@@ -1,0 +1,38 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`addressUtils - Golden Tests > addressToBytes matches PublicKey.toBytes() > should match PublicKey.toBytes() for user wallet (snapshot test) > user-wallet-bytes-addressUtils 1`] = `
+[
+  186,
+  122,
+  116,
+  243,
+  116,
+  171,
+  5,
+  183,
+  13,
+  17,
+  74,
+  120,
+  17,
+  46,
+  240,
+  211,
+  240,
+  105,
+  90,
+  129,
+  149,
+  114,
+  199,
+  151,
+  16,
+  181,
+  55,
+  32,
+  0,
+  216,
+  26,
+  226,
+]
+`;

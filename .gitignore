@@ -1,0 +1,23 @@
+node_modules
+.DS_Store
+dist
+dist-ssr
+*.local
+count.txt
+.env
+.nitro
+.tanstack
+.wrangler
+.output
+.vinxi
+todos.json
+.vercel
+.env*.local
+
+# Internal scripts (sensitive admin/key operations)
+scripts-internal/
+docs-internal/
+
+# Claude Code local settings (may contain permissions with sensitive data)
+.claude/settings.local.json
+nul

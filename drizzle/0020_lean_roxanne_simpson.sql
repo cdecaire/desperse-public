@@ -1,0 +1,1 @@
+ALTER TABLE "users" ADD COLUMN "username_last_changed_at" timestamp;

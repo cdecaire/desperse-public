@@ -1,0 +1,17 @@
+{
+  "tailwindCSS.experimental.configFile": "./src/styles.css",
+  "editor.quickSuggestions": {
+    "strings": true
+  },
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+  "tailwindCSS.includeLanguages": {
+    "html": "html",
+    "javascript": "javascript",
+    "javascriptreact": "javascript",
+    "typescript": "javascript",
+    "typescriptreact": "javascript",
+    "css": "css"
+  }
+}

@@ -1,0 +1,462 @@
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800;900&family=DM+Mono:wght@300;400;500&display=swap');
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+html {
+  font-size: 16px; /* Mobile base: 16px */
+}
+
+/* Desktop base: 14px */
+@media (min-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+body {
+  @apply m-0;
+  font-family: 'Figtree', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-weight: 500;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Prevent layout shift when scrollbar disappears (e.g., when modals open) */
+  scrollbar-gutter: stable;
+}
+
+code {
+  font-family: 'DM Mono', source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+.font-mono {
+  font-family: 'DM Mono', ui-monospace, SFMono-Regular, monospace;
+}
+
+@theme inline {
+  --radius-none: 0px;
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+
+  /* Soft shadows (lighter opacity + more blur) */
+  --shadow-sm: 0 1px 4px 0 rgb(0 0 0 / 0.03);
+  --shadow: 0 2px 8px 0 rgb(0 0 0 / 0.04);
+  --shadow-md: 0 4px 12px -2px rgb(0 0 0 / 0.05);
+  --shadow-lg: 0 8px 24px -4px rgb(0 0 0 / 0.05);
+  --shadow-xl: 0 16px 40px -8px rgb(0 0 0 / 0.05);
+  
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-border-floating: var(--border-floating);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+  --radius: 0.625rem; /* Legacy, kept for backward compatibility */
+
+  /* Zinc palette tokens */
+  --zinc-50: #fafafa;
+  --zinc-100: #f4f4f5;
+  --zinc-200: #e4e4e7;
+  --zinc-300: #d4d4d8;
+  --zinc-400: #a1a1aa;
+  --zinc-500: #71717a;
+  --zinc-600: #52525b;
+  --zinc-700: #3f3f46;
+  --zinc-800: #27272a;
+  --zinc-900: #18181b;
+  --zinc-950: #09090b;
+
+  /* Torch Red palette tokens (destructive) */
+  --torch-red-50: #fff0f4;
+  --torch-red-100: #ffdde5;
+  --torch-red-200: #ffc0cf;
+  --torch-red-300: #ff94ad;
+  --torch-red-400: #ff577f;
+  --torch-red-500: #ff2357;
+  --torch-red-600: #ff003c;
+  --torch-red-700: #d70033;
+  --torch-red-800: #b1032c;
+  --torch-red-900: #920a2a;
+  --torch-red-950: #500013;
+
+  /* Blue Gem palette tokens (collectible) */
+  --blue-gem-50: #f3f1ff;
+  --blue-gem-100: #e9e6ff;
+  --blue-gem-200: #d5d0ff;
+  --blue-gem-300: #b7abff;
+  --blue-gem-400: #947bff;
+  --blue-gem-500: #7346ff;
+  --blue-gem-600: #6221ff;
+  --blue-gem-700: #540ff2;
+  --blue-gem-800: #450ccb;
+  --blue-gem-900: #3a0ca3;
+  --blue-gem-950: #220471;
+
+  /* Purple Heart palette tokens (edition/accent) */
+  --purple-heart-50: #fbf3ff;
+  --purple-heart-100: #f4e4ff;
+  --purple-heart-200: #ecceff;
+  --purple-heart-300: #dda7ff;
+  --purple-heart-400: #c86fff;
+  --purple-heart-500: #b439ff;
+  --purple-heart-600: #a213ff;
+  --purple-heart-700: #8d04ec;
+  --purple-heart-800: #7209b7;
+  --purple-heart-900: #62099a;
+  --purple-heart-950: #430074;
+
+  /* Caribbean Green palette tokens (success) */
+  --caribbean-green-50: #eafff8;
+  --caribbean-green-100: #cdfeeb;
+  --caribbean-green-200: #9ffbdd;
+  --caribbean-green-300: #61f4cd;
+  --caribbean-green-400: #27e4b8;
+  --caribbean-green-500: #00cba2;
+  --caribbean-green-600: #00a585;
+  --caribbean-green-700: #00846d;
+  --caribbean-green-800: #006858;
+  --caribbean-green-900: #00554a;
+  --caribbean-green-950: #00302a;
+
+  /* Flush Orange palette tokens (warning) */
+  --flush-orange-50: #fffaec;
+  --flush-orange-100: #fff4d3;
+  --flush-orange-200: #ffe5a5;
+  --flush-orange-300: #ffd16d;
+  --flush-orange-400: #ffb232;
+  --flush-orange-500: #ff980a;
+  --flush-orange-600: #ff8000;
+  --flush-orange-700: #cc5d02;
+  --flush-orange-800: #a1480b;
+  --flush-orange-900: #823d0c;
+  --flush-orange-950: #461d04;
+
+  /* Azure Radiance palette tokens (info) */
+  --azure-radiance-50: #eff7ff;
+  --azure-radiance-100: #daedff;
+  --azure-radiance-200: #bee1ff;
+  --azure-radiance-300: #91cfff;
+  --azure-radiance-400: #5db3fd;
+  --azure-radiance-500: #3792fa;
+  --azure-radiance-600: #2e7cf0;
+  --azure-radiance-700: #195ddc;
+  --azure-radiance-800: #1b4bb2;
+  --azure-radiance-900: #1c438c;
+  --azure-radiance-950: #162a55;
+
+  /* Background & surface */
+  --background: #ffffff;
+  --card: #ffffff;
+  --popover: #ffffff;
+
+  /* Text & foreground */
+  --foreground: var(--zinc-950);
+  --card-foreground: var(--zinc-950);
+  --popover-foreground: var(--zinc-950);
+
+  /* Interactive / neutrals */
+  --primary: var(--zinc-950);
+  --primary-foreground: var(--zinc-50);
+  --secondary: var(--zinc-100);
+  --secondary-foreground: var(--zinc-950);
+  --muted: var(--zinc-100);
+  --muted-foreground: var(--zinc-600);
+  --accent: var(--zinc-100);
+  --accent-foreground: var(--zinc-950);
+  --destructive: var(--torch-red-600);
+  --destructive-foreground: #ffffff;
+
+  /* Post type tones - for light mode */
+  --tone-standard: var(--caribbean-green-500);
+  --tone-collectible: var(--blue-gem-600);
+  --tone-edition: var(--purple-heart-700);
+  --tone-warning: var(--flush-orange-600);
+  --tone-info: var(--azure-radiance-500);
+  --highlight: var(--purple-heart-700);
+
+  /* Borders & inputs */
+  --border: var(--zinc-200);
+  --border-floating: oklch(from var(--zinc-400) l c h / 0.5);
+  --input: var(--zinc-200);
+  --ring: var(--zinc-400);
+
+  /* Sidebar */
+  --sidebar: #ffffff;
+  --sidebar-foreground: var(--zinc-950);
+  --sidebar-primary: var(--zinc-950);
+  --sidebar-primary-foreground: var(--zinc-50);
+  --sidebar-accent: var(--zinc-100);
+  --sidebar-accent-foreground: var(--zinc-950);
+  --sidebar-border: var(--zinc-200);
+  --sidebar-ring: var(--zinc-400);
+}
+
+.dark {
+  /* Background & surface */
+  --background: var(--zinc-950);
+  --card: var(--zinc-900);
+  --popover: var(--zinc-900);
+
+  /* Text & foreground */
+  --foreground: var(--zinc-50);
+  --card-foreground: var(--zinc-50);
+  --popover-foreground: var(--zinc-50);
+
+  /* Interactive / neutrals */
+  --primary: var(--zinc-50);
+  --primary-foreground: var(--zinc-950);
+  --secondary: var(--zinc-800);
+  --secondary-foreground: var(--zinc-50);
+  --muted: var(--zinc-800);
+  --muted-foreground: var(--zinc-400);
+  --accent: var(--zinc-800);
+  --accent-foreground: var(--zinc-50);
+  --destructive: var(--torch-red-500);
+  --destructive-foreground: #ffffff;
+
+  /* Post type tones - for dark mode */
+  --tone-standard: var(--caribbean-green-400);
+  --tone-collectible: var(--blue-gem-500);
+  --tone-edition: var(--purple-heart-600);
+  --tone-warning: var(--flush-orange-500);
+  --tone-info: var(--azure-radiance-400);
+  --highlight: var(--purple-heart-600);
+
+  /* Borders & inputs */
+  --border: oklch(from var(--zinc-700) l c h / 0.4);
+  --border-floating: oklch(from var(--zinc-500) l c h / 0.5);
+  --input: oklch(from var(--zinc-700) l c h / 0.4);
+  --ring: var(--zinc-500);
+
+  /* Sidebar */
+  --sidebar: var(--zinc-950);
+  --sidebar-foreground: var(--zinc-50);
+  --sidebar-primary: var(--zinc-50);
+  --sidebar-primary-foreground: var(--zinc-950);
+  --sidebar-accent: var(--zinc-800);
+  --sidebar-accent-foreground: var(--zinc-50);
+  --sidebar-border: var(--zinc-900);
+  --sidebar-ring: var(--zinc-500);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  /* Global focus reset for buttons and interactive UI elements */
+  /* Form inputs (input, textarea, select) retain focus indicators for usability */
+  /* Full accessibility pass planned for future */
+  button:focus,
+  button:focus-visible,
+  [role="button"]:focus,
+  [role="button"]:focus-visible,
+  [role="dialog"]:focus,
+  [role="dialog"]:focus-visible,
+  [role="menu"]:focus,
+  [role="menu"]:focus-visible,
+  [role="menuitem"]:focus,
+  [role="menuitem"]:focus-visible,
+  [data-radix-dialog-content]:focus,
+  [data-radix-dialog-content]:focus-visible,
+  [data-radix-popover-content]:focus,
+  [data-radix-popover-content]:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+  
+  /* Text selection styling */
+  ::selection {
+    background-color: var(--highlight);
+    color: #FFFFFF;
+  }
+
+  ::-moz-selection {
+    background-color: var(--highlight);
+    color: #FFFFFF;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+  }
+  button {
+    cursor: pointer;
+  }
+  button,
+  input,
+  select,
+  textarea {
+    font-family: 'Figtree', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+
+  b,
+  strong,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: 600;
+  }
+
+  /* Darker button hover states in dark mode */
+  /* Note: Primary buttons use default hover:bg-primary/90 which provides subtle hover */
+  .dark button:hover[class*="bg-secondary"] {
+    background-color: var(--zinc-800) !important;
+    opacity: 1 !important;
+  }
+  .dark button:hover[class*="bg-accent"] {
+    background-color: var(--zinc-800) !important;
+    opacity: 1 !important;
+  }
+
+  /* Darker sidebar and menu hover states in dark mode */
+  /* Target sidebar navigation links and menu items */
+  /* Exclude primary buttons, no-hover-bg elements, and elements with bg-transparent hover from this rule */
+  .dark aside a:not([class*="bg-transparent"]):not(.no-hover-bg),
+  .dark aside button:not([class*="bg-primary"]):not(.no-hover-bg),
+  .dark [role="menu"] a:not(.no-hover-bg),
+  .dark [role="menu"] button:not([class*="bg-primary"]):not(.no-hover-bg),
+  .dark [role="menuitem"]:not(.no-hover-bg) {
+    transition: background-color 150ms ease-out !important;
+  }
+  .dark aside a:hover:not([class*="bg-transparent"]):not(.no-hover-bg),
+  .dark aside button:hover:not([class*="bg-primary"]):not(.no-hover-bg),
+  .dark [role="menu"] a:hover:not(.no-hover-bg),
+  .dark [role="menu"] button:hover:not([class*="bg-primary"]):not(.no-hover-bg),
+  .dark [role="menuitem"]:hover:not(.no-hover-bg) {
+    background-color: var(--zinc-800) !important;
+  }
+
+  /* Darker hover states for feed action buttons (like, comment, etc.) in dark mode */
+  /* Target buttons and links within post cards/articles */
+  /* Exclude username links (those with hover:underline) and no-hover-bg elements from background hover */
+  .dark article button:not(.no-hover-bg),
+  .dark article a:not([class*="hover:underline"]):not(.no-hover-bg),
+  .dark article [role="button"]:not(.no-hover-bg) {
+    transition: background-color 150ms ease-out !important;
+  }
+  .dark article button:hover:not(.no-hover-bg),
+  .dark article a:hover:not([class*="hover:underline"]):not(.no-hover-bg),
+  .dark article [role="button"]:hover:not(.no-hover-bg) {
+    background-color: var(--zinc-900) !important;
+  }
+  
+  /* Exclude username links from background hover in dark mode */
+  .dark article a[class*="hover:underline"]:hover,
+  .dark a[class*="hover:underline"]:hover {
+    background-color: transparent !important;
+  }
+}
+
+@layer utilities {
+  /* Smooth hover transition for interactive elements */
+  .hover-fade {
+    transition: background-color 150ms ease-out, color 150ms ease-out;
+  }
+
+  /* Hide scrollbars while maintaining scroll functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
+
+  /* PWA Safe Area utilities for iOS standalone mode */
+  /* Main content padding when TopNav is shown (header height + safe-area) */
+  /* Only applies on mobile (< lg), resets to 0 on desktop where sidebar is used */
+  .pt-topnav-safe {
+    padding-top: calc(3.5rem + env(safe-area-inset-top, 0px));
+  }
+  @media (min-width: 1024px) {
+    .pt-topnav-safe {
+      padding-top: 0;
+    }
+  }
+
+  /* Settings/Help page content padding - accounts for mobile header + safe-area */
+  /* Only on mobile (< md), desktop uses sidebar layout */
+  .pt-settings-header {
+    padding-top: calc(3.5rem + env(safe-area-inset-top, 0px));
+  }
+  @media (min-width: 768px) {
+    .pt-settings-header {
+      padding-top: 0;
+    }
+  }
+}
+
+/* Privy theme customization - matches app's color scheme */
+:root {
+  /* Privy CSS variable overrides for light theme */
+  --privy-color-foreground: var(--foreground);
+  --privy-color-background: var(--background);
+  --privy-color-background-2: var(--card);
+  --privy-color-foreground-2: var(--card-foreground);
+  --privy-color-foreground-3: var(--muted-foreground);
+  --privy-color-foreground-4: var(--zinc-600);
+  --privy-color-background-3: var(--muted);
+  --privy-color-accent: var(--highlight);
+  --privy-color-accent-foreground: #FFFFFF;
+  --privy-color-link: var(--foreground);
+  --privy-color-error: var(--destructive);
+  --privy-color-success: var(--tone-standard);
+  --privy-border-radius: var(--radius-sm);
+  --privy-font-family-body: 'Figtree', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --privy-font-family-mono: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
+.dark {
+  /* Privy CSS variable overrides for dark theme */
+  --privy-color-foreground: var(--foreground);
+  --privy-color-background: var(--background);
+  --privy-color-background-2: var(--card);
+  --privy-color-foreground-2: var(--card-foreground);
+  --privy-color-foreground-3: var(--muted-foreground);
+  --privy-color-foreground-4: var(--zinc-400);
+  --privy-color-background-3: var(--muted);
+  --privy-color-accent: var(--highlight);
+  --privy-color-accent-foreground: #FFFFFF;
+  --privy-color-link: var(--foreground);
+  --privy-color-error: var(--destructive);
+  --privy-color-success: var(--tone-standard);
+  --privy-border-radius: var(--radius-sm);
+  --privy-font-family-body: 'Figtree', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --privy-font-family-mono: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}

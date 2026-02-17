@@ -1,0 +1,1 @@
+CREATE INDEX "purchases_tx_signature_idx" ON "purchases" USING btree ("tx_signature");

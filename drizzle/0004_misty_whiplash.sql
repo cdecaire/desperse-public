@@ -1,0 +1,1 @@
+ALTER TABLE "users" ADD COLUMN "header_bg_url" text;

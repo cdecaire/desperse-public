@@ -12,6 +12,7 @@
 
 import { defineEventHandler, readBody, getHeader, createError } from 'h3'
 import { handleUpload, type HandleUploadBody } from '@vercel/blob/client'
+import { authenticateWithToken } from '@/server/auth'
 import { env } from '@/config/env'
 
 // Max file size in bytes (25MB to match client-side limit)
@@ -58,8 +59,7 @@ export default defineEventHandler(async (event) => {
         }),
       } as Request,
       onBeforeGenerateToken: async (_pathname, clientPayload) => {
-        // Verify user is authenticated via clientPayload
-        // The client sends auth token in clientPayload
+        // Verify user is authenticated via Bearer token in clientPayload
         if (!clientPayload) {
           throw createError({
             statusCode: 401,
@@ -67,7 +67,7 @@ export default defineEventHandler(async (event) => {
           })
         }
 
-        let payload: { authorized?: boolean }
+        let payload: { token?: string }
         try {
           payload = JSON.parse(clientPayload)
         } catch {
@@ -77,10 +77,20 @@ export default defineEventHandler(async (event) => {
           })
         }
 
-        if (!payload.authorized) {
+        // Verify the actual auth token server-side
+        const token = payload.token || authHeader?.replace('Bearer ', '')
+        if (!token) {
           throw createError({
             statusCode: 401,
             message: 'Authentication required',
+          })
+        }
+
+        const auth = await authenticateWithToken(token)
+        if (!auth) {
+          throw createError({
+            statusCode: 401,
+            message: 'Invalid or expired token',
           })
         }
 

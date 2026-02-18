@@ -14,7 +14,7 @@ import { eq, and } from 'drizzle-orm'
 import { randomBytes, createHmac } from 'node:crypto'
 import * as ed25519 from '@noble/ed25519'
 import { addressToBytes, validateAddress } from '@/server/services/blockchain/addressUtils'
-import { generateUniqueSlug } from '@/server/functions/slug-utils'
+import { generateUniqueSlug } from '@/server/utils/slug-utils'
 import { getPrivyClient, type AuthenticatedUser } from '@/server/auth'
 
 // ============================================================================

@@ -17,6 +17,7 @@ import { prepareTip, confirmTip } from "@/server/functions/tips";
 import { useAuth } from "./useAuth";
 import { useActiveWallet } from "./useActiveWallet";
 import { toastError, toastSuccess } from "@/lib/toast";
+import { getClientRpcUrl } from "@/lib/rpc";
 import { Buffer } from "buffer";
 import bs58 from "bs58";
 
@@ -157,12 +158,7 @@ export function useTip() {
 								options: { uiOptions: modalUiOptions },
 							});
 
-							const heliusApiKey =
-								import.meta.env.VITE_HELIUS_API_KEY;
-							const rpcUrl = heliusApiKey
-								? `https://mainnet.helius-rpc.com/?api-key=${heliusApiKey}`
-								: "https://api.mainnet-beta.solana.com";
-							const rpc = createSolanaRpc(rpcUrl);
+							const rpc = createSolanaRpc(getClientRpcUrl());
 
 							const base64Tx = Buffer.from(
 								signedTx.signedTransaction,

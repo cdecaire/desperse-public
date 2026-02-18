@@ -10,8 +10,9 @@ import { eq } from 'drizzle-orm'
 import { authenticateWithToken } from '@/server/auth'
 import { uploadMetadataJson } from '@/server/storage/blob'
 import { validateCategories, categoriesToStrings, type Category } from '@/constants/categories'
-import { processMentions } from '@/server/functions/mentions'
-import { processHashtags } from '@/server/functions/hashtags'
+import { processMentions } from '@/server/utils/mentions'
+import { processHashtags } from '@/server/utils/hashtags'
+import { generateNftMetadata } from '@/server/utils/nft-metadata'
 
 // Minimum edition prices
 const MIN_EDITION_PRICE_SOL = 100_000_000 // 0.1 SOL in lamports
@@ -34,124 +35,6 @@ function validateEditionPrice(price: number, currency: 'SOL' | 'USDC'): string |
 
 const MAX_ASSETS_PER_POST = 10
 
-// Copy of generateNftMetadata from posts.ts (cannot import due to createServerFn)
-function generateNftMetadata(post: {
-  id: string
-  caption: string | null
-  mediaUrl: string
-  coverUrl: string | null
-  type: 'collectible' | 'edition'
-  maxSupply: number | null
-  price: number | null
-  currency: 'SOL' | 'USDC' | null
-  nftName?: string | null
-  nftSymbol?: string | null
-  nftDescription?: string | null
-  sellerFeeBasisPoints?: number | null
-  isMutable?: boolean | null
-  categories?: Category[] | null
-  protectDownload?: boolean
-  assetId?: string
-  assets?: Array<{ id: string; url: string; mimeType: string; isPreviewable: boolean }>
-}, creator: {
-  displayName: string | null
-  usernameSlug: string
-  walletAddress: string
-}) {
-  const inferMimeType = (url: string): string => {
-    const extension = url.split('.').pop()?.toLowerCase()
-    const typeMap: Record<string, string> = {
-      'png': 'image/png', 'jpg': 'image/jpeg', 'jpeg': 'image/jpeg',
-      'gif': 'image/gif', 'webp': 'image/webp', 'mp4': 'video/mp4',
-      'webm': 'video/webm', 'mp3': 'audio/mpeg', 'wav': 'audio/wav',
-      'ogg': 'audio/ogg', 'glb': 'model/gltf-binary', 'gltf': 'model/gltf+json',
-      'pdf': 'application/pdf',
-    }
-    return typeMap[extension || ''] || 'application/octet-stream'
-  }
-
-  const isImageMime = (mime: string) => mime.startsWith('image/')
-  const isAnimationMime = (mime: string) => mime.startsWith('video/') || mime.startsWith('audio/')
-
-  const deriveCategory = (url: string): string => {
-    const mime = inferMimeType(url)
-    if (mime.startsWith('image/')) return 'image'
-    if (mime.startsWith('video/')) return 'video'
-    if (mime.startsWith('audio/')) return 'audio'
-    if (mime.startsWith('model/') || url.endsWith('.glb') || url.endsWith('.gltf')) return 'vr'
-    return 'image'
-  }
-
-  const name = post.nftName?.trim() || (post.type === 'collectible' ? `Collectible #${post.id.slice(0, 8)}` : `Edition #${post.id.slice(0, 8)}`)
-  const symbol = post.nftSymbol?.trim() || 'DSPRS'
-  const description = post.nftDescription?.trim() || post.caption?.trim() || ''
-
-  const hasMultipleAssets = post.assets && post.assets.length > 1
-
-  let imageUrl: string
-  let animationUrl: string | undefined
-  let files: Array<{ uri: string; type: string }>
-  let category: string
-
-  if (hasMultipleAssets && post.assets) {
-    const firstImage = post.assets.find(a => isImageMime(a.mimeType))
-    const firstAnimation = post.assets.find(a => isAnimationMime(a.mimeType))
-    imageUrl = post.coverUrl || firstImage?.url || post.assets[0].url
-    animationUrl = firstAnimation?.url
-    files = post.assets.map(asset => {
-      if (post.protectDownload && !asset.isPreviewable && asset.id) {
-        return { uri: `https://www.desperse.com/api/assets/${asset.id}`, type: asset.mimeType }
-      }
-      return { uri: asset.url, type: asset.mimeType }
-    })
-    if (post.coverUrl && !post.assets.some(a => a.url === post.coverUrl)) {
-      files.push({ uri: post.coverUrl, type: inferMimeType(post.coverUrl) })
-    }
-    category = deriveCategory(post.assets[0].url)
-  } else {
-    const isDocumentType = post.mediaUrl.match(/\.(pdf|zip|epub)$/i)
-    imageUrl = post.coverUrl
-      ? post.coverUrl
-      : (post.protectDownload && isDocumentType)
-        ? post.coverUrl!
-        : post.mediaUrl
-
-    const mediaMime = inferMimeType(post.mediaUrl)
-    const coverMime = post.coverUrl ? inferMimeType(post.coverUrl) : null
-    category = deriveCategory(post.mediaUrl)
-
-    const mediaUri = post.protectDownload && post.assetId
-      ? `https://www.desperse.com/api/assets/${post.assetId}`
-      : post.mediaUrl
-
-    files = [
-      { uri: mediaUri, type: mediaMime },
-      ...(post.coverUrl ? [{ uri: post.coverUrl, type: coverMime || 'image/png' }] : []),
-    ]
-
-    animationUrl = post.coverUrl
-      ? (post.protectDownload && post.assetId
-          ? `https://www.desperse.com/api/assets/${post.assetId}`
-          : post.mediaUrl)
-      : undefined
-  }
-
-  return {
-    name, symbol, description,
-    image: imageUrl,
-    animation_url: animationUrl,
-    external_url: `https://www.desperse.com/post/${post.id}`,
-    attributes: [
-      { trait_type: 'Type', value: post.type === 'collectible' ? 'Collectible' : 'Edition' },
-      { trait_type: 'Creator', value: creator.displayName || creator.usernameSlug },
-      ...(post.maxSupply !== null ? [{ trait_type: 'Max Supply', value: post.maxSupply }] : []),
-      ...(post.categories && post.categories.length > 0
-        ? post.categories.map((cat) => ({ trait_type: 'Category', value: cat.display }))
-        : []),
-    ],
-    properties: { files, category },
-  }
-}
 
 // Input type for createPostDirect
 export interface CreatePostInput {

@@ -8,7 +8,7 @@ import { db } from '@/server/db'
 import { users } from '@/server/db/schema'
 import { eq } from 'drizzle-orm'
 import { z } from 'zod'
-import { generateUniqueSlug } from './slug-utils'
+import { generateUniqueSlug } from '@/server/utils/slug-utils'
 import {
   extractAuthorizationFromPayload,
   verifyPrivyToken,
@@ -243,15 +243,11 @@ export const getCurrentUser = createServerFn({
     const authorization = extractAuthorizationFromPayload(dataObj)
 
     if (!authorization) {
-      // Not authenticated - return null (not an error)
-      console.log('[getCurrentUser] No authorization token provided')
       return {
         success: true,
         user: null,
       }
     }
-
-    console.log('[getCurrentUser] Authorization token present, length:', authorization.length)
 
     // Verify the token with Privy - this is the source of truth for privyId
     let verifiedPrivyId: string
@@ -261,7 +257,6 @@ export const getCurrentUser = createServerFn({
         : authorization
       const verifiedClaims = await verifyPrivyToken(accessToken)
       verifiedPrivyId = verifiedClaims.userId
-      console.log('[getCurrentUser] Token verified, privyId:', verifiedPrivyId)
     } catch (error) {
       console.warn('[getCurrentUser] Token verification failed:', error instanceof Error ? error.message : 'Unknown error')
       return {
@@ -278,16 +273,11 @@ export const getCurrentUser = createServerFn({
       .limit(1)
 
     if (!user) {
-      // User authenticated with Privy but not in our DB yet
-      // This is normal for new users before initAuth is called
-      console.log('[getCurrentUser] User not found in DB for privyId:', verifiedPrivyId)
       return {
         success: true,
         user: null,
       }
     }
-
-    console.log('[getCurrentUser] User found:', user.id, user.usernameSlug)
 
     return {
       success: true,

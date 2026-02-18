@@ -9,11 +9,12 @@ import { posts, users, follows, collections, purchases, postAssets } from '@/ser
 import { eq, and, desc, lt, inArray, sql, count, arrayContains, isNotNull } from 'drizzle-orm'
 import { z } from 'zod'
 import { uploadMetadataJson } from '@/server/storage/blob'
-import { PRESET_CATEGORIES, validateCategories, stringsToCategories, categoriesToStrings, type Category } from '@/constants/categories'
-import { isModeratorOrAdmin } from './auth-helpers'
+import { validateCategories, stringsToCategories, categoriesToStrings, type Category } from '@/constants/categories'
+import { isModeratorOrAdmin } from '@/server/utils/auth-helpers'
 import { withAuth, withOptionalAuth, redactSensitiveFields } from '@/server/auth'
-import { processMentions, deleteMentions } from '@/server/functions/mentions'
-import { processHashtags } from '@/server/functions/hashtags'
+import { processMentions, deleteMentions } from '@/server/utils/mentions'
+import { processHashtags } from '@/server/utils/hashtags'
+import { generateNftMetadata } from '@/server/utils/nft-metadata'
 
 // Post type enum
 const postTypeSchema = z.enum(['post', 'collectible', 'edition'])
@@ -86,8 +87,6 @@ const createPostSchema = z.object({
   mediaFileSize: z.number().int().positive().optional().nullable(), // File size in bytes
 })
 
-export type CreatePostInput = z.infer<typeof createPostSchema>
-
 // Schema for feed query
 const feedQuerySchema = z.object({
   tab: z.enum(['for-you', 'following']).default('for-you'),
@@ -103,212 +102,6 @@ const userPostsQuerySchema = z.object({
   cursor: z.string().datetime().optional(),
   limit: z.number().int().min(1).max(50).default(20),
 })
-
-/**
- * Generate Metaplex-compatible metadata JSON for NFT posts
- * Supports both single-asset and multi-asset posts
- */
-export function generateNftMetadata(post: {
-  id: string
-  caption: string | null
-  mediaUrl: string
-  coverUrl: string | null
-  type: 'collectible' | 'edition'
-  maxSupply: number | null
-  price: number | null
-  currency: 'SOL' | 'USDC' | null
-  nftName?: string | null
-  nftSymbol?: string | null
-  nftDescription?: string | null
-  sellerFeeBasisPoints?: number | null
-  isMutable?: boolean | null
-  categories?: Category[] | null
-  protectDownload?: boolean
-  assetId?: string
-  // Multi-asset support (Phase 2 & 3)
-  // For editions, include assetId and isPreviewable so gated downloads use API endpoints
-  assets?: Array<{ id: string; url: string; mimeType: string; isPreviewable: boolean }>
-}, creator: {
-  displayName: string | null
-  usernameSlug: string
-  walletAddress: string
-}) {
-  // Infer MIME type from file extension
-  const inferMimeType = (url: string): string => {
-    const extension = url.split('.').pop()?.toLowerCase()
-    const typeMap: Record<string, string> = {
-      // Images
-      'png': 'image/png',
-      'jpg': 'image/jpeg',
-      'jpeg': 'image/jpeg',
-      'gif': 'image/gif',
-      'webp': 'image/webp',
-      // Videos
-      'mp4': 'video/mp4',
-      'webm': 'video/webm',
-      // Audio
-      'mp3': 'audio/mpeg',
-      'wav': 'audio/wav',
-      'ogg': 'audio/ogg',
-      // 3D Models
-      'glb': 'model/gltf-binary',
-      'gltf': 'model/gltf+json',
-      // Documents
-      'pdf': 'application/pdf',
-    }
-    return typeMap[extension || ''] || 'application/octet-stream'
-  }
-
-  // Helper to check if MIME type is image
-  const isImageMime = (mime: string) => mime.startsWith('image/')
-  // Helper to check if MIME type is video/audio (animation)
-  const isAnimationMime = (mime: string) => mime.startsWith('video/') || mime.startsWith('audio/')
-
-  // Derive category from media type
-  const deriveCategory = (url: string): string => {
-    const mime = inferMimeType(url)
-    if (mime.startsWith('image/')) return 'image'
-    if (mime.startsWith('video/')) return 'video'
-    if (mime.startsWith('audio/')) return 'audio'
-    if (mime.startsWith('model/') || url.endsWith('.glb') || url.endsWith('.gltf')) return 'vr'
-    return 'image' // fallback
-  }
-
-  // Name: nftName or safe fallback (caption is content-only, not used for metadata)
-  const name = post.nftName?.trim() || (post.type === 'collectible' ? `Collectible #${post.id.slice(0, 8)}` : `Edition #${post.id.slice(0, 8)}`)
-
-  // Symbol precedence: nftSymbol -> default
-  const symbol = post.nftSymbol?.trim() || 'DSPRS'
-
-  // Description: nftDescription or caption (caption is what's used on-chain)
-  const description = post.nftDescription?.trim() || post.caption?.trim() || ''
-
-  // Handle multi-asset vs single-asset
-  const hasMultipleAssets = post.assets && post.assets.length > 1
-
-  let imageUrl: string
-  let animationUrl: string | undefined
-  let files: Array<{ uri: string; type: string }>
-  let category: string
-
-  if (hasMultipleAssets && post.assets) {
-    // Multi-asset mode: build files from all assets
-    // Find first image and first video/audio for image and animation_url
-    const firstImage = post.assets.find(a => isImageMime(a.mimeType))
-    const firstAnimation = post.assets.find(a => isAnimationMime(a.mimeType))
-
-    // image: first image asset, or coverUrl if provided, or first asset
-    imageUrl = post.coverUrl || firstImage?.url || post.assets[0].url
-
-    // animation_url: first video/audio if present
-    animationUrl = firstAnimation?.url
-
-    // Build files array from all assets
-    // For editions with protectDownload, non-previewable assets use API endpoint URLs
-    files = post.assets.map(asset => {
-      // For non-previewable assets (downloads) on editions with protectDownload, use API endpoint
-      if (post.protectDownload && !asset.isPreviewable && asset.id) {
-        return {
-          uri: `https://www.desperse.com/api/assets/${asset.id}`,
-          type: asset.mimeType,
-        }
-      }
-      // Previewable assets (images, videos) use direct URLs
-      return {
-        uri: asset.url,
-        type: asset.mimeType,
-      }
-    })
-
-    // Add cover to files if present and not already in assets
-    if (post.coverUrl && !post.assets.some(a => a.url === post.coverUrl)) {
-      files.push({
-        uri: post.coverUrl,
-        type: inferMimeType(post.coverUrl),
-      })
-    }
-
-    // Category from first asset
-    category = deriveCategory(post.assets[0].url)
-  } else {
-    // Single-asset mode (existing behavior)
-    // Determine if this is a document type (ZIP, PDF, EPUB)
-    const isDocumentType = post.mediaUrl.match(/\.(pdf|zip|epub)$/i)
-
-    // Determine the image URL for NFT metadata
-    // For protected documents, cover is REQUIRED (enforced in createPost validation)
-    imageUrl = post.coverUrl
-      ? post.coverUrl
-      : (post.protectDownload && isDocumentType)
-        ? post.coverUrl! // Cover is required for protected documents - validation ensures this
-        : post.mediaUrl
-
-    const mediaMime = inferMimeType(post.mediaUrl)
-    const coverMime = post.coverUrl ? inferMimeType(post.coverUrl) : null
-    category = deriveCategory(post.mediaUrl)
-
-    // Build files array: always include media, conditionally include cover
-    // For protected downloads (editions only), use protected API endpoint instead of direct blob URL
-    const mediaUri = post.protectDownload && post.assetId
-      ? `https://www.desperse.com/api/assets/${post.assetId}`
-      : post.mediaUrl
-
-    files = [
-      {
-        uri: mediaUri,
-        type: mediaMime,
-      },
-      ...(post.coverUrl ? [{
-        uri: post.coverUrl,
-        type: coverMime || 'image/png',
-      }] : []),
-    ]
-
-    // animation_url: only set if there's a cover (audio/video)
-    animationUrl = post.coverUrl
-      ? (post.protectDownload && post.assetId
-          ? `https://www.desperse.com/api/assets/${post.assetId}`
-          : post.mediaUrl)
-      : undefined
-  }
-
-  const metadata = {
-    name,
-    symbol,
-    description,
-    image: imageUrl,
-    animation_url: animationUrl,
-    external_url: `https://www.desperse.com/post/${post.id}`,
-    attributes: [
-      {
-        trait_type: 'Type',
-        value: post.type === 'collectible' ? 'Collectible' : 'Edition',
-      },
-      {
-        trait_type: 'Creator',
-        value: creator.displayName || creator.usernameSlug,
-      },
-      // Only include Max Supply if not null (open edition is implied if omitted)
-      ...(post.maxSupply !== null ? [{
-        trait_type: 'Max Supply',
-        value: post.maxSupply,
-      }] : []),
-      // Include categories as separate attributes (one per category)
-      ...(post.categories && post.categories.length > 0
-        ? post.categories.map((cat) => ({
-            trait_type: 'Category',
-            value: cat.display, // Use display value for on-chain metadata
-          }))
-        : []),
-    ],
-    properties: {
-      files,
-      category,
-    },
-  }
-
-  return metadata
-}
 
 /**
  * Create a new post
@@ -1336,92 +1129,6 @@ export const regeneratePostMetadata = createServerFn({
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to regenerate metadata',
-    };
-  }
-});
-
-/**
- * Get counts for multiple posts (collect counts and current supply)
- * Used for real-time polling on feed
- */
-const getPostCountsSchema = z.object({
-  postIds: z.array(z.string().uuid()).min(1).max(50), // Limit to 50 posts per request
-});
-
-export const getPostCounts = createServerFn({
-  method: 'GET',
-}).handler(async (input: unknown): Promise<{
-  success: boolean;
-  counts: Record<string, {
-    collectCount: number;
-    currentSupply: number;
-  }>;
-  error?: string;
-}> => {
-  try {
-    const rawData = input && typeof input === 'object' && 'data' in input
-      ? (input as { data: unknown }).data
-      : input;
-    
-    const { postIds } = getPostCountsSchema.parse(rawData);
-    
-    // Get collect counts for collectibles
-    const collectCountResults = await db
-      .select({
-        postId: collections.postId,
-        count: count(),
-      })
-      .from(collections)
-      .where(
-        and(
-          inArray(collections.postId, postIds),
-          eq(collections.status, 'confirmed')
-        )
-      )
-      .groupBy(collections.postId);
-    
-    const collectCounts: Record<string, number> = Object.fromEntries(
-      collectCountResults.map(r => [r.postId, r.count])
-    );
-    
-    // Get current supply for editions (count confirmed purchases only)
-    const purchaseCountResults = await db
-      .select({
-        postId: purchases.postId,
-        count: count(),
-      })
-      .from(purchases)
-      .where(
-        and(
-          inArray(purchases.postId, postIds),
-          eq(purchases.status, 'confirmed')
-        )
-      )
-      .groupBy(purchases.postId);
-    
-    const supplyCounts: Record<string, number> = Object.fromEntries(
-      purchaseCountResults.map(r => [r.postId, r.count])
-    );
-    
-    // Combine results
-    const counts: Record<string, { collectCount: number; currentSupply: number }> = {};
-    for (const postId of postIds) {
-      counts[postId] = {
-        collectCount: collectCounts[postId] || 0,
-        currentSupply: supplyCounts[postId] || 0,
-      };
-    }
-    
-    return {
-      success: true,
-      counts,
-    };
-  } catch (error) {
-    console.error('Error in getPostCounts:', error);
-    return {
-      success: false,
-      counts: {},
-      error: error instanceof Error ? error.message : 'Unknown error',
     };
   }
 });

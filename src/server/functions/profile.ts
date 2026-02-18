@@ -19,7 +19,7 @@ import {
 import { z } from 'zod'
 import { env } from '@/config/env'
 import { uploadToBlob, SUPPORTED_IMAGE_TYPES } from '@/server/storage/blob'
-import { isModeratorOrAdmin } from './auth-helpers'
+import { isModeratorOrAdmin } from '@/server/utils/auth-helpers'
 import { withAuth, withOptionalAuth } from '@/server/auth'
 
 // Shared schemas

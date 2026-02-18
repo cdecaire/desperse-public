@@ -8,7 +8,7 @@ import { db } from '@/server/db'
 import { betaFeedback, users } from '@/server/db/schema'
 import { eq, desc } from 'drizzle-orm'
 import { z } from 'zod'
-import { requireModerator } from './auth-helpers'
+import { requireModerator } from '@/server/utils/auth-helpers'
 import { withAuth } from '@/server/auth'
 
 // Schema for creating feedback - all optional except auth

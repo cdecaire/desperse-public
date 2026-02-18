@@ -8,7 +8,7 @@ import { db } from '@/server/db'
 import { posts, users, follows, collections, purchases, likes, comments, postAssets } from '@/server/db/schema'
 import { eq, and, desc, sql, count, gte, notInArray, isNotNull, or, ilike, inArray } from 'drizzle-orm'
 import { z } from 'zod'
-import { isModeratorOrAdmin } from './auth-helpers'
+import { isModeratorOrAdmin } from '@/server/utils/auth-helpers'
 import { withOptionalAuth } from '@/server/auth'
 
 // Schema for suggested creators query

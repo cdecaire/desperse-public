@@ -267,7 +267,7 @@ export async function buyEditionDirect(
 
 		// Import blockchain utilities dynamically
 		const { PublicKey, Connection } = await import('@solana/web3.js')
-		const { generateNftMetadata } = await import('@/server/functions/posts')
+		const { generateNftMetadata } = await import('@/server/utils/nft-metadata')
 		const { uploadMetadataJson } = await import('@/server/storage/blob')
 
 		// Helper functions (defined inline to avoid complex import issues)

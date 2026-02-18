@@ -10,7 +10,7 @@ import { db } from '@/server/db'
 import { users, userWallets } from '@/server/db/schema'
 import { eq, or } from 'drizzle-orm'
 import { z } from 'zod'
-import { generateUniqueSlug } from '@/server/functions/slug-utils'
+import { generateUniqueSlug } from '@/server/utils/slug-utils'
 import { verifyPrivyToken } from '@/server/auth'
 import { validateSessionToken } from './siws'
 

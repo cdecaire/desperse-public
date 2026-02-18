@@ -1,10 +1,13 @@
 /**
  * Hook for polling post counts (collect counts and supply) for visible posts
- * Polls every 5-10 seconds to keep feed data fresh
+ * Polls every 8 seconds to keep feed data fresh
+ *
+ * Uses a REST API endpoint (/api/v1/posts/counts) instead of a TanStack Start
+ * server function to avoid a dev-mode race condition where the server function
+ * ID isn't registered in time (TanStack/router#4486).
  */
 
 import { useQuery } from '@tanstack/react-query';
-import { getPostCounts } from '@/server/functions/posts';
 
 export interface PostCounts {
   collectCount: number;
@@ -34,30 +37,29 @@ export function usePostCountsPolling({
     queryKey: ['postCounts', [...postIds].sort().join(',')],
     queryFn: async () => {
       if (postIds.length === 0) {
-        return { success: true, counts: {} };
+        return {} as Record<string, PostCounts>;
       }
-      
+
       // Split into batches of 50 (server limit)
       const batches: string[][] = [];
       for (let i = 0; i < postIds.length; i += 50) {
         batches.push(postIds.slice(i, i + 50));
       }
-      
+
       const allCounts: Record<string, PostCounts> = {};
-      
+
       await Promise.all(
         batches.map(async (batch) => {
-          const result = await getPostCounts({
-            data: { postIds: batch },
-          });
-          
+          const res = await fetch(`/api/v1/posts/counts?postIds=${batch.join(',')}`);
+          if (!res.ok) return;
+          const result = await res.json();
           if (result.success) {
             Object.assign(allCounts, result.counts);
           }
         })
       );
-      
-      return { success: true, counts: allCounts };
+
+      return allCounts;
     },
     enabled: enabled && postIds.length > 0,
     refetchInterval: intervalMs,
@@ -65,6 +67,5 @@ export function usePostCountsPolling({
     gcTime: 30 * 1000,
   });
 
-  return data?.counts || {};
+  return data || {};
 }
-

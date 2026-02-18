@@ -7,7 +7,7 @@ import { db } from '@/server/db'
 import { posts, users, collections, purchases, postAssets, likes, comments } from '@/server/db/schema'
 import { eq, and, count, isNotNull } from 'drizzle-orm'
 import { authenticateWithToken } from '@/server/auth'
-import { isModeratorOrAdmin } from '@/server/functions/auth-helpers'
+import { isModeratorOrAdmin } from '@/server/utils/auth-helpers'
 
 export interface GetPostResult {
 	success: boolean

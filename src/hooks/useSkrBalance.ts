@@ -6,15 +6,13 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { SKR_MINT } from "@/constants/tokens";
+import { getClientRpcUrl } from "@/lib/rpc";
 
 /**
  * Fetch SKR token balance for a wallet address via JSON-RPC
  */
 async function fetchSkrBalance(walletAddress: string): Promise<number> {
-	const heliusApiKey = import.meta.env.VITE_HELIUS_API_KEY;
-	const rpcUrl = heliusApiKey
-		? `https://mainnet.helius-rpc.com/?api-key=${heliusApiKey}`
-		: "https://api.mainnet-beta.solana.com";
+	const rpcUrl = getClientRpcUrl();
 
 	const response = await fetch(rpcUrl, {
 		method: "POST",

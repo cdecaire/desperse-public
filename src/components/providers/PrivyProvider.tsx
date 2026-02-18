@@ -2,8 +2,9 @@
 
 import { PrivyProvider as PrivySDKProvider } from '@privy-io/react-auth'
 import { toSolanaWalletConnectors } from '@privy-io/react-auth/solana'
-import { createSolanaRpc, createSolanaRpcSubscriptions } from '@solana/kit'
+import { createSolanaRpc } from '@solana/kit'
 import { useTheme } from './ThemeProvider'
+import { getClientRpcUrl } from '@/lib/rpc'
 
 interface PrivyProviderProps {
   children: React.ReactNode
@@ -34,8 +35,7 @@ export function PrivyProvider({ children }: PrivyProviderProps) {
 
   // Get app ID from environment - uses Vite's import.meta.env for client-side access
   const appId = import.meta.env.VITE_PRIVY_APP_ID
-  const heliusApiKey = import.meta.env.VITE_HELIUS_API_KEY
-  
+
   // Generate theme-aware SVG logo as data URI
   // This adapts to light/dark theme and overrides any logo uploaded in the Privy dashboard
   const logoColor = privyTheme === 'dark' ? '#fafafa' : '#09090b' // zinc-50 for dark, zinc-950 for light
@@ -45,20 +45,8 @@ export function PrivyProvider({ children }: PrivyProviderProps) {
 </svg>`
   const logoUrl = `data:image/svg+xml,${encodeURIComponent(logoSvg)}`
 
-  // Warn if Helius API key is missing (required for production to avoid rate limits)
-  if (!heliusApiKey) {
-    console.error(
-      '⚠️ VITE_HELIUS_API_KEY is not set. Using public Solana RPC endpoint which is rate-limited.',
-      'This will cause 403 errors in production. Please set VITE_HELIUS_API_KEY in your environment variables.'
-    )
-  }
-
-  const heliusRpc = heliusApiKey
-    ? `https://mainnet.helius-rpc.com/?api-key=${heliusApiKey}`
-    : 'https://api.mainnet-beta.solana.com'
-  const heliusWs = heliusApiKey
-    ? `wss://mainnet.helius-rpc.com/?api-key=${heliusApiKey}`
-    : 'wss://api.mainnet-beta.solana.com'
+  // RPC URL points to our server proxy — API key never reaches the client
+  const rpcUrl = getClientRpcUrl()
 
   if (!appId) {
     console.error('VITE_PRIVY_APP_ID is not set')
@@ -88,15 +76,12 @@ export function PrivyProvider({ children }: PrivyProviderProps) {
           walletChainType: 'solana-only', // Required for Solana wallet connections
         },
         // Solana RPC configuration for embedded wallet UIs (required for transactions)
+        // Uses our server proxy — no WS subscriptions needed (Privy falls back to HTTP polling)
         solana: {
           rpcs: {
             'solana:mainnet': {
-              rpc: createSolanaRpc(heliusRpc),
-              // WebSocket subscriptions for transaction monitoring
-              // Note: Privy uses this for transaction status updates
-              // If WebSocket connection fails, transactions may still work via HTTP RPC
-              rpcSubscriptions: createSolanaRpcSubscriptions(heliusWs),
-            },
+              rpc: createSolanaRpc(rpcUrl),
+            } as any, // rpcSubscriptions is optional at runtime; Privy falls back to HTTP polling
           },
         },
         // Embedded wallet configuration - create Solana wallets for ALL users automatically

@@ -19,6 +19,7 @@ import { useRpcHealthContext } from '@/components/providers/RpcHealthProvider';
 import { useWalletConnection } from '@/hooks/useWalletConnection';
 import { useAuth } from '@/hooks/useAuth';
 import { useActiveWallet } from '@/hooks/useActiveWallet';
+import { getClientRpcUrl } from '@/lib/rpc';
 import { Buffer } from 'buffer';
 import bs58 from 'bs58';
 
@@ -556,11 +557,7 @@ export function BuyButton({
               });
               
               // Manually send the signed transaction via RPC
-              const heliusApiKey = import.meta.env.VITE_HELIUS_API_KEY;
-              const rpcUrl = heliusApiKey
-                ? `https://mainnet.helius-rpc.com/?api-key=${heliusApiKey}`
-                : 'https://api.mainnet-beta.solana.com';
-              const rpc = createSolanaRpc(rpcUrl);
+              const rpc = createSolanaRpc(getClientRpcUrl());
 
               // Send the signed transaction with a specific timeout
               // Wrap sendRawTransaction in a timeout to prevent hanging

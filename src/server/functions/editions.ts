@@ -23,14 +23,14 @@ const USDC_MINT_ADDRESS = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
 // Core imports are done dynamically inside fulfillPurchase to avoid
 // pulling Umi/mpl-core dependencies into client bundle
 import { checkTransactionStatus } from '@/server/services/blockchain/mintCnft';
-import { snapshotMintedMetadata } from './mintSnapshot';
+import { snapshotMintedMetadata } from '@/server/utils/mint-snapshot';
 import { withAuth } from '@/server/auth';
 import { Buffer } from 'buffer';
 
 // MINT_SIZE constant (82 bytes) - defined locally to avoid Buffer dependency in client bundle
 const MINT_SIZE = 82;
 import { uploadMetadataJson } from '@/server/storage/blob';
-import { generateNftMetadata } from './posts';
+import { generateNftMetadata } from '@/server/utils/nft-metadata';
 
 // Schema for buying edition (no userId - derived from auth)
 const buyEditionSchema = z.object({

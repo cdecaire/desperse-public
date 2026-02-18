@@ -110,7 +110,7 @@ vi.mock("@/server/storage/blob", () => ({
 	uploadMetadataJson: vi.fn().mockResolvedValue({ success: true, url: "https://example.com/metadata.json" }),
 }));
 
-vi.mock("./posts", () => ({
+vi.mock("@/server/utils/nft-metadata", () => ({
 	generateNftMetadata: vi.fn().mockReturnValue({}),
 }));
 

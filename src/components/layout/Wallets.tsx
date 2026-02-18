@@ -27,6 +27,7 @@ import { getWalletOverview } from '@/server/functions/wallets'
 import { getResponsiveImageProps, resolveDecentralizedUri } from '@/lib/imageUrl'
 import { usePreferences } from '@/hooks/usePreferences'
 import { getExplorerUrl } from '@/server/functions/preferences'
+import { SeekerIcon } from '@/components/tipping/SeekerIcon'
 
 interface WalletsProps {
   /** Display variant - sidebar for desktop, bottomnav for mobile */
@@ -745,6 +746,10 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
             return { label: 'MINTED', variant: 'default' }
           case 'collection':
             return { label: 'COLLECTED', variant: 'secondary' }
+          case 'tip_received':
+            return { label: 'TIP', variant: 'success' }
+          case 'tip_sent':
+            return { label: 'TIPPED', variant: 'default' }
           default:
             return null
         }
@@ -762,6 +767,10 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
             return 'Edition Purchase'
           case 'collection':
             return 'Collected'
+          case 'tip_sent':
+            return 'Seeker Tip'
+          case 'tip_received':
+            return 'Seeker Tip'
           case 'transfer_in':
             return `Received ${entry.token}`
           case 'transfer_out':
@@ -794,6 +803,16 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
             person = entry.context.creator
             preposition = 'from'
             break
+          case 'tip_sent':
+            // For tips sent: show who you tipped
+            person = entry.context.counterparty
+            preposition = 'to'
+            break
+          case 'tip_received':
+            // For tips received: show who tipped you
+            person = entry.context.counterparty
+            preposition = 'from'
+            break
           default:
             return null
         }
@@ -811,11 +830,17 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
         }
         const isPositive = entry.direction === 'in'
         const sign = isPositive ? '+' : '-'
+        // SKR doesn't have a USD price feed; SOL uses live price; USDC is ~$1
+        const usdValue = entry.token === 'SOL'
+          ? entry.amount * solPrice
+          : entry.token === 'SKR'
+            ? undefined
+            : entry.amount
         return {
           text: `${sign}${entry.amount.toFixed(entry.amount < 0.01 ? 4 : 2)}`,
           token: entry.token,
           isPositive,
-          usdValue: entry.token === 'SOL' ? entry.amount * solPrice : entry.amount,
+          usdValue,
         }
       }
 
@@ -930,14 +955,18 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
                           </a>
                         ) : (
                           <div className="shrink-0 h-12 w-12 rounded-lg border border-border bg-muted flex items-center justify-center">
-                            <i
-                              className={cn(
-                                'text-lg text-muted-foreground',
-                                entry.type === 'collection' && 'fa-regular fa-bookmark',
-                                (entry.type === 'edition_sale' || entry.type === 'edition_purchase') && 'fa-regular fa-gem'
-                              )}
-                              aria-hidden="true"
-                            />
+                            {entry.type === 'tip_sent' || entry.type === 'tip_received' ? (
+                              <SeekerIcon size={20} className="text-muted-foreground" />
+                            ) : (
+                              <i
+                                className={cn(
+                                  'text-lg text-muted-foreground',
+                                  entry.type === 'collection' && 'fa-regular fa-bookmark',
+                                  (entry.type === 'edition_sale' || entry.type === 'edition_purchase') && 'fa-regular fa-gem'
+                                )}
+                                aria-hidden="true"
+                              />
+                            )}
                           </div>
                         )}
 

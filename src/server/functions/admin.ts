@@ -11,7 +11,7 @@ import { db } from '@/server/db'
 import { contentReports, posts, users, comments, dmThreads } from '@/server/db/schema'
 import { eq, and, desc, sql, count, inArray, exists, or } from 'drizzle-orm'
 import { z } from 'zod'
-import { requireModerator, requireAdmin, getUserWithRole } from './auth-helpers'
+import { requireModerator, requireAdmin, getUserWithRole } from '@/server/utils/auth-helpers'
 import { withAuth } from '@/server/auth'
 
 // Schema for getting reports queue (no moderatorUserId - derived from auth)

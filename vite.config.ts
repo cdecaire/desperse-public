@@ -12,6 +12,11 @@ const config = defineConfig({
     hmr: {
       overlay: false, // Disable error overlay (workaround for nitro dev body stream bug)
     },
+    warmup: {
+      // Pre-transform server function modules to avoid TanStack Start dev-mode
+      // race condition where function IDs aren't registered in time (TanStack/router#4486)
+      ssrFiles: ['./src/server/functions/*.ts'],
+    },
   },
   plugins: [
     // Nitro must be initialized first to make its environment available

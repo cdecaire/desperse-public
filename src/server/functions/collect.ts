@@ -14,7 +14,7 @@ import { checkTransactionStatus } from '@/server/services/blockchain/mintCnft';
 import { buildCompressedCollectTransaction } from '@/server/services/blockchain/compressed/mintCollectible';
 import { Connection, VersionedTransaction } from '@solana/web3.js';
 import { getHeliusRpcUrl } from '@/config/env';
-import { snapshotMintedMetadata } from './mintSnapshot';
+import { snapshotMintedMetadata } from '@/server/utils/mint-snapshot';
 import { withAuth } from '@/server/auth';
 
 /**

@@ -9,7 +9,7 @@ import { comments, posts, users, collections, notifications } from '@/server/db/
 import { eq, desc, count, and, lt, inArray } from 'drizzle-orm'
 import { z } from 'zod'
 import { withAuth } from '@/server/auth'
-import { processMentions, deleteMentions } from '@/server/functions/mentions'
+import { processMentions, deleteMentions } from '@/server/utils/mentions'
 import { sendPushNotification, getActorDisplayName } from '@/server/utils/pushDispatch'
 
 // Character limit for comments

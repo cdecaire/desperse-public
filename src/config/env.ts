@@ -83,18 +83,17 @@ export const env = {
 } as const;
 
 /**
- * Get the Helius RPC URL with API key
- * Checks both HELIUS_API_KEY and VITE_HELIUS_API_KEY
- * Falls back to public mainnet RPC if no API key is set
+ * Get the Helius RPC URL with API key (server-side only)
+ * Uses HELIUS_API_KEY — the key is never exposed to the client.
+ * Client code should use `getClientRpcUrl()` from `@/lib/rpc` instead.
  */
 export function getHeliusRpcUrl(): string {
-  // Check both HELIUS_API_KEY and VITE_HELIUS_API_KEY
-  const apiKey = env.HELIUS_API_KEY || getEnvVar('VITE_HELIUS_API_KEY', '');
+  const apiKey = env.HELIUS_API_KEY;
   if (apiKey) {
     return `https://mainnet.helius-rpc.com/?api-key=${apiKey}`;
   }
   // Fallback to public RPC (rate limited, not recommended for production)
-  console.warn('HELIUS_API_KEY or VITE_HELIUS_API_KEY not set, using public RPC endpoint');
+  console.warn('HELIUS_API_KEY not set, using public RPC endpoint');
   return 'https://api.mainnet-beta.solana.com';
 }
 

@@ -10,7 +10,7 @@ import { posts, users, follows, contentReports, comments, notifications, betaFee
 import { eq, and, gt, lt, desc, sql, count, inArray } from 'drizzle-orm'
 import { z } from 'zod'
 import { withAuth } from '@/server/auth'
-import { isModeratorOrAdmin } from './auth-helpers'
+import { isModeratorOrAdmin } from '@/server/utils/auth-helpers'
 
 const getNotificationCountersSchema = z.object({
   lastSeenForYouAt: z.string().datetime().optional().nullable(),

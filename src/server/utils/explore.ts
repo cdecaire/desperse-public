@@ -7,7 +7,7 @@ import { db } from '@/server/db'
 import { posts, users, follows, collections, purchases, likes, comments, postAssets } from '@/server/db/schema'
 import { eq, and, desc, sql, count, gte, notInArray, isNotNull, or, ilike, inArray } from 'drizzle-orm'
 import { authenticateWithToken } from '@/server/auth'
-import { isModeratorOrAdmin } from '@/server/functions/auth-helpers'
+import { isModeratorOrAdmin } from '@/server/utils/auth-helpers'
 
 // Types
 export interface SuggestedCreator {

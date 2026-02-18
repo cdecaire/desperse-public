@@ -172,9 +172,6 @@ async function fetchBalances(address: string, solPriceUsd: number): Promise<Wall
         }),
       })
       const solData = await solResponse.json()
-      if (process.env.NODE_ENV !== 'production') {
-        console.log(`[fetchBalances] SOL balance for ${address}:`, JSON.stringify(solData))
-      }
       if (solData.result?.value !== undefined) {
         sol = Number(solData.result.value) / LAMPORTS_PER_SOL
       }
@@ -199,10 +196,6 @@ async function fetchBalances(address: string, solPriceUsd: number): Promise<Wall
         }),
       })
       const tokenData = await tokenResponse.json()
-      if (process.env.NODE_ENV !== 'production') {
-        console.log(`[fetchBalances] USDC accounts for ${address}:`, JSON.stringify(tokenData))
-      }
-
       const accounts = tokenData.result?.value
       if (Array.isArray(accounts)) {
         usdc = accounts.reduce((sum: number, acct: any) => {
@@ -612,11 +605,6 @@ export const getWalletOverview = createServerFn({
       }))
       // Filter out invalid addresses early
       .filter((w) => isValidSolanaAddress(w.address))
-
-    // Debug log for troubleshooting
-    if (process.env.NODE_ENV !== 'production') {
-      console.log('[getWalletOverview] Processing addresses:', addressList.map(w => w.address))
-    }
 
     if (addressList.length === 0) {
       return {

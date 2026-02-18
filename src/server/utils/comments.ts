@@ -7,7 +7,7 @@ import { db } from '@/server/db'
 import { comments, posts, users, notifications } from '@/server/db/schema'
 import { eq, desc } from 'drizzle-orm'
 import { authenticateWithToken } from '@/server/auth'
-import { processMentions, deleteMentions } from '@/server/functions/mentions'
+import { processMentions, deleteMentions } from '@/server/utils/mentions'
 import { sendPushNotification, getActorDisplayName } from './pushDispatch'
 
 export interface Comment {

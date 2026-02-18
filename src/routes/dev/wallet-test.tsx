@@ -31,6 +31,7 @@ import { Button } from '@/components/ui/button';
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner';
 import { AuthGuard } from '@/components/shared/AuthGuard';
 import { getWalletBalance } from '@/server/functions/dev';
+import { getClientRpcUrl } from '@/lib/rpc';
 
 export const Route = createFileRoute('/dev/wallet-test')({
   component: WalletTestPage,
@@ -433,12 +434,7 @@ function WalletTestContent() {
     setTxSignStatus('Building transaction...');
 
     try {
-      const heliusApiKey = import.meta.env.VITE_HELIUS_API_KEY;
-      const heliusRpc = heliusApiKey
-        ? `https://mainnet.helius-rpc.com/?api-key=${heliusApiKey}`
-        : 'https://api.mainnet-beta.solana.com';
-
-      const rpc = createSolanaRpc(heliusRpc);
+      const rpc = createSolanaRpc(getClientRpcUrl());
       const { value: latestBlockhash } = await rpc.getLatestBlockhash().send();
 
       const feePayer = address(selectedWallet.address);
@@ -505,12 +501,7 @@ function WalletTestContent() {
     setTxSendStatus('Building transaction...');
 
     try {
-      const heliusApiKey = import.meta.env.VITE_HELIUS_API_KEY;
-      const heliusRpc = heliusApiKey
-        ? `https://mainnet.helius-rpc.com/?api-key=${heliusApiKey}`
-        : 'https://api.mainnet-beta.solana.com';
-
-      const rpc = createSolanaRpc(heliusRpc);
+      const rpc = createSolanaRpc(getClientRpcUrl());
       const { value: latestBlockhash } = await rpc.getLatestBlockhash().send();
 
       const feePayer = address(selectedWallet.address);

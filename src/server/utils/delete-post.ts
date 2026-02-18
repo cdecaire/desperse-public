@@ -6,7 +6,7 @@ import { db } from '@/server/db'
 import { posts, collections, purchases } from '@/server/db/schema'
 import { eq, and, count } from 'drizzle-orm'
 import { authenticateWithToken } from '@/server/auth'
-import { deleteMentions } from '@/server/functions/mentions'
+import { deleteMentions } from '@/server/utils/mentions'
 
 export interface DeletePostResult {
   success: boolean

@@ -566,7 +566,7 @@ export async function checkCollectionStatusDirect(
 				// Snapshot minted metadata on first confirmed mint (non-critical)
 				try {
 					const { snapshotMintedMetadata } = await import(
-						'@/server/functions/mintSnapshot'
+						'@/server/utils/mint-snapshot'
 					)
 					await snapshotMintedMetadata({
 						postId: col.postId,

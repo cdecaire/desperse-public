@@ -95,6 +95,8 @@ export default defineEventHandler(async (event) => {
 				currentSupply: posts.currentSupply,
 				nftName: posts.nftName,
 				masterMint: posts.masterMint,
+				mintWindowStart: posts.mintWindowStart,
+				mintWindowEnd: posts.mintWindowEnd,
 				createdAt: posts.createdAt,
 				userId: users.id,
 				userSlug: users.usernameSlug,
@@ -366,6 +368,8 @@ export default defineEventHandler(async (event) => {
 					: post.currentSupply,
 				nftName: post.nftName,
 				masterMint: post.masterMint, // For explorer links (editions)
+				mintWindowStart: post.mintWindowStart?.toISOString() ?? null,
+				mintWindowEnd: post.mintWindowEnd?.toISOString() ?? null,
 				collectibleAssetId: collectibleAssetIds.get(post.id) || null, // For explorer links (collectibles)
 				likeCount: likeCounts.get(post.id) || 0,
 				commentCount: commentCounts.get(post.id) || 0,

@@ -97,6 +97,9 @@ export const posts = pgTable(
     currency: currencyEnum('currency'), // Required for editions
     maxSupply: integer('max_supply'), // null = open/unlimited edition
     currentSupply: integer('current_supply').notNull().default(0), // For editions only
+    // Timed edition mint window (nullable = no time restriction)
+    mintWindowStart: timestamp('mint_window_start', { withTimezone: true }),
+    mintWindowEnd: timestamp('mint_window_end', { withTimezone: true }),
     // NFT metadata fields (edition-specific in UI, but stored on all posts)
     nftName: text('nft_name'), // Custom NFT name (max 32 chars on-chain)
     nftSymbol: text('nft_symbol'), // Custom symbol (max 10 chars on-chain)

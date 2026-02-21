@@ -23,6 +23,11 @@ interface UpdatePostInput {
   price?: number | null
   currency?: 'SOL' | 'USDC' | null
   maxSupply?: number | null
+  // Timed edition fields
+  mintWindowEnabled?: boolean
+  mintWindowStartMode?: 'now' | 'scheduled'
+  mintWindowStartTime?: string | null
+  mintWindowDurationHours?: number | null
 }
 
 /**

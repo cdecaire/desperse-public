@@ -25,6 +25,7 @@ const USDC_MINT_ADDRESS = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
 import { checkTransactionStatus } from '@/server/services/blockchain/mintCnft';
 import { snapshotMintedMetadata } from '@/server/utils/mint-snapshot';
 import { withAuth } from '@/server/auth';
+import { getMintWindowStatus } from '@/server/utils/mintWindowStatus';
 import { Buffer } from 'buffer';
 
 // MINT_SIZE constant (82 bytes) - defined locally to avoid Buffer dependency in client bundle
@@ -171,12 +172,14 @@ async function logClusterInfo(connection: Connection, rpcUrl: string): Promise<v
 
 interface BuyEditionResult {
   success: boolean;
-  status?: PurchaseStatus | 'sold_out' | 'insufficient_funds';
+  status?: PurchaseStatus | 'sold_out' | 'insufficient_funds' | 'not_started' | 'ended';
   purchaseId?: string;
   transaction?: string; // base64
   mintAddress?: string;
   error?: string;
   message?: string;
+  startsAt?: Date;
+  endedAt?: Date;
 }
 
 async function getConnection() {
@@ -314,6 +317,10 @@ const STALE_CLAIM_THRESHOLD_MS = 2 * 60 * 1000; // 2 minutes
  * checkPurchaseStatus and retryFulfillment should delegate to this.
  */
 async function fulfillPurchase(purchaseId: string): Promise<FulfillPurchaseResult> {
+  // TIMED EDITIONS GUARD: Do NOT check mintWindowStart/mintWindowEnd here.
+  // Time was validated at buyEdition (reservation time). Valid reservations are honored
+  // regardless of whether the window has since closed. The reservation TTL (2 min) and
+  // blockhash expiry (~60-90s) provide natural bounds.
   const fulfillmentKey = crypto.randomUUID();
   const now = new Date();
   const staleCutoff = new Date(Date.now() - STALE_CLAIM_THRESHOLD_MS);
@@ -778,6 +785,49 @@ export const buyEdition = createServerFn({
 
     if (post.type !== 'edition' || !post.price || !post.currency) {
       return { success: false, error: 'Not an edition', message: 'This post is not purchasable as an edition.' };
+    }
+
+    // Time window check (pre-flight — authoritative check uses DB time in the atomic transaction)
+    const mintWindowStatus = getMintWindowStatus(post)
+    if (mintWindowStatus.status === 'not_started') {
+      console.info('[buyEdition] time-gate', {
+        postId, userId,
+        windowStart: post.mintWindowStart,
+        windowEnd: post.mintWindowEnd,
+        serverNow: new Date().toISOString(),
+        decision: 'not_started',
+      })
+      return {
+        success: false,
+        status: 'not_started',
+        message: 'This edition is not available for purchase yet.',
+        startsAt: mintWindowStatus.startsAt,
+      }
+    }
+    if (mintWindowStatus.status === 'ended') {
+      console.info('[buyEdition] time-gate', {
+        postId, userId,
+        windowStart: post.mintWindowStart,
+        windowEnd: post.mintWindowEnd,
+        serverNow: new Date().toISOString(),
+        decision: 'ended',
+      })
+      return {
+        success: false,
+        status: 'ended',
+        message: 'The minting window for this edition has closed.',
+        endedAt: mintWindowStatus.endedAt,
+      }
+    }
+    // Log successful time gate pass for audit trail
+    if (mintWindowStatus.status === 'active') {
+      console.info('[buyEdition] time-gate', {
+        postId, userId,
+        windowStart: post.mintWindowStart,
+        windowEnd: post.mintWindowEnd,
+        serverNow: new Date().toISOString(),
+        decision: 'allowed',
+      })
     }
 
     // Supply check (pre-flight)

@@ -36,6 +36,8 @@ export interface TrendingPost {
   userNftMint?: string
   isHidden?: boolean
   masterMint?: string | null
+  mintWindowStart?: string | null
+  mintWindowEnd?: string | null
   assets?: Array<{
     id: string
     url: string
@@ -470,6 +472,8 @@ export async function getTrendingPostsDirect(
           coverUrl: p.post.coverUrl,
           createdAt: p.post.createdAt.toISOString(),
           masterMint: p.post.masterMint,
+          mintWindowStart: p.post.mintWindowStart?.toISOString() ?? null,
+          mintWindowEnd: p.post.mintWindowEnd?.toISOString() ?? null,
           user: p.user,
           likeCount: Number(p.likeCount) || 0,
           commentCount: Number(p.commentCount) || 0,

@@ -11,7 +11,7 @@ import { MediaUpload, type UploadedMedia } from './MediaUpload'
 import { MultiMediaUpload, type UploadedMediaItem } from './MultiMediaUpload'
 import { isMultiAssetEnabled, isMultiAssetCollectibleEnabled, isMultiAssetEditionEnabled } from '@/config/env'
 import { PostTypeSelector, type PostType } from './PostTypeSelector'
-import { EditionOptions, type Currency } from './EditionOptions'
+import { EditionOptions, type Currency, type MintWindowState } from './EditionOptions'
 import { NftMetadataOptions } from './NftMetadataOptions'
 import { CategorySelector } from './CategorySelector'
 import { type Category, categoriesToStrings, stringsToCategories } from '@/constants/categories'
@@ -75,6 +75,8 @@ interface FormState {
   isMutable: boolean
   // Gated download
   protectDownload: boolean
+  // Timed edition (mint window)
+  mintWindow: MintWindowState
 }
 
 interface CreatePostFormProps {
@@ -147,6 +149,30 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
     }
   }, [editState?.isMinted])
 
+  // Sync mint window state from editState (for edit mode)
+  useEffect(() => {
+    if (editState?.mintWindowStart && editState?.mintWindowEnd) {
+      const start = new Date(editState.mintWindowStart)
+      const end = new Date(editState.mintWindowEnd)
+      const durationMs = end.getTime() - start.getTime()
+      const durationHours = durationMs / 3_600_000
+
+      // Convert start Date to datetime-local string format
+      const pad = (n: number) => String(n).padStart(2, '0')
+      const startLocal = `${start.getFullYear()}-${pad(start.getMonth() + 1)}-${pad(start.getDate())}T${pad(start.getHours())}:${pad(start.getMinutes())}`
+
+      setFormState(prev => ({
+        ...prev,
+        mintWindow: {
+          enabled: true,
+          startMode: 'scheduled',
+          startTime: startLocal,
+          durationHours: Math.round(durationHours * 100) / 100, // Round to 2 decimals
+        },
+      }))
+    }
+  }, [editState?.mintWindowStart, editState?.mintWindowEnd])
+
   // Track when mutation succeeds to prevent flash during query invalidation
   useEffect(() => {
     if (updatePostMutation.isSuccess && isEditMode) {
@@ -158,6 +184,14 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
       return () => clearTimeout(timer)
     }
   }, [updatePostMutation.isSuccess, isEditMode])
+
+  // Default mint window state (used for both create and reset)
+  const defaultMintWindow: MintWindowState = {
+    enabled: false,
+    startMode: 'now',
+    startTime: '',
+    durationHours: null,
+  }
 
   // Initialize form state
   const getInitialFormState = (): FormState => {
@@ -179,6 +213,8 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
         sellerFeeBasisPoints: initialPost.sellerFeeBasisPoints || null,
         isMutable: initialPost.isMutable ?? true,
         protectDownload: true, // Default to protected in edit mode (can't change existing)
+        // Mint window: will be populated from editState once it loads
+        mintWindow: { ...defaultMintWindow },
       }
     }
     return {
@@ -196,6 +232,7 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
       sellerFeeBasisPoints: 0, // Default to 0% royalties (collectibles are free)
       isMutable: true,
       protectDownload: false, // Posts and collectibles are always free - downloads always available
+      mintWindow: { ...defaultMintWindow },
     }
   }
 
@@ -247,6 +284,7 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
   const isMinted = editState?.isMinted ?? false
   const mintedIsMutable = editState?.mintedIsMutable ?? true
   const areNftFieldsLocked = editState?.areNftFieldsLocked ?? false
+  const areTimeWindowFieldsLocked = editState?.areTimeWindowFieldsLocked ?? false
   const mintedMetadataJson = editState?.mintedMetadataJson as Record<string, unknown> | null
   
   // NFT metadata fields (name, symbol, description, royalties) are editable if:
@@ -306,7 +344,26 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
     if (isMutabilityEditable) {
       if (formState.isMutable !== (initialPost.isMutable ?? true)) return true
     }
-    
+
+    // Check mint window (edition only, if not locked)
+    if (formState.type === 'edition' && !areTimeWindowFieldsLocked) {
+      const existingMwStart = editState?.mintWindowStart
+      const existingMwEnd = editState?.mintWindowEnd
+      const hadWindow = !!(existingMwStart && existingMwEnd)
+      if (formState.mintWindow.enabled !== hadWindow) return true
+      if (formState.mintWindow.enabled && hadWindow && existingMwStart && existingMwEnd) {
+        // Compare start/end with existing values — if the user changed duration or start, it counts
+        const existingStart = existingMwStart instanceof Date ? existingMwStart : new Date(String(existingMwStart))
+        const existingEnd = existingMwEnd instanceof Date ? existingMwEnd : new Date(String(existingMwEnd))
+        const existingDuration = (existingEnd.getTime() - existingStart.getTime()) / 3_600_000
+        if (Math.abs((formState.mintWindow.durationHours ?? 0) - existingDuration) > 0.01) return true
+        if (formState.mintWindow.startMode === 'scheduled' && formState.mintWindow.startTime) {
+          const formStart = new Date(formState.mintWindow.startTime)
+          if (Math.abs(formStart.getTime() - existingStart.getTime()) > 60_000) return true
+        }
+      }
+    }
+
     return false
   }
 
@@ -342,6 +399,17 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
           currency: formState.currency || null,
           maxSupply: formState.maxSupply || null,
         }),
+        // Edition-only: timed edition fields (locked after first purchase)
+        ...(!areTimeWindowFieldsLocked && formState.type === 'edition' ? {
+          mintWindowEnabled: formState.mintWindow.enabled,
+          ...(formState.mintWindow.enabled ? {
+            mintWindowStartMode: formState.mintWindow.startMode,
+            mintWindowStartTime: formState.mintWindow.startMode === 'scheduled' && formState.mintWindow.startTime
+              ? new Date(formState.mintWindow.startTime).toISOString()
+              : null,
+            mintWindowDurationHours: formState.mintWindow.durationHours,
+          } : {}),
+        } : {}),
       })
       
       // Navigate to post detail after update
@@ -393,6 +461,15 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
           ) ? formState.protectDownload : false,
           mediaMimeType: uploadedMediaInfo?.mimeType || null,
           mediaFileSize: uploadedMediaInfo?.fileSize || null,
+          // Timed edition fields
+          ...(formState.type === 'edition' && formState.mintWindow.enabled ? {
+            mintWindowEnabled: true,
+            mintWindowStartMode: formState.mintWindow.startMode,
+            mintWindowStartTime: formState.mintWindow.startMode === 'scheduled' && formState.mintWindow.startTime
+              ? new Date(formState.mintWindow.startTime).toISOString()
+              : null,
+            mintWindowDurationHours: formState.mintWindow.durationHours,
+          } : {}),
         }) as never
       )
 
@@ -809,6 +886,11 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
             currency={formState.currency}
             maxSupply={formState.maxSupply}
             protectDownload={formState.protectDownload}
+            mintWindow={formState.mintWindow}
+            onMintWindowChange={(mintWindow) => setFormState(prev => ({ ...prev, mintWindow }))}
+            mintWindowLocked={isEditMode ? areTimeWindowFieldsLocked : false}
+            existingMintWindowStart={editState?.mintWindowStart}
+            existingMintWindowEnd={editState?.mintWindowEnd}
             onPriceChange={(value) => setFormState(prev => ({ ...prev, price: value }))}
             onCurrencyChange={(currency) => setFormState(prev => ({ ...prev, currency }))}
             onMaxSupplyChange={(value) => setFormState(prev => ({ ...prev, maxSupply: value }))}

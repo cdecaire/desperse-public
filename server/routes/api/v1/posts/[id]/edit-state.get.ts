@@ -96,9 +96,12 @@ export default defineEventHandler(async (event) => {
 				mintedAt: post.mintedAt,
 				mintedIsMutable,
 				areNftFieldsLocked,
+				areTimeWindowFieldsLocked: hasConfirmedPurchases,
 				canUpdateOnChain,
 				onchainSyncStatus: post.onchainSyncStatus,
 				lastOnchainSyncAt: post.lastOnchainSyncAt,
+				mintWindowStart: post.mintWindowStart,
+				mintWindowEnd: post.mintWindowEnd,
 			},
 			requestId,
 		}

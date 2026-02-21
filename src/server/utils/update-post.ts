@@ -12,6 +12,7 @@ import { validateCategories, categoriesToStrings, stringsToCategories, type Cate
 import { processMentions } from '@/server/utils/mentions'
 import { processHashtags } from '@/server/utils/hashtags'
 import { generateNftMetadata } from '@/server/utils/nft-metadata'
+import { validateMintWindow } from '@/server/utils/mintWindowStatus'
 
 // Minimum edition prices
 const MIN_EDITION_PRICE_SOL = 100_000_000
@@ -38,6 +39,10 @@ export interface UpdatePostInput {
   price?: number | null
   currency?: 'SOL' | 'USDC' | null
   maxSupply?: number | null
+  mintWindowEnabled?: boolean
+  mintWindowStartMode?: 'now' | 'scheduled'
+  mintWindowStartTime?: string | Date | null
+  mintWindowDurationHours?: number | null
 }
 
 export interface UpdatePostResult {
@@ -159,6 +164,23 @@ export async function updatePostDirect(
           if (priceError) return { success: false, error: priceError }
         }
       }
+    }
+    // Time window: locked after first purchase (same as pricing fields)
+    if (data.mintWindowEnabled !== undefined) {
+      if (arePricingFieldsLocked) {
+        return { success: false, error: 'This edition has been purchased. Time window cannot be edited.' }
+      }
+      const windowResult = validateMintWindow({
+        mintWindowEnabled: data.mintWindowEnabled,
+        mintWindowStartMode: data.mintWindowStartMode,
+        mintWindowStartTime: data.mintWindowStartTime,
+        mintWindowDurationHours: data.mintWindowDurationHours,
+      }, 'update')
+      if (!windowResult.valid) {
+        return { success: false, error: windowResult.error }
+      }
+      allowedUpdates.mintWindowStart = windowResult.mintWindowStart ?? null
+      allowedUpdates.mintWindowEnd = windowResult.mintWindowEnd ?? null
     }
   }
 

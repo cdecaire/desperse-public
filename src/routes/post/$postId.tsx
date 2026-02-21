@@ -25,6 +25,7 @@ import { type Category, isPresetCategory, categoryToSlug } from '@/constants/cat
 import { CategoryPill } from '@/components/ui/category-pill'
 import { MediaPill } from '@/components/ui/media-pill'
 import { cn } from '@/lib/utils'
+import { MintWindowBadge } from '@/components/feed/MintWindowBadge'
 
 export const Route = createFileRoute('/post/$postId')({
   component: PostDetailPage,
@@ -235,6 +236,8 @@ function PostDetailPage() {
               toneColor={postTypeColor}
               isCollected={isCollected}
               isSoldOut={typeof post.maxSupply === 'number' && editionSupply >= post.maxSupply}
+              mintWindowStart={post.mintWindowStart}
+              mintWindowEnd={post.mintWindowEnd}
             />
           )}
         </div>
@@ -372,6 +375,17 @@ function PostDetailPage() {
               </span>
             </>
           )}
+          {post.type === 'edition' && (post.mintWindowStart || post.mintWindowEnd) && (
+            <>
+              <span>·</span>
+              <MintWindowBadge
+                mintWindowStart={post.mintWindowStart}
+                mintWindowEnd={post.mintWindowEnd}
+                mintedCount={editionSupply}
+                variant="compact"
+              />
+            </>
+          )}
         </div>
       </div>
 
@@ -479,6 +493,15 @@ function PostDetailPage() {
                 </p>
               )}
               <Categories />
+              {post.type === 'edition' && (post.mintWindowStart || post.mintWindowEnd) && (
+                <MintWindowBadge
+                  mintWindowStart={post.mintWindowStart}
+                  mintWindowEnd={post.mintWindowEnd}
+                  mintedCount={editionSupply}
+                  variant="prominent"
+                  className="mt-3"
+                />
+              )}
             </div>
 
             {/* Scrollable middle: Comments */}
@@ -558,6 +581,14 @@ function PostDetailPage() {
           {/* Content */}
           <div className="px-4 py-3 md:px-2 space-y-4">
             <ActionButtons />
+            {post.type === 'edition' && (post.mintWindowStart || post.mintWindowEnd) && (
+              <MintWindowBadge
+                mintWindowStart={post.mintWindowStart}
+                mintWindowEnd={post.mintWindowEnd}
+                mintedCount={editionSupply}
+                variant="prominent"
+              />
+            )}
             <Caption showAvatar={true} />
             <Categories />
 

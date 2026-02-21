@@ -15,6 +15,7 @@ import { withAuth, withOptionalAuth, redactSensitiveFields } from '@/server/auth
 import { processMentions, deleteMentions } from '@/server/utils/mentions'
 import { processHashtags } from '@/server/utils/hashtags'
 import { generateNftMetadata } from '@/server/utils/nft-metadata'
+import { validateMintWindow } from '@/server/utils/mintWindowStatus'
 
 // Post type enum
 const postTypeSchema = z.enum(['post', 'collectible', 'edition'])
@@ -85,6 +86,11 @@ const createPostSchema = z.object({
   protectDownload: z.boolean().optional().default(true), // Whether to gate downloads (default true)
   mediaMimeType: z.string().optional().nullable(), // MIME type of uploaded media
   mediaFileSize: z.number().int().positive().optional().nullable(), // File size in bytes
+  // Timed edition fields
+  mintWindowEnabled: z.boolean().optional(),
+  mintWindowStartMode: z.enum(['now', 'scheduled']).optional(),
+  mintWindowStartTime: z.string().datetime().optional().nullable(),
+  mintWindowDurationHours: z.number().positive().optional().nullable(),
 })
 
 // Schema for feed query
@@ -174,6 +180,19 @@ export const createPost = createServerFn({
       }
     }
 
+    // Validate mint window for editions
+    if (postData.type === 'edition' && postData.mintWindowEnabled) {
+      const windowResult = validateMintWindow({
+        mintWindowEnabled: postData.mintWindowEnabled,
+        mintWindowStartMode: postData.mintWindowStartMode,
+        mintWindowStartTime: postData.mintWindowStartTime,
+        mintWindowDurationHours: postData.mintWindowDurationHours,
+      }, 'create')
+      if (!windowResult.valid) {
+        return { success: false, error: windowResult.error }
+      }
+    }
+
     // Get user for metadata generation
     const [user] = await db
       .select({
@@ -190,6 +209,22 @@ export const createPost = createServerFn({
       return {
         success: false,
         error: 'User not found.',
+      }
+    }
+
+    // Compute mint window timestamps
+    let mintWindowStart: Date | null = null
+    let mintWindowEnd: Date | null = null
+    if (postData.type === 'edition' && postData.mintWindowEnabled) {
+      const windowResult = validateMintWindow({
+        mintWindowEnabled: postData.mintWindowEnabled,
+        mintWindowStartMode: postData.mintWindowStartMode,
+        mintWindowStartTime: postData.mintWindowStartTime,
+        mintWindowDurationHours: postData.mintWindowDurationHours,
+      }, 'create')
+      if (windowResult.valid) {
+        mintWindowStart = windowResult.mintWindowStart ?? null
+        mintWindowEnd = windowResult.mintWindowEnd ?? null
       }
     }
 
@@ -216,6 +251,9 @@ export const createPost = createServerFn({
         collectionAddress: postData.collectionAddress || null,
         // Store creator wallet address (canonical update authority target)
         creatorWallet: user.walletAddress,
+        // Timed edition window
+        mintWindowStart,
+        mintWindowEnd,
       })
       .returning()
 
@@ -1224,6 +1262,10 @@ export const getPostEditState = createServerFn({
       canUpdateOnChain,
       onchainSyncStatus: post.onchainSyncStatus,
       lastOnchainSyncAt: post.lastOnchainSyncAt,
+      // Time window state
+      mintWindowStart: post.mintWindowStart,
+      mintWindowEnd: post.mintWindowEnd,
+      areTimeWindowFieldsLocked: hasConfirmedPurchases,
     }
   } catch (error) {
     console.error('Error in getPostEditState:', error)
@@ -1251,6 +1293,11 @@ const updatePostSchema = z.object({
   price: z.number().int().positive().optional().nullable(),
   currency: currencySchema.optional().nullable(),
   maxSupply: z.number().int().positive().optional().nullable(),
+  // Timed edition fields
+  mintWindowEnabled: z.boolean().optional(),
+  mintWindowStartMode: z.enum(['now', 'scheduled']).optional(),
+  mintWindowStartTime: z.string().datetime().optional().nullable(),
+  mintWindowDurationHours: z.number().positive().optional().nullable(),
 })
 
 export const updatePost = createServerFn({
@@ -1496,6 +1543,27 @@ export const updatePost = createServerFn({
             }
           }
         }
+      }
+
+      // Time window: locked after first purchase (same as pricing fields)
+      if (updates.mintWindowEnabled !== undefined) {
+        if (arePricingFieldsLocked) {
+          return {
+            success: false,
+            error: 'This edition has been purchased. Time window cannot be edited.',
+          }
+        }
+        const windowResult = validateMintWindow({
+          mintWindowEnabled: updates.mintWindowEnabled,
+          mintWindowStartMode: updates.mintWindowStartMode,
+          mintWindowStartTime: updates.mintWindowStartTime,
+          mintWindowDurationHours: updates.mintWindowDurationHours,
+        }, 'update')
+        if (!windowResult.valid) {
+          return { success: false, error: windowResult.error }
+        }
+        allowedUpdates.mintWindowStart = windowResult.mintWindowStart ?? null
+        allowedUpdates.mintWindowEnd = windowResult.mintWindowEnd ?? null
       }
     }
 

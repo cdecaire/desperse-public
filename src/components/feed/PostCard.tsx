@@ -25,6 +25,7 @@ import { CategoryPill } from '@/components/ui/category-pill'
 import { MediaPill } from '@/components/ui/media-pill'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { TokenText } from '@/components/shared/TokenText'
+import { MintWindowBadge } from './MintWindowBadge'
 
 // Format relative time
 function formatRelativeTime(date: Date | string): string {
@@ -113,6 +114,10 @@ export interface PostCardData {
     fileSize: number | null
     sortOrder: number
   }>
+  /** Timed edition: when the mint window opens */
+  mintWindowStart?: Date | string | null
+  /** Timed edition: when the mint window closes */
+  mintWindowEnd?: Date | string | null
 }
 
 interface PostCardProps {
@@ -327,6 +332,17 @@ export function PostCard({
                   </span>
                 </>
               )}
+              {post.type === 'edition' && (post.mintWindowStart || post.mintWindowEnd) && (
+                <>
+                  <span>·</span>
+                  <MintWindowBadge
+                    mintWindowStart={post.mintWindowStart}
+                    mintWindowEnd={post.mintWindowEnd}
+                    mintedCount={localEditionSupply}
+                    variant="compact"
+                  />
+                </>
+              )}
               {isModeratorOrAdmin && (post.isHidden === true) && (
                 <>
                   <span>·</span>
@@ -490,6 +506,8 @@ export function PostCard({
                   toneColor={postTypeColor}
                   isCollected={computedPost.isCollected}
                   isSoldOut={typeof post.maxSupply === 'number' && (localEditionSupply ?? 0) >= post.maxSupply}
+                  mintWindowStart={post.mintWindowStart}
+                  mintWindowEnd={post.mintWindowEnd}
                 />
               )}
             </div>

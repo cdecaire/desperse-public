@@ -13,6 +13,7 @@ import { validateCategories, categoriesToStrings, type Category } from '@/consta
 import { processMentions } from '@/server/utils/mentions'
 import { processHashtags } from '@/server/utils/hashtags'
 import { generateNftMetadata } from '@/server/utils/nft-metadata'
+import { validateMintWindow } from '@/server/utils/mintWindowStatus'
 
 // Minimum edition prices
 const MIN_EDITION_PRICE_SOL = 100_000_000 // 0.1 SOL in lamports
@@ -62,6 +63,10 @@ export interface CreatePostInput {
   protectDownload?: boolean
   mediaMimeType?: string | null
   mediaFileSize?: number | null
+  mintWindowEnabled?: boolean
+  mintWindowStartMode?: 'now' | 'scheduled'
+  mintWindowStartTime?: string | Date | null
+  mintWindowDurationHours?: number | null
 }
 
 export interface CreatePostResult {
@@ -110,6 +115,18 @@ export async function createPostDirect(
     if (priceError) {
       return { success: false, error: priceError }
     }
+    // Validate mint window
+    if (data.mintWindowEnabled) {
+      const windowResult = validateMintWindow({
+        mintWindowEnabled: data.mintWindowEnabled,
+        mintWindowStartMode: data.mintWindowStartMode,
+        mintWindowStartTime: data.mintWindowStartTime,
+        mintWindowDurationHours: data.mintWindowDurationHours,
+      }, 'create')
+      if (!windowResult.valid) {
+        return { success: false, error: windowResult.error }
+      }
+    }
   }
 
   // Validate assets count
@@ -134,6 +151,22 @@ export async function createPostDirect(
     return { success: false, error: 'User not found.' }
   }
 
+  // Compute mint window timestamps
+  let mintWindowStart: Date | null = null
+  let mintWindowEnd: Date | null = null
+  if (data.type === 'edition' && data.mintWindowEnabled) {
+    const windowResult = validateMintWindow({
+      mintWindowEnabled: data.mintWindowEnabled,
+      mintWindowStartMode: data.mintWindowStartMode,
+      mintWindowStartTime: data.mintWindowStartTime,
+      mintWindowDurationHours: data.mintWindowDurationHours,
+    }, 'create')
+    if (windowResult.valid) {
+      mintWindowStart = windowResult.mintWindowStart ?? null
+      mintWindowEnd = windowResult.mintWindowEnd ?? null
+    }
+  }
+
   // Insert post
   const [newPost] = await db
     .insert(posts)
@@ -153,6 +186,8 @@ export async function createPostDirect(
       sellerFeeBasisPoints: data.sellerFeeBasisPoints || null,
       isMutable: data.isMutable ?? true,
       creatorWallet: user.walletAddress,
+      mintWindowStart,
+      mintWindowEnd,
     })
     .returning()
 

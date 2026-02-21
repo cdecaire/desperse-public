@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { toastError, toastInfo, toastSuccess } from '@/lib/toast';
@@ -35,6 +35,50 @@ type BuyState =
   | 'insufficient_funds'
   | 'claiming';        // Payment confirmed but NFT not minted - user can claim
 
+type TimeStatus = 'no_window' | 'not_started' | 'active' | 'ending_soon' | 'ended';
+
+const ENDING_SOON_THRESHOLD_MS = 60 * 60 * 1000; // 1 hour
+
+/** Parse a Date, string, or null into a Date or null */
+function parseDate(value: Date | string | null | undefined): Date | null {
+  if (value == null) return null;
+  if (value instanceof Date) return value;
+  const d = new Date(value);
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+
+/** Compute the time status from window boundaries */
+function computeTimeStatus(
+  start: Date | null,
+  end: Date | null,
+  now: Date,
+): TimeStatus {
+  if (start == null || end == null) return 'no_window';
+  if (now < start) return 'not_started';
+  if (now >= end) return 'ended';
+  const remaining = end.getTime() - now.getTime();
+  if (remaining <= ENDING_SOON_THRESHOLD_MS) return 'ending_soon';
+  return 'active';
+}
+
+/** Format a millisecond duration into a human-readable countdown string */
+function formatCountdown(ms: number): string {
+  if (ms <= 0) return '0s';
+  const totalSeconds = Math.floor(ms / 1000);
+  const days = Math.floor(totalSeconds / 86400);
+  const hours = Math.floor((totalSeconds % 86400) / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  const parts: string[] = [];
+  if (days > 0) parts.push(`${days}d`);
+  if (hours > 0) parts.push(`${hours}h`);
+  if (minutes > 0) parts.push(`${minutes}m`);
+  // Only show seconds when less than 1 hour remaining
+  if (days === 0 && hours === 0) parts.push(`${seconds}s`);
+  return parts.join(' ') || '0s';
+}
+
 interface BuyButtonProps {
   postId: string;
   userId: string;
@@ -57,6 +101,10 @@ interface BuyButtonProps {
   isCollected?: boolean;
   /** Whether the item is sold out */
   isSoldOut?: boolean;
+  /** Timed edition: when the mint window opens */
+  mintWindowStart?: Date | string | null;
+  /** Timed edition: when the mint window closes */
+  mintWindowEnd?: Date | string | null;
 }
 
 type ServerFnInput<T> = { data: T };
@@ -85,6 +133,8 @@ export function BuyButton({
   compact = false,
   isCollected = false,
   isSoldOut = false,
+  mintWindowStart: mintWindowStartProp,
+  mintWindowEnd: mintWindowEndProp,
 }: BuyButtonProps) {
   // Ensure Buffer is available for privy/solana SDKs in the browser
   if (typeof window !== 'undefined' && !(window as any).Buffer) {
@@ -117,6 +167,64 @@ export function BuyButton({
   const extendedTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const mintingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [pollCount, setPollCount] = useState(0);
+
+  // ---- Timed edition countdown ----
+  const windowStart = useMemo(() => parseDate(mintWindowStartProp), [mintWindowStartProp]);
+  const windowEnd = useMemo(() => parseDate(mintWindowEndProp), [mintWindowEndProp]);
+
+  const [timeStatus, setTimeStatus] = useState<TimeStatus>(() =>
+    computeTimeStatus(windowStart, windowEnd, new Date()),
+  );
+  const [countdown, setCountdown] = useState<string>('');
+  // Override from server rejection (authoritative)
+  const [serverTimeOverride, setServerTimeOverride] = useState<TimeStatus | null>(null);
+
+  // Effective time status: server override wins, unless user has an active reservation
+  const hasActiveReservation = purchaseId != null &&
+    (state === 'preparing' || state === 'signing' || state === 'confirming' || state === 'minting' || state === 'claiming');
+  const effectiveTimeStatus = hasActiveReservation
+    ? 'active' // reservation is the user's "contract" — don't disable
+    : serverTimeOverride ?? timeStatus;
+
+  // Countdown timer — ticks every second when there is a visible time window
+  useEffect(() => {
+    if (windowStart == null && windowEnd == null) {
+      setTimeStatus('no_window');
+      setCountdown('');
+      return;
+    }
+
+    const tick = () => {
+      const now = new Date();
+      const status = computeTimeStatus(windowStart, windowEnd, now);
+      setTimeStatus(status);
+
+      if (status === 'not_started' && windowStart) {
+        const remaining = windowStart.getTime() - now.getTime();
+        setCountdown(remaining > 0 ? formatCountdown(remaining) : '');
+      } else if ((status === 'active' || status === 'ending_soon') && windowEnd) {
+        const remaining = windowEnd.getTime() - now.getTime();
+        setCountdown(remaining > 0 ? formatCountdown(remaining) : '');
+      } else {
+        setCountdown('');
+      }
+    };
+
+    // Run immediately
+    tick();
+
+    // Only run interval if we need a live countdown
+    const status = computeTimeStatus(windowStart, windowEnd, new Date());
+    if (status === 'no_window' || status === 'ended') return;
+
+    const intervalId = setInterval(tick, 1000);
+    return () => clearInterval(intervalId);
+  }, [windowStart, windowEnd]);
+
+  // Clear server override when props change (e.g., page navigated to a different post)
+  useEffect(() => {
+    setServerTimeOverride(null);
+  }, [mintWindowStartProp, mintWindowEndProp]);
 
   // Lock refs to prevent duplicate calls
   const isMintingRef = useRef(false);
@@ -489,6 +597,20 @@ export function BuyButton({
           toastError('This edition is sold out.');
           return;
         }
+        if (prepare.status === 'not_started') {
+          // Server says mint hasn't started — authoritative override
+          setState('idle');
+          setServerTimeOverride('not_started');
+          toastInfo(prepare.message || 'This edition is not available for purchase yet.');
+          return;
+        }
+        if (prepare.status === 'ended') {
+          // Server says mint ended — authoritative override
+          setState('idle');
+          setServerTimeOverride('ended');
+          toastInfo(prepare.message || 'The minting window for this edition has closed.');
+          return;
+        }
         if (prepare.status === 'insufficient_funds') {
           setState('insufficient_funds');
           const errorMsg = prepare.message || 'Insufficient balance.';
@@ -770,6 +892,26 @@ export function BuyButton({
         );
       }
 
+      // Timed edition states (compact) — show before purchased check so ended overrides
+      if (effectiveTimeStatus === 'not_started') {
+        return (
+          <>
+            <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">
+              {countdown ? `Starts in ${countdown}` : 'Checking...'}
+            </span>
+            <i className={cn('fa-regular', editionIcon, 'text-base text-muted-foreground')} />
+          </>
+        );
+      }
+      if (effectiveTimeStatus === 'ended') {
+        return (
+          <>
+            <span className="text-sm font-medium text-muted-foreground">Mint Ended</span>
+            <i className={cn('fa-regular', editionIcon, 'text-base text-muted-foreground')} />
+          </>
+        );
+      }
+
       // Show "Purchased" for success state or already collected
       if (state === 'success' || isPurchased) {
         let displayCount: string | null = null
@@ -788,6 +930,28 @@ export function BuyButton({
               className={cn('fa-solid', editionIcon, 'text-base')}
               style={toneColor ? { color: toneColor } : undefined}
             />
+          </>
+        );
+      }
+
+      // "ending_soon" compact — show countdown badge next to normal icon
+      if (effectiveTimeStatus === 'ending_soon' && countdown) {
+        let displayCount: string | null = null
+        if (maxSupply === 1) {
+          displayCount = `${currentSupply}/1`
+        } else if (maxSupply !== null && maxSupply !== undefined) {
+          displayCount = `${currentSupply}/${maxSupply}`
+        } else {
+          displayCount = `${currentSupply}`
+        }
+
+        return (
+          <>
+            <span className="text-xs font-medium text-amber-500 whitespace-nowrap">{countdown}</span>
+            {displayCount && (
+              <span className="text-sm font-medium">{displayCount}</span>
+            )}
+            <i className={cn('fa-regular', editionIcon, 'text-base')} />
           </>
         );
       }
@@ -817,15 +981,40 @@ export function BuyButton({
         </>
       );
     }
-    
+
+    // ---- Non-compact (full) mode ----
+
+    // Timed edition states take priority when idle (not in active buy flow)
+    if (state === 'idle' || state === 'failed' || state === 'insufficient_funds') {
+      if (effectiveTimeStatus === 'not_started') {
+        return (
+          <span className="text-sm font-semibold leading-5">
+            {countdown ? `Starts in ${countdown}` : 'Checking availability...'}
+          </span>
+        );
+      }
+      if (effectiveTimeStatus === 'ended') {
+        return <span className="text-sm font-semibold leading-5">Mint Ended</span>;
+      }
+    }
+
     // Show "Connect wallet" if no wallet available
     if (!hasWallet && state === 'idle') {
       return <span className="text-sm font-semibold leading-5">Connect wallet</span>;
     }
-    
+
     switch (state) {
-      case 'idle':
+      case 'idle': {
+        // "ending_soon" — show buy price with urgency countdown
+        if (effectiveTimeStatus === 'ending_soon' && countdown) {
+          return (
+            <span className="text-sm font-semibold leading-5">
+              Buy {formatPrice()} <span className="text-amber-500">({countdown} left)</span>
+            </span>
+          );
+        }
         return <span className="text-sm font-semibold leading-5">Buy {formatPrice()}</span>;
+      }
       case 'preparing':
         return (
           <>
@@ -880,6 +1069,10 @@ export function BuyButton({
   };
 
   const hasWallet = solanaWalletsReady && (activePrivyWallet || solanaWallets[0]);
+
+  // Disable button for time-gated states (not_started / ended) unless user has reservation
+  const isTimeDisabled = (effectiveTimeStatus === 'not_started' || effectiveTimeStatus === 'ended');
+
   const isDisabled =
     !isAuthenticated ||
     isOffline ||
@@ -892,14 +1085,20 @@ export function BuyButton({
     state === 'success' ||
     state === 'sold_out' ||
     isCollected ||
-    isSoldOut;
+    isSoldOut ||
+    isTimeDisabled;
 
   const getButtonVariant = () => {
     // In compact mode, use the provided variant
     if (compact) {
       return variant;
     }
-    
+
+    // Muted styling for time-gated states
+    if (isTimeDisabled) {
+      return 'ghost';
+    }
+
     switch (state) {
       case 'success':
         return 'secondary';

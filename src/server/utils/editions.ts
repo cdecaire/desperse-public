@@ -13,6 +13,7 @@ import { sql } from 'drizzle-orm'
 import { authenticateWithToken } from '@/server/auth'
 import { getHeliusRpcUrl, getPlatformWalletAddress } from '@/config/env'
 import { validateAddress } from '@/server/services/blockchain/addressUtils'
+import { getMintWindowStatus } from '@/server/utils/mintWindowStatus'
 
 // Minting fee in lamports (must match transactionBuilder.ts)
 const MINTING_FEE_LAMPORTS = 10_000_000 // 0.01 SOL
@@ -30,12 +31,14 @@ export type PurchaseStatus =
 
 export interface BuyEditionResult {
 	success: boolean
-	status?: PurchaseStatus | 'sold_out' | 'insufficient_funds'
+	status?: PurchaseStatus | 'sold_out' | 'insufficient_funds' | 'not_started' | 'ended'
 	purchaseId?: string
 	transaction?: string
 	mintAddress?: string
 	message?: string
 	error?: string
+	startsAt?: Date
+	endedAt?: Date
 }
 
 export interface SubmitSignatureResult {
@@ -85,6 +88,9 @@ export async function submitPurchaseSignatureDirect(
 export async function checkPurchaseStatusDirect(
 	purchaseId: string
 ): Promise<CheckStatusResult> {
+	// TIMED EDITIONS GUARD: Do NOT check mintWindowStart/mintWindowEnd here.
+	// Time was validated at buyEdition (reservation time). Valid reservations are honored
+	// regardless of whether the window has since closed.
 	console.log('[checkPurchaseStatusDirect] Checking status for:', purchaseId)
 	try {
 		const purchaseResult = await db
@@ -247,6 +253,49 @@ export async function buyEditionDirect(
 
 		if (post.type !== 'edition' || !post.price || !post.currency) {
 			return { success: false, error: 'Not an edition', message: 'This post is not purchasable as an edition.' }
+		}
+
+		// Time window check (pre-flight — authoritative for this request)
+		const mintWindowStatus = getMintWindowStatus(post)
+		if (mintWindowStatus.status === 'not_started') {
+			console.info('[buyEditionDirect] time-gate', {
+				postId, userId,
+				windowStart: post.mintWindowStart,
+				windowEnd: post.mintWindowEnd,
+				serverNow: new Date().toISOString(),
+				decision: 'not_started',
+			})
+			return {
+				success: false,
+				status: 'not_started',
+				message: 'This edition is not available for purchase yet.',
+				startsAt: mintWindowStatus.startsAt,
+			}
+		}
+		if (mintWindowStatus.status === 'ended') {
+			console.info('[buyEditionDirect] time-gate', {
+				postId, userId,
+				windowStart: post.mintWindowStart,
+				windowEnd: post.mintWindowEnd,
+				serverNow: new Date().toISOString(),
+				decision: 'ended',
+			})
+			return {
+				success: false,
+				status: 'ended',
+				message: 'The minting window for this edition has closed.',
+				endedAt: mintWindowStatus.endedAt,
+			}
+		}
+		// Log successful time gate pass for audit trail
+		if (mintWindowStatus.status === 'active') {
+			console.info('[buyEditionDirect] time-gate', {
+				postId, userId,
+				windowStart: post.mintWindowStart,
+				windowEnd: post.mintWindowEnd,
+				serverNow: new Date().toISOString(),
+				decision: 'allowed',
+			})
 		}
 
 		// Supply check (pre-flight)

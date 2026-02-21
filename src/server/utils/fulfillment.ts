@@ -55,6 +55,9 @@ async function decrementPostSupply(postId: string) {
  * IMPORTANT: This is the ONLY function that should perform minting for REST endpoints.
  */
 export async function fulfillPurchaseDirect(purchaseId: string): Promise<FulfillPurchaseResult> {
+  // TIMED EDITIONS GUARD: Do NOT check mintWindowStart/mintWindowEnd here.
+  // Time was validated at buyEdition (reservation time). Valid reservations are honored
+  // regardless of whether the window has since closed.
   const fulfillmentKey = crypto.randomUUID()
   const now = new Date()
   const staleCutoff = new Date(Date.now() - STALE_CLAIM_THRESHOLD_MS)

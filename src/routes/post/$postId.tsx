@@ -19,7 +19,7 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { Logo } from '@/components/shared/Logo'
-import { getPostDisplayState, getEditionLabel, POST_TYPE_COLORS } from '@/components/feed/postDisplay'
+import { getPostDisplayState, getEditionLabel, POST_TYPE_COLORS, formatPrice as formatPriceDisplay } from '@/components/feed/postDisplay'
 import { POST_TYPE_META } from '@/constants/postTypes'
 import { type Category, isPresetCategory, categoryToSlug } from '@/constants/categories'
 import { CategoryPill } from '@/components/ui/category-pill'
@@ -67,6 +67,25 @@ function detectMediaType(url: string): 'image' | 'video' | 'audio' | 'document' 
   }
   
   return 'image' // Default fallback
+}
+
+// Get user-friendly media type labels from post assets
+function getMediaTypeLabels(post: { mediaUrl: string; assets?: Array<{ mimeType: string | null }> }): string[] {
+  if (post.assets && post.assets.length > 0) {
+    return post.assets.map((asset) => {
+      if (asset.mimeType === 'image/gif') return 'Animated GIF'
+      if (asset.mimeType?.startsWith('image/')) return 'Image'
+      if (asset.mimeType?.startsWith('video/')) return 'Video'
+      if (asset.mimeType?.startsWith('audio/')) return 'Audio'
+      if (asset.mimeType === 'application/pdf') return 'PDF'
+      return 'File'
+    })
+  }
+  const ext = post.mediaUrl?.split('.').pop()?.toLowerCase()?.split('?')[0]
+  if (ext === 'gif') return ['Animated GIF']
+  const type = detectMediaType(post.mediaUrl)
+  const labelMap: Record<string, string> = { image: 'Image', video: 'Video', audio: 'Audio', document: 'Document', '3d': '3D Model' }
+  return [labelMap[type] || 'File']
 }
 
 function PostDetailPage() {
@@ -170,6 +189,8 @@ function PostDetailPage() {
     }
   )
   const postTypeColor = POST_TYPE_COLORS[post.type]
+  const isTimedEdition = post.type === 'edition' && (post.mintWindowStart || post.mintWindowEnd)
+  const mediaLabels = getMediaTypeLabels(post as any)
 
   // Handle collect success
   const handleCollectSuccess = () => {
@@ -184,7 +205,8 @@ function PostDetailPage() {
   }
 
   // Shared action buttons component
-  const ActionButtons = ({ className }: { className?: string }) => (
+  // skipBuy: when true, BuyButton is rendered elsewhere (e.g., timed edition dark bar)
+  const ActionButtons = ({ className, skipBuy = false }: { className?: string; skipBuy?: boolean }) => (
     <div className={cn('flex items-center justify-between gap-0.5', className)}>
       <div className="flex items-center gap-0.5">
         <LikeButton
@@ -220,7 +242,7 @@ function PostDetailPage() {
             />
           )}
 
-          {post.type === 'edition' && post.price && post.currency && (
+          {post.type === 'edition' && post.price && post.currency && !skipBuy && (
             <BuyButton
               postId={post.id}
               userId={currentUser.id}
@@ -239,6 +261,23 @@ function PostDetailPage() {
               mintWindowStart={post.mintWindowStart}
               mintWindowEnd={post.mintWindowEnd}
             />
+          )}
+
+          {/* Static supply count when BuyButton is rendered elsewhere */}
+          {post.type === 'edition' && skipBuy && (
+            <div className="flex items-center gap-1 px-2">
+              <span className="text-sm font-medium">
+                {post.maxSupply ? `${editionSupply}/${post.maxSupply}` : `${editionSupply}`}
+              </span>
+              <i
+                className={cn(
+                  'fa-solid',
+                  post.maxSupply === 1 ? 'fa-hexagon-image' : 'fa-image-stack',
+                  'text-base',
+                )}
+                style={isCollected ? { color: postTypeColor } : undefined}
+              />
+            </div>
           )}
         </div>
       ) : post.type !== 'post' && isUserReady && (
@@ -330,7 +369,7 @@ function PostDetailPage() {
   )
 
   // User header component
-  const UserHeader = ({ showMenu = true }: { showMenu?: boolean }) => (
+  const UserHeader = ({ showMenu = true, showTypeBadge = true }: { showMenu?: boolean; showTypeBadge?: boolean }) => (
     <div className="flex items-center gap-3">
       <Link to="/profile/$slug" params={{ slug: user.usernameSlug }}>
         <div className="w-10 h-10 rounded-full overflow-hidden bg-muted shrink-0">
@@ -360,7 +399,7 @@ function PostDetailPage() {
           <span>@{user.usernameSlug}</span>
           <span>·</span>
           <span>{formatRelativeTime(post.createdAt)}</span>
-          {typeBadge && (
+          {showTypeBadge && typeBadge && (
             <>
               <span>·</span>
               <span className={cn('flex items-center gap-1', typeBadge.color)}>
@@ -375,7 +414,7 @@ function PostDetailPage() {
               </span>
             </>
           )}
-          {post.type === 'edition' && (post.mintWindowStart || post.mintWindowEnd) && (
+          {showTypeBadge && post.type === 'edition' && (post.mintWindowStart || post.mintWindowEnd) && (
             <>
               <span>·</span>
               <MintWindowBadge
@@ -484,67 +523,210 @@ function PostDetailPage() {
 
           {/* Right column: Info panel */}
           <div className="w-[340px] flex flex-col bg-background border-l border-border shrink-0">
-            {/* Fixed header with user info + caption */}
-            <div className="px-4 py-3 border-b border-border shrink-0">
-              <UserHeader />
-              {post.caption && (
-                <p className="text-sm text-foreground whitespace-pre-wrap wrap-break-word mt-3">
-                  {post.caption}
-                </p>
-              )}
-              <Categories />
-              {post.type === 'edition' && (post.mintWindowStart || post.mintWindowEnd) && (
-                <MintWindowBadge
-                  mintWindowStart={post.mintWindowStart}
-                  mintWindowEnd={post.mintWindowEnd}
-                  mintedCount={editionSupply}
-                  variant="prominent"
-                  className="mt-3"
-                />
-              )}
-            </div>
+            {isTimedEdition ? (
+              <>
+                {/* Timed edition: Header with user + price/collected + countdown bar */}
+                <div className="px-4 pb-3 pt-3 border-b border-border shrink-0 flex flex-col gap-3">
+                  <UserHeader showTypeBadge={false} />
 
-            {/* Scrollable middle: Comments */}
-            <div className="flex-1 overflow-y-auto min-h-0">
-              {/* Comments list */}
-              {isAuthenticated ? (
-                <CommentSection
-                  postId={post.id}
-                  userId={currentUser?.id || undefined}
-                  isAuthenticated={isAuthenticated}
-                  className="px-4"
-                  variant="inline"
-                />
-              ) : (
-                <div className="px-4 py-8 text-center text-muted-foreground text-sm">
-                  Sign in to view and add comments
-                </div>
-              )}
-            </div>
+                  {/* Price / Collected info card */}
+                  {post.price && post.currency && (
+                    <div className="bg-muted/30 border border-border rounded-2xl px-[17px] py-[9px]">
+                      <div className="flex items-start justify-between text-xs">
+                        <div className="flex flex-col flex-1 justify-center">
+                          <span className="text-muted-foreground font-medium leading-snug">Price</span>
+                          <span className="text-foreground font-semibold leading-tight">
+                            {formatPriceDisplay(post.price, post.currency)}
+                          </span>
+                        </div>
+                        <div className="flex flex-col flex-1 justify-center">
+                          <span className="text-muted-foreground font-medium leading-snug">Collected</span>
+                          <span className="text-foreground font-semibold leading-tight">
+                            {post.maxSupply ? `${editionSupply}/${post.maxSupply} Minted` : `${editionSupply} Minted`}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
-            {/* Fixed footer: Actions + Comment input */}
-            <div className="border-t border-border shrink-0">
-              <div className="px-4 py-2">
-                <ActionButtons />
-              </div>
-              {isAuthenticated && (
-                <div className="px-4 pb-3">
-                  <CommentSection
-                    postId={post.id}
-                    userId={currentUser?.id || undefined}
-                    isAuthenticated={isAuthenticated}
-                    variant="input-only"
+                  {/* Dark countdown bar with buy button */}
+                  <MintWindowBadge
+                    mintWindowStart={post.mintWindowStart}
+                    mintWindowEnd={post.mintWindowEnd}
+                    mintedCount={editionSupply}
+                    variant="dark"
+                    action={
+                      isUserReady && isAuthenticated && currentUser?.id && post.price && post.currency ? (
+                        <BuyButton
+                          postId={post.id}
+                          userId={currentUser.id}
+                          price={post.price}
+                          currency={post.currency}
+                          maxSupply={post.maxSupply}
+                          currentSupply={editionSupply}
+                          isAuthenticated={isAuthenticated}
+                          onSuccess={handleBuySuccess}
+                          onPurchased={() => setLocalIsOwned(true)}
+                          variant="default"
+                          toneColor={postTypeColor}
+                          isCollected={isCollected}
+                          isSoldOut={typeof post.maxSupply === 'number' && editionSupply >= post.maxSupply}
+                          mintWindowStart={post.mintWindowStart}
+                          mintWindowEnd={post.mintWindowEnd}
+                          label="Collect"
+                          className="!bg-background !text-foreground !rounded-full !px-3.5 !h-8 !text-xs !font-medium"
+                        />
+                      ) : undefined
+                    }
                   />
                 </div>
-              )}
-              {isReady && !isAuthenticated && (
-                <div className="px-4 pb-3">
-                  <Button onClick={() => login()} className="w-full">
-                    Log in or Sign up
-                  </Button>
+
+                {/* Post info: title + badge, description, media pills */}
+                <div className="px-4 py-3 border-b border-border shrink-0">
+                  <div className="flex items-center gap-2.5">
+                    <span className="flex-1 font-semibold text-sm min-w-0">
+                      {(post as any).nftName || post.caption?.split('\n')[0] || 'Untitled'}
+                    </span>
+                    {typeBadge && (
+                      <span
+                        className={cn(
+                          'shrink-0 text-[10.5px] font-medium px-2 py-1.5 rounded-lg',
+                          POST_TYPE_META[post.type].accentBgClass,
+                          POST_TYPE_META[post.type].badgeClass,
+                        )}
+                      >
+                        {typeBadge.label}
+                      </span>
+                    )}
+                  </div>
+                  {post.caption && (
+                    <p className="text-sm text-muted-foreground whitespace-pre-wrap wrap-break-word mt-2">
+                      {post.caption}
+                    </p>
+                  )}
+                  {mediaLabels.length > 0 && (
+                    <div className="flex flex-wrap gap-1 pt-2">
+                      {mediaLabels.map((label, i) => (
+                        <span
+                          key={i}
+                          className="bg-muted text-muted-foreground text-[10px] font-semibold tracking-[0.2px] px-2.5 h-[21px] inline-flex items-center rounded-full"
+                        >
+                          {label}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  <Categories />
                 </div>
-              )}
-            </div>
+
+                {/* Scrollable middle: Comments */}
+                <div className="flex-1 overflow-y-auto min-h-0">
+                  <div className="px-4 pt-3">
+                    <span className="text-xs font-semibold text-muted-foreground">Comments</span>
+                  </div>
+                  {isAuthenticated ? (
+                    <CommentSection
+                      postId={post.id}
+                      userId={currentUser?.id || undefined}
+                      isAuthenticated={isAuthenticated}
+                      className="px-4"
+                      variant="inline"
+                    />
+                  ) : (
+                    <div className="px-4 py-8 text-center text-muted-foreground text-sm">
+                      Sign in to view and add comments
+                    </div>
+                  )}
+                </div>
+
+                {/* Fixed footer: Actions + Comment input */}
+                <div className="border-t border-border shrink-0">
+                  <div className="px-4 py-2">
+                    <ActionButtons skipBuy />
+                  </div>
+                  {isAuthenticated && (
+                    <div className="px-4 pb-3">
+                      <CommentSection
+                        postId={post.id}
+                        userId={currentUser?.id || undefined}
+                        isAuthenticated={isAuthenticated}
+                        variant="input-only"
+                      />
+                    </div>
+                  )}
+                  {isReady && !isAuthenticated && (
+                    <div className="px-4 pb-3">
+                      <Button onClick={() => login()} className="w-full">
+                        Log in or Sign up
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </>
+            ) : (
+              <>
+                {/* Standard layout: Header with user info + caption */}
+                <div className="px-4 py-3 border-b border-border shrink-0">
+                  <UserHeader />
+                  {post.caption && (
+                    <p className="text-sm text-foreground whitespace-pre-wrap wrap-break-word mt-3">
+                      {post.caption}
+                    </p>
+                  )}
+                  <Categories />
+                  {post.type === 'edition' && (post.mintWindowStart || post.mintWindowEnd) && (
+                    <MintWindowBadge
+                      mintWindowStart={post.mintWindowStart}
+                      mintWindowEnd={post.mintWindowEnd}
+                      mintedCount={editionSupply}
+                      variant="prominent"
+                      className="mt-3"
+                    />
+                  )}
+                </div>
+
+                {/* Scrollable middle: Comments */}
+                <div className="flex-1 overflow-y-auto min-h-0">
+                  {isAuthenticated ? (
+                    <CommentSection
+                      postId={post.id}
+                      userId={currentUser?.id || undefined}
+                      isAuthenticated={isAuthenticated}
+                      className="px-4"
+                      variant="inline"
+                    />
+                  ) : (
+                    <div className="px-4 py-8 text-center text-muted-foreground text-sm">
+                      Sign in to view and add comments
+                    </div>
+                  )}
+                </div>
+
+                {/* Fixed footer: Actions + Comment input */}
+                <div className="border-t border-border shrink-0">
+                  <div className="px-4 py-2">
+                    <ActionButtons />
+                  </div>
+                  {isAuthenticated && (
+                    <div className="px-4 pb-3">
+                      <CommentSection
+                        postId={post.id}
+                        userId={currentUser?.id || undefined}
+                        isAuthenticated={isAuthenticated}
+                        variant="input-only"
+                      />
+                    </div>
+                  )}
+                  {isReady && !isAuthenticated && (
+                    <div className="px-4 pb-3">
+                      <Button onClick={() => login()} className="w-full">
+                        Log in or Sign up
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -580,17 +762,116 @@ function PostDetailPage() {
 
           {/* Content */}
           <div className="px-4 py-3 md:px-2 space-y-4">
-            <ActionButtons />
-            {post.type === 'edition' && (post.mintWindowStart || post.mintWindowEnd) && (
-              <MintWindowBadge
-                mintWindowStart={post.mintWindowStart}
-                mintWindowEnd={post.mintWindowEnd}
-                mintedCount={editionSupply}
-                variant="prominent"
-              />
+            {isTimedEdition ? (
+              <>
+                {/* Price / Collected info card */}
+                {post.price && post.currency && (
+                  <div className="bg-muted/30 border border-border rounded-2xl px-[17px] py-[9px]">
+                    <div className="flex items-start justify-between text-xs">
+                      <div className="flex flex-col flex-1 justify-center">
+                        <span className="text-muted-foreground font-medium leading-snug">Price</span>
+                        <span className="text-foreground font-semibold leading-tight">
+                          {formatPriceDisplay(post.price, post.currency)}
+                        </span>
+                      </div>
+                      <div className="flex flex-col flex-1 justify-center">
+                        <span className="text-muted-foreground font-medium leading-snug">Collected</span>
+                        <span className="text-foreground font-semibold leading-tight">
+                          {post.maxSupply ? `${editionSupply}/${post.maxSupply} Minted` : `${editionSupply} Minted`}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Dark countdown bar with buy button */}
+                <MintWindowBadge
+                  mintWindowStart={post.mintWindowStart}
+                  mintWindowEnd={post.mintWindowEnd}
+                  mintedCount={editionSupply}
+                  variant="dark"
+                  action={
+                    isUserReady && isAuthenticated && currentUser?.id && post.price && post.currency ? (
+                      <BuyButton
+                        postId={post.id}
+                        userId={currentUser.id}
+                        price={post.price}
+                        currency={post.currency}
+                        maxSupply={post.maxSupply}
+                        currentSupply={editionSupply}
+                        isAuthenticated={isAuthenticated}
+                        onSuccess={handleBuySuccess}
+                        onPurchased={() => setLocalIsOwned(true)}
+                        variant="default"
+                        toneColor={postTypeColor}
+                        isCollected={isCollected}
+                        isSoldOut={typeof post.maxSupply === 'number' && editionSupply >= post.maxSupply}
+                        mintWindowStart={post.mintWindowStart}
+                        mintWindowEnd={post.mintWindowEnd}
+                        label="Collect"
+                        className="!bg-background !text-foreground !rounded-full !px-3.5 !h-8 !text-xs !font-medium"
+                      />
+                    ) : undefined
+                  }
+                />
+
+                {/* Title + badge */}
+                <div className="flex items-center gap-2.5">
+                  <span className="flex-1 font-semibold text-sm min-w-0">
+                    {(post as any).nftName || post.caption?.split('\n')[0] || 'Untitled'}
+                  </span>
+                  {typeBadge && (
+                    <span
+                      className={cn(
+                        'shrink-0 text-[10.5px] font-medium px-2 py-1.5 rounded-lg',
+                        POST_TYPE_META[post.type].accentBgClass,
+                        POST_TYPE_META[post.type].badgeClass,
+                      )}
+                    >
+                      {typeBadge.label}
+                    </span>
+                  )}
+                </div>
+
+                {/* Description */}
+                {post.caption && (
+                  <p className="text-sm text-muted-foreground whitespace-pre-wrap wrap-break-word">
+                    {post.caption}
+                  </p>
+                )}
+
+                {/* Media type pills */}
+                {mediaLabels.length > 0 && (
+                  <div className="flex flex-wrap gap-1">
+                    {mediaLabels.map((label, i) => (
+                      <span
+                        key={i}
+                        className="bg-muted text-muted-foreground text-[10px] font-semibold tracking-[0.2px] px-2.5 h-[21px] inline-flex items-center rounded-full"
+                      >
+                        {label}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                <Categories />
+                <ActionButtons skipBuy />
+              </>
+            ) : (
+              <>
+                <ActionButtons />
+                {post.type === 'edition' && (post.mintWindowStart || post.mintWindowEnd) && (
+                  <MintWindowBadge
+                    mintWindowStart={post.mintWindowStart}
+                    mintWindowEnd={post.mintWindowEnd}
+                    mintedCount={editionSupply}
+                    variant="prominent"
+                  />
+                )}
+                <Caption showAvatar={true} />
+                <Categories />
+              </>
             )}
-            <Caption showAvatar={true} />
-            <Categories />
 
             {/* Comments Section - Only show when authenticated */}
             {isAuthenticated && (

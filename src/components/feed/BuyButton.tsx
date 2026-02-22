@@ -13,6 +13,7 @@ import {
 import { getExplorerUrl } from '@/server/functions/preferences';
 import { usePreferences } from '@/hooks/usePreferences';
 import { useWallets as useSolanaWallets, useSignTransaction } from '@privy-io/react-auth/solana';
+import { useConnectWallet } from '@privy-io/react-auth';
 import { createSolanaRpc } from '@solana/kit';
 import { useNetworkStatus } from '@/hooks/useNetworkStatus';
 import { useRpcHealthContext } from '@/components/providers/RpcHealthProvider';
@@ -105,6 +106,8 @@ interface BuyButtonProps {
   mintWindowStart?: Date | string | null;
   /** Timed edition: when the mint window closes */
   mintWindowEnd?: Date | string | null;
+  /** Override the idle button label (e.g. "Collect") */
+  label?: string;
 }
 
 type ServerFnInput<T> = { data: T };
@@ -135,6 +138,7 @@ export function BuyButton({
   isSoldOut = false,
   mintWindowStart: mintWindowStartProp,
   mintWindowEnd: mintWindowEndProp,
+  label,
 }: BuyButtonProps) {
   // Ensure Buffer is available for privy/solana SDKs in the browser
   if (typeof window !== 'undefined' && !(window as any).Buffer) {
@@ -144,6 +148,10 @@ export function BuyButton({
   const { wallets: solanaWallets, ready: solanaWalletsReady } = useSolanaWallets();
   const { signTransaction } = useSignTransaction();
   const { activePrivyWallet, activeAddress } = useActiveWallet();
+  const { connectWallet } = useConnectWallet({
+    onSuccess: () => { /* wallet reconnected — user can now collect */ },
+    onError: () => { toastError('Wallet connection failed. Please try again.'); },
+  });
 
   // Network and RPC health status
   const { isOffline } = useNetworkStatus();
@@ -562,15 +570,17 @@ export function BuyButton({
 
   const handleBuy = async () => {
     if (!isAuthenticated || !userId) return;
-    if (!hasWallet) {
-      toastError('Please connect your Solana wallet to purchase.');
-      return;
-    }
     if (state !== 'idle' && state !== 'failed' && state !== 'insufficient_funds') return;
 
     // Ensure wallets are ready before proceeding
     if (!solanaWalletsReady) {
       toastError('Wallets are still initializing. Please wait a moment and try again.');
+      return;
+    }
+
+    // External wallet disconnected — prompt reconnection
+    if (!hasWallet) {
+      connectWallet({ walletChainType: 'solana-only' });
       return;
     }
 
@@ -928,22 +938,14 @@ export function BuyButton({
       }
     }
 
-    // Show "Connect wallet" if no wallet available
+    // External wallet disconnected — show "Connect" (clicking triggers reconnection)
     if (!hasWallet && state === 'idle') {
-      return <span className="text-sm font-semibold leading-5">Connect wallet</span>;
+      return <span className="text-sm font-semibold leading-5">Connect</span>;
     }
 
     switch (state) {
       case 'idle': {
-        // "ending_soon" — show buy price with urgency countdown
-        if (effectiveTimeStatus === 'ending_soon' && countdown) {
-          return (
-            <span className="text-sm font-semibold leading-5">
-              Buy {formatPrice()} <span className="text-amber-500">({countdown} left)</span>
-            </span>
-          );
-        }
-        return <span className="text-sm font-semibold leading-5">Buy {formatPrice()}</span>;
+        return <span className="text-sm font-semibold leading-5">{label || `Buy ${formatPrice()}`}</span>;
       }
       case 'preparing':
         return (
@@ -983,10 +985,10 @@ export function BuyButton({
         // Show "Claim NFT" button text (not "Claiming..." unless actively processing)
         return <span className="text-sm font-semibold leading-5">Claim NFT</span>;
       case 'failed':
-        // Show "Buy" instead of "Retry" if wallet is available, otherwise "Connect wallet"
+        // Show "Buy" for retry — button is disabled when no wallet
         return (
           <span className="text-sm font-semibold leading-5">
-            {hasWallet ? `Buy ${formatPrice()}` : 'Connect wallet'}
+            Buy {formatPrice()}
           </span>
         );
       case 'sold_out':
@@ -1007,7 +1009,6 @@ export function BuyButton({
     !isAuthenticated ||
     isOffline ||
     !isRpcHealthy ||
-    (state !== 'claiming' && !hasWallet) || // Allow claiming without wallet (server-side)
     state === 'preparing' ||
     state === 'signing' ||
     state === 'confirming' ||

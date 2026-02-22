@@ -10,7 +10,7 @@
  *   - none:         renders nothing
  */
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, type ReactNode } from "react"
 import { cn } from "@/lib/utils"
 import {
 	getMintWindowDisplayStatus,
@@ -23,7 +23,9 @@ interface MintWindowBadgeProps {
 	/** Optional: show final mint count when ended */
 	mintedCount?: number
 	/** Compact variant for the PostCard header line */
-	variant?: "compact" | "prominent"
+	variant?: "compact" | "prominent" | "dark"
+	/** Action button to render inside the dark variant */
+	action?: ReactNode
 	className?: string
 }
 
@@ -40,6 +42,7 @@ export function MintWindowBadge({
 	mintWindowEnd,
 	mintedCount,
 	variant = "compact",
+	action,
 	className,
 }: MintWindowBadgeProps) {
 	const compute = useCallback(
@@ -65,6 +68,10 @@ export function MintWindowBadge({
 	}, [compute])
 
 	if (status.phase === "none") return null
+
+	if (variant === "dark") {
+		return <DarkBadge status={status} mintedCount={mintedCount} action={action} className={className} />
+	}
 
 	if (variant === "prominent") {
 		return <ProminentBadge status={status} mintedCount={mintedCount} className={className} />
@@ -173,6 +180,64 @@ function ProminentBadge({
 					</span>
 				)}
 			</div>
+		</div>
+	)
+}
+
+/** Dark variant: full-width CTA bar with countdown + action button. */
+function DarkBadge({
+	status,
+	mintedCount,
+	action,
+	className,
+}: {
+	status: ActiveMintWindowStatus
+	mintedCount?: number
+	action?: ReactNode
+	className?: string
+}) {
+	const dateOpts: Intl.DateTimeFormatOptions = {
+		month: "short",
+		day: "numeric",
+		hour: "numeric",
+		minute: "2-digit",
+	}
+
+	let timeDetail: string | null = null
+	if (status.phase === "scheduled") {
+		timeDetail = `Opens ${status.startsAt.toLocaleString(undefined, dateOpts)}`
+	} else if (status.phase === "active" || status.phase === "ending_soon") {
+		timeDetail = `Closes ${status.endsAt.toLocaleString(undefined, dateOpts)}`
+	} else if (status.phase === "ended") {
+		timeDetail =
+			mintedCount !== undefined && mintedCount > 0
+				? `${mintedCount} minted`
+				: `Closed ${status.endedAt.toLocaleString(undefined, dateOpts)}`
+	}
+
+	const isEnded = status.phase === "ended"
+
+	return (
+		<div
+			className={cn(
+				"flex items-center justify-between rounded-2xl px-4 py-3",
+				isEnded
+					? "bg-muted text-foreground"
+					: "bg-foreground text-background",
+				className,
+			)}
+		>
+			<div className="flex flex-col gap-1.5">
+				<span className="font-bold text-xs leading-tight">
+					{status.label}
+				</span>
+				{timeDetail && (
+					<span className="font-semibold text-[10.5px] leading-tight opacity-75">
+						{timeDetail}
+					</span>
+				)}
+			</div>
+			{action}
 		</div>
 	)
 }

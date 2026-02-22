@@ -504,7 +504,7 @@ export function MultiMediaUpload({
         const blob = await upload(pathname, file, {
           access: 'public',
           handleUploadUrl: '/api/upload',
-          clientPayload: JSON.stringify({ authorized: true }),
+          clientPayload: JSON.stringify({ token: accessToken }),
           onUploadProgress: (progress) => {
             const scaledProgress = 10 + Math.round(progress.percentage * 0.85)
             setItems((prev) =>

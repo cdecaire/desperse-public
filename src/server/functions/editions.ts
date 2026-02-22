@@ -1,5 +1,5 @@
 import { createServerFn } from '@tanstack/react-start';
-import { Connection, PublicKey } from '@solana/web3.js';
+import type { Connection, PublicKey } from '@solana/web3.js';
 import { z } from 'zod';
 import { and, desc, eq, gt, isNull, lt, or, sql } from 'drizzle-orm';
 import { db } from '@/server/db';
@@ -10,9 +10,9 @@ import { validateAddress } from '@/server/services/blockchain/addressUtils';
 // NOTE: @solana/spl-token and transactionBuilder imports are done dynamically inside
 // functions to avoid pulling them into client bundle (causes Buffer is not defined error)
 
-// Token program IDs - defined locally to avoid importing from spl-token
-const TOKEN_PROGRAM_ID = new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA');
-const TOKEN_2022_PROGRAM_ID = new PublicKey('TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb');
+// Token program IDs as strings (instantiated lazily to avoid top-level PublicKey)
+const TOKEN_PROGRAM_ID_STR = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+const TOKEN_2022_PROGRAM_ID_STR = 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
 
 // Minting fee in lamports - must match MINTING_FEE_LAMPORTS in transactionBuilder.ts
 const MINTING_FEE_LAMPORTS = 10_000_000; // 0.01 SOL
@@ -26,9 +26,7 @@ import { checkTransactionStatus } from '@/server/services/blockchain/mintCnft';
 import { snapshotMintedMetadata } from '@/server/utils/mint-snapshot';
 import { withAuth } from '@/server/auth';
 import { getMintWindowStatus } from '@/server/utils/mintWindowStatus';
-import { Buffer } from 'buffer';
-
-// MINT_SIZE constant (82 bytes) - defined locally to avoid Buffer dependency in client bundle
+// MINT_SIZE constant (82 bytes)
 const MINT_SIZE = 82;
 import { uploadMetadataJson } from '@/server/storage/blob';
 import { generateNftMetadata } from '@/server/utils/nft-metadata';
@@ -81,7 +79,7 @@ type PurchaseStatus =
  */
 async function sendAndConfirmFulfillmentTransaction(
   connection: Connection,
-  txBytes: Buffer,
+  txBytes: Uint8Array,
   blockhash: string,
   lastValidBlockHeight: number,
 ): Promise<{ signature: string; confirmation: { value: { err: any } } }> {
@@ -128,6 +126,10 @@ async function validateMasterMintExists(
   if (!validateAddress(masterMint)) {
     throw new Error(`Invalid master mint address: ${masterMint}`);
   }
+
+  const { PublicKey } = await import('@solana/web3.js');
+  const TOKEN_PROGRAM_ID = new PublicKey(TOKEN_PROGRAM_ID_STR);
+  const TOKEN_2022_PROGRAM_ID = new PublicKey(TOKEN_2022_PROGRAM_ID_STR);
 
   const masterMintPk = new PublicKey(masterMint);
   const info = await connection.getAccountInfo(masterMintPk, 'confirmed');
@@ -183,6 +185,7 @@ interface BuyEditionResult {
 }
 
 async function getConnection() {
+  const { Connection } = await import('@solana/web3.js');
   return new Connection(getHeliusRpcUrl(), 'confirmed');
 }
 
@@ -192,6 +195,7 @@ async function ensureSolBalance(address: string, requiredLamports: bigint): Prom
     console.error('[ensureSolBalance] Invalid address:', address);
     return false;
   }
+  const { PublicKey } = await import('@solana/web3.js');
   const connection = await getConnection();
   const balance = await connection.getBalance(new PublicKey(address));
   return BigInt(balance) >= requiredLamports;
@@ -203,6 +207,7 @@ async function ensureUsdcBalance(ownerAddress: string, requiredAmount: bigint): 
     console.error('[ensureUsdcBalance] Invalid owner address:', ownerAddress);
     return false;
   }
+  const { PublicKey } = await import('@solana/web3.js');
   const connection = await getConnection();
   const owner = new PublicKey(ownerAddress);
   const usdcMint = new PublicKey(USDC_MINT_ADDRESS);
@@ -231,8 +236,9 @@ async function decrementPostSupply(postId: string) {
  * - Having size MINT_SIZE (82 bytes)
  * - Being writable in the transaction
  */
-export async function extractMintAddressFromTransaction(txSignature: string): Promise<string | null> {
+async function extractMintAddressFromTransaction(txSignature: string): Promise<string | null> {
   try {
+    const { PublicKey } = await import('@solana/web3.js');
     const connection = await getConnection();
     const TOKEN_PROGRAM = new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA');
     
@@ -994,6 +1000,7 @@ export const buyEdition = createServerFn({
     }
 
     // Double-check balance right before building transaction (balance may have changed)
+    const { PublicKey } = await import('@solana/web3.js');
     const currentBalance = await connection.getBalance(new PublicKey(buyerWallet));
     const currentBalanceSOL = currentBalance / 1e9;
     
@@ -1623,8 +1630,9 @@ export const updatePurchaseStatus = createServerFn({
       } else {
         // Verify mint account exists on-chain before saving
         try {
+          const { PublicKey: PK } = await import('@solana/web3.js');
           const connection = await getConnection();
-          const mintAccount = await connection.getAccountInfo(new PublicKey(nftMint));
+          const mintAccount = await connection.getAccountInfo(new PK(nftMint));
           if (mintAccount) {
             verifiedMint = nftMint;
           } else {

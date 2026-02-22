@@ -182,6 +182,7 @@ export const uploadHeaderBg = createServerFn({
 
     const data = uploadHeaderBgSchema.parse(rawData)
 
+    const { Buffer } = await import('node:buffer')
     let fileBuffer: Buffer
     let mimeType: string
     let fileName: string
@@ -263,6 +264,7 @@ export const uploadAvatar = createServerFn({
 
     const data = uploadAvatarSchema.parse(rawData)
 
+    const { Buffer } = await import('node:buffer')
     let fileBuffer: Buffer
     let mimeType: string
     let fileName: string

@@ -12,7 +12,6 @@ import { z } from 'zod';
 import { env } from '@/config/env';
 import { checkTransactionStatus } from '@/server/services/blockchain/mintCnft';
 import { buildCompressedCollectTransaction } from '@/server/services/blockchain/compressed/mintCollectible';
-import { Connection, VersionedTransaction } from '@solana/web3.js';
 import { getHeliusRpcUrl } from '@/config/env';
 import { snapshotMintedMetadata } from '@/server/utils/mint-snapshot';
 import { withAuth } from '@/server/auth';
@@ -215,7 +214,7 @@ async function getPostCollectCount(postId: string): Promise<number> {
         eq(collections.status, 'confirmed')
       )
     );
-  
+
   return result[0]?.count || 0;
 }
 
@@ -612,9 +611,9 @@ export const getUserCollectionStatus = createServerFn({
     const rawData = input && typeof input === 'object' && 'data' in input
       ? (input as { data: unknown }).data
       : input;
-    
+
     const { postId, userId } = getUserCollectionSchema.parse(rawData);
-    
+
     const collection = await db
       .select()
       .from(collections)
@@ -625,30 +624,30 @@ export const getUserCollectionStatus = createServerFn({
         )
       )
       .limit(1);
-    
+
     if (collection.length === 0) {
       return {
         success: true,
         hasCollected: false,
       };
     }
-    
+
     const col = collection[0];
-    
+
     // Auto-clear stale pending records (older than 2 minutes)
     const STALE_PENDING_THRESHOLD_MS = 2 * 60 * 1000; // 2 minutes
     const now = new Date();
     const ageMs = now.getTime() - col.createdAt.getTime();
-    
+
     if (col.status === 'pending' && ageMs > STALE_PENDING_THRESHOLD_MS) {
       // Mark stale pending as failed
       await db
         .update(collections)
         .set({ status: 'failed' })
         .where(eq(collections.id, col.id));
-      
+
       console.log(`[getUserCollectionStatus] Auto-marked stale pending collection as failed: ${col.id} (age: ${Math.round(ageMs / 1000)}s)`);
-      
+
       // Return failed status so client can retry
       return {
         success: true,
@@ -662,7 +661,7 @@ export const getUserCollectionStatus = createServerFn({
         },
       };
     }
-    
+
     // Only treat 'confirmed' as collected - pending and failed allow retries
     return {
       success: true,
@@ -702,38 +701,38 @@ export const checkCollectionStatus = createServerFn({
     const rawData = input && typeof input === 'object' && 'data' in input
       ? (input as { data: unknown }).data
       : input;
-    
+
     const { collectionId } = checkCollectionStatusSchema.parse(rawData);
-    
+
     const collection = await db
       .select()
       .from(collections)
       .where(eq(collections.id, collectionId))
       .limit(1);
-    
+
     if (collection.length === 0) {
       return {
         success: false,
         error: 'Collection not found',
       };
     }
-    
+
     const col = collection[0];
-    
+
     // Auto-clear stale pending records (older than 2 minutes)
     const STALE_PENDING_THRESHOLD_MS = 2 * 60 * 1000; // 2 minutes
     const now = new Date();
     const ageMs = now.getTime() - col.createdAt.getTime();
-    
+
     if (col.status === 'pending' && ageMs > STALE_PENDING_THRESHOLD_MS) {
       // Mark stale pending as failed
       await db
         .update(collections)
         .set({ status: 'failed' })
         .where(eq(collections.id, collectionId));
-      
+
       console.log(`[checkCollectionStatus] Auto-marked stale pending collection as failed: ${collectionId} (age: ${Math.round(ageMs / 1000)}s)`);
-      
+
       return {
         success: true,
         status: 'failed',
@@ -741,11 +740,11 @@ export const checkCollectionStatus = createServerFn({
         nftMint: col.nftMint || undefined,
       };
     }
-    
+
     // If still pending and we have a tx signature, check on-chain status
     if (col.status === 'pending' && col.txSignature) {
       const txStatus = await checkTransactionStatus(col.txSignature);
-      
+
       if (txStatus.status === 'confirmed' || txStatus.status === 'finalized') {
         // Try to extract asset ID if we don't have it yet
         let assetId = col.nftMint;
@@ -753,7 +752,7 @@ export const checkCollectionStatus = createServerFn({
           const { extractAssetIdFromTransaction } = await import('@/server/services/blockchain/compressed/mintCollectible');
           assetId = await extractAssetIdFromTransaction(col.txSignature);
         }
-        
+
         // Update to confirmed with asset ID
         await db
           .update(collections)
@@ -801,14 +800,14 @@ export const checkCollectionStatus = createServerFn({
           nftMint: assetId || col.nftMint || undefined,
         };
       }
-      
+
       if (txStatus.status === 'failed') {
         // Update to failed
         await db
           .update(collections)
           .set({ status: 'failed' })
           .where(eq(collections.id, collectionId));
-        
+
         return {
           success: true,
           status: 'failed',
@@ -816,7 +815,7 @@ export const checkCollectionStatus = createServerFn({
         };
       }
     }
-    
+
     return {
       success: true,
       status: col.status as 'pending' | 'confirmed' | 'failed',
@@ -864,9 +863,12 @@ export const simulateTransaction = createServerFn({
 
     const { txBytes } = simulateTransactionSchema.parse(rawData);
 
+    // Dynamic import to avoid leaking Node-only Buffer into client bundle
+    const { Connection, VersionedTransaction } = await import('@solana/web3.js');
+
     // Convert number array back to Uint8Array
     const bytes = new Uint8Array(txBytes);
-    
+
     // Deserialize transaction
     const tx = VersionedTransaction.deserialize(bytes);
 
@@ -898,13 +900,13 @@ export const simulateTransaction = createServerFn({
         console.log(`  [${idx}] ${log}`);
         // Highlight Bubblegum errors
         if (typeof log === 'string' && (
-          log.includes('tree authority') || 
+          log.includes('tree authority') ||
           log.includes('TreeAuthority') ||
           log.includes('PublicKeyMismatch') ||
           log.includes('Incorrect tree') ||
           log.includes('AccountNotFound')
         )) {
-          console.error(`  ⚠️  BUBBLEGUM ERROR: ${log}`);
+          console.error(`  BUBBLEGUM ERROR: ${log}`);
         }
       });
     }
@@ -980,16 +982,16 @@ export const updateCollectionStatus = createServerFn({
     const rawData = input && typeof input === 'object' && 'data' in input
       ? (input as { data: unknown }).data
       : input;
-    
+
     const { txSignature, status, nftMint } = updateCollectionStatusSchema.parse(rawData);
-    
+
     // Find collection by tx signature
     const collection = await db
       .select()
       .from(collections)
       .where(eq(collections.txSignature, txSignature))
       .limit(1);
-    
+
     if (collection.length === 0) {
       return {
         success: false,
@@ -997,7 +999,7 @@ export const updateCollectionStatus = createServerFn({
         error: 'Collection not found for this transaction',
       };
     }
-    
+
     // Update the collection status
     await db
       .update(collections)
@@ -1006,7 +1008,7 @@ export const updateCollectionStatus = createServerFn({
         nftMint: nftMint || collection[0].nftMint,
       })
       .where(eq(collections.id, collection[0].id));
-    
+
     return {
       success: true,
       updated: true,
@@ -1036,11 +1038,11 @@ export const getCollectCount = createServerFn({
     const rawData = input && typeof input === 'object' && 'data' in input
       ? (input as { data: unknown }).data
       : input;
-    
+
     const { postId } = z.object({ postId: z.string().uuid() }).parse(rawData);
-    
+
     const count = await getPostCollectCount(postId);
-    
+
     return {
       success: true,
       count,
@@ -1054,4 +1056,3 @@ export const getCollectCount = createServerFn({
     };
   }
 });
-

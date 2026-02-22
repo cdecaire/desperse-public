@@ -16,7 +16,7 @@ import { env } from '@/config/env'
 import {
   processHeliusWebhookCore,
   heliusWebhookSchema,
-} from '@/server/functions/webhook'
+} from '@/server/utils/webhook-core'
 
 /**
  * Timing-safe string comparison to prevent timing attacks

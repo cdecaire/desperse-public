@@ -111,7 +111,8 @@ export const uploadMedia = createServerFn({
       }
     }
 
-    // Convert base64 to Blob
+    // Convert base64 to Blob (dynamic import to avoid leaking Buffer into client bundle)
+    const { Buffer } = await import('node:buffer')
     const binaryData = Buffer.from(fileData, 'base64')
     const blob = new Blob([binaryData], { type: mimeType })
 

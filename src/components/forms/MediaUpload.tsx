@@ -268,7 +268,7 @@ export function MediaUpload({
       const blob = await upload(pathname, file, {
         access: 'public',
         handleUploadUrl: '/api/upload',
-        clientPayload: JSON.stringify({ authorized: true }),
+        clientPayload: JSON.stringify({ token: accessToken }),
         onUploadProgress: (progress) => {
           // Progress is 0-100
           const scaledProgress = 20 + Math.round(progress.percentage * 0.7)
@@ -357,7 +357,7 @@ export function MediaUpload({
       const blob = await upload(pathname, file, {
         access: 'public',
         handleUploadUrl: '/api/upload',
-        clientPayload: JSON.stringify({ authorized: true }),
+        clientPayload: JSON.stringify({ token: accessToken }),
         onUploadProgress: (progress) => {
           const scaledProgress = 20 + Math.round(progress.percentage * 0.7)
           setCoverUploadState({ status: 'uploading', progress: scaledProgress })

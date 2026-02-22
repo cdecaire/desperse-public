@@ -26,9 +26,8 @@ import { postAssets, downloadNonces, downloadTokens } from '@/server/db/schema'
 import { eq, and, lt, isNull } from 'drizzle-orm'
 import { verifyNftOwnership, isPostCreator } from '@/server/services/blockchain/ownershipCheck'
 import { addressToBytes } from '@/server/services/blockchain/addressUtils'
-import * as ed25519 from '@noble/ed25519'
-import bs58 from 'bs58'
-import { randomBytes } from 'node:crypto'
+// ed25519, bs58, randomBytes are dynamically imported inside handlers
+// to avoid leaking Node-only code into the client bundle
 
 // ============================================================================
 // Constants
@@ -104,6 +103,7 @@ export const getDownloadNonce = createServerFn({
     }
 
     // Generate random nonce
+    const { randomBytes } = await import('node:crypto')
     const nonce = randomBytes(32).toString('hex')
     const expiresAt = new Date(Date.now() + NONCE_EXPIRY_MS)
 
@@ -293,6 +293,7 @@ export const verifyAndIssueToken = createServerFn({
     }
 
     // 7. Issue short-lived download token
+    const { randomBytes } = await import('node:crypto')
     const token = randomBytes(32).toString('hex')
     const expiresAt = new Date(Date.now() + TOKEN_EXPIRY_MS)
 
@@ -328,6 +329,11 @@ async function verifyWalletSignature(
   signatureBase58: string,
 ): Promise<boolean> {
   try {
+    // Dynamic imports to avoid leaking Node-only code into client bundle
+    const ed25519 = await import('@noble/ed25519')
+    const bs58Module = await import('bs58')
+    const bs58 = bs58Module.default
+
     // Convert wallet address to bytes using @solana/addresses
     // (Migrated from @solana/web3.js PublicKey.toBytes() - Phase 3)
     const publicKeyBytes = addressToBytes(wallet)

@@ -8,26 +8,30 @@
 
 import { db } from '@/server/db'
 import { purchases, posts, users } from '@/server/db/schema'
-import { eq, and, lt, or, isNull } from 'drizzle-orm'
+import { eq, and, lt, or, isNull, gt } from 'drizzle-orm'
 import { sql } from 'drizzle-orm'
 import { authenticateWithToken } from '@/server/auth'
 import { getHeliusRpcUrl, getPlatformWalletAddress } from '@/config/env'
 import { validateAddress } from '@/server/services/blockchain/addressUtils'
 import { getMintWindowStatus } from '@/server/utils/mintWindowStatus'
+import { checkTransactionStatus } from '@/server/services/blockchain/mintCnft'
 
 // Minting fee in lamports (must match transactionBuilder.ts)
 const MINTING_FEE_LAMPORTS = 10_000_000 // 0.01 SOL
-// USDC mint address (devnet for testing)
-const USDC_MINT_ADDRESS = 'Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr'
+// USDC mint address (mainnet)
+const USDC_MINT_ADDRESS = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'
 
 // Types
 export type PurchaseStatus =
 	| 'reserved'
 	| 'submitted'
+	| 'awaiting_fulfillment'
 	| 'minting'
+	| 'master_created'
 	| 'confirmed'
 	| 'failed'
 	| 'abandoned'
+	| 'blocked_missing_master'
 
 export interface BuyEditionResult {
 	success: boolean
@@ -161,9 +165,126 @@ export async function checkPurchaseStatusDirect(
 				)
 		}
 
-		// For submitted transactions, we need to check on-chain status
-		// This is handled by a separate fulfillment process triggered by webhooks
-		// Here we just return the current database status
+		// Check submitted transactions for on-chain confirmation
+		if ((purchase.status === 'submitted' || purchase.status === 'reserved') && purchase.txSignature) {
+			console.log(`[checkPurchaseStatusDirect] Checking transaction status for ${purchase.txSignature.slice(0, 20)}...`)
+			const txStatus = await checkTransactionStatus(purchase.txSignature)
+			console.log(`[checkPurchaseStatusDirect] Transaction status: ${txStatus.status}`)
+
+			if (txStatus.status === 'confirmed' || txStatus.status === 'finalized') {
+				if (!purchase.nftMint) {
+					const updateResult = await db
+						.update(purchases)
+						.set({
+							status: 'awaiting_fulfillment',
+							paymentConfirmedAt: new Date(),
+						})
+						.where(and(
+							eq(purchases.id, purchaseId),
+							or(
+								eq(purchases.status, 'submitted'),
+								eq(purchases.status, 'reserved')
+							)
+						))
+						.returning({ id: purchases.id })
+
+					if (updateResult.length > 0) {
+						console.log(`[checkPurchaseStatusDirect] Payment confirmed for ${purchaseId}, status set to awaiting_fulfillment`)
+					} else {
+						// Status was already changed by another request
+						const [currentPurchase] = await db
+							.select()
+							.from(purchases)
+							.where(eq(purchases.id, purchaseId))
+							.limit(1)
+
+						if (currentPurchase) {
+							return {
+								success: true,
+								status: currentPurchase.status as PurchaseStatus,
+								txSignature: currentPurchase.txSignature,
+								nftMint: currentPurchase.nftMint,
+							}
+						}
+					}
+
+					// Fall through to awaiting_fulfillment handler below
+					purchase.status = 'awaiting_fulfillment'
+				}
+			}
+
+			if (txStatus.status === 'failed') {
+				await db
+					.update(purchases)
+					.set({
+						status: 'failed',
+						failedAt: new Date(),
+					})
+					.where(eq(purchases.id, purchaseId))
+
+				// Release reserved supply
+				await db
+					.update(posts)
+					.set({
+						currentSupply: sql`GREATEST(0, ${posts.currentSupply} - 1)`,
+					})
+					.where(and(eq(posts.id, purchase.postId), gt(posts.currentSupply, 0)))
+
+				return {
+					success: true,
+					status: 'failed',
+					txSignature: purchase.txSignature,
+					nftMint: purchase.nftMint,
+				}
+			}
+
+			if (txStatus.status === 'pending') {
+				console.log(`[checkPurchaseStatusDirect] Transaction ${purchase.txSignature.slice(0, 20)}... is still pending`)
+				return {
+					success: true,
+					status: purchase.status as PurchaseStatus,
+					txSignature: purchase.txSignature,
+					nftMint: purchase.nftMint,
+				}
+			}
+		}
+
+		// Handle stale minting status
+		if (purchase.status === 'minting') {
+			const STALE_MINTING_THRESHOLD_MS = 2 * 60 * 1000
+			const lastActivity = purchase.mintingStartedAt || purchase.fulfillmentClaimedAt || purchase.submittedAt || purchase.reservedAt || purchase.createdAt
+			const mintingAge = Date.now() - new Date(lastActivity).getTime()
+
+			if (mintingAge >= STALE_MINTING_THRESHOLD_MS) {
+				console.log(`[checkPurchaseStatusDirect] Purchase ${purchaseId} has stale minting status (age: ${Math.round(mintingAge / 1000)}s), resetting for retry`)
+
+				const [postCheck] = await db
+					.select({ masterMint: posts.masterMint })
+					.from(posts)
+					.where(eq(posts.id, purchase.postId))
+					.limit(1)
+
+				const retryStatus = postCheck?.masterMint ? 'master_created' : 'awaiting_fulfillment'
+
+				await db
+					.update(purchases)
+					.set({
+						status: retryStatus,
+						fulfillmentKey: null,
+						fulfillmentClaimedAt: null,
+					})
+					.where(eq(purchases.id, purchaseId))
+
+				purchase.status = retryStatus
+			} else {
+				return {
+					success: true,
+					status: 'minting' as PurchaseStatus,
+					txSignature: purchase.txSignature,
+					nftMint: null,
+				}
+			}
+		}
 
 		// Handle awaiting_fulfillment and master_created - trigger fulfillment
 		// This ensures Android purchases get their NFT minted when polling
@@ -350,7 +471,7 @@ export async function buyEditionDirect(
 			return total >= requiredAmount
 		}
 
-		// Buyer wallet - use provided wallet address (from connected wallet) or fall back to database
+		// Buyer wallet - validate ownership via userWallets table with backward compat
 		let buyerWallet: string
 
 		if (walletAddress) {
@@ -358,9 +479,23 @@ export async function buyEditionDirect(
 				console.error('[buyEditionDirect] Invalid wallet address:', walletAddress)
 				return { success: false, error: 'Invalid wallet address', message: 'Invalid wallet address provided.' }
 			}
-			const pubkey = new PublicKey(walletAddress)
-			buyerWallet = pubkey.toBase58()
-			console.log('[buyEditionDirect] Using provided wallet address:', buyerWallet)
+
+			// Validate ownership via userWallets table
+			const { getWalletAddressForTransaction } = await import('@/server/utils/wallet-compat')
+			const resolved = await getWalletAddressForTransaction(userId, walletAddress)
+			if (resolved) {
+				buyerWallet = resolved
+				console.log('[buyEditionDirect] Using validated wallet address:', buyerWallet)
+			} else {
+				// Backward compat: allow if it matches users.walletAddress
+				const buyerRow = await db.select({ walletAddress: users.walletAddress }).from(users).where(eq(users.id, userId)).limit(1)
+				if (buyerRow.length && buyerRow[0].walletAddress === walletAddress) {
+					buyerWallet = walletAddress
+					console.log('[buyEditionDirect] Using legacy wallet address:', buyerWallet)
+				} else {
+					return { success: false, error: 'Wallet not verified', message: 'The selected wallet is not registered to your account.' }
+				}
+			}
 		} else {
 			console.log('[buyEditionDirect] No wallet address provided, using database wallet')
 			const buyerRow = await db.select({ walletAddress: users.walletAddress }).from(users).where(eq(users.id, userId)).limit(1)
@@ -369,8 +504,6 @@ export async function buyEditionDirect(
 			}
 			buyerWallet = buyerRow[0].walletAddress
 		}
-
-		const connection = await getConnection()
 
 		// Balance check for Core minting
 		const transactionFeeLamports = 10_000n
@@ -499,6 +632,7 @@ export async function buyEditionDirect(
 			.values({
 				userId,
 				postId,
+				buyerWalletAddress: buyerWallet,
 				nftMint: null,
 				amountPaid: post.price,
 				currency: post.currency,

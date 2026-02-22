@@ -186,7 +186,8 @@ export async function fulfillPurchaseDirect(purchaseId: string): Promise<Fulfill
       .where(eq(users.id, postData.userId))
       .limit(1)
 
-    const buyer = buyerData.walletAddress
+    // Use the wallet that actually paid (stored at purchase time), fallback to legacy field
+    const buyer = purchaseData.buyerWalletAddress || buyerData.walletAddress
     const creatorWallet = postData.creatorWallet || creatorData?.walletAddress
 
     if (!creatorWallet) {

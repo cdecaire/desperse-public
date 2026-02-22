@@ -12,7 +12,7 @@ import {
 } from '@/server/functions/editions';
 import { getExplorerUrl } from '@/server/functions/preferences';
 import { usePreferences } from '@/hooks/usePreferences';
-import { useWallets as useSolanaWallets, useSignAndSendTransaction, useSignTransaction } from '@privy-io/react-auth/solana';
+import { useWallets as useSolanaWallets, useSignTransaction } from '@privy-io/react-auth/solana';
 import { createSolanaRpc } from '@solana/kit';
 import { useNetworkStatus } from '@/hooks/useNetworkStatus';
 import { useRpcHealthContext } from '@/components/providers/RpcHealthProvider';
@@ -142,7 +142,6 @@ export function BuyButton({
   }
 
   const { wallets: solanaWallets, ready: solanaWalletsReady } = useSolanaWallets();
-  const { signAndSendTransaction } = useSignAndSendTransaction();
   const { signTransaction } = useSignTransaction();
   const { activePrivyWallet, activeAddress } = useActiveWallet();
 
@@ -652,124 +651,55 @@ export function BuyButton({
       const walletToUse = currentWallet;
       const { retryWithBackoff } = await import('@/lib/retryUtils');
 
-      // Check if this is an embedded wallet (Privy wallet) vs external wallet
-      const isEmbeddedWallet = walletToUse.walletClientType === 'privy';
-      
+      // Use signTransaction + manual HTTP send for ALL wallet types.
+      // Privy's signAndSendTransaction relies on WebSocket for confirmation,
+      // but our RPC proxy (/api/v1/rpc) is HTTP-only, causing WebSocket failures.
+      // By signing separately and sending via HTTP RPC, we avoid this entirely.
       let signature: string;
-      
-      if (isEmbeddedWallet) {
-        // For embedded wallets, use signTransaction + manual send to avoid WebSocket issues
-        const signed = await Promise.race([
-          retryWithBackoff(
-            async () => {
-              // Validate wallet again inside retry function (check current state)
-              const wallet = walletToUse;
-              if (!wallet || !wallet.address) {
-                throw new Error('Wallet not connected. Please reconnect your wallet.');
-              }
 
-              // Sign the transaction
-              const signedTx = await signTransaction({
-                transaction: txBytes,
-                wallet: wallet,
-                chain: 'solana:mainnet',
-                options: { 
-                  uiOptions: modalUiOptions,
-                },
-              });
-              
-              // Manually send the signed transaction via RPC
-              const rpc = createSolanaRpc(getClientRpcUrl());
+      const signed = await Promise.race([
+        retryWithBackoff(
+          async () => {
+            // Validate wallet again inside retry function (check current state)
+            const wallet = walletToUse;
+            if (!wallet || !wallet.address) {
+              throw new Error('Wallet not connected. Please reconnect your wallet.');
+            }
 
-              // Send the signed transaction with a specific timeout
-              // Wrap sendRawTransaction in a timeout to prevent hanging
-              // Convert Uint8Array to base64 for @solana/kit RPC
-              const base64Tx = Buffer.from(signedTx.signedTransaction).toString('base64');
-              const sendTxPromise = rpc.sendTransaction(base64Tx, {
-                encoding: 'base64',
-                skipPreflight: false,
-                maxRetries: 3,
-              }).send();
-              
-              const txSignature = await Promise.race([
-                sendTxPromise,
-                new Promise<never>((_, reject) => 
-                  setTimeout(() => reject(new Error('Transaction send timeout - RPC may be slow. Please try again.')), SEND_TX_TIMEOUT_MS)
-                ),
-              ]);
-              
-              return { signature: bs58.decode(txSignature) };
-            },
-            { maxRetries: 3, baseDelayMs: 1000 }
-          ),
-          new Promise<never>((_, reject) => setTimeout(() => reject(new Error('Transaction signing timeout')), SIGN_TIMEOUT_MS)),
-        ]);
-        
-        signature = bs58.encode(signed.signature);
-      } else {
-        // For external wallets, use signAndSendTransaction (works fine with WebSocket)
-        // Note: Even if WebSocket fails, the transaction may have been sent successfully
-        let signedResult: { signature: Uint8Array } | null = null;
-        let signError: any = null;
-        
-        try {
-          signedResult = await Promise.race([
-            retryWithBackoff(
-              async () => {
-                // Validate wallet again inside retry function (check current state)
-                const wallet = walletToUse;
-                if (!wallet || !wallet.address) {
-                  throw new Error('Wallet not connected. Please reconnect your wallet.');
-                }
-
-                return await signAndSendTransaction({
-                  transaction: txBytes,
-                  wallet: wallet,
-                  chain: 'solana:mainnet',
-                  options: { 
-                    uiOptions: modalUiOptions,
-                  },
-                });
+            // Sign the transaction (works for both embedded and external wallets)
+            const signedTx = await signTransaction({
+              transaction: txBytes,
+              wallet: wallet,
+              chain: 'solana:mainnet',
+              options: {
+                uiOptions: modalUiOptions,
               },
-              { maxRetries: 3, baseDelayMs: 1000 }
-            ),
-            new Promise<never>((_, reject) => setTimeout(() => reject(new Error('Transaction signing timeout')), SIGN_TIMEOUT_MS)),
-          ]);
-        } catch (error: any) {
-          signError = error;
-          // Check if error contains a signature (transaction might have been sent before error)
-          if (error?.signature) {
-            signedResult = { signature: typeof error.signature === 'string' ? bs58.decode(error.signature) : error.signature };
-          }
-        }
-        
-        if (signedResult) {
-          // We have a signature, use it
-          signature = bs58.encode(signedResult.signature);
-        } else if (signError) {
-          // No signature found, check if it's a WebSocket error that we can recover from
-          const errorMessage = signError?.message || signError?.toString() || '';
-          const isWebSocketError = 
-            errorMessage.includes('WebSocket') || 
-            errorMessage.includes('websocket') ||
-            errorMessage.includes('wss://') ||
-            signError?.stack?.includes('WebSocket') ||
-            errorMessage.includes('Failed to connect to wallet');
-          
-          if (isWebSocketError) {
-            // For WebSocket errors, the transaction might still have been sent
-            // Check the database to see if a purchase was created with a signature
-            // This is a fallback - normally the signature should be in the response
-            console.warn('[BuyButton] WebSocket error occurred. Transaction may have succeeded. Check purchase status via polling.');
-            throw new Error('Transaction may have succeeded but confirmation failed. Please check your wallet and the purchase status.');
-          } else {
-            // Not a WebSocket error, re-throw
-            throw signError;
-          }
-        } else {
-          throw new Error('Failed to sign transaction');
-        }
-      }
+            });
+
+            // Manually send the signed transaction via HTTP RPC (no WebSocket needed)
+            const rpc = createSolanaRpc(getClientRpcUrl());
+            const base64Tx = Buffer.from(signedTx.signedTransaction).toString('base64');
+            const sendTxPromise = rpc.sendTransaction(base64Tx, {
+              encoding: 'base64',
+              skipPreflight: false,
+              maxRetries: 3,
+            }).send();
+
+            const txSignature = await Promise.race([
+              sendTxPromise,
+              new Promise<never>((_, reject) =>
+                setTimeout(() => reject(new Error('Transaction send timeout - RPC may be slow. Please try again.')), SEND_TX_TIMEOUT_MS)
+              ),
+            ]);
+
+            return { signature: bs58.decode(txSignature) };
+          },
+          { maxRetries: 3, baseDelayMs: 1000 }
+        ),
+        new Promise<never>((_, reject) => setTimeout(() => reject(new Error('Transaction signing timeout')), SIGN_TIMEOUT_MS)),
+      ]);
+
+      signature = bs58.encode(signed.signature);
       setTxSignature(signature);
 
       await submitPurchaseSignature(wrapInput({ purchaseId: prepare.purchaseId, txSignature: signature }) as never);

@@ -21,6 +21,7 @@ import { EmptyState } from '@/components/shared/EmptyState'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { PullToRefresh } from '@/components/shared/PullToRefresh'
 import { Button } from '@/components/ui/button'
+import { Icon } from '@/components/ui/icon'
 import { setLastSeen, getLastSeen } from '@/lib/utils'
 import { LandingPage } from '@/components/landing/LandingPage'
 
@@ -49,7 +50,7 @@ function FeedContent() {
   const { isAuthenticated, isReady } = useAuth()
   const queryClient = useQueryClient()
   // Only call useCurrentUser for authenticated users to avoid loading delays
-  const { user, isLoading: isUserLoading } = useCurrentUser()
+  const { user } = useCurrentUser()
   const observerRef = useRef<IntersectionObserver | null>(null)
   const loadMoreRef = useRef<HTMLDivElement>(null)
 
@@ -305,12 +306,12 @@ function FeedContent() {
           />
         )}
         <EmptyState
-          icon={<i className="fa-regular fa-triangle-exclamation text-4xl" />}
+          icon={<Icon name="triangle-exclamation" variant="regular" className="text-4xl" />}
           title="Couldn't load posts"
           description={error?.message || "Check your connection and try again."}
           action={
             <Button onClick={() => refetch()} variant="outline">
-              <i className="fa-regular fa-arrow-rotate-right mr-2" />
+              <Icon name="arrow-rotate-right" variant="regular" className="mr-2" />
               Retry
             </Button>
           }
@@ -330,7 +331,7 @@ function FeedContent() {
             followingNewPostsCount={followingNewPostsCount}
           />
           <EmptyState
-            icon={<i className="fa-regular fa-users text-4xl" />}
+            icon={<Icon name="users" variant="regular" className="text-4xl" />}
             title="Your Following feed is empty"
             description="Follow creators to customize this view."
             action={
@@ -355,7 +356,7 @@ function FeedContent() {
           />
         )}
         <EmptyState
-          icon={<i className="fa-regular fa-images text-4xl" />}
+          icon={<Icon name="images" variant="regular" className="text-4xl" />}
           title="No posts yet"
           description="Be the first to create something amazing!"
           action={isAuthenticated ? { label: 'Create Post', to: '/create' } : undefined}
@@ -416,6 +417,8 @@ function FeedContent() {
                   isHidden: (post as any).isHidden, // Include isHidden for admin/moderator visibility
                   assets: (post as any).assets, // Multi-asset carousel support
                   downloadableAssets: (post as any).downloadableAssets, // For download menu
+                  mintWindowStart: post.mintWindowStart,
+                  mintWindowEnd: post.mintWindowEnd,
                 }}
                 currentUserId={user?.id}
                 isAuthenticated={isAuthenticated}

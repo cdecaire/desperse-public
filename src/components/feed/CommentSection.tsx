@@ -13,8 +13,9 @@
 import { useState, useRef, useEffect } from 'react'
 import { Link } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
+import { Icon } from '@/components/ui/icon'
 import { cn } from '@/lib/utils'
-import { usePostComments, useDeleteCommentMutation, useCommentCount, MAX_COMMENT_LENGTH, createCommentWithMutation } from '@/hooks/useComments'
+import { usePostComments, useDeleteCommentMutation, MAX_COMMENT_LENGTH, createCommentWithMutation } from '@/hooks/useComments'
 import { useAuth } from '@/hooks/useAuth'
 import { useQueryClient } from '@tanstack/react-query'
 import { toast } from '@/hooks/use-toast'
@@ -106,7 +107,7 @@ function CommentItem({ comment, currentUserId, onDelete, isDeleting, onReportSub
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
-              <i className="fa-regular fa-user text-xs text-muted-foreground" />
+              <Icon name="user" variant="regular" className="text-xs text-muted-foreground" />
             </div>
           )}
         </div>
@@ -225,7 +226,6 @@ export function CommentSection({
       {
         contentType: 'comment',
         contentId: commentId,
-        reportedByUserId: userId,
         reasons,
         details: details || null,
       },

@@ -42,7 +42,7 @@ export default defineEventHandler(async (event) => {
 
 	let body: Record<string, unknown>
 	try {
-		body = await readBody(event)
+		body = (await readBody(event)) as Record<string, unknown>
 	} catch {
 		setResponseStatus(event, 400)
 		return {

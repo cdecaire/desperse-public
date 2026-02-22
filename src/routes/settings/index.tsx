@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useLocation, useNavigate } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import { AuthGuard } from '@/components/shared/AuthGuard'
+import { Icon } from '@/components/ui/icon'
 import { MobileHeader, MobileHeaderSpacer } from '@/components/layout/MobileHeader'
 
 export const Route = createFileRoute('/settings/')({
@@ -108,9 +109,10 @@ function SettingsIndexPage() {
                         }`}
                       >
                         <span className="w-6 h-6 grid place-items-center flex-shrink-0">
-                          <i
-                            className={`${isActive ? 'fa-solid' : 'fa-regular'} ${item.icon} text-xl`}
-                            aria-hidden="true"
+                          <Icon
+                            name={item.icon}
+                            variant={isActive ? 'solid' : 'regular'}
+                            className="text-xl"
                           />
                         </span>
                         <div className="flex-1 min-w-0">
@@ -121,10 +123,7 @@ function SettingsIndexPage() {
                             {item.description}
                           </div>
                         </div>
-                        <i
-                          className="fa-regular fa-chevron-right text-muted-foreground text-sm"
-                          aria-hidden="true"
-                        />
+                        <Icon name="chevron-right" variant="regular" className="text-muted-foreground text-sm" />
                       </Link>
                     )
                   })}

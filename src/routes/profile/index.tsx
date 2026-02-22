@@ -5,6 +5,7 @@ import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/ui/button'
+import { Icon } from '@/components/ui/icon'
 
 export const Route = createFileRoute('/profile/')({
   component: ProfileIndexPage,
@@ -49,7 +50,7 @@ function ProfileRedirect() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[50vh] text-center px-4">
         <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
-          <i className="fa-regular fa-wallet text-2xl text-muted-foreground" />
+          <Icon name="wallet" variant="regular" className="text-2xl text-muted-foreground" />
         </div>
         <h2 className="text-xl font-semibold mb-2">Wallet Required</h2>
         <p className="text-muted-foreground mb-6 max-w-md">
@@ -67,7 +68,7 @@ function ProfileRedirect() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[50vh] text-center px-4">
         <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center mb-4">
-          <i className="fa-regular fa-triangle-exclamation text-2xl text-destructive" />
+          <Icon name="triangle-exclamation" variant="regular" className="text-2xl text-destructive" />
         </div>
         <h2 className="text-xl font-semibold mb-2">Something went wrong</h2>
         <p className="text-muted-foreground mb-6 max-w-md">

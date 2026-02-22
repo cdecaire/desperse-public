@@ -4,6 +4,7 @@
  */
 
 import { cn } from '@/lib/utils'
+import { Icon } from '@/components/ui/icon'
 import { NotificationBadge } from '@/components/ui/notification-badge'
 import type { Thread } from '@/hooks/useMessages'
 
@@ -64,7 +65,7 @@ export function ThreadItem({ thread, isActive = false, onClick }: ThreadItemProp
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-              <i className="fa-solid fa-user text-lg" aria-hidden="true" />
+              <Icon name="user" className="text-lg" />
             </div>
           )}
         </div>

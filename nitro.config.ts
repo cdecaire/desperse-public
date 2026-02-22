@@ -37,7 +37,7 @@ const __dirname = __pathDirname(__filename);
 
   // Experimental features for better serverless compatibility
   experimental: {
-    wasm: true,
+    // wasm: true, // Removed: 'wasm' is not a recognized experimental option in this Nitro version
   },
 });
 

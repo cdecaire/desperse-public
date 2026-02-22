@@ -17,6 +17,7 @@ import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { PullToRefresh } from '@/components/shared/PullToRefresh'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
+import { Icon } from '@/components/ui/icon'
 import { isPresetCategory, getPresetDisplay } from '@/constants/categories'
 
 export const Route = createFileRoute('/category/$categorySlug')({
@@ -116,7 +117,7 @@ function CategoryPage() {
       <div>
         <CategoryPageHeader categoryName={categorySlug} />
         <EmptyState
-          icon={<i className="fa-regular fa-folder-xmark text-4xl" />}
+          icon={<Icon name="folder-xmark" variant="regular" className="text-4xl" />}
           title="Category not found"
           description="This category doesn't exist. Browse our preset categories or use hashtags to discover content."
           action={
@@ -135,7 +136,7 @@ function CategoryPage() {
       <div>
         <CategoryPageHeader categoryName={categoryName} />
         <EmptyState
-          icon={<i className="fa-regular fa-triangle-exclamation text-4xl" />}
+          icon={<Icon name="triangle-exclamation" variant="regular" className="text-4xl" />}
           title="Error loading posts"
           description={error?.message || 'Something went wrong'}
         />
@@ -154,7 +155,7 @@ function CategoryPage() {
         {/* Posts list */}
         {posts.length === 0 ? (
           <EmptyState
-            icon={<i className="fa-regular fa-folder text-4xl" />}
+            icon={<Icon name="folder" variant="regular" className="text-4xl" />}
             title="No posts yet"
             description={`No posts have been added to ${categoryName}`}
           />
@@ -221,7 +222,7 @@ function CategoryPageHeader({
     <div className="py-6 mb-4 border-b border-border">
       <div className="flex items-center gap-3">
         <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center">
-          <i className="fa-solid fa-folder text-xl text-muted-foreground" />
+          <Icon name="folder" className="text-xl text-muted-foreground" />
         </div>
         <div>
           <h1 className="text-2xl font-bold">{categoryName}</h1>

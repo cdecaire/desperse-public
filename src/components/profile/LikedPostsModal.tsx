@@ -4,6 +4,7 @@
  */
 
 import { useState, useMemo } from 'react'
+import { Icon } from '@/components/ui/icon'
 import { Link } from '@tanstack/react-router'
 import { SearchIcon } from 'lucide-react'
 import {
@@ -151,33 +152,33 @@ function LikedPostItem({
           />
         ) : mediaType === 'audio' ? (
           <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-muted to-muted/50">
-            <i className="fa-regular fa-music text-2xl text-muted-foreground/50" />
+            <Icon name="music" variant="regular" className="text-2xl text-muted-foreground/50" />
           </div>
         ) : mediaType === 'document' ? (
           <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-muted to-muted/50">
-            <i className="fa-regular fa-file-pdf text-2xl text-muted-foreground/50" />
+            <Icon name="file-pdf" variant="regular" className="text-2xl text-muted-foreground/50" />
           </div>
         ) : mediaType === '3d' ? (
           <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-muted to-muted/50">
-            <i className="fa-regular fa-cube text-2xl text-muted-foreground/50" />
+            <Icon name="cube" variant="regular" className="text-2xl text-muted-foreground/50" />
           </div>
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-muted to-muted/50">
-            <i className="fa-regular fa-file text-2xl text-muted-foreground/50" />
+            <Icon name="file" variant="regular" className="text-2xl text-muted-foreground/50" />
           </div>
         )}
         {/* Media type indicator */}
         {mediaType === 'video' && (
           <div className="absolute top-1 right-1">
             <div className="w-4 h-4 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center">
-              <i className="fa-solid fa-play text-[8px] text-white" />
+              <Icon name="play" className="text-[8px] text-white" />
             </div>
           </div>
         )}
         {mediaType === 'audio' && (
           <div className="absolute top-1 right-1">
             <div className="w-4 h-4 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center">
-              <i className="fa-solid fa-music text-[8px] text-white" />
+              <Icon name="music" className="text-[8px] text-white" />
             </div>
           </div>
         )}
@@ -195,7 +196,7 @@ function LikedPostItem({
                   className="w-4 h-4 rounded-full"
                 />
               ) : (
-                <i className="fa-regular fa-user text-[10px] text-muted-foreground" />
+                <Icon name="user" variant="regular" className="text-[10px] text-muted-foreground" />
               )}
               <p className="text-sm font-semibold truncate">
                 {user.displayName || user.usernameSlug}

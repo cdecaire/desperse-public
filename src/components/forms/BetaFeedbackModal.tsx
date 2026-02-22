@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
+import { Icon } from '@/components/ui/icon'
 import { cn } from '@/lib/utils'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { uploadMedia } from '@/server/functions/upload'
@@ -78,12 +79,14 @@ function StarRating({
           onMouseLeave={() => setHoverValue(null)}
           aria-label={`Rate ${star} star${star > 1 ? 's' : ''}`}
         >
-          <i
+          <Icon
+            name="star"
+            variant={star <= displayValue ? 'solid' : 'regular'}
             className={cn(
               'text-2xl transition-colors',
               star <= displayValue
-                ? 'fa-solid fa-star text-yellow-400'
-                : 'fa-regular fa-star text-muted-foreground'
+                ? 'text-yellow-400'
+                : 'text-muted-foreground'
             )}
           />
         </button>
@@ -324,7 +327,7 @@ export function BetaFeedbackModal({ open, onOpenChange }: BetaFeedbackModalProps
                   </div>
                 ) : (
                   <>
-                    <i className="fa-regular fa-camera text-xl text-muted-foreground mb-2" />
+                    <Icon name="camera" variant="regular" className="text-xl text-muted-foreground mb-2" />
                     <p className="text-xs text-muted-foreground">
                       Add a screenshot (optional)
                     </p>
@@ -354,7 +357,7 @@ export function BetaFeedbackModal({ open, onOpenChange }: BetaFeedbackModalProps
                     className="absolute top-2 right-2"
                     disabled={createFeedback.isPending}
                   >
-                    <i className="fa-solid fa-xmark" />
+                    <Icon name="xmark" />
                   </Button>
                 )}
               </div>
@@ -362,7 +365,7 @@ export function BetaFeedbackModal({ open, onOpenChange }: BetaFeedbackModalProps
 
             {uploadError && (
               <div className="flex items-center gap-2 text-xs text-destructive">
-                <i className="fa-regular fa-circle-exclamation" />
+                <Icon name="circle-exclamation" variant="regular" />
                 <span>{uploadError}</span>
               </div>
             )}

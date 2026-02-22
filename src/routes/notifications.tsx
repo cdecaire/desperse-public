@@ -12,6 +12,7 @@ import { PullToRefresh } from '@/components/shared/PullToRefresh'
 import { useNotifications, useMarkAllNotificationsAsReadMutation, useClearAllNotificationsMutation } from '@/hooks/useNotifications'
 import { NotificationItem } from '@/components/notifications/NotificationItem'
 import { Button } from '@/components/ui/button'
+import { Icon } from '@/components/ui/icon'
 import { useQueryClient } from '@tanstack/react-query'
 
 export const Route = createFileRoute('/notifications')({
@@ -109,7 +110,7 @@ function NotificationsContent() {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
         <EmptyState
-          icon={<i className="fa-regular fa-bell text-4xl" />}
+          icon={<Icon name="bell" variant="regular" className="text-4xl" />}
           title="No notifications yet"
           description="When someone follows you or interacts with your posts, you'll see it here."
         />

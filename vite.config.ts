@@ -55,7 +55,7 @@ const config = defineConfig({
   build: {
     rollupOptions: {
       // Externalize server-only dependencies that shouldn't be bundled in client builds
-      external: (id, importer, isResolved) => {
+      external: (id, _importer, _isResolved) => {
         // Only externalize for client builds, not SSR (ssr uses ssr.external/noExternal)
         // Externalize database packages for client (they're server-only)
         if (['postgres'].includes(id)) {
@@ -83,7 +83,29 @@ const config = defineConfig({
     'global': 'globalThis',
   },
   optimizeDeps: {
-    include: ["buffer-es", "@privy-io/react-auth", "react-intersection-observer"],
+    include: [
+      "buffer-es",
+      "react-intersection-observer",
+      // Privy: main entry + solana subpath (used in 9+ files but treated as separate entry)
+      "@privy-io/react-auth",
+      "@privy-io/react-auth/solana",
+      // Privy transitive deps: lazy-loaded when modals open, nested in pnpm virtual store.
+      // Without these, Vite discovers them at runtime → re-optimizes → 504 "Outdated Optimize Dep"
+      "@privy-io/react-auth > styled-components",
+      "@privy-io/react-auth > @floating-ui/react",
+      "@privy-io/react-auth > @headlessui/react",
+      "@privy-io/react-auth > @heroicons/react",
+      "@privy-io/react-auth > @hcaptcha/react-hcaptcha",
+      "@privy-io/react-auth > @simplewebauthn/browser",
+      "@privy-io/react-auth > react-device-detect",
+      "@privy-io/react-auth > tinycolor2",
+      "@privy-io/react-auth > qrcode",
+      "@privy-io/react-auth > eventemitter3",
+      "@privy-io/react-auth > zustand",
+      "@privy-io/react-auth > mipd",
+      "@privy-io/react-auth > @wallet-standard/app",
+      "@privy-io/react-auth > @walletconnect/universal-provider",
+    ],
     esbuildOptions: {
       // Ensure Buffer is available during esbuild optimization
       define: {

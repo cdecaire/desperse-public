@@ -9,6 +9,7 @@ import { TipDialog } from '@/components/tipping/TipButton'
 import { SeekerIcon } from '@/components/tipping/SeekerIcon'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { Icon } from '@/components/ui/icon'
 
 interface UnlockMessagingCardProps {
   eligibility: DmEligibilityResult
@@ -21,13 +22,13 @@ interface UnlockMessagingCardProps {
 function getUnlockPathIcon(method: string): string {
   switch (method) {
     case 'edition_purchase':
-      return 'fa-bag-shopping'
+      return 'bag-shopping'
     case 'collectible_count':
-      return 'fa-gem'
+      return 'gem'
     case 'tip_unlock':
-      return 'fa-coins'
+      return 'coins'
     default:
-      return 'fa-circle-question'
+      return 'circle-question'
   }
 }
 
@@ -47,7 +48,7 @@ export function UnlockMessagingCard({
     return (
       <div className={cn('flex flex-col items-center text-center', className)}>
         <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center mb-3">
-          <i className="fa-regular fa-message-slash text-muted-foreground" aria-hidden="true" />
+          <Icon name="message-slash" variant="regular" className="text-muted-foreground" />
         </div>
         <p className="text-sm font-medium">Messaging not available</p>
         <p className="text-xs text-muted-foreground mt-1">
@@ -62,7 +63,7 @@ export function UnlockMessagingCard({
   return (
     <div className={cn('flex flex-col items-center text-center', className)}>
       <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center mb-3">
-        <i className="fa-regular fa-lock text-muted-foreground" aria-hidden="true" />
+        <Icon name="lock" variant="regular" className="text-muted-foreground" />
       </div>
       <p className="text-sm font-medium">Unlock messaging</p>
       <p className="text-xs text-muted-foreground mt-1">
@@ -74,9 +75,9 @@ export function UnlockMessagingCard({
         <ul className="mt-4 space-y-2 w-full">
           {eligibility.unlockPaths.map((path) => (
             <li key={path.method} className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-              <i
-                className={cn('fa-regular', getUnlockPathIcon(path.method))}
-                aria-hidden="true"
+              <Icon
+                name={getUnlockPathIcon(path.method)}
+                variant="regular"
               />
               <span>{path.message}</span>
             </li>

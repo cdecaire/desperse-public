@@ -10,7 +10,6 @@ import { db } from '@/server/db';
 import { collections, posts, purchases } from '@/server/db/schema';
 import { and, eq, gt, sql } from 'drizzle-orm';
 import { z } from 'zod';
-import { checkTransactionStatus } from '@/server/services/blockchain/mintCnft';
 import { snapshotMintedMetadata } from '@/server/utils/mint-snapshot';
 
 // Helius webhook event schema

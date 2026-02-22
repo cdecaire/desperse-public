@@ -22,6 +22,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { Icon } from '@/components/ui/icon';
 import { toastError, toastSuccess } from '@/lib/toast';
 import {
   prepareCollect,
@@ -29,17 +30,15 @@ import {
   checkCollectionStatus,
   cancelPendingCollect,
   // submitCollectSignature, // No longer needed - server signs in prepareCollect
-  simulateTransaction,
 } from '@/server/functions/collect';
 import { getExplorerUrl } from '@/server/functions/preferences';
 import { usePreferences } from '@/hooks/usePreferences';
-import { useWallets as useSolanaWallets, useSignTransaction } from '@privy-io/react-auth/solana';
+import { useWallets as useSolanaWallets } from '@privy-io/react-auth/solana';
 import { useNetworkStatus } from '@/hooks/useNetworkStatus';
 import { useRpcHealthContext } from '@/components/providers/RpcHealthProvider';
 import { useWalletConnection } from '@/hooks/useWalletConnection';
 import { useAuth } from '@/hooks/useAuth';
 import { useActiveWallet } from '@/hooks/useActiveWallet';
-import bs58 from 'bs58';
 
 // Type helpers for server function calls
 type ServerFnInput<T> = { data: T };
@@ -86,7 +85,6 @@ interface CollectButtonProps {
 const POLL_INTERVAL_MS = 5000; // 5 seconds
 const MAX_POLL_TIME_MS = 60000; // 60 seconds
 const EXTENDED_MESSAGE_TIME_MS = 60000; // Show extended message after 60s
-const SIGN_TIMEOUT_MS = 60000; // 60 seconds
 
 export function CollectButton({
   postId,
@@ -105,12 +103,11 @@ export function CollectButton({
 
   const queryClient = useQueryClient();
   const { wallets: solanaWallets, ready: solanaWalletsReady } = useSolanaWallets();
-  const { signTransaction } = useSignTransaction();
   const { activePrivyWallet, activeAddress } = useActiveWallet();
 
   // Network and RPC health status
   const { isOffline } = useNetworkStatus();
-  const { isAuthenticated: isAuthForRpc, getAuthHeaders } = useAuth();
+  const { getAuthHeaders } = useAuth();
   const { isRpcHealthy } = useRpcHealthContext();
   const { onWalletDisconnect } = useWalletConnection();
 
@@ -428,13 +425,9 @@ export function CollectButton({
           {currentCollectCount > 0 && (
             <span className="text-sm font-medium">{currentCollectCount}</span>
           )}
-          <i
-            className={cn(
-              isCollected ? 'fa-solid fa-gem' : 'fa-regular fa-gem',
-              'text-base'
-            )}
-            style={isCollected && toneColor ? { color: toneColor } : undefined}
-          />
+          <span style={isCollected && toneColor ? { color: toneColor } : undefined}>
+            <Icon name="gem" variant={isCollected ? "solid" : "regular"} className="text-base" />
+          </span>
         </>
       );
     }
@@ -598,7 +591,7 @@ export function CollectButton({
           rel="noopener noreferrer"
           className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
         >
-          <i className="fa-regular fa-external-link text-[10px]" />
+          <Icon name="external-link" variant="regular" className="text-[10px]" />
           View on explorer
         </a>
       )}

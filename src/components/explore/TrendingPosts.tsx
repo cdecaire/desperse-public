@@ -4,6 +4,7 @@
  */
 
 import { useEffect, useRef, useCallback } from 'react'
+import { Icon } from '@/components/ui/icon'
 import { useTrendingPosts, getTrendingPostsList, getTrendingSectionTitle } from '@/hooks/useExploreQuery'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { PostCard } from '@/components/feed/PostCard'
@@ -88,12 +89,12 @@ export function TrendingPosts() {
           Trending
         </h2>
         <EmptyState
-          icon={<i className="fa-regular fa-triangle-exclamation text-4xl" />}
+          icon={<Icon name="triangle-exclamation" variant="regular" className="text-4xl" />}
           title="Couldn't load posts"
           description={error?.message || 'Check your connection and try again.'}
           action={
             <Button onClick={() => refetch()} variant="outline">
-              <i className="fa-regular fa-arrow-rotate-right mr-2" />
+              <Icon name="arrow-rotate-right" variant="regular" className="mr-2" />
               Retry
             </Button>
           }
@@ -110,7 +111,7 @@ export function TrendingPosts() {
           Trending
         </h2>
         <EmptyState
-          icon={<i className="fa-regular fa-fire text-4xl" />}
+          icon={<Icon name="fire" variant="regular" className="text-4xl" />}
           title="Nothing trending yet"
           description="Be the first to create something amazing!"
           action={
@@ -155,6 +156,8 @@ export function TrendingPosts() {
                 assetId: (post as any).assetId,
                 isHidden: (post as any).isHidden,
                 assets: (post as any).assets,
+                mintWindowStart: post.mintWindowStart,
+                mintWindowEnd: post.mintWindowEnd,
               }}
               currentUserId={currentUser?.id}
               isAuthenticated={isAuthenticated}

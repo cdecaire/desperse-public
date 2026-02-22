@@ -6,7 +6,7 @@
 import { createFileRoute, useNavigate, Link } from '@tanstack/react-router'
 import { useState, useCallback, useEffect, useRef } from 'react'
 import { z } from 'zod'
-import { useQuery, useInfiniteQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { useAuth } from '@/hooks/useAuth'
 import { search } from '@/server/functions/explore'
@@ -14,8 +14,8 @@ import { SearchResultsTabs, type SearchTab } from '@/components/explore/SearchRe
 import { PostCard } from '@/components/feed/PostCard'
 import { FeedSkeleton } from '@/components/feed/PostCardSkeleton'
 import { EmptyState } from '@/components/shared/EmptyState'
-import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { Input } from '@/components/ui/input'
+import { Icon } from '@/components/ui/icon'
 import { addRecentSearch } from '@/lib/recentSearches'
 
 // Search params schema
@@ -151,14 +151,15 @@ function SearchPage() {
             className="p-2 -ml-1 text-foreground hover:bg-accent rounded-full transition-colors"
             aria-label="Go back"
           >
-            <i className="fa-regular fa-arrow-left text-lg" aria-hidden="true" />
+            <Icon name="arrow-left" variant="regular" className="text-lg" />
           </button>
 
           {/* Search input */}
           <form onSubmit={handleSubmit} className="flex-1 relative">
-            <i
-              className="fa-regular fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
-              aria-hidden="true"
+            <Icon
+              name="magnifying-glass"
+              variant="regular"
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
             />
             <Input
               ref={inputRef}
@@ -177,7 +178,7 @@ function SearchPage() {
                 className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground transition-colors"
                 aria-label="Clear search"
               >
-                <i className="fa-solid fa-circle-xmark" aria-hidden="true" />
+                <Icon name="circle-xmark" />
               </button>
             )}
           </form>
@@ -192,7 +193,7 @@ function SearchPage() {
         {/* No query state */}
         {!initialQuery && (
           <EmptyState
-            icon={<i className="fa-regular fa-magnifying-glass text-4xl" />}
+            icon={<Icon name="magnifying-glass" variant="regular" className="text-4xl" />}
             title="Search Desperse"
             description="Find creators, posts, and collectibles"
           />
@@ -208,7 +209,7 @@ function SearchPage() {
         {/* Error state */}
         {initialQuery && isError && (
           <EmptyState
-            icon={<i className="fa-regular fa-triangle-exclamation text-4xl" />}
+            icon={<Icon name="triangle-exclamation" variant="regular" className="text-4xl" />}
             title="Search failed"
             description="Please try again"
           />
@@ -258,9 +259,16 @@ function SearchPage() {
                             mediaUrl: post.mediaUrl,
                             coverUrl: post.coverUrl,
                             caption: post.caption,
+                            price: post.price,
+                            currency: post.currency,
+                            maxSupply: post.maxSupply,
+                            currentSupply: post.currentSupply ?? 0,
+                            collectCount: (post as any).collectCount ?? 0,
                             createdAt: post.createdAt,
                             user: post.user,
                             assets: (post as any).assets,
+                            mintWindowStart: post.mintWindowStart,
+                            mintWindowEnd: post.mintWindowEnd,
                           }}
                           currentUserId={currentUser?.id}
                           isAuthenticated={isAuthenticated}
@@ -281,7 +289,7 @@ function SearchPage() {
                 {/* No results */}
                 {searchResults.users.length === 0 && searchResults.posts.length === 0 && (
                   <EmptyState
-                    icon={<i className="fa-regular fa-magnifying-glass text-4xl" />}
+                    icon={<Icon name="magnifying-glass" variant="regular" className="text-4xl" />}
                     title="No results"
                     description={`No results found for "${initialQuery}"`}
                   />
@@ -300,7 +308,7 @@ function SearchPage() {
                   </div>
                 ) : (
                   <EmptyState
-                    icon={<i className="fa-regular fa-users text-4xl" />}
+                    icon={<Icon name="users" variant="regular" className="text-4xl" />}
                     title="No people found"
                     description={`No users matching "${initialQuery}"`}
                   />
@@ -322,9 +330,16 @@ function SearchPage() {
                           mediaUrl: post.mediaUrl,
                           coverUrl: post.coverUrl,
                           caption: post.caption,
+                          price: post.price,
+                          currency: post.currency,
+                          maxSupply: post.maxSupply,
+                          currentSupply: post.currentSupply ?? 0,
+                          collectCount: (post as any).collectCount ?? 0,
                           createdAt: post.createdAt,
                           user: post.user,
                           assets: (post as any).assets,
+                          mintWindowStart: post.mintWindowStart,
+                          mintWindowEnd: post.mintWindowEnd,
                         }}
                         currentUserId={currentUser?.id}
                         isAuthenticated={isAuthenticated}
@@ -333,7 +348,7 @@ function SearchPage() {
                   </div>
                 ) : (
                   <EmptyState
-                    icon={<i className="fa-regular fa-images text-4xl" />}
+                    icon={<Icon name="images" variant="regular" className="text-4xl" />}
                     title="No posts found"
                     description={`No posts matching "${initialQuery}"`}
                   />
@@ -355,9 +370,16 @@ function SearchPage() {
                           mediaUrl: post.mediaUrl,
                           coverUrl: post.coverUrl,
                           caption: post.caption,
+                          price: post.price,
+                          currency: post.currency,
+                          maxSupply: post.maxSupply,
+                          currentSupply: post.currentSupply ?? 0,
+                          collectCount: (post as any).collectCount ?? 0,
                           createdAt: post.createdAt,
                           user: post.user,
                           assets: (post as any).assets,
+                          mintWindowStart: post.mintWindowStart,
+                          mintWindowEnd: post.mintWindowEnd,
                         }}
                         currentUserId={currentUser?.id}
                         isAuthenticated={isAuthenticated}
@@ -366,7 +388,7 @@ function SearchPage() {
                   </div>
                 ) : (
                   <EmptyState
-                    icon={<i className="fa-regular fa-gem text-4xl" />}
+                    icon={<Icon name="gem" variant="regular" className="text-4xl" />}
                     title="No collectibles found"
                     description={`No collectibles matching "${initialQuery}"`}
                   />
@@ -410,7 +432,7 @@ function UserResultCard({ user, currentUserId }: UserResultCardProps) {
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <i className="fa-regular fa-user text-muted-foreground text-lg" aria-hidden="true" />
+            <Icon name="user" variant="regular" className="text-muted-foreground text-lg" />
           </div>
         )}
       </div>

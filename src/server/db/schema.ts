@@ -116,7 +116,7 @@ export const posts = pgTable(
     mintedAt: timestamp('minted_at'), // When first mint was confirmed
     mintedTxSignature: text('minted_tx_signature'), // First mint transaction signature
     mintedMetadataUri: text('minted_metadata_uri'), // The metadata URL used at mint time
-    mintedMetadataJson: jsonb('minted_metadata_json'), // Full Metaplex JSON snapshot
+    mintedMetadataJson: jsonb('minted_metadata_json').$type<Record<string, unknown>>(), // Full Metaplex JSON snapshot
     mintedIsMutable: boolean('minted_is_mutable'), // The actual mutability that was minted
     // On-chain sync tracking (for mutable NFTs)
     lastOnchainSyncAt: timestamp('last_onchain_sync_at'), // When metadata was last synced on-chain

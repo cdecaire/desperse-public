@@ -10,7 +10,6 @@ import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { useAuth } from '@/hooks/useAuth'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { EmptyState } from '@/components/shared/EmptyState'
-import { cn } from '@/lib/utils'
 import { useState, useMemo } from 'react'
 import {
   Table,
@@ -29,6 +28,7 @@ import {
 } from '@/components/ui/select'
 import { ModerationRowMenu } from '@/components/admin/ModerationRowMenu'
 import { Badge } from '@/components/ui/badge'
+import { Icon } from '@/components/ui/icon'
 
 // Detect media type from URL
 function detectMediaType(url: string): 'image' | 'video' | 'audio' | 'document' | '3d' {
@@ -105,7 +105,7 @@ function ModerationListPage() {
           limit: 100,
           _authorization: authHeaders.Authorization,
         },
-      })
+      } as any)
 
       if (!result.success) {
         throw new Error(result.error || 'Failed to fetch reports')
@@ -245,7 +245,7 @@ function ModerationListPage() {
 
         {error && (
           <EmptyState
-            icon={<i className="fa-regular fa-circle-exclamation text-4xl" />}
+            icon={<Icon name="circle-exclamation" variant="regular" className="text-4xl" />}
             title="Failed to load reports"
             description={error.message || 'An error occurred while loading reports.'}
           />
@@ -253,7 +253,7 @@ function ModerationListPage() {
 
         {!isLoading && !isPending && filteredData.length === 0 && (
           <EmptyState
-            icon={<i className="fa-regular fa-check-circle text-4xl" />}
+            icon={<Icon name="check-circle" variant="regular" className="text-4xl" />}
             title={statusFilter === 'open' ? "No open reports" : statusFilter === 'resolved' ? "No resolved reports" : "No reports"}
             description={statusFilter === 'open'
               ? "All reports have been reviewed."
@@ -279,10 +279,10 @@ function ModerationListPage() {
                     <div className="flex items-center gap-1">
                       Reports
                       {sortField === 'reportCount' && (
-                        <i className={cn(
-                          'fa-solid text-[10px]',
-                          sortDirection === 'desc' ? 'fa-caret-down' : 'fa-caret-up'
-                        )} />
+                        <Icon
+                          name={sortDirection === 'desc' ? 'caret-down' : 'caret-up'}
+                          className="text-[10px]"
+                        />
                       )}
                     </div>
                   </TableHead>
@@ -295,10 +295,10 @@ function ModerationListPage() {
                     <div className="flex items-center gap-1">
                       Last Report
                       {sortField === 'latestReportDate' && (
-                        <i className={cn(
-                          'fa-solid text-[10px]',
-                          sortDirection === 'desc' ? 'fa-caret-down' : 'fa-caret-up'
-                        )} />
+                        <Icon
+                          name={sortDirection === 'desc' ? 'caret-down' : 'caret-up'}
+                          className="text-[10px]"
+                        />
                       )}
                     </div>
                   </TableHead>
@@ -321,11 +321,11 @@ function ModerationListPage() {
                       <TableCell>
                         {isDmThread ? (
                           <div className="w-10 h-10 rounded bg-muted shrink-0 flex items-center justify-center">
-                            <i className="fa-regular fa-envelope text-sm text-muted-foreground" />
+                            <Icon name="envelope" variant="regular" className="text-sm text-muted-foreground" />
                           </div>
                         ) : isComment ? (
                           <div className="w-10 h-10 rounded bg-muted shrink-0 flex items-center justify-center">
-                            <i className="fa-regular fa-comment text-sm text-muted-foreground" />
+                            <Icon name="comment" variant="regular" className="text-sm text-muted-foreground" />
                           </div>
                         ) : (() => {
                           const mediaType = detectMediaType(report.mediaUrl || '')
@@ -345,17 +345,17 @@ function ModerationListPage() {
                           }
 
                           const iconMap: Record<string, string> = {
-                            video: 'fa-video',
-                            audio: 'fa-music',
-                            document: (report.mediaUrl || '').toLowerCase().endsWith('.zip') ? 'fa-file-zipper' : 'fa-file-pdf',
-                            '3d': 'fa-cube',
-                            image: 'fa-image',
+                            video: 'video',
+                            audio: 'music',
+                            document: (report.mediaUrl || '').toLowerCase().endsWith('.zip') ? 'file-zipper' : 'file-pdf',
+                            '3d': 'cube',
+                            image: 'image',
                           }
-                          const icon = iconMap[mediaType] || 'fa-file'
+                          const icon = iconMap[mediaType] || 'file'
 
                           return (
                             <div className="w-10 h-10 rounded bg-muted shrink-0 flex items-center justify-center">
-                              <i className={cn('fa-regular', icon, 'text-sm text-muted-foreground')} />
+                              <Icon name={icon} variant="regular" className="text-sm text-muted-foreground" />
                             </div>
                           )
                         })()}
@@ -373,7 +373,7 @@ function ModerationListPage() {
                               />
                             ) : (
                               <div className="w-full h-full flex items-center justify-center bg-muted">
-                                <i className="fa-regular fa-user text-[10px] text-muted-foreground" />
+                                <Icon name="user" variant="regular" className="text-[10px] text-muted-foreground" />
                               </div>
                             )}
                           </div>
@@ -443,7 +443,7 @@ function ModerationListPage() {
                       {/* Actions */}
                       <TableCell onClick={(e) => e.stopPropagation()}>
                         <ModerationRowMenu
-                          contentType={report.contentType}
+                          contentType={report.contentType as 'post' | 'comment'}
                           postId={report.postId!}
                           commentId={report.commentId}
                           isHidden={report.isHidden}

@@ -578,6 +578,7 @@ export const getUserBySlug = createServerFn({
  */
 export const getUserPosts = createServerFn({
   method: 'GET',
+// @ts-expect-error -- TanStack Start dual-context type inference
 }).handler(async (input: unknown) => {
   try {
     const authResult = await withOptionalAuth(cursorSchema, input)
@@ -665,6 +666,7 @@ export const getUserPosts = createServerFn({
  */
 export const getUserCollections = createServerFn({
   method: 'GET',
+// @ts-expect-error -- TanStack Start dual-context type inference
 }).handler(async (input: unknown) => {
   try {
     const rawData = input && typeof input === 'object' && 'data' in input
@@ -790,6 +792,7 @@ export const getUserCollections = createServerFn({
  */
 export const getUserForSale = createServerFn({
   method: 'GET',
+// @ts-expect-error -- TanStack Start dual-context type inference
 }).handler(async (input: unknown) => {
   try {
     const rawData = input && typeof input === 'object' && 'data' in input

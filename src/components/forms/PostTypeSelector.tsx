@@ -4,6 +4,7 @@
  */
 
 import { POST_TYPE_LIST, type PostType } from '@/constants/postTypes'
+import { Icon } from '@/components/ui/icon'
 import { cn } from '@/lib/utils'
 
 interface PostTypeSelectorProps {
@@ -51,13 +52,10 @@ export function PostTypeSelector({ value, onChange, disabled }: PostTypeSelector
               
               {/* Icon */}
               <div className="mb-3">
-                <i
-                  className={cn(
-                    type.iconStyle === 'solid' ? 'fa-solid' : 'fa-regular',
-                    type.icon,
-                    'text-lg',
-                    type.badgeClass
-                  )}
+                <Icon
+                  name={type.icon}
+                  variant={type.iconStyle}
+                  className={cn('text-lg', type.badgeClass)}
                 />
               </div>
               

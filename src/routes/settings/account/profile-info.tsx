@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Icon } from '@/components/ui/icon'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
 import {
@@ -136,7 +137,6 @@ function ProfileInfoPage() {
     })
     try {
       await profileUpdate.mutateAsync({
-        userId: currentUser.id,
         displayName: displayName.trim() || undefined,
         bio: bio.trim() || undefined,
         avatarUrl: null,
@@ -210,7 +210,6 @@ function ProfileInfoPage() {
     })
     try {
       await profileUpdate.mutateAsync({
-        userId: currentUser.id,
         displayName: displayName.trim() || undefined,
         bio: bio.trim() || undefined,
         headerBgUrl: null,
@@ -346,7 +345,7 @@ function ProfileInfoPage() {
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
-                  <i className="fa-regular fa-image text-4xl text-muted-foreground" />
+                  <Icon name="image" variant="regular" className="text-4xl text-muted-foreground" />
                 </div>
               )}
               {/* Mobile: always visible buttons at top right */}
@@ -369,7 +368,7 @@ function ProfileInfoPage() {
                     onClick={handleRemoveHeaderBg}
                     aria-label="Remove header image"
                   >
-                    {isRemovingHeaderBg ? <LoadingSpinner size="sm" /> : <i className="fa-solid fa-xmark" />}
+                    {isRemovingHeaderBg ? <LoadingSpinner size="sm" /> : <Icon name="xmark" />}
                   </Button>
                 )}
               </div>
@@ -394,7 +393,7 @@ function ProfileInfoPage() {
                       onClick={handleRemoveHeaderBg}
                       aria-label="Remove header image"
                     >
-                      {isRemovingHeaderBg ? <LoadingSpinner size="sm" /> : <i className="fa-solid fa-xmark" />}
+                      {isRemovingHeaderBg ? <LoadingSpinner size="sm" /> : <Icon name="xmark" />}
                     </Button>
                   )}
                 </div>
@@ -419,7 +418,7 @@ function ProfileInfoPage() {
                 {avatarUrl ? (
                   <img src={avatarUrl} alt="Avatar preview" className="w-full h-full object-cover" />
                 ) : (
-                  <i className="fa-regular fa-circle-user-circle-plus text-2xl text-muted-foreground" />
+                  <Icon name="circle-user-circle-plus" variant="regular" className="text-2xl text-muted-foreground" />
                 )}
               </div>
               <div className="space-y-0.5 min-w-0">
@@ -447,7 +446,7 @@ function ProfileInfoPage() {
                 onClick={handleRemoveAvatar}
                 aria-label="Remove photo"
               >
-                {isRemovingAvatar ? <LoadingSpinner size="sm" /> : <i className="fa-solid fa-xmark" />}
+                {isRemovingAvatar ? <LoadingSpinner size="sm" /> : <Icon name="xmark" />}
               </Button>
               <input
                 ref={fileInputRef}

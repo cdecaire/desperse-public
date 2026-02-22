@@ -10,7 +10,6 @@ import {
 	executeWriteOperation,
 	getRpcProviderStats,
 	resetRpcProviderStats,
-	type RpcCallResult,
 } from "./rpcProvider";
 
 // Mock the @solana/kit module

@@ -5,6 +5,7 @@
  */
 
 import { Button } from '@/components/ui/button'
+import { Icon } from '@/components/ui/icon'
 import { LoadingSpinner } from './LoadingSpinner'
 
 interface NewPostsBannerProps {
@@ -53,7 +54,7 @@ export function NewPostsBanner({
             </>
           ) : (
             <>
-              <i className="fa-regular fa-arrow-rotate-right mr-2" />
+              <Icon name="arrow-rotate-right" variant="regular" className="mr-2" />
               <span>Refresh</span>
             </>
           )}

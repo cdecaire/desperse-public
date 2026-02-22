@@ -5,6 +5,7 @@
 
 import { Link } from '@tanstack/react-router'
 import { cn } from '@/lib/utils'
+import { Icon } from '@/components/ui/icon'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import {
   DropdownMenu,
@@ -51,7 +52,7 @@ export function ConversationMenu({
           )}
           aria-label="Conversation options"
         >
-          <i className="fa-solid fa-ellipsis-vertical text-sm" aria-hidden="true" />
+          <Icon name="ellipsis-vertical" className="text-sm" />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
@@ -59,7 +60,7 @@ export function ConversationMenu({
         {profilePath && (
           <DropdownMenuItem asChild className={itemClassName} onClick={onClose}>
             <Link to={profilePath}>
-              <i className="fa-regular fa-user w-5 text-center" aria-hidden="true" />
+              <Icon name="user" variant="regular" className="w-5 text-center" />
               <span>Go to profile</span>
             </Link>
           </DropdownMenuItem>
@@ -78,12 +79,10 @@ export function ConversationMenu({
             </>
           ) : (
             <>
-              <i
-                className={cn(
-                  "w-5 text-center",
-                  isBlocked ? "fa-solid fa-user-slash" : "fa-regular fa-user-slash"
-                )}
-                aria-hidden="true"
+              <Icon
+                name="user-slash"
+                variant={isBlocked ? "solid" : "regular"}
+                className="w-5 text-center"
               />
               <span>{isBlocked ? 'Unblock messages' : 'Block messages'}</span>
             </>
@@ -95,7 +94,7 @@ export function ConversationMenu({
           onClick={onReport}
           className={cn(itemClassName, "text-destructive hover:bg-destructive/10")}
         >
-          <i className="fa-regular fa-flag w-5 text-center" aria-hidden="true" />
+          <Icon name="flag" variant="regular" className="w-5 text-center" />
           <span>Report user</span>
         </DropdownMenuItem>
       </DropdownMenuContent>

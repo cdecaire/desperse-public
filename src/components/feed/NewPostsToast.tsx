@@ -6,6 +6,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react'
+import { Icon } from '@/components/ui/icon'
 import { cn } from '@/lib/utils'
 import { smoothScrollTo } from '@/hooks/useFeedRefresh'
 import type { NewPostCreator } from '@/hooks/useNotificationCounters'
@@ -112,7 +113,7 @@ export function NewPostsToast({
       aria-label="View new posts"
     >
       {/* Up arrow icon */}
-      <i className="fa-solid fa-arrow-up text-sm" />
+      <Icon name="arrow-up" className="text-sm" />
       
       {/* Overlapping creator avatars */}
       <div className="flex -space-x-2">

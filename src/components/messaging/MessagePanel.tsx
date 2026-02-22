@@ -17,6 +17,7 @@ import { ConversationView } from './ConversationView'
 import { useThreads, type Thread } from '@/hooks/useMessages'
 import { useMessaging } from './MessagingContext'
 import { cn } from '@/lib/utils'
+import { Icon } from '@/components/ui/icon'
 
 interface MessagePanelProps {
   open: boolean
@@ -103,7 +104,7 @@ export function MessagePanel({ open, onOpenChange, initialThreadId }: MessagePan
                     onClick={handleClose}
                   >
                     <Link to="/settings/account/messaging" aria-label="Message settings">
-                      <i className="fa-regular fa-gear text-sm" aria-hidden="true" />
+                      <Icon name="gear" variant="regular" className="text-sm" />
                     </Link>
                   </Button>
                   <Button
@@ -112,7 +113,7 @@ export function MessagePanel({ open, onOpenChange, initialThreadId }: MessagePan
                     onClick={handleClose}
                     aria-label="Close messages"
                   >
-                    <i className="fa-solid fa-xmark text-sm" aria-hidden="true" />
+                    <Icon name="xmark" className="text-sm" />
                   </Button>
                 </div>
               </div>

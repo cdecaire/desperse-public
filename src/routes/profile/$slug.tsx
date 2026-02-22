@@ -30,7 +30,7 @@ import { TipButton } from '@/components/tipping/TipButton'
 import { Logo } from '@/components/shared/Logo'
 import { usePostLikes } from '@/hooks/useLikes'
 import { useCommentCount } from '@/hooks/useComments'
-import { cn } from '@/lib/utils'
+import { Icon } from '@/components/ui/icon'
 import { getResponsiveImageProps } from '@/lib/imageUrl'
 
 type ProfileTab = 'posts' | 'collected' | 'for-sale'
@@ -141,7 +141,7 @@ function ProfileGridItem({
               })()
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-muted">
-                <i className="fa-regular fa-user text-[10px] text-muted-foreground" />
+                <Icon name="user" variant="regular" className="text-[10px] text-muted-foreground" />
               </div>
             )}
           </div>
@@ -154,28 +154,25 @@ function ProfileGridItem({
             <div className="flex items-center gap-4 text-white text-sm font-semibold">
               {likeCount > 0 && (
                 <span className="flex items-center gap-1.5">
-                  <i className="fa-solid fa-heart" />
+                  <Icon name="heart" />
                   {likeCount}
                 </span>
               )}
               {commentCountValue > 0 && (
                 <span className="flex items-center gap-1.5">
-                  <i className="fa-solid fa-comment" />
+                  <Icon name="comment" />
                   {commentCountValue}
                 </span>
               )}
               {post.type === 'collectible' && (
                 <span className="flex items-center gap-1.5">
-                  <i className="fa-solid fa-gem" />
+                  <Icon name="gem" />
                   {post.collectCount ?? 0}
                 </span>
               )}
               {post.type === 'edition' && (
                 <span className="flex items-center gap-1.5">
-                  <i className={cn(
-                    'fa-solid',
-                    post.maxSupply === 1 ? 'fa-hexagon-image' : 'fa-image-stack'
-                  )} />
+                  <Icon name={post.maxSupply === 1 ? 'hexagon-image' : 'image-stack'} />
                   {post.currentSupply || 0}
                   {post.maxSupply && ` / ${post.maxSupply}`}
                 </span>
@@ -290,7 +287,7 @@ function ProfilePage() {
   if (userError || !profileUser) {
     return (
       <EmptyState
-        icon={<i className="fa-regular fa-user-slash text-4xl text-muted-foreground" />}
+        icon={<Icon name="user-slash" variant="regular" className="text-4xl text-muted-foreground" />}
         title="User not found"
         description="This user doesn't exist."
         action={{ label: 'Go to feed', to: '/' }}
@@ -356,7 +353,7 @@ function ProfilePage() {
                   )
                 })()
               ) : (
-                <i className="fa-regular fa-user text-2xl md:text-3xl text-muted-foreground" />
+                <Icon name="user" variant="regular" className="text-2xl md:text-3xl text-muted-foreground" />
               )}
             </div>
             
@@ -371,7 +368,7 @@ function ProfilePage() {
                   className="gap-1 px-2"
                   aria-label="View activity"
                 >
-                  <i className="fa-regular fa-clock text-base" />
+                  <Icon name="clock" variant="regular" className="text-base" />
                 </Button>
 
                 {/* Edit Profile Button */}
@@ -381,7 +378,7 @@ function ProfilePage() {
                     className="gap-1 px-2"
                     aria-label="Edit profile"
                   >
-                    <i className="fa-regular fa-user-pen text-base" />
+                    <Icon name="user-pen" variant="regular" className="text-base" />
                   </Button>
                 </Link>
               </div>
@@ -418,11 +415,10 @@ function ProfilePage() {
                   {followMutation.isPending ? (
                     <LoadingSpinner size="sm" />
                   ) : (
-                    <i
-                      className={cn(
-                        'text-base',
-                        isFollowing ? 'fa-solid fa-user-check' : 'fa-regular fa-user-plus'
-                      )}
+                    <Icon
+                      name={isFollowing ? 'user-check' : 'user-plus'}
+                      variant={isFollowing ? 'solid' : 'regular'}
+                      className="text-base"
                     />
                   )}
                 </Button>
@@ -708,7 +704,7 @@ function PostsTab({
   if (posts.length === 0) {
     return (
       <EmptyState
-        icon={<i className="fa-regular fa-images text-4xl text-muted-foreground" />}
+        icon={<Icon name="images" variant="regular" className="text-4xl text-muted-foreground" />}
         title="No posts yet"
         description={
           isOwnProfile
@@ -719,7 +715,7 @@ function PostsTab({
           isOwnProfile && (
             <Link to="/create">
               <Button>
-                <i className="fa-regular fa-plus mr-2" />
+                <Icon name="plus" variant="regular" className="mr-2" />
                 Create Post
               </Button>
             </Link>
@@ -780,7 +776,7 @@ function CollectedTab({
   if (posts.length === 0) {
     return (
       <EmptyState
-        icon={<i className="fa-regular fa-gem text-4xl text-muted-foreground" />}
+        icon={<Icon name="gem" variant="regular" className="text-4xl text-muted-foreground" />}
         title="No collections yet"
         description={
           isOwnProfile
@@ -831,7 +827,7 @@ function ForSaleTab({
   if (posts.length === 0) {
     return (
       <EmptyState
-        icon={<i className="fa-regular fa-tag text-4xl text-muted-foreground" />}
+        icon={<Icon name="tag" variant="regular" className="text-4xl text-muted-foreground" />}
         title="Nothing for sale"
         description={
           isOwnProfile
@@ -842,7 +838,7 @@ function ForSaleTab({
           isOwnProfile && (
             <Link to="/create">
               <Button>
-                <i className="fa-regular fa-plus mr-2" />
+                <Icon name="plus" variant="regular" className="mr-2" />
                 Create Edition
               </Button>
             </Link>

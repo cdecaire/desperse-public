@@ -59,7 +59,7 @@ export default defineEventHandler(async (event) => {
 	// Parse body
 	let body: { pathname?: string; contentType?: string; fileSize?: number }
 	try {
-		body = await readBody(event)
+		body = (await readBody(event)) as typeof body ?? {}
 	} catch {
 		setResponseStatus(event, 400)
 		return {

@@ -13,6 +13,7 @@ import { ModelViewer } from '@/components/shared/ModelViewer'
 import { useGatedDownload } from '@/hooks/useGatedDownload'
 import { getResponsiveImageProps } from '@/lib/imageUrl'
 import { MediaCarousel, type CarouselAsset } from './MediaCarousel'
+import { Icon } from '@/components/ui/icon'
 
 export type MediaType = 'image' | 'video' | 'audio' | 'document' | '3d'
 
@@ -304,7 +305,7 @@ export function PostMedia({
         )}
         {hasError ? (
           <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-foreground">
-            <i className="fa-regular fa-image-slash text-2xl mb-2" />
+            <Icon name="image-slash" variant="regular" className="text-2xl mb-2" />
             <span className="text-sm">Failed to load</span>
           </div>
         ) : (
@@ -428,7 +429,7 @@ export function PostMedia({
           {/* Error state for video */}
           {hasError ? (
             <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-foreground bg-muted/30 z-10">
-              <i className="fa-regular fa-video-slash text-2xl mb-2" />
+              <Icon name="video-slash" variant="regular" className="text-2xl mb-2" />
               <span className="text-sm">Failed to load video</span>
             </div>
           ) : (
@@ -459,7 +460,7 @@ export function PostMedia({
           {!hasError && (
             <div className="absolute top-2 right-2 pointer-events-none z-20">
               <div className="w-6 h-6 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center">
-                <i className="fa-solid fa-play text-[10px] text-white" />
+                <Icon name="play" className="text-[10px] text-white" />
               </div>
             </div>
           )}
@@ -512,7 +513,7 @@ export function PostMedia({
         {/* Error state for video */}
         {hasError ? (
           <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-foreground bg-muted/30 z-10">
-            <i className="fa-regular fa-video-slash text-2xl mb-2" />
+            <Icon name="video-slash" variant="regular" className="text-2xl mb-2" />
             <span className="text-sm">Failed to load video</span>
           </div>
         ) : (
@@ -581,7 +582,7 @@ export function PostMedia({
                 onClick={handleVideoPlayPause}
                 aria-label="Play video"
               >
-                <i className="fa-solid fa-play text-2xl ml-1" />
+                <Icon name="play" className="text-2xl ml-1" />
               </Button>
             )}
           </div>
@@ -598,7 +599,7 @@ export function PostMedia({
                 onClick={handleVideoMute}
                 aria-label={isMuted ? 'Unmute video' : 'Mute video'}
               >
-                <i className={isMuted ? 'fa-solid fa-volume-xmark' : 'fa-solid fa-volume-high'} />
+                <Icon name={isMuted ? "volume-xmark" : "volume-high"} />
               </Button>
               {isPlaying && (
                 <Button
@@ -608,7 +609,7 @@ export function PostMedia({
                   onClick={handleVideoPlayPause}
                   aria-label="Pause video"
                 >
-                  <i className="fa-solid fa-pause" />
+                  <Icon name="pause" />
                 </Button>
               )}
             </div>
@@ -691,14 +692,14 @@ export function PostMedia({
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-muted to-muted/50">
-              <i className="fa-regular fa-music text-6xl text-muted-foreground/50" />
+              <Icon name="music" variant="regular" className="text-6xl text-muted-foreground/50" />
             </div>
           )}
 
           {/* Audio indicator icon */}
           <div className="absolute top-2 right-2 z-20">
             <div className="w-6 h-6 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center">
-              <i className="fa-solid fa-music text-[10px] text-white" />
+              <Icon name="music" className="text-[10px] text-white" />
             </div>
           </div>
         </div>
@@ -783,7 +784,7 @@ export function PostMedia({
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-muted to-muted/50">
-            <i className="fa-regular fa-music text-6xl text-muted-foreground/50" />
+            <Icon name="music" variant="regular" className="text-6xl text-muted-foreground/50" />
           </div>
         )}
 
@@ -798,7 +799,7 @@ export function PostMedia({
               onClick={handleAudioPlayPause}
               aria-label={isPlaying ? 'Pause audio' : 'Play audio'}
             >
-              <i className={isPlaying ? 'fa-solid fa-pause' : 'fa-solid fa-play ml-0.5'} />
+              <Icon name={isPlaying ? "pause" : "play"} className={!isPlaying ? "ml-0.5" : undefined} />
             </Button>
 
             {/* Native audio element (hidden, used for actual playback) */}
@@ -951,7 +952,7 @@ export function PostMedia({
           />
         ) : (
           <div className="w-full h-full flex flex-col items-center justify-center bg-linear-to-br from-muted to-muted/50">
-            <i className={cn("fa-regular", fileIcon, "text-6xl text-muted-foreground/50 mb-2")} />
+            <Icon name={fileIcon} variant="regular" className="text-6xl text-muted-foreground/50 mb-2" />
             <span className="text-sm text-muted-foreground">{fileTypeLabel} Document</span>
           </div>
         )}
@@ -1055,7 +1056,7 @@ export function PostMedia({
   // Fallback
   return (
     <div className={cn(containerClass, 'aspect-square flex items-center justify-center')}>
-      <i className="fa-regular fa-file text-4xl text-muted-foreground/50" />
+      <Icon name="file" variant="regular" className="text-4xl text-muted-foreground/50" />
     </div>
   )
 }

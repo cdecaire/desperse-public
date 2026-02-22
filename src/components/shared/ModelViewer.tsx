@@ -43,7 +43,7 @@ interface ModelViewerProps extends React.HTMLAttributes<HTMLElement> {
   interactionPromptThreshold?: number
 }
 
-declare global {
+declare module 'react' {
   namespace JSX {
     interface IntrinsicElements {
       'model-viewer': React.DetailedHTMLProps<
@@ -52,6 +52,7 @@ declare global {
       > & {
         src?: string
         alt?: string
+        controls?: boolean
         'auto-rotate'?: boolean
         'camera-orbit'?: string
         'camera-fov'?: number

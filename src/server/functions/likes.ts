@@ -287,6 +287,7 @@ function mapPostToCard(post: typeof posts.$inferSelect, user: {
  */
 export const getUserLikes = createServerFn({
   method: 'GET',
+// @ts-expect-error -- TanStack Start dual-context type inference
 }).handler(async (input: unknown) => {
   try {
     const rawData = input && typeof input === 'object' && 'data' in input

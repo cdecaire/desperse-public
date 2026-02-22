@@ -5,6 +5,7 @@
  */
 
 import { useRouter } from "@tanstack/react-router"
+import { Icon } from "@/components/ui/icon"
 
 interface MobileHeaderProps {
 	/** Page title to display in center */
@@ -53,7 +54,7 @@ export function MobileHeader({
 							className="inline-flex h-10 w-10 items-center justify-center rounded-md text-foreground hover:bg-accent transition-colors"
 							aria-label="Go back"
 						>
-							<i className="fa-solid fa-arrow-left" aria-hidden="true" />
+							<Icon name="arrow-left" />
 						</button>
 					)}
 				</div>

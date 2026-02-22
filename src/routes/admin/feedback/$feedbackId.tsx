@@ -8,6 +8,7 @@ import { useBetaFeedbackById, useMarkBetaFeedbackReviewed } from '@/hooks/useFee
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { Button } from '@/components/ui/button'
+import { Icon } from '@/components/ui/icon'
 import { cn } from '@/lib/utils'
 
 // Format relative time
@@ -36,13 +37,15 @@ function StarDisplay({ rating, size = 'md' }: { rating: number | null; size?: 's
   return (
     <div className="flex items-center gap-1">
       {[1, 2, 3, 4, 5].map((star) => (
-        <i
+        <Icon
           key={star}
+          name="star"
+          variant={star <= rating ? 'solid' : 'regular'}
           className={cn(
             starSize,
             star <= rating
-              ? 'fa-solid fa-star text-yellow-400'
-              : 'fa-regular fa-star text-muted-foreground/30'
+              ? 'text-yellow-400'
+              : 'text-muted-foreground/30'
           )}
         />
       ))}
@@ -75,7 +78,7 @@ function FeedbackDetailPage() {
         onClick={() => navigate({ to: '/admin/feedback' })}
         className="mb-4 hidden md:inline-flex"
       >
-        <i className="fa-regular fa-arrow-left mr-2" />
+        <Icon name="arrow-left" variant="regular" className="mr-2" />
         Back to Feedback
       </Button>
 
@@ -90,7 +93,7 @@ function FeedbackDetailPage() {
 
       {error && (
         <EmptyState
-          icon={<i className="fa-regular fa-circle-exclamation text-4xl" />}
+          icon={<Icon name="circle-exclamation" variant="regular" className="text-4xl" />}
           title="Failed to load feedback"
           description={error.message || 'An error occurred while loading feedback.'}
         />
@@ -98,7 +101,7 @@ function FeedbackDetailPage() {
 
       {!isLoading && !isPending && !feedback && (
         <EmptyState
-          icon={<i className="fa-regular fa-circle-exclamation text-4xl" />}
+          icon={<Icon name="circle-exclamation" variant="regular" className="text-4xl" />}
           title="Feedback not found"
           description="The feedback submission could not be found."
         />
@@ -119,7 +122,7 @@ function FeedbackDetailPage() {
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center bg-muted">
-                      <i className="fa-regular fa-user text-muted-foreground" />
+                      <Icon name="user" variant="regular" className="text-muted-foreground" />
                     </div>
                   )}
                 </div>
@@ -248,12 +251,12 @@ function FeedbackDetailPage() {
                   onClick={handleMarkReviewed}
                   disabled={markReviewed.isPending}
                 >
-                  <i className="fa-regular fa-check mr-2" />
+                  <Icon name="check" variant="regular" className="mr-2" />
                   {markReviewed.isPending ? 'Marking...' : 'Mark as Reviewed'}
                 </Button>
               ) : (
                 <span className="inline-flex items-center gap-2 text-sm text-muted-foreground">
-                  <i className="fa-regular fa-check-circle text-green-500" />
+                  <Icon name="check-circle" variant="regular" className="text-green-500" />
                   Already reviewed
                 </span>
               )}

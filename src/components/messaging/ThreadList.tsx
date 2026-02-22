@@ -6,6 +6,7 @@
 import { useEffect, useRef, useCallback } from 'react'
 import { ThreadItem } from './ThreadItem'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
+import { Icon } from '@/components/ui/icon'
 import type { Thread } from '@/hooks/useMessages'
 
 interface ThreadListProps {
@@ -64,7 +65,7 @@ export function ThreadList({
     return (
       <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
         <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center mb-4">
-          <i className="fa-regular fa-message text-2xl text-muted-foreground" aria-hidden="true" />
+          <Icon name="message" variant="regular" className="text-2xl text-muted-foreground" />
         </div>
         <p className="text-sm text-muted-foreground">No conversations yet</p>
         <p className="text-xs text-muted-foreground mt-1">

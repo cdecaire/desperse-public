@@ -4,6 +4,7 @@
  */
 
 import { Link, useNavigate } from '@tanstack/react-router'
+import { Icon } from '@/components/ui/icon'
 import { cn } from '@/lib/utils'
 import { OptimizedImage } from '@/components/shared/OptimizedImage'
 
@@ -181,7 +182,7 @@ export function NotificationItem({ notification }: NotificationItemProps) {
           />
         ) : (
           <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-            <i className="fa-solid fa-user text-muted-foreground" />
+            <Icon name="user" className="text-muted-foreground" />
           </div>
         )}
       </Link>
@@ -236,13 +237,9 @@ export function NotificationItem({ notification }: NotificationItemProps) {
             />
           ) : mediaType === 'audio' || mediaType === 'document' || mediaType === '3d' ? (
             <div className="w-full h-full flex items-center justify-center bg-muted">
-              <i
-                className={cn(
-                  'text-muted-foreground',
-                  mediaType === 'audio' && 'fa-solid fa-music',
-                  mediaType === 'document' && 'fa-solid fa-file',
-                  mediaType === '3d' && 'fa-solid fa-cube'
-                )}
+              <Icon
+                name={mediaType === 'audio' ? 'music' : mediaType === 'document' ? 'file' : 'cube'}
+                className="text-muted-foreground"
               />
             </div>
           ) : (

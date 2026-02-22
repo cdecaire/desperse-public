@@ -9,7 +9,7 @@ import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
 import { db } from '../src/server/db';
 import { purchases, posts } from '../src/server/db/schema';
-import { eq, and } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 
 // Load environment variables
 const __filename = fileURLToPath(import.meta.url);

@@ -1,5 +1,6 @@
 import { Link, useRouterState, useRouter } from '@tanstack/react-router'
 import { useEffect } from 'react'
+import { Icon } from '@/components/ui/icon'
 import { useAuth } from '@/hooks/useAuth'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { Logo } from '../shared/Logo'
@@ -113,7 +114,7 @@ export default function TopNav() {
                 }
               }}
             >
-              <i className="fa-regular fa-plus text-xl" />
+              <Icon name="plus" variant="regular" className="text-xl" />
             </Link>
           ) : (
             <button
@@ -122,7 +123,7 @@ export default function TopNav() {
               className="inline-flex h-10 w-10 items-center justify-center rounded-md text-foreground hover:bg-accent transition-colors"
               aria-label="Back"
             >
-              <i className="fa-solid fa-arrow-left" />
+              <Icon name="arrow-left" />
             </button>
           )}
         </div>

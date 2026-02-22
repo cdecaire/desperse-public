@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
 		const token = authHeader?.replace('Bearer ', '')
 
 		if (!token) {
-			event.node.res.statusCode = 401
+			event.node!.res!.statusCode = 401
 			return {
 				success: false,
 				error: { code: 'unauthorized', message: 'Authentication required' },
@@ -33,10 +33,10 @@ export default defineEventHandler(async (event) => {
 		}
 
 		// Parse request body
-		const body = await readBody(event)
+		const body = await readBody(event) as Record<string, any>
 
 		if (!body || typeof body !== 'object') {
-			event.node.res.statusCode = 400
+			event.node!.res!.statusCode = 400
 			return {
 				success: false,
 				error: { code: 'invalid_body', message: 'Request body is required' },
@@ -48,7 +48,7 @@ export default defineEventHandler(async (event) => {
 
 		// Validate contentType
 		if (!contentType || !['post', 'comment', 'dm_thread'].includes(contentType)) {
-			event.node.res.statusCode = 400
+			event.node!.res!.statusCode = 400
 			return {
 				success: false,
 				error: { code: 'invalid_content_type', message: 'contentType must be post, comment, or dm_thread' },
@@ -58,7 +58,7 @@ export default defineEventHandler(async (event) => {
 
 		// Validate contentId
 		if (!contentId || typeof contentId !== 'string') {
-			event.node.res.statusCode = 400
+			event.node!.res!.statusCode = 400
 			return {
 				success: false,
 				error: { code: 'invalid_content_id', message: 'contentId is required' },
@@ -68,7 +68,7 @@ export default defineEventHandler(async (event) => {
 
 		// Validate reasons
 		if (!reasons || !Array.isArray(reasons) || reasons.length === 0) {
-			event.node.res.statusCode = 400
+			event.node!.res!.statusCode = 400
 			return {
 				success: false,
 				error: { code: 'invalid_reasons', message: 'At least one reason is required' },
@@ -78,7 +78,7 @@ export default defineEventHandler(async (event) => {
 
 		// Validate details length
 		if (details && typeof details === 'string' && details.length > 500) {
-			event.node.res.statusCode = 400
+			event.node!.res!.statusCode = 400
 			return {
 				success: false,
 				error: { code: 'details_too_long', message: 'Details must be 500 characters or less' },
@@ -104,7 +104,7 @@ export default defineEventHandler(async (event) => {
 				statusCode = 409 // Conflict
 			}
 
-			event.node.res.statusCode = statusCode
+			event.node!.res!.statusCode = statusCode
 			return {
 				success: false,
 				error: { code: 'report_failed', message: result.error },
@@ -121,7 +121,7 @@ export default defineEventHandler(async (event) => {
 		}
 	} catch (error) {
 		console.error('[POST /reports] Error:', error)
-		event.node.res.statusCode = 500
+		event.node!.res!.statusCode = 500
 		return {
 			success: false,
 			error: { code: 'internal_error', message: 'Failed to create report' },

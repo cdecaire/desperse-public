@@ -7,6 +7,7 @@
 import { Link } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { Icon } from '@/components/ui/icon'
 import { useCommentCount } from '@/hooks/useComments'
 import { useAuth } from '@/hooks/useAuth'
 
@@ -38,7 +39,7 @@ export function CommentButton({
         className={cn('gap-1 px-2', className)}
         disabled
       >
-        <i className="fa-regular fa-comment text-base" />
+        <Icon name="comment" variant="regular" className="text-base" />
         {showCount && commentCount !== undefined && commentCount > 0 && (
           <span className="text-sm font-medium">{commentCount}</span>
         )}
@@ -59,7 +60,7 @@ export function CommentButton({
         variant={variant}
         className="gap-1 px-2"
       >
-        <i className="fa-regular fa-comment text-base" />
+        <Icon name="comment" variant="regular" className="text-base" />
         {showCount && commentCount !== undefined && commentCount > 0 && (
           <span className="text-sm font-medium">{commentCount}</span>
         )}

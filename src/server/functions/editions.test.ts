@@ -14,7 +14,7 @@
  * - Address validation
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 
 // Create shared mock functions using vi.hoisted
 const mocks = vi.hoisted(() => {
@@ -50,16 +50,6 @@ vi.mock("@/server/db", () => ({
 		insert: mocks.mockDbInsert,
 	},
 }));
-
-// Create mock classes using hoisted functions to ensure stability across test resets
-const mockClasses = vi.hoisted(() => {
-	const connectionInstance = {
-		getBalance: vi.fn(),
-		getParsedTokenAccountsByOwner: vi.fn(),
-		getAccountInfo: vi.fn(),
-	};
-	return { connectionInstance };
-});
 
 vi.mock("@solana/web3.js", () => {
 	// Define Connection class that returns our stable connection instance

@@ -101,15 +101,14 @@ export default defineEventHandler(async (event) => {
     // For gated assets, stream the file through our server
     // This ensures token is validated before serving
     const streamResult = await getGatedAssetStream(
-      downloadInfo.downloadUrl,
-      downloadInfo.contentType || publicInfo.mimeType || 'application/octet-stream',
-      downloadInfo.downloadName || publicInfo.downloadName || undefined
+      'vercel-blob' as any,
+      downloadInfo.downloadUrl
     )
 
-    if (!streamResult.success) {
+    if (!streamResult) {
       return new Response(
-        JSON.stringify({ error: streamResult.error || 'Failed to stream asset' }),
-        { 
+        JSON.stringify({ error: 'Failed to stream asset' }),
+        {
           status: 500,
           headers: { 'Content-Type': 'application/json' },
         }
@@ -117,24 +116,24 @@ export default defineEventHandler(async (event) => {
     }
 
     // Return the streamed file with appropriate headers
-    const headers = new Headers({
+    const responseHeaders = new Headers({
       'Content-Type': downloadInfo.contentType || publicInfo.mimeType || 'application/octet-stream',
       'Cache-Control': 'private, no-cache, no-store, must-revalidate',
     })
 
     // Set Content-Disposition for download behavior
     if (downloadInfo.downloadName || publicInfo.downloadName) {
-      headers.set('Content-Disposition', `attachment; filename="${downloadInfo.downloadName || publicInfo.downloadName}"`)
+      responseHeaders.set('Content-Disposition', `attachment; filename="${downloadInfo.downloadName || publicInfo.downloadName}"`)
     } else {
-      headers.set('Content-Disposition', 'attachment')
+      responseHeaders.set('Content-Disposition', 'attachment')
     }
 
     // Set Content-Length if available
     if (downloadInfo.contentLength) {
-      headers.set('Content-Length', downloadInfo.contentLength.toString())
+      responseHeaders.set('Content-Length', downloadInfo.contentLength.toString())
     }
 
-    return new Response(streamResult.stream, { headers })
+    return new Response(streamResult.body as BodyInit, { headers: responseHeaders })
   } catch (error) {
     // Log error without exposing sensitive details
     console.error('[AssetDownload] Error:', error instanceof Error ? error.message : 'Unknown error')

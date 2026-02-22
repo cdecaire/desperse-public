@@ -4,7 +4,7 @@
  */
 
 import { db } from '@/server/db'
-import { posts, users, collections, purchases, postAssets } from '@/server/db/schema'
+import { posts, users, collections, purchases } from '@/server/db/schema'
 import { eq, and, count } from 'drizzle-orm'
 import { authenticateWithToken } from '@/server/auth'
 import { uploadMetadataJson } from '@/server/storage/blob'

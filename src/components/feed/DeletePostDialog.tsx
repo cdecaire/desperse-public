@@ -12,6 +12,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
+import { Icon } from '@/components/ui/icon'
 
 interface DeletePostDialogProps {
   open: boolean
@@ -26,7 +27,7 @@ interface DeletePostDialogProps {
 export function DeletePostDialog({
   open,
   onOpenChange,
-  postType,
+  postType: _postType,
   hasCollects,
   hasPurchases,
   onConfirm,
@@ -57,7 +58,7 @@ export function DeletePostDialog({
         {hasExistingItems && (
           <div className="p-4 bg-(--flush-orange-500)/10 dark:bg-(--flush-orange-500)/20 border border-(--flush-orange-500)/20 dark:border-(--flush-orange-500)/30 rounded-lg">
             <div className="flex items-start gap-3">
-              <i className="fa-regular fa-triangle-exclamation text-(--tone-warning) mt-0.5" />
+              <Icon name="triangle-exclamation" variant="regular" className="text-(--tone-warning) mt-0.5" />
               <div className="flex-1 space-y-1">
                 <p className="text-sm font-medium text-(--flush-orange-900) dark:text-(--flush-orange-100)">
                   {hasPurchases

@@ -8,6 +8,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState } from 'react'
 import { Card } from '@/components/ui/card'
+import { Icon } from '@/components/ui/icon'
 import { Badge } from '@/components/ui/badge'
 import { NotificationBadge } from '@/components/ui/notification-badge'
 import { MediaPill } from '@/components/ui/media-pill'
@@ -50,13 +51,13 @@ function CategoryPillDemo() {
           <p className="text-xs text-muted-foreground mb-2">Link variant (with asChild + Link)</p>
           <div className="flex flex-wrap gap-1.5">
             <CategoryPill variant="link" asChild>
-              <Link to="/tag/photography">Photography</Link>
+              <Link to={"/tag/photography" as string}>Photography</Link>
             </CategoryPill>
             <CategoryPill variant="link" asChild>
-              <Link to="/tag/digital-art">Digital Art</Link>
+              <Link to={"/tag/digital-art" as string}>Digital Art</Link>
             </CategoryPill>
             <CategoryPill variant="link" asChild>
-              <Link to="/tag/music">Music</Link>
+              <Link to={"/tag/music" as string}>Music</Link>
             </CategoryPill>
           </div>
         </div>
@@ -205,16 +206,16 @@ function BadgesTestPage() {
               <p className="text-xs text-muted-foreground mb-2">Use case: Navigation items</p>
               <div className="flex items-center gap-6 p-3 bg-muted/30 rounded-lg">
                 <span className="relative inline-flex items-center gap-2">
-                  <i className="fa-regular fa-bell text-xl" />
+                  <Icon name="bell" variant="regular" className="text-xl" />
                   Notifications
                   <NotificationBadge count={3} className="ml-1" />
                 </span>
                 <span className="relative">
-                  <i className="fa-regular fa-bell text-xl" />
+                  <Icon name="bell" variant="regular" className="text-xl" />
                   <NotificationBadge variant="destructive" size="dot" className="absolute -top-0.5 -right-0.5" />
                 </span>
                 <span className="relative">
-                  <i className="fa-regular fa-shield-halved text-xl" />
+                  <Icon name="shield-halved" variant="regular" className="text-xl" />
                   <NotificationBadge variant="destructive" size="sm" count={12} className="absolute -top-1 -right-2" />
                 </span>
               </div>
@@ -310,7 +311,7 @@ function BadgesTestPage() {
                   <span>2h</span>
                   <span>·</span>
                   <span className="flex items-center gap-1 text-[var(--tone-collectible)]">
-                    <i className="fa-regular fa-gem text-[10px]" />
+                    <Icon name="gem" variant="regular" className="text-[10px]" />
                     Collectible
                   </span>
                 </div>
@@ -320,7 +321,7 @@ function BadgesTestPage() {
                   <span>5h</span>
                   <span>·</span>
                   <span className="flex items-center gap-1 text-[var(--tone-edition)]">
-                    <i className="fa-regular fa-layer-group text-[10px]" />
+                    <Icon name="layer-group" variant="regular" className="text-[10px]" />
                     Edition of 10
                   </span>
                 </div>
@@ -340,7 +341,7 @@ function BadgesTestPage() {
                   <span>2h</span>
                   <span>·</span>
                   <span className="flex items-center gap-1 text-destructive">
-                    <i className="fa-regular fa-eye-slash text-[10px]" />
+                    <Icon name="eye-slash" variant="regular" className="text-[10px]" />
                     Hidden
                   </span>
                 </div>
@@ -355,7 +356,7 @@ function BadgesTestPage() {
               </p>
               <div className="flex justify-center p-8 bg-muted/30 rounded-lg">
                 <button className="flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-primary text-primary-foreground shadow-lg shadow-black/10 hover:scale-105 transition-transform">
-                  <i className="fa-solid fa-arrow-up text-sm" />
+                  <Icon name="arrow-up" className="text-sm" />
                   <div className="flex -space-x-2">
                     <div className="w-7 h-7 rounded-full bg-muted ring-2 ring-primary flex items-center justify-center text-xs font-medium">A</div>
                     <div className="w-7 h-7 rounded-full bg-muted ring-2 ring-primary flex items-center justify-center text-xs font-medium" style={{ zIndex: 1 }}>B</div>

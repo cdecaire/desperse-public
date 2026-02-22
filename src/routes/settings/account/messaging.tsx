@@ -5,6 +5,7 @@ import { useDmPreferences } from '@/hooks/useDmPreferences'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
+import { Icon } from '@/components/ui/icon'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 
 export const Route = createFileRoute('/settings/account/messaging')({
@@ -40,7 +41,7 @@ function MessagingSettingsPage() {
         {/* Master Toggle */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <i className="fa-regular fa-message w-5 text-center text-muted-foreground" aria-hidden="true" />
+            <Icon name="message" variant="regular" className="w-5 text-center text-muted-foreground" />
             <div className="flex flex-col">
               <span className="text-sm font-semibold">Direct Messages</span>
               <span className="text-xs text-muted-foreground">
@@ -128,7 +129,7 @@ function MessagingSettingsPage() {
       {/* Info Note */}
       <div className="rounded-lg bg-muted/50 border border-input px-5 md:px-6 lg:px-8 py-4">
         <div className="flex gap-3">
-          <i className="fa-regular fa-circle-info w-5 text-center text-muted-foreground mt-0.5 shrink-0" aria-hidden="true" />
+          <Icon name="circle-info" variant="regular" className="w-5 text-center text-muted-foreground mt-0.5 shrink-0" />
           <span className="text-xs text-muted-foreground">
             To prevent spam, only your supporters can message you. Once someone starts a conversation,
             they can continue messaging even if they no longer meet the criteria.
@@ -159,7 +160,7 @@ function MessagingToggle({
   return (
     <div className="flex items-center justify-between py-1">
       <div className="flex items-center gap-3">
-        <i className={`fa-regular ${icon} w-5 text-center text-muted-foreground/70`} aria-hidden="true" />
+        <Icon name={icon} variant="regular" className="w-5 text-center text-muted-foreground/70" />
         <div className="flex flex-col gap-0.5">
           <Label htmlFor={id} className="text-sm font-semibold cursor-pointer">
             {label}

@@ -23,7 +23,7 @@ import { TokenAutocomplete } from '@/components/shared/TokenAutocomplete'
 import { Input } from '@/components/ui/input'
 import { Tooltip } from '@/components/ui/tooltip'
 import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
+import { Icon } from '@/components/ui/icon'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import {
   Dialog,
@@ -135,6 +135,7 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
 
   // Use ref to stabilize hasConfirmedPurchases during refetch to prevent UI flash
   const hasConfirmedPurchasesRef = useRef<boolean>(false)
+  const mintWindowSyncedRef = useRef<boolean>(false)
   useEffect(() => {
     if (editState) {
       // Always update ref when we have data
@@ -149,8 +150,10 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
     }
   }, [editState?.isMinted])
 
-  // Sync mint window state from editState (for edit mode)
+  // Sync mint window state from editState (for edit mode) — only on first load
+  // Background refetches must not overwrite user edits
   useEffect(() => {
+    if (mintWindowSyncedRef.current) return
     if (editState?.mintWindowStart && editState?.mintWindowEnd) {
       const start = new Date(editState.mintWindowStart)
       const end = new Date(editState.mintWindowEnd)
@@ -170,6 +173,7 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
           durationHours: Math.round(durationHours * 100) / 100, // Round to 2 decimals
         },
       }))
+      mintWindowSyncedRef.current = true
     }
   }, [editState?.mintWindowStart, editState?.mintWindowEnd])
 
@@ -357,7 +361,9 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
         const existingEnd = existingMwEnd instanceof Date ? existingMwEnd : new Date(String(existingMwEnd))
         const existingDuration = (existingEnd.getTime() - existingStart.getTime()) / 3_600_000
         if (Math.abs((formState.mintWindow.durationHours ?? 0) - existingDuration) > 0.01) return true
-        if (formState.mintWindow.startMode === 'scheduled' && formState.mintWindow.startTime) {
+        // Existing windows always sync as 'scheduled' — switching to 'now' is a change
+        if (formState.mintWindow.startMode !== 'scheduled') return true
+        if (formState.mintWindow.startTime) {
           const formStart = new Date(formState.mintWindow.startTime)
           if (Math.abs(formStart.getTime() - existingStart.getTime()) > 60_000) return true
         }
@@ -375,6 +381,13 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
     
     setFormError(null)
 
+    // Validate mint window before submitting
+    const mintWindowError = validateMintWindowClient()
+    if (mintWindowError) {
+      setFormError(mintWindowError)
+      return
+    }
+
     if (isEditMode && initialPost) {
       // Save all editable fields to database
       // Note: On-chain metadata updates are not supported (now using Core)
@@ -382,7 +395,7 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
       await updatePostMutation.mutateAsync({
         postId: initialPost.id,
         caption: formState.caption || null,
-        categories: formState.categories.length > 0 ? formState.categories : null,
+        categories: formState.categories.length > 0 ? categoriesToStrings(formState.categories) : null,
         ...(areNftFieldsEditable && {
           nftName: formState.nftName || null,
           nftSymbol: formState.nftSymbol || null,
@@ -559,6 +572,25 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
     }
     // For edits, additional validation happens server-side
     return true
+  }
+
+  // Validate mint window and return an error message, or null if valid
+  const validateMintWindowClient = (): string | null => {
+    if (formState.type !== 'edition' || !formState.mintWindow.enabled) return null
+    if (!formState.mintWindow.durationHours) return null
+    let start: Date
+    if (formState.mintWindow.startMode === 'now') {
+      start = new Date()
+    } else if (formState.mintWindow.startTime) {
+      start = new Date(formState.mintWindow.startTime)
+    } else {
+      return 'Please select a start time for the mint window.'
+    }
+    const end = new Date(start.getTime() + formState.mintWindow.durationHours * 3_600_000)
+    if (end <= new Date()) {
+      return 'The mint window end time is in the past. Please adjust the start time or duration.'
+    }
+    return null
   }
   
   const canPreview = () => {
@@ -771,10 +803,7 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
               className="flex items-center justify-between w-full text-sm text-foreground transition-colors hover:text-foreground/80"
             >
               <span>Minted on-chain details</span>
-              <i className={cn(
-                'fa-regular transition-transform',
-                isMintedDetailsOpen ? 'fa-chevron-up' : 'fa-chevron-down'
-              )} />
+              <Icon name={isMintedDetailsOpen ? 'chevron-up' : 'chevron-down'} variant="regular" className="transition-transform" />
             </button>
 
             {isMintedDetailsOpen && (
@@ -926,7 +955,7 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
         {/* Error message (rate limit, etc.) */}
         {formError && (
           <div className="flex items-start gap-2 p-3 rounded-lg bg-destructive/10 text-destructive text-sm">
-            <i className="fa-regular fa-circle-exclamation mt-0.5" />
+            <Icon name="circle-exclamation" variant="regular" className="mt-0.5" />
             <span>{formError}</span>
           </div>
         )}

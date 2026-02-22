@@ -160,7 +160,7 @@ describe("downloadAuth", () => {
 		});
 
 		it("should handle different wallet addresses", () => {
-			for (const [name, wallet] of Object.entries(TEST_WALLETS)) {
+			for (const [_name, wallet] of Object.entries(TEST_WALLETS)) {
 				const message = buildDownloadMessage(TEST_UUID, wallet, TEST_NONCE, TEST_EXPIRY);
 				expect(message).toContain(`Wallet: ${wallet}`);
 			}

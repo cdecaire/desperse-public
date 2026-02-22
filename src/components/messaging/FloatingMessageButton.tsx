@@ -14,6 +14,7 @@ import { useMessaging } from './MessagingContext'
 import { useThreads, useUnreadCount, type Thread } from '@/hooks/useMessages'
 import { useScrollHideNav } from '@/hooks/useScrollHideNav'
 import { cn } from '@/lib/utils'
+import { Icon } from '@/components/ui/icon'
 
 type PopoverView = 'threads' | 'conversation' | 'new'
 
@@ -236,7 +237,7 @@ export function FloatingMessageButton({ className, hideTrigger = false }: Floati
                 onClick={handleNewMessage}
                 aria-label="New message"
               >
-                <i className="fa-regular fa-circle-plus text-sm" aria-hidden="true" />
+                <Icon name="circle-plus" variant="regular" className="text-sm" />
               </Button>
               <Button
                 variant="ghost"
@@ -245,7 +246,7 @@ export function FloatingMessageButton({ className, hideTrigger = false }: Floati
                 onClick={handleClose}
               >
                 <Link to="/settings/account/messaging" aria-label="Message settings">
-                  <i className="fa-regular fa-gear text-sm" aria-hidden="true" />
+                  <Icon name="gear" variant="regular" className="text-sm" />
                 </Link>
               </Button>
               <Button
@@ -254,7 +255,7 @@ export function FloatingMessageButton({ className, hideTrigger = false }: Floati
                 onClick={handleClose}
                 aria-label="Close messages"
               >
-                <i className="fa-solid fa-xmark text-sm" aria-hidden="true" />
+                <Icon name="xmark" className="text-sm" />
               </Button>
             </div>
           </div>
@@ -350,7 +351,7 @@ export function FloatingMessageButton({ className, hideTrigger = false }: Floati
           >
             {/* Paper plane icon */}
             <span className="w-6 h-6 grid place-items-center relative">
-              <i className="fa-regular fa-paper-plane text-lg translate-y-0.5 -translate-x-px" aria-hidden="true" />
+              <Icon name="paper-plane" variant="regular" className="text-lg translate-y-0.5 -translate-x-px" />
               {/* Unread badge on icon when no avatars */}
               {unreadCount > 0 && !hasAvatars && (
                 <NotificationBadge

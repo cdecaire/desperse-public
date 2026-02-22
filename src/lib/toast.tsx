@@ -1,4 +1,5 @@
 import { toast as sonnerToast } from 'sonner'
+import { Icon } from '@/components/ui/icon'
 
 interface ToastOptions {
   duration?: number
@@ -18,11 +19,7 @@ function ToastIcon({ variant }: { variant: 'success' | 'error' | 'info' | 'warni
       className="flex items-center justify-center rounded-full flex-shrink-0"
       style={{ backgroundColor: config.bgColor, width: '20px', height: '20px' }}
     >
-      <i
-        className={`fa-solid ${config.icon}`}
-        style={{ color: 'white', fontSize: '10px' }}
-        aria-hidden="true"
-      />
+      <Icon name={config.icon} className="text-white text-[10px]" />
     </div>
   )
 }
@@ -36,7 +33,7 @@ function CloseButton({ onClick }: { onClick: () => void }) {
       className="ml-auto flex-shrink-0 w-6 h-6 flex items-center justify-center opacity-70 transition-opacity hover:opacity-100 focus:outline-none bg-transparent border-0 p-0 cursor-pointer"
       aria-label="Close"
     >
-      <i className="fa-solid fa-xmark text-primary-foreground text-sm" aria-hidden="true" />
+      <Icon name="xmark" className="text-primary-foreground text-sm" />
     </button>
   )
 }

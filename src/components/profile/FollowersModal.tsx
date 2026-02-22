@@ -4,6 +4,7 @@
  */
 
 import { useState, useMemo, useEffect } from 'react'
+import { Icon } from '@/components/ui/icon'
 import { Link } from '@tanstack/react-router'
 import { SearchIcon } from 'lucide-react'
 import {
@@ -251,7 +252,7 @@ function FollowerItem({
               className="w-full h-full object-cover"
             />
           ) : (
-            <i className="fa-regular fa-user text-lg text-muted-foreground" />
+            <Icon name="user" variant="regular" className="text-lg text-muted-foreground" />
           )}
         </div>
 

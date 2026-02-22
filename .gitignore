@@ -18,6 +18,9 @@ todos.json
 scripts-internal/
 docs-internal/
 
+# Font Awesome Pro token
+.npmrc
+
 # Claude Code local settings (may contain permissions with sensitive data)
 .claude/settings.local.json
 nul

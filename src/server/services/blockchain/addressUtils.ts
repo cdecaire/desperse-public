@@ -104,7 +104,7 @@ export function addressToBytes(addr: string): Uint8Array {
 		throw new Error(`Address encoding produced ${bytes.length} bytes, expected 32`);
 	}
 
-	return bytes;
+	return bytes as Uint8Array;
 }
 
 /**

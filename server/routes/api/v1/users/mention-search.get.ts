@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
 		const token = authHeader?.replace('Bearer ', '')
 
 		if (!token) {
-			event.node.res.statusCode = 401
+			event.node!.res!.statusCode = 401
 			return {
 				success: false,
 				error: { code: 'unauthorized', message: 'Authentication required' },
@@ -37,7 +37,7 @@ export default defineEventHandler(async (event) => {
 
 		// Validate limit
 		if (isNaN(limit) || limit < 1 || limit > 20) {
-			event.node.res.statusCode = 400
+			event.node!.res!.statusCode = 400
 			return {
 				success: false,
 				error: { code: 'invalid_limit', message: 'Limit must be between 1 and 20' },
@@ -48,7 +48,7 @@ export default defineEventHandler(async (event) => {
 		const result = await searchMentionUsersDirect(token, query, limit)
 
 		if (!result.success) {
-			event.node.res.statusCode = result.error === 'Authentication required' ? 401 : 400
+			event.node!.res!.statusCode = result.error === 'Authentication required' ? 401 : 400
 			return {
 				success: false,
 				error: { code: 'error', message: result.error },
@@ -65,7 +65,7 @@ export default defineEventHandler(async (event) => {
 		}
 	} catch (error) {
 		console.error('[GET /users/mention-search] Error:', error)
-		event.node.res.statusCode = 500
+		event.node!.res!.statusCode = 500
 		return {
 			success: false,
 			error: { code: 'internal_error', message: 'Failed to search users' },

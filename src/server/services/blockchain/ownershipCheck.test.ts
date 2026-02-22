@@ -57,9 +57,7 @@ import {
 	verifyCnftOwnership,
 	verifyNftOwnership,
 	isPostCreator,
-	type OwnershipCheckResult,
 } from "./ownershipCheck";
-import { db } from "@/server/db";
 
 // ============================================================================
 // Test Data
@@ -71,14 +69,6 @@ const TEST_POST_ID = "test-post-123";
 const TEST_NFT_MINT = "nft-mint-address-123";
 const TEST_ASSET_ID = "asset-id-456";
 
-// Helper to create mock token account data with balance
-function createTokenAccountData(balance: bigint): Buffer {
-	const data = Buffer.alloc(165); // Standard token account size
-	// Write balance at offset 64 (after mint + owner)
-	data.writeBigUInt64LE(balance, 64);
-	return data;
-}
-
 // ============================================================================
 // Test Setup
 // ============================================================================
@@ -88,7 +78,7 @@ describe("ownershipCheck", () => {
 
 	beforeEach(() => {
 		vi.clearAllMocks();
-		fetchSpy = vi.spyOn(global, "fetch");
+		fetchSpy = vi.spyOn(global, "fetch") as any;
 	});
 
 	afterEach(() => {

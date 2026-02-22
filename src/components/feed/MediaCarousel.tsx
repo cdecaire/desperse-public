@@ -7,6 +7,7 @@
  */
 
 import { useState, useRef, useCallback, useEffect, useMemo } from 'react'
+import { Icon } from '@/components/ui/icon'
 import { cn } from '@/lib/utils'
 import { getResponsiveImageProps } from '@/lib/imageUrl'
 
@@ -365,7 +366,7 @@ export function MediaCarousel({
       {getMediaType(currentAsset?.mimeType || '') === 'video' && (
         <div className="absolute top-2 right-2 pointer-events-none z-20">
           <div className="w-6 h-6 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center">
-            <i className="fa-solid fa-play text-[10px] text-white" />
+            <Icon name="play" className="text-[10px] text-white" />
           </div>
         </div>
       )}
@@ -390,7 +391,7 @@ export function MediaCarousel({
             )}
             aria-label="Previous image"
           >
-            <i className="fa-solid fa-arrow-left text-sm" />
+            <Icon name="arrow-left" className="text-sm" />
           </button>
 
           <button
@@ -410,7 +411,7 @@ export function MediaCarousel({
             )}
             aria-label="Next image"
           >
-            <i className="fa-solid fa-arrow-right text-sm" />
+            <Icon name="arrow-right" className="text-sm" />
           </button>
         </>
       )}

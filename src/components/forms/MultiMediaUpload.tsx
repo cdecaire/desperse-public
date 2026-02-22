@@ -6,6 +6,7 @@
 
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { upload } from '@vercel/blob/client'
+import { Icon } from '@/components/ui/icon'
 import { cn } from '@/lib/utils'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { Button } from '@/components/ui/button'
@@ -271,7 +272,7 @@ function MediaItemCard({
       {/* Error Overlay */}
       {item.status === 'error' && (
         <div className="absolute inset-0 bg-destructive/80 flex flex-col items-center justify-center p-2">
-          <i className="fa-regular fa-circle-exclamation text-white text-lg" />
+          <Icon name="circle-exclamation" variant="regular" className="text-white text-lg" />
           <p className="text-xs text-white text-center mt-1">{item.error}</p>
         </div>
       )}
@@ -280,7 +281,7 @@ function MediaItemCard({
       {item.mediaType === 'video' && item.status === 'success' && (
         <div className="absolute bottom-1.5 left-1.5">
           <div className="w-5 h-5 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center">
-            <i className="fa-solid fa-play text-[8px] text-white" />
+            <Icon name="play" className="text-[8px] text-white" />
           </div>
         </div>
       )}
@@ -310,7 +311,7 @@ function MediaItemCard({
           className="absolute top-1 right-1 w-6 h-6"
           aria-label="Remove media"
         >
-          <i className="fa-solid fa-xmark text-xs" />
+          <Icon name="xmark" className="text-xs" />
         </Button>
       )}
     </div>
@@ -331,7 +332,7 @@ function DownloadableFileCard({ item, onRemove }: DownloadableFileCardProps) {
       <div className="flex items-center gap-4">
         {/* File icon */}
         <div className="w-14 h-14 rounded-lg bg-background flex items-center justify-center flex-shrink-0">
-          <i className={cn('fa-regular text-xl text-muted-foreground', getFileIcon(item.mediaType, item.fileName))} />
+          <Icon name={getFileIcon(item.mediaType, item.fileName)} variant="regular" className="text-xl text-muted-foreground" />
         </div>
 
         {/* File info */}
@@ -359,7 +360,7 @@ function DownloadableFileCard({ item, onRemove }: DownloadableFileCardProps) {
             className="flex-shrink-0"
             aria-label="Remove file"
           >
-            <i className="fa-solid fa-xmark" />
+            <Icon name="xmark" />
           </Button>
         )}
       </div>
@@ -375,7 +376,7 @@ function DownloadableFileCard({ item, onRemove }: DownloadableFileCardProps) {
       {/* Error state */}
       {item.status === 'error' && (
         <div className="mt-2 flex items-center gap-2 text-destructive text-xs">
-          <i className="fa-regular fa-circle-exclamation" />
+          <Icon name="circle-exclamation" variant="regular" />
           <span>{item.error}</span>
         </div>
       )}
@@ -840,7 +841,7 @@ export function MultiMediaUpload({
           />
 
           <div className="mb-4">
-            <i className="fa-solid fa-cloud-arrow-up text-3xl text-muted-foreground" />
+            <Icon name="cloud-arrow-up" className="text-3xl text-muted-foreground" />
           </div>
           <p className="text-sm font-medium mb-1">
             {isDragging ? 'Drop files here' : 'Drag and drop your media'}
@@ -910,7 +911,7 @@ export function MultiMediaUpload({
                 disabled={disabled}
                 multiple
               />
-              <i className="fa-solid fa-plus text-lg text-muted-foreground mb-1" />
+              <Icon name="plus" className="text-lg text-muted-foreground mb-1" />
               <span className="text-xs text-muted-foreground">Add</span>
             </div>
           )}

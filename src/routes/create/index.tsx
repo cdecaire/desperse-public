@@ -22,7 +22,7 @@ function CreatePage() {
 }
 
 function CreateContent() {
-  const { user, isLoading } = useCurrentUser()
+  const { isLoading } = useCurrentUser()
 
   return (
     <div className="pt-4 pb-8 px-4 md:px-6 lg:px-8">

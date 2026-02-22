@@ -5,6 +5,7 @@
  */
 
 import { useState, useMemo } from 'react'
+import { Icon } from '@/components/ui/icon'
 import { Link } from '@tanstack/react-router'
 import { SearchIcon } from 'lucide-react'
 import {
@@ -244,19 +245,19 @@ function ActivityItem({
           />
         ) : mediaType === 'audio' ? (
           <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-muted to-muted/50">
-            <i className="fa-regular fa-music text-2xl text-muted-foreground/50" />
+            <Icon name="music" variant="regular" className="text-2xl text-muted-foreground/50" />
           </div>
         ) : mediaType === 'document' ? (
           <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-muted to-muted/50">
-            <i className="fa-regular fa-file-pdf text-2xl text-muted-foreground/50" />
+            <Icon name="file-pdf" variant="regular" className="text-2xl text-muted-foreground/50" />
           </div>
         ) : mediaType === '3d' ? (
           <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-muted to-muted/50">
-            <i className="fa-regular fa-cube text-2xl text-muted-foreground/50" />
+            <Icon name="cube" variant="regular" className="text-2xl text-muted-foreground/50" />
           </div>
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-muted to-muted/50">
-            <i className="fa-regular fa-file text-2xl text-muted-foreground/50" />
+            <Icon name="file" variant="regular" className="text-2xl text-muted-foreground/50" />
           </div>
         )}
       </div>
@@ -273,7 +274,7 @@ function ActivityItem({
                   className="w-3 h-3 rounded-full"
                 />
               ) : (
-                <i className="fa-regular fa-user text-[8px] text-muted-foreground" />
+                <Icon name="user" variant="regular" className="text-[8px] text-muted-foreground" />
               )}
               <p className="text-sm font-semibold truncate">
                 {user.displayName || user.usernameSlug}
@@ -293,7 +294,7 @@ function ActivityItem({
       </div>
       
       {/* Activity type icon - top right of row */}
-      <i className={`${getActivityIcon(activity.type)} absolute top-3 right-3 text-base text-foreground`} />
+      <Icon name={getActivityIcon(activity.type)} variant="regular" className="absolute top-3 right-3 text-base text-foreground" />
     </Link>
   )
 }
@@ -316,15 +317,15 @@ function getActivityLabel(type: ActivityItem['type']): string {
 function getActivityIcon(type: ActivityItem['type']): string {
   switch (type) {
     case 'post':
-      return 'fa-regular fa-circle-plus'
+      return 'circle-plus'
     case 'like':
-      return 'fa-regular fa-heart'
+      return 'heart'
     case 'commented':
-      return 'fa-regular fa-comment'
+      return 'comment'
     case 'collected':
-      return 'fa-regular fa-gem'
+      return 'gem'
     case 'bought':
-      return 'fa-regular fa-wallet'
+      return 'wallet'
   }
 }
 

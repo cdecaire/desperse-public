@@ -1,4 +1,5 @@
 import { Link, useLocation } from '@tanstack/react-router'
+import { Icon } from '@/components/ui/icon'
 import { useNotificationCounters } from '@/hooks/useNotificationCounters'
 
 type AdminNavVariant = 'desktop' | 'mobile'
@@ -41,7 +42,6 @@ export function AdminNav({ variant = 'desktop' }: AdminNavProps) {
           {adminNavItems.map((item) => {
             const isActive =
               location.pathname === item.path || location.pathname.startsWith(`${item.path}/`)
-            const iconStyle = isActive ? 'fa-solid' : 'fa-regular'
 
             return (
               <Link
@@ -54,7 +54,7 @@ export function AdminNav({ variant = 'desktop' }: AdminNavProps) {
                 }`}
               >
                 <span className="w-6 h-6 grid place-items-center">
-                  <i className={`${iconStyle} ${item.icon} text-xl`} aria-hidden="true" />
+                  <Icon name={item.icon} variant={isActive ? "solid" : "regular"} className="text-xl" />
                 </span>
                 <span className="text-sm font-medium leading-none">{item.label}</span>
               </Link>
@@ -86,10 +86,7 @@ export function AdminNav({ variant = 'desktop' }: AdminNavProps) {
                 }`}
               >
                 <span className="w-6 h-6 grid place-items-center shrink-0">
-                  <i
-                    className={`${isActive ? 'fa-solid' : 'fa-regular'} ${item.icon} text-xl`}
-                    aria-hidden="true"
-                  />
+                  <Icon name={item.icon} variant={isActive ? "solid" : "regular"} className="text-xl" />
                 </span>
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-medium leading-none">
@@ -104,10 +101,7 @@ export function AdminNav({ variant = 'desktop' }: AdminNavProps) {
                     {badgeCount > 99 ? '99+' : badgeCount}
                   </span>
                 )}
-                <i
-                  className="fa-regular fa-chevron-right text-muted-foreground text-sm"
-                  aria-hidden="true"
-                />
+                <Icon name="chevron-right" variant="regular" className="text-muted-foreground text-sm" />
               </Link>
             )
           })}

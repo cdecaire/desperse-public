@@ -8,6 +8,7 @@ import { Link, useNavigate } from '@tanstack/react-router'
 import { useState, useRef, useEffect } from 'react'
 import { useTheme } from '../providers/ThemeProvider'
 import { useAuth } from '../../hooks/useAuth'
+import { Icon } from '@/components/ui/icon'
 import {
   Sheet,
   SheetContent,
@@ -103,7 +104,7 @@ export default function MoreMenu({ variant = 'sidebar' }: MoreMenuProps) {
           className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-accent dark:hover:bg-zinc-800 rounded-md hover-fade"
           role="menuitem"
         >
-          <i className="fa-regular fa-user-gear w-5 text-center" aria-hidden="true" />
+          <Icon name="user-gear" variant="regular" className="w-5 text-center" />
           <div className="flex flex-col">
             <span className="text-sm font-medium leading-none">Settings</span>
             <span className="text-xs text-muted-foreground leading-none">Account, preferences, help</span>
@@ -119,10 +120,7 @@ export default function MoreMenu({ variant = 'sidebar' }: MoreMenuProps) {
           className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-accent dark:hover:bg-zinc-800 rounded-md hover-fade"
           role="menuitem"
         >
-          <i
-            className={`fa-regular ${activeTheme === 'light' ? 'fa-sun-bright' : 'fa-moon'} w-5 text-center`}
-            aria-hidden="true"
-          />
+          <Icon name={activeTheme === 'light' ? 'sun-bright' : 'moon'} variant="regular" className="w-5 text-center" />
           <div className="flex flex-col">
             <span className="text-sm font-medium leading-none">Theme</span>
             <span className="text-xs text-muted-foreground leading-none">
@@ -137,10 +135,7 @@ export default function MoreMenu({ variant = 'sidebar' }: MoreMenuProps) {
           role="menuitem"
         >
           <div className="flex items-center gap-3">
-            <i
-              className={`fa-regular ${theme === 'light' ? 'fa-sun-bright' : 'fa-moon'} w-5 text-center`}
-              aria-hidden="true"
-            />
+            <Icon name={theme === 'light' ? 'sun-bright' : 'moon'} variant="regular" className="w-5 text-center" />
             <span className="text-sm font-medium">Theme</span>
           </div>
           <Switch
@@ -159,7 +154,7 @@ export default function MoreMenu({ variant = 'sidebar' }: MoreMenuProps) {
             className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-accent dark:hover:bg-zinc-800 rounded-md hover-fade"
             role="menuitem"
           >
-            <i className="fa-regular fa-circle-info w-5 text-center" aria-hidden="true" />
+            <Icon name="circle-info" variant="regular" className="w-5 text-center" />
             <span className="text-sm font-medium">Help</span>
           </Link>
           <button
@@ -167,7 +162,7 @@ export default function MoreMenu({ variant = 'sidebar' }: MoreMenuProps) {
             className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-accent dark:hover:bg-zinc-800 rounded-md hover-fade"
             role="menuitem"
           >
-            <i className="fa-regular fa-message-lines w-5 text-center" aria-hidden="true" />
+            <Icon name="message-lines" variant="regular" className="w-5 text-center" />
             <span className="text-sm font-medium">Send beta feedback</span>
           </button>
         </>
@@ -179,7 +174,7 @@ export default function MoreMenu({ variant = 'sidebar' }: MoreMenuProps) {
             className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-accent dark:hover:bg-zinc-800 rounded-md hover-fade"
             role="menuitem"
           >
-            <i className="fa-regular fa-shield-check w-5 text-center" aria-hidden="true" />
+            <Icon name="shield-check" variant="regular" className="w-5 text-center" />
             <span className="text-sm font-medium">Privacy Policy</span>
           </Link>
           <Link
@@ -188,7 +183,7 @@ export default function MoreMenu({ variant = 'sidebar' }: MoreMenuProps) {
             className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-accent dark:hover:bg-zinc-800 rounded-md hover-fade"
             role="menuitem"
           >
-            <i className="fa-regular fa-file-contract w-5 text-center" aria-hidden="true" />
+            <Icon name="file-contract" variant="regular" className="w-5 text-center" />
             <span className="text-sm font-medium">Terms of Service</span>
           </Link>
         </>
@@ -202,7 +197,7 @@ export default function MoreMenu({ variant = 'sidebar' }: MoreMenuProps) {
           className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-accent dark:hover:bg-zinc-800 rounded-md hover-fade"
           role="menuitem"
         >
-          <i className="fa-regular fa-arrow-right-from-bracket w-5 text-center" aria-hidden="true" />
+          <Icon name="arrow-right-from-bracket" variant="regular" className="w-5 text-center" />
           <span className="text-sm font-medium">Sign out</span>
         </button>
       ) : (
@@ -211,7 +206,7 @@ export default function MoreMenu({ variant = 'sidebar' }: MoreMenuProps) {
           className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-accent dark:hover:bg-zinc-800 rounded-md hover-fade"
           role="menuitem"
         >
-          <i className="fa-regular fa-right-to-bracket w-5 text-center" aria-hidden="true" />
+          <Icon name="right-to-bracket" variant="regular" className="w-5 text-center" />
           <span className="text-sm font-medium">Log in or Sign up</span>
         </button>
       )}
@@ -229,7 +224,7 @@ export default function MoreMenu({ variant = 'sidebar' }: MoreMenuProps) {
               aria-label="More"
             >
               <span className="w-6 h-6 grid place-items-center">
-                <i className={`${isOpen ? 'fa-solid' : 'fa-regular'} fa-bars text-xl`} aria-hidden="true" />
+                <Icon name="bars" variant={isOpen ? 'solid' : 'regular'} className="text-xl" />
               </span>
             </button>
           </SheetTrigger>
@@ -280,7 +275,7 @@ export default function MoreMenu({ variant = 'sidebar' }: MoreMenuProps) {
           aria-haspopup="menu"
         >
           <span className="w-6 h-6 grid place-items-center">
-            <i className={`${isOpen ? 'fa-solid' : 'fa-regular'} fa-bars text-xl`} aria-hidden="true" />
+            <Icon name="bars" variant={isOpen ? 'solid' : 'regular'} className="text-xl" />
           </span>
           <span className="text-sm leading-none">More</span>
         </button>

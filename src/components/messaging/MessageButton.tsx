@@ -10,6 +10,7 @@ import { useDmEligibility } from '@/hooks/useDmEligibility'
 import { useGetOrCreateThread, type Thread } from '@/hooks/useMessages'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { cn } from '@/lib/utils'
+import { Icon } from '@/components/ui/icon'
 
 interface MessageButtonProps {
   creatorId: string
@@ -79,7 +80,7 @@ export function MessageButton({
       {isLoading ? (
         <LoadingSpinner size="sm" />
       ) : (
-        <i className="fa-regular fa-paper-plane text-base -translate-x-px translate-y-px" aria-hidden="true" />
+        <Icon name="paper-plane" variant="regular" className="text-base -translate-x-px translate-y-px" />
       )}
       {!iconOnly && <span>Message</span>}
     </Button>

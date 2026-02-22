@@ -14,6 +14,7 @@ import { ReportModal } from '@/components/forms/ReportModal'
 import { useMessages, useSendMessage, useMarkRead, useBlockInThread, type Thread } from '@/hooks/useMessages'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { useCreateReport } from '@/hooks/useReports'
+import { Icon } from '@/components/ui/icon'
 import { useMessaging } from './MessagingContext'
 
 interface ConversationViewProps {
@@ -286,7 +287,7 @@ export function ConversationView({ thread, onBack, onClose }: ConversationViewPr
           className="flex-shrink-0 md:hidden"
           aria-label="Back to conversations"
         >
-          <i className="fa-solid fa-arrow-left text-sm" aria-hidden="true" />
+          <Icon name="arrow-left" className="text-sm" />
         </Button>
 
         {/* User info */}
@@ -300,7 +301,7 @@ export function ConversationView({ thread, onBack, onClose }: ConversationViewPr
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                <i className="fa-solid fa-user" aria-hidden="true" />
+                <Icon name="user" />
               </div>
             )}
           </div>
@@ -337,7 +338,7 @@ export function ConversationView({ thread, onBack, onClose }: ConversationViewPr
               className="hidden md:flex"
               aria-label="Close conversation"
             >
-              <i className="fa-solid fa-xmark text-sm" aria-hidden="true" />
+              <Icon name="xmark" className="text-sm" />
             </Button>
           )}
         </div>

@@ -6,6 +6,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useAuth } from '@/hooks/useAuth'
 import { EmptyState } from '@/components/shared/EmptyState'
+import { Icon } from '@/components/ui/icon'
 
 export const Route = createFileRoute('/$')({
   component: NotFoundPage,
@@ -17,7 +18,7 @@ export function NotFoundPage() {
   return (
     <div className="flex items-center justify-center min-h-[60vh]">
       <EmptyState
-        icon={<i className="fa-regular fa-compass text-4xl" />}
+        icon={<Icon name="compass" variant="regular" className="text-4xl" />}
         title="Page not found"
         description="This page doesn't exist or may have been moved."
         action={{ label: 'Go to Feed', to: '/' }}

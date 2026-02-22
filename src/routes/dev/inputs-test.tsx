@@ -6,6 +6,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 import { Card } from '@/components/ui/card'
+import { Icon } from '@/components/ui/icon'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
@@ -364,7 +365,7 @@ function SettingsToggle({
   return (
     <div className="flex items-center justify-between py-1">
       <div className="flex items-center gap-3">
-        <i className={`fa-regular ${icon} w-4 text-center text-muted-foreground/70`} />
+        <Icon name={icon.replace('fa-', '')} variant="regular" className="w-4 text-center text-muted-foreground/70" />
         <div className="flex flex-col">
           <span className="text-sm font-medium">{label}</span>
           <span className="text-xs text-muted-foreground">{description}</span>

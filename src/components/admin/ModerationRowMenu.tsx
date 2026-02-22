@@ -25,6 +25,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
+import { Icon } from '@/components/ui/icon'
 
 interface ModerationRowMenuProps {
   contentType: 'post' | 'comment'
@@ -164,7 +165,7 @@ export function ModerationRowMenu({
             )}
             aria-label="Actions menu"
           >
-            <i className="fa-regular fa-ellipsis-vertical text-muted-foreground" />
+            <Icon name="ellipsis-vertical" variant="regular" className="text-muted-foreground" />
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="min-w-[180px]">
@@ -174,12 +175,12 @@ export function ModerationRowMenu({
               onClick={() => unhideMutation.mutate()}
               disabled={unhideMutation.isPending}
             >
-              <i className="fa-regular fa-eye w-4 text-center text-muted-foreground" />
+              <Icon name="eye" variant="regular" className="w-4 text-center text-muted-foreground" />
               <span>{unhideMutation.isPending ? 'Unhiding...' : `Unhide ${isComment ? 'comment' : 'post'}`}</span>
             </DropdownMenuItem>
           ) : (
             <DropdownMenuItem onClick={() => setShowHideDialog(true)}>
-              <i className="fa-regular fa-eye-slash w-4 text-center text-muted-foreground" />
+              <Icon name="eye-slash" variant="regular" className="w-4 text-center text-muted-foreground" />
               <span>Hide {isComment ? 'comment' : 'post'}</span>
             </DropdownMenuItem>
           )}
@@ -190,7 +191,7 @@ export function ModerationRowMenu({
               onClick={() => resolveMutation.mutate()}
               disabled={resolveMutation.isPending}
             >
-              <i className="fa-regular fa-check w-4 text-center text-muted-foreground" />
+              <Icon name="check" variant="regular" className="w-4 text-center text-muted-foreground" />
               <span>{resolveMutation.isPending ? 'Resolving...' : 'Mark resolved'}</span>
             </DropdownMenuItem>
           )}

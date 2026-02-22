@@ -6,6 +6,7 @@
 import { useState, useRef, useCallback, type KeyboardEvent } from 'react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { Icon } from '@/components/ui/icon'
 
 interface MessageInputProps {
   onSend: (content: string) => void
@@ -86,9 +87,9 @@ export function MessageInput({
         className="rounded-full flex-shrink-0"
       >
         {isLoading ? (
-          <i className="fa-solid fa-spinner fa-spin text-sm" aria-hidden="true" />
+          <Icon name="spinner" spin className="text-sm" />
         ) : (
-          <i className="fa-regular fa-paper-plane text-sm -translate-x-px translate-y-px" aria-hidden="true" />
+          <Icon name="paper-plane" variant="regular" className="text-sm -translate-x-px translate-y-px" />
         )}
       </Button>
     </div>

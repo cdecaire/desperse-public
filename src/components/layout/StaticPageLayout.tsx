@@ -6,6 +6,7 @@
 
 import { Link } from '@tanstack/react-router'
 import { usePrivy } from '@privy-io/react-auth'
+import { Icon } from '@/components/ui/icon'
 import { useTheme } from '@/components/providers/ThemeProvider'
 import { Switch } from '@/components/ui/switch'
 import { Logo } from '@/components/shared/Logo'
@@ -38,10 +39,7 @@ function Header() {
       </Link>
       <div className="flex-1 flex items-center justify-end gap-4">
         <div className="flex items-center gap-2">
-          <i
-            className={`fa-regular ${activeTheme === 'light' ? 'fa-sun-bright' : 'fa-moon'} text-sm`}
-            aria-hidden="true"
-          />
+          <Icon name={activeTheme === 'light' ? 'sun-bright' : 'moon'} variant="regular" className="text-sm" />
           <Switch
             checked={activeTheme === 'dark'}
             onCheckedChange={handleThemeToggle}

@@ -3,6 +3,7 @@ import { usePreferences } from '@/hooks/usePreferences'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
+import { Icon } from '@/components/ui/icon'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 
 export const Route = createFileRoute('/settings/account/notifications')({
@@ -128,7 +129,7 @@ function NotificationToggle({
   return (
     <div className="flex items-center justify-between py-1">
       <div className="flex items-center gap-3">
-        <i className={`fa-regular ${icon} w-4 text-center text-muted-foreground/70`} aria-hidden="true" />
+        <Icon name={icon} variant="regular" className="w-4 text-center text-muted-foreground/70" />
         <div className="flex flex-col">
           <Label htmlFor={id} className="text-sm font-medium cursor-pointer">
             {label}

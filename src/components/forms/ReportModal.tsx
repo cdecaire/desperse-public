@@ -15,6 +15,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Checkbox } from '@/components/ui/checkbox'
+import { Icon } from '@/components/ui/icon'
 import { cn } from '@/lib/utils'
 import { PostCardUser } from '@/components/feed/PostCard'
 
@@ -51,8 +52,8 @@ export function ReportModal({
   open,
   onOpenChange,
   contentType = 'post',
-  contentId,
-  postId,
+  contentId: _contentId,
+  postId: _postId,
   postUser,
   postCaption,
   postMediaUrl,
@@ -141,7 +142,7 @@ export function ReportModal({
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-muted">
-                  <i className="fa-regular fa-user text-muted-foreground" />
+                  <Icon name="user" variant="regular" className="text-muted-foreground" />
                 </div>
               )}
             </div>

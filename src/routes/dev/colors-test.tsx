@@ -5,6 +5,7 @@
 
 import { createFileRoute } from '@tanstack/react-router'
 import { Card } from '@/components/ui/card'
+import { Icon } from '@/components/ui/icon'
 
 export const Route = createFileRoute('/dev/colors-test')({
   component: ColorsTestPage,
@@ -623,7 +624,7 @@ function ColorsTestPage() {
               />
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <i className="fa-solid fa-circle-plus" style={{ color: 'var(--tone-standard)' }} />
+                  <span style={{ color: 'var(--tone-standard)' }}><Icon name="circle-plus" /></span>
                   <span className="font-medium">Standard Post</span>
                   <span className="text-sm font-mono" style={{ color: 'var(--tone-standard)' }}>--tone-standard</span>
                 </div>
@@ -640,7 +641,7 @@ function ColorsTestPage() {
               />
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <i className="fa-solid fa-gem" style={{ color: 'var(--tone-collectible)' }} />
+                  <span style={{ color: 'var(--tone-collectible)' }}><Icon name="gem" /></span>
                   <span className="font-medium">Collectible</span>
                   <span className="text-sm font-mono" style={{ color: 'var(--tone-collectible)' }}>--tone-collectible</span>
                 </div>
@@ -666,7 +667,7 @@ function ColorsTestPage() {
               />
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <i className="fa-solid fa-image-stack" style={{ color: 'var(--tone-edition)' }} />
+                  <span style={{ color: 'var(--tone-edition)' }}><Icon name="image-stack" /></span>
                   <span className="font-medium">Edition</span>
                   <span className="text-sm font-mono" style={{ color: 'var(--tone-edition)' }}>--tone-edition</span>
                 </div>

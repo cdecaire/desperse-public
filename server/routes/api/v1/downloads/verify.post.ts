@@ -71,7 +71,7 @@ export default defineEventHandler(async (event) => {
 		}
 
 		// Parse request body
-		const body = await readBody(event)
+		const body = await readBody(event) as Record<string, any>
 		const assetId = body?.assetId as string | undefined
 		const signature = body?.signature as string | undefined
 		const message = body?.message as string | undefined

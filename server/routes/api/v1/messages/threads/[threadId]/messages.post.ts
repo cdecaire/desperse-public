@@ -58,7 +58,7 @@ export default defineEventHandler(async (event) => {
 		}
 	}
 
-	const body = await readBody(event)
+	const body = await readBody(event) as Record<string, any>
 	const content = body?.content as string | undefined
 
 	if (!content || typeof content !== 'string' || content.trim().length === 0) {

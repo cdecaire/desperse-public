@@ -20,6 +20,7 @@ import {
 	readBody,
 	setHeaders,
 	setResponseStatus,
+	type H3Event,
 } from 'h3'
 import { randomUUID } from 'node:crypto'
 import { prepareCollectDirect } from '@/server/utils/collect'
@@ -28,7 +29,7 @@ import { prepareCollectDirect } from '@/server/utils/collect'
  * Extract client IP address from request headers
  * Checks multiple headers in order of preference (handles proxies like Vercel, Cloudflare)
  */
-function getClientIp(event: Parameters<typeof defineEventHandler>[0] extends (e: infer E) => unknown ? E : never): string | null {
+function getClientIp(event: H3Event): string | null {
 	// Order of preference for IP headers
 	const ipHeaders = [
 		'x-vercel-forwarded-for', // Vercel
@@ -113,7 +114,7 @@ export default defineEventHandler(async (event) => {
 	// Read optional wallet address from body
 	let walletAddress: string | undefined
 	try {
-		const body = (await readBody(event)) || {}
+		const body = ((await readBody(event)) || {}) as Record<string, any>
 		if (body.walletAddress && typeof body.walletAddress === 'string') {
 			walletAddress = body.walletAddress
 		}

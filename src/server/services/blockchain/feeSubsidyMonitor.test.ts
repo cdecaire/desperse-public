@@ -198,7 +198,7 @@ describe("feeSubsidyMonitor", () => {
 			}));
 
 			// Re-import to get the updated mock
-			const { isFeeSubsidyEnabled: updatedCheck } = await import("./feeSubsidyMonitor");
+			const { isFeeSubsidyEnabled: _updatedCheck } = await import("./feeSubsidyMonitor");
 			// Note: Due to module caching, this may not work as expected in the same test file
 			// In real usage, the env check happens at call time, not import time
 		});

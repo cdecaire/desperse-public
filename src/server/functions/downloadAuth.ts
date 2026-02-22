@@ -23,7 +23,7 @@ import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
 import { db } from '@/server/db'
 import { postAssets, downloadNonces, downloadTokens } from '@/server/db/schema'
-import { eq, and, lt, isNull } from 'drizzle-orm'
+import { eq, and, isNull } from 'drizzle-orm'
 import { verifyNftOwnership, isPostCreator } from '@/server/services/blockchain/ownershipCheck'
 import { addressToBytes } from '@/server/services/blockchain/addressUtils'
 // ed25519, bs58, randomBytes are dynamically imported inside handlers

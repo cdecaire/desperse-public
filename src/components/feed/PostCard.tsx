@@ -25,7 +25,7 @@ import { CategoryPill } from '@/components/ui/category-pill'
 import { MediaPill } from '@/components/ui/media-pill'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { TokenText } from '@/components/shared/TokenText'
-import { MintWindowBadge } from './MintWindowBadge'
+import { Icon } from '@/components/ui/icon'
 
 // Format relative time
 function formatRelativeTime(date: Date | string): string {
@@ -63,6 +63,40 @@ function detectMediaType(url: string): MediaType {
   }
   
   return 'image'
+}
+
+// Compute a compact time label for timed edition price pills
+function getMintTimeLabel(
+  start: Date | string | null | undefined,
+  end: Date | string | null | undefined,
+): string | null {
+  if (!start && !end) return null
+  const now = new Date()
+  const startDate = start ? new Date(start) : null
+  const endDate = end ? new Date(end) : null
+
+  // Not started yet → show scheduled date
+  if (startDate && now < startDate) {
+    return startDate.toLocaleDateString('en-US', {
+      month: 'short', day: 'numeric', year: 'numeric',
+    }) + ' @ ' + startDate.toLocaleTimeString('en-US', {
+      hour: 'numeric', minute: '2-digit',
+    })
+  }
+
+  // Active → show time remaining
+  if (endDate && now < endDate) {
+    const ms = endDate.getTime() - now.getTime()
+    const totalMin = Math.floor(ms / 60000)
+    if (totalMin < 60) return `${totalMin}m left`
+    const hours = Math.floor(totalMin / 60)
+    if (hours < 24) return `${hours}h ${totalMin % 60}m left`
+    const days = Math.floor(hours / 24)
+    return `${days}d ${hours % 24}h left`
+  }
+
+  // Ended
+  return null
 }
 
 export interface PostCardUser {
@@ -197,7 +231,24 @@ export function PostCard({
     localCollectCount,
     localEditionSupply,
   })
-  
+
+  // Time-aware pill text for timed editions
+  const mintTimeLabel = post.type === 'edition'
+    ? getMintTimeLabel(post.mintWindowStart, post.mintWindowEnd)
+    : null
+  const isScheduled = !!(post.mintWindowStart && new Date(post.mintWindowStart) > new Date())
+  // For active timed editions: "53m left · 0.10 SOL"
+  // For scheduled: "Starts Feb 22, 2026 @ 5:30PM"
+  const timedPillText = mintTimeLabel
+    ? isScheduled
+      ? display.overlayPillText
+        ? `Starts ${mintTimeLabel} · ${display.overlayPillText.replace(/^✓\s*/, '')}`
+        : `Starts ${mintTimeLabel}`
+      : display.overlayPillText
+        ? `${mintTimeLabel} · ${display.overlayPillText.replace(/^✓\s*/, '')}`
+        : mintTimeLabel
+    : null
+
   // Handle collect success - update local count and invalidate DM eligibility
   const handleCollectSuccess = () => {
     const newCount = localCollectCount + 1
@@ -283,7 +334,7 @@ export function PostCard({
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-muted">
-                  <i className="fa-regular fa-user text-muted-foreground" />
+                  <Icon name="user" variant="regular" className="text-muted-foreground" />
                 </div>
               )}
             </div>
@@ -298,7 +349,7 @@ export function PostCard({
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-muted">
-                    <i className="fa-regular fa-user text-muted-foreground" />
+                    <Icon name="user" variant="regular" className="text-muted-foreground" />
                   </div>
                 )}
               </div>
@@ -327,27 +378,16 @@ export function PostCard({
                 <>
                   <span>·</span>
                   <span className={cn('flex items-center gap-1', typeBadge.color)}>
-                    <i className={cn(typeBadge.solid ? 'fa-solid' : 'fa-regular', typeBadge.icon, 'text-[10px]')} />
+                    <Icon name={typeBadge.icon} variant={typeBadge.solid ? "solid" : "regular"} className="text-[10px]" />
                     {typeBadge.label}
                   </span>
-                </>
-              )}
-              {post.type === 'edition' && (post.mintWindowStart || post.mintWindowEnd) && (
-                <>
-                  <span>·</span>
-                  <MintWindowBadge
-                    mintWindowStart={post.mintWindowStart}
-                    mintWindowEnd={post.mintWindowEnd}
-                    mintedCount={localEditionSupply}
-                    variant="compact"
-                  />
                 </>
               )}
               {isModeratorOrAdmin && (post.isHidden === true) && (
                 <>
                   <span>·</span>
                   <span className="flex items-center gap-1 text-destructive">
-                    <i className="fa-regular fa-eye-slash text-[10px]" />
+                    <Icon name="eye-slash" variant="regular" className="text-[10px]" />
                     Hidden
                   </span>
                 </>
@@ -402,7 +442,7 @@ export function PostCard({
           assets={post.assets}
         />
 
-        {(showActionButtons || display.overlayPillText || display.statusPillText) && (
+        {(showActionButtons || display.overlayPillText || timedPillText || display.statusPillText) && (
           <div className="absolute inset-0 pointer-events-none z-20">
             <div className="absolute right-7 top-3 md:right-3 md:top-3 pointer-events-auto flex items-center gap-1.5">
               {/* Status pill (Sold, Sold Out) - NOT shown for document/3D (PostMedia handles it) */}
@@ -411,24 +451,24 @@ export function PostCard({
                   {display.statusPillText}
                 </MediaPill>
               )}
-              {/* Price pill - hide for PDF/3D since PostMedia shows it */}
-              {display.overlayPillText && mediaType !== 'document' && mediaType !== '3d' && (
+              {/* Price/time pill - hide for PDF/3D since PostMedia shows it */}
+              {(timedPillText || display.overlayPillText) && mediaType !== 'document' && mediaType !== '3d' && (
                 <>
                   {/* Wrap edition price pills with tooltip for breakdown (web only) */}
-                  {display.overlayPillVariant === 'edition' && post.price && post.currency ? (
+                  {display.overlayPillVariant === 'edition' && post.price && post.currency && !isScheduled ? (
                     <PriceTooltip
                       price={post.price}
                       currency={post.currency}
                       sellerFeeBasisPoints={post.sellerFeeBasisPoints}
                     >
                       <MediaPill variant="dark" className="cursor-default">
-                        {display.overlayPillText?.replace(/^✓\s*/, '')}
+                        {timedPillText || display.overlayPillText?.replace(/^✓\s*/, '')}
                       </MediaPill>
                     </PriceTooltip>
                   ) : (
                     <MediaPill
                       variant={
-                        display.overlayPillVariant === 'edition' ? 'dark' :
+                        display.overlayPillVariant === 'edition' || timedPillText ? 'dark' :
                         display.overlayPillVariant === 'soldOut' ? 'muted' : 'tone'
                       }
                       toneColor={
@@ -440,7 +480,7 @@ export function PostCard({
                       }
                       className={display.overlayPillVariant === 'likes' ? 'text-xs' : undefined}
                     >
-                      {display.overlayPillText?.replace(/^✓\s*/, '')}
+                      {timedPillText || display.overlayPillText?.replace(/^✓\s*/, '')}
                     </MediaPill>
                   )}
                 </>
@@ -516,13 +556,13 @@ export function PostCard({
             <div className="flex items-center gap-1 text-muted-foreground px-2">
               {post.type === 'collectible' && localCollectCount > 0 && (
                 <>
-                  <i className="fa-regular fa-gem text-base" />
+                  <Icon name="gem" variant="regular" className="text-base" />
                   <span className="text-sm font-medium">{localCollectCount}</span>
                 </>
               )}
               {post.type === 'edition' && (localEditionSupply ?? 0) > 0 && (
                 <>
-                  <i className="fa-regular fa-gem text-base" />
+                  <Icon name="gem" variant="regular" className="text-base" />
                   <span className="text-sm font-medium">{localEditionSupply}</span>
                 </>
               )}

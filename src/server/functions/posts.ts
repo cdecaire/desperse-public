@@ -6,12 +6,12 @@
 import { createServerFn } from '@tanstack/react-start'
 import { db } from '@/server/db'
 import { posts, users, follows, collections, purchases, postAssets } from '@/server/db/schema'
-import { eq, and, desc, lt, inArray, sql, count, arrayContains, isNotNull } from 'drizzle-orm'
+import { eq, and, desc, lt, inArray, sql, count, isNotNull } from 'drizzle-orm'
 import { z } from 'zod'
 import { uploadMetadataJson } from '@/server/storage/blob'
 import { validateCategories, stringsToCategories, categoriesToStrings, type Category } from '@/constants/categories'
 import { isModeratorOrAdmin } from '@/server/utils/auth-helpers'
-import { withAuth, withOptionalAuth, redactSensitiveFields } from '@/server/auth'
+import { withAuth, withOptionalAuth } from '@/server/auth'
 import { processMentions, deleteMentions } from '@/server/utils/mentions'
 import { processHashtags } from '@/server/utils/hashtags'
 import { generateNftMetadata } from '@/server/utils/nft-metadata'
@@ -114,6 +114,7 @@ const userPostsQuerySchema = z.object({
  */
 export const createPost = createServerFn({
   method: 'POST',
+// @ts-expect-error -- TanStack Start dual-context type inference
 }).handler(async (input: unknown) => {
   try {
     // Verify authentication using withAuth helper
@@ -413,6 +414,7 @@ export const createPost = createServerFn({
  */
 export const getPost = createServerFn({
   method: 'GET',
+// @ts-expect-error -- TanStack Start dual-context type inference
 }).handler(async (input: unknown) => {
   try {
     const getPostSchema = z.object({
@@ -651,6 +653,7 @@ export const getPost = createServerFn({
  */
 export const getFeed = createServerFn({
   method: 'GET',
+// @ts-expect-error -- TanStack Start dual-context type inference
 }).handler(async (input: unknown) => {
   try {
     const authResult = await withOptionalAuth(feedQuerySchema, input)
@@ -957,6 +960,7 @@ export const getFeed = createServerFn({
  */
 export const getUserPosts = createServerFn({
   method: 'GET',
+// @ts-expect-error -- TanStack Start dual-context type inference
 }).handler(async (input: unknown) => {
   try {
     const authResult = await withOptionalAuth(userPostsQuerySchema, input)
@@ -1176,6 +1180,7 @@ export const regeneratePostMetadata = createServerFn({
  */
 export const getPostEditState = createServerFn({
   method: 'GET',
+// @ts-expect-error -- TanStack Start dual-context type inference
 }).handler(async (input: unknown) => {
   try {
     const rawData = input && typeof input === 'object' && 'data' in input
@@ -1302,6 +1307,7 @@ const updatePostSchema = z.object({
 
 export const updatePost = createServerFn({
   method: 'POST',
+// @ts-expect-error -- TanStack Start dual-context type inference
 }).handler(async (input: unknown) => {
   try {
     // Verify authentication using withAuth helper

@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
 		const token = authHeader?.replace('Bearer ', '')
 
 		if (!token) {
-			event.node.res.statusCode = 401
+			event.node!.res!.statusCode = 401
 			return {
 				success: false,
 				error: { code: 'unauthorized', message: 'Authentication required' },
@@ -29,7 +29,7 @@ export default defineEventHandler(async (event) => {
 		}
 
 		// Parse request body
-		const body = await readBody(event)
+		const body = await readBody(event) as Record<string, any>
 
 		// Validate and build updates object
 		const updates: UpdatePreferencesInput = {}
@@ -37,7 +37,7 @@ export default defineEventHandler(async (event) => {
 		// Validate theme
 		if (body.theme !== undefined) {
 			if (!themeOptions.includes(body.theme)) {
-				event.node.res.statusCode = 400
+				event.node!.res!.statusCode = 400
 				return {
 					success: false,
 					error: {
@@ -53,7 +53,7 @@ export default defineEventHandler(async (event) => {
 		// Validate explorer
 		if (body.explorer !== undefined) {
 			if (!explorerOptions.includes(body.explorer)) {
-				event.node.res.statusCode = 400
+				event.node!.res!.statusCode = 400
 				return {
 					success: false,
 					error: {
@@ -69,7 +69,7 @@ export default defineEventHandler(async (event) => {
 		// Validate notifications (partial object of booleans)
 		if (body.notifications !== undefined) {
 			if (typeof body.notifications !== 'object') {
-				event.node.res.statusCode = 400
+				event.node!.res!.statusCode = 400
 				return {
 					success: false,
 					error: { code: 'invalid_notifications', message: 'Notifications must be an object' },
@@ -83,7 +83,7 @@ export default defineEventHandler(async (event) => {
 			for (const key of validKeys) {
 				if (body.notifications[key] !== undefined) {
 					if (typeof body.notifications[key] !== 'boolean') {
-						event.node.res.statusCode = 400
+						event.node!.res!.statusCode = 400
 						return {
 							success: false,
 							error: { code: 'invalid_notification', message: `notifications.${key} must be a boolean` },
@@ -102,7 +102,7 @@ export default defineEventHandler(async (event) => {
 		// Validate messaging preferences
 		if (body.messaging !== undefined) {
 			if (typeof body.messaging !== 'object') {
-				event.node.res.statusCode = 400
+				event.node!.res!.statusCode = 400
 				return {
 					success: false,
 					error: { code: 'invalid_messaging', message: 'Messaging must be an object' },
@@ -115,7 +115,7 @@ export default defineEventHandler(async (event) => {
 			// Validate dmEnabled
 			if (body.messaging.dmEnabled !== undefined) {
 				if (typeof body.messaging.dmEnabled !== 'boolean') {
-					event.node.res.statusCode = 400
+					event.node!.res!.statusCode = 400
 					return {
 						success: false,
 						error: { code: 'invalid_messaging', message: 'messaging.dmEnabled must be a boolean' },
@@ -128,7 +128,7 @@ export default defineEventHandler(async (event) => {
 			// Validate allowBuyers
 			if (body.messaging.allowBuyers !== undefined) {
 				if (typeof body.messaging.allowBuyers !== 'boolean') {
-					event.node.res.statusCode = 400
+					event.node!.res!.statusCode = 400
 					return {
 						success: false,
 						error: { code: 'invalid_messaging', message: 'messaging.allowBuyers must be a boolean' },
@@ -141,7 +141,7 @@ export default defineEventHandler(async (event) => {
 			// Validate allowCollectors
 			if (body.messaging.allowCollectors !== undefined) {
 				if (typeof body.messaging.allowCollectors !== 'boolean') {
-					event.node.res.statusCode = 400
+					event.node!.res!.statusCode = 400
 					return {
 						success: false,
 						error: { code: 'invalid_messaging', message: 'messaging.allowCollectors must be a boolean' },
@@ -155,7 +155,7 @@ export default defineEventHandler(async (event) => {
 			if (body.messaging.collectorMinCount !== undefined) {
 				const minCount = body.messaging.collectorMinCount
 				if (typeof minCount !== 'number' || !Number.isInteger(minCount) || minCount < 1 || minCount > 100) {
-					event.node.res.statusCode = 400
+					event.node!.res!.statusCode = 400
 					return {
 						success: false,
 						error: { code: 'invalid_messaging', message: 'messaging.collectorMinCount must be an integer between 1 and 100' },
@@ -172,7 +172,7 @@ export default defineEventHandler(async (event) => {
 
 		// Check if there are any updates
 		if (Object.keys(updates).length === 0) {
-			event.node.res.statusCode = 400
+			event.node!.res!.statusCode = 400
 			return {
 				success: false,
 				error: { code: 'no_updates', message: 'No valid updates provided' },
@@ -183,7 +183,7 @@ export default defineEventHandler(async (event) => {
 		const result = await updatePreferencesDirect(token, updates)
 
 		if (!result.success) {
-			event.node.res.statusCode = result.error === 'User not found' ? 404 : 401
+			event.node!.res!.statusCode = result.error === 'User not found' ? 404 : 401
 			return {
 				success: false,
 				error: { code: 'error', message: result.error },
@@ -200,7 +200,7 @@ export default defineEventHandler(async (event) => {
 		}
 	} catch (error) {
 		console.error('[PATCH /users/me/preferences] Error:', error)
-		event.node.res.statusCode = 500
+		event.node!.res!.statusCode = 500
 		return {
 			success: false,
 			error: { code: 'internal_error', message: 'Failed to update preferences' },

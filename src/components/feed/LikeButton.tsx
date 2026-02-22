@@ -11,6 +11,7 @@
 
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { Icon } from '@/components/ui/icon'
 import { usePostLikes, useLikeMutation } from '@/hooks/useLikes'
 import { useAuth } from '@/hooks/useAuth'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
@@ -68,7 +69,7 @@ export function LikeButton({
         className={cn('gap-1 px-2', className)}
         disabled
       >
-        <i className={cn('fa-regular fa-heart text-base')} />
+        <Icon name="heart" variant="regular" className="text-base" />
         {showCount && likeCount > 0 && (
           <span className="text-sm font-medium">{likeCount}</span>
         )}
@@ -100,12 +101,10 @@ export function LikeButton({
       {isPending ? (
         <LoadingSpinner size="sm" />
       ) : (
-        <i
-          className={cn(
-            isLiked ? 'fa-solid fa-heart' : 'fa-regular fa-heart',
-            'text-base',
-            isLiked && 'text-red-500'
-          )}
+        <Icon
+          name="heart"
+          variant={isLiked ? "solid" : "regular"}
+          className={cn("text-base", isLiked && "text-red-500")}
         />
       )}
       {showCount && likeCount > 0 && (

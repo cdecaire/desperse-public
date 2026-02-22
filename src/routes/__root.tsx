@@ -160,10 +160,6 @@ export const Route = createRootRoute({
       },
     ],
     scripts: [
-      {
-        src: 'https://kit.fontawesome.com/83ea8f1952.js',
-        crossOrigin: 'anonymous',
-      },
       // Script to prevent flash of wrong theme
       {
         children: `
@@ -211,6 +207,15 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       .catch((err) => {
         console.error('Failed to load Buffer polyfill:', err)
       })
+  }, [])
+
+  // Temporary: Figma capture script for html-to-design
+  useEffect(() => {
+    const el = document.createElement('script')
+    el.src = 'https://mcp.figma.com/mcp/html-to-design/capture.js'
+    el.async = true
+    document.head.appendChild(el)
+    return () => { el.remove() }
   }, [])
 
   return (

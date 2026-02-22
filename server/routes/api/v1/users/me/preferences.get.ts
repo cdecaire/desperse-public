@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
 		const token = authHeader?.replace('Bearer ', '')
 
 		if (!token) {
-			event.node.res.statusCode = 401
+			event.node!.res!.statusCode = 401
 			return {
 				success: false,
 				error: { code: 'unauthorized', message: 'Authentication required' },
@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
 		const result = await getPreferencesDirect(token)
 
 		if (!result.success) {
-			event.node.res.statusCode = result.error === 'User not found' ? 404 : 401
+			event.node!.res!.statusCode = result.error === 'User not found' ? 404 : 401
 			return {
 				success: false,
 				error: { code: 'error', message: result.error },
@@ -43,7 +43,7 @@ export default defineEventHandler(async (event) => {
 		}
 	} catch (error) {
 		console.error('[GET /users/me/preferences] Error:', error)
-		event.node.res.statusCode = 500
+		event.node!.res!.statusCode = 500
 		return {
 			success: false,
 			error: { code: 'internal_error', message: 'Failed to get preferences' },

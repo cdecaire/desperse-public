@@ -9,9 +9,9 @@
 import { createServerFn } from '@tanstack/react-start'
 import { db } from '@/server/db'
 import { contentReports, posts, users, comments, dmThreads } from '@/server/db/schema'
-import { eq, and, desc, sql, count, inArray, exists, or } from 'drizzle-orm'
+import { eq, and, desc, sql, inArray } from 'drizzle-orm'
 import { z } from 'zod'
-import { requireModerator, requireAdmin, getUserWithRole } from '@/server/utils/auth-helpers'
+import { requireModerator, requireAdmin } from '@/server/utils/auth-helpers'
 import { withAuth } from '@/server/auth'
 
 // Schema for getting reports queue (no moderatorUserId - derived from auth)
@@ -63,12 +63,6 @@ const unhideCommentSchema = z.object({
 const softDeleteCommentSchema = z.object({
   commentId: z.string().uuid(),
   reason: z.string().max(500),
-})
-
-// Schema for getting reports by post/comment ID
-const getReportsByIdSchema = z.object({
-  postId: z.string().uuid().optional(),
-  commentId: z.string().uuid().optional(),
 })
 
 // Schema for getting a comment
@@ -163,27 +157,6 @@ export const getReportsQueue = createServerFn({
           if (threadIdsWithReports.length === 0) return []
 
           const threadIds = threadIdsWithReports.map(r => r.contentId)
-
-          // Alias for user_a and user_b joins
-          const userA = db
-            .select({
-              id: users.id,
-              displayName: users.displayName,
-              usernameSlug: users.usernameSlug,
-              avatarUrl: users.avatarUrl,
-            })
-            .from(users)
-            .as('user_a')
-
-          const userB = db
-            .select({
-              id: users.id,
-              displayName: users.displayName,
-              usernameSlug: users.usernameSlug,
-              avatarUrl: users.avatarUrl,
-            })
-            .from(users)
-            .as('user_b')
 
           // Get thread details with both users
           const threads = await db
@@ -791,6 +764,7 @@ export const getDmThreadForModeration = createServerFn({
  */
 export const getComment = createServerFn({
   method: 'POST',
+// @ts-expect-error -- TanStack Start dual-context type inference
 }).handler(async (input: unknown) => {
   try {
     // Authenticate and verify moderator role
@@ -872,6 +846,7 @@ export const getComment = createServerFn({
  */
 export const getReportDetails = createServerFn({
   method: 'POST',
+// @ts-expect-error -- TanStack Start dual-context type inference
 }).handler(async (input: unknown) => {
   try {
     // Authenticate and verify moderator role
@@ -1002,6 +977,7 @@ export const getReportDetails = createServerFn({
  */
 export const hidePost = createServerFn({
   method: 'POST',
+// @ts-expect-error -- TanStack Start dual-context type inference
 }).handler(async (input: unknown) => {
   try {
     // Authenticate and verify moderator role
@@ -1061,6 +1037,7 @@ export const hidePost = createServerFn({
  */
 export const unhidePost = createServerFn({
   method: 'POST',
+// @ts-expect-error -- TanStack Start dual-context type inference
 }).handler(async (input: unknown) => {
   try {
     // Authenticate and verify moderator role
@@ -1120,6 +1097,7 @@ export const unhidePost = createServerFn({
  */
 export const softDeletePost = createServerFn({
   method: 'POST',
+// @ts-expect-error -- TanStack Start dual-context type inference
 }).handler(async (input: unknown) => {
   try {
     // Authenticate and verify admin role

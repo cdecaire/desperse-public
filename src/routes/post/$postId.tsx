@@ -25,7 +25,9 @@ import { type Category, isPresetCategory, categoryToSlug } from '@/constants/cat
 import { CategoryPill } from '@/components/ui/category-pill'
 import { MediaPill } from '@/components/ui/media-pill'
 import { cn } from '@/lib/utils'
+import { Icon } from '@/components/ui/icon'
 import { MintWindowBadge } from '@/components/feed/MintWindowBadge'
+import { useGatedDownload } from '@/hooks/useGatedDownload'
 
 export const Route = createFileRoute('/post/$postId')({
   component: PostDetailPage,
@@ -69,24 +71,6 @@ function detectMediaType(url: string): 'image' | 'video' | 'audio' | 'document' 
   return 'image' // Default fallback
 }
 
-// Get user-friendly media type labels from post assets
-function getMediaTypeLabels(post: { mediaUrl: string; assets?: Array<{ mimeType: string | null }> }): string[] {
-  if (post.assets && post.assets.length > 0) {
-    return post.assets.map((asset) => {
-      if (asset.mimeType === 'image/gif') return 'Animated GIF'
-      if (asset.mimeType?.startsWith('image/')) return 'Image'
-      if (asset.mimeType?.startsWith('video/')) return 'Video'
-      if (asset.mimeType?.startsWith('audio/')) return 'Audio'
-      if (asset.mimeType === 'application/pdf') return 'PDF'
-      return 'File'
-    })
-  }
-  const ext = post.mediaUrl?.split('.').pop()?.toLowerCase()?.split('?')[0]
-  if (ext === 'gif') return ['Animated GIF']
-  const type = detectMediaType(post.mediaUrl)
-  const labelMap: Record<string, string> = { image: 'Image', video: 'Video', audio: 'Audio', document: 'Document', '3d': '3D Model' }
-  return [labelMap[type] || 'File']
-}
 
 function PostDetailPage() {
   const { postId } = Route.useParams()
@@ -98,6 +82,7 @@ function PostDetailPage() {
   
   // Call all hooks first (hooks must be called unconditionally)
   const { data, isLoading, isError, error } = usePostQuery({ postId })
+  const { downloadProtectedAsset, isAuthenticating: isDownloading } = useGatedDownload()
   
   // Local state for collect count (updated on successful collect)
   const [localCollectCount, setLocalCollectCount] = useState<number | null>(null)
@@ -133,7 +118,7 @@ function PostDetailPage() {
   if (isError || !data) {
     return (
       <EmptyState
-        icon={<i className="fa-regular fa-circle-exclamation text-4xl" />}
+        icon={<Icon name="circle-exclamation" variant="regular" className="text-4xl" />}
         title="This post doesn't exist or was removed"
         description={error?.message || "The post you're looking for is no longer available."}
         action={{ label: 'Go to Feed', to: '/' }}
@@ -190,7 +175,47 @@ function PostDetailPage() {
   )
   const postTypeColor = POST_TYPE_COLORS[post.type]
   const isTimedEdition = post.type === 'edition' && (post.mintWindowStart || post.mintWindowEnd)
-  const mediaLabels = getMediaTypeLabels(post as any)
+  const isCollectibleOrEdition = post.type === 'edition' || post.type === 'collectible'
+  const isSoldOut = post.type === 'edition' && typeof post.maxSupply === 'number' && editionSupply >= post.maxSupply
+  const isTimedExpired = isTimedEdition && post.mintWindowEnd && new Date(post.mintWindowEnd) <= new Date()
+  const isNoLongerCollectible = isSoldOut || isTimedExpired
+
+  // Download: show download button when user has collected and post has downloadable content
+  const downloadableAssets = (post as any).downloadableAssets as Array<{ id: string; url: string; mimeType: string | null }> | undefined
+  const hasDownloads = mediaType === 'document' || mediaType === '3d' || (downloadableAssets && downloadableAssets.length > 0)
+  const showDownload = isCollected && hasDownloads
+
+  const handleDownload = async () => {
+    if (post.type === 'edition' && post.assetId) {
+      // Gated download — signature verification
+      const downloadUrl = await downloadProtectedAsset(post.assetId)
+      if (downloadUrl) window.open(downloadUrl, '_blank')
+    } else if (downloadableAssets && downloadableAssets.length > 0) {
+      // Use first downloadable asset
+      if (post.type === 'edition') {
+        const downloadUrl = await downloadProtectedAsset(downloadableAssets[0].id)
+        if (downloadUrl) window.open(downloadUrl, '_blank')
+      } else {
+        window.open(downloadableAssets[0].url, '_blank')
+      }
+    } else if (post.mediaUrl) {
+      window.open(post.mediaUrl, '_blank')
+    }
+  }
+
+  // Display values for Price/Collected card
+  const priceText = post.type === 'collectible'
+    ? 'Free'
+    : post.price && post.currency
+      ? formatPriceDisplay(post.price, post.currency)
+      : null
+  const collectedText = post.type === 'collectible'
+    ? collectCount.toLocaleString()
+    : post.maxSupply === 1
+      ? `${editionSupply} of 1`
+      : post.maxSupply
+        ? `${editionSupply}/${post.maxSupply} Minted`
+        : `${editionSupply} Minted`
 
   // Handle collect success
   const handleCollectSuccess = () => {
@@ -269,14 +294,12 @@ function PostDetailPage() {
               <span className="text-sm font-medium">
                 {post.maxSupply ? `${editionSupply}/${post.maxSupply}` : `${editionSupply}`}
               </span>
-              <i
-                className={cn(
-                  'fa-solid',
-                  post.maxSupply === 1 ? 'fa-hexagon-image' : 'fa-image-stack',
-                  'text-base',
-                )}
-                style={isCollected ? { color: postTypeColor } : undefined}
-              />
+              <span style={isCollected ? { color: postTypeColor } : undefined}>
+                <Icon
+                  name={post.maxSupply === 1 ? 'hexagon-image' : 'image-stack'}
+                  className="text-base"
+                />
+              </span>
             </div>
           )}
         </div>
@@ -285,13 +308,13 @@ function PostDetailPage() {
         <div className="flex items-center gap-1 text-muted-foreground px-2">
           {post.type === 'collectible' && collectCount > 0 && (
             <>
-              <i className="fa-regular fa-gem text-base" />
+              <Icon name="gem" variant="regular" className="text-base" />
               <span className="text-sm font-medium">{collectCount}</span>
             </>
           )}
           {post.type === 'edition' && editionSupply > 0 && (
             <>
-              <i className="fa-regular fa-gem text-base" />
+              <Icon name="gem" variant="regular" className="text-base" />
               <span className="text-sm font-medium">{editionSupply}</span>
             </>
           )}
@@ -315,7 +338,7 @@ function PostDetailPage() {
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
-                  <i className="fa-regular fa-user text-xs text-muted-foreground" />
+                  <Icon name="user" variant="regular" className="text-xs text-muted-foreground" />
                 </div>
               )}
             </div>
@@ -381,7 +404,7 @@ function PostDetailPage() {
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-muted">
-              <i className="fa-regular fa-user text-muted-foreground" />
+              <Icon name="user" variant="regular" className="text-muted-foreground" />
             </div>
           )}
         </div>
@@ -403,12 +426,10 @@ function PostDetailPage() {
             <>
               <span>·</span>
               <span className={cn('flex items-center gap-1', typeBadge.color)}>
-                <i
-                  className={cn(
-                    typeBadge.solid ? 'fa-solid' : 'fa-regular',
-                    typeBadge.icon,
-                    'text-[10px]'
-                  )}
+                <Icon
+                  name={typeBadge.icon}
+                  variant={typeBadge.solid ? 'solid' : 'regular'}
+                  className="text-[10px]"
                 />
                 {typeBadge.label}
               </span>
@@ -456,30 +477,11 @@ function PostDetailPage() {
     (display.overlayPillText || display.statusPillText || display.showCta || ((display.isEdition || display.isCollectible) && isCollected)) ? (
       <div className="absolute inset-0 pointer-events-none z-20">
         {/* Only show overlay pills for non-document/3D types (PostMedia handles those) */}
-        {(display.statusPillText || display.overlayPillText) && mediaType !== 'document' && mediaType !== '3d' && (
+        {display.statusPillText && mediaType !== 'document' && mediaType !== '3d' && (
           <div className="absolute right-3 top-3 flex items-center gap-1.5">
-            {/* Status pill (Sold, Sold Out) */}
-            {display.statusPillText && (
-              <MediaPill variant="tone" toneColor={postTypeColor}>
-                {display.statusPillText}
-              </MediaPill>
-            )}
-            {/* Price pill */}
-            {display.overlayPillText && (
-              <MediaPill
-                variant={
-                  display.overlayPillVariant === 'edition' ? 'dark' :
-                  display.overlayPillVariant === 'soldOut' ? 'muted' : 'tone'
-                }
-                toneColor={
-                  display.overlayPillVariant === 'collectible' ? POST_TYPE_META.collectible.tone :
-                  display.overlayPillVariant === 'likes' ? 'var(--tone-standard)' :
-                  undefined
-                }
-              >
-                {display.overlayPillText?.replace(/^✓\s*/, '')}
-              </MediaPill>
-            )}
+            <MediaPill variant="tone" toneColor={postTypeColor}>
+              {display.statusPillText}
+            </MediaPill>
           </div>
         )}
       </div>
@@ -493,7 +495,7 @@ function PostDetailPage() {
         {/* Back button */}
         <Link to="/" className="w-fit">
           <Button variant="ghost" className="mb-4">
-            <i className="fa-regular fa-arrow-left mr-2" />
+            <Icon name="arrow-left" variant="regular" className="mr-2" />
             Back to Feed
           </Button>
         </Link>
@@ -523,40 +525,71 @@ function PostDetailPage() {
 
           {/* Right column: Info panel */}
           <div className="w-[340px] flex flex-col bg-background border-l border-border shrink-0">
-            {isTimedEdition ? (
+            {isCollectibleOrEdition ? (
               <>
-                {/* Timed edition: Header with user + price/collected + countdown bar */}
+                {/* Edition/Collectible: Header + price/collected + action */}
                 <div className="px-4 pb-3 pt-3 border-b border-border shrink-0 flex flex-col gap-3">
                   <UserHeader showTypeBadge={false} />
 
                   {/* Price / Collected info card */}
-                  {post.price && post.currency && (
+                  {priceText && (
                     <div className="bg-muted/30 border border-border rounded-2xl px-[17px] py-[9px]">
                       <div className="flex items-start justify-between text-xs">
                         <div className="flex flex-col flex-1 justify-center">
                           <span className="text-muted-foreground font-medium leading-snug">Price</span>
                           <span className="text-foreground font-semibold leading-tight">
-                            {formatPriceDisplay(post.price, post.currency)}
+                            {priceText}
                           </span>
                         </div>
                         <div className="flex flex-col flex-1 justify-center">
                           <span className="text-muted-foreground font-medium leading-snug">Collected</span>
                           <span className="text-foreground font-semibold leading-tight">
-                            {post.maxSupply ? `${editionSupply}/${post.maxSupply} Minted` : `${editionSupply} Minted`}
+                            {collectedText}
                           </span>
                         </div>
                       </div>
                     </div>
                   )}
 
-                  {/* Dark countdown bar with buy button */}
-                  <MintWindowBadge
-                    mintWindowStart={post.mintWindowStart}
-                    mintWindowEnd={post.mintWindowEnd}
-                    mintedCount={editionSupply}
-                    variant="dark"
-                    action={
-                      isUserReady && isAuthenticated && currentUser?.id && post.price && post.currency ? (
+                  {/* Action area */}
+                  {showDownload ? (
+                    <Button onClick={handleDownload} disabled={isDownloading} className="w-full">
+                      <Icon name="download" variant="regular" className="mr-2" />
+                      {isDownloading ? 'Verifying...' : 'Download'}
+                    </Button>
+                  ) : !isNoLongerCollectible && (
+                    isTimedEdition ? (
+                      <MintWindowBadge
+                        mintWindowStart={post.mintWindowStart}
+                        mintWindowEnd={post.mintWindowEnd}
+                        mintedCount={editionSupply}
+                        variant="dark"
+                        action={
+                          isUserReady && isAuthenticated && currentUser?.id && post.price && post.currency ? (
+                            <BuyButton
+                              postId={post.id}
+                              userId={currentUser.id}
+                              price={post.price}
+                              currency={post.currency}
+                              maxSupply={post.maxSupply}
+                              currentSupply={editionSupply}
+                              isAuthenticated={isAuthenticated}
+                              onSuccess={handleBuySuccess}
+                              onPurchased={() => setLocalIsOwned(true)}
+                              variant="default"
+                              toneColor={postTypeColor}
+                              isCollected={isCollected}
+                              isSoldOut={isSoldOut}
+                              mintWindowStart={post.mintWindowStart}
+                              mintWindowEnd={post.mintWindowEnd}
+                              label="Collect"
+                              className="!bg-background !text-foreground !rounded-full !px-3.5 !h-8 !text-xs !font-medium"
+                            />
+                          ) : undefined
+                        }
+                      />
+                    ) : isUserReady && isAuthenticated && currentUser?.id ? (
+                      post.type === 'edition' && post.price && post.currency ? (
                         <BuyButton
                           postId={post.id}
                           userId={currentUser.id}
@@ -570,18 +603,31 @@ function PostDetailPage() {
                           variant="default"
                           toneColor={postTypeColor}
                           isCollected={isCollected}
-                          isSoldOut={typeof post.maxSupply === 'number' && editionSupply >= post.maxSupply}
-                          mintWindowStart={post.mintWindowStart}
-                          mintWindowEnd={post.mintWindowEnd}
+                          isSoldOut={isSoldOut}
                           label="Collect"
-                          className="!bg-background !text-foreground !rounded-full !px-3.5 !h-8 !text-xs !font-medium"
+                          className="w-full"
                         />
-                      ) : undefined
-                    }
-                  />
+                      ) : post.type === 'collectible' ? (
+                        <CollectButton
+                          postId={post.id}
+                          userId={currentUser.id}
+                          isAuthenticated={isAuthenticated}
+                          currentCollectCount={collectCount}
+                          onCollectSuccess={handleCollectSuccess}
+                          onCollected={() => setLocalIsOwned(true)}
+                          variant="default"
+                          className="w-full"
+                        />
+                      ) : null
+                    ) : isReady && !isAuthenticated ? (
+                      <Button onClick={() => login()} className="w-full">
+                        Log in to Collect
+                      </Button>
+                    ) : null
+                  )}
                 </div>
 
-                {/* Post info: title + badge, description, media pills */}
+                {/* Post info: title + badge, description, categories */}
                 <div className="px-4 py-3 border-b border-border shrink-0">
                   <div className="flex items-center gap-2.5">
                     <span className="flex-1 font-semibold text-sm min-w-0">
@@ -590,7 +636,7 @@ function PostDetailPage() {
                     {typeBadge && (
                       <span
                         className={cn(
-                          'shrink-0 text-[10.5px] font-medium px-2 py-1.5 rounded-lg',
+                          'shrink-0 text-xs font-medium px-2 py-0.5 rounded-full',
                           POST_TYPE_META[post.type].accentBgClass,
                           POST_TYPE_META[post.type].badgeClass,
                         )}
@@ -603,18 +649,6 @@ function PostDetailPage() {
                     <p className="text-sm text-muted-foreground whitespace-pre-wrap wrap-break-word mt-2">
                       {post.caption}
                     </p>
-                  )}
-                  {mediaLabels.length > 0 && (
-                    <div className="flex flex-wrap gap-1 pt-2">
-                      {mediaLabels.map((label, i) => (
-                        <span
-                          key={i}
-                          className="bg-muted text-muted-foreground text-[10px] font-semibold tracking-[0.2px] px-2.5 h-[21px] inline-flex items-center rounded-full"
-                        >
-                          {label}
-                        </span>
-                      ))}
-                    </div>
                   )}
                   <Categories />
                 </div>
@@ -665,7 +699,7 @@ function PostDetailPage() {
               </>
             ) : (
               <>
-                {/* Standard layout: Header with user info + caption */}
+                {/* Standard layout for plain posts */}
                 <div className="px-4 py-3 border-b border-border shrink-0">
                   <UserHeader />
                   {post.caption && (
@@ -674,15 +708,6 @@ function PostDetailPage() {
                     </p>
                   )}
                   <Categories />
-                  {post.type === 'edition' && (post.mintWindowStart || post.mintWindowEnd) && (
-                    <MintWindowBadge
-                      mintWindowStart={post.mintWindowStart}
-                      mintWindowEnd={post.mintWindowEnd}
-                      mintedCount={editionSupply}
-                      variant="prominent"
-                      className="mt-3"
-                    />
-                  )}
                 </div>
 
                 {/* Scrollable middle: Comments */}
@@ -762,36 +787,67 @@ function PostDetailPage() {
 
           {/* Content */}
           <div className="px-4 py-3 md:px-2 space-y-4">
-            {isTimedEdition ? (
+            {isCollectibleOrEdition ? (
               <>
                 {/* Price / Collected info card */}
-                {post.price && post.currency && (
+                {priceText && (
                   <div className="bg-muted/30 border border-border rounded-2xl px-[17px] py-[9px]">
                     <div className="flex items-start justify-between text-xs">
                       <div className="flex flex-col flex-1 justify-center">
                         <span className="text-muted-foreground font-medium leading-snug">Price</span>
                         <span className="text-foreground font-semibold leading-tight">
-                          {formatPriceDisplay(post.price, post.currency)}
+                          {priceText}
                         </span>
                       </div>
                       <div className="flex flex-col flex-1 justify-center">
                         <span className="text-muted-foreground font-medium leading-snug">Collected</span>
                         <span className="text-foreground font-semibold leading-tight">
-                          {post.maxSupply ? `${editionSupply}/${post.maxSupply} Minted` : `${editionSupply} Minted`}
+                          {collectedText}
                         </span>
                       </div>
                     </div>
                   </div>
                 )}
 
-                {/* Dark countdown bar with buy button */}
-                <MintWindowBadge
-                  mintWindowStart={post.mintWindowStart}
-                  mintWindowEnd={post.mintWindowEnd}
-                  mintedCount={editionSupply}
-                  variant="dark"
-                  action={
-                    isUserReady && isAuthenticated && currentUser?.id && post.price && post.currency ? (
+                {/* Action area */}
+                {showDownload ? (
+                  <Button onClick={handleDownload} disabled={isDownloading} className="w-full">
+                    <Icon name="download" variant="regular" className="mr-2" />
+                    {isDownloading ? 'Verifying...' : 'Download'}
+                  </Button>
+                ) : !isNoLongerCollectible && (
+                  isTimedEdition ? (
+                    <MintWindowBadge
+                      mintWindowStart={post.mintWindowStart}
+                      mintWindowEnd={post.mintWindowEnd}
+                      mintedCount={editionSupply}
+                      variant="dark"
+                      action={
+                        isUserReady && isAuthenticated && currentUser?.id && post.price && post.currency ? (
+                          <BuyButton
+                            postId={post.id}
+                            userId={currentUser.id}
+                            price={post.price}
+                            currency={post.currency}
+                            maxSupply={post.maxSupply}
+                            currentSupply={editionSupply}
+                            isAuthenticated={isAuthenticated}
+                            onSuccess={handleBuySuccess}
+                            onPurchased={() => setLocalIsOwned(true)}
+                            variant="default"
+                            toneColor={postTypeColor}
+                            isCollected={isCollected}
+                            isSoldOut={isSoldOut}
+                            mintWindowStart={post.mintWindowStart}
+                            mintWindowEnd={post.mintWindowEnd}
+                            label="Collect"
+                            className="!bg-background !text-foreground !rounded-full !px-3.5 !h-8 !text-xs !font-medium"
+                          />
+                        ) : undefined
+                      }
+                    />
+                  ) : isUserReady && isAuthenticated && currentUser?.id ? (
+                    post.type === 'edition' && post.price && post.currency ? (
                       <BuyButton
                         postId={post.id}
                         userId={currentUser.id}
@@ -805,15 +861,28 @@ function PostDetailPage() {
                         variant="default"
                         toneColor={postTypeColor}
                         isCollected={isCollected}
-                        isSoldOut={typeof post.maxSupply === 'number' && editionSupply >= post.maxSupply}
-                        mintWindowStart={post.mintWindowStart}
-                        mintWindowEnd={post.mintWindowEnd}
+                        isSoldOut={isSoldOut}
                         label="Collect"
-                        className="!bg-background !text-foreground !rounded-full !px-3.5 !h-8 !text-xs !font-medium"
+                        className="w-full"
                       />
-                    ) : undefined
-                  }
-                />
+                    ) : post.type === 'collectible' ? (
+                      <CollectButton
+                        postId={post.id}
+                        userId={currentUser.id}
+                        isAuthenticated={isAuthenticated}
+                        currentCollectCount={collectCount}
+                        onCollectSuccess={handleCollectSuccess}
+                        onCollected={() => setLocalIsOwned(true)}
+                        variant="default"
+                        className="w-full"
+                      />
+                    ) : null
+                  ) : isReady && !isAuthenticated ? (
+                    <Button onClick={() => login()} className="w-full">
+                      Log in to Collect
+                    </Button>
+                  ) : null
+                )}
 
                 {/* Title + badge */}
                 <div className="flex items-center gap-2.5">
@@ -823,7 +892,7 @@ function PostDetailPage() {
                   {typeBadge && (
                     <span
                       className={cn(
-                        'shrink-0 text-[10.5px] font-medium px-2 py-1.5 rounded-lg',
+                        'shrink-0 text-xs font-medium px-2 py-0.5 rounded-full',
                         POST_TYPE_META[post.type].accentBgClass,
                         POST_TYPE_META[post.type].badgeClass,
                       )}
@@ -840,34 +909,12 @@ function PostDetailPage() {
                   </p>
                 )}
 
-                {/* Media type pills */}
-                {mediaLabels.length > 0 && (
-                  <div className="flex flex-wrap gap-1">
-                    {mediaLabels.map((label, i) => (
-                      <span
-                        key={i}
-                        className="bg-muted text-muted-foreground text-[10px] font-semibold tracking-[0.2px] px-2.5 h-[21px] inline-flex items-center rounded-full"
-                      >
-                        {label}
-                      </span>
-                    ))}
-                  </div>
-                )}
-
                 <Categories />
                 <ActionButtons skipBuy />
               </>
             ) : (
               <>
                 <ActionButtons />
-                {post.type === 'edition' && (post.mintWindowStart || post.mintWindowEnd) && (
-                  <MintWindowBadge
-                    mintWindowStart={post.mintWindowStart}
-                    mintWindowEnd={post.mintWindowEnd}
-                    mintedCount={editionSupply}
-                    variant="prominent"
-                  />
-                )}
                 <Caption showAvatar={true} />
                 <Categories />
               </>

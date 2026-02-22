@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { Icon } from '@/components/ui/icon';
 import { cn } from '@/lib/utils';
 import { toastError, toastInfo, toastSuccess } from '@/lib/toast';
 import {
@@ -155,7 +156,7 @@ export function BuyButton({
 
   // Network and RPC health status
   const { isOffline } = useNetworkStatus();
-  const { isAuthenticated: isAuthForRpc, getAuthHeaders } = useAuth();
+  const { getAuthHeaders } = useAuth();
   const { isRpcHealthy } = useRpcHealthContext();
   const { onWalletDisconnect } = useWalletConnection();
 
@@ -168,12 +169,12 @@ export function BuyButton({
   const [nftMint, setNftMint] = useState<string | null>(null);
   const [showExtendedMessage, setShowExtendedMessage] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [, setPollCount] = useState(0);
 
   const pollStartTime = useRef<number | null>(null);
   const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const extendedTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const mintingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const [pollCount, setPollCount] = useState(0);
 
   // ---- Timed edition countdown ----
   const windowStart = useMemo(() => parseDate(mintWindowStartProp), [mintWindowStartProp]);
@@ -689,11 +690,11 @@ export function BuyButton({
             // Manually send the signed transaction via HTTP RPC (no WebSocket needed)
             const rpc = createSolanaRpc(getClientRpcUrl());
             const base64Tx = Buffer.from(signedTx.signedTransaction).toString('base64');
-            const sendTxPromise = rpc.sendTransaction(base64Tx, {
+            const sendTxPromise = rpc.sendTransaction(base64Tx as any, {
               encoding: 'base64',
               skipPreflight: false,
-              maxRetries: 3,
-            }).send();
+              maxRetries: BigInt(3),
+            } as any).send();
 
             const txSignature = await Promise.race([
               sendTxPromise,
@@ -827,19 +828,27 @@ export function BuyButton({
         return (
           <>
             <span className="text-sm font-medium text-muted-foreground">Sold Out</span>
-            <i className={cn('fa-regular', editionIcon, 'text-base text-muted-foreground')} />
+            <Icon name={editionIcon} variant="regular" className="text-base text-muted-foreground" />
           </>
         );
       }
 
-      // Timed edition states (compact) — show before purchased check so ended overrides
+      // Timed edition: not started yet — show muted count + icon (time shown in image pill)
       if (effectiveTimeStatus === 'not_started') {
+        let displayCount: string | null = null
+        if (maxSupply === 1) {
+          displayCount = `${currentSupply}/1`
+        } else if (maxSupply !== null && maxSupply !== undefined) {
+          displayCount = `${currentSupply}/${maxSupply}`
+        } else {
+          displayCount = `${currentSupply}`
+        }
         return (
           <>
-            <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">
-              {countdown ? `Starts in ${countdown}` : 'Checking...'}
-            </span>
-            <i className={cn('fa-regular', editionIcon, 'text-base text-muted-foreground')} />
+            {displayCount && (
+              <span className="text-sm font-medium text-muted-foreground">{displayCount}</span>
+            )}
+            <Icon name={editionIcon} variant="regular" className="text-base text-muted-foreground" />
           </>
         );
       }
@@ -847,7 +856,7 @@ export function BuyButton({
         return (
           <>
             <span className="text-sm font-medium text-muted-foreground">Mint Ended</span>
-            <i className={cn('fa-regular', editionIcon, 'text-base text-muted-foreground')} />
+            <Icon name={editionIcon} variant="regular" className="text-base text-muted-foreground" />
           </>
         );
       }
@@ -866,16 +875,15 @@ export function BuyButton({
         return (
           <>
             <span className="text-sm font-medium">{displayCount}</span>
-            <i
-              className={cn('fa-solid', editionIcon, 'text-base')}
-              style={toneColor ? { color: toneColor } : undefined}
-            />
+            <span style={toneColor ? { color: toneColor } : undefined}>
+              <Icon name={editionIcon} className="text-base" />
+            </span>
           </>
         );
       }
 
-      // "ending_soon" compact — show countdown badge next to normal icon
-      if (effectiveTimeStatus === 'ending_soon' && countdown) {
+      // "ending_soon" compact — show count + icon (time shown in image pill)
+      if (effectiveTimeStatus === 'ending_soon') {
         let displayCount: string | null = null
         if (maxSupply === 1) {
           displayCount = `${currentSupply}/1`
@@ -887,11 +895,10 @@ export function BuyButton({
 
         return (
           <>
-            <span className="text-xs font-medium text-amber-500 whitespace-nowrap">{countdown}</span>
             {displayCount && (
               <span className="text-sm font-medium">{displayCount}</span>
             )}
-            <i className={cn('fa-regular', editionIcon, 'text-base')} />
+            <Icon name={editionIcon} variant="regular" className="text-base" />
           </>
         );
       }
@@ -915,9 +922,7 @@ export function BuyButton({
           {displayCount && (
             <span className="text-sm font-medium">{displayCount}</span>
           )}
-          <i
-            className={cn('fa-regular', editionIcon, 'text-base')}
-          />
+          <Icon name={editionIcon} variant="regular" className="text-base" />
         </>
       );
     }
@@ -1034,12 +1039,12 @@ export function BuyButton({
       case 'success':
         return 'secondary';
       case 'failed':
-        return 'primary'; // Keep original color for retry, not destructive
+        return 'default'; // Keep original color for retry, not destructive
       case 'sold_out':
       case 'insufficient_funds':
         return 'ghost';
       default:
-        return 'primary';
+        return 'default';
     }
   };
 
@@ -1098,7 +1103,7 @@ export function BuyButton({
           rel="noopener noreferrer"
           className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
         >
-          <i className="fa-regular fa-external-link text-[10px]" />
+          <Icon name="external-link" variant="regular" className="text-[10px]" />
           View on explorer
         </a>
       )}
@@ -1110,7 +1115,7 @@ export function BuyButton({
           rel="noopener noreferrer"
           className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
         >
-          <i className="fa-regular fa-cube text-[10px]" />
+          <Icon name="cube" variant="regular" className="text-[10px]" />
           View NFT
         </a>
       )}

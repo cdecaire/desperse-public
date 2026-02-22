@@ -19,9 +19,9 @@ interface PrivyProviderProps {
  * - Configured Solana connectors for external wallet connections
  * 
  * Embedded Wallet Strategy:
- * - Automatically creates Solana embedded wallets for ALL new users
- * - This ensures every user has a wallet ready for NFT minting/collecting
- * - Users can later link external Solana wallets if desired
+ * - Automatically creates Solana embedded wallets for ALL users on login
+ * - Includes users who sign up with external wallets (Brave, Phantom, etc.)
+ * - This ensures every user has an embedded wallet for NFT minting/collecting
  * - Ethereum wallets are explicitly disabled to match app requirements
  */
 export function PrivyProvider({ children }: PrivyProviderProps) {
@@ -86,9 +86,9 @@ export function PrivyProvider({ children }: PrivyProviderProps) {
         },
         // Embedded wallet configuration - create Solana wallets for ALL users automatically
         embeddedWallets: {
-          // Create Solana embedded wallets only for users who don't already have a wallet
+          // Create Solana embedded wallets for ALL users, even those with external wallets
           solana: {
-            createOnLogin: 'users-without-wallets',
+            createOnLogin: 'all-users',
           },
           // Explicitly disable Ethereum embedded wallets
           ethereum: {

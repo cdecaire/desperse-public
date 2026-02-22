@@ -14,6 +14,7 @@ import { useMentionSearch, type MentionUser } from '@/hooks/useMentionSearch'
 import { UnlockMessagingCard } from './UnlockMessagingCard'
 import { useDebounce } from '@/hooks/useDebounce'
 import { cn } from '@/lib/utils'
+import { Icon } from '@/components/ui/icon'
 import type { PendingMessageUser } from './MessagingContext'
 
 interface NewMessageViewProps {
@@ -91,7 +92,7 @@ export function NewMessageView({ onBack, onClose, onThreadCreated, initialUser }
       {/* Header - changes based on whether user is selected */}
       <div className="flex items-center gap-3 px-4 py-3 border-b shrink-0 bg-background">
         <Button variant="ghost" size="icon" onClick={handleBack} className="flex-shrink-0">
-          <i className="fa-solid fa-arrow-left text-sm" aria-hidden="true" />
+          <Icon name="arrow-left" className="text-sm" />
         </Button>
 
         {selectedUser ? (
@@ -106,7 +107,7 @@ export function NewMessageView({ onBack, onClose, onThreadCreated, initialUser }
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                  <i className="fa-solid fa-user" aria-hidden="true" />
+                  <Icon name="user" />
                 </div>
               )}
             </div>
@@ -129,7 +130,7 @@ export function NewMessageView({ onBack, onClose, onThreadCreated, initialUser }
         )}
 
         <Button variant="ghost" size="icon" onClick={onClose} className="flex-shrink-0">
-          <i className="fa-solid fa-xmark text-sm" aria-hidden="true" />
+          <Icon name="xmark" className="text-sm" />
         </Button>
       </div>
 
@@ -152,7 +153,7 @@ export function NewMessageView({ onBack, onClose, onThreadCreated, initialUser }
                   </>
                 ) : (
                   <>
-                    <i className="fa-regular fa-paper-plane mr-2" aria-hidden="true" />
+                    <Icon name="paper-plane" variant="regular" className="mr-2" />
                     Start Conversation
                   </>
                 )}
@@ -184,9 +185,10 @@ export function NewMessageView({ onBack, onClose, onThreadCreated, initialUser }
         <div className="flex-1 flex flex-col overflow-hidden">
           <div className="px-4 py-3">
             <div className="relative">
-              <i
-                className="fa-regular fa-search absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm"
-                aria-hidden="true"
+              <Icon
+                name="search"
+                variant="regular"
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm"
               />
               <Input
                 type="text"
@@ -227,7 +229,7 @@ export function NewMessageView({ onBack, onClose, onThreadCreated, initialUser }
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                          <i className="fa-solid fa-user text-xs" aria-hidden="true" />
+                          <Icon name="user" className="text-xs" />
                         </div>
                       )}
                     </div>
@@ -246,14 +248,14 @@ export function NewMessageView({ onBack, onClose, onThreadCreated, initialUser }
 
             {debouncedQuery.length >= 2 && !isSearching && searchResults?.length === 0 && (
               <div className="text-center py-8 text-muted-foreground">
-                <i className="fa-regular fa-user-slash text-xl mb-2" aria-hidden="true" />
+                <Icon name="user-slash" variant="regular" className="text-xl mb-2" />
                 <p className="text-sm">No users found</p>
               </div>
             )}
 
             {debouncedQuery.length < 2 && (
               <div className="text-center py-8 text-muted-foreground">
-                <i className="fa-regular fa-search text-xl mb-2" aria-hidden="true" />
+                <Icon name="search" variant="regular" className="text-xl mb-2" />
                 <p className="text-sm">Search for a user to message</p>
               </div>
             )}

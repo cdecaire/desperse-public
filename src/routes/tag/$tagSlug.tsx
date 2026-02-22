@@ -3,7 +3,7 @@
  * Displays posts with a specific hashtag
  */
 
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 import { useRef, useCallback, useMemo } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
@@ -14,7 +14,7 @@ import { FeedSkeleton } from '@/components/feed/PostCardSkeleton'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { PullToRefresh } from '@/components/shared/PullToRefresh'
-import { Button } from '@/components/ui/button'
+import { Icon } from '@/components/ui/icon'
 import { Skeleton } from '@/components/ui/skeleton'
 
 export const Route = createFileRoute('/tag/$tagSlug')({
@@ -26,7 +26,6 @@ function TagPage() {
   const { isReady } = useAuth()
   const { user } = useCurrentUser()
   const observerRef = useRef<IntersectionObserver | null>(null)
-  const loadMoreRef = useRef<HTMLDivElement>(null)
 
   // Fetch tag info
   const {
@@ -115,7 +114,7 @@ function TagPage() {
       <div>
         <TagPageHeader tagSlug={tagSlug} />
         <EmptyState
-          icon={<i className="fa-regular fa-triangle-exclamation text-4xl" />}
+          icon={<Icon name="triangle-exclamation" variant="regular" className="text-4xl" />}
           title="Error loading posts"
           description={error?.message || 'Something went wrong'}
         />
@@ -136,7 +135,7 @@ function TagPage() {
         {/* Posts list */}
         {posts.length === 0 ? (
           <EmptyState
-            icon={<i className="fa-regular fa-hashtag text-4xl" />}
+            icon={<Icon name="hashtag" variant="regular" className="text-4xl" />}
             title="No posts yet"
             description={`No posts have been tagged with #${tagSlug}`}
           />
@@ -211,7 +210,7 @@ function TagPageHeader({
     <div className="py-6 mb-4 border-b border-border">
       <div className="flex items-center gap-3">
         <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center">
-          <i className="fa-solid fa-hashtag text-xl text-muted-foreground" />
+          <Icon name="hashtag" className="text-xl text-muted-foreground" />
         </div>
         <div>
           <h1 className="text-2xl font-bold">#{displayName}</h1>

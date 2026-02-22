@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     const token = getHeader(event, 'authorization')?.replace('Bearer ', '')
-    const body = await readBody(event)
+    const body = await readBody(event) as Record<string, any>
 
     const result = await createFeedbackDirect(
       {

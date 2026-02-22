@@ -10,6 +10,7 @@
  */
 
 import { useRef, useState, forwardRef, useImperativeHandle, useCallback } from 'react'
+import { Icon } from '@/components/ui/icon'
 import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
 import {
@@ -237,7 +238,7 @@ function MentionUserItem({ user, isSelected, onSelect, onHover }: MentionUserIte
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <i className="fa-regular fa-user text-xs text-muted-foreground" />
+            <Icon name="user" variant="regular" className="text-xs text-muted-foreground" />
           </div>
         )}
       </div>
@@ -272,7 +273,7 @@ function HashtagItem({ tag, isSelected, onSelect, onHover }: HashtagItemProps) {
       }}
     >
       <div className="w-8 h-8 rounded-md bg-muted flex items-center justify-center shrink-0">
-        <i className="fa-solid fa-hashtag text-sm text-muted-foreground" />
+        <Icon name="hashtag" className="text-sm text-muted-foreground" />
       </div>
       <div className="flex-1 min-w-0">
         <div className="font-medium text-sm truncate">#{tag.slug}</div>

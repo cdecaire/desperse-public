@@ -4,6 +4,7 @@
  */
 
 import { useRpcHealthContext } from '@/components/providers/RpcHealthProvider'
+import { Icon } from '@/components/ui/icon'
 import { useAuth } from '@/hooks/useAuth'
 
 export function RpcHealthBanner() {
@@ -17,7 +18,7 @@ export function RpcHealthBanner() {
   return (
     <div className="w-full bg-red-500/90 dark:bg-red-600/90 text-red-900 dark:text-red-100 px-4 py-2 text-sm font-medium text-center border-b border-red-600 dark:border-red-700">
       <span className="flex items-center justify-center gap-2">
-        <i className="fa-regular fa-triangle-exclamation" aria-hidden="true" />
+        <Icon name="triangle-exclamation" variant="regular" />
         Blockchain is currently unavailable. Collect and buy actions are temporarily disabled.
       </span>
     </div>

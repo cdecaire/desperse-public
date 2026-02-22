@@ -7,6 +7,7 @@ import { createFileRoute, Outlet, useMatchRoute, Link } from '@tanstack/react-ro
 import { useBetaFeedbackList } from '@/hooks/useFeedback'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { EmptyState } from '@/components/shared/EmptyState'
+import { Icon } from '@/components/ui/icon'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
 
@@ -34,13 +35,15 @@ function StarDisplay({ rating }: { rating: number | null }) {
   return (
     <div className="flex items-center gap-0.5">
       {[1, 2, 3, 4, 5].map((star) => (
-        <i
+        <Icon
           key={star}
+          name="star"
+          variant={star <= rating ? 'solid' : 'regular'}
           className={cn(
             'text-sm',
             star <= rating
-              ? 'fa-solid fa-star text-yellow-400'
-              : 'fa-regular fa-star text-muted-foreground/30'
+              ? 'text-yellow-400'
+              : 'text-muted-foreground/30'
           )}
         />
       ))}
@@ -119,7 +122,7 @@ function FeedbackListPage() {
 
         {error && (
           <EmptyState
-            icon={<i className="fa-regular fa-circle-exclamation text-4xl" />}
+            icon={<Icon name="circle-exclamation" variant="regular" className="text-4xl" />}
             title="Failed to load feedback"
             description={error.message || 'An error occurred while loading feedback.'}
           />
@@ -127,7 +130,7 @@ function FeedbackListPage() {
 
         {!isLoading && !isPending && (!data || data.length === 0) && (
           <EmptyState
-            icon={<i className="fa-regular fa-message-lines text-4xl" />}
+            icon={<Icon name="message-lines" variant="regular" className="text-4xl" />}
             title={activeTab === 'new' ? 'No new feedback' : 'No reviewed feedback'}
             description={activeTab === 'new'
               ? 'No new feedback to review.'
@@ -156,7 +159,7 @@ function FeedbackListPage() {
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center bg-muted">
-                          <i className="fa-regular fa-user text-muted-foreground" />
+                          <Icon name="user" variant="regular" className="text-muted-foreground" />
                         </div>
                       )}
                     </div>
@@ -177,7 +180,7 @@ function FeedbackListPage() {
                           {/* Screenshot indicator */}
                           {feedback.imageUrl && (
                             <span className="text-muted-foreground">
-                              <i className="fa-regular fa-image text-sm" />
+                              <Icon name="image" variant="regular" className="text-sm" />
                             </span>
                           )}
                           {/* Rating */}

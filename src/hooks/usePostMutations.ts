@@ -9,12 +9,11 @@ import { toastSuccess, toastError } from '@/lib/toast'
 import { parseAppError } from '@/lib/errorUtils'
 import { useAuth } from '@/hooks/useAuth'
 
-import { type Category } from '@/constants/categories'
 
 interface UpdatePostInput {
   postId: string
   caption?: string | null
-  categories?: Category[] | null
+  categories?: string[] | null
   nftName?: string | null
   nftSymbol?: string | null
   nftDescription?: string | null
@@ -63,10 +62,8 @@ export function useUpdatePost() {
       
       toastSuccess('Post updated successfully')
     },
-    onError: (error) => {
-      const parsed = parseAppError(error)
-      toastError(parsed.message)
-    },
+    // Error toasting handled by the caller (createMutation.onError in CreatePostForm)
+    // to avoid duplicate toasts when mutateAsync rejects
   })
 }
 

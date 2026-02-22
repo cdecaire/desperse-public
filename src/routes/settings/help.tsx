@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { AuthGuard } from '@/components/shared/AuthGuard'
 import SettingsNav from '@/components/settings/SettingsNav'
+import { Icon } from '@/components/ui/icon'
 
 export const Route = createFileRoute('/settings/help')({
   component: HelpPage,
@@ -29,7 +30,7 @@ function HelpPage() {
                   className="inline-flex h-10 w-10 items-center justify-center rounded-md text-foreground"
                   aria-label="Back to settings"
                 >
-                  <i className="fa-solid fa-arrow-left" aria-hidden="true" />
+                  <Icon name="arrow-left" />
                 </Link>
               </div>
               <div className="flex justify-center min-w-0 flex-1">
@@ -53,7 +54,7 @@ function HelpPage() {
                 <div className="rounded-xl border border-border/60 bg-card p-5 flex flex-col">
                   <div className="flex items-center justify-between mb-2">
                     <p className="font-semibold">Support</p>
-                    <i className="fa-regular fa-life-ring text-muted-foreground" aria-hidden="true" />
+                    <Icon name="life-ring" variant="regular" className="text-muted-foreground" />
                   </div>
                   <p className="text-sm text-muted-foreground mb-4">
                     Get help with bugs, account issues, or general questions.
@@ -64,7 +65,7 @@ function HelpPage() {
                       className="flex items-center gap-2 text-sm hover:text-foreground transition-colors"
                     >
                       <span>support@desperse.app</span>
-                      <i className="fa-regular fa-envelope text-xs" aria-hidden="true" />
+                      <Icon name="envelope" variant="regular" className="text-xs" />
                     </a>
                     <a
                       href="https://x.com/DesperseApp"
@@ -73,7 +74,7 @@ function HelpPage() {
                       className="flex items-center gap-2 text-sm hover:text-foreground transition-colors"
                     >
                       <span>@DesperseApp</span>
-                      <i className="fa-brands fa-x-twitter text-xs" aria-hidden="true" />
+                      <Icon name="x-twitter" variant="brands" className="text-xs" />
                     </a>
                   </div>
                 </div>
@@ -82,7 +83,7 @@ function HelpPage() {
                 <div className="rounded-xl border border-border/60 bg-card p-5 flex flex-col">
                   <div className="flex items-center justify-between mb-2">
                     <p className="font-semibold">Fees & Pricing</p>
-                    <i className="fa-regular fa-tag text-muted-foreground" aria-hidden="true" />
+                    <Icon name="tag" variant="regular" className="text-muted-foreground" />
                   </div>
                   <p className="text-sm text-muted-foreground mb-4">
                     Understand platform fees, minting costs, and how pricing works for Collectibles and Editions.
@@ -93,7 +94,7 @@ function HelpPage() {
                       className="flex items-center gap-2 text-sm hover:text-foreground transition-colors"
                     >
                       <span>View fees</span>
-                      <i className="fa-regular fa-arrow-right text-xs" aria-hidden="true" />
+                      <Icon name="arrow-right" variant="regular" className="text-xs" />
                     </Link>
                   </div>
                 </div>
@@ -102,7 +103,7 @@ function HelpPage() {
                 <div className="rounded-xl border border-border/60 bg-card p-5 flex flex-col">
                   <div className="flex items-center justify-between mb-2">
                     <p className="font-semibold">About Desperse</p>
-                    <i className="fa-regular fa-circle-info text-muted-foreground" aria-hidden="true" />
+                    <Icon name="circle-info" variant="regular" className="text-muted-foreground" />
                   </div>
                   <p className="text-sm text-muted-foreground mb-4">
                     Learn what Desperse is, who it's for, and how it works.
@@ -113,7 +114,7 @@ function HelpPage() {
                       className="flex items-center gap-2 text-sm hover:text-foreground transition-colors"
                     >
                       <span>Visit about page</span>
-                      <i className="fa-regular fa-arrow-right text-xs" aria-hidden="true" />
+                      <Icon name="arrow-right" variant="regular" className="text-xs" />
                     </Link>
                   </div>
                 </div>
@@ -122,7 +123,7 @@ function HelpPage() {
                 <div className="rounded-xl border border-border/60 bg-card p-5 flex flex-col">
                   <div className="flex items-center justify-between mb-2">
                     <p className="font-semibold">Changelog</p>
-                    <i className="fa-regular fa-list-ul text-muted-foreground" aria-hidden="true" />
+                    <Icon name="list-ul" variant="regular" className="text-muted-foreground" />
                   </div>
                   <p className="text-sm text-muted-foreground mb-4">
                     See what's new and what we've been working on.
@@ -133,7 +134,7 @@ function HelpPage() {
                       className="flex items-center gap-2 text-sm hover:text-foreground transition-colors"
                     >
                       <span>View changelog</span>
-                      <i className="fa-regular fa-arrow-right text-xs" aria-hidden="true" />
+                      <Icon name="arrow-right" variant="regular" className="text-xs" />
                     </Link>
                   </div>
                 </div>
@@ -142,7 +143,7 @@ function HelpPage() {
                 <div className="rounded-xl border border-border/60 bg-card p-5 flex flex-col">
                   <div className="flex items-center justify-between mb-2">
                     <p className="font-semibold">Legal</p>
-                    <i className="fa-regular fa-shield text-muted-foreground" aria-hidden="true" />
+                    <Icon name="shield" variant="regular" className="text-muted-foreground" />
                   </div>
                   <p className="text-sm text-muted-foreground mb-4">
                     Review our terms and privacy policy.
@@ -153,14 +154,14 @@ function HelpPage() {
                       className="flex items-center gap-2 text-sm hover:text-foreground transition-colors"
                     >
                       <span>Terms of Service</span>
-                      <i className="fa-regular fa-arrow-right text-xs" aria-hidden="true" />
+                      <Icon name="arrow-right" variant="regular" className="text-xs" />
                     </Link>
                     <Link
                       to="/privacy"
                       className="flex items-center gap-2 text-sm hover:text-foreground transition-colors"
                     >
                       <span>Privacy Policy</span>
-                      <i className="fa-regular fa-arrow-right text-xs" aria-hidden="true" />
+                      <Icon name="arrow-right" variant="regular" className="text-xs" />
                     </Link>
                   </div>
                 </div>

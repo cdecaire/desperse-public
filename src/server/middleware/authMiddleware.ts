@@ -68,7 +68,6 @@ async function getUserByPrivyId(privyId: string): Promise<AuthUser | null> {
       .select({
         id: users.id,
         privyId: users.privyId,
-        email: users.email,
         walletAddress: users.walletAddress,
       })
       .from(users)
@@ -82,7 +81,6 @@ async function getUserByPrivyId(privyId: string): Promise<AuthUser | null> {
     return {
       privyId: user.privyId,
       userId: user.id,
-      email: user.email || undefined,
       walletAddress: user.walletAddress || undefined,
     }
   } catch (error) {
@@ -96,18 +94,10 @@ async function getUserByPrivyId(privyId: string): Promise<AuthUser | null> {
  * Performs OPTIONAL authentication - adds user to context if valid token provided
  * Does not reject requests without auth
  */
-export const authMiddleware = createMiddleware().client(async ({ next }) => {
-  // Client middleware - attach auth token from Privy
-  // This will be implemented on the client side via the useServerFn hook wrapper
-  return next({
-    sendContext: {
-      // Will be populated by client-side wrapper
-    },
-  })
-}).server(async ({ next, context }) => {
+export const authMiddleware = createMiddleware().server(async ({ next, context }: { next: any; context: any }) => {
   // Server middleware - verify token and get user
-  const authHeader = context?.headers?.get?.('authorization') || 
-                     (context?.authorization as string | undefined) || 
+  const authHeader = context?.headers?.get?.('authorization') ||
+                     (context?.authorization as string | undefined) ||
                      null
   
   let authContext: AuthContext = {

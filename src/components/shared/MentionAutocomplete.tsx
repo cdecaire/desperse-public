@@ -10,6 +10,7 @@
  */
 
 import { useRef, useState, forwardRef, useImperativeHandle, useCallback } from 'react'
+import { Icon } from '@/components/ui/icon'
 import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
 import { useMentionAutocomplete } from '@/hooks/useMentionAutocomplete'
@@ -185,7 +186,7 @@ function MentionUserItem({ user, isSelected, onSelect, onHover }: MentionUserIte
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <i className="fa-regular fa-user text-xs text-muted-foreground" />
+            <Icon name="user" variant="regular" className="text-xs text-muted-foreground" />
           </div>
         )}
       </div>

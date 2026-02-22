@@ -2,6 +2,7 @@ import { createFileRoute, Outlet, Link, useLocation } from '@tanstack/react-rout
 import { AuthGuard } from '@/components/shared/AuthGuard'
 import { RoleGuard } from '@/components/shared/RoleGuard'
 import AdminNav from '@/components/admin/AdminNav'
+import { Icon } from '@/components/ui/icon'
 
 export const Route = createFileRoute('/admin')({
   component: AdminLayout,
@@ -68,7 +69,7 @@ function AdminLayout() {
                       className="inline-flex h-10 w-10 items-center justify-center rounded-md text-foreground"
                       aria-label="Back"
                     >
-                      <i className="fa-solid fa-arrow-left" aria-hidden="true" />
+                      <Icon name="arrow-left" />
                     </Link>
                   </div>
                   <div className="flex justify-center min-w-0 flex-1">
@@ -87,7 +88,7 @@ function AdminLayout() {
                         className="inline-flex h-10 w-10 items-center justify-center rounded-md text-foreground"
                         aria-label="Back to home"
                       >
-                        <i className="fa-solid fa-arrow-left" aria-hidden="true" />
+                        <Icon name="arrow-left" />
                       </Link>
                     </div>
                     <div className="flex justify-center min-w-0 flex-1">
@@ -109,7 +110,7 @@ function AdminLayout() {
                       className="inline-flex h-10 w-10 items-center justify-center rounded-md text-foreground"
                       aria-label="Back to admin"
                     >
-                      <i className="fa-solid fa-arrow-left" aria-hidden="true" />
+                      <Icon name="arrow-left" />
                     </Link>
                   </div>
                   <div className="flex justify-center min-w-0 flex-1">

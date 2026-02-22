@@ -8,8 +8,6 @@ import { useAuth } from './useAuth'
 import { initAuth, getCurrentUser } from '@/server/functions/auth'
 import type { User } from '@/server/db/schema'
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { useNavigate } from '@tanstack/react-router'
-import { toastError } from '@/lib/toast'
 
 export interface UseCurrentUserReturn {
   // User data from DB
@@ -58,8 +56,6 @@ export function useCurrentUser(): UseCurrentUserReturn {
 
   // Track previous wallet address for mismatch detection
   const prevWalletAddressRef = useRef<string | null>(null)
-
-  const navigate = useNavigate()
 
   // For unauthenticated users, skip running queries/mutations
   const isUserAuthenticated = isReady && isAuthenticated && !!privyId
@@ -182,28 +178,27 @@ export function useCurrentUser(): UseCurrentUserReturn {
     setPrevPrivyId(privyId)
   }, [privyId, prevPrivyId, queryClient])
 
-  // Handle wallet address mismatch
+  // Track if wallet sync is in progress to prevent duplicate calls
+  const walletSyncInProgressRef = useRef(false)
+
+  // Handle wallet address mismatch by syncing to DB via initAuth
   const handleWalletMismatch = useCallback(async () => {
+    // Prevent duplicate sync attempts
+    if (walletSyncInProgressRef.current || initMutation.isPending) return
+    walletSyncInProgressRef.current = true
+
     try {
-      // Show error message
-      toastError('Your connected wallet doesn\'t match this account. Please sign in again with the correct wallet.')
-
-      // Clear all cached data first
-      queryClient.clear()
-
-      // Small delay to let toast show, then redirect and reload
-      setTimeout(() => {
-        // Navigate to home and reload to fully reset auth state
-        navigate({ to: '/' }).then(() => {
-          window.location.href = '/'
-        })
-      }, 1000)
+      console.log('[useCurrentUser] Wallet mismatch detected, syncing new wallet to DB')
+      initMutation.mutate(undefined, {
+        onSettled: () => {
+          walletSyncInProgressRef.current = false
+        },
+      })
     } catch (error) {
-      console.error('Error handling wallet mismatch:', error)
-      // Fallback: just redirect to home
-      navigate({ to: '/' })
+      console.error('[useCurrentUser] Error syncing wallet:', error)
+      walletSyncInProgressRef.current = false
     }
-  }, [navigate, queryClient])
+  }, [initMutation])
 
   // Wallet address mismatch detection
   useEffect(() => {

@@ -2,6 +2,7 @@ import * as React from "react"
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox"
 
 import { cn } from "@/lib/utils"
+import { Icon } from "@/components/ui/icon"
 
 const Checkbox = React.forwardRef<
   React.ElementRef<typeof CheckboxPrimitive.Root>,
@@ -16,18 +17,12 @@ const Checkbox = React.forwardRef<
     {...props}
   >
     {/* Unchecked state - always visible */}
-    <i 
-      className="fa-regular fa-circle text-base leading-none absolute inset-0 flex items-center justify-center text-current"
-      aria-hidden="true"
-    />
+    <Icon name="circle" variant="regular" className="text-base leading-none absolute inset-0 flex items-center justify-center text-current" />
     {/* Checked state - only visible when checked */}
     <CheckboxPrimitive.Indicator
       className={cn("flex items-center justify-center text-current absolute inset-0")}
     >
-      <i 
-        className="fa-solid fa-circle-check text-base leading-none absolute inset-0 flex items-center justify-center text-current"
-        aria-hidden="true"
-      />
+      <Icon name="circle-check" className="text-base leading-none absolute inset-0 flex items-center justify-center text-current" />
     </CheckboxPrimitive.Indicator>
   </CheckboxPrimitive.Root>
 ))

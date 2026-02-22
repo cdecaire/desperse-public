@@ -17,7 +17,6 @@ import { z } from 'zod'
 import { db } from '@/server/db'
 import { postAssets, downloadTokens } from '@/server/db/schema'
 import { eq, and } from 'drizzle-orm'
-import { getGatedAssetStream, type StorageProviderType } from '@/server/storage/blob'
 
 // ============================================================================
 // Asset Download

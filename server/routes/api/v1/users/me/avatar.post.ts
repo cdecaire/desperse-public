@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
 		const token = authHeader?.replace('Bearer ', '')
 
 		if (!token) {
-			event.node.res.statusCode = 401
+			event.node!.res!.statusCode = 401
 			return {
 				success: false,
 				error: { code: 'unauthorized', message: 'Authentication required' },
@@ -27,10 +27,10 @@ export default defineEventHandler(async (event) => {
 		}
 
 		// Parse request body
-		const body = await readBody(event)
+		const body = await readBody(event) as Record<string, any>
 
 		if (!body.fileData || !body.fileName || !body.mimeType || typeof body.fileSize !== 'number') {
-			event.node.res.statusCode = 400
+			event.node!.res!.statusCode = 400
 			return {
 				success: false,
 				error: { code: 'invalid_request', message: 'Missing required fields: fileData, fileName, mimeType, fileSize' },
@@ -47,7 +47,7 @@ export default defineEventHandler(async (event) => {
 
 		if (!result.success) {
 			const statusCode = result.status || 400
-			event.node.res.statusCode = statusCode
+			event.node!.res!.statusCode = statusCode
 			return {
 				success: false,
 				error: { code: 'upload_failed', message: result.error },
@@ -64,7 +64,7 @@ export default defineEventHandler(async (event) => {
 		}
 	} catch (error) {
 		console.error('[POST /users/me/avatar] Error:', error)
-		event.node.res.statusCode = 500
+		event.node!.res!.statusCode = 500
 		return {
 			success: false,
 			error: { code: 'internal_error', message: 'Failed to upload avatar' },

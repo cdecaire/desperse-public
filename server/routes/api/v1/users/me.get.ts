@@ -31,7 +31,7 @@ export default defineEventHandler(async (event) => {
 	// Use standalone function instead of TanStack server function
 	const result = await getCurrentUserByToken(token)
 
-	console.log(`[me.get] ${requestId} result: user=${result.user?.usernameSlug || 'null'}`)
+	console.log(`[me.get] ${requestId} result: user=${result.user?.slug || 'null'}`)
 
 	return {
 		success: true,

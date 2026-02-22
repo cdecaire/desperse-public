@@ -22,7 +22,7 @@ export function usePostLikes(postId: string | undefined, userId: string | undefi
           postId,
           userId: userId || undefined,
         },
-      })
+      } as any)
       
       if (!result.success) {
         throw new Error(result.error || 'Failed to fetch post likes')
@@ -53,8 +53,8 @@ export function useLikeMutation(postId: string, userId: string | undefined) {
       
       const authHeaders = await getAuthHeaders()
       const result = action === 'like'
-        ? await likePost({ data: { postId, _authorization: authHeaders.Authorization } })
-        : await unlikePost({ data: { postId, _authorization: authHeaders.Authorization } })
+        ? await likePost({ data: { postId, _authorization: authHeaders.Authorization } } as any)
+        : await unlikePost({ data: { postId, _authorization: authHeaders.Authorization } } as any)
       
       if (!result.success) {
         throw new Error(result.error || `Failed to ${action} post`)
@@ -93,7 +93,7 @@ export function useLikeMutation(postId: string, userId: string | undefined) {
       }
       toast.error(error instanceof Error ? error.message : `Failed to ${action} post`)
     },
-    onSuccess: (result, action) => {
+    onSuccess: (_result, _action) => {
       // Invalidate to refetch and ensure consistency
       queryClient.invalidateQueries({ queryKey: ['postLikes', postId, userId] })
       // Also invalidate feed queries that might show like counts

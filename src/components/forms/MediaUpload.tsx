@@ -5,6 +5,7 @@
 
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { upload } from '@vercel/blob/client'
+import { Icon } from '@/components/ui/icon'
 import { cn } from '@/lib/utils'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { Button } from '@/components/ui/button'
@@ -530,7 +531,7 @@ export function MediaUpload({
           ) : (
             <>
               <div className="mb-4">
-                <i className="fa-solid fa-cloud-arrow-up text-3xl text-muted-foreground" />
+                <Icon name="cloud-arrow-up" className="text-3xl text-muted-foreground" />
               </div>
               <p className="text-sm font-medium mb-1">
                 {isDragging ? 'Drop your file here' : 'Drag and drop your media'}
@@ -574,7 +575,7 @@ export function MediaUpload({
               className="absolute top-3 right-3"
               aria-label="Remove media"
             >
-              <i className="fa-solid fa-xmark text-base" />
+              <Icon name="xmark" className="text-base" />
             </Button>
           )}
         </div>
@@ -583,7 +584,7 @@ export function MediaUpload({
       {/* Error Message */}
       {uploadState.status === 'error' && uploadState.error && (
         <div className="flex items-center gap-2 p-3 rounded-lg bg-destructive/10 text-destructive text-sm">
-          <i className="fa-regular fa-circle-exclamation" />
+          <Icon name="circle-exclamation" variant="regular" />
           <span>{uploadState.error}</span>
         </div>
       )}
@@ -633,7 +634,7 @@ export function MediaUpload({
                 </div>
               ) : (
                 <>
-                  <i className="fa-regular fa-image text-xl text-muted-foreground mb-2" />
+                  <Icon name="image" variant="regular" className="text-xl text-muted-foreground mb-2" />
                   <p className="text-xs text-muted-foreground">
                     Add a cover image
                   </p>
@@ -663,7 +664,7 @@ export function MediaUpload({
                   className="absolute top-2 right-2"
                   aria-label="Remove cover image"
                 >
-                  <i className="fa-solid fa-xmark text-base" />
+                  <Icon name="xmark" className="text-base" />
                 </Button>
               )}
             </div>
@@ -672,7 +673,7 @@ export function MediaUpload({
           {/* Cover Error */}
           {coverUploadState.status === 'error' && coverUploadState.error && (
             <div className="flex items-center gap-2 p-2 rounded-lg bg-destructive/10 text-destructive text-xs">
-              <i className="fa-regular fa-circle-exclamation" />
+              <Icon name="circle-exclamation" variant="regular" />
               <span>{coverUploadState.error}</span>
             </div>
           )}
@@ -680,7 +681,7 @@ export function MediaUpload({
           {/* Cover Required Warning */}
           {needsCover && uploadState.status === 'success' && (
             <p className="text-xs text-(--tone-warning)">
-              <i className="fa-regular fa-triangle-exclamation mr-1" />
+              <Icon name="triangle-exclamation" variant="regular" className="mr-1" />
               A cover image is required for this file type
             </p>
           )}
@@ -749,7 +750,7 @@ function MediaPreview({ url, mediaType, fileName, coverUrl }: MediaPreviewProps)
             {coverUrl ? (
               <img src={coverUrl} alt="Cover" className="w-full h-full object-cover" />
             ) : (
-              <i className="fa-regular fa-music text-2xl text-muted-foreground" />
+              <Icon name="music" variant="regular" className="text-2xl text-muted-foreground" />
             )}
           </div>
           
@@ -783,7 +784,7 @@ function MediaPreview({ url, mediaType, fileName, coverUrl }: MediaPreviewProps)
             {coverUrl ? (
               <img src={coverUrl} alt="Cover" className="w-full h-full object-cover" />
             ) : (
-              <i className={cn("fa-regular", fileIcon, "text-2xl text-muted-foreground")} />
+              <Icon name={fileIcon} variant="regular" className="text-2xl text-muted-foreground" />
             )}
           </div>
           
@@ -797,7 +798,7 @@ function MediaPreview({ url, mediaType, fileName, coverUrl }: MediaPreviewProps)
               rel="noopener noreferrer"
               className="text-xs text-primary hover:underline inline-flex items-center gap-1"
             >
-              <i className="fa-regular fa-external-link" />
+              <Icon name="external-link" variant="regular" />
               Open {fileTypeLabel}
             </a>
           </div>
@@ -815,7 +816,7 @@ function MediaPreview({ url, mediaType, fileName, coverUrl }: MediaPreviewProps)
             {coverUrl ? (
               <img src={coverUrl} alt="Cover" className="w-full h-full object-cover" />
             ) : (
-              <i className="fa-regular fa-cube text-2xl text-muted-foreground" />
+              <Icon name="cube" variant="regular" className="text-2xl text-muted-foreground" />
             )}
           </div>
           

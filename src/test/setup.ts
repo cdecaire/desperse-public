@@ -57,7 +57,7 @@ beforeEach(() => {
 	vi.spyOn(Math, "random").mockImplementation(seededRandom);
 
 	// Mock crypto.randomUUID if available (Node 19+)
-	if (typeof crypto !== "undefined" && crypto.randomUUID) {
+	if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
 		let uuidCounter = 0;
 		vi.spyOn(crypto, "randomUUID").mockImplementation(() => {
 			uuidCounter++;

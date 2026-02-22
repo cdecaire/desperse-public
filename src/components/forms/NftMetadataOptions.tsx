@@ -9,6 +9,7 @@
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { Tooltip } from '@/components/ui/tooltip'
+import { Icon } from '@/components/ui/icon'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
 
@@ -52,10 +53,11 @@ export function NftMetadataOptions({
         className="flex items-center justify-between w-full text-sm text-foreground transition-colors hover:text-foreground/80"
       >
         <span>Additional details</span>
-        <i className={cn(
-          'fa-regular transition-transform',
-          isAdvancedOpen ? 'fa-chevron-up' : 'fa-chevron-down'
-        )} />
+        <Icon
+          name={isAdvancedOpen ? 'chevron-up' : 'chevron-down'}
+          variant="regular"
+          className={cn('transition-transform')}
+        />
       </button>
 
       {isAdvancedOpen && (
@@ -137,7 +139,7 @@ export function NftMetadataOptions({
             {isMutabilityDisabled && (
               <div className="p-2 bg-muted rounded-lg">
                 <p className="text-xs text-muted-foreground">
-                  <i className="fa-regular fa-lock mr-2" />
+                  <Icon name="lock" variant="regular" className="mr-2" />
                   Mutability is locked once the NFT has been minted.
                 </p>
               </div>

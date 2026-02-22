@@ -29,9 +29,13 @@ export function usePreferences() {
     queryKey: preferencesQueryKey,
     queryFn: async () => {
       const authHeaders = await getAuthHeaders()
+      if (!authHeaders.Authorization) {
+        // Token expired or unavailable — return cached data or defaults silently
+        return queryClient.getQueryData<UserPreferencesJson>(preferencesQueryKey) ?? defaultPreferences
+      }
       const result = await getUserPreferences({
         data: { _authorization: authHeaders.Authorization },
-      })
+      } as any)
 
       if (!result.success) {
         throw new Error(result.error || 'Failed to fetch preferences')
@@ -41,6 +45,7 @@ export function usePreferences() {
     },
     enabled: isAuthenticated,
     staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: false, // Don't retry auth failures
   })
 
   // Mutation for updating preferences
@@ -52,7 +57,7 @@ export function usePreferences() {
           ...updates,
           _authorization: authHeaders.Authorization,
         },
-      })
+      } as any)
 
       if (!result.success) {
         throw new Error(result.error || 'Failed to update preferences')

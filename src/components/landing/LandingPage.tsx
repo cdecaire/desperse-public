@@ -4,6 +4,7 @@
  */
 
 import { Link } from '@tanstack/react-router'
+import { Icon } from '@/components/ui/icon'
 import { useEffect, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { usePrivy } from '@privy-io/react-auth'
@@ -104,7 +105,7 @@ function LandingMediaThumbnail({
   if (mediaType === 'audio') {
     return (
       <div className={`flex items-center justify-center bg-gradient-to-br from-muted to-muted/50 ${className}`}>
-        <i className="fa-regular fa-music text-4xl text-muted-foreground/50" />
+        <Icon name="music" variant="regular" className="text-4xl text-muted-foreground/50" />
       </div>
     )
   }
@@ -112,7 +113,7 @@ function LandingMediaThumbnail({
   // Other/unknown - show generic placeholder
   return (
     <div className={`flex items-center justify-center bg-muted ${className}`}>
-      <i className="fa-regular fa-file text-4xl text-muted-foreground/50" />
+      <Icon name="file" variant="regular" className="text-4xl text-muted-foreground/50" />
     </div>
   )
 }
@@ -180,10 +181,7 @@ function Header() {
       </nav>
       <div className="flex-1 flex items-center justify-end gap-4">
         <div className="flex items-center gap-2">
-          <i
-            className={`fa-regular ${activeTheme === 'light' ? 'fa-sun-bright' : 'fa-moon'} text-sm`}
-            aria-hidden="true"
-          />
+          <Icon name={activeTheme === 'light' ? 'sun-bright' : 'moon'} variant="regular" className="text-sm" />
           <Switch
             checked={activeTheme === 'dark'}
             onCheckedChange={handleThemeToggle}
@@ -714,7 +712,7 @@ function StickyCards() {
             <div className="space-y-4 w-72">
               <div className="border border-border rounded-xl p-4 bg-card/50 backdrop-blur flex items-center gap-4">
                 <div className="w-10 h-10 rounded-full bg-(--blue-gem-600) flex items-center justify-center">
-                  <i className="fa-regular fa-user-plus text-white text-lg" />
+                  <Icon name="user-plus" variant="regular" className="text-white text-lg" />
                 </div>
                 <div>
                   <div className="font-semibold text-sm">Sign Up</div>
@@ -723,7 +721,7 @@ function StickyCards() {
               </div>
               <div className="border border-border rounded-xl p-4 bg-card/50 backdrop-blur flex items-center gap-4">
                 <div className="w-10 h-10 rounded-full bg-(--flush-orange-500) flex items-center justify-center">
-                  <i className="fa-regular fa-wallet text-white text-lg" />
+                  <Icon name="wallet" variant="regular" className="text-white text-lg" />
                 </div>
                 <div>
                   <div className="font-semibold text-sm">Connect Wallet</div>
@@ -732,7 +730,7 @@ function StickyCards() {
               </div>
               <div className="border border-border rounded-xl p-4 bg-card/50 backdrop-blur flex items-center gap-4">
                 <div className="w-10 h-10 rounded-full bg-(--caribbean-green-500) flex items-center justify-center">
-                  <i className="fa-regular fa-key text-white text-lg" />
+                  <Icon name="key" variant="regular" className="text-white text-lg" />
                 </div>
                 <div>
                   <div className="font-semibold text-sm">Full Ownership</div>

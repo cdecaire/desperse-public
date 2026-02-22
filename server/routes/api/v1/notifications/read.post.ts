@@ -73,7 +73,7 @@ export default defineEventHandler(async (event) => {
 	// Parse request body
 	let body: { notificationIds?: string[] }
 	try {
-		body = await readBody(event)
+		body = (await readBody(event)) as typeof body ?? {}
 	} catch (error) {
 		setResponseStatus(event, 400)
 		return {

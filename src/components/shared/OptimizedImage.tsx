@@ -6,6 +6,7 @@
  */
 
 import { useState, useCallback, useMemo } from 'react'
+import { Icon } from '@/components/ui/icon'
 import { cn } from '@/lib/utils'
 import {
   getResponsiveImageProps,
@@ -114,7 +115,7 @@ export function OptimizedImage({
         style={{ backgroundColor: placeholderColor }}
         aria-label={alt}
       >
-        <i className="fa-regular fa-image text-muted-foreground/50 text-2xl" />
+        <Icon name="image" variant="regular" className="text-muted-foreground/50 text-2xl" />
       </div>
     )
   }

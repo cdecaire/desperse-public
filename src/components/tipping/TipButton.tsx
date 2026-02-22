@@ -5,6 +5,7 @@
  */
 
 import { useState, useCallback, useMemo } from "react";
+import { Icon } from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -206,7 +207,7 @@ export function TipDialog({
 									/>
 								) : (
 									<div className="w-full h-full flex items-center justify-center">
-										<i className="fa-solid fa-user text-xs text-muted-foreground" aria-hidden="true" />
+										<Icon name="user" className="text-xs text-muted-foreground" />
 									</div>
 								)}
 							</div>
@@ -266,7 +267,7 @@ export function TipDialog({
 								disabled={isPending}
 								className="text-xs text-muted-foreground hover:text-foreground transition-colors"
 							>
-								<i className="fa-regular fa-arrow-left mr-1" aria-hidden="true" />
+								<Icon name="arrow-left" variant="regular" className="mr-1" />
 								Back to presets
 							</button>
 						</div>
@@ -322,7 +323,7 @@ export function TipDialog({
 					{/* Insufficient funds warning */}
 					{hasInsufficientFunds && state === "idle" && (
 						<div className="flex items-center gap-2 rounded-md bg-destructive/10 border border-destructive/20 px-3 py-2 text-xs text-destructive">
-							<i className="fa-regular fa-triangle-exclamation" />
+							<Icon name="triangle-exclamation" variant="regular" />
 							<span>
 								Insufficient balance. You need{" "}
 								{(parsedAmount - skrBalance).toLocaleString(
@@ -359,7 +360,7 @@ export function TipDialog({
 					{state === "success" && (
 						<StatusMessage
 							icon={
-								<i className="fa-solid fa-circle-check text-green-500" />
+								<Icon name="circle-check" className="text-green-500" />
 							}
 							message={`Successfully sent ${amount} SKR!`}
 						/>
@@ -367,7 +368,7 @@ export function TipDialog({
 					{state === "failed" && (
 						<StatusMessage
 							icon={
-								<i className="fa-solid fa-circle-xmark text-destructive" />
+								<Icon name="circle-xmark" className="text-destructive" />
 							}
 							message="Tip failed. Please try again."
 						/>
@@ -393,7 +394,7 @@ export function TipDialog({
 								target="_blank"
 								rel="noopener noreferrer"
 							>
-								<i className="fa-regular fa-arrow-up-right-from-square text-xs" />
+								<Icon name="arrow-up-right-from-square" variant="regular" className="text-xs" />
 								Get SKR
 							</a>
 						</Button>

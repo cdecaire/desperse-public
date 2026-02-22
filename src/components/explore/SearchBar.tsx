@@ -4,6 +4,7 @@
  */
 
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react'
+import { Icon } from '@/components/ui/icon'
 import { useNavigate } from '@tanstack/react-router'
 import { Input } from '@/components/ui/input'
 import { SearchDropdown } from './SearchDropdown'
@@ -184,10 +185,7 @@ export function SearchBar({
       <form onSubmit={handleSubmit}>
         <div className="relative flex items-center">
           {/* Search icon */}
-          <i
-            className="fa-regular fa-magnifying-glass absolute left-3 text-muted-foreground pointer-events-none z-10"
-            aria-hidden="true"
-          />
+          <Icon name="magnifying-glass" variant="regular" className="absolute left-3 text-muted-foreground pointer-events-none z-10" />
 
           {/* Input */}
           <Input
@@ -211,7 +209,7 @@ export function SearchBar({
               className="absolute right-3 p-1 text-muted-foreground hover:text-foreground transition-colors"
               aria-label="Clear search"
             >
-              <i className="fa-solid fa-circle-xmark" aria-hidden="true" />
+              <Icon name="circle-xmark" />
             </button>
           )}
         </div>

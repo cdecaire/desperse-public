@@ -9,12 +9,12 @@ import { usePostQuery } from '@/hooks/usePostQuery'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { AuthGuard } from '@/components/shared/AuthGuard'
 import { CreatePostForm } from '@/components/forms/CreatePostForm'
-import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { Skeleton } from '@/components/ui/skeleton'
 import { DeletePostDialog } from '@/components/feed/DeletePostDialog'
 import { useDeletePost } from '@/hooks/usePostMutations'
 import { Button } from '@/components/ui/button'
+import { Icon } from '@/components/ui/icon'
 
 export const Route = createFileRoute('/post/$postId/edit')({
   component: EditPostPage,
@@ -47,7 +47,7 @@ function EditPostPage() {
   if (isError || !data) {
     return (
       <EmptyState
-        icon={<i className="fa-regular fa-circle-exclamation text-4xl" />}
+        icon={<Icon name="circle-exclamation" variant="regular" className="text-4xl" />}
         title="Post not found"
         description="This post doesn't exist or was removed."
         action={{ label: 'Go to Feed', to: '/' }}
@@ -61,10 +61,10 @@ function EditPostPage() {
   if (currentUser && data.user.id !== currentUser.id) {
     return (
       <EmptyState
-        icon={<i className="fa-regular fa-lock text-4xl" />}
+        icon={<Icon name="lock" variant="regular" className="text-4xl" />}
         title="Access Denied"
         description="You don't have permission to edit this post."
-        action={{ label: 'Go to Post', to: '/post/$postId', params: { postId } }}
+        action={{ label: 'Go to Post', to: `/post/${postId}` }}
       />
     )
   }
@@ -73,7 +73,7 @@ function EditPostPage() {
   if (!data.post) {
     return (
       <EmptyState
-        icon={<i className="fa-regular fa-circle-exclamation text-4xl" />}
+        icon={<Icon name="circle-exclamation" variant="regular" className="text-4xl" />}
         title="Post not found"
         description="This post doesn't exist or was removed."
         action={{ label: 'Go to Feed', to: '/' }}

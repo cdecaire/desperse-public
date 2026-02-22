@@ -5,7 +5,7 @@
 
 import { db } from '@/server/db'
 import { users } from '@/server/db/schema'
-import { eq, like, sql } from 'drizzle-orm'
+import { eq, like } from 'drizzle-orm'
 
 /**
  * Normalize a string to a valid username slug

@@ -5,6 +5,7 @@
  */
 
 import { Link } from '@tanstack/react-router'
+import { Icon } from '@/components/ui/icon'
 
 interface GradientAvatarProps {
   src?: string | null
@@ -74,7 +75,7 @@ export function GradientAvatar({
               loading="lazy"
             />
           ) : (
-            <i className="fa-solid fa-user text-muted-foreground text-lg" aria-hidden="true" />
+            <Icon name="user" className="text-muted-foreground text-lg" />
           )}
         </div>
       </div>

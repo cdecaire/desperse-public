@@ -164,6 +164,7 @@ export const getSuggestedCreators = createServerFn({
  */
 export const getTrendingPosts = createServerFn({
   method: 'GET',
+// @ts-expect-error -- TanStack Start dual-context type inference
 }).handler(async (input: unknown) => {
   try {
     const authResult = await withOptionalAuth(trendingPostsSchema, input)
@@ -626,6 +627,12 @@ export const search = createServerFn({
       mediaUrl: string
       coverUrl: string | null
       type: 'post' | 'collectible' | 'edition'
+      price: number | null
+      currency: 'SOL' | 'USDC' | null
+      maxSupply: number | null
+      currentSupply: number
+      mintWindowStart: Date | null
+      mintWindowEnd: Date | null
       createdAt: Date
       user: {
         id: string
@@ -679,6 +686,12 @@ export const search = createServerFn({
           mediaUrl: posts.mediaUrl,
           coverUrl: posts.coverUrl,
           type: posts.type,
+          price: posts.price,
+          currency: posts.currency,
+          maxSupply: posts.maxSupply,
+          currentSupply: posts.currentSupply,
+          mintWindowStart: posts.mintWindowStart,
+          mintWindowEnd: posts.mintWindowEnd,
           createdAt: posts.createdAt,
           user: {
             id: users.id,

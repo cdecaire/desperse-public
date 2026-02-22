@@ -1,5 +1,4 @@
 import { createServerFn } from '@tanstack/react-start';
-import type { Connection, PublicKey } from '@solana/web3.js';
 import { z } from 'zod';
 import { and, desc, eq, gt, isNull, lt, or, sql } from 'drizzle-orm';
 import { db } from '@/server/db';
@@ -9,10 +8,6 @@ import { validateAddress } from '@/server/services/blockchain/addressUtils';
 
 // NOTE: @solana/spl-token and transactionBuilder imports are done dynamically inside
 // functions to avoid pulling them into client bundle (causes Buffer is not defined error)
-
-// Token program IDs as strings (instantiated lazily to avoid top-level PublicKey)
-const TOKEN_PROGRAM_ID_STR = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
-const TOKEN_2022_PROGRAM_ID_STR = 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb';
 
 // Minting fee in lamports - must match MINTING_FEE_LAMPORTS in transactionBuilder.ts
 const MINTING_FEE_LAMPORTS = 10_000_000; // 0.01 SOL
@@ -26,8 +21,6 @@ import { checkTransactionStatus } from '@/server/services/blockchain/mintCnft';
 import { snapshotMintedMetadata } from '@/server/utils/mint-snapshot';
 import { withAuth } from '@/server/auth';
 import { getMintWindowStatus } from '@/server/utils/mintWindowStatus';
-// MINT_SIZE constant (82 bytes)
-const MINT_SIZE = 82;
 import { uploadMetadataJson } from '@/server/storage/blob';
 import { generateNftMetadata } from '@/server/utils/nft-metadata';
 
@@ -71,106 +64,6 @@ type PurchaseStatus =
   | 'failed'
   | 'abandoned'
   | 'blocked_missing_master';
-
-/**
- * Shared helper to send and confirm a fulfillment transaction.
- * Returns the signature and confirmation result.
- * Throws if transaction fails or cannot be confirmed.
- */
-async function sendAndConfirmFulfillmentTransaction(
-  connection: Connection,
-  txBytes: Uint8Array,
-  blockhash: string,
-  lastValidBlockHeight: number,
-): Promise<{ signature: string; confirmation: { value: { err: any } } }> {
-  // Send transaction
-  const signature = await connection.sendRawTransaction(txBytes, {
-    skipPreflight: false,
-    maxRetries: 3,
-  });
-
-  console.log(`[sendAndConfirmFulfillmentTransaction] Transaction sent: ${signature}`);
-
-  // Confirm transaction
-  const confirmation = await connection.confirmTransaction(
-    {
-      signature,
-      blockhash,
-      lastValidBlockHeight,
-    },
-    'confirmed'
-  );
-
-  if (confirmation.value.err) {
-    throw new Error(`Fulfillment tx failed: ${JSON.stringify(confirmation.value.err)}`);
-  }
-
-  console.log(`[sendAndConfirmFulfillmentTransaction] Transaction confirmed: ${signature}`);
-
-  return { signature, confirmation };
-}
-
-/**
- * Validate that master mint exists on-chain before attempting fulfillment.
- * Returns true if valid, throws if invalid (should block fulfillment).
- */
-async function validateMasterMintExists(
-  connection: Connection,
-  masterMint: string | null,
-): Promise<void> {
-  if (!masterMint) {
-    return; // No master mint means this is first purchase (master creation)
-  }
-
-  // Validate address before creating PublicKey (Phase 4b migration)
-  if (!validateAddress(masterMint)) {
-    throw new Error(`Invalid master mint address: ${masterMint}`);
-  }
-
-  const { PublicKey } = await import('@solana/web3.js');
-  const TOKEN_PROGRAM_ID = new PublicKey(TOKEN_PROGRAM_ID_STR);
-  const TOKEN_2022_PROGRAM_ID = new PublicKey(TOKEN_2022_PROGRAM_ID_STR);
-
-  const masterMintPk = new PublicKey(masterMint);
-  const info = await connection.getAccountInfo(masterMintPk, 'confirmed');
-
-  if (!info) {
-    throw new Error(
-      `Master mint not found on-chain: ${masterMintPk.toBase58()}. ` +
-      `This purchase is blocked. The master mint may have been created on a different cluster ` +
-      `or the transaction may have failed. Please contact support.`
-    );
-  }
-
-  const isTokenProgram =
-    info.owner.equals(TOKEN_PROGRAM_ID) || info.owner.equals(TOKEN_2022_PROGRAM_ID);
-
-  if (!isTokenProgram) {
-    throw new Error(
-      `Master mint has unexpected owner ${info.owner.toBase58()} for ${masterMintPk.toBase58()}. ` +
-      `This likely means the database contains the wrong address (metadata PDA, edition PDA, etc.). ` +
-      `Please contact support.`
-    );
-  }
-
-  console.log(`[validateMasterMintExists] Master mint validated: ${masterMintPk.toBase58()}`);
-}
-
-/**
- * Log cluster information (RPC URL and genesis hash) for debugging cluster mismatches.
- * Uses a per-request flag to avoid spam while still logging once per fulfillment attempt.
- */
-async function logClusterInfo(connection: Connection, rpcUrl: string): Promise<void> {
-  try {
-    const genesisHash = await connection.getGenesisHash();
-    console.log('[editions] Cluster info:', {
-      rpcUrl,
-      genesisHash,
-    });
-  } catch (error) {
-    console.warn('[editions] Failed to get genesis hash:', error);
-  }
-}
 
 interface BuyEditionResult {
   success: boolean;
@@ -226,74 +119,6 @@ async function decrementPostSupply(postId: string) {
       currentSupply: sql`${posts.currentSupply} - 1`,
     })
     .where(and(eq(posts.id, postId), gt(posts.currentSupply, 0)));
-}
-
-/**
- * Extract mint address from a confirmed transaction.
- * Looks for newly created accounts owned by the Token Program that are mint accounts (MINT_SIZE bytes).
- * Since the transaction creates exactly one mint account, we can identify it by:
- * - Being owned by Token Program
- * - Having size MINT_SIZE (82 bytes)
- * - Being writable in the transaction
- */
-async function extractMintAddressFromTransaction(txSignature: string): Promise<string | null> {
-  try {
-    const { PublicKey } = await import('@solana/web3.js');
-    const connection = await getConnection();
-    const TOKEN_PROGRAM = new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA');
-    
-    const tx = await connection.getTransaction(txSignature, {
-      maxSupportedTransactionVersion: 0,
-      commitment: 'confirmed',
-    });
-    
-    if (!tx?.transaction?.message) {
-      return null;
-    }
-    
-    // Get account keys and their write status
-    const accountKeys: Array<{ pubkey: PublicKey; writable: boolean }> = [];
-    const message = tx.transaction.message;
-    
-    if ('staticAccountKeys' in message) {
-      // V0 transaction
-      const v0Message = message as { staticAccountKeys: PublicKey[]; header: { numReadonlySignedAccounts: number; numReadonlyUnsignedAccounts: number } };
-      v0Message.staticAccountKeys.forEach((pubkey: PublicKey, index: number) => {
-        // Check if this account is writable (in header or address table)
-        const writable = v0Message.header.numReadonlySignedAccounts + v0Message.header.numReadonlyUnsignedAccounts <= index;
-        accountKeys.push({ pubkey, writable });
-      });
-    } else if ('accountKeys' in message) {
-      // Legacy transaction
-      const legacyMessage = message as { accountKeys: PublicKey[]; header: { numReadonlySignedAccounts: number; numReadonlyUnsignedAccounts: number } };
-      legacyMessage.accountKeys.forEach((pubkey: PublicKey, index: number) => {
-        // In legacy, all accounts before readonly accounts are writable
-        const writable = index < legacyMessage.accountKeys.length - legacyMessage.header.numReadonlySignedAccounts - legacyMessage.header.numReadonlyUnsignedAccounts;
-        accountKeys.push({ pubkey, writable });
-      });
-    }
-    
-    // Find mint account: writable, owned by Token Program, size = MINT_SIZE
-    for (const { pubkey, writable } of accountKeys) {
-      if (!writable) continue; // Mint account must be writable (created)
-      
-      try {
-        const accountInfo = await connection.getAccountInfo(pubkey, 'confirmed');
-        if (accountInfo && accountInfo.owner.equals(TOKEN_PROGRAM) && accountInfo.data.length === MINT_SIZE) {
-          // This is likely the mint account
-          return pubkey.toBase58();
-        }
-      } catch (e) {
-        // Skip accounts we can't fetch
-        continue;
-      }
-    }
-    
-    return null;
-  } catch (error) {
-    console.error('[extractMintAddressFromTransaction] Error:', error);
-    return null;
-  }
 }
 
 // ============================================================================

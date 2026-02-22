@@ -1,6 +1,7 @@
 import { createFileRoute, Outlet, Link, useLocation } from '@tanstack/react-router'
 import { AuthGuard } from '@/components/shared/AuthGuard'
 import SettingsNav from '@/components/settings/SettingsNav'
+import { Icon } from '@/components/ui/icon'
 
 export const Route = createFileRoute('/settings/account')({
   component: AccountLayout,
@@ -47,7 +48,7 @@ function AccountLayout() {
                     className="inline-flex h-10 w-10 items-center justify-center rounded-md text-foreground"
                     aria-label="Back to settings"
                   >
-                    <i className="fa-solid fa-arrow-left" aria-hidden="true" />
+                    <Icon name="arrow-left" />
                   </Link>
                 </div>
                 <div className="flex justify-center min-w-0 flex-1">

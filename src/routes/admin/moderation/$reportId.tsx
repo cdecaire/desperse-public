@@ -28,6 +28,7 @@ import {
 } from '@/components/ui/dialog'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
+import { Icon } from '@/components/ui/icon'
 
 // Format relative time (same as PostCard)
 function formatRelativeTime(date: Date | string): string {
@@ -75,11 +76,11 @@ function ReportDetailPage() {
           postId,
           currentUserId: currentUser.id,
         },
-      })
+      } as any)
       if (!result.success) throw new Error(result.error || 'Post not found')
       return result
     },
-    enabled: !!currentUser?.id && !!postId && !isLoadingUser && !isDmThreadReport,
+    enabled: !!(currentUser?.id) && !!postId && !isLoadingUser && !isDmThreadReport,
     staleTime: 0,
     refetchOnMount: true,
     refetchOnWindowFocus: true,
@@ -96,11 +97,11 @@ function ReportDetailPage() {
           commentId,
           _authorization: authHeaders.Authorization,
         },
-      })
+      } as any)
       if (!result.success) throw new Error(result.error || 'Comment not found')
       return result
     },
-    enabled: !!currentUser?.id && !!commentId && isCommentReport && !isLoadingUser,
+    enabled: !!(currentUser?.id) && !!commentId && !!isCommentReport && !isLoadingUser,
     staleTime: 0,
     refetchOnMount: true,
     refetchOnWindowFocus: true,
@@ -117,11 +118,11 @@ function ReportDetailPage() {
           threadId,
           _authorization: authHeaders.Authorization,
         },
-      })
+      } as any)
       if (!result.success) throw new Error(result.error || 'Thread not found')
       return result
     },
-    enabled: !!currentUser?.id && !!threadId && isDmThreadReport && !isLoadingUser,
+    enabled: !!(currentUser?.id) && !!threadId && !!isDmThreadReport && !isLoadingUser,
     staleTime: 0,
     refetchOnMount: true,
     refetchOnWindowFocus: true,
@@ -140,21 +141,21 @@ function ReportDetailPage() {
             threadId,
             _authorization: authHeaders.Authorization,
           },
-        })
+        } as any)
       } else if (isCommentReport && commentId) {
         result = await getReportsByCommentId({
           data: {
             commentId,
             _authorization: authHeaders.Authorization,
           },
-        })
+        } as any)
       } else if (postId) {
         result = await getReportsByPostId({
           data: {
             postId,
             _authorization: authHeaders.Authorization,
           },
-        })
+        } as any)
       } else {
         throw new Error('No content ID provided')
       }
@@ -175,9 +176,9 @@ function ReportDetailPage() {
   const error = postData && !postData.success ? new Error(postData.error) :
     (commentData && !commentData.success ? new Error(commentData.error) :
     (dmThreadData && !dmThreadData.success ? new Error(dmThreadData.error) : null))
-  const postDataResult = postData && postData.success ? { post: postData.post, user: postData.user } : null
-  const commentDataResult = commentData && commentData.success ? commentData : null
-  const dmThreadDataResult = dmThreadData && dmThreadData.success ? { thread: dmThreadData.thread, userA: dmThreadData.userA, userB: dmThreadData.userB } : null
+  const postDataResult = postData && postData.success ? { post: (postData as any).post, user: (postData as any).user } : null
+  const commentDataResult = commentData && commentData.success ? commentData as any : null
+  const dmThreadDataResult = dmThreadData && dmThreadData.success ? { thread: (dmThreadData as any).thread, userA: (dmThreadData as any).userA, userB: (dmThreadData as any).userB } : null
 
   const hideMutation = useMutation({
     mutationFn: async (reason: string) => {
@@ -190,7 +191,7 @@ function ReportDetailPage() {
             reason,
             _authorization: authHeaders.Authorization,
           },
-        })
+        } as any)
         if (!result.success) throw new Error(result.error || 'Failed to hide comment')
         return result
       } else {
@@ -200,7 +201,7 @@ function ReportDetailPage() {
             reason,
             _authorization: authHeaders.Authorization,
           },
-        })
+        } as any)
         if (!result.success) throw new Error(result.error || 'Failed to hide post')
         return result
       }
@@ -231,7 +232,7 @@ function ReportDetailPage() {
             commentId,
             _authorization: authHeaders.Authorization,
           },
-        })
+        } as any)
         if (!result.success) throw new Error(result.error || 'Failed to unhide comment')
         return result
       } else {
@@ -240,7 +241,7 @@ function ReportDetailPage() {
             postId,
             _authorization: authHeaders.Authorization,
           },
-        })
+        } as any)
         if (!result.success) throw new Error(result.error || 'Failed to unhide post')
         return result
       }
@@ -272,7 +273,7 @@ function ReportDetailPage() {
             reason,
             _authorization: authHeaders.Authorization,
           },
-        })
+        } as any)
         if (!result.success) throw new Error(result.error || 'Failed to delete comment')
         return result
       } else {
@@ -282,7 +283,7 @@ function ReportDetailPage() {
             reason,
             _authorization: authHeaders.Authorization,
           },
-        })
+        } as any)
         if (!result.success) throw new Error(result.error || 'Failed to delete post')
         return result
       }
@@ -311,7 +312,7 @@ function ReportDetailPage() {
           resolution,
           _authorization: authHeaders.Authorization,
         },
-      })
+      } as any)
       if (!result.success) throw new Error(result.error || 'Failed to resolve reports')
       return result
     },
@@ -361,7 +362,7 @@ function ReportDetailPage() {
         onClick={() => navigate({ to: '/admin/moderation' })}
         className="mb-4 hidden md:inline-flex"
       >
-        <i className="fa-regular fa-arrow-left mr-2" />
+        <Icon name="arrow-left" variant="regular" className="mr-2" />
         Back to Reports
       </Button>
 
@@ -385,7 +386,7 @@ function ReportDetailPage() {
 
       {!isLoading && error && (
         <EmptyState
-          icon={<i className="fa-regular fa-circle-exclamation text-4xl" />}
+          icon={<Icon name="circle-exclamation" variant="regular" className="text-4xl" />}
           title="Failed to load report"
           description={error.message || 'An error occurred while loading the report.'}
         />
@@ -393,7 +394,7 @@ function ReportDetailPage() {
 
       {!isLoading && !error && !postDataResult && !commentDataResult && !dmThreadDataResult && (
         <EmptyState
-          icon={<i className="fa-regular fa-circle-exclamation text-4xl" />}
+          icon={<Icon name="circle-exclamation" variant="regular" className="text-4xl" />}
           title={isDmThreadReport ? "Conversation not found" : (isCommentReport ? "Comment not found" : "Post not found")}
           description={isDmThreadReport ? "The reported conversation could not be found." : (isCommentReport ? "The reported comment could not be found." : "The reported post could not be found.")}
         />
@@ -418,7 +419,7 @@ function ReportDetailPage() {
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center bg-muted">
-                      <i className="fa-regular fa-user text-muted-foreground" />
+                      <Icon name="user" variant="regular" className="text-muted-foreground" />
                     </div>
                   )}
                 </div>
@@ -440,7 +441,7 @@ function ReportDetailPage() {
                       <>
                         <span className="text-xs text-muted-foreground">·</span>
                         <span className="flex items-center gap-1 text-xs text-destructive">
-                          <i className="fa-regular fa-eye-slash" />
+                          <Icon name="eye-slash" variant="regular" />
                           <span>Hidden</span>
                         </span>
                       </>
@@ -449,7 +450,7 @@ function ReportDetailPage() {
                       <>
                         <span className="text-xs text-muted-foreground">·</span>
                         <span className="flex items-center gap-1 text-xs text-destructive">
-                          <i className="fa-regular fa-trash-xmark" />
+                          <Icon name="trash-xmark" variant="regular" />
                           <span>Deleted</span>
                         </span>
                       </>
@@ -493,7 +494,7 @@ function ReportDetailPage() {
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-muted">
-                        <i className="fa-regular fa-user text-muted-foreground" />
+                        <Icon name="user" variant="regular" className="text-muted-foreground" />
                       </div>
                     )}
                   </div>
@@ -508,7 +509,7 @@ function ReportDetailPage() {
                       <span>·</span>
                       <span>{formatRelativeTime(postDataResult.post.createdAt)}</span>
                       {postDataResult.post.type !== 'post' && (() => {
-                        const typeMeta = POST_TYPE_META[postDataResult.post.type]
+                        const typeMeta = POST_TYPE_META[postDataResult.post.type as keyof typeof POST_TYPE_META]
                         const label = postDataResult.post.type === 'edition' && postDataResult.post.maxSupply
                           ? getEditionLabel(postDataResult.post.maxSupply)
                           : typeMeta.label
@@ -516,7 +517,7 @@ function ReportDetailPage() {
                           <>
                             <span>·</span>
                             <span className={cn('flex items-center gap-1', typeMeta.badgeClass)}>
-                              <i className={cn(typeMeta.iconStyle === 'solid' ? 'fa-solid' : 'fa-regular', typeMeta.icon, 'text-[10px]')} />
+                              <Icon name={typeMeta.icon.replace('fa-', '')} variant={typeMeta.iconStyle === 'solid' ? 'solid' : 'regular'} className="text-[10px]" />
                               {label}
                             </span>
                           </>
@@ -526,7 +527,7 @@ function ReportDetailPage() {
                         <>
                           <span>·</span>
                           <span className="flex items-center gap-1 text-destructive">
-                            <i className="fa-regular fa-eye-slash" />
+                            <Icon name="eye-slash" variant="regular" />
                             <span>Hidden</span>
                           </span>
                         </>
@@ -556,7 +557,7 @@ function ReportDetailPage() {
                       onClick={() => unhideMutation.mutate()}
                       disabled={unhideMutation.isPending}
                     >
-                      <i className="fa-regular fa-eye mr-2" />
+                      <Icon name="eye" variant="regular" className="mr-2" />
                       Unhide {isCommentReport ? 'Comment' : 'Post'}
                     </Button>
                   ) : (
@@ -565,7 +566,7 @@ function ReportDetailPage() {
                       onClick={handleHide}
                       disabled={hideMutation.isPending}
                     >
-                      <i className="fa-regular fa-eye-slash mr-2" />
+                      <Icon name="eye-slash" variant="regular" className="mr-2" />
                       Hide {isCommentReport ? 'Comment' : 'Post'}
                     </Button>
                   )}
@@ -574,7 +575,7 @@ function ReportDetailPage() {
                     onClick={() => resolveMutation.mutate('no_action')}
                     disabled={resolveMutation.isPending}
                   >
-                    <i className="fa-regular fa-check mr-2" />
+                    <Icon name="check" variant="regular" className="mr-2" />
                     Mark Resolved (No Action)
                   </Button>
                 </>
@@ -585,7 +586,7 @@ function ReportDetailPage() {
                   onClick={handleDelete}
                   disabled={deleteMutation.isPending}
                 >
-                  <i className="fa-regular fa-xmark mr-2" />
+                  <Icon name="xmark" variant="regular" className="mr-2" />
                   Delete {isCommentReport ? 'Comment' : 'Post'}
                 </Button>
               )}
@@ -657,7 +658,7 @@ function ReportDetailPage() {
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center bg-muted">
-                            <i className="fa-regular fa-user text-xs text-muted-foreground" />
+                            <Icon name="user" variant="regular" className="text-xs text-muted-foreground" />
                           </div>
                         )}
                       </div>
@@ -717,7 +718,7 @@ function ReportDetailPage() {
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center bg-muted">
-                      <i className="fa-regular fa-user text-muted-foreground" />
+                      <Icon name="user" variant="regular" className="text-muted-foreground" />
                     </div>
                   )}
                 </div>
@@ -733,7 +734,7 @@ function ReportDetailPage() {
 
               {/* Separator */}
               <div className="flex items-center gap-2 text-muted-foreground">
-                <i className="fa-solid fa-arrows-up-down text-xs" />
+                <Icon name="arrows-up-down" className="text-xs" />
                 <span className="text-xs">Conversation between</span>
               </div>
 
@@ -748,7 +749,7 @@ function ReportDetailPage() {
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center bg-muted">
-                      <i className="fa-regular fa-user text-muted-foreground" />
+                      <Icon name="user" variant="regular" className="text-muted-foreground" />
                     </div>
                   )}
                 </div>
@@ -782,7 +783,7 @@ function ReportDetailPage() {
                   onClick={() => resolveMutation.mutate('no_action')}
                   disabled={resolveMutation.isPending}
                 >
-                  <i className="fa-regular fa-check mr-2" />
+                  <Icon name="check" variant="regular" className="mr-2" />
                   Mark Resolved (No Action)
                 </Button>
               )}
@@ -814,7 +815,7 @@ function ReportDetailPage() {
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center bg-muted">
-                            <i className="fa-regular fa-user text-xs text-muted-foreground" />
+                            <Icon name="user" variant="regular" className="text-xs text-muted-foreground" />
                           </div>
                         )}
                       </div>

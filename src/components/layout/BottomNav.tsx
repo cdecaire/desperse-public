@@ -1,6 +1,7 @@
 import { Link, useLocation } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
 import MoreMenu from './MoreMenu'
+import { Icon } from '@/components/ui/icon'
 import { useAuth } from '../../hooks/useAuth'
 import { useCurrentUser } from '../../hooks/useCurrentUser'
 import { useNotificationCounters } from '../../hooks/useNotificationCounters'
@@ -104,7 +105,6 @@ export default function BottomNav() {
   ]
 
   const renderIcon = (item: { path: string; icon: string }, isActive: boolean) => {
-    const iconStyle = isActive ? 'fa-solid' : 'fa-regular'
     const isProfile = item.path.startsWith('/profile')
     const isAdmin = item.path === '/admin'
     const isNotifications = item.path === '/notifications'
@@ -122,7 +122,7 @@ export default function BottomNav() {
 
     return (
       <span className={`${sizeClasses} grid place-items-center relative`}>
-        <i className={`${iconStyle} ${item.icon} text-xl`} aria-hidden="true" />
+        <Icon name={item.icon} variant={isActive ? "solid" : "regular"} className="text-xl" />
         {isNotifications && unreadNotificationsCount !== undefined && unreadNotificationsCount > 0 && (
           <NotificationBadge variant="destructive" size="dot" className="absolute -top-0.5 -right-0.5" />
         )}

@@ -5,6 +5,7 @@ import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
+import { Icon } from '@/components/ui/icon'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 
 export const Route = createFileRoute('/settings/account/app')({
@@ -59,9 +60,10 @@ function AppSettingsPage() {
       <div className="rounded-[var(--radius-lg)] bg-white dark:bg-input/30 border border-input px-5 md:px-6 lg:px-8 py-4 md:py-5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <i
-              className={`fa-regular ${activeTheme === 'light' ? 'fa-sun-bright' : 'fa-moon'} w-5 text-center text-muted-foreground`}
-              aria-hidden="true"
+            <Icon
+              name={activeTheme === 'light' ? 'sun-bright' : 'moon'}
+              variant="regular"
+              className="w-5 text-center text-muted-foreground"
             />
             <div className="flex flex-col">
               <span className="text-sm font-medium">Theme</span>
@@ -106,7 +108,7 @@ function AppSettingsPage() {
       {/* Explorer Preference */}
       <div className="rounded-[var(--radius-lg)] bg-white dark:bg-input/30 border border-input px-5 md:px-6 lg:px-8 py-4 md:py-5">
         <div className="flex items-center gap-3 mb-4">
-          <i className="fa-regular fa-arrow-up-right-from-square w-5 text-center text-muted-foreground" aria-hidden="true" />
+          <Icon name="arrow-up-right-from-square" variant="regular" className="w-5 text-center text-muted-foreground" />
           <div className="flex flex-col">
             <span className="text-sm font-medium">Blockchain Explorer</span>
             <span className="text-xs text-muted-foreground">

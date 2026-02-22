@@ -11,6 +11,7 @@
  */
 
 import { useState, useEffect, useCallback, type ReactNode } from "react"
+import { Icon } from "@/components/ui/icon"
 import { cn } from "@/lib/utils"
 import {
 	getMintWindowDisplayStatus,
@@ -100,7 +101,7 @@ export function MintWindowBadge({
 				className,
 			)}
 		>
-			<i className={cn(iconMap[status.phase], "text-[10px]")} />
+			<Icon name={iconMap[status.phase]} className="text-[10px]" />
 			<span>{status.label}</span>
 			{status.phase === "ended" &&
 				mintedCount !== undefined &&
@@ -162,7 +163,7 @@ function ProminentBadge({
 				className,
 			)}
 		>
-			<i className={cn(iconMap[status.phase], "text-base")} />
+			<Icon name={iconMap[status.phase]} className="text-base" />
 			<div className="flex flex-col">
 				<span className="font-semibold leading-tight">
 					{status.label}

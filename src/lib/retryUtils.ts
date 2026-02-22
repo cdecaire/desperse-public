@@ -15,7 +15,7 @@ const DEFAULT_BASE_DELAY_MS = 1000 // 1 second
 /**
  * Check if an error is retryable (network/RPC errors)
  */
-function isRetryableError(error: unknown): boolean {
+export function isRetryableError(error: unknown): boolean {
   if (error instanceof Error) {
     const errorMsg = error.message.toLowerCase()
     

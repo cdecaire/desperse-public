@@ -6,6 +6,7 @@
 import { useState } from 'react'
 import { Link } from '@tanstack/react-router'
 import { toast } from '@/hooks/use-toast'
+import { Icon } from '@/components/ui/icon'
 import { cn } from '@/lib/utils'
 import { ReportModal } from '@/components/forms/ReportModal'
 import { useFollowMutation, useFollowStats } from '@/hooks/useProfileQuery'
@@ -126,7 +127,7 @@ export function CommentMenu({
             )}
             aria-label="Comment options"
           >
-            <i className="fa-solid fa-ellipsis-vertical text-sm" aria-hidden="true" />
+            <Icon name="ellipsis-vertical" className="text-sm" />
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56">
@@ -136,7 +137,7 @@ export function CommentMenu({
               to="/profile/$slug"
               params={{ slug: commentUser.usernameSlug }}
             >
-              <i className="fa-regular fa-user w-5 text-center" aria-hidden="true" />
+              <Icon name="user" variant="regular" className="w-5 text-center" />
               <span>Go to profile</span>
             </Link>
           </DropdownMenuItem>
@@ -152,7 +153,7 @@ export function CommentMenu({
                 {followMutation.isPending ? (
                   <LoadingSpinner size="sm" className="w-5" />
                 ) : (
-                  <i className="fa-regular fa-user-minus w-5 text-center" aria-hidden="true" />
+                  <Icon name="user-minus" variant="regular" className="w-5 text-center" />
                 )}
                 <span>Unfollow</span>
               </DropdownMenuItem>
@@ -165,7 +166,7 @@ export function CommentMenu({
                 {followMutation.isPending ? (
                   <LoadingSpinner size="sm" className="w-5" />
                 ) : (
-                  <i className="fa-regular fa-user-plus w-5 text-center" aria-hidden="true" />
+                  <Icon name="user-plus" variant="regular" className="w-5 text-center" />
                 )}
                 <span>Follow</span>
               </DropdownMenuItem>
@@ -178,7 +179,7 @@ export function CommentMenu({
               onClick={() => setShowReportModal(true)}
               className={cn(itemClassName, "text-destructive hover:bg-destructive/10")}
             >
-              <i className="fa-regular fa-flag w-5 text-center" aria-hidden="true" />
+              <Icon name="flag" variant="regular" className="w-5 text-center" />
               <span>Report comment</span>
             </DropdownMenuItem>
           )}
@@ -197,7 +198,7 @@ export function CommentMenu({
                 </>
               ) : (
                 <>
-                  <i className="fa-regular fa-xmark w-5 text-center" aria-hidden="true" />
+                  <Icon name="xmark" variant="regular" className="w-5 text-center" />
                   <span>Delete</span>
                 </>
               )}

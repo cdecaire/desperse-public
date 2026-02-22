@@ -77,10 +77,7 @@ vi.mock("@solana/web3.js", () => {
 	}
 
 	class MockVersionedTransaction {
-		private message: any;
-		constructor(message: any) {
-			this.message = message;
-		}
+		constructor(_message: any) {}
 		serialize() {
 			// Return a mock serialized transaction (just some bytes for testing)
 			return new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8]);

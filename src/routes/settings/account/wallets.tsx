@@ -9,6 +9,7 @@ import { addWallet } from '@/server/functions/walletPreferences'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Tooltip } from '@/components/ui/tooltip'
+import { Icon } from '@/components/ui/icon'
 import { toastSuccess, toastError } from '@/lib/toast'
 
 export const Route = createFileRoute('/settings/account/wallets')({
@@ -184,7 +185,7 @@ function WalletsPage() {
           <div className="flex items-center justify-between">
             <p className="text-lg font-semibold">Wallets</p>
             <Button variant="default" onClick={() => linkWallet()}>
-              <i className="fa-regular fa-plus mr-2" />
+              <Icon name="plus" variant="regular" className="mr-2" />
               Link Wallet
             </Button>
           </div>
@@ -213,9 +214,9 @@ function WalletsPage() {
                     <div className="flex items-center gap-3">
                       {/* Checkbox indicator - only show when multiple wallets in DB */}
                       {canSelectWallet && (
-                        <div className="shrink-0">
+                        <div className="shrink-0" onClick={(e) => e.stopPropagation()}>
                           {isSettingThis ? (
-                            <i className="fa-regular fa-spinner-third fa-spin text-primary text-sm" />
+                            <Icon name="spinner-third" variant="regular" spin className="text-primary text-sm" />
                           ) : (
                             <Checkbox
                               checked={isActive}
@@ -229,7 +230,7 @@ function WalletsPage() {
                         </div>
                       )}
                       <div className="w-10 h-10 rounded-full bg-muted grid place-items-center">
-                        <i className="fa-regular fa-wallet text-lg text-muted-foreground" />
+                        <Icon name="wallet" variant="regular" className="text-lg text-muted-foreground" />
                       </div>
                       <div className="space-y-0.5">
                         <div className="flex items-center gap-2">
@@ -255,7 +256,7 @@ function WalletsPage() {
                             disabled={!isReady || !isAuthenticated}
                             aria-label="Export private key"
                           >
-                            <i className="fa-regular fa-key" />
+                            <Icon name="key" variant="regular" />
                           </Button>
                         </Tooltip>
                       )}
@@ -271,9 +272,9 @@ function WalletsPage() {
                             disabled={unlinking === wallet.address || !canUnlinkLoginMethod}
                           >
                             {unlinking === wallet.address ? (
-                              <i className="fa-regular fa-spinner-third fa-spin" />
+                              <Icon name="spinner-third" variant="regular" spin />
                             ) : (
-                              <i className="fa-regular fa-xmark" />
+                              <Icon name="xmark" variant="regular" />
                             )}
                           </Button>
                         </Tooltip>
@@ -294,13 +295,13 @@ function WalletsPage() {
           <div className="flex flex-wrap gap-2">
             {!hasGoogle && (
               <Button variant="default" onClick={() => linkGoogle()}>
-                <i className="fa-brands fa-google mr-2" />
+                <Icon name="google" variant="brands" className="mr-2" />
                 Link Google
               </Button>
             )}
             {!hasTwitter && (
               <Button variant="default" onClick={() => linkTwitter()}>
-                <i className="fa-brands fa-x-twitter mr-2" />
+                <Icon name="x-twitter" variant="brands" className="mr-2" />
                 Link Twitter
               </Button>
             )}
@@ -317,10 +318,10 @@ function WalletsPage() {
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-muted grid place-items-center">
-                      <i
-                        className={`fa-brands ${
-                          account.type.startsWith('google') ? 'fa-google' : account.type.startsWith('twitter') ? 'fa-x-twitter' : 'fa-at'
-                        } text-lg text-muted-foreground`}
+                      <Icon
+                        name={account.type.startsWith('google') ? 'google' : account.type.startsWith('twitter') ? 'x-twitter' : 'at'}
+                        variant={account.type.startsWith('google') || account.type.startsWith('twitter') ? 'brands' : 'solid'}
+                        className="text-lg text-muted-foreground"
                       />
                     </div>
                     <div className="space-y-0.5">
@@ -345,9 +346,9 @@ function WalletsPage() {
                           disabled={unlinking === account.type || !canUnlinkLoginMethod}
                         >
                           {unlinking === account.type ? (
-                            <i className="fa-regular fa-spinner-third fa-spin" />
+                            <Icon name="spinner-third" variant="regular" spin />
                           ) : (
-                            <i className="fa-regular fa-xmark" />
+                            <Icon name="xmark" variant="regular" />
                           )}
                         </Button>
                       </Tooltip>

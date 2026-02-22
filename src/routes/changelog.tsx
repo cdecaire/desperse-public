@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { StaticPageLayout } from '@/components/layout/StaticPageLayout'
+import { Icon } from '@/components/ui/icon'
 
 export const Route = createFileRoute('/changelog')({
   component: ChangelogPage,
@@ -18,7 +19,7 @@ function ChangelogPage() {
         </p>
 
         <h2 className="text-xl font-semibold mt-8 mb-4 flex items-center gap-2">
-          <i className="fa-solid fa-sparkles text-muted-foreground" aria-hidden="true" />
+          <Icon name="sparkles" className="text-muted-foreground" />
           Latest Updates (February 2026)
         </h2>
 
@@ -63,7 +64,7 @@ function ChangelogPage() {
         </ul>
 
         <h2 className="text-xl font-semibold mt-8 mb-4 flex items-center gap-2">
-          <i className="fa-solid fa-comments text-muted-foreground" aria-hidden="true" />
+          <Icon name="comments" className="text-muted-foreground" />
           January 2026
         </h2>
 
@@ -118,7 +119,7 @@ function ChangelogPage() {
         </ul>
 
         <h2 className="text-xl font-semibold mt-8 mb-4 flex items-center gap-2">
-          <i className="fa-solid fa-palette text-muted-foreground" aria-hidden="true" />
+          <Icon name="palette" className="text-muted-foreground" />
           Design & Experience (December 2025)
         </h2>
 
@@ -138,7 +139,7 @@ function ChangelogPage() {
         </ul>
 
         <h2 className="text-xl font-semibold mt-8 mb-4 flex items-center gap-2">
-          <i className="fa-solid fa-lock text-muted-foreground" aria-hidden="true" />
+          <Icon name="lock" className="text-muted-foreground" />
           Premium Content Features
         </h2>
 
@@ -151,7 +152,7 @@ function ChangelogPage() {
         </ul>
 
         <h2 className="text-xl font-semibold mt-8 mb-4 flex items-center gap-2">
-          <i className="fa-solid fa-comments text-muted-foreground" aria-hidden="true" />
+          <Icon name="comments" className="text-muted-foreground" />
           Community Building
         </h2>
 
@@ -164,7 +165,7 @@ function ChangelogPage() {
         </ul>
 
         <h2 className="text-xl font-semibold mt-8 mb-4 flex items-center gap-2">
-          <i className="fa-solid fa-rocket text-muted-foreground" aria-hidden="true" />
+          <Icon name="rocket" className="text-muted-foreground" />
           Platform Stability
         </h2>
 
@@ -177,7 +178,7 @@ function ChangelogPage() {
         </ul>
 
         <h2 className="text-xl font-semibold mt-8 mb-4 flex items-center gap-2">
-          <i className="fa-solid fa-image text-muted-foreground" aria-hidden="true" />
+          <Icon name="image" className="text-muted-foreground" />
           NFT Creation & Management
         </h2>
 
@@ -189,7 +190,7 @@ function ChangelogPage() {
         </ul>
 
         <h2 className="text-xl font-semibold mt-8 mb-4 flex items-center gap-2">
-          <i className="fa-solid fa-mobile-screen-button text-muted-foreground" aria-hidden="true" />
+          <Icon name="mobile-screen-button" className="text-muted-foreground" />
           Mobile-First Experience
         </h2>
 
@@ -202,7 +203,7 @@ function ChangelogPage() {
         </ul>
 
         <h2 className="text-xl font-semibold mt-8 mb-4 flex items-center gap-2">
-          <i className="fa-solid fa-star text-muted-foreground" aria-hidden="true" />
+          <Icon name="star" className="text-muted-foreground" />
           Getting Started
         </h2>
 

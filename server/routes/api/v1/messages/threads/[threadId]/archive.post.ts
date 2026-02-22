@@ -58,7 +58,7 @@ export default defineEventHandler(async (event) => {
 		}
 	}
 
-	const body = await readBody(event)
+	const body = await readBody(event) as Record<string, any>
 	if (typeof body?.archived !== 'boolean') {
 		setResponseStatus(event, 400)
 		return {

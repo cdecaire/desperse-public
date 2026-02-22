@@ -374,7 +374,7 @@ export function getResilientRpcClient(config: RpcProviderConfig = {}) {
 						.send(),
 				"getSignatureStatuses"
 			);
-			return { value: result.data.value, endpoint: result.endpoint };
+			return { value: [...result.data.value] as Array<unknown>, endpoint: result.endpoint };
 		},
 
 		/** Get current slot with automatic fallback */

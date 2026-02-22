@@ -145,14 +145,12 @@ export async function prepareCollectDirect(
 ): Promise<CollectPrepareResult> {
 	// Authenticate user
 	let userId: string
-	let walletAddress: string | null = null
 	try {
 		const auth = await authenticateWithToken(token)
 		if (!auth?.userId) {
 			return { success: false, error: 'auth_required', message: 'Authentication required' }
 		}
 		userId = auth.userId
-		walletAddress = auth.walletAddress || null
 	} catch (authError) {
 		const message =
 			authError instanceof Error ? authError.message : 'Authentication failed'

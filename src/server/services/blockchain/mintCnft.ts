@@ -12,7 +12,7 @@
  * - Clean interface that can be swapped for different implementations
  */
 
-import { env, getHeliusRpcUrl, getHeliusApiUrl } from '@/config/env';
+import { env, getHeliusRpcUrl } from '@/config/env';
 import { getSolanaClient } from './solanaClient';
 
 // Types for the mint service
@@ -62,22 +62,6 @@ export interface MintCnftResult {
   error?: string;
   /** Whether the transaction was submitted (vs preparation failed) */
   submitted?: boolean;
-}
-
-/**
- * Helius Mint API response types
- */
-interface HeliusMintApiResponse {
-  jsonrpc: string;
-  id: string;
-  result?: {
-    signature: string;
-    assetId?: string;
-  };
-  error?: {
-    code: number;
-    message: string;
-  };
 }
 
 /**

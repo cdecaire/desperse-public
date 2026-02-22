@@ -70,7 +70,7 @@ export default defineEventHandler(async (event) => {
 		}
 
 		// Parse request body
-		const body = await readBody(event)
+		const body = await readBody(event) as Record<string, any>
 		const assetId = body?.assetId as string | undefined
 
 		if (!assetId) {

@@ -39,7 +39,7 @@ export function useDmPreferences() {
       const authHeaders = await getAuthHeaders()
       const result = await getDmPreferences({
         data: { _authorization: authHeaders.Authorization },
-      })
+      } as any)
 
       if (!result.success) {
         throw new Error(result.error || 'Failed to fetch DM preferences')
@@ -60,7 +60,7 @@ export function useDmPreferences() {
           ...updates,
           _authorization: authHeaders.Authorization,
         },
-      })
+      } as any)
 
       if (!result.success) {
         throw new Error(result.error || 'Failed to update DM preferences')

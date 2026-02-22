@@ -3,6 +3,8 @@
  * Dropdown showing recent searches and live search results
  */
 
+import { Icon } from '@/components/ui/icon'
+
 interface SearchUser {
   id: string
   usernameSlug: string
@@ -84,14 +86,14 @@ export function SearchDropdown({
                 className="w-full flex items-center gap-3 px-4 py-2.5 mx-1 rounded-lg hover:bg-accent transition-colors text-left"
                 style={{ width: 'calc(100% - 8px)' }}
               >
-                <i className="fa-regular fa-clock text-muted-foreground w-5 text-center" aria-hidden="true" />
+                <Icon name="clock" variant="regular" className="text-muted-foreground w-5 text-center" />
                 <span className="flex-1 text-sm text-foreground truncate">{search}</span>
                 <button
                   onClick={(e) => onRemoveRecent(search, e)}
                   className="p-1 text-muted-foreground hover:text-foreground transition-colors"
                   aria-label="Remove from recent"
                 >
-                  <i className="fa-solid fa-xmark text-xs" aria-hidden="true" />
+                  <Icon name="xmark" className="text-xs" />
                 </button>
               </button>
             ))}
@@ -107,7 +109,7 @@ export function SearchDropdown({
             onClick={() => onSelectRecent(query)}
             className="w-full flex items-center gap-3 px-4 py-3 hover:bg-accent transition-colors text-left border-b border-border/50"
           >
-            <i className="fa-regular fa-magnifying-glass text-muted-foreground w-5 text-center" aria-hidden="true" />
+            <Icon name="magnifying-glass" variant="regular" className="text-muted-foreground w-5 text-center" />
             <span className="text-sm text-foreground">
               Search for "<span className="font-semibold">{query}</span>"
             </span>
@@ -116,7 +118,7 @@ export function SearchDropdown({
           {/* Loading state */}
           {isLoading && (
             <div className="flex items-center justify-center py-6">
-              <i className="fa-solid fa-spinner-third fa-spin text-muted-foreground" aria-hidden="true" />
+              <Icon name="spinner-third" spin className="text-muted-foreground" />
             </div>
           )}
 
@@ -132,7 +134,7 @@ export function SearchDropdown({
                 >
                   {/* Category icon */}
                   <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center shrink-0">
-                    <i className="fa-solid fa-folder text-muted-foreground" aria-hidden="true" />
+                    <Icon name="folder" className="text-muted-foreground" />
                   </div>
 
                   {/* Category name */}
@@ -161,7 +163,7 @@ export function SearchDropdown({
                 >
                   {/* Hashtag icon */}
                   <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center shrink-0">
-                    <i className="fa-solid fa-hashtag text-muted-foreground" aria-hidden="true" />
+                    <Icon name="hashtag" className="text-muted-foreground" />
                   </div>
 
                   {/* Tag name and count */}
@@ -200,7 +202,7 @@ export function SearchDropdown({
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
-                        <i className="fa-regular fa-user text-muted-foreground" aria-hidden="true" />
+                        <Icon name="user" variant="regular" className="text-muted-foreground" />
                       </div>
                     )}
                   </div>
@@ -232,7 +234,7 @@ export function SearchDropdown({
               onClick={onGoToHashtag}
               className="w-full flex items-center gap-3 px-4 py-3 hover:bg-accent transition-colors text-left border-t border-border/50"
             >
-              <i className="fa-solid fa-hashtag text-muted-foreground w-5 text-center" aria-hidden="true" />
+              <Icon name="hashtag" className="text-muted-foreground w-5 text-center" />
               <span className="text-sm text-primary">
                 Go to #{query.replace(/^#/, '').toLowerCase()}
               </span>
@@ -245,7 +247,7 @@ export function SearchDropdown({
               onClick={onGoToQuery}
               className="w-full flex items-center gap-3 px-4 py-3 hover:bg-accent transition-colors text-left border-t border-border/50"
             >
-              <i className="fa-regular fa-at text-muted-foreground w-5 text-center" aria-hidden="true" />
+              <Icon name="at" variant="regular" className="text-muted-foreground w-5 text-center" />
               <span className="text-sm text-primary">
                 Go to @{query.replace(/^@/, '')}
               </span>

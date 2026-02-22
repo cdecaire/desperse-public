@@ -1,4 +1,5 @@
 import { Link, useLocation } from '@tanstack/react-router'
+import { Icon } from '@/components/ui/icon'
 
 type SettingsNavVariant = 'desktop' | 'mobile'
 
@@ -74,7 +75,6 @@ export function SettingsNav({ variant = 'desktop' }: SettingsNavProps) {
   const renderNavItem = (item: typeof accountNavItems[0]) => {
     const isActive =
       location.pathname === item.path || location.pathname.startsWith(`${item.path}/`)
-    const iconStyle = isActive ? 'fa-solid' : 'fa-regular'
 
     if (item.disabled) {
       return (
@@ -85,7 +85,7 @@ export function SettingsNav({ variant = 'desktop' }: SettingsNavProps) {
           aria-label={`${item.label} (coming soon)`}
         >
           <span className="w-6 h-6 grid place-items-center">
-            <i className={`fa-regular ${item.icon} text-xl`} aria-hidden="true" />
+            <Icon name={item.icon} variant="regular" className="text-xl" />
           </span>
           <span className="text-sm font-medium leading-none">{item.label}</span>
         </button>
@@ -103,7 +103,7 @@ export function SettingsNav({ variant = 'desktop' }: SettingsNavProps) {
         }`}
       >
         <span className="w-6 h-6 grid place-items-center">
-          <i className={`${iconStyle} ${item.icon} text-xl`} aria-hidden="true" />
+          <Icon name={item.icon} variant={isActive ? "solid" : "regular"} className="text-xl" />
         </span>
         <span className="text-sm font-medium leading-none">{item.label}</span>
       </Link>

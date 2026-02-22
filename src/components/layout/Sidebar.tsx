@@ -2,6 +2,7 @@ import { Link, useLocation } from '@tanstack/react-router'
 import MoreMenu from './MoreMenu'
 import Wallets from './Wallets'
 import { Logo } from '../shared/Logo'
+import { Icon } from '@/components/ui/icon'
 import { useAuth } from '../../hooks/useAuth'
 import { useCurrentUser } from '../../hooks/useCurrentUser'
 import { useNotificationCounters } from '../../hooks/useNotificationCounters'
@@ -108,7 +109,6 @@ export default function Sidebar() {
   const showProfileSkeleton = !isReady
 
   const renderIcon = (item: NavItem, isActive: boolean) => {
-    const iconStyle = isActive ? 'fa-solid' : 'fa-regular'
     const isProfile = item.path.startsWith('/profile')
     const sizeClasses = 'w-6 h-6'
 
@@ -124,7 +124,7 @@ export default function Sidebar() {
 
     return (
       <span className={`${sizeClasses} grid place-items-center`}>
-        <i className={`${iconStyle} ${item.icon} text-xl`} aria-hidden="true" />
+        <Icon name={item.icon} variant={isActive ? "solid" : "regular"} className="text-xl" />
       </span>
     )
   }
@@ -235,7 +235,7 @@ export default function Sidebar() {
               aria-label="Log in or Sign up"
             >
               <span className="w-6 h-6 grid place-items-center">
-                <i className="fa-regular fa-right-to-bracket text-xl" aria-hidden="true" />
+                <Icon name="right-to-bracket" variant="regular" className="text-xl" />
               </span>
               <span className="text-sm font-medium leading-none">Log in or Sign up</span>
             </button>

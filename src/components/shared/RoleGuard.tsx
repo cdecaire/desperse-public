@@ -4,6 +4,7 @@
  */
 
 import { useEffect } from 'react'
+import { Icon } from '@/components/ui/icon'
 import { useNavigate } from '@tanstack/react-router'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { LoadingSpinner } from './LoadingSpinner'
@@ -21,7 +22,7 @@ interface RoleGuardProps {
  * Wraps protected content and redirects if user doesn't have required role
  */
 export function RoleGuard({ children, requiredRole, deniedMessage }: RoleGuardProps) {
-  const { user: currentUser, isLoading, isInitializing } = useCurrentUser()
+  const { user: currentUser, isLoading } = useCurrentUser()
   const navigate = useNavigate()
 
   const hasAccess =
@@ -52,7 +53,7 @@ export function RoleGuard({ children, requiredRole, deniedMessage }: RoleGuardPr
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
         <EmptyState
-          icon={<i className="fa-regular fa-shield-halved text-4xl" />}
+          icon={<Icon name="shield-halved" variant="regular" className="text-4xl" />}
           title="Access Denied"
           description={
             deniedMessage ||

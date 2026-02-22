@@ -6,6 +6,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { Icon } from '@/components/ui/icon'
 import {
   Heart,
   MessageCircle,
@@ -64,7 +65,7 @@ function ButtonTestPage() {
               <Button>Default (40/32px)</Button>
               <Button size="cta">CTA (44/32px)</Button>
               <Button size="icon"><Settings className="h-4 w-4" /></Button>
-              <Button size="icon-lg" className="rounded-full"><i className="fa-solid fa-play text-xl ml-1" /></Button>
+              <Button size="icon-lg" className="rounded-full"><Icon name="play" className="text-xl ml-1" /></Button>
             </div>
           </div>
           <div className="mt-4 p-3 bg-muted/50 border rounded-md">
@@ -182,7 +183,7 @@ function ButtonTestPage() {
               size="icon-lg"
               className="rounded-full bg-black/50 backdrop-blur-sm hover:bg-black/60 text-white"
             >
-              <i className="fa-solid fa-play text-xl ml-1" />
+              <Icon name="play" className="text-xl ml-1" />
             </Button>
 
             {/* Audio play button */}
@@ -191,7 +192,7 @@ function ButtonTestPage() {
               size="icon"
               className="h-10 w-10 rounded-full bg-black/50 backdrop-blur-sm hover:bg-black/60 text-white"
             >
-              <i className="fa-solid fa-play text-sm ml-0.5" />
+              <Icon name="play" className="text-sm ml-0.5" />
             </Button>
 
             {/* Small control buttons (mute/pause) */}
@@ -200,26 +201,26 @@ function ButtonTestPage() {
               size="icon"
               className="h-9 w-9 rounded-full bg-black/50 backdrop-blur-sm hover:bg-black/60 text-white"
             >
-              <i className="fa-solid fa-pause text-sm" />
+              <Icon name="pause" className="text-sm" />
             </Button>
             <Button
               variant="ghost"
               size="icon"
               className="h-9 w-9 rounded-full bg-black/50 backdrop-blur-sm hover:bg-black/60 text-white"
             >
-              <i className="fa-solid fa-volume-high text-sm" />
+              <Icon name="volume-high" className="text-sm" />
             </Button>
             <Button
               variant="ghost"
               size="icon"
               className="h-9 w-9 rounded-full bg-black/50 backdrop-blur-sm hover:bg-black/60 text-white"
             >
-              <i className="fa-solid fa-volume-xmark text-sm" />
+              <Icon name="volume-xmark" className="text-sm" />
             </Button>
 
             {/* Small indicator (non-interactive) */}
             <div className="w-6 h-6 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center">
-              <i className="fa-solid fa-play text-[8px] text-white ml-0.5" />
+              <Icon name="play" className="text-[8px] text-white ml-0.5" />
             </div>
           </div>
           <div className="mt-4 p-3 bg-muted/50 rounded-md">
@@ -246,7 +247,7 @@ function ButtonTestPage() {
               <span className="text-xs text-muted-foreground w-20">Idle:</span>
               <Button variant="ghost" className="gap-1 px-2">
                 <span className="text-sm font-medium">0/5</span>
-                <i className="fa-regular fa-image-stack text-base" />
+                <Icon name="image-stack" variant="regular" className="text-base" />
               </Button>
             </div>
 
@@ -288,7 +289,7 @@ function ButtonTestPage() {
                 style={{ color: 'var(--tone-edition)' }}
               >
                 <span className="text-sm font-semibold">Claim NFT</span>
-                <i className="fa-regular fa-image-stack text-base" />
+                <Icon name="image-stack" variant="regular" className="text-base" />
               </Button>
             </div>
 
@@ -296,7 +297,7 @@ function ButtonTestPage() {
               <span className="text-xs text-muted-foreground w-20">Purchased:</span>
               <Button variant="ghost" className="gap-1 px-2 disabled:opacity-100" disabled>
                 <span className="text-sm font-medium">1/5</span>
-                <i className="fa-solid fa-image-stack text-base" style={{ color: 'var(--tone-edition)' }} />
+                <span style={{ color: 'var(--tone-edition)' }}><Icon name="image-stack" className="text-base" /></span>
               </Button>
             </div>
           </div>

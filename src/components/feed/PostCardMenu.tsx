@@ -7,6 +7,7 @@ import { useState } from 'react'
 import { Link } from '@tanstack/react-router'
 import { toast } from '@/hooks/use-toast'
 import { cn } from '@/lib/utils'
+import { Icon } from '@/components/ui/icon'
 import { ReportModal } from '@/components/forms/ReportModal'
 import { getExplorerUrl } from '@/server/functions/preferences'
 import { usePreferences } from '@/hooks/usePreferences'
@@ -208,7 +209,7 @@ export function PostCardMenu({
             )}
             aria-label="Post options"
           >
-            <i className="fa-solid fa-ellipsis-vertical text-sm" aria-hidden="true" />
+            <Icon name="ellipsis-vertical" className="text-sm" />
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56">
@@ -219,14 +220,14 @@ export function PostCardMenu({
                 params={{ postId }}
                 onClick={(e) => e.stopPropagation()}
               >
-                <i className="fa-regular fa-arrow-right w-5 text-center" aria-hidden="true" />
+                <Icon name="arrow-right" variant="regular" className="w-5 text-center" />
                 <span>Go to post</span>
               </Link>
             </DropdownMenuItem>
           )}
 
           <DropdownMenuItem onClick={handleCopyLink} className={itemClassName}>
-            <i className="fa-regular fa-link-simple w-5 text-center" aria-hidden="true" />
+            <Icon name="link-simple" variant="regular" className="w-5 text-center" />
             <span>Copy link</span>
           </DropdownMenuItem>
 
@@ -240,15 +241,12 @@ export function PostCardMenu({
                 isLocked && "text-muted-foreground"
               )}
             >
-              <i className={cn(
-                "fa-regular fa-arrow-down-to-bracket w-5 text-center",
-                isAuthenticating && "opacity-50"
-              )} aria-hidden="true" />
+              <Icon name="arrow-down-to-bracket" variant="regular" className={cn("w-5 text-center", isAuthenticating && "opacity-50")} />
               <span className="flex-1">
                 {isAuthenticating ? 'Verifying...' : `Download ${getFileTypeLabel(mediaUrl)}`}
               </span>
               {isLocked && (
-                <i className="fa-solid fa-lock text-xs" aria-hidden="true" />
+                <Icon name="lock" className="text-xs" />
               )}
             </DropdownMenuItem>
           )}
@@ -263,12 +261,12 @@ export function PostCardMenu({
                 !canDownloadAssets && "text-muted-foreground"
               )}
             >
-              <i className="fa-regular fa-arrow-down-to-bracket w-5 text-center" aria-hidden="true" />
+              <Icon name="arrow-down-to-bracket" variant="regular" className="w-5 text-center" />
               <span className="flex-1">
                 Download {getFileTypeLabelFromMime(asset.mimeType, asset.url)}
               </span>
               {!canDownloadAssets && (
-                <i className="fa-solid fa-lock text-xs" aria-hidden="true" />
+                <Icon name="lock" className="text-xs" />
               )}
             </DropdownMenuItem>
           ))}
@@ -281,7 +279,7 @@ export function PostCardMenu({
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <i className="fa-regular fa-cube w-5 text-center" aria-hidden="true" />
+                <Icon name="cube" variant="regular" className="w-5 text-center" />
                 <span>View on explorer</span>
               </a>
             </DropdownMenuItem>
@@ -295,7 +293,7 @@ export function PostCardMenu({
                 onClick={() => setShowReportModal(true)}
                 className={cn(itemClassName, "text-destructive hover:bg-destructive/10")}
               >
-                <i className="fa-regular fa-flag w-5 text-center" aria-hidden="true" />
+                <Icon name="flag" variant="regular" className="w-5 text-center" />
                 <span>Report post</span>
               </DropdownMenuItem>
             </>
@@ -310,7 +308,7 @@ export function PostCardMenu({
                   params={{ postId }}
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <i className="fa-regular fa-pencil w-5 text-center" aria-hidden="true" />
+                  <Icon name="pencil" variant="regular" className="w-5 text-center" />
                   <span>Edit</span>
                 </Link>
               </DropdownMenuItem>

@@ -142,7 +142,7 @@ export const createComment = createServerFn({
     if (error instanceof z.ZodError) {
       return {
         success: false,
-        error: error.errors[0]?.message || 'Invalid input.',
+        error: error.issues[0]?.message || 'Invalid input.',
       }
     }
     return {
@@ -231,7 +231,7 @@ export const getPostComments = createServerFn({
       ? (input as { data: unknown }).data
       : input
     
-    const { postId, cursor, limit = 50 } = z.object({
+    const { postId, cursor: _cursor, limit = 50 } = z.object({
       postId: z.string().uuid(),
       cursor: z.string().optional(),
       limit: z.number().int().positive().max(100).optional(),

@@ -23,7 +23,7 @@ export function usePostQuery({ postId, enabled = true }: UsePostQueryOptions) {
           postId,
           currentUserId: currentUser?.id,
         }
-      })
+      } as any)
 
       if (!result.success) {
         throw new Error(result.error || 'Post not found')

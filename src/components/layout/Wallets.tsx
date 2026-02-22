@@ -6,6 +6,7 @@
  */
 
 import { useState, useRef, useEffect, useMemo } from 'react'
+import { Icon } from '@/components/ui/icon'
 import { useWallets, usePrivy } from '@privy-io/react-auth'
 import { useFundWallet } from '@privy-io/react-auth/solana'
 import { useQuery } from '@tanstack/react-query'
@@ -136,13 +137,13 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
         activity: Array<{
           id: string
           signature?: string
-          token: 'SOL' | 'USDC' | null
+          token: 'SOL' | 'USDC' | 'SKR' | null
           amount: number | null
           direction: 'in' | 'out' | null
           timestamp: number
-          type: 'edition_sale' | 'edition_purchase' | 'collection' | 'transfer_in' | 'transfer_out'
+          type: 'edition_sale' | 'edition_purchase' | 'collection' | 'tip_received' | 'tip_sent' | 'transfer_in' | 'transfer_out'
           context: {
-            type: 'edition_sale' | 'edition_purchase' | 'collection' | 'transfer_in' | 'transfer_out'
+            type: 'edition_sale' | 'edition_purchase' | 'collection' | 'tip_received' | 'tip_sent' | 'transfer_in' | 'transfer_out'
             post?: {
               id: string
               caption: string | null
@@ -503,7 +504,7 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
       if (nfts.length === 0) {
         return (
           <div className="px-1 py-8 text-center">
-            <i className="fa-regular fa-image text-4xl text-muted-foreground mb-3 block" aria-hidden="true" />
+            <Icon name="image" variant="regular" className="text-4xl text-muted-foreground mb-3 block" />
             <p className="text-sm text-muted-foreground">No NFTs found</p>
             <p className="text-xs text-muted-foreground mt-1">Your NFTs will appear here</p>
           </div>
@@ -553,7 +554,7 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
                 )}
                 title="Grid view"
               >
-                <i className="fa-regular fa-grid-2 text-sm" aria-hidden="true" />
+                <Icon name="grid-2" variant="regular" className="text-sm" />
               </button>
               <button
                 onClick={() => setNftLayout('list')}
@@ -565,7 +566,7 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
                 )}
                 title="List view"
               >
-                <i className="fa-regular fa-list text-sm" aria-hidden="true" />
+                <Icon name="list" variant="regular" className="text-sm" />
               </button>
             </div>
           </div>
@@ -619,11 +620,11 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
                           imageUrl ? 'hidden' : 'flex'
                         )}
                       >
-                        <i className="fa-regular fa-image text-2xl text-muted-foreground" aria-hidden="true" />
+                        <Icon name="image" variant="regular" className="text-2xl text-muted-foreground" />
                       </div>
                       {/* Hover overlay */}
                       <div className="absolute inset-0 bg-black/65 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <i className="fa-solid fa-circle-arrow-up-right text-white text-lg" aria-hidden="true" />
+                        <Icon name="circle-arrow-up-right" className="text-white text-lg" />
                       </div>
                     </div>
                     <div className="px-2.5 py-2">
@@ -674,7 +675,7 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center bg-muted/40">
-                          <i className="fa-regular fa-image text-sm text-muted-foreground" aria-hidden="true" />
+                          <Icon name="image" variant="regular" className="text-sm text-muted-foreground" />
                         </div>
                       )}
                     </div>
@@ -684,7 +685,7 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
                         <p className="text-xs text-muted-foreground truncate -mt-0.5">{nftCollection}</p>
                       )}
                     </div>
-                    <i className="fa-regular fa-arrow-up-right text-muted-foreground text-xs shrink-0 mr-1" aria-hidden="true" />
+                    <Icon name="arrow-up-right" variant="regular" className="text-muted-foreground text-xs shrink-0 mr-1" />
                   </a>
                 )
               })}
@@ -698,7 +699,7 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
       if (activity.length === 0) {
         return (
           <div className="px-1 py-8 text-center">
-            <i className="fa-regular fa-clock-rotate-left text-4xl text-muted-foreground mb-3 block" aria-hidden="true" />
+            <Icon name="clock-rotate-left" variant="regular" className="text-4xl text-muted-foreground mb-3 block" />
             <p className="text-sm text-muted-foreground">No recent activity</p>
             <p className="text-xs text-muted-foreground mt-1">Your transactions will appear here</p>
           </div>
@@ -880,12 +881,10 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
                       >
                         {/* Icon */}
                         <div className="shrink-0 h-8 w-8 rounded-full border border-border bg-muted flex items-center justify-center">
-                          <i
-                            className={cn(
-                              'text-sm text-muted-foreground',
-                              entry.type === 'transfer_in' ? 'fa-regular fa-arrow-down' : 'fa-regular fa-arrow-up'
-                            )}
-                            aria-hidden="true"
+                          <Icon
+                            name={entry.type === 'transfer_in' ? 'arrow-down' : 'arrow-up'}
+                            variant="regular"
+                            className="text-sm text-muted-foreground"
                           />
                         </div>
 
@@ -914,7 +913,7 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
                             className="text-muted-foreground hover:text-foreground p-1 shrink-0"
                             aria-label="View on explorer"
                           >
-                            <i className="fa-regular fa-arrow-up-right text-xs" aria-hidden="true" />
+                            <Icon name="arrow-up-right" variant="regular" className="text-xs" />
                           </a>
                         )}
                       </div>
@@ -958,13 +957,10 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
                             {entry.type === 'tip_sent' || entry.type === 'tip_received' ? (
                               <SeekerIcon size={20} className="text-muted-foreground" />
                             ) : (
-                              <i
-                                className={cn(
-                                  'text-lg text-muted-foreground',
-                                  entry.type === 'collection' && 'fa-regular fa-bookmark',
-                                  (entry.type === 'edition_sale' || entry.type === 'edition_purchase') && 'fa-regular fa-gem'
-                                )}
-                                aria-hidden="true"
+                              <Icon
+                                name={entry.type === 'collection' ? 'bookmark' : 'gem'}
+                                variant="regular"
+                                className="text-lg text-muted-foreground"
                               />
                             )}
                           </div>
@@ -1022,7 +1018,7 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
                                     />
                                   ) : (
                                     <div className="h-4 w-4 rounded-full bg-muted flex items-center justify-center">
-                                      <i className="fa-solid fa-user text-[8px] text-muted-foreground" aria-hidden="true" />
+                                      <Icon name="user" className="text-[8px] text-muted-foreground" />
                                     </div>
                                   )}
                                   <span className="text-xs text-muted-foreground">
@@ -1043,7 +1039,7 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
                             className="text-muted-foreground hover:text-foreground p-1"
                             aria-label="View on explorer"
                           >
-                            <i className="fa-regular fa-arrow-up-right text-xs" aria-hidden="true" />
+                            <Icon name="arrow-up-right" variant="regular" className="text-xs" />
                           </a>
                         )}
                       </div>
@@ -1137,7 +1133,7 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
               className="w-full"
               variant="default"
             >
-              <i className="fa-regular fa-arrow-down mr-2" aria-hidden="true" />
+              <Icon name="arrow-down" variant="regular" className="mr-2" />
               Deposit
             </Button>
           </div>
@@ -1156,7 +1152,7 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
             aria-label="Wallets"
           >
             <span className="w-6 h-6 grid place-items-center">
-              <i className={`${isOpen ? 'fa-solid' : 'fa-regular'} fa-wallet text-xl`} aria-hidden="true" />
+              <Icon name="wallet" variant={isOpen ? 'solid' : 'regular'} className="text-xl" />
             </span>
           </button>
         </SheetTrigger>
@@ -1204,7 +1200,7 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
         aria-haspopup="menu"
       >
         <span className="w-6 h-6 grid place-items-center">
-          <i className={`${isOpen ? 'fa-solid' : 'fa-regular'} fa-wallet text-xl`} aria-hidden="true" />
+          <Icon name="wallet" variant={isOpen ? 'solid' : 'regular'} className="text-xl" />
         </span>
         <span className="text-sm leading-none">Wallets</span>
       </button>

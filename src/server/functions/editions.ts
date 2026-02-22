@@ -1556,10 +1556,16 @@ export const retryFulfillment = createServerFn({
       return { success: false, error: 'No payment transaction signature found' };
     }
 
-    // Verify payment is confirmed before attempting fulfillment
-    const txStatus = await checkTransactionStatus(purchase.txSignature);
-    if (txStatus.status !== 'confirmed' && txStatus.status !== 'finalized') {
-      return { success: false, error: `Payment transaction not confirmed: ${txStatus.status}` };
+    // Skip tx verification if payment was already confirmed (status >= awaiting_fulfillment)
+    // The DB is the source of truth — redundant RPC checks can fail due to cache expiry
+    const paymentAlreadyConfirmed = ['awaiting_fulfillment', 'master_created', 'minting'].includes(purchase.status);
+
+    if (!paymentAlreadyConfirmed) {
+      // Verify payment is confirmed before attempting fulfillment
+      const txStatus = await checkTransactionStatus(purchase.txSignature);
+      if (txStatus.status !== 'confirmed' && txStatus.status !== 'finalized') {
+        return { success: false, error: `Payment transaction not confirmed: ${txStatus.status}` };
+      }
     }
 
     // Ensure purchase is in a fulfillable state

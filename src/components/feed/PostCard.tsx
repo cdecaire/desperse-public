@@ -65,34 +65,52 @@ function detectMediaType(url: string): MediaType {
   return 'image'
 }
 
+// Format a millisecond countdown into a compact string
+function formatCountdownCompact(ms: number): string {
+  const totalMin = Math.floor(ms / 60000)
+  if (totalMin < 60) return `${totalMin}m`
+  const hours = Math.floor(totalMin / 60)
+  if (hours < 24) return `${hours}h ${totalMin % 60}m`
+  const days = Math.floor(hours / 24)
+  return `${days}d ${hours % 24}h`
+}
+
 // Compute a compact time label for timed edition price pills
+// Accepts `now` so it can use a live-updating clock
 function getMintTimeLabel(
   start: Date | string | null | undefined,
   end: Date | string | null | undefined,
-): string | null {
+  now: Date,
+): { text: string; isLive: boolean } | null {
   if (!start && !end) return null
-  const now = new Date()
   const startDate = start ? new Date(start) : null
   const endDate = end ? new Date(end) : null
 
-  // Not started yet → show scheduled date
+  // Not started yet
   if (startDate && now < startDate) {
-    return startDate.toLocaleDateString('en-US', {
-      month: 'short', day: 'numeric', year: 'numeric',
-    }) + ' @ ' + startDate.toLocaleTimeString('en-US', {
-      hour: 'numeric', minute: '2-digit',
-    })
+    const msUntilStart = startDate.getTime() - now.getTime()
+    const hoursUntilStart = msUntilStart / 3600000
+
+    // Within 12 hours → live countdown
+    if (hoursUntilStart <= 12) {
+      return { text: formatCountdownCompact(msUntilStart), isLive: true }
+    }
+
+    // Further out → static date
+    return {
+      text: startDate.toLocaleDateString('en-US', {
+        month: 'short', day: 'numeric', year: 'numeric',
+      }) + ' @ ' + startDate.toLocaleTimeString('en-US', {
+        hour: 'numeric', minute: '2-digit',
+      }),
+      isLive: false,
+    }
   }
 
   // Active → show time remaining
   if (endDate && now < endDate) {
     const ms = endDate.getTime() - now.getTime()
-    const totalMin = Math.floor(ms / 60000)
-    if (totalMin < 60) return `${totalMin}m left`
-    const hours = Math.floor(totalMin / 60)
-    if (hours < 24) return `${hours}h ${totalMin % 60}m left`
-    const days = Math.floor(hours / 24)
-    return `${days}d ${hours % 24}h left`
+    return { text: `${formatCountdownCompact(ms)} left`, isLive: true }
   }
 
   // Ended
@@ -232,18 +250,31 @@ export function PostCard({
     localEditionSupply,
   })
 
+  // Live clock for timed edition countdowns (ticks every 30s when needed)
+  const [now, setNow] = useState(() => new Date())
+  const hasMintWindow = post.type === 'edition' && (post.mintWindowStart || post.mintWindowEnd)
+  useEffect(() => {
+    if (!hasMintWindow) return
+    const result = getMintTimeLabel(post.mintWindowStart, post.mintWindowEnd, new Date())
+    if (!result?.isLive) return
+    const id = setInterval(() => setNow(new Date()), 30_000)
+    return () => clearInterval(id)
+  }, [hasMintWindow, post.mintWindowStart, post.mintWindowEnd])
+
   // Time-aware pill text for timed editions
-  const mintTimeLabel = post.type === 'edition'
-    ? getMintTimeLabel(post.mintWindowStart, post.mintWindowEnd)
+  const mintTimeResult = post.type === 'edition'
+    ? getMintTimeLabel(post.mintWindowStart, post.mintWindowEnd, now)
     : null
-  const isScheduled = !!(post.mintWindowStart && new Date(post.mintWindowStart) > new Date())
-  // For active timed editions: "53m left · 0.10 SOL"
-  // For scheduled: "Starts Feb 22, 2026 @ 5:30PM"
+  const mintTimeLabel = mintTimeResult?.text ?? null
+  const isScheduled = !!(post.mintWindowStart && new Date(post.mintWindowStart) > now)
+  // Active: "53m left · 0.10 SOL"
+  // Scheduled (>12h): "Starts Feb 22, 2026 @ 5:30PM · 0.10 SOL"
+  // Scheduled (≤12h): "Starts in 2h 30m · 0.10 SOL"
   const timedPillText = mintTimeLabel
     ? isScheduled
       ? display.overlayPillText
-        ? `Starts ${mintTimeLabel} · ${display.overlayPillText.replace(/^✓\s*/, '')}`
-        : `Starts ${mintTimeLabel}`
+        ? `Starts ${mintTimeResult?.isLive ? 'in ' : ''}${mintTimeLabel} · ${display.overlayPillText.replace(/^✓\s*/, '')}`
+        : `Starts ${mintTimeResult?.isLive ? 'in ' : ''}${mintTimeLabel}`
       : display.overlayPillText
         ? `${mintTimeLabel} · ${display.overlayPillText.replace(/^✓\s*/, '')}`
         : mintTimeLabel

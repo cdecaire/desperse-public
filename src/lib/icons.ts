@@ -247,6 +247,7 @@ import {
 // --- Brand icons ---
 import {
 	faGoogle,
+	faInstagram,
 	faXTwitter,
 } from "@fortawesome/free-brands-svg-icons"
 
@@ -500,6 +501,7 @@ export const regularIcons: Record<string, IconDefinition> = {
 
 export const brandIcons: Record<string, IconDefinition> = {
 	"google": faGoogle,
+	"instagram": faInstagram,
 	"x-twitter": faXTwitter,
 }
 

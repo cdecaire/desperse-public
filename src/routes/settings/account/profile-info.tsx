@@ -48,6 +48,8 @@ function ProfileInfoPage() {
   const [avatarUrl, setAvatarUrl] = useState('')
   const [headerBgUrl, setHeaderBgUrl] = useState('')
   const [link, setLink] = useState('')
+  const [twitterUsername, setTwitterUsername] = useState('')
+  const [instagramUsername, setInstagramUsername] = useState('')
   const [username, setUsername] = useState('')
   const [initialValues, setInitialValues] = useState<{
     displayName: string
@@ -55,6 +57,8 @@ function ProfileInfoPage() {
     avatarUrl: string
     headerBgUrl: string
     link: string
+    twitterUsername: string
+    instagramUsername: string
     username: string
   } | null>(null)
   const [isRemovingAvatar, setIsRemovingAvatar] = useState(false)
@@ -70,6 +74,8 @@ function ProfileInfoPage() {
       setAvatarUrl(profileData.user.avatarUrl || '')
       setHeaderBgUrl(profileData.user.headerBgUrl || '')
       setLink(profileData.user.link || '')
+      setTwitterUsername(profileData.user.twitterUsername || '')
+      setInstagramUsername(profileData.user.instagramUsername || '')
       setUsername(profileData.user.slug)
       setInitialValues({
         displayName: profileData.user.displayName || '',
@@ -77,6 +83,8 @@ function ProfileInfoPage() {
         avatarUrl: profileData.user.avatarUrl || '',
         headerBgUrl: profileData.user.headerBgUrl || '',
         link: profileData.user.link || '',
+        twitterUsername: profileData.user.twitterUsername || '',
+        instagramUsername: profileData.user.instagramUsername || '',
         username: profileData.user.slug,
       })
     }
@@ -247,6 +255,8 @@ function ProfileInfoPage() {
         avatarUrl?: string
         headerBgUrl?: string
         link?: string | null
+        twitterUsername?: string | null
+        instagramUsername?: string | null
         slug?: string
       } = {
         userId: currentUser.id,
@@ -255,6 +265,8 @@ function ProfileInfoPage() {
         avatarUrl: avatarUrl.trim() || undefined,
         headerBgUrl: headerBgUrl.trim() || undefined,
         link: link.trim() || null,
+        twitterUsername: twitterUsername.trim() || null,
+        instagramUsername: instagramUsername.trim() || null,
       }
       
       // Only include slug if it changed and username is not locked
@@ -273,6 +285,8 @@ function ProfileInfoPage() {
               avatarUrl,
               headerBgUrl,
               link,
+              twitterUsername,
+              instagramUsername,
               username,
             }
           : null,
@@ -298,6 +312,8 @@ function ProfileInfoPage() {
       avatarUrl !== initialValues.avatarUrl ||
       headerBgUrl !== initialValues.headerBgUrl ||
       link !== initialValues.link ||
+      twitterUsername !== initialValues.twitterUsername ||
+      instagramUsername !== initialValues.instagramUsername ||
       (!isUsernameLocked && username !== initialValues.username))
   const nextChangeLabel = nextChangeAt ? format(nextChangeAt, 'MMM d, yyyy, h:mm a') : null
 
@@ -503,7 +519,41 @@ function ProfileInfoPage() {
               maxLength={2048}
             />
             <p className="text-xs text-muted-foreground">
-              Your portfolio, website, or social media link
+              Your portfolio or personal website
+            </p>
+          </div>
+
+          <div className="space-y-2">
+            <Label>X (Twitter)</Label>
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm pointer-events-none">@</span>
+              <Input
+                value={twitterUsername}
+                onChange={(e) => setTwitterUsername(e.target.value.replace(/^@/, ''))}
+                placeholder="username"
+                maxLength={15}
+                className="pl-7"
+              />
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Your X username (without the @)
+            </p>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Instagram</Label>
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm pointer-events-none">@</span>
+              <Input
+                value={instagramUsername}
+                onChange={(e) => setInstagramUsername(e.target.value.replace(/^@/, ''))}
+                placeholder="username"
+                maxLength={30}
+                className="pl-7"
+              />
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Your Instagram username (without the @)
             </p>
           </div>
 

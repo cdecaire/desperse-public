@@ -110,6 +110,48 @@ const updateProfileSchema = z.object({
     })
     .optional()
     .nullable(),
+  twitterUsername: z
+    .string()
+    .trim()
+    .max(15)
+    .transform((val) => {
+      if (!val || val.trim().length === 0) return null
+      // Strip @ prefix and extract handle from full URL
+      let handle = val.trim()
+      // Handle full URLs like https://x.com/username or https://twitter.com/username
+      const urlMatch = handle.match(/(?:x\.com|twitter\.com)\/(@?[\w]+)\/?$/i)
+      if (urlMatch) handle = urlMatch[1]
+      // Strip leading @
+      handle = handle.replace(/^@/, '')
+      return handle.toLowerCase() || null
+    })
+    .refine(
+      (val) => !val || /^[a-z0-9_]{1,15}$/.test(val),
+      { message: 'Invalid X username. Use only letters, numbers, and underscores (max 15 characters).' }
+    )
+    .optional()
+    .nullable(),
+  instagramUsername: z
+    .string()
+    .trim()
+    .max(30)
+    .transform((val) => {
+      if (!val || val.trim().length === 0) return null
+      // Strip @ prefix and extract handle from full URL
+      let handle = val.trim()
+      // Handle full URLs like https://instagram.com/username
+      const urlMatch = handle.match(/instagram\.com\/(@?[\w.]+)\/?$/i)
+      if (urlMatch) handle = urlMatch[1]
+      // Strip leading @
+      handle = handle.replace(/^@/, '')
+      return handle.toLowerCase() || null
+    })
+    .refine(
+      (val) => !val || /^[a-z0-9_.]{1,30}$/.test(val),
+      { message: 'Invalid Instagram username. Use only letters, numbers, underscores, and periods (max 30 characters).' }
+    )
+    .optional()
+    .nullable(),
   slug: z
     .string()
     .trim()
@@ -379,6 +421,8 @@ export const getUserBySlug = createServerFn({
         avatarUrl: users.avatarUrl,
         headerBgUrl: users.headerBgUrl,
         link: users.link,
+        twitterUsername: users.twitterUsername,
+        instagramUsername: users.instagramUsername,
         createdAt: users.createdAt,
         updatedAt: users.updatedAt,
         usernameLastChangedAt: users.usernameLastChangedAt,
@@ -551,6 +595,8 @@ export const getUserBySlug = createServerFn({
         avatarUrl: user.avatarUrl,
         headerBgUrl: user.headerBgUrl,
         link: user.link,
+        twitterUsername: user.twitterUsername,
+        instagramUsername: user.instagramUsername,
         createdAt: user.createdAt,
       },
       stats: {
@@ -1034,6 +1080,14 @@ export const updateProfile = createServerFn({
       updates.link = rest.link
     }
 
+    if (rest.twitterUsername !== undefined) {
+      updates.twitterUsername = rest.twitterUsername
+    }
+
+    if (rest.instagramUsername !== undefined) {
+      updates.instagramUsername = rest.instagramUsername
+    }
+
     if (slug !== undefined && slug !== user.usernameSlug) {
       const normalized = slug.toLowerCase().replace(/[^a-z0-9_.]/g, '')
 
@@ -1101,6 +1155,8 @@ export const updateProfile = createServerFn({
           avatarUrl: user.avatarUrl,
           headerBgUrl: user.headerBgUrl,
           link: user.link,
+          twitterUsername: user.twitterUsername,
+          instagramUsername: user.instagramUsername,
           createdAt: user.createdAt,
         },
         nextUsernameChangeAt,
@@ -1121,6 +1177,8 @@ export const updateProfile = createServerFn({
         avatarUrl: users.avatarUrl,
         headerBgUrl: users.headerBgUrl,
         link: users.link,
+        twitterUsername: users.twitterUsername,
+        instagramUsername: users.instagramUsername,
         createdAt: users.createdAt,
         usernameLastChangedAt: users.usernameLastChangedAt,
       })
@@ -1140,6 +1198,8 @@ export const updateProfile = createServerFn({
         avatarUrl: updated.avatarUrl,
         headerBgUrl: updated.headerBgUrl,
         link: updated.link,
+        twitterUsername: updated.twitterUsername,
+        instagramUsername: updated.instagramUsername,
         createdAt: updated.createdAt,
       },
       nextUsernameChangeAt,

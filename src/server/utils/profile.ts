@@ -20,6 +20,8 @@ export interface ProfileUser {
 	avatarUrl: string | null
 	headerBgUrl: string | null
 	link: string | null
+	twitterUsername: string | null
+	instagramUsername: string | null
 	createdAt: Date
 }
 
@@ -96,6 +98,8 @@ export async function getUserBySlugDirect(
 				avatarUrl: users.avatarUrl,
 				headerBgUrl: users.headerBgUrl,
 				link: users.link,
+				twitterUsername: users.twitterUsername,
+				instagramUsername: users.instagramUsername,
 				createdAt: users.createdAt,
 			})
 			.from(users)
@@ -263,6 +267,8 @@ export async function getUserBySlugDirect(
 				avatarUrl: user.avatarUrl,
 				headerBgUrl: user.headerBgUrl,
 				link: user.link,
+				twitterUsername: user.twitterUsername,
+				instagramUsername: user.instagramUsername,
 				createdAt: user.createdAt,
 			},
 			stats: {
@@ -878,6 +884,8 @@ export interface UpdateProfileInput {
 	bio?: string | null
 	usernameSlug?: string
 	website?: string | null
+	twitterUsername?: string | null
+	instagramUsername?: string | null
 	avatarUrl?: string | null
 	headerUrl?: string | null
 }
@@ -893,6 +901,8 @@ export interface UpdateProfileResult {
 		avatarUrl: string | null
 		headerBgUrl: string | null
 		link: string | null
+		twitterUsername: string | null
+		instagramUsername: string | null
 		walletAddress: string | null
 	}
 }
@@ -966,6 +976,36 @@ export async function updateProfileDirect(
 			updateData.link = trimmed || null
 		}
 
+		// Handle twitterUsername
+		if (updates.twitterUsername !== undefined) {
+			let handle = updates.twitterUsername?.trim() || null
+			if (handle) {
+				// Strip @ prefix and extract handle from full URL
+				const urlMatch = handle.match(/(?:x\.com|twitter\.com)\/(@?[\w]+)\/?$/i)
+				if (urlMatch) handle = urlMatch[1]
+				handle = handle.replace(/^@/, '').toLowerCase()
+				if (handle && !/^[a-z0-9_]{1,15}$/.test(handle)) {
+					return { success: false, error: 'Invalid X username' }
+				}
+			}
+			updateData.twitterUsername = handle || null
+		}
+
+		// Handle instagramUsername
+		if (updates.instagramUsername !== undefined) {
+			let handle = updates.instagramUsername?.trim() || null
+			if (handle) {
+				// Strip @ prefix and extract handle from full URL
+				const urlMatch = handle.match(/instagram\.com\/(@?[\w.]+)\/?$/i)
+				if (urlMatch) handle = urlMatch[1]
+				handle = handle.replace(/^@/, '').toLowerCase()
+				if (handle && !/^[a-z0-9_.]{1,30}$/.test(handle)) {
+					return { success: false, error: 'Invalid Instagram username' }
+				}
+			}
+			updateData.instagramUsername = handle || null
+		}
+
 		// Handle avatarUrl
 		if (updates.avatarUrl !== undefined) {
 			updateData.avatarUrl = updates.avatarUrl?.trim() || null
@@ -1032,6 +1072,8 @@ export async function updateProfileDirect(
 				avatarUrl: users.avatarUrl,
 				headerBgUrl: users.headerBgUrl,
 				link: users.link,
+				twitterUsername: users.twitterUsername,
+				instagramUsername: users.instagramUsername,
 				walletAddress: users.walletAddress,
 			})
 
@@ -1045,6 +1087,8 @@ export async function updateProfileDirect(
 				avatarUrl: updated.avatarUrl,
 				headerBgUrl: updated.headerBgUrl,
 				link: updated.link,
+				twitterUsername: updated.twitterUsername,
+				instagramUsername: updated.instagramUsername,
 				walletAddress: updated.walletAddress,
 			},
 		}

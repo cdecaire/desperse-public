@@ -65,6 +65,8 @@ export const users = pgTable(
     avatarUrl: text('avatar_url'),
     headerBgUrl: text('header_bg_url'),
     link: text('link'),
+    twitterUsername: text('twitter_username'),
+    instagramUsername: text('instagram_username'),
     role: userRoleEnum('role').notNull().default('user'),
     preferences: jsonb('preferences').$type<UserPreferencesJson>().notNull().default({}),
     // Username change tracking - null means never changed (first change is free)

@@ -28,6 +28,7 @@ import { ActivityModal } from '@/components/profile/ActivityModal'
 import { MessageButton } from '@/components/messaging/MessageButton'
 import { TipButton } from '@/components/tipping/TipButton'
 import { Logo } from '@/components/shared/Logo'
+import { ExternalLinkWarning } from '@/components/shared/ExternalLinkWarning'
 import { usePostLikes } from '@/hooks/useLikes'
 import { useCommentCount } from '@/hooks/useComments'
 import { Icon } from '@/components/ui/icon'
@@ -194,6 +195,7 @@ function ProfilePage() {
   const [followersModalOpen, setFollowersModalOpen] = useState(false)
   const [followersModalTab, setFollowersModalTab] = useState<'followers' | 'following' | 'collectors'>('followers')
   const [activityModalOpen, setActivityModalOpen] = useState(false)
+  const [externalLinkUrl, setExternalLinkUrl] = useState<string | null>(null)
   
   // Fetch profile user
   const {
@@ -427,96 +429,123 @@ function ProfilePage() {
           </div>
 
           {/* Profile Info */}
-          <div className="space-y-2">
-            <div>
-              <h1 className="text-xl md:text-2xl font-bold">
+          <div className="space-y-1.5">
+            {/* Display Name + Stats on same line */}
+            <div className="flex items-baseline gap-5 flex-wrap">
+              <h1 className="text-xl md:text-2xl font-bold truncate">
                 {profileUser.displayName || profileUser.slug}
               </h1>
-              <p className="text-muted-foreground">
-                @{profileUser.slug}
-                {profileUser.createdAt && (
-                  <>
-                    {' • '}
-                    <span className="text-sm">
-                      Joined {new Date(profileUser.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-                    </span>
-                  </>
-                )}
-              </p>
+              <div className="flex gap-4 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFollowersModalTab('followers')
+                    setFollowersModalOpen(true)
+                  }}
+                  className="cursor-pointer hover:opacity-80 transition-opacity"
+                >
+                  <span className="text-sm font-bold">
+                    {profileData?.followersCount ?? 0}
+                  </span>{' '}
+                  <span className="text-sm text-muted-foreground">
+                    {profileData?.followersCount === 1 ? 'follower' : 'followers'}
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFollowersModalTab('following')
+                    setFollowersModalOpen(true)
+                  }}
+                  className="cursor-pointer hover:opacity-80 transition-opacity"
+                >
+                  <span className="text-sm font-bold">
+                    {profileData?.followingCount ?? 0}
+                  </span>{' '}
+                  <span className="text-sm text-muted-foreground">following</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFollowersModalTab('collectors')
+                    setFollowersModalOpen(true)
+                  }}
+                  className="cursor-pointer hover:opacity-80 transition-opacity"
+                >
+                  <span className="text-sm font-bold">
+                    {profileData?.collectorsCount ?? 0}
+                  </span>{' '}
+                  <span className="text-sm text-muted-foreground">
+                    {profileData?.collectorsCount === 1 ? 'collector' : 'collectors'}
+                  </span>
+                </button>
+              </div>
             </div>
+
+            {/* Username + Join date */}
+            <p className="text-muted-foreground">
+              @{profileUser.slug}
+              {profileUser.createdAt && (
+                <>
+                  {' • '}
+                  <span className="text-sm">
+                    Joined {new Date(profileUser.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                  </span>
+                </>
+              )}
+            </p>
 
             {/* Bio */}
             {profileUser.bio && (
               <p className="text-foreground wrap-break-word">{profileUser.bio}</p>
             )}
 
-            {/* Website Link */}
-            {profileUser.link && (
-              <div className={`flex items-center gap-2 flex-wrap text-sm ${profileUser.bio ? 'pt-2' : 'pt-0'}`}>
-                <a
-                  href={profileUser.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary hover:underline break-all"
-                >
-                  {profileUser.link.replace(/^https?:\/\//, '').replace(/\/$/, '')}
-                </a>
+            {/* Social Links */}
+            {(profileUser.twitterUsername || profileUser.instagramUsername || profileUser.link) && (
+              <div className={`flex items-center gap-4 flex-wrap text-sm ${profileUser.bio ? 'pt-1' : 'pt-0'}`}>
+                {profileUser.twitterUsername && (
+                  <a
+                    href={`https://x.com/${profileUser.twitterUsername}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    <Icon name="x-twitter" variant="brands" className="text-sm" />
+                    <span>@{profileUser.twitterUsername}</span>
+                  </a>
+                )}
+                {profileUser.instagramUsername && (
+                  <a
+                    href={`https://instagram.com/${profileUser.instagramUsername}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    <Icon name="instagram" variant="brands" className="text-sm" />
+                    <span>@{profileUser.instagramUsername}</span>
+                  </a>
+                )}
+                {profileUser.link && (
+                  <button
+                    type="button"
+                    onClick={() => setExternalLinkUrl(profileUser.link!)}
+                    className="inline-flex items-center gap-1.5 text-primary hover:underline break-all cursor-pointer"
+                  >
+                    <Icon name="arrow-up-right-from-square" variant="regular" className="text-xs" />
+                    <span>{profileUser.link.replace(/^https?:\/\//, '').replace(/\/$/, '')}</span>
+                  </button>
+                )}
               </div>
             )}
           </div>
         </div>
       </div>
 
-      {/* Stats Row - Followers, Following, and Collectors */}
-      {/* Uses counts from profileData (already fetched) to avoid redundant query */}
-      <div className="flex gap-6 md:gap-8 py-4 px-4">
-        <button
-          type="button"
-          onClick={() => {
-            setFollowersModalTab('followers')
-            setFollowersModalOpen(true)
-          }}
-          className="cursor-pointer hover:opacity-80 transition-opacity"
-        >
-          <span className="text-base font-bold">
-            {profileData?.followersCount ?? 0}
-          </span>{' '}
-          <span className="text-base text-muted-foreground">
-            {profileData?.followersCount === 1 ? 'follower' : 'followers'}
-          </span>
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setFollowersModalTab('following')
-            setFollowersModalOpen(true)
-          }}
-          className="cursor-pointer hover:opacity-80 transition-opacity"
-        >
-          <span className="text-base font-bold">
-            {profileData?.followingCount ?? 0}
-          </span>{' '}
-          <span className="text-base text-muted-foreground">following</span>
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setFollowersModalTab('collectors')
-            setFollowersModalOpen(true)
-          }}
-          className="cursor-pointer hover:opacity-80 transition-opacity"
-        >
-          <span className="text-base font-bold">
-            {profileData?.collectorsCount ?? 0}
-          </span>{' '}
-          <span className="text-base text-muted-foreground">
-            {profileData?.collectorsCount === 1 ? 'collector' : 'collectors'}
-          </span>
-        </button>
-      </div>
+      {/* Divider */}
+      <div className="mx-4 mt-4 border-t border-border" />
 
       {/* Tabs */}
-      <div className="bg-background">
+      <div className="bg-background pt-2">
         <div className="flex">
           {(['posts', 'collected', 'for-sale'] as ProfileTab[]).map((tab) => {
             const count = 
@@ -633,6 +662,11 @@ function ProfilePage() {
             userId={profileUser.id}
           />
         )}
+
+        <ExternalLinkWarning
+          url={externalLinkUrl}
+          onClose={() => setExternalLinkUrl(null)}
+        />
       </div>
     </PullToRefresh>
   )

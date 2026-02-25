@@ -95,6 +95,8 @@ export default defineEventHandler(async (event) => {
 				avatarUrl: result.user.avatarUrl,
 				headerBgUrl: result.user.headerBgUrl,
 				link: result.user.link,
+				twitterUsername: result.user.twitterUsername,
+				instagramUsername: result.user.instagramUsername,
 				createdAt: result.user.createdAt,
 			},
 			stats: result.stats,

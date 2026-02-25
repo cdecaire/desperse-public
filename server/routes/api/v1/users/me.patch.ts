@@ -81,6 +81,32 @@ export default defineEventHandler(async (event) => {
 			updates.website = body.website
 		}
 
+		// twitterUsername - optional, can be empty string to clear
+		if ('twitterUsername' in body) {
+			if (body.twitterUsername !== null && typeof body.twitterUsername !== 'string') {
+				event.node!.res!.statusCode = 400
+				return {
+					success: false,
+					error: { code: 'invalid_twitter', message: 'Twitter username must be a string or null' },
+					requestId,
+				}
+			}
+			updates.twitterUsername = body.twitterUsername
+		}
+
+		// instagramUsername - optional, can be empty string to clear
+		if ('instagramUsername' in body) {
+			if (body.instagramUsername !== null && typeof body.instagramUsername !== 'string') {
+				event.node!.res!.statusCode = 400
+				return {
+					success: false,
+					error: { code: 'invalid_instagram', message: 'Instagram username must be a string or null' },
+					requestId,
+				}
+			}
+			updates.instagramUsername = body.instagramUsername
+		}
+
 		// avatarUrl - optional, can be null to clear
 		if ('avatarUrl' in body) {
 			if (body.avatarUrl !== null && typeof body.avatarUrl !== 'string') {

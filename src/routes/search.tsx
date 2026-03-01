@@ -342,6 +342,8 @@ function SearchPage() {
                           assets: (post as any).assets,
                           mintWindowStart: post.mintWindowStart,
                           mintWindowEnd: post.mintWindowEnd,
+                          storageType: (post as any).storageType,
+                          arweaveStatus: (post as any).arweaveStatus,
                         }}
                         currentUserId={currentUser?.id}
                         isAuthenticated={isAuthenticated}
@@ -382,6 +384,8 @@ function SearchPage() {
                           assets: (post as any).assets,
                           mintWindowStart: post.mintWindowStart,
                           mintWindowEnd: post.mintWindowEnd,
+                          storageType: (post as any).storageType,
+                          arweaveStatus: (post as any).arweaveStatus,
                         }}
                         currentUserId={currentUser?.id}
                         isAuthenticated={isAuthenticated}

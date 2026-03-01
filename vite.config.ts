@@ -1,9 +1,37 @@
-import { defineConfig } from "vite";
+import path from "node:path";
+import { defineConfig, type Plugin } from "vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import viteReact from "@vitejs/plugin-react";
 import viteTsConfigPaths from "vite-tsconfig-paths";
 import tailwindcss from "@tailwindcss/vite";
 import { nitro } from "nitro/vite";
+
+/**
+ * Fix broken ESM import in libsodium-wrappers-sumo@0.7.16.
+ *
+ * The ESM entry (`libsodium-wrappers.mjs`) does `import from "./libsodium-sumo.mjs"`
+ * expecting it as a sibling file, but in pnpm's node_modules layout the actual file
+ * lives in the separate `libsodium-sumo` package. This plugin resolves the import to
+ * the correct path.
+ */
+function fixLibsodiumEsm(): Plugin {
+  return {
+    name: 'fix-libsodium-esm',
+    resolveId(source, importer) {
+      if (
+        source === './libsodium-sumo.mjs' &&
+        importer &&
+        importer.includes('libsodium-wrappers-sumo')
+      ) {
+        // importer: .../node_modules/libsodium-wrappers-sumo/dist/modules-sumo-esm/libsodium-wrappers.mjs
+        // target:  .../node_modules/libsodium-sumo/dist/modules-sumo-esm/libsodium-sumo.mjs
+        const dir = path.dirname(importer);
+        return path.resolve(dir, '..', '..', '..', 'libsodium-sumo', 'dist', 'modules-sumo-esm', 'libsodium-sumo.mjs');
+      }
+      return null;
+    },
+  };
+}
 
 const config = defineConfig({
   server: {
@@ -19,6 +47,8 @@ const config = defineConfig({
     },
   },
   plugins: [
+    // Fix broken ESM resolution in libsodium-wrappers-sumo (transitive dep of @ardrive/turbo-sdk)
+    fixLibsodiumEsm(),
     // Nitro must be initialized first to make its environment available
     // TanStack Start will handle its own server function routes via middleware
     nitro({
@@ -43,13 +73,20 @@ const config = defineConfig({
     // (pnpm uses strict node_modules, so nested deps aren't resolvable if externalized)
     noExternal: [
       '@noble/curves',
-      '@noble/hashes', 
+      '@noble/hashes',
       '@scure/bip32',
       '@scure/bip39',
     ],
     // Externalize these - they're either top-level deps or Node.js native
     external: [
       'postgres',
+      // Turbo SDK and its libsodium dependency have broken ESM resolution
+      // that Rollup cannot bundle. Keep them as external runtime requires.
+      '@ardrive/turbo-sdk',
+      '@ardrive/turbo-sdk/node',
+      '@ardrive/turbo-sdk/web',
+      'libsodium-wrappers-sumo',
+      'libsodium-sumo',
     ],
   },
   build: {

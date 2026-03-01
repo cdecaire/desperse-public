@@ -681,7 +681,7 @@ export const creatorStorageBalances = pgTable(
       .references(() => users.id, { onDelete: 'cascade' })
       .unique(),
     walletAddress: text('wallet_address').notNull(),
-    turboSharedWinc: bigint('turbo_shared_winc', { mode: 'bigint' }).default(BigInt(0)),
+    turboSharedWinc: bigint('turbo_shared_winc', { mode: 'bigint' }).default(sql`0`),
     turboApprovalExpiresAt: timestamp('turbo_approval_expires_at', { withTimezone: true }),
     lastTopUpAt: timestamp('last_top_up_at', { withTimezone: true }),
     lastTopUpAmountSol: numeric('last_top_up_amount_sol'),

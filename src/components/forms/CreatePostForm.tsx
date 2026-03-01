@@ -11,6 +11,7 @@ import { MediaUpload, type UploadedMedia } from './MediaUpload'
 import { MultiMediaUpload, type UploadedMediaItem } from './MultiMediaUpload'
 import { isMultiAssetEnabled, isMultiAssetCollectibleEnabled, isMultiAssetEditionEnabled } from '@/config/env'
 import { PostTypeSelector, type PostType } from './PostTypeSelector'
+import { StorageSelector, type StorageType } from './StorageSelector'
 import { EditionOptions, type Currency, type MintWindowState } from './EditionOptions'
 import { NftMetadataOptions } from './NftMetadataOptions'
 import { CategorySelector } from './CategorySelector'
@@ -77,6 +78,8 @@ interface FormState {
   protectDownload: boolean
   // Timed edition (mint window)
   mintWindow: MintWindowState
+  // Storage type (centralized CDN vs Arweave permanent storage)
+  storageType: StorageType
 }
 
 interface CreatePostFormProps {
@@ -219,6 +222,7 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
         protectDownload: true, // Default to protected in edit mode (can't change existing)
         // Mint window: will be populated from editState once it loads
         mintWindow: { ...defaultMintWindow },
+        storageType: 'centralized', // Storage type is immutable after creation
       }
     }
     return {
@@ -237,6 +241,7 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
       isMutable: true,
       protectDownload: false, // Posts and collectibles are always free - downloads always available
       mintWindow: { ...defaultMintWindow },
+      storageType: 'centralized',
     }
   }
 
@@ -483,6 +488,8 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
               : null,
             mintWindowDurationHours: formState.mintWindow.durationHours,
           } : {}),
+          // Storage type (only meaningful for editions)
+          ...(formState.type === 'edition' ? { storageType: formState.storageType } : {}),
         }) as never
       )
 
@@ -688,6 +695,8 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
               // Posts and collectibles are always free - downloads always available
               // Editions default to protected (can be toggled)
               protectDownload: type === 'edition' ? (prev.type === 'edition' ? prev.protectDownload : true) : false,
+              // Reset storage type when switching away from editions
+              storageType: type === 'edition' ? prev.storageType : 'centralized',
             }))}
             disabled={isSubmitting}
           />
@@ -906,6 +915,15 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
               </div>
             )}
           </div>
+        )}
+
+        {/* Storage Type Selector - only shown for editions in create mode when feature is enabled */}
+        {!isEditMode && formState.type === 'edition' && import.meta.env.VITE_FEATURE_ARWEAVE_STORAGE === 'true' && (
+          <StorageSelector
+            value={formState.storageType}
+            onChange={(storageType) => setFormState(prev => ({ ...prev, storageType }))}
+            disabled={isSubmitting}
+          />
         )}
 
         {/* Edition-only: Commerce & Supply Options (includes protected download) - hidden after minting */}

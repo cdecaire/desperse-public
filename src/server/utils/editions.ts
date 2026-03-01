@@ -35,7 +35,7 @@ export type PurchaseStatus =
 
 export interface BuyEditionResult {
 	success: boolean
-	status?: PurchaseStatus | 'sold_out' | 'insufficient_funds' | 'not_started' | 'ended'
+	status?: PurchaseStatus | 'sold_out' | 'insufficient_funds' | 'not_started' | 'ended' | 'arweave_unfunded'
 	purchaseId?: string
 	transaction?: string
 	mintAddress?: string
@@ -417,6 +417,46 @@ export async function buyEditionDirect(
 				serverNow: new Date().toISOString(),
 				decision: 'allowed',
 			})
+		}
+
+		// Arweave credit re-check: block minting if credits are insufficient
+		if (post.storageType === 'arweave' && post.arweaveStatus !== 'uploaded') {
+			if (post.arweaveStatus === 'unfunded' || post.arweaveStatus === 'failed') {
+				return {
+					success: false,
+					error: 'arweave_unfunded',
+					message: "This edition's permanent storage is not currently funded. Please try again later.",
+				}
+			}
+
+			// For 'funded' status, re-check credits haven't expired/been revoked
+			if (post.arweaveStatus === 'funded') {
+				try {
+					const { checkCreatorSharedBalance } = await import(
+						'@/server/services/arweave/turbo-server'
+					)
+					const creatorWalletAddr = post.creatorWallet || creatorFromDb.walletAddress
+					if (creatorWalletAddr) {
+						const creditCheck = await checkCreatorSharedBalance(creatorWalletAddr)
+						if (!creditCheck.sufficient) {
+							// Update state to unfunded
+							await db
+								.update(posts)
+								.set({ arweaveStatus: 'unfunded' })
+								.where(eq(posts.id, postId))
+
+							return {
+								success: false,
+								error: 'arweave_unfunded',
+								message: "Creator's permanent storage is not currently funded. Please try again later.",
+							}
+						}
+					}
+				} catch (creditError) {
+					console.warn('[buyEditionDirect] Arweave credit check failed, allowing purchase:', creditError instanceof Error ? creditError.message : 'Unknown')
+					// Don't block purchase on credit check failure — finalization will catch it
+				}
+			}
 		}
 
 		// Supply check (pre-flight)

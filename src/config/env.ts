@@ -80,6 +80,14 @@ export const env = {
   // Fee Subsidy Circuit Breaker
   // When enabled, returns error instead of subsidizing fees
   DISABLE_FEE_SUBSIDY: getEnvVar('DISABLE_FEE_SUBSIDY', 'false') === 'true',
+
+  // Arweave / Turbo Storage
+  FEATURE_ARWEAVE_STORAGE: getEnvVar('VITE_FEATURE_ARWEAVE_STORAGE', 'false') === 'true',
+  TURBO_SERVER_PRIVATE_KEY: getEnvVar('TURBO_SERVER_PRIVATE_KEY', ''),
+  TURBO_PAYMENT_URL: getEnvVar('TURBO_PAYMENT_URL', 'https://payment.ardrive.io'),
+  TURBO_UPLOAD_URL: getEnvVar('TURBO_UPLOAD_URL', 'https://upload.ardrive.io'),
+  DESPERSE_TURBO_WALLET: getEnvVar('DESPERSE_TURBO_WALLET', ''),
+  SYSTEM_USER_ID: getEnvVar('SYSTEM_USER_ID', ''),
 } as const;
 
 /**
@@ -114,6 +122,13 @@ export function getHeliusApiUrl(): string {
  */
 export function isBlockchainEnabled(): boolean {
   return Boolean(env.HELIUS_API_KEY);
+}
+
+/**
+ * Check if Arweave permanent storage feature is enabled
+ */
+export function isArweaveStorageEnabled(): boolean {
+  return env.FEATURE_ARWEAVE_STORAGE;
 }
 
 /**

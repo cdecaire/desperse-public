@@ -14,6 +14,7 @@ import { processMentions } from '@/server/utils/mentions'
 import { processHashtags } from '@/server/utils/hashtags'
 import { generateNftMetadata } from '@/server/utils/nft-metadata'
 import { validateMintWindow } from '@/server/utils/mintWindowStatus'
+import { env } from '@/config/env'
 
 // Minimum edition prices
 const MIN_EDITION_PRICE_SOL = 100_000_000 // 0.1 SOL in lamports
@@ -67,6 +68,7 @@ export interface CreatePostInput {
   mintWindowStartMode?: 'now' | 'scheduled'
   mintWindowStartTime?: string | Date | null
   mintWindowDurationHours?: number | null
+  storageType?: 'centralized' | 'arweave'
 }
 
 export interface CreatePostResult {
@@ -151,6 +153,26 @@ export async function createPostDirect(
     return { success: false, error: 'User not found.' }
   }
 
+  // Validate Arweave storage if requested
+  if (data.storageType === 'arweave') {
+    if (!env.FEATURE_ARWEAVE_STORAGE) {
+      return { success: false, error: 'Arweave permanent storage is not currently enabled.' }
+    }
+    if (!user.walletAddress) {
+      return { success: false, error: 'Wallet address is required for Arweave storage.' }
+    }
+    try {
+      const { checkCreatorSharedBalance } = await import('@/server/services/arweave/turbo-server')
+      const balance = await checkCreatorSharedBalance(user.walletAddress)
+      if (!balance.sufficient) {
+        return { success: false, error: 'Insufficient Arweave storage credits' }
+      }
+    } catch (err) {
+      console.error('[createPostDirect] Arweave balance check failed:', err instanceof Error ? err.message : 'Unknown error')
+      return { success: false, error: 'Failed to verify Arweave storage credits. Please try again.' }
+    }
+  }
+
   // Compute mint window timestamps
   let mintWindowStart: Date | null = null
   let mintWindowEnd: Date | null = null
@@ -188,6 +210,8 @@ export async function createPostDirect(
       creatorWallet: user.walletAddress,
       mintWindowStart,
       mintWindowEnd,
+      storageType: data.storageType || 'centralized',
+      arweaveStatus: data.storageType === 'arweave' ? 'funded' : null,
     })
     .returning()
 

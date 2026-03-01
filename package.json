@@ -26,6 +26,7 @@
     "promote-user": "tsx scripts/promote-user.ts"
   },
   "dependencies": {
+    "@ardrive/turbo-sdk": "^1.41.0",
     "@fortawesome/fontawesome-svg-core": "^7.2.0",
     "@fortawesome/free-brands-svg-icons": "^7.2.0",
     "@fortawesome/pro-regular-svg-icons": "^7.2.0",
@@ -75,6 +76,7 @@
     "drizzle-kit": "^0.31.8",
     "drizzle-orm": "^0.45.1",
     "esbuild": "^0.27.3",
+    "firebase": "^12.10.0",
     "firebase-admin": "^13.6.1",
     "h3": "2.0.1-rc.11",
     "lucide-react": "^0.544.0",

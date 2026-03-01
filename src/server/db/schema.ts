@@ -11,6 +11,8 @@ import {
   boolean,
   integer,
   bigint,
+  numeric,
+  serial,
   pgEnum,
   index,
   jsonb,
@@ -114,6 +116,12 @@ export const posts = pgTable(
     masterMetadataPda: text('master_metadata_pda'), // Master metadata PDA (optional, for debugging)
     masterEditionPda: text('master_edition_pda'), // Master edition PDA (optional, for debugging)
     creatorWallet: text('creator_wallet'), // Creator wallet address (canonical update authority target, set at post creation)
+    // Arweave permanent storage fields
+    storageType: text('storage_type').notNull().default('centralized'), // 'centralized' | 'arweave'
+    arweaveStatus: text('arweave_status'), // NULL | 'unfunded' | 'funded' | 'uploading' | 'uploaded' | 'failed' — NULL only when storageType = 'centralized'
+    arweaveMediaTxId: text('arweave_media_tx_id'), // Arweave transaction ID for canonical media
+    arweaveMetadataTxId: text('arweave_metadata_tx_id'), // Arweave transaction ID for canonical metadata JSON
+    arweaveError: text('arweave_error'), // Last error message when arweave_status = 'failed'
     // Minted snapshot fields (write-once at first confirmed mint)
     mintedAt: timestamp('minted_at'), // When first mint was confirmed
     mintedTxSignature: text('minted_tx_signature'), // First mint transaction signature
@@ -663,6 +671,30 @@ export const tips = pgTable(
   }),
 );
 
+// Creator storage balances table (Arweave/Turbo credit tracking)
+export const creatorStorageBalances = pgTable(
+  'creator_storage_balances',
+  {
+    id: serial('id').primaryKey(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' })
+      .unique(),
+    walletAddress: text('wallet_address').notNull(),
+    turboSharedWinc: bigint('turbo_shared_winc', { mode: 'bigint' }).default(BigInt(0)),
+    turboApprovalExpiresAt: timestamp('turbo_approval_expires_at', { withTimezone: true }),
+    lastTopUpAt: timestamp('last_top_up_at', { withTimezone: true }),
+    lastTopUpAmountSol: numeric('last_top_up_amount_sol'),
+    lastBalanceCheckAt: timestamp('last_balance_check_at', { withTimezone: true }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    userIdIdx: uniqueIndex('creator_storage_balances_user_id_idx').on(table.userId),
+    walletAddressIdx: index('creator_storage_balances_wallet_address_idx').on(table.walletAddress),
+  }),
+);
+
 // Export types for use in queries
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
@@ -704,6 +736,12 @@ export type Tip = typeof tips.$inferSelect;
 export type NewTip = typeof tips.$inferInsert;
 export type PushToken = typeof pushTokens.$inferSelect;
 export type NewPushToken = typeof pushTokens.$inferInsert;
+export type CreatorStorageBalance = typeof creatorStorageBalances.$inferSelect;
+export type NewCreatorStorageBalance = typeof creatorStorageBalances.$inferInsert;
+
+// Arweave storage types
+export type StorageType = 'centralized' | 'arweave';
+export type ArweaveStatus = 'unfunded' | 'funded' | 'uploading' | 'uploaded' | 'failed';
 
 // User preferences type (stored as JSONB in users.preferences)
 export type UserPreferencesJson = {

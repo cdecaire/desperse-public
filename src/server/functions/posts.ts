@@ -91,6 +91,8 @@ const createPostSchema = z.object({
   mintWindowStartMode: z.enum(['now', 'scheduled']).optional(),
   mintWindowStartTime: z.string().datetime().optional().nullable(),
   mintWindowDurationHours: z.number().positive().optional().nullable(),
+  // Storage type (centralized vs Arweave permanent storage)
+  storageType: z.enum(['centralized', 'arweave']).optional().default('centralized'),
 })
 
 // Schema for feed query
@@ -255,6 +257,9 @@ export const createPost = createServerFn({
         // Timed edition window
         mintWindowStart,
         mintWindowEnd,
+        // Storage type (centralized vs Arweave)
+        storageType: postData.storageType || 'centralized',
+        arweaveStatus: postData.storageType === 'arweave' ? 'funded' : null,
       })
       .returning()
 

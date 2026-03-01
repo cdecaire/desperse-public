@@ -180,6 +180,10 @@ function PostDetailPage() {
   const isTimedExpired = isTimedEdition && post.mintWindowEnd && new Date(post.mintWindowEnd) <= new Date()
   const isNoLongerCollectible = isSoldOut || isTimedExpired
 
+  // Arweave storage status — minting is paused when unfunded or failed
+  const arweaveStatus = (post as any).storageType === 'arweave' ? (post as any).arweaveStatus : undefined
+  const isMintingPaused = arweaveStatus === 'unfunded' || arweaveStatus === 'failed'
+
   // Download: show download button when user has collected and post has downloadable content
   const downloadableAssets = (post as any).downloadableAssets as Array<{ id: string; url: string; mimeType: string | null }> | undefined
   const hasDownloads = mediaType === 'document' || mediaType === '3d' || (downloadableAssets && downloadableAssets.length > 0)
@@ -285,7 +289,17 @@ function PostDetailPage() {
               isSoldOut={typeof post.maxSupply === 'number' && editionSupply >= post.maxSupply}
               mintWindowStart={post.mintWindowStart}
               mintWindowEnd={post.mintWindowEnd}
+              arweaveStatus={arweaveStatus}
             />
+          )}
+
+          {/* Arweave minting-paused banner */}
+          {isMintingPaused && (
+            <div className="px-3 py-2 rounded-lg text-xs bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-300">
+              {arweaveStatus === 'unfunded'
+                ? "This edition's permanent storage needs to be re-funded by the creator."
+                : "This edition is experiencing a temporary storage issue. Please try again later."}
+            </div>
           )}
 
           {/* Static supply count when BuyButton is rendered elsewhere */}
@@ -551,6 +565,16 @@ function PostDetailPage() {
                     </div>
                   )}
 
+                  {/* Arweave storage issue banner */}
+                  {isMintingPaused && (
+                    <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-800 dark:bg-amber-950/50 dark:text-amber-200">
+                      <Icon name="circle-info" variant="regular" className="mr-1.5 inline-block" />
+                      {arweaveStatus === 'unfunded'
+                        ? "This edition's permanent storage needs to be re-funded by the creator. Minting is temporarily paused."
+                        : "This edition is experiencing a temporary storage issue. Please try again later."}
+                    </div>
+                  )}
+
                   {/* Action area */}
                   {showDownload ? (
                     <Button onClick={handleDownload} disabled={isDownloading} className="w-full">
@@ -582,6 +606,7 @@ function PostDetailPage() {
                               isSoldOut={isSoldOut}
                               mintWindowStart={post.mintWindowStart}
                               mintWindowEnd={post.mintWindowEnd}
+                              arweaveStatus={arweaveStatus}
                               label="Collect"
                               className="!bg-background !text-foreground !rounded-full !px-3.5 !h-8 !text-xs !font-medium"
                             />
@@ -604,6 +629,7 @@ function PostDetailPage() {
                           toneColor={postTypeColor}
                           isCollected={isCollected}
                           isSoldOut={isSoldOut}
+                          arweaveStatus={arweaveStatus}
                           label="Collect"
                           className="w-full"
                         />
@@ -809,6 +835,16 @@ function PostDetailPage() {
                   </div>
                 )}
 
+                {/* Arweave storage issue banner (mobile) */}
+                {isMintingPaused && (
+                  <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-800 dark:bg-amber-950/50 dark:text-amber-200">
+                    <Icon name="circle-info" variant="regular" className="mr-1.5 inline-block" />
+                    {arweaveStatus === 'unfunded'
+                      ? "This edition's permanent storage needs to be re-funded by the creator. Minting is temporarily paused."
+                      : "This edition is experiencing a temporary storage issue. Please try again later."}
+                  </div>
+                )}
+
                 {/* Action area */}
                 {showDownload ? (
                   <Button onClick={handleDownload} disabled={isDownloading} className="w-full">
@@ -840,6 +876,7 @@ function PostDetailPage() {
                             isSoldOut={isSoldOut}
                             mintWindowStart={post.mintWindowStart}
                             mintWindowEnd={post.mintWindowEnd}
+                            arweaveStatus={arweaveStatus}
                             label="Collect"
                             className="!bg-background !text-foreground !rounded-full !px-3.5 !h-8 !text-xs !font-medium"
                           />
@@ -862,6 +899,7 @@ function PostDetailPage() {
                         toneColor={postTypeColor}
                         isCollected={isCollected}
                         isSoldOut={isSoldOut}
+                        arweaveStatus={arweaveStatus}
                         label="Collect"
                         className="w-full"
                       />

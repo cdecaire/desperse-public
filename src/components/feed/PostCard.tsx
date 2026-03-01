@@ -170,6 +170,10 @@ export interface PostCardData {
   mintWindowStart?: Date | string | null
   /** Timed edition: when the mint window closes */
   mintWindowEnd?: Date | string | null
+  /** Storage type: 'centralized' or 'arweave' */
+  storageType?: string | null
+  /** Arweave storage status: null | 'unfunded' | 'funded' | 'uploading' | 'uploaded' | 'failed' */
+  arweaveStatus?: string | null
 }
 
 interface PostCardProps {
@@ -579,6 +583,7 @@ export function PostCard({
                   isSoldOut={typeof post.maxSupply === 'number' && (localEditionSupply ?? 0) >= post.maxSupply}
                   mintWindowStart={post.mintWindowStart}
                   mintWindowEnd={post.mintWindowEnd}
+                  arweaveStatus={post.storageType === 'arweave' ? post.arweaveStatus : undefined}
                 />
               )}
             </div>

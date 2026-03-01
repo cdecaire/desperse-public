@@ -109,6 +109,8 @@ interface BuyButtonProps {
   mintWindowEnd?: Date | string | null;
   /** Override the idle button label (e.g. "Collect") */
   label?: string;
+  /** Arweave storage status — when 'unfunded' or 'failed', minting is paused */
+  arweaveStatus?: string | null;
 }
 
 type ServerFnInput<T> = { data: T };
@@ -140,6 +142,7 @@ export function BuyButton({
   mintWindowStart: mintWindowStartProp,
   mintWindowEnd: mintWindowEndProp,
   label,
+  arweaveStatus,
 }: BuyButtonProps) {
   // Ensure Buffer is available for privy/solana SDKs in the browser
   if (typeof window !== 'undefined' && !(window as any).Buffer) {
@@ -790,7 +793,10 @@ export function BuyButton({
 
   // Check if purchased
   const isPurchased = state === 'success' || isCollected;
-  
+
+  // Check if minting is paused due to Arweave storage issues
+  const isMintingPaused = arweaveStatus === 'unfunded' || arweaveStatus === 'failed';
+
   // Get status label for display outside button
   const getStatusLabel = (): string | null => {
     switch (state) {
@@ -822,6 +828,16 @@ export function BuyButton({
 
       // Use fa-hexagon-image for 1/1 editions, fa-image-stack for others
       const editionIcon = maxSupply === 1 ? 'fa-hexagon-image' : 'fa-image-stack'
+
+      // Show "Minting Paused" for Arweave storage issues
+      if (isMintingPaused) {
+        return (
+          <>
+            <span className="text-sm font-medium text-muted-foreground">Paused</span>
+            <Icon name={editionIcon} variant="regular" className="text-base text-muted-foreground" />
+          </>
+        );
+      }
 
       // Show "Sold Out" for sold out state
       if (state === 'sold_out' || isSoldOut) {
@@ -929,6 +945,11 @@ export function BuyButton({
 
     // ---- Non-compact (full) mode ----
 
+    // Minting paused due to Arweave storage issues
+    if (isMintingPaused) {
+      return <span className="text-sm font-semibold leading-5">Minting Paused</span>;
+    }
+
     // Timed edition states take priority when idle (not in active buy flow)
     if (state === 'idle' || state === 'failed' || state === 'insufficient_funds') {
       if (effectiveTimeStatus === 'not_started') {
@@ -1014,6 +1035,7 @@ export function BuyButton({
     !isAuthenticated ||
     isOffline ||
     !isRpcHealthy ||
+    isMintingPaused ||
     state === 'preparing' ||
     state === 'signing' ||
     state === 'confirming' ||
@@ -1030,8 +1052,8 @@ export function BuyButton({
       return variant;
     }
 
-    // Muted styling for time-gated states
-    if (isTimeDisabled) {
+    // Muted styling for paused or time-gated states
+    if (isMintingPaused || isTimeDisabled) {
       return 'ghost';
     }
 

@@ -419,6 +419,8 @@ function FeedContent() {
                   downloadableAssets: (post as any).downloadableAssets, // For download menu
                   mintWindowStart: post.mintWindowStart,
                   mintWindowEnd: post.mintWindowEnd,
+                  storageType: (post as any).storageType,
+                  arweaveStatus: (post as any).arweaveStatus,
                 }}
                 currentUserId={user?.id}
                 isAuthenticated={isAuthenticated}

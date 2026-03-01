@@ -201,8 +201,31 @@ export async function fulfillPurchaseDirect(purchaseId: string): Promise<Fulfill
       .where(eq(postAssets.postId, purchaseData.postId))
       .limit(1)
 
-    // Resolve metadata URI
+    // Arweave finalization: if this is an Arweave edition, finalize before minting
     let resolvedMetadataUri = postData.metadataUrl
+
+    if (postData.storageType === 'arweave') {
+      const { finalizeArweaveAssets } = await import(
+        '@/server/services/arweave/first-mint-finalization'
+      )
+
+      const finalization = await finalizeArweaveAssets(postData.id, creatorWallet)
+
+      if (finalization.success && finalization.metadataUrl) {
+        resolvedMetadataUri = finalization.metadataUrl
+        console.log(`[fulfillPurchaseDirect] Arweave finalization complete, metadata: ${resolvedMetadataUri}`)
+      } else if (finalization.status === 'in_progress') {
+        // Another process is finalizing — fail this attempt, retry will pick it up
+        throw new Error('[fulfillPurchaseDirect] Arweave finalization in progress by another process')
+      } else {
+        // Arweave finalization failed — DO NOT fall back to Blob
+        throw new Error(
+          `[fulfillPurchaseDirect] Arweave finalization failed: ${finalization.error}. Mint blocked until Arweave storage is resolved.`
+        )
+      }
+    }
+
+    // Resolve metadata URI (for centralized storage or as fallback)
     if (!resolvedMetadataUri && creatorData) {
       const metadata = generateNftMetadata(
         {
@@ -423,7 +446,9 @@ export async function fulfillPurchaseDirect(purchaseId: string): Promise<Fulfill
       errorMessage.includes('timeout') ||
       errorMessage.includes('block height') ||
       errorMessage.includes('not found') || // RPC propagation delay
-      errorMessage.includes('AccountNotFoundError') // Collection not found yet
+      errorMessage.includes('AccountNotFoundError') || // Collection not found yet
+      errorMessage.includes('Arweave finalization in progress') || // Another process handling it
+      errorMessage.includes('Arweave finalization failed') // Retryable — will succeed when credits restored
 
     // Check if master was created
     const [postCheck] = await db

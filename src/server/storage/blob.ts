@@ -261,7 +261,7 @@ export async function uploadMetadataJson(
 // Gated Asset Downloads
 // ============================================================================
 
-export type StorageProviderType = 'vercel-blob' | 'r2' | 's3'
+export type StorageProviderType = 'vercel-blob' | 'r2' | 's3' | 'arweave'
 
 /**
  * Get a stream for a gated asset from storage

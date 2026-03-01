@@ -37,6 +37,13 @@ export function resolveDecentralizedUri(uri: string): string {
 }
 
 /**
+ * Convert an Arweave transaction ID to a gateway URL
+ */
+export function arweaveTxIdToUrl(txId: string): string {
+  return `https://arweave.net/${txId}`
+}
+
+/**
  * Check if we're running in a production Vercel environment
  * where image optimization is available
  */

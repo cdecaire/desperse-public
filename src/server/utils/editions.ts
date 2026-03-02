@@ -59,6 +59,60 @@ export interface CheckStatusResult {
 }
 
 /**
+ * Confirm an edition payment transaction with cache-expiry fallback.
+ *
+ * Fast path: `getSignatureStatuses` (recent status cache — ~150 slots / 1-2 min).
+ * Fallback:  `getTransaction` (full ledger search) when fast path returns null
+ *            AND the tx was submitted >10 seconds ago.
+ *
+ * This prevents the "stuck confirming" bug where a confirmed tx ages out of
+ * the status cache before polling reads it.
+ */
+async function confirmEditionPayment(
+	txSignature: string,
+	submittedAt: Date | null,
+): Promise<{ status: 'pending' | 'confirmed' | 'finalized' | 'failed'; error?: string }> {
+	// Fast path: recent status cache
+	const fastResult = await checkTransactionStatus(txSignature)
+	if (fastResult.status !== 'pending') {
+		return fastResult
+	}
+
+	// Only fall back to getTransaction if the tx was submitted >10s ago
+	// (before that, it may genuinely still be propagating)
+	const ageMs = submittedAt ? Date.now() - submittedAt.getTime() : 0
+	if (ageMs < 10_000) {
+		return fastResult // still pending, too early for fallback
+	}
+
+	// Fallback: full ledger search via @solana/web3.js Connection.getTransaction
+	console.log(`[confirmEditionPayment] Fast path returned pending after ${Math.round(ageMs / 1000)}s, trying getTransaction fallback for ${txSignature.slice(0, 20)}...`)
+	try {
+		const { Connection } = await import('@solana/web3.js')
+		const connection = new Connection(getHeliusRpcUrl(), 'confirmed')
+		const txResult = await connection.getTransaction(txSignature, {
+			maxSupportedTransactionVersion: 0,
+		})
+
+		if (txResult) {
+			if (txResult.meta?.err) {
+				console.log(`[confirmEditionPayment] getTransaction fallback: tx failed`, txResult.meta.err)
+				return { status: 'failed', error: JSON.stringify(txResult.meta.err) }
+			}
+			console.log(`[confirmEditionPayment] getTransaction fallback: tx confirmed (slot ${txResult.slot})`)
+			return { status: 'confirmed' }
+		}
+
+		// getTransaction returned null — tx still propagating or was dropped
+		console.log(`[confirmEditionPayment] getTransaction fallback: tx not found yet`)
+		return { status: 'pending' }
+	} catch (err) {
+		console.warn('[confirmEditionPayment] getTransaction fallback failed, returning pending:', err instanceof Error ? err.message : 'Unknown')
+		return { status: 'pending' }
+	}
+}
+
+/**
  * Submit transaction signature after client signing (core logic)
  * No authentication required - uses purchaseId for identification
  */
@@ -168,7 +222,7 @@ export async function checkPurchaseStatusDirect(
 		// Check submitted transactions for on-chain confirmation
 		if ((purchase.status === 'submitted' || purchase.status === 'reserved') && purchase.txSignature) {
 			console.log(`[checkPurchaseStatusDirect] Checking transaction status for ${purchase.txSignature.slice(0, 20)}...`)
-			const txStatus = await checkTransactionStatus(purchase.txSignature)
+			const txStatus = await confirmEditionPayment(purchase.txSignature, purchase.submittedAt)
 			console.log(`[checkPurchaseStatusDirect] Transaction status: ${txStatus.status}`)
 
 			if (txStatus.status === 'confirmed' || txStatus.status === 'finalized') {

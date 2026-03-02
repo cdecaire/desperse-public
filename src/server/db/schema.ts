@@ -110,11 +110,8 @@ export const posts = pgTable(
     nftDescription: text('nft_description'), // Separate from caption for NFT metadata
     sellerFeeBasisPoints: integer('seller_fee_basis_points'), // Creator royalties (0-10000), separate from platform fee
     isMutable: boolean('is_mutable').notNull().default(true), // Metadata mutability (default true)
-    collectionAddress: text('collection_address'), // Optional collection association (future use)
     // Edition master mint fields
-    masterMint: text('master_mint'), // Master edition mint address (set on first purchase)
-    masterMetadataPda: text('master_metadata_pda'), // Master metadata PDA (optional, for debugging)
-    masterEditionPda: text('master_edition_pda'), // Master edition PDA (optional, for debugging)
+    masterMint: text('master_mint'), // Core collection address (set on first purchase)
     creatorWallet: text('creator_wallet'), // Creator wallet address (canonical update authority target, set at post creation)
     // Arweave permanent storage fields
     storageType: text('storage_type').notNull().default('centralized'), // 'centralized' | 'arweave'
@@ -128,10 +125,10 @@ export const posts = pgTable(
     mintedMetadataUri: text('minted_metadata_uri'), // The metadata URL used at mint time
     mintedMetadataJson: jsonb('minted_metadata_json').$type<Record<string, unknown>>(), // Full Metaplex JSON snapshot
     mintedIsMutable: boolean('minted_is_mutable'), // The actual mutability that was minted
-    // On-chain sync tracking (for mutable NFTs)
+    // On-chain sync tracking (for mutable NFTs) — placeholder for future feature
     lastOnchainSyncAt: timestamp('last_onchain_sync_at'), // When metadata was last synced on-chain
     onchainSyncStatus: text('onchain_sync_status'), // 'synced' | 'pending' | 'failed'
-    lastOnchainTxSignature: text('last_onchain_tx_signature'), // Last successful on-chain update tx
+    isDev: boolean('is_dev').notNull().default(false), // true for posts created in dev environments
     isDeleted: boolean('is_deleted').notNull().default(false),
     isHidden: boolean('is_hidden').notNull().default(false),
     hiddenReason: text('hidden_reason'),
@@ -150,6 +147,7 @@ export const posts = pgTable(
     typeIdx: index('posts_type_idx').on(table.type),
     createdAtIdx: index('posts_created_at_idx').on(table.createdAt),
     filteredFeedIdx: index('posts_filtered_feed_idx').on(
+      table.isDev,
       table.isDeleted,
       table.isHidden,
       table.createdAt,

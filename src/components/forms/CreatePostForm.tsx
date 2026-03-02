@@ -3,15 +3,15 @@
  * Main form for creating posts with media upload, caption, and type-specific options
  */
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useCallback, useMemo } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toastSuccess, toastError, toastInfo } from '@/lib/toast'
 import { MediaUpload, type UploadedMedia } from './MediaUpload'
 import { MultiMediaUpload, type UploadedMediaItem } from './MultiMediaUpload'
-import { isMultiAssetEnabled, isMultiAssetCollectibleEnabled, isMultiAssetEditionEnabled } from '@/config/env'
+import { isMultiAssetEnabled, isMultiAssetCollectibleEnabled, isMultiAssetEditionEnabled, isArweaveStorageEnabled } from '@/config/env'
 import { PostTypeSelector, type PostType } from './PostTypeSelector'
-import { StorageSelector, type StorageType } from './StorageSelector'
+type StorageType = "centralized" | "arweave"
 import { EditionOptions, type Currency, type MintWindowState } from './EditionOptions'
 import { NftMetadataOptions } from './NftMetadataOptions'
 import { CategorySelector } from './CategorySelector'
@@ -23,6 +23,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { TokenAutocomplete } from '@/components/shared/TokenAutocomplete'
 import { Input } from '@/components/ui/input'
 import { Tooltip } from '@/components/ui/tooltip'
+import { Switch } from '@/components/ui/switch'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icon'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
@@ -34,6 +35,8 @@ import {
 } from '@/components/ui/dialog'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { XIcon } from 'lucide-react'
+import { ArweaveFundingSection } from './ArweaveFundingSection'
+import { useArweaveFunding } from '@/hooks/useArweaveFunding'
 import { createPost, getPostEditState } from '@/server/functions/posts'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { useAuth } from '@/hooks/useAuth'
@@ -253,6 +256,13 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
   const [formError, setFormError] = useState<string | null>(null)
   const [isMintedDetailsOpen, setIsMintedDetailsOpen] = useState(false)
   const [justSaved, setJustSaved] = useState(false)
+
+  // Arweave funding readiness (set by ArweaveFundingSection)
+  const [isArweaveReady, setIsArweaveReady] = useState(false)
+  const handleArweaveReadyChange = useCallback((ready: boolean) => {
+    setIsArweaveReady(ready)
+  }, [])
+
 
   // Multi-asset state (Phase 1: standard posts, Phase 2: collectibles, Phase 3: editions)
   const [multiAssetItems, setMultiAssetItems] = useState<UploadedMediaItem[]>([])
@@ -576,6 +586,8 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
       if (!formState.nftName || formState.nftName.trim() === '') return false
       // Validate minimum price
       if (!isEditionPriceValid(formState.price, formState.currency)) return false
+      // Arweave storage requires funding + authorization before publish
+      if (formState.storageType === 'arweave' && !isEditMode && !isArweaveReady) return false
     }
     // For edits, additional validation happens server-side
     return true
@@ -604,6 +616,34 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
     return !!formState.mediaUrl && !!user
   }
   
+  // Compute file sizes for Arweave cost estimation (always computed so we can prefetch)
+  const arweaveFileSizes: number[] = useMemo(() => {
+    if (formState.type !== 'edition') return []
+    const sizes: number[] = []
+    // Multi-asset mode
+    if (multiAssetItems.length > 0) {
+      for (const item of multiAssetItems) {
+        sizes.push(item.fileSize ?? 500_000) // fallback 500KB
+      }
+    } else if (uploadedMedia?.fileSize) {
+      // Single-asset mode
+      sizes.push(uploadedMedia.fileSize)
+    } else if (uploadedMediaInfo?.fileSize) {
+      sizes.push(uploadedMediaInfo.fileSize)
+    } else {
+      // Fallback: estimate 500KB per file
+      sizes.push(500_000)
+    }
+    return sizes
+  }, [formState.type, multiAssetItems, uploadedMedia?.fileSize, uploadedMediaInfo?.fileSize])
+
+  // Prefetch Arweave balance/cost/shared-credits so data is cached before toggle
+  const isArweaveFeatureAvailable = formState.type === 'edition' && !isEditMode && isArweaveStorageEnabled()
+  useArweaveFunding({
+    fileSizes: isArweaveFeatureAvailable ? arweaveFileSizes : [],
+    enabled: isArweaveFeatureAvailable,
+  })
+
   // Handle submit
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -917,15 +957,6 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
           </div>
         )}
 
-        {/* Storage Type Selector - only shown for editions in create mode when feature is enabled */}
-        {!isEditMode && formState.type === 'edition' && import.meta.env.VITE_FEATURE_ARWEAVE_STORAGE === 'true' && (
-          <StorageSelector
-            value={formState.storageType}
-            onChange={(storageType) => setFormState(prev => ({ ...prev, storageType }))}
-            disabled={isSubmitting}
-          />
-        )}
-
         {/* Edition-only: Commerce & Supply Options (includes protected download) - hidden after minting */}
         {formState.type === 'edition' && !(isEditMode && isMinted) && (
           <EditionOptions
@@ -952,6 +983,34 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
             disabled={isSubmitting}
             pricingDisabled={!arePricingFieldsEditable}
           />
+        )}
+
+        {/* Arweave Permanent Storage — toggle + inline funding */}
+        {formState.type === 'edition' && !isEditMode && isArweaveStorageEnabled() && (
+          <div className="p-4 bg-card border border-border rounded-xl shadow-md dark:bg-card space-y-3">
+            <div className="flex items-center justify-between">
+              <Tooltip content="Store edition media and metadata permanently on Arweave. Requires storage credits.">
+                <label className="text-sm text-foreground cursor-help border-b border-dotted border-muted-foreground/40">
+                  Permanent Storage
+                </label>
+              </Tooltip>
+              <Switch
+                checked={formState.storageType === 'arweave'}
+                onCheckedChange={(checked) =>
+                  setFormState(prev => ({ ...prev, storageType: checked ? 'arweave' : 'centralized' }))
+                }
+                disabled={isSubmitting}
+                aria-label="Toggle permanent storage"
+              />
+            </div>
+            {formState.storageType === 'arweave' && (
+              <ArweaveFundingSection
+                fileSizes={arweaveFileSizes}
+                onReadyChange={handleArweaveReadyChange}
+                disabled={isSubmitting}
+              />
+            )}
+          </div>
         )}
 
         {/* Additional Details - Shown for both Collectibles and Editions, hidden after minting */}

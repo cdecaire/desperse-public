@@ -10,6 +10,7 @@ import { eq, and, desc, sql, count, gte, notInArray, isNotNull, or, ilike, inArr
 import { z } from 'zod'
 import { isModeratorOrAdmin } from '@/server/utils/auth-helpers'
 import { withOptionalAuth } from '@/server/auth'
+import { excludeDevPosts } from '@/server/utils/dev-posts'
 
 // Schema for suggested creators query
 const suggestedCreatorsSchema = z.object({
@@ -90,6 +91,7 @@ export const getSuggestedCreators = createServerFn({
       .from(posts)
       .where(
         and(
+          excludeDevPosts(),
           gte(posts.createdAt, thirtyDaysAgo),
           eq(posts.isDeleted, false),
           eq(posts.isHidden, false)
@@ -223,6 +225,7 @@ export const getTrendingPosts = createServerFn({
 
     // Build base conditions
     const baseConditions = [
+      excludeDevPosts(),
       eq(posts.isDeleted, false),
       ...(canSeeHidden ? [] : [eq(posts.isHidden, false)]),
       gte(posts.createdAt, sevenDaysAgo),
@@ -294,6 +297,7 @@ export const getTrendingPosts = createServerFn({
         .leftJoin(purchaseCounts, eq(posts.id, purchaseCounts.postId))
         .where(
           and(
+            excludeDevPosts(),
             eq(posts.isDeleted, false),
             ...(canSeeHidden ? [] : [eq(posts.isHidden, false)])
           )
@@ -515,6 +519,7 @@ export const getFeaturedCreators = createServerFn({
       .from(posts)
       .where(
         and(
+          excludeDevPosts(),
           eq(posts.isDeleted, false),
           eq(posts.isHidden, false)
         )
@@ -670,6 +675,7 @@ export const search = createServerFn({
     // Search posts
     if (type === 'all' || type === 'posts') {
       const postConditions = [
+        excludeDevPosts(),
         eq(posts.isDeleted, false),
         ...(canSeeHidden ? [] : [eq(posts.isHidden, false)]),
         or(

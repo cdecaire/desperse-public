@@ -39,6 +39,12 @@ const accountNavItems = [
     disabled: false,
   },
   {
+    path: '/settings/account/storage-credits',
+    label: 'Storage Credits',
+    icon: 'fa-hard-drive',
+    disabled: false,
+  },
+  {
     path: '/settings/account/app',
     label: 'App Settings',
     icon: 'fa-gear',

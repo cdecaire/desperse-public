@@ -43,6 +43,12 @@ const settingsCategories = [
         description: 'Password and security settings',
       },
       {
+        path: '/settings/account/storage-credits',
+        label: 'Storage Credits',
+        icon: 'fa-hard-drive',
+        description: 'Manage Arweave storage credits and authorizations',
+      },
+      {
         path: '/settings/account/app',
         label: 'App Settings',
         icon: 'fa-gear',

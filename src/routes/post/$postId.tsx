@@ -90,8 +90,7 @@ function PostDetailPage() {
   const [localIsOwned, setLocalIsOwned] = useState(false)
   
   // Sync ownership with fetched data to keep flag consistent
-  const initialCollected =
-    (data?.post as unknown as { isCollected?: boolean } | undefined)?.isCollected ?? false
+  const initialCollected = data?.post?.isCollected ?? false
 
   useEffect(() => {
     if (data?.post) {
@@ -252,26 +251,21 @@ function PostDetailPage() {
         />
       </div>
 
-      {/* Collect/Buy Button - Gate on user readiness to prevent flash */}
-      {post.type !== 'post' && isUserReady && isAuthenticated && currentUser?.id ? (
+      {/* Collect/Buy stats indicator + edition buy shortcut */}
+      {post.type !== 'post' && (
         <div className="flex items-center gap-2 flex-shrink-0">
           {post.type === 'collectible' && (
-            <CollectButton
-              postId={post.id}
-              userId={currentUser.id}
-              isAuthenticated={isAuthenticated}
-              currentCollectCount={collectCount}
-              onCollectSuccess={handleCollectSuccess}
-              onCollected={() => {
-                setLocalIsOwned(true)
-              }}
-              variant="ghost"
-              compact
-              toneColor={postTypeColor}
-            />
+            <div className="flex items-center gap-1.5 px-2 py-1.5 text-muted-foreground">
+              {collectCount > 0 && (
+                <span className="text-sm font-medium">{collectCount}</span>
+              )}
+              <span style={isCollected && postTypeColor ? { color: postTypeColor } : undefined}>
+                <Icon name="gem" variant={isCollected ? "solid" : "regular"} className="text-base" />
+              </span>
+            </div>
           )}
 
-          {post.type === 'edition' && post.price && post.currency && !skipBuy && (
+          {post.type === 'edition' && post.price && post.currency && !skipBuy && isUserReady && isAuthenticated && currentUser?.id && (
             <BuyButton
               postId={post.id}
               userId={currentUser.id}
@@ -315,22 +309,6 @@ function PostDetailPage() {
                 />
               </span>
             </div>
-          )}
-        </div>
-      ) : post.type !== 'post' && isUserReady && (
-        // Show count for unauthenticated users (only when user state is settled)
-        <div className="flex items-center gap-1 text-muted-foreground px-2">
-          {post.type === 'collectible' && collectCount > 0 && (
-            <>
-              <Icon name="gem" variant="regular" className="text-base" />
-              <span className="text-sm font-medium">{collectCount}</span>
-            </>
-          )}
-          {post.type === 'edition' && editionSupply > 0 && (
-            <>
-              <Icon name="gem" variant="regular" className="text-base" />
-              <span className="text-sm font-medium">{editionSupply}</span>
-            </>
           )}
         </div>
       )}
@@ -913,6 +891,7 @@ function PostDetailPage() {
                         onCollected={() => setLocalIsOwned(true)}
                         variant="default"
                         className="w-full"
+                        initialCollected={isCollected}
                       />
                     ) : null
                   ) : isReady && !isAuthenticated ? (

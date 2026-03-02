@@ -11,6 +11,7 @@ import {
 	createTurboClientFromPrivy,
 	topUpWithSol,
 	shareCreditsWithDesperse,
+	revokeSharedCredits,
 	getBalance,
 } from "@/lib/arweave/turbo-client";
 import type { TurboClient } from "@/lib/arweave/turbo-client";
@@ -105,6 +106,22 @@ export function useArweaveBalance() {
 		},
 	});
 
+	// Revoke shared credits mutation
+	const revokeCreditsMutation = useMutation({
+		mutationFn: async (revokedAddress: string) => {
+			const turbo = await getTurboClient();
+			return revokeSharedCredits(turbo, revokedAddress);
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: ["arweave-balance", walletAddress],
+			});
+			queryClient.invalidateQueries({
+				queryKey: ["arweave-shared-credits"],
+			});
+		},
+	});
+
 	return {
 		/** Current Turbo credit balance in winc, or null if not loaded */
 		balance: balance ?? null,
@@ -120,7 +137,15 @@ export function useArweaveBalance() {
 		shareCredits: shareCreditsMutation.mutateAsync,
 		/** Whether a credit share is in progress */
 		isSharePending: shareCreditsMutation.isPending,
+		/** Revoke previously shared credits */
+		revokeCredits: revokeCreditsMutation.mutateAsync,
+		/** Whether a revoke is in progress */
+		isRevokePending: revokeCreditsMutation.isPending,
 		/** Manually refetch the balance */
 		refetch,
+		/** Get or create a cached Turbo client for the current wallet */
+		getTurboClient,
+		/** Current wallet address, or null if not connected */
+		walletAddress,
 	};
 }

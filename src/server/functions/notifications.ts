@@ -11,6 +11,7 @@ import { eq, and, gt, lt, desc, sql, count, inArray } from 'drizzle-orm'
 import { z } from 'zod'
 import { withAuth } from '@/server/auth'
 import { isModeratorOrAdmin } from '@/server/utils/auth-helpers'
+import { excludeDevPosts } from '@/server/utils/dev-posts'
 
 const getNotificationCountersSchema = z.object({
   lastSeenForYouAt: z.string().datetime().optional().nullable(),
@@ -94,6 +95,7 @@ export const getNotificationCounters = createServerFn({
         const canSeeHidden = currentUserId ? await isModeratorOrAdmin(currentUserId) : false
 
         const forYouConditions = [
+          excludeDevPosts(),
           eq(posts.isDeleted, false),
           gt(posts.createdAt, lastSeenDateWithBuffer),
           ...(canSeeHidden ? [] : [eq(posts.isHidden, false)]),
@@ -181,6 +183,7 @@ export const getNotificationCounters = createServerFn({
           const canSeeHidden = await isModeratorOrAdmin(currentUserId)
 
           const followingConditions = [
+            excludeDevPosts(),
             eq(posts.isDeleted, false),
             gt(posts.createdAt, lastSeenDateWithBuffer),
             inArray(posts.userId, followingIds),

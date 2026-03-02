@@ -14,7 +14,7 @@ import { eq, and, asc } from "drizzle-orm"
 import { sql } from "drizzle-orm"
 import { arweaveTxIdToUrl } from "@/lib/imageUrl"
 import { generateNftMetadata } from "@/server/utils/nft-metadata"
-import type { Category } from "@/constants/categories"
+import { stringsToCategories } from "@/constants/categories"
 
 export interface FinalizationResult {
 	success: boolean
@@ -238,7 +238,7 @@ export async function finalizeArweaveAssets(
 				nftDescription: postData.nftDescription,
 				sellerFeeBasisPoints: postData.sellerFeeBasisPoints,
 				isMutable: postData.isMutable,
-				categories: postData.categories as Category[] | null,
+				categories: postData.categories ? stringsToCategories(postData.categories) : null,
 				protectDownload: assets.some((a) => a.isGated),
 				assets: assets.map((a) => ({
 					id: a.id,

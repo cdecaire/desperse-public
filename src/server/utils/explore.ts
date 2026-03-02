@@ -8,6 +8,7 @@ import { posts, users, follows, collections, purchases, likes, comments, postAss
 import { eq, and, desc, sql, count, gte, notInArray, isNotNull, or, ilike, inArray } from 'drizzle-orm'
 import { authenticateWithToken } from '@/server/auth'
 import { isModeratorOrAdmin } from '@/server/utils/auth-helpers'
+import { excludeDevPosts } from '@/server/utils/dev-posts'
 
 // Types
 export interface SuggestedCreator {
@@ -137,6 +138,7 @@ export async function getSuggestedCreatorsDirect(
       .from(posts)
       .where(
         and(
+          excludeDevPosts(),
           gte(posts.createdAt, thirtyDaysAgo),
           eq(posts.isDeleted, false),
           eq(posts.isHidden, false)
@@ -269,6 +271,7 @@ export async function getTrendingPostsDirect(
 
     // Build base conditions
     const baseConditions = [
+      excludeDevPosts(),
       eq(posts.isDeleted, false),
       ...(canSeeHidden ? [] : [eq(posts.isHidden, false)]),
       gte(posts.createdAt, sevenDaysAgo),
@@ -339,6 +342,7 @@ export async function getTrendingPostsDirect(
         .leftJoin(purchaseCounts, eq(posts.id, purchaseCounts.postId))
         .where(
           and(
+            excludeDevPosts(),
             eq(posts.isDeleted, false),
             ...(canSeeHidden ? [] : [eq(posts.isHidden, false)])
           )
@@ -596,6 +600,7 @@ export async function searchDirect(
         .as('collect_counts')
 
       const postConditions = [
+        excludeDevPosts(),
         eq(posts.isDeleted, false),
         ...(canSeeHidden ? [] : [eq(posts.isHidden, false)]),
         or(

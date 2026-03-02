@@ -6,6 +6,7 @@
 import { db } from '@/server/db'
 import { notifications, users, posts, comments } from '@/server/db/schema'
 import { eq, and, gt, lt, desc, count, inArray } from 'drizzle-orm'
+import { excludeDevPosts } from '@/server/utils/dev-posts'
 
 // Types for user notifications
 export type NotificationType = 'follow' | 'like' | 'comment' | 'collect' | 'purchase' | 'mention'
@@ -344,6 +345,7 @@ export async function getNotificationCountersDirect(
         const lastSeenDateWithBuffer = new Date(lastSeenDate.getTime() + 100)
 
         const forYouConditions = [
+          excludeDevPosts(),
           eq(posts.isDeleted, false),
           eq(posts.isHidden, false),
           gt(posts.createdAt, lastSeenDateWithBuffer),
@@ -413,6 +415,7 @@ export async function getNotificationCountersDirect(
           const lastSeenDateWithBuffer = new Date(lastSeenDate.getTime() + 100)
 
           const followingConditions = [
+            excludeDevPosts(),
             eq(posts.isDeleted, false),
             eq(posts.isHidden, false),
             gt(posts.createdAt, lastSeenDateWithBuffer),

@@ -6,6 +6,8 @@
  */
 
 import type { TurboAuthenticatedClient } from "@ardrive/turbo-sdk/web";
+import bs58 from "bs58";
+import { getClientRpcUrl } from "@/lib/rpc";
 
 /** Re-export the authenticated client type for consumers */
 export type TurboClient = TurboAuthenticatedClient;
@@ -27,14 +29,14 @@ interface PrivyWallet {
 }
 
 /** Desperse platform wallet address for credit sharing (public, not a secret) */
-const DESPERSE_TURBO_WALLET = import.meta.env.VITE_DESPERSE_TURBO_WALLET || "";
+export const DESPERSE_TURBO_WALLET = import.meta.env.VITE_DESPERSE_TURBO_WALLET || "";
 
 /**
  * Adapts a Privy connected Solana wallet into the SolanaWalletAdapter shape
  * expected by TurboFactory.authenticated().
  *
  * Turbo SDK expects:
- *   publicKey: { toString() }
+ *   publicKey: { toString(), toBuffer(), toBytes() }
  *   signMessage(Uint8Array) => Promise<Uint8Array>
  *   signTransaction(tx) => Promise<tx>
  *
@@ -44,21 +46,43 @@ const DESPERSE_TURBO_WALLET = import.meta.env.VITE_DESPERSE_TURBO_WALLET || "";
  *   signTransaction({ transaction: Uint8Array }) => Promise<{ signedTransaction: Uint8Array }>
  */
 function adaptPrivyWallet(wallet: PrivyWallet) {
+	// Decode the base58 address once — reused by toBuffer/toBytes
+	const pubkeyBytes = bs58.decode(wallet.address);
+
 	return {
 		publicKey: {
 			toString: () => wallet.address,
+			toBuffer: () => Buffer.from(pubkeyBytes),
+			toBytes: () => new Uint8Array(pubkeyBytes),
 		},
 		signMessage: async (message: Uint8Array): Promise<Uint8Array> => {
 			const result = await wallet.signMessage({ message });
 			return result.signature;
 		},
 		signTransaction: async (transaction: unknown): Promise<unknown> => {
-			// Turbo SDK passes the transaction object through; Privy expects { transaction: Uint8Array }
-			const txBytes = transaction instanceof Uint8Array
-				? transaction
-				: new Uint8Array(transaction as ArrayBuffer);
-			const result = await wallet.signTransaction({ transaction: txBytes });
-			return result.signedTransaction;
+			// The Turbo SDK passes a @solana/web3.js Transaction object.
+			// We need to serialize it for Privy, then deserialize the signed result
+			// back into a Transaction so the SDK can call .serialize() on it.
+			const { Transaction } = await import("@solana/web3.js");
+
+			let txBytes: Uint8Array;
+			if (transaction instanceof Transaction) {
+				txBytes = transaction.serialize({
+					requireAllSignatures: false,
+					verifySignatures: false,
+				});
+			} else if (transaction instanceof Uint8Array) {
+				txBytes = transaction;
+			} else {
+				txBytes = new Uint8Array(transaction as ArrayBuffer);
+			}
+
+			const result = await wallet.signTransaction({
+				transaction: txBytes,
+			});
+
+			// Deserialize back into a Transaction so the SDK can call .serialize()
+			return Transaction.from(result.signedTransaction);
 		},
 	};
 }
@@ -77,12 +101,18 @@ export async function createTurboClientFromPrivy(
 	return TurboFactory.authenticated({
 		walletAdapter,
 		token: "solana",
+		// Use the project's RPC proxy instead of the default public mainnet RPC
+		// which is rate-limited and returns 403
+		gatewayUrl: getClientRpcUrl(),
 	});
 }
 
 /**
  * Top up Turbo credits by paying with SOL.
  * Converts SOL amount to lamports and calls topUpWithTokens.
+ *
+ * If the on-chain tx succeeds but the Turbo API submission fails,
+ * automatically retries submitFundTransaction before throwing.
  *
  * @param turbo - Authenticated Turbo client
  * @param amountSol - Amount in SOL (e.g. 0.1 for 0.1 SOL)
@@ -97,15 +127,102 @@ export async function topUpWithSol(
 		throw new Error("Top-up amount must be greater than 0");
 	}
 
-	const result = await turbo.topUpWithTokens({
-		tokenAmount: lamports,
-	});
+	try {
+		const result = await turbo.topUpWithTokens({
+			tokenAmount: lamports,
+		});
 
-	return {
-		id: result.id,
-		winc: result.winc,
-		status: result.status,
-	};
+		return {
+			id: result.id,
+			winc: result.winc,
+			status: result.status,
+		};
+	} catch (err) {
+		const msg = err instanceof Error ? err.message : "";
+
+		// The SDK error includes the tx ID when on-chain succeeds but API submission fails.
+		// Extract it and retry submitFundTransaction.
+		if (msg.includes("Failed to submit fund transaction")) {
+			const txIdMatch = msg.match(
+				/submitFundTransaction\(id\)':\s*(\S+)/,
+			);
+			const txId = txIdMatch?.[1];
+
+			if (txId) {
+				console.log(
+					"[topUpWithSol] On-chain tx succeeded, retrying API submission for txId:",
+					txId,
+				);
+				// Wait a bit for the tx to propagate
+				await new Promise((r) => setTimeout(r, 3000));
+				try {
+					// Use direct REST call — SDK's submitFundTransaction uses Node Buffer
+					return await retryFundSubmission(txId);
+				} catch (retryErr) {
+					console.warn(
+						"[topUpWithSol] Retry also failed, returning pending with txId",
+						retryErr,
+					);
+					// Return a pending result so the UI can track it
+					return { id: txId, winc: "0", status: "pending" };
+				}
+			}
+		}
+
+		throw err;
+	}
+}
+
+/** Turbo payment API base URL */
+const TURBO_PAYMENT_URL = "https://payment.ardrive.io";
+
+/**
+ * Manually submit a fund transaction to the Turbo API via direct REST call.
+ * Bypasses the SDK's submitFundTransaction which uses Node.js Buffer internally.
+ *
+ * Use this to recover credits when topUpWithTokens sent SOL on-chain
+ * but failed to notify the Turbo API.
+ *
+ * @param txId - The Solana transaction signature
+ */
+export async function retryFundSubmission(
+	txId: string,
+): Promise<{ id: string; winc: string; status: string }> {
+	const response = await fetch(
+		`${TURBO_PAYMENT_URL}/account/balance/solana`,
+		{
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ tx_id: txId }),
+		},
+	);
+
+	if (!response.ok) {
+		const text = await response.text();
+		throw new Error(
+			`Turbo API error (${response.status}): ${text}`,
+		);
+	}
+
+	const data = await response.json();
+
+	if (data.creditedTransaction) {
+		return {
+			id: data.creditedTransaction.transactionId,
+			winc: data.creditedTransaction.winstonCreditAmount,
+			status: "confirmed",
+		};
+	}
+	if (data.pendingTransaction) {
+		return {
+			id: data.pendingTransaction.transactionId,
+			winc: data.pendingTransaction.winstonCreditAmount,
+			status: "pending",
+		};
+	}
+
+	// Fallback
+	return { id: txId, winc: "0", status: "pending" };
 }
 
 /**
@@ -139,17 +256,39 @@ export async function shareCreditsWithDesperse(
 	};
 }
 
+/** Shape of a credit share approval from the Turbo API */
+export interface CreditApproval {
+	approvalDataItemId: string;
+	approvedAddress: string;
+	approvedWincAmount: string;
+	usedWincAmount: string;
+	createdDate: string;
+	expirationDate?: string;
+}
+
+/** Full balance response including approval details */
+export interface TurboBalanceResult {
+	winc: string;
+	givenApprovals: CreditApproval[];
+	receivedApprovals: CreditApproval[];
+}
+
 /**
- * Get the current Turbo credit balance for the authenticated wallet.
+ * Get the current Turbo credit balance for the authenticated wallet,
+ * including credit share approval details.
  *
  * @param turbo - Authenticated Turbo client
- * @returns Balance in winc (smallest unit)
+ * @returns Balance in winc plus given/received approval arrays
  */
 export async function getBalance(
 	turbo: TurboClient,
-): Promise<{ winc: string }> {
+): Promise<TurboBalanceResult> {
 	const balance = await turbo.getBalance();
-	return { winc: balance.winc };
+	return {
+		winc: balance.winc,
+		givenApprovals: (balance as Record<string, unknown>).givenApprovals as CreditApproval[] ?? [],
+		receivedApprovals: (balance as Record<string, unknown>).receivedApprovals as CreditApproval[] ?? [],
+	};
 }
 
 /**
@@ -171,4 +310,80 @@ export async function estimateCost(
 	}, BigInt(0));
 
 	return { winc: totalWinc.toString() };
+}
+
+/**
+ * Revoke shared credits previously given to an address.
+ * Reclaims any unused credits from the approval.
+ *
+ * @param turbo - Authenticated Turbo client
+ * @param revokedAddress - The address whose approval to revoke
+ */
+export async function revokeSharedCredits(
+	turbo: TurboClient,
+	revokedAddress: string,
+): Promise<void> {
+	await turbo.revokeCredits({ revokedAddress });
+}
+
+/**
+ * Format winc (smallest Turbo credit unit) to human-readable AR.
+ * Shared utility used by settings page and inline funding section.
+ */
+export function formatCredits(winc: string): string {
+	const val = BigInt(winc);
+	if (val === BigInt(0)) return "0 AR";
+	const ar = Number(val) / 1e12;
+	if (ar >= 0.01) return `${ar.toFixed(4)} AR`;
+	if (ar >= 0.0001) return `${ar.toFixed(6)} AR`;
+	return `~${ar.toExponential(2)} AR`;
+}
+
+/**
+ * Check how many Turbo credits the current wallet has shared with the
+ * Desperse platform wallet. Mirrors the server-side `checkCreatorSharedBalance`
+ * logic but runs entirely client-side.
+ *
+ * @param turbo - Authenticated Turbo client
+ * @returns Shared winc remaining and whether an active approval exists
+ */
+export async function getSharedCreditsWithDesperse(
+	turbo: TurboClient,
+): Promise<{ sharedWinc: string; hasApproval: boolean }> {
+	if (!DESPERSE_TURBO_WALLET) {
+		return { sharedWinc: "0", hasApproval: false };
+	}
+
+	const approvals = await turbo.getCreditShareApprovals({});
+
+	// Filter to approvals given TO the Desperse platform wallet
+	const relevant = approvals.givenApprovals.filter(
+		(a: { approvedAddress: string }) =>
+			a.approvedAddress.toLowerCase() ===
+			DESPERSE_TURBO_WALLET.toLowerCase(),
+	);
+
+	if (relevant.length === 0) {
+		return { sharedWinc: "0", hasApproval: false };
+	}
+
+	// Sum remaining winc across all relevant approvals (approved - used)
+	let totalSharedWinc = BigInt(0);
+	for (const approval of relevant) {
+		const approved = BigInt(
+			(approval as { approvedWincAmount: string }).approvedWincAmount,
+		);
+		const used = BigInt(
+			(approval as { usedWincAmount: string }).usedWincAmount,
+		);
+		const remaining = approved - used;
+		if (remaining > BigInt(0)) {
+			totalSharedWinc += remaining;
+		}
+	}
+
+	return {
+		sharedWinc: totalSharedWinc.toString(),
+		hasApproval: totalSharedWinc > BigInt(0),
+	};
 }

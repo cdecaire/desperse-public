@@ -16,6 +16,8 @@ import { processMentions, deleteMentions } from '@/server/utils/mentions'
 import { processHashtags } from '@/server/utils/hashtags'
 import { generateNftMetadata } from '@/server/utils/nft-metadata'
 import { validateMintWindow } from '@/server/utils/mintWindowStatus'
+import { env } from '@/config/env'
+import { excludeDevPosts } from '@/server/utils/dev-posts'
 
 // Post type enum
 const postTypeSchema = z.enum(['post', 'collectible', 'edition'])
@@ -82,7 +84,6 @@ const createPostSchema = z.object({
   nftDescription: z.string().max(5000).optional().nullable(), // Separate from caption for NFT metadata
   sellerFeeBasisPoints: z.number().int().min(0).max(1000).optional().nullable(), // Creator royalties (0-1000 = 0-10%)
   isMutable: z.boolean().optional().default(true), // Metadata mutability (default true)
-  collectionAddress: z.string().optional().nullable(), // Optional collection association (future use)
   protectDownload: z.boolean().optional().default(true), // Whether to gate downloads (default true)
   mediaMimeType: z.string().optional().nullable(), // MIME type of uploaded media
   mediaFileSize: z.number().int().positive().optional().nullable(), // File size in bytes
@@ -251,7 +252,6 @@ export const createPost = createServerFn({
         nftDescription: postData.nftDescription || postData.caption || null,
         sellerFeeBasisPoints: postData.sellerFeeBasisPoints || null,
         isMutable: postData.isMutable ?? true,
-        collectionAddress: postData.collectionAddress || null,
         // Store creator wallet address (canonical update authority target)
         creatorWallet: user.walletAddress,
         // Timed edition window
@@ -260,6 +260,8 @@ export const createPost = createServerFn({
         // Storage type (centralized vs Arweave)
         storageType: postData.storageType || 'centralized',
         arweaveStatus: postData.storageType === 'arweave' ? 'funded' : null,
+        // Dev post flag (set via DEV_POSTS env var in .env.local)
+        isDev: env.DEV_POSTS,
       })
       .returning()
 
@@ -503,6 +505,38 @@ export const getPost = createServerFn({
       collectibleAssetId = assetIdResult[0]?.nftMint || undefined
     }
 
+    // Check if current user has collected/purchased this post
+    let isCollected = false
+    if (authResult.auth?.userId) {
+      if (result[0].post.type === 'collectible') {
+        const [userCollection] = await db
+          .select({ postId: collections.postId })
+          .from(collections)
+          .where(
+            and(
+              eq(collections.postId, postId),
+              eq(collections.userId, authResult.auth.userId),
+              eq(collections.status, 'confirmed')
+            )
+          )
+          .limit(1)
+        isCollected = !!userCollection
+      } else if (result[0].post.type === 'edition') {
+        const [userPurchase] = await db
+          .select({ postId: purchases.postId })
+          .from(purchases)
+          .where(
+            and(
+              eq(purchases.postId, postId),
+              eq(purchases.userId, authResult.auth.userId),
+              eq(purchases.status, 'confirmed')
+            )
+          )
+          .limit(1)
+        isCollected = !!userPurchase
+      }
+    }
+
     // Get current supply for editions (count confirmed purchases only)
     let currentSupply = result[0].post.currentSupply || 0
     if (result[0].post.type === 'edition') {
@@ -623,6 +657,7 @@ export const getPost = createServerFn({
         ...result[0].post,
         collectCount,
         currentSupply,
+        isCollected,
         hiddenByUser,
         deletedByUser,
         // Add first assetId for collectibles (for Orb link)
@@ -670,6 +705,7 @@ export const getFeed = createServerFn({
 
     // Build base query conditions
     const baseConditions = [
+      excludeDevPosts(),
       eq(posts.isDeleted, false),
       ...(canSeeHidden ? [] : [eq(posts.isHidden, false)]),
     ]
@@ -977,6 +1013,7 @@ export const getUserPosts = createServerFn({
 
     // Build conditions
     const conditions = [
+      excludeDevPosts(),
       eq(posts.userId, userId),
       eq(posts.isDeleted, false),
       ...(canSeeHidden ? [] : [eq(posts.isHidden, false)]),

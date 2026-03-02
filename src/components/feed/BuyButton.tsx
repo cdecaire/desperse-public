@@ -1130,18 +1130,6 @@ export function BuyButton({
         </a>
       )}
 
-      {state === 'success' && nftMint && (
-        <a
-          href={getExplorerUrl('token', nftMint, preferences.explorer)}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
-        >
-          <Icon name="cube" variant="regular" className="text-[10px]" />
-          View NFT
-        </a>
-      )}
-
     </div>
   );
 }

@@ -8,6 +8,7 @@ import { users, posts, collections, purchases, follows, likes, postAssets, comme
 import { and, asc, count, desc, eq, inArray, isNull, lt, ne, or } from 'drizzle-orm'
 import { authenticateWithToken } from '@/server/auth'
 import { uploadToBlob, SUPPORTED_IMAGE_TYPES } from '@/server/storage/blob'
+import { excludeDevPosts } from '@/server/utils/dev-posts'
 
 const AVATAR_MAX_BYTES = 2 * 1024 * 1024 // 2MB limit for avatars
 const HEADER_MAX_BYTES = 5 * 1024 * 1024 // 5MB limit for header backgrounds
@@ -119,6 +120,7 @@ export async function getUserBySlugDirect(
 			.from(posts)
 			.where(
 				and(
+					excludeDevPosts(),
 					eq(posts.userId, user.id),
 					eq(posts.isDeleted, false),
 					eq(posts.isHidden, false)
@@ -158,6 +160,7 @@ export async function getUserBySlugDirect(
 				.from(posts)
 				.where(
 					and(
+						excludeDevPosts(),
 						inArray(posts.id, Array.from(collectedIds)),
 						eq(posts.isDeleted, false),
 						eq(posts.isHidden, false)
@@ -172,6 +175,7 @@ export async function getUserBySlugDirect(
 			.from(posts)
 			.where(
 				and(
+					excludeDevPosts(),
 					eq(posts.userId, user.id),
 					eq(posts.type, 'edition'),
 					eq(posts.isDeleted, false),
@@ -204,6 +208,7 @@ export async function getUserBySlugDirect(
 			.from(posts)
 			.where(
 				and(
+					excludeDevPosts(),
 					eq(posts.userId, user.id),
 					eq(posts.isDeleted, false),
 					eq(posts.isHidden, false)
@@ -301,6 +306,7 @@ export async function getUserPostsDirect(
 ): Promise<UserPostsResult> {
 	try {
 		const conditions = [
+			excludeDevPosts(),
 			eq(posts.userId, userId),
 			eq(posts.isDeleted, false),
 			eq(posts.isHidden, false),
@@ -621,6 +627,7 @@ export async function getUserCollectedDirect(
 		}
 
 		const conditions = [
+			excludeDevPosts(),
 			inArray(posts.id, Array.from(collectedIds)),
 			eq(posts.isDeleted, false),
 			eq(posts.isHidden, false),
@@ -766,6 +773,7 @@ export async function getUserForSaleDirect(
 ): Promise<UserPostsResult> {
 	try {
 		const conditions = [
+			excludeDevPosts(),
 			eq(posts.userId, userId),
 			eq(posts.type, 'edition'),
 			eq(posts.isDeleted, false),

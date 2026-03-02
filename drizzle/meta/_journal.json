@@ -211,6 +211,20 @@
       "when": 1772058448740,
       "tag": "0029_ambiguous_black_knight",
       "breakpoints": true
+    },
+    {
+      "idx": 30,
+      "version": "7",
+      "when": 1772399109761,
+      "tag": "0030_opposite_loa",
+      "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "7",
+      "when": 1772474483007,
+      "tag": "0031_striped_maddog",
+      "breakpoints": true
     }
   ]
 }

@@ -21,6 +21,7 @@ import { env } from '@/config/env'
 import { uploadToBlob, SUPPORTED_IMAGE_TYPES } from '@/server/storage/blob'
 import { isModeratorOrAdmin } from '@/server/utils/auth-helpers'
 import { withAuth, withOptionalAuth } from '@/server/auth'
+import { excludeDevPosts } from '@/server/utils/dev-posts'
 
 // Shared schemas
 const cursorSchema = z.object({
@@ -445,6 +446,7 @@ export const getUserBySlug = createServerFn({
       .from(posts)
       .where(
         and(
+          excludeDevPosts(),
           eq(posts.userId, user.id),
           eq(posts.isDeleted, false),
           eq(posts.isHidden, false),
@@ -484,6 +486,7 @@ export const getUserBySlug = createServerFn({
         .from(posts)
         .where(
           and(
+            excludeDevPosts(),
             inArray(posts.id, Array.from(collectedIds)),
             eq(posts.isDeleted, false),
             eq(posts.isHidden, false),
@@ -498,6 +501,7 @@ export const getUserBySlug = createServerFn({
       .from(posts)
       .where(
         and(
+          excludeDevPosts(),
           eq(posts.userId, user.id),
           eq(posts.type, 'edition'),
           eq(posts.isDeleted, false),
@@ -534,6 +538,7 @@ export const getUserBySlug = createServerFn({
         .from(posts)
         .where(
           and(
+            excludeDevPosts(),
             eq(posts.userId, user.id),
             eq(posts.isDeleted, false),
             eq(posts.isHidden, false),
@@ -635,6 +640,7 @@ export const getUserPosts = createServerFn({
     const canSeeHidden = authResult.auth ? await isModeratorOrAdmin(authResult.auth.userId) : false
 
     const conditions = [
+      excludeDevPosts(),
       eq(posts.userId, userId),
       eq(posts.isDeleted, false),
       ...(canSeeHidden ? [] : [eq(posts.isHidden, false)]),
@@ -755,6 +761,7 @@ export const getUserCollections = createServerFn({
     }
 
     const conditions = [
+      excludeDevPosts(),
       inArray(posts.id, Array.from(collectedIds)),
       // Filter out deleted and hidden posts
       eq(posts.isDeleted, false),
@@ -848,6 +855,7 @@ export const getUserForSale = createServerFn({
     const { userId, cursor, limit } = cursorSchema.parse(rawData)
 
     const conditions = [
+      excludeDevPosts(),
       eq(posts.userId, userId),
       eq(posts.type, 'edition'),
       eq(posts.isDeleted, false),
@@ -925,6 +933,7 @@ export const getCollectorsList = createServerFn({
       .from(posts)
       .where(
         and(
+          excludeDevPosts(),
           eq(posts.userId, userId),
           eq(posts.isDeleted, false),
           eq(posts.isHidden, false),

@@ -562,6 +562,7 @@ export function PostCard({
                   variant="ghost"
                   compact
                   toneColor={postTypeColor}
+                  initialCollected={!!post.isCollected}
                 />
               )}
 

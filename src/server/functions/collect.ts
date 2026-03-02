@@ -370,6 +370,7 @@ export const prepareCollect = createServerFn({
             .update(collections)
             .set({ status: 'failed' })
             .where(eq(collections.id, existing.id));
+          existing.status = 'failed'; // Sync in-memory state for retry logic below
           // Continue to retry logic below
         }
         // If tx is still pending on-chain, check staleness
@@ -387,6 +388,7 @@ export const prepareCollect = createServerFn({
             .update(collections)
             .set({ status: 'failed' })
             .where(eq(collections.id, existing.id));
+          existing.status = 'failed'; // Sync in-memory state for retry logic below
 
           console.log(`[prepareCollect] Auto-marked stale pending collection as failed: ${existing.id} (age: ${Math.round(ageMs / 1000)}s)`);
           // Continue to retry logic below
@@ -404,6 +406,7 @@ export const prepareCollect = createServerFn({
             .update(collections)
             .set({ status: 'failed' })
             .where(eq(collections.id, existing.id));
+          existing.status = 'failed'; // Sync in-memory state for retry logic below
           // Continue to retry logic below
         }
       }
@@ -573,9 +576,11 @@ export const prepareCollect = createServerFn({
   } catch (error) {
     console.error('Error in prepareCollect:', error);
 
-    if (error instanceof Error && error.message.includes('unique')) {
+    if (error instanceof Error && (error.message.includes('unique') || error.message.includes('duplicate'))) {
+      // Race condition — another request already created the collection record.
+      // The user's intent (collecting) was achieved, so return success.
       return {
-        success: false,
+        success: true,
         status: 'already_collected',
         message: 'You\'ve already collected this.',
       };

@@ -47,6 +47,9 @@ importers:
       '@noble/ed25519':
         specifier: ^3.0.0
         version: 3.0.0
+      '@noble/hashes':
+        specifier: ^1.8.0
+        version: 1.8.0
       '@privy-io/react-auth':
         specifier: ^3.12.0
         version: 3.12.0(ddc2dbe0629ca88a173cbc8211d0e30a)
@@ -14308,7 +14311,7 @@ snapshots:
 
   asn1.js@5.4.1:
     dependencies:
-      bn.js: 4.11.6
+      bn.js: 4.12.3
       inherits: 2.0.4
       minimalistic-assert: 1.0.1
       safer-buffer: 2.1.2

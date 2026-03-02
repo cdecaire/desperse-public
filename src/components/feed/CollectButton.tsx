@@ -79,6 +79,8 @@ interface CollectButtonProps {
   variant?: 'default' | 'ghost' | 'outline';
   /** Compact mode - shows Label (Count) Icon format */
   compact?: boolean;
+  /** Pre-fetched collected status from parent query — skips the extra API call when true */
+  initialCollected?: boolean;
 }
 
 // Polling configuration
@@ -98,6 +100,7 @@ export function CollectButton({
   toneColor,
   variant = 'default',
   compact = false,
+  initialCollected = false,
 }: CollectButtonProps) {
   // Note: Using browser APIs (atob) instead of Node Buffer for base64 decoding
 
@@ -114,11 +117,11 @@ export function CollectButton({
   // User preferences for explorer
   const { preferences } = usePreferences();
 
-  const [state, setState] = useState<CollectState>('idle');
+  const [state, setState] = useState<CollectState>(initialCollected ? 'already_collected' : 'idle');
   const [collectionId, setCollectionId] = useState<string | null>(null);
   const [txSignature, setTxSignature] = useState<string | null>(null);
   const [showExtendedMessage, setShowExtendedMessage] = useState(false);
-  const [isInitialized, setIsInitialized] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(initialCollected);
   
   const pollStartTime = useRef<number | null>(null);
   const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);

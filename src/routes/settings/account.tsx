@@ -12,6 +12,7 @@ const routeTitles: Record<string, string> = {
   '/settings/account/profile-info': 'Profile Info',
   '/settings/account/wallets': 'Wallets & Linked',
   '/settings/account/security': 'Security',
+  '/settings/account/storage-credits': 'Storage Credits',
   '/settings/account/app': 'App Settings',
   '/settings/account/messaging': 'Messaging',
   '/settings/account/notifications': 'Notifications',

@@ -165,11 +165,20 @@ export async function createPostDirect(
       const { checkCreatorSharedBalance } = await import('@/server/services/arweave/turbo-server')
       const balance = await checkCreatorSharedBalance(user.walletAddress)
       if (!balance.sufficient) {
-        return { success: false, error: 'Insufficient Arweave storage credits' }
+        // In dev, warn but allow — no credits to test with locally
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('[createPostDirect] Arweave balance insufficient but allowing in dev mode')
+        } else {
+          return { success: false, error: 'Insufficient Arweave storage credits. Top up and share credits before publishing.' }
+        }
       }
     } catch (err) {
       console.error('[createPostDirect] Arweave balance check failed:', err instanceof Error ? err.message : 'Unknown error')
-      return { success: false, error: 'Failed to verify Arweave storage credits. Please try again.' }
+      // In dev, warn but allow — Turbo client may not be configured
+      if (process.env.NODE_ENV !== 'development') {
+        return { success: false, error: 'Failed to verify Arweave storage credits. Please try again.' }
+      }
+      console.warn('[createPostDirect] Allowing Arweave post creation in dev despite balance check failure')
     }
   }
 
@@ -212,6 +221,7 @@ export async function createPostDirect(
       mintWindowEnd,
       storageType: data.storageType || 'centralized',
       arweaveStatus: data.storageType === 'arweave' ? 'funded' : null,
+      isDev: env.DEV_POSTS,
     })
     .returning()
 

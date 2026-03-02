@@ -23,6 +23,7 @@ import { db } from '@/server/db'
 import { posts, users, postAssets, likes, collections, comments, purchases } from '@/server/db/schema'
 import { eq, and, desc, lt, inArray, asc, count } from 'drizzle-orm'
 import { authenticateWithToken } from '@/server/auth'
+import { excludeDevPosts } from '@/server/utils/dev-posts'
 
 export default defineEventHandler(async (event) => {
 	const requestId = `req_${crypto.randomUUID().slice(0, 12)}`
@@ -72,6 +73,7 @@ export default defineEventHandler(async (event) => {
 	try {
 		// Build conditions
 		const conditions = [
+			excludeDevPosts(),
 			eq(posts.isDeleted, false),
 			eq(posts.isHidden, false),
 		]

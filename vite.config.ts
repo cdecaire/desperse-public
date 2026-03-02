@@ -1,5 +1,8 @@
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { defineConfig, type Plugin } from "vite";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import viteReact from "@vitejs/plugin-react";
 import viteTsConfigPaths from "vite-tsconfig-paths";
@@ -82,9 +85,9 @@ const config = defineConfig({
       'postgres',
       // Turbo SDK and its libsodium dependency have broken ESM resolution
       // that Rollup cannot bundle. Keep them as external runtime requires.
+      // Note: /web is NOT externalized here — it's pre-bundled via optimizeDeps for client use.
       '@ardrive/turbo-sdk',
       '@ardrive/turbo-sdk/node',
-      '@ardrive/turbo-sdk/web',
       'libsodium-wrappers-sumo',
       'libsodium-sumo',
     ],
@@ -123,6 +126,8 @@ const config = defineConfig({
     include: [
       "buffer-es",
       "react-intersection-observer",
+      // Turbo SDK web entrypoint — dynamically imported in turbo-client.ts for client-side funding
+      "@ardrive/turbo-sdk/web",
       // Privy: main entry + solana subpath (used in 9+ files but treated as separate entry)
       "@privy-io/react-auth",
       "@privy-io/react-auth/solana",
@@ -144,10 +149,26 @@ const config = defineConfig({
       "@privy-io/react-auth > @walletconnect/universal-provider",
     ],
     esbuildOptions: {
-      // Ensure Buffer is available during esbuild optimization
       define: {
         global: 'globalThis',
       },
+      plugins: [
+        {
+          // @dha-team/arbundles and @ardrive/turbo-sdk import from Node's 'crypto'
+          // even in their web builds. This redirects to a browser shim using
+          // @noble/hashes during client-side dep pre-bundling only (no SSR impact).
+          name: 'crypto-browser-shim',
+          setup(build) {
+            const shimPath = path.resolve(__dirname, 'src/lib/crypto-browser.js');
+            build.onResolve({ filter: /^crypto$/ }, (args) => {
+              if (args.importer?.includes('arbundles') || args.importer?.includes('turbo-sdk')) {
+                return { path: shimPath };
+              }
+              return undefined;
+            });
+          },
+        },
+      ],
     },
   },
 });

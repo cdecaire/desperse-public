@@ -42,6 +42,9 @@ export const env = {
   HANDLE_CHANGE_RATE_LIMIT: getEnvVarAsNumber('VITE_HANDLE_CHANGE_RATE_LIMIT', 3),
   PROFILE_USERNAME_CHANGE_LIMIT_DAYS: getEnvVarAsNumber('VITE_PROFILE_USERNAME_CHANGE_LIMIT_DAYS', 30),
 
+  // Dev posts flag — set to 'true' in .env.local to mark posts as dev (hidden from production feeds)
+  DEV_POSTS: getEnvVar('DEV_POSTS', 'false') === 'true',
+
   // Feature flags
   FEATURE_MULTI_ASSET_STANDARD: getEnvVar('VITE_FEATURE_MULTI_ASSET_STANDARD', 'true') === 'true',
   FEATURE_MULTI_ASSET_COLLECTIBLE: getEnvVar('VITE_FEATURE_MULTI_ASSET_COLLECTIBLE', 'true') === 'true',

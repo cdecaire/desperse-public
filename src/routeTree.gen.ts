@@ -43,6 +43,7 @@ import { Route as AdminModerationRouteImport } from './routes/admin/moderation'
 import { Route as AdminFeedbackRouteImport } from './routes/admin/feedback'
 import { Route as SettingsAccountIndexRouteImport } from './routes/settings/account/index'
 import { Route as SettingsAccountWalletsRouteImport } from './routes/settings/account/wallets'
+import { Route as SettingsAccountStorageCreditsRouteImport } from './routes/settings/account/storage-credits'
 import { Route as SettingsAccountSecurityRouteImport } from './routes/settings/account/security'
 import { Route as SettingsAccountProfileInfoRouteImport } from './routes/settings/account/profile-info'
 import { Route as SettingsAccountNotificationsRouteImport } from './routes/settings/account/notifications'
@@ -222,6 +223,12 @@ const SettingsAccountWalletsRoute = SettingsAccountWalletsRouteImport.update({
   path: '/wallets',
   getParentRoute: () => SettingsAccountRoute,
 } as any)
+const SettingsAccountStorageCreditsRoute =
+  SettingsAccountStorageCreditsRouteImport.update({
+    id: '/storage-credits',
+    path: '/storage-credits',
+    getParentRoute: () => SettingsAccountRoute,
+  } as any)
 const SettingsAccountSecurityRoute = SettingsAccountSecurityRouteImport.update({
   id: '/security',
   path: '/security',
@@ -307,6 +314,7 @@ export interface FileRoutesByFullPath {
   '/settings/account/notifications': typeof SettingsAccountNotificationsRoute
   '/settings/account/profile-info': typeof SettingsAccountProfileInfoRoute
   '/settings/account/security': typeof SettingsAccountSecurityRoute
+  '/settings/account/storage-credits': typeof SettingsAccountStorageCreditsRoute
   '/settings/account/wallets': typeof SettingsAccountWalletsRoute
   '/settings/account/': typeof SettingsAccountIndexRoute
 }
@@ -349,6 +357,7 @@ export interface FileRoutesByTo {
   '/settings/account/notifications': typeof SettingsAccountNotificationsRoute
   '/settings/account/profile-info': typeof SettingsAccountProfileInfoRoute
   '/settings/account/security': typeof SettingsAccountSecurityRoute
+  '/settings/account/storage-credits': typeof SettingsAccountStorageCreditsRoute
   '/settings/account/wallets': typeof SettingsAccountWalletsRoute
   '/settings/account': typeof SettingsAccountIndexRoute
 }
@@ -394,6 +403,7 @@ export interface FileRoutesById {
   '/settings/account/notifications': typeof SettingsAccountNotificationsRoute
   '/settings/account/profile-info': typeof SettingsAccountProfileInfoRoute
   '/settings/account/security': typeof SettingsAccountSecurityRoute
+  '/settings/account/storage-credits': typeof SettingsAccountStorageCreditsRoute
   '/settings/account/wallets': typeof SettingsAccountWalletsRoute
   '/settings/account/': typeof SettingsAccountIndexRoute
 }
@@ -440,6 +450,7 @@ export interface FileRouteTypes {
     | '/settings/account/notifications'
     | '/settings/account/profile-info'
     | '/settings/account/security'
+    | '/settings/account/storage-credits'
     | '/settings/account/wallets'
     | '/settings/account/'
   fileRoutesByTo: FileRoutesByTo
@@ -482,6 +493,7 @@ export interface FileRouteTypes {
     | '/settings/account/notifications'
     | '/settings/account/profile-info'
     | '/settings/account/security'
+    | '/settings/account/storage-credits'
     | '/settings/account/wallets'
     | '/settings/account'
   id:
@@ -526,6 +538,7 @@ export interface FileRouteTypes {
     | '/settings/account/notifications'
     | '/settings/account/profile-info'
     | '/settings/account/security'
+    | '/settings/account/storage-credits'
     | '/settings/account/wallets'
     | '/settings/account/'
   fileRoutesById: FileRoutesById
@@ -802,6 +815,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsAccountWalletsRouteImport
       parentRoute: typeof SettingsAccountRoute
     }
+    '/settings/account/storage-credits': {
+      id: '/settings/account/storage-credits'
+      path: '/storage-credits'
+      fullPath: '/settings/account/storage-credits'
+      preLoaderRoute: typeof SettingsAccountStorageCreditsRouteImport
+      parentRoute: typeof SettingsAccountRoute
+    }
     '/settings/account/security': {
       id: '/settings/account/security'
       path: '/security'
@@ -917,6 +937,7 @@ interface SettingsAccountRouteChildren {
   SettingsAccountNotificationsRoute: typeof SettingsAccountNotificationsRoute
   SettingsAccountProfileInfoRoute: typeof SettingsAccountProfileInfoRoute
   SettingsAccountSecurityRoute: typeof SettingsAccountSecurityRoute
+  SettingsAccountStorageCreditsRoute: typeof SettingsAccountStorageCreditsRoute
   SettingsAccountWalletsRoute: typeof SettingsAccountWalletsRoute
   SettingsAccountIndexRoute: typeof SettingsAccountIndexRoute
 }
@@ -927,6 +948,7 @@ const SettingsAccountRouteChildren: SettingsAccountRouteChildren = {
   SettingsAccountNotificationsRoute: SettingsAccountNotificationsRoute,
   SettingsAccountProfileInfoRoute: SettingsAccountProfileInfoRoute,
   SettingsAccountSecurityRoute: SettingsAccountSecurityRoute,
+  SettingsAccountStorageCreditsRoute: SettingsAccountStorageCreditsRoute,
   SettingsAccountWalletsRoute: SettingsAccountWalletsRoute,
   SettingsAccountIndexRoute: SettingsAccountIndexRoute,
 }

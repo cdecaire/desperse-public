@@ -122,6 +122,19 @@ export function parseAppError(error: unknown): ParsedError {
 }
 
 /**
+ * Check if an error message indicates the user rejected/cancelled a wallet transaction.
+ * Consolidates the common pattern used across wallet interaction handlers.
+ */
+export function isUserRejectedError(msg: string): boolean {
+  return (
+    msg.includes("rejected") ||
+    msg.includes("cancelled") ||
+    msg.includes("denied") ||
+    msg.includes("User rejected")
+  )
+}
+
+/**
  * Format rate limit message with time remaining
  */
 export function formatRateLimitMessage(minutes?: number): string {

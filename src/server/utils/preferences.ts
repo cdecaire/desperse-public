@@ -19,7 +19,7 @@ export type ThemeOption = (typeof themeOptions)[number]
 // Default preferences
 export const defaultPreferences: UserPreferencesJson = {
 	theme: 'system',
-	explorer: 'solscan',
+	explorer: 'solana-explorer',
 	notifications: {
 		follows: true,
 		likes: true,

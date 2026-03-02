@@ -39,7 +39,7 @@ const updatePreferencesSchema = z.object({
 // Default preferences
 export const defaultPreferences: UserPreferencesJson = {
   theme: 'system',
-  explorer: 'solscan',
+  explorer: 'solana-explorer',
   notifications: {
     follows: true,
     likes: true,
@@ -189,7 +189,7 @@ export const updateUserPreferences = createServerFn({
 export function getExplorerUrl(
   type: 'tx' | 'address' | 'token',
   value: string,
-  explorer: ExplorerOption = 'solscan'
+  explorer: ExplorerOption = 'solana-explorer'
 ): string {
   switch (explorer) {
     case 'orb':

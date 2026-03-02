@@ -11,7 +11,7 @@ import { z } from 'zod'
 import { withAuth } from '@/server/auth'
 
 // Explorer options
-export const explorerOptions = ['orb', 'solscan', 'solana-explorer', 'solanafm'] as const
+export const explorerOptions = ['orb', 'solscan', 'solana-explorer', 'metaplex'] as const
 export type ExplorerOption = (typeof explorerOptions)[number]
 
 // Theme options
@@ -39,7 +39,7 @@ const updatePreferencesSchema = z.object({
 // Default preferences
 export const defaultPreferences: UserPreferencesJson = {
   theme: 'system',
-  explorer: 'orb',
+  explorer: 'solscan',
   notifications: {
     follows: true,
     likes: true,
@@ -189,7 +189,7 @@ export const updateUserPreferences = createServerFn({
 export function getExplorerUrl(
   type: 'tx' | 'address' | 'token',
   value: string,
-  explorer: ExplorerOption = 'orb'
+  explorer: ExplorerOption = 'solscan'
 ): string {
   switch (explorer) {
     case 'orb':
@@ -207,12 +207,13 @@ export function getExplorerUrl(
       if (type === 'address') return `https://explorer.solana.com/address/${value}`
       if (type === 'token') return `https://explorer.solana.com/address/${value}`
       break
-    case 'solanafm':
-      if (type === 'tx') return `https://solana.fm/tx/${value}`
-      if (type === 'address') return `https://solana.fm/address/${value}`
-      if (type === 'token') return `https://solana.fm/address/${value}`
+    case 'metaplex':
+      if (type === 'tx') return `https://explorer.solana.com/tx/${value}`
+      if (type === 'address') return `https://core.metaplex.com/explorer/${value}`
+      if (type === 'token') return `https://core.metaplex.com/explorer/${value}`
       break
   }
-  // Fallback to Orb
-  return `https://orbmarkets.io/${type}/${value}`
+  // Fallback to Solscan
+  if (type === 'address') return `https://solscan.io/account/${value}`
+  return `https://solscan.io/${type}/${value}`
 }

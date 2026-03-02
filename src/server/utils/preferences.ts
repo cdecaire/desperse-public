@@ -9,7 +9,7 @@ import { eq } from 'drizzle-orm'
 import { authenticateWithToken } from '@/server/auth'
 
 // Explorer options
-export const explorerOptions = ['orb', 'solscan', 'solana-explorer', 'solanafm'] as const
+export const explorerOptions = ['orb', 'solscan', 'solana-explorer', 'metaplex'] as const
 export type ExplorerOption = (typeof explorerOptions)[number]
 
 // Theme options
@@ -19,7 +19,7 @@ export type ThemeOption = (typeof themeOptions)[number]
 // Default preferences
 export const defaultPreferences: UserPreferencesJson = {
 	theme: 'system',
-	explorer: 'orb',
+	explorer: 'solscan',
 	notifications: {
 		follows: true,
 		likes: true,

@@ -16,7 +16,7 @@ const explorerLabels: Record<ExplorerOption, { name: string; description: string
   orb: { name: 'Orb', description: 'Simple, clean explorer' },
   solscan: { name: 'Solscan', description: 'General purpose explorer' },
   'solana-explorer': { name: 'Solana Explorer', description: 'Official explorer' },
-  solanafm: { name: 'SolanaFM', description: 'Developer-friendly explorer' },
+  metaplex: { name: 'Metaplex', description: 'Metaplex Core asset explorer' },
 }
 
 function AppSettingsPage() {

@@ -744,7 +744,7 @@ export type ArweaveStatus = 'unfunded' | 'funded' | 'uploading' | 'uploaded' | '
 // User preferences type (stored as JSONB in users.preferences)
 export type UserPreferencesJson = {
   theme?: 'light' | 'dark' | 'system'
-  explorer?: 'orb' | 'solscan' | 'solana-explorer' | 'solanafm'
+  explorer?: 'orb' | 'solscan' | 'solana-explorer' | 'metaplex'
   notifications?: {
     follows?: boolean
     likes?: boolean

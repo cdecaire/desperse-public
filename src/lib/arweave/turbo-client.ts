@@ -52,7 +52,9 @@ function adaptPrivyWallet(wallet: PrivyWallet) {
 	return {
 		publicKey: {
 			toString: () => wallet.address,
-			toBuffer: () => Buffer.from(pubkeyBytes),
+			// Cast to satisfy SDK's Buffer type — Uint8Array is compatible at runtime
+			// (Buffer extends Uint8Array) and avoids requiring the Buffer polyfill
+			toBuffer: () => new Uint8Array(pubkeyBytes) as unknown as Buffer,
 			toBytes: () => new Uint8Array(pubkeyBytes),
 		},
 		signMessage: async (message: Uint8Array): Promise<Uint8Array> => {

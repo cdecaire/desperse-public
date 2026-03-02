@@ -182,7 +182,7 @@ export function ArweaveFundingSection({
 	}
 
 	// Error loading
-	if (fundingError && !balanceWinc) {
+	if (fundingError) {
 		return (
 			<div className="space-y-2 pt-3 ">
 				<p className="text-xs text-destructive">

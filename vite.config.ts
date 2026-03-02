@@ -66,12 +66,14 @@ function arbundlesNodeShim(): Plugin {
       }));
 
       // Apply aliases only to the client environment
-      config.environments = config.environments || {};
-      config.environments.client = config.environments.client || {};
-      config.environments.client.resolve = config.environments.client.resolve || {};
-      config.environments.client.resolve.alias = [
-        ...(Array.isArray(config.environments.client.resolve?.alias)
-          ? config.environments.client.resolve.alias
+      // Using 'as any' because Vite 7's EnvironmentResolveOptions types
+      // don't expose 'alias' yet, but it works at runtime
+      const environments = (config.environments = config.environments || {}) as any;
+      environments.client = environments.client || {};
+      environments.client.resolve = environments.client.resolve || {};
+      environments.client.resolve.alias = [
+        ...(Array.isArray(environments.client.resolve?.alias)
+          ? environments.client.resolve.alias
           : []),
         ...nodeAliases,
       ];

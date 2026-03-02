@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "skills": {
+    "arweave": {
+      "source": "permaweb/skills",
+      "sourceType": "github",
+      "computedHash": "19f6d0e4282ce2c1065c08f74f945c5a8a49f8c7a7eb3b765eb706c94db8d0df"
+    },
+    "metaplex": {
+      "source": "metaplex-foundation/skill",
+      "sourceType": "github",
+      "computedHash": "9f9a34cc6bba79229a8df54fbe4d43d89445c68fb75d909acb1ba7a07a09d976"
+    }
+  }
+}

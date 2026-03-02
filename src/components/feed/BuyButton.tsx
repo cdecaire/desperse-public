@@ -5,7 +5,6 @@ import { cn } from '@/lib/utils';
 import { toastError, toastInfo, toastSuccess } from '@/lib/toast';
 import {
   buyEdition,
-  checkPurchaseStatus,
   getUserPurchaseStatus,
   submitPurchaseSignature,
   cancelPendingPurchase,
@@ -241,6 +240,10 @@ export function BuyButton({
   const isMintingRef = useRef(false);
   const isPollingActiveRef = useRef(false);
 
+  // Track state in a ref so cleanup can read it without re-running on every state change
+  const stateRef = useRef(state);
+  stateRef.current = state;
+
   // Stop polling function (defined later, but referenced here)
   const stopPolling = useCallback(() => {
     if (pollIntervalRef.current) {
@@ -295,24 +298,29 @@ export function BuyButton({
     }
   }, [currentSupply, maxSupply, state]);
 
-  // Cleanup: Clear polling and cancel reserved purchases on unmount
+  // Cleanup: Cancel reserved purchases on unmount (uses stateRef to avoid re-running on state changes)
   useEffect(() => {
     return () => {
       // Cancel reserved purchase if component unmounts while still in preparing/signing state
       // (user navigated away or closed the page before completing the transaction)
-      if (purchaseId && (state === 'preparing' || state === 'signing')) {
+      if (purchaseId && (stateRef.current === 'preparing' || stateRef.current === 'signing')) {
         // Fire and forget - we can't await in cleanup
         cancelPendingPurchase(wrapInput({ purchaseId }) as never).catch((e) => {
           console.error('[BuyButton] Failed to cancel purchase on unmount:', e);
         });
       }
-      
-      // Clear intervals
+    };
+  }, [purchaseId]);
+
+  // Cleanup: Clear timers on unmount only (empty deps — matches CollectButton pattern)
+  // IMPORTANT: This must NOT depend on [state] — state changes were killing the polling interval
+  useEffect(() => {
+    return () => {
       if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
       if (extendedTimeoutRef.current) clearTimeout(extendedTimeoutRef.current);
       if (mintingTimeoutRef.current) clearTimeout(mintingTimeoutRef.current);
     };
-  }, [purchaseId, state]);
+  }, []);
 
   // Define startPolling before the effect that uses it
   const startPolling = useCallback(
@@ -349,16 +357,25 @@ export function BuyButton({
       }, MINTING_MESSAGE_DELAY_MS);
 
       // Define the poll function so we can call it immediately
+      // Uses REST API endpoint instead of server function to avoid TanStack Start race condition
       const doPoll = async () => {
         try {
           setPollCount((c) => c + 1);
-          const result = await checkPurchaseStatus(wrapInput({ purchaseId: purchase }) as never);
+          const res = await fetch(`/api/v1/editions/purchase/${purchase}/status`);
+          if (!res.ok) {
+            console.warn(`[BuyButton] Poll HTTP error: ${res.status}`);
+            return; // Skip this poll cycle, interval will retry
+          }
+          const json = await res.json();
+          const result = json.success ? { success: true, ...json.data } : json;
           if (result.success) {
             if (result.status === 'confirmed') {
               // Check if NFT was actually minted
               if (result.nftMint) {
                 stopPolling();
-                toastSuccess('Edition minted successfully!');
+                if (stateRef.current !== 'success') {
+                  toastSuccess('Edition minted successfully!');
+                }
 
                 // Brief delay to show "Minted!" before transitioning to success
                 setState('success');
@@ -372,40 +389,19 @@ export function BuyButton({
                 stopPolling();
               }
             } else if (result.status === 'awaiting_fulfillment') {
-              // Payment confirmed! Check if minting is already in progress
-              if (isMintingRef.current) {
-                return;
+              // Payment confirmed — server handles fulfillment inline during poll.
+              // Just update UI state and keep polling for confirmed status.
+              if (stateRef.current !== 'minting') {
+                toastInfo('Payment confirmed! Minting your edition...');
               }
-
-              isMintingRef.current = true;
-              toastInfo('Payment confirmed! Minting your edition...');
               setState('minting');
-              stopPolling(); // Stop polling, we'll trigger minting directly
-
-              // Trigger minting immediately
-              try {
-                const mintResult = await retryFulfillment(wrapInput({ purchaseId: purchase }) as never);
-                if (mintResult.success && mintResult.nftMint) {
-                  toastSuccess('Edition minted successfully!');
-                  setState('success');
-                  setNftMint(mintResult.nftMint);
-                  onPurchased?.();
-                  onSuccess?.();
-                } else {
-                  // Minting failed but payment was made - show claim button
-                  setState('claiming');
-                  toastError(mintResult.error || 'Minting failed. Click "Claim NFT" to retry.');
-                }
-              } catch (mintError) {
-                console.error('[BuyButton] Minting error:', mintError);
-                setState('claiming');
-                toastError('Minting failed. Click "Claim NFT" to retry.');
-              } finally {
-                isMintingRef.current = false;
-              }
             } else if (result.status === 'minting' || result.status === 'master_created') {
               // Minting already in progress - just show minting state and keep polling
               setState('minting');
+            } else if (result.status === 'abandoned') {
+              setState('failed');
+              toastError('Purchase expired. Please try again.');
+              stopPolling();
             } else if (result.status === 'failed' || result.status === 'blocked_missing_master') {
               setState('failed');
               toastError(result.error || 'Transaction failed. You can try again.');
@@ -432,7 +428,7 @@ export function BuyButton({
             // continue polling but show extended message
           }
         } catch (error) {
-          console.error('Error polling purchase status:', error);
+          console.error('[BuyButton] Error polling purchase status:', error);
         }
       };
 
@@ -468,36 +464,10 @@ export function BuyButton({
               setPurchaseId(purchase.id); // Ensure purchaseId is set for claiming
             }
           } else if (purchase.status === 'awaiting_fulfillment') {
-            // Payment confirmed but minting not started - check lock before triggering
-            if (isMintingRef.current) {
-              setState('minting');
-              setPurchaseId(purchase.id);
-              return;
-            }
-
-            isMintingRef.current = true;
+            // Payment confirmed — start polling; server handles fulfillment inline
             setState('minting');
             setPurchaseId(purchase.id);
-
-            // Trigger minting immediately (don't wait for polling)
-            try {
-              const mintResult = await retryFulfillment(wrapInput({ purchaseId: purchase.id }) as never);
-              if (mintResult.success && mintResult.nftMint) {
-                toastSuccess('Edition minted successfully!');
-                setState('success');
-                setNftMint(mintResult.nftMint);
-                onPurchased?.();
-              } else {
-                setState('claiming');
-                toastError(mintResult.error || 'Minting failed. Click "Claim NFT" to retry.');
-              }
-            } catch (mintError) {
-              console.error('[BuyButton] Minting error on load:', mintError);
-              setState('claiming');
-              toastError('Minting failed. Click "Claim NFT" to retry.');
-            } finally {
-              isMintingRef.current = false;
-            }
+            startPolling(purchase.id);
           } else if (purchase.status === 'minting' || purchase.status === 'master_created') {
             // Minting in progress - poll to check when it's done
             setState('minting');

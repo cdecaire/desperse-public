@@ -108,6 +108,17 @@ Do not shortcut this.
 - [ ] All new DB logic lives in `src/server/utils/*`
 - [ ] Client code never imports from `src/server/utils/*`
 - [ ] App boots with `pnpm dev` after changes
+- [ ] If adding client-side requests to new external domains, update CSP `connect-src` in `vercel.json`
+
+### CSP / CORS Validation
+
+When adding **any** client-side `fetch`, SDK, or WebSocket connection to a new external domain:
+
+1. Check `vercel.json` → `Content-Security-Policy` → `connect-src` directive
+2. Add the domain if missing (e.g. `https://example.com`)
+3. For WebSocket connections, add `wss://` variant too
+4. This applies to: new third-party SDKs, API integrations, RPC endpoints, real-time services
+5. CSP violations are **silent in server logs** — they only appear in the browser console, making them easy to miss in production
 
 ## Safety Rules
 

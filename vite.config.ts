@@ -10,6 +10,76 @@ import tailwindcss from "@tailwindcss/vite";
 import { nitro } from "nitro/vite";
 
 /**
+ * Shim Node built-ins for @dha-team/arbundles in browser builds.
+ *
+ * arbundles' "web" ESM build still imports Node-only modules (crypto, stream, fs,
+ * util, tmp-promise) from its file/ operations. Only `crypto` is actually used in
+ * our browser code path (createHash for deep hashing). The rest are dead code paths
+ * (file-based bundle operations) that Rollup can't tree-shake until imports resolve.
+ *
+ * Strategy:
+ * - crypto → real browser shim using @noble/hashes
+ * - everything else → empty stub (code paths never reached in browser)
+ *
+ * SSR is unaffected: turbo-sdk is externalized, uses real Node modules.
+ */
+function arbundlesNodeShim(): Plugin {
+  const cryptoShimPath = path.resolve(__dirname, 'src/lib/crypto-browser.js');
+  // Node builtins and Node-only packages that arbundles/turbo-sdk import
+  // but never use in browser code paths (file-based bundle operations)
+  const STUB_MODULES = new Set([
+    'stream', 'stream/promises', 'fs', 'fs/promises', 'util', 'os',
+    'tmp-promise', 'multistream', 'arweave-stream-tx',
+  ]);
+  const VIRTUAL_PREFIX = '\0arbundles-node-stub:';
+
+  function shouldStub(source: string): boolean {
+    const bare = source.startsWith('node:') ? source.slice(5) : source;
+    return STUB_MODULES.has(bare);
+  }
+
+  return {
+    name: 'arbundles-node-shim',
+    enforce: 'pre',
+    resolveId(source, importer, options) {
+      // Skip for SSR builds (use real Node modules)
+      // In Vite 7, options.ssr can be a string (environment name) or boolean
+      if (options?.ssr) return null;
+      // Only intercept imports from arbundles/turbo-sdk
+      if (!importer || !(importer.includes('arbundles') || importer.includes('turbo-sdk'))) return null;
+      if (source === 'crypto') return cryptoShimPath;
+      if (shouldStub(source)) return VIRTUAL_PREFIX + source;
+      return null;
+    },
+    load(id) {
+      if (!id.startsWith(VIRTUAL_PREFIX)) return null;
+      return 'export default {}; export const Readable = undefined; export const Duplex = undefined; export const PassThrough = undefined; export const Transform = undefined; export const pipeline = undefined; export const createReadStream = undefined; export const createWriteStream = undefined; export const promises = {}; export const promisify = (fn) => fn; export const read = undefined; export const file = undefined; export const tmpName = undefined;';
+    },
+    // For client builds, Vite resolves node: protocol before plugin resolveId hooks.
+    // Use config hook to add aliases, but ONLY for client environment.
+    config(config) {
+      // Target the client environment's resolve alias (Vite 7 environment API)
+      const stubModules = ['stream', 'fs', 'util', 'os', 'http', 'https', 'http2'];
+      const nodeAliases = stubModules.map(mod => ({
+        find: new RegExp(`^node:${mod}$`),
+        replacement: VIRTUAL_PREFIX + 'node:' + mod,
+      }));
+
+      // Apply aliases only to the client environment
+      config.environments = config.environments || {};
+      config.environments.client = config.environments.client || {};
+      config.environments.client.resolve = config.environments.client.resolve || {};
+      config.environments.client.resolve.alias = [
+        ...(Array.isArray(config.environments.client.resolve?.alias)
+          ? config.environments.client.resolve.alias
+          : []),
+        ...nodeAliases,
+      ];
+    },
+  };
+}
+
+/**
  * Fix broken ESM import in libsodium-wrappers-sumo@0.7.16.
  *
  * The ESM entry (`libsodium-wrappers.mjs`) does `import from "./libsodium-sumo.mjs"`
@@ -50,6 +120,8 @@ const config = defineConfig({
     },
   },
   plugins: [
+    // Shim Node built-ins → browser stubs for arbundles/turbo-sdk in client builds
+    arbundlesNodeShim(),
     // Fix broken ESM resolution in libsodium-wrappers-sumo (transitive dep of @ardrive/turbo-sdk)
     fixLibsodiumEsm(),
     // Nitro must be initialized first to make its environment available

@@ -335,6 +335,23 @@ function generateCanonicalNftMetadata(
 			}
 			return file
 		})
+
+		// Append original Vercel Blob URLs as fallback entries for explorers/wallets
+		if (post.mediaUrl && !post.mediaUrl.includes("/api/assets/")) {
+			const alreadyIncluded = metadata.properties.files.some((f) => f.uri === post.mediaUrl)
+			if (!alreadyIncluded) {
+				metadata.properties.files.push({
+					uri: post.mediaUrl,
+					type: inferContentType(post.mediaUrl),
+				})
+			}
+		}
+		if (post.coverUrl && !metadata.properties.files.some((f) => f.uri === post.coverUrl)) {
+			metadata.properties.files.push({
+				uri: post.coverUrl,
+				type: inferContentType(post.coverUrl),
+			})
+		}
 	}
 
 	return metadata

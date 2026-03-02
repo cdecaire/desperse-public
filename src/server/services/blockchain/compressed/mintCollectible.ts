@@ -188,8 +188,10 @@ export async function buildCompressedCollectTransaction(
     
     const userPays = params.userPays ?? false; // Default to server-paid for backward compatibility
 
+    const nftSymbol = (post.nftSymbol?.trim() || 'DSPRS').slice(0, 10);
     const metadata = {
       name,
+      symbol: nftSymbol,
       uri,
       sellerFeeBasisPoints,
       creators: [
@@ -238,6 +240,7 @@ export async function buildCompressedCollectTransaction(
       treeCreatorOrDelegate: treeAuthority,     // tree authority (server key, server signs)
       metadata: {
         name,
+        symbol: nftSymbol,
         uri,
         sellerFeeBasisPoints,
         creators: [

@@ -178,9 +178,14 @@ export function generateNftMetadata(post: {
     name,
     symbol,
     description,
+    seller_fee_basis_points: post.sellerFeeBasisPoints ?? 0,
     image: imageUrl,
     animation_url: animationUrl,
     external_url: `https://www.desperse.com/post/${post.id}`,
+    collection: {
+      name,
+      family: "Desperse",
+    },
     attributes: [
       {
         trait_type: 'Type',
@@ -206,6 +211,7 @@ export function generateNftMetadata(post: {
     properties: {
       files,
       category,
+      creators: [{ address: creator.walletAddress, share: 100 }],
     },
   }
 

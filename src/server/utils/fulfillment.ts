@@ -214,6 +214,31 @@ export async function fulfillPurchaseDirect(purchaseId: string): Promise<Fulfill
       if (finalization.success && finalization.metadataUrl) {
         resolvedMetadataUri = finalization.metadataUrl
         console.log(`[fulfillPurchaseDirect] Arweave finalization complete, metadata: ${resolvedMetadataUri}`)
+
+        // Verify Arweave metadata is accessible before minting
+        const maxAttempts = 4
+        for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+          try {
+            const resp = await fetch(resolvedMetadataUri, {
+              method: 'HEAD',
+              redirect: 'follow',
+            })
+            if (resp.ok) {
+              console.log('[fulfillPurchaseDirect] Arweave metadata verified accessible')
+              break
+            }
+          } catch { /* network error, retry */ }
+          if (attempt === maxAttempts) {
+            const err = new Error(
+              `[fulfillPurchaseDirect] Arweave metadata not available after ${maxAttempts} attempts: ${resolvedMetadataUri}`
+            )
+            ;(err as any).code = 'ARWEAVE_NOT_READY'
+            throw err
+          }
+          const delay = 3000 * Math.pow(2, attempt - 1) // 3s, 6s, 12s, 24s
+          console.log(`[fulfillPurchaseDirect] Arweave metadata not ready, retrying in ${delay}ms (attempt ${attempt}/${maxAttempts})`)
+          await new Promise(r => setTimeout(r, delay))
+        }
       } else if (finalization.status === 'in_progress') {
         // Another process is finalizing — fail this attempt, retry will pick it up
         throw new Error('[fulfillPurchaseDirect] Arweave finalization in progress by another process')
@@ -441,7 +466,9 @@ export async function fulfillPurchaseDirect(purchaseId: string): Promise<Fulfill
     const errorMessage = error instanceof Error ? error.message : 'Unknown error'
 
     // Check if this is a retryable error
+    const errorCode = (error as any)?.code
     const isRetryable =
+      errorCode === 'ARWEAVE_NOT_READY' ||
       errorMessage.includes('expired') ||
       errorMessage.includes('timeout') ||
       errorMessage.includes('block height') ||

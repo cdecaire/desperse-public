@@ -5,7 +5,7 @@
 
 import { db } from '@/server/db'
 import { notifications, users, posts, comments } from '@/server/db/schema'
-import { eq, and, gt, lt, desc, count, inArray } from 'drizzle-orm'
+import { eq, and, gt, lt, desc, count, inArray, or, isNull } from 'drizzle-orm'
 import { excludeDevPosts } from '@/server/utils/dev-posts'
 
 // Types for user notifications
@@ -113,7 +113,8 @@ export async function getUserNotificationsDirect(
         .from(posts)
         .where(and(
           inArray(posts.id, postReferenceIds),
-          eq(posts.isDeleted, false)
+          eq(posts.isDeleted, false),
+          excludeDevPosts(),
         ))
 
       postReferences = Object.fromEntries(
@@ -138,7 +139,8 @@ export async function getUserNotificationsDirect(
         .where(and(
           inArray(comments.id, commentReferenceIds),
           eq(comments.isDeleted, false),
-          eq(posts.isDeleted, false)
+          eq(posts.isDeleted, false),
+          excludeDevPosts(),
         ))
 
       commentReferences = Object.fromEntries(
@@ -214,6 +216,25 @@ export async function getUnreadNotificationCountDirect(
   userId: string
 ): Promise<{ count: number }> {
   try {
+    const devFilter = excludeDevPosts()
+
+    if (devFilter) {
+      // Production: exclude notifications referencing dev posts
+      const [countResult] = await db
+        .select({ count: count() })
+        .from(notifications)
+        .leftJoin(posts, and(
+          eq(notifications.referenceType, 'post'),
+          eq(notifications.referenceId, posts.id)
+        ))
+        .where(and(
+          eq(notifications.userId, userId),
+          eq(notifications.isRead, false),
+          or(isNull(posts.isDev), eq(posts.isDev, false))
+        ))
+      return { count: Math.min(countResult?.count ?? 0, 100) }
+    }
+
     const [countResult] = await db
       .select({ count: count() })
       .from(notifications)
@@ -326,14 +347,33 @@ export async function getNotificationCountersDirect(
   try {
     // 1. Unread notifications count (requires auth)
     if (userId) {
-      const [countResult] = await db
-        .select({ count: count() })
-        .from(notifications)
-        .where(and(
-          eq(notifications.userId, userId),
-          eq(notifications.isRead, false)
-        ))
-      unreadNotifications = Math.min(Number(countResult?.count ?? 0), 100)
+      const devFilter = excludeDevPosts()
+
+      if (devFilter) {
+        // Production: exclude notifications referencing dev posts
+        const [countResult] = await db
+          .select({ count: count() })
+          .from(notifications)
+          .leftJoin(posts, and(
+            eq(notifications.referenceType, 'post'),
+            eq(notifications.referenceId, posts.id)
+          ))
+          .where(and(
+            eq(notifications.userId, userId),
+            eq(notifications.isRead, false),
+            or(isNull(posts.isDev), eq(posts.isDev, false))
+          ))
+        unreadNotifications = Math.min(Number(countResult?.count ?? 0), 100)
+      } else {
+        const [countResult] = await db
+          .select({ count: count() })
+          .from(notifications)
+          .where(and(
+            eq(notifications.userId, userId),
+            eq(notifications.isRead, false)
+          ))
+        unreadNotifications = Math.min(Number(countResult?.count ?? 0), 100)
+      }
     }
 
     // 2. For You feed count

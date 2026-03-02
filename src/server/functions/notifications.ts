@@ -7,7 +7,7 @@
 import { createServerFn } from '@tanstack/react-start'
 import { db } from '@/server/db'
 import { posts, users, follows, contentReports, comments, notifications, betaFeedback, dmThreads } from '@/server/db/schema'
-import { eq, and, gt, lt, desc, sql, count, inArray } from 'drizzle-orm'
+import { eq, and, gt, lt, desc, sql, count, inArray, or, isNull } from 'drizzle-orm'
 import { z } from 'zod'
 import { withAuth } from '@/server/auth'
 import { isModeratorOrAdmin } from '@/server/utils/auth-helpers'
@@ -300,15 +300,33 @@ export const getNotificationCounters = createServerFn({
 
     // 4. Unread user notifications count (requires auth)
     if (currentUserId) {
-      const unreadResult = await db
-        .select({ count: count() })
-        .from(notifications)
-        .where(and(
-          eq(notifications.userId, currentUserId),
-          eq(notifications.isRead, false)
-        ))
+      const devFilter = excludeDevPosts()
 
-      unreadNotificationsCount = Math.min(Number(unreadResult[0]?.count || 0), 100)
+      if (devFilter) {
+        // Production: exclude notifications referencing dev posts
+        const unreadResult = await db
+          .select({ count: count() })
+          .from(notifications)
+          .leftJoin(posts, and(
+            eq(notifications.referenceType, 'post'),
+            eq(notifications.referenceId, posts.id)
+          ))
+          .where(and(
+            eq(notifications.userId, currentUserId),
+            eq(notifications.isRead, false),
+            or(isNull(posts.isDev), eq(posts.isDev, false))
+          ))
+        unreadNotificationsCount = Math.min(Number(unreadResult[0]?.count || 0), 100)
+      } else {
+        const unreadResult = await db
+          .select({ count: count() })
+          .from(notifications)
+          .where(and(
+            eq(notifications.userId, currentUserId),
+            eq(notifications.isRead, false)
+          ))
+        unreadNotificationsCount = Math.min(Number(unreadResult[0]?.count || 0), 100)
+      }
     }
 
     return {
@@ -375,6 +393,24 @@ export const getUnreadNotificationCount = createServerFn({
       return { count: 0 }
     }
     const { auth } = result
+    const devFilter = excludeDevPosts()
+
+    if (devFilter) {
+      const [countResult] = await db
+        .select({ count: count() })
+        .from(notifications)
+        .leftJoin(posts, and(
+          eq(notifications.referenceType, 'post'),
+          eq(notifications.referenceId, posts.id)
+        ))
+        .where(and(
+          eq(notifications.userId, auth.userId),
+          eq(notifications.isRead, false),
+          or(isNull(posts.isDev), eq(posts.isDev, false))
+        ))
+      return { count: Math.min(countResult?.count ?? 0, 100) }
+    }
+
     const [countResult] = await db
       .select({ count: count() })
       .from(notifications)
@@ -548,7 +584,8 @@ export const getUserNotifications = createServerFn({
         .from(posts)
         .where(and(
           inArray(posts.id, postReferenceIds),
-          eq(posts.isDeleted, false)
+          eq(posts.isDeleted, false),
+          excludeDevPosts(),
         ))
 
       postReferences = Object.fromEntries(
@@ -573,7 +610,8 @@ export const getUserNotifications = createServerFn({
         .where(and(
           inArray(comments.id, commentReferenceIds),
           eq(comments.isDeleted, false),
-          eq(posts.isDeleted, false)
+          eq(posts.isDeleted, false),
+          excludeDevPosts(),
         ))
 
       commentReferences = Object.fromEntries(

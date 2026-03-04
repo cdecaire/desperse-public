@@ -487,7 +487,7 @@ export async function buyEditionDirect(
 			if (post.arweaveStatus === 'funded') {
 				try {
 					const { checkCreatorSharedBalance } = await import(
-						'@/server/services/arweave/turbo-server'
+						'@/server/services/arweave/check-balance'
 					)
 					const creatorWalletAddr = post.creatorWallet || creatorFromDb.walletAddress
 					if (creatorWalletAddr) {

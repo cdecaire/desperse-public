@@ -237,7 +237,7 @@ export async function runArweaveFundingMonitor(): Promise<MonitorResult> {
 
 	// Step 3: Check balance for each creator
 	const { checkCreatorSharedBalance } = await import(
-		"@/server/services/arweave/turbo-server"
+		"@/server/services/arweave/check-balance"
 	);
 
 	let unfundedCount = 0;

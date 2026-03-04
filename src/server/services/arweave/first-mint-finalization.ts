@@ -118,8 +118,11 @@ export async function finalizeArweaveAssets(
 
 	try {
 		// Step 3: Dynamically import Turbo service (avoids circular deps)
-		const { uploadMediaToArweave, uploadMetadataToArweave, checkCreatorSharedBalance } = await import(
+		const { uploadMediaToArweave, uploadMetadataToArweave } = await import(
 			"@/server/services/arweave/turbo-server"
+		)
+		const { checkCreatorSharedBalance } = await import(
+			"@/server/services/arweave/check-balance"
 		)
 
 		// Step 4: Re-check creator's shared credits

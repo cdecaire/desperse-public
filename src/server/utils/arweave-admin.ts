@@ -162,7 +162,7 @@ export async function inspectArweaveState(
 	if (post.storageType === "arweave" && post.creatorWallet) {
 		try {
 			const { checkCreatorSharedBalance } = await import(
-				"@/server/services/arweave/turbo-server"
+				"@/server/services/arweave/check-balance"
 			);
 			const balance = await checkCreatorSharedBalance(
 				post.creatorWallet,

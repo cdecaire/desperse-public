@@ -163,7 +163,7 @@ export async function createPostDirect(
       return { success: false, error: 'Wallet address is required for Arweave storage.' }
     }
     try {
-      const { checkCreatorSharedBalance } = await import('@/server/services/arweave/turbo-server')
+      const { checkCreatorSharedBalance } = await import('@/server/services/arweave/check-balance')
       const balance = await checkCreatorSharedBalance(user.walletAddress)
       if (!balance.sufficient) {
         // In dev, warn but allow — no credits to test with locally

@@ -174,7 +174,8 @@ export async function createPostDirect(
         }
       }
     } catch (err) {
-      console.error('[createPostDirect] Arweave balance check failed:', err instanceof Error ? err.message : 'Unknown error')
+      const errMsg = err instanceof Error ? err.message : typeof err === 'string' ? err : JSON.stringify(err, null, 2)
+      console.error('[createPostDirect] Arweave balance check failed:', errMsg, err)
       // In dev, warn but allow — Turbo client may not be configured
       if (process.env.NODE_ENV !== 'development') {
         return { success: false, error: 'Failed to verify Arweave storage credits. Please try again.' }

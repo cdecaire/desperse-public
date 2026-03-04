@@ -353,9 +353,16 @@ export async function checkCreatorSharedBalance(
 			expiresAt: earliestExpiration,
 		};
 	} catch (error) {
+		const msg =
+			error instanceof Error
+				? error.message
+				: typeof error === "string"
+					? error
+					: JSON.stringify(error, null, 2);
 		console.error(
 			"[ArweaveTurbo] Failed to check creator shared balance:",
-			error instanceof Error ? error.message : "Unknown error",
+			msg,
+			error,
 		);
 		throw error;
 	}

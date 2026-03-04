@@ -10,13 +10,15 @@ import { eq, isNull, and } from 'drizzle-orm'
 interface MintSnapshotParams {
   postId: string
   txSignature: string
+  /** Pre-resolved metadata JSON — used when the metadata URL (e.g. Arweave) may not be fetchable yet */
+  metadataJson?: Record<string, unknown>
 }
 
 /**
  * Snapshot minted metadata for a post at first confirmed mint.
  * This is write-once - if mintedAt is already set, this is a no-op.
  */
-export async function snapshotMintedMetadata({ postId, txSignature }: MintSnapshotParams): Promise<boolean> {
+export async function snapshotMintedMetadata({ postId, txSignature, metadataJson: preResolvedJson }: MintSnapshotParams): Promise<boolean> {
   try {
     // Get the post with its current metadata
     const [post] = await db
@@ -42,11 +44,12 @@ export async function snapshotMintedMetadata({ postId, txSignature }: MintSnapsh
       return true
     }
 
-    // Fetch the current metadata JSON from the stored URL
-    let metadataJson: Record<string, unknown> | null = null
-    if (post.metadataUrl) {
+    // Use pre-resolved metadata if provided (e.g. Arweave URL not yet on gateway),
+    // otherwise fetch from the stored URL
+    let metadataJson: Record<string, unknown> | null = preResolvedJson ?? null
+    if (!metadataJson && post.metadataUrl) {
       try {
-        const response = await fetch(post.metadataUrl)
+        const response = await fetch(post.metadataUrl, { signal: AbortSignal.timeout(10000) })
         if (response.ok) {
           metadataJson = await response.json()
         } else {

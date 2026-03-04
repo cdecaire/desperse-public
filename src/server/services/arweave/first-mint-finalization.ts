@@ -19,6 +19,7 @@ import { stringsToCategories } from "@/constants/categories"
 export interface FinalizationResult {
 	success: boolean
 	metadataUrl?: string
+	metadataJson?: Record<string, unknown>
 	status?: "uploaded" | "in_progress" | "unfunded" | "failed"
 	error?: string
 }
@@ -261,24 +262,26 @@ export async function finalizeArweaveAssets(
 			creatorWallet,
 		)
 
-		// Step 9: Persist metadata tx ID and mark as uploaded
+		// Step 9: Persist metadata tx ID, update canonical metadataUrl, and mark as uploaded
+		const metadataUrl = arweaveTxIdToUrl(metadataResult.txId)
 		await db
 			.update(posts)
 			.set({
 				arweaveMetadataTxId: metadataResult.txId,
+				metadataUrl: metadataUrl,
 				arweaveStatus: "uploaded",
 				arweaveError: null,
 				updatedAt: new Date(),
 			})
 			.where(eq(posts.id, postId))
 
-		const metadataUrl = arweaveTxIdToUrl(metadataResult.txId)
 		console.log(`[finalizeArweaveAssets] Finalization complete for post ${postId}: ${metadataUrl}`)
 
 		return {
 			success: true,
 			status: "uploaded",
 			metadataUrl,
+			metadataJson: canonicalMetadata as Record<string, unknown>,
 		}
 	} catch (error) {
 		const errorMessage = error instanceof Error ? error.message : "Unknown error"

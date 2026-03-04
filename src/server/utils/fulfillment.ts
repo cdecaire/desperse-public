@@ -203,6 +203,7 @@ export async function fulfillPurchaseDirect(purchaseId: string): Promise<Fulfill
 
     // Arweave finalization: if this is an Arweave edition, finalize before minting
     let resolvedMetadataUri = postData.metadataUrl
+    let resolvedMetadataJson: Record<string, unknown> | undefined
 
     if (postData.storageType === 'arweave') {
       const { finalizeArweaveAssets } = await import(
@@ -213,31 +214,57 @@ export async function fulfillPurchaseDirect(purchaseId: string): Promise<Fulfill
 
       if (finalization.success && finalization.metadataUrl) {
         resolvedMetadataUri = finalization.metadataUrl
+        resolvedMetadataJson = finalization.metadataJson
         console.log(`[fulfillPurchaseDirect] Arweave finalization complete, metadata: ${resolvedMetadataUri}`)
 
-        // Verify Arweave metadata is accessible before minting
-        const maxAttempts = 4
-        for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-          try {
-            const resp = await fetch(resolvedMetadataUri, {
-              method: 'HEAD',
-              redirect: 'follow',
+        // Ensure posts.metadataUrl is updated to the Arweave URL so that
+        // snapshotMintedMetadata (which reads from DB) captures the correct URI.
+        // This covers the idempotent path where finalizeArweaveAssets returned
+        // early without updating metadataUrl.
+        if (postData.metadataUrl !== resolvedMetadataUri) {
+          await db.update(posts)
+            .set({ metadataUrl: resolvedMetadataUri })
+            .where(eq(posts.id, postData.id))
+        }
+
+        // For subsequent mints (idempotent path), finalization doesn't return
+        // metadataJson. Regenerate it locally so the snapshot doesn't depend on
+        // fetching from the Arweave gateway (which can take hours to propagate).
+        if (!resolvedMetadataJson && postData.arweaveMediaTxId && creatorData) {
+          const { arweaveTxIdToUrl } = await import('@/lib/imageUrl')
+          const arweaveMediaUrl = arweaveTxIdToUrl(postData.arweaveMediaTxId)
+          const metadata = generateNftMetadata(
+            {
+              id: postData.id,
+              caption: postData.caption,
+              mediaUrl: postData.mediaUrl,
+              coverUrl: postData.coverUrl,
+              type: postData.type as 'collectible' | 'edition',
+              maxSupply: postData.maxSupply,
+              price: postData.price,
+              currency: postData.currency,
+              nftName: postData.nftName,
+              nftSymbol: postData.nftSymbol,
+              nftDescription: postData.nftDescription,
+              sellerFeeBasisPoints: postData.sellerFeeBasisPoints,
+              isMutable: postData.isMutable,
+              protectDownload: assetResult?.isGated ?? false,
+              assetId: assetResult?.id,
+            },
+            creatorData
+          )
+          // Override image with Arweave URL (same logic as generateCanonicalNftMetadata)
+          metadata.image = arweaveMediaUrl
+          if (metadata.properties?.files) {
+            metadata.properties.files = metadata.properties.files.map((file: { uri: string; type: string }) => {
+              if (file.uri === postData.mediaUrl || file.uri === postData.coverUrl) {
+                return { ...file, uri: arweaveMediaUrl }
+              }
+              return file
             })
-            if (resp.ok) {
-              console.log('[fulfillPurchaseDirect] Arweave metadata verified accessible')
-              break
-            }
-          } catch { /* network error, retry */ }
-          if (attempt === maxAttempts) {
-            const err = new Error(
-              `[fulfillPurchaseDirect] Arweave metadata not available after ${maxAttempts} attempts: ${resolvedMetadataUri}`
-            )
-            ;(err as any).code = 'ARWEAVE_NOT_READY'
-            throw err
           }
-          const delay = 3000 * Math.pow(2, attempt - 1) // 3s, 6s, 12s, 24s
-          console.log(`[fulfillPurchaseDirect] Arweave metadata not ready, retrying in ${delay}ms (attempt ${attempt}/${maxAttempts})`)
-          await new Promise(r => setTimeout(r, delay))
+          resolvedMetadataJson = metadata as Record<string, unknown>
+          console.log('[fulfillPurchaseDirect] Regenerated Arweave metadata JSON for snapshot')
         }
       } else if (finalization.status === 'in_progress') {
         // Another process is finalizing — fail this attempt, retry will pick it up
@@ -420,6 +447,7 @@ export async function fulfillPurchaseDirect(purchaseId: string): Promise<Fulfill
       await snapshotMintedMetadata({
         postId: purchaseData.postId,
         txSignature: editionResult.signature,
+        metadataJson: resolvedMetadataJson,
       })
     } catch (snapshotError) {
       console.warn('[fulfillPurchaseDirect] Failed to snapshot metadata:', snapshotError instanceof Error ? snapshotError.message : 'Unknown error')

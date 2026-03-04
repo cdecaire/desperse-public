@@ -762,6 +762,9 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
                 {formState.caption.length} / 2000
               </div>
             </div>
+            <p className="text-xs text-muted-foreground mt-1.5">
+              Use <span className="font-medium">#hashtags</span> in your caption for custom topics
+            </p>
           </div>
 
           {/* Categories - hidden after minting (on-chain traits) */}
@@ -775,7 +778,7 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
 
           {/* NFT Name - only shown for edition/collectible types, hidden after minting */}
           {(formState.type === 'collectible' || formState.type === 'edition') && !(isEditMode && areNftFieldsLocked) && (
-            <div className="pt-2 border-t border-border">
+            <div>
               <label className="text-sm font-medium mb-2 block">
                 NFT Name {formState.type === 'edition' && <span className="text-destructive">*</span>}
               </label>

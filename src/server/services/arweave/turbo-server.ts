@@ -277,7 +277,6 @@ export async function checkCreatorSharedBalance(
 	sufficient: boolean;
 	expiresAt: Date | null;
 }> {
-	const turbo = getTurboClient();
 	const desperseWallet = env.DESPERSE_TURBO_WALLET;
 
 	if (!desperseWallet) {
@@ -296,9 +295,24 @@ export async function checkCreatorSharedBalance(
 	);
 
 	try {
-		const approvals = await turbo.getCreditShareApprovals({
-			userAddress: creatorWallet,
-		});
+		// Use the Turbo REST API directly instead of the SDK to avoid
+		// cosmjs-types bundling issues (broken globalThis detection in Rollup ESM).
+		const paymentUrl = env.TURBO_PAYMENT_URL || "https://payment.ardrive.io";
+		const url = `${paymentUrl}/v1/account/approvals/get?userAddress=${encodeURIComponent(creatorWallet)}`;
+		const res = await fetch(url);
+
+		if (!res.ok) {
+			throw new Error(`Turbo API returned HTTP ${res.status}: ${await res.text()}`);
+		}
+
+		const approvals = (await res.json()) as {
+			givenApprovals: Array<{
+				approvedAddress: string;
+				approvedWincAmount: string;
+				usedWincAmount: string;
+				expirationDate?: string | null;
+			}>;
+		};
 
 		// Find approvals given by this creator TO the Desperse platform wallet
 		const relevantApprovals = approvals.givenApprovals.filter(

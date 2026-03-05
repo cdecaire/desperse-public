@@ -1,11 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { usePrivy, useWallets, useLinkAccount } from '@privy-io/react-auth'
 import { useExportWallet } from '@privy-io/react-auth/solana'
 import { buildSolanaWalletList } from '@/lib/wallets'
 import { useAuth } from '@/hooks/useAuth'
 import { useActiveWallet } from '@/hooks/useActiveWallet'
-import { addWallet } from '@/server/functions/walletPreferences'
+import { addWallet, syncWallets } from '@/server/functions/walletPreferences'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Tooltip } from '@/components/ui/tooltip'
@@ -24,6 +24,40 @@ function WalletsPage() {
   const { exportWallet } = useExportWallet()
   const [unlinking, setUnlinking] = useState<string | null>(null)
   const [settingActiveId, setSettingActiveId] = useState<string | null>(null)
+  const hasSynced = useRef(false)
+
+  // Reconcile: sync any Privy-linked wallets missing from the DB.
+  // Handles the case where Privy linking succeeded but DB insert failed.
+  const solanaLinkedAccounts = useMemo(() => {
+    if (!user?.linkedAccounts) return []
+    return user.linkedAccounts.filter(
+      (a) => a.type === 'wallet' && a.chainType === 'solana' && 'address' in a && a.address,
+    )
+  }, [user?.linkedAccounts])
+
+  useEffect(() => {
+    if (hasSynced.current || !isAuthenticated || !isReady || solanaLinkedAccounts.length === 0) return
+    hasSynced.current = true
+
+    const doSync = async () => {
+      try {
+        const token = await getAccessToken()
+        if (!token) return
+
+        const walletsToSync = solanaLinkedAccounts.map((a) => ({
+          address: (a as { address: string }).address,
+          type: ('walletClientType' in a && a.walletClientType === 'privy' ? 'embedded' : 'external') as 'embedded' | 'external',
+          label: ('walletClient' in a && a.walletClient) ? String(a.walletClient) : undefined,
+        }))
+
+        await syncWallets({ data: { _authorization: token, wallets: walletsToSync } } as never)
+        refreshWallets()
+      } catch (e) {
+        console.warn('[WalletsPage] Background wallet sync failed:', e)
+      }
+    }
+    doSync()
+  }, [isAuthenticated, isReady, solanaLinkedAccounts, getAccessToken, refreshWallets])
 
   const { linkWallet, linkGoogle, linkTwitter } = useLinkAccount({
     onSuccess: async ({ linkedAccount }) => {
@@ -33,23 +67,30 @@ function WalletsPage() {
       if (linkedAccount.type === 'wallet' && 'address' in linkedAccount && linkedAccount.address) {
         try {
           const token = await getAccessToken()
-          if (token) {
-            await addWallet({
-              data: {
-                _authorization: token,
-                address: linkedAccount.address,
-                type: 'external',
-                connector: 'privy',
-                label: ('walletClient' in linkedAccount && linkedAccount.walletClient)
-                  ? String(linkedAccount.walletClient)
-                  : undefined,
-              },
-            } as never)
-            refreshWallets()
+          if (!token) {
+            toastError('Failed to save wallet — please refresh the page')
+            return
+          }
+          const result = await addWallet({
+            data: {
+              _authorization: token,
+              address: linkedAccount.address,
+              type: 'external',
+              connector: 'privy',
+              label: ('walletClient' in linkedAccount && linkedAccount.walletClient)
+                ? String(linkedAccount.walletClient)
+                : undefined,
+            },
+          } as never) as { success: boolean; error?: string }
+          if (!result.success) {
+            console.warn('[WalletsPage] addWallet returned error:', result.error)
+            toastError('Wallet linked but failed to save — please refresh the page')
           }
         } catch (e) {
           console.warn('[WalletsPage] Failed to add linked wallet to DB:', e)
+          toastError('Wallet linked but failed to save — please refresh the page')
         }
+        refreshWallets()
       }
     },
     onError: () => {

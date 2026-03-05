@@ -10,6 +10,7 @@ import {
 	getUserWalletsDirect,
 	setDefaultWalletDirect,
 	addWalletDirect,
+	syncWalletsDirect,
 } from '@/server/utils/wallet-preferences'
 
 const setDefaultWalletSchema = z.object({
@@ -21,6 +22,14 @@ const addWalletSchema = z.object({
 	type: z.enum(['embedded', 'external']),
 	connector: z.string().optional(),
 	label: z.string().max(50).optional(),
+})
+
+const syncWalletsSchema = z.object({
+	wallets: z.array(z.object({
+		address: z.string().min(32).max(44),
+		type: z.enum(['embedded', 'external']),
+		label: z.string().max(50).optional(),
+	})).max(10),
 })
 
 /**
@@ -88,4 +97,30 @@ export const addWallet = createServerFn({
 	const { address, type, connector, label } = addWalletSchema.parse(cleanedData)
 
 	return addWalletDirect(authorization, address, type, connector, label)
+})
+
+/**
+ * Sync Privy-linked wallets to the DB.
+ * Ensures all wallets known to Privy exist in user_wallets.
+ * Uses INSERT ... ON CONFLICT DO NOTHING so it's idempotent.
+ */
+export const syncWallets = createServerFn({
+	method: 'POST',
+}).handler(async (input: unknown) => {
+	const rawData =
+		input && typeof input === 'object' && 'data' in input
+			? (input as { data: unknown }).data
+			: input
+
+	const authorization = extractAuthorizationFromPayload(rawData)
+	if (!authorization) {
+		return { success: false, error: 'Authentication required' }
+	}
+
+	const cleanedData = stripAuthorization(
+		rawData as Record<string, unknown>,
+	)
+	const { wallets } = syncWalletsSchema.parse(cleanedData)
+
+	return syncWalletsDirect(authorization, wallets)
 })

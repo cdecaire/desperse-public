@@ -345,6 +345,55 @@ export async function updateWalletLabelDirect(
 }
 
 /**
+ * Sync a list of Privy-linked wallets to the DB.
+ * For each wallet, ensures a row exists via INSERT ... ON CONFLICT DO NOTHING.
+ * Returns the updated wallet list so the client can refresh.
+ */
+export async function syncWalletsDirect(
+  token: string,
+  wallets: Array<{ address: string; type: 'embedded' | 'external'; label?: string }>
+): Promise<WalletResult> {
+  try {
+    const auth = await authenticateWithToken(token)
+    if (!auth?.userId) {
+      return { success: false, error: 'Authentication required' }
+    }
+
+    let synced = 0
+    for (const wallet of wallets) {
+      try {
+        await ensureWalletExists(auth.userId, wallet.address, wallet.type, {
+          label: wallet.label,
+        })
+        synced++
+      } catch (error) {
+        console.warn('[syncWalletsDirect] Failed to sync wallet:', wallet.address, error instanceof Error ? error.message : 'Unknown')
+      }
+    }
+
+    // Return the updated wallet list
+    const updatedWallets = await db
+      .select({
+        id: userWallets.id,
+        address: userWallets.address,
+        type: userWallets.type,
+        connector: userWallets.connector,
+        label: userWallets.label,
+        isPrimary: userWallets.isPrimary,
+        createdAt: userWallets.createdAt,
+      })
+      .from(userWallets)
+      .where(eq(userWallets.userId, auth.userId))
+      .orderBy(userWallets.createdAt)
+
+    return { success: true, wallets: updatedWallets }
+  } catch (error) {
+    console.error('[syncWalletsDirect] Error:', error instanceof Error ? error.message : 'Unknown error')
+    return { success: false, error: 'Failed to sync wallets' }
+  }
+}
+
+/**
  * Ensure a wallet row exists in userWallets for a given userId + address.
  * Uses INSERT ... ON CONFLICT DO NOTHING so it's safe to call repeatedly.
  * Called server-side (no token auth needed — caller must already have userId).

@@ -99,6 +99,9 @@ export default defineEventHandler(async (event) => {
 				masterMint: posts.masterMint,
 				mintWindowStart: posts.mintWindowStart,
 				mintWindowEnd: posts.mintWindowEnd,
+				categories: posts.categories,
+				storageType: posts.storageType,
+				arweaveStatus: posts.arweaveStatus,
 				createdAt: posts.createdAt,
 				userId: users.id,
 				userSlug: users.usernameSlug,
@@ -130,6 +133,7 @@ export default defineEventHandler(async (event) => {
 						postId: postAssets.postId,
 						url: postAssets.storageKey, // storageKey is the URL for vercel-blob
 						mimeType: postAssets.mimeType,
+						fileSize: postAssets.fileSize,
 						sortOrder: postAssets.sortOrder,
 					})
 					.from(postAssets)
@@ -351,6 +355,7 @@ export default defineEventHandler(async (event) => {
 						id: a.id,
 						url: a.url,
 						mimeType: a.mimeType,
+						fileSize: a.fileSize,
 						sortOrder: a.sortOrder,
 					}))
 				: undefined
@@ -373,13 +378,18 @@ export default defineEventHandler(async (event) => {
 				mintWindowStart: post.mintWindowStart?.toISOString() ?? null,
 				mintWindowEnd: post.mintWindowEnd?.toISOString() ?? null,
 				collectibleAssetId: collectibleAssetIds.get(post.id) || null, // For explorer links (collectibles)
+				categories: post.categories || [],
 				likeCount: likeCounts.get(post.id) || 0,
 				commentCount: commentCounts.get(post.id) || 0,
 				collectCount: collectCounts.get(post.id) || 0,
 				isLiked: likedPostIds.has(post.id),
 				isCollected: collectedPostIds.has(post.id),
+				storageType: post.storageType || 'centralized',
+				arweaveStatus: post.arweaveStatus || null,
 				createdAt: post.createdAt?.toISOString(),
 				assets, // Only present for multi-asset posts
+				// File metadata from first media asset (for single-asset posts)
+				...(postAssetsForPost.length > 0 ? { mediaFileSize: postAssetsForPost[0].fileSize, mediaMimeType: postAssetsForPost[0].mimeType } : {}),
 				// Downloadable assets for download menu (audio, documents, 3D)
 				...(downloadableByPostId.has(post.id)
 					? { downloadableAssets: downloadableByPostId.get(post.id)!.map((a) => ({

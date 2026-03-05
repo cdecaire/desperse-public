@@ -303,6 +303,8 @@ export async function getPostDirect(
 				...(mediaAssets.length > 1 ? { assets: mediaAssets } : {}),
 				// Add downloadable assets for download menu (audio, documents, 3D)
 				...(downloadableAssets.length > 0 ? { downloadableAssets } : {}),
+				// File metadata from first media asset (for detail views)
+				...(mediaAssets.length > 0 ? { mediaFileSize: mediaAssets[0].fileSize, mediaMimeType: mediaAssets[0].mimeType } : {}),
 			},
 			user: result[0].user,
 		}

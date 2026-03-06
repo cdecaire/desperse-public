@@ -139,6 +139,7 @@ export default defineEventHandler(async (event) => {
 				user,
 				assets: post.assets || [],
 				downloadableAssets: post.downloadableAssets || [],
+				assetId: post.assetId || null,
 				mediaFileSize: post.mediaFileSize || null,
 				mediaMimeType: post.mediaMimeType || null,
 				storageType: post.storageType || 'centralized',

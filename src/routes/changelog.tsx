@@ -11,7 +11,7 @@ function ChangelogPage() {
     <StaticPageLayout>
       <article className="prose prose-zinc dark:prose-invert prose-p:my-4 max-w-none">
         <h1 className="text-2xl md:text-3xl font-bold mb-2">Changelog</h1>
-        <p className="text-muted-foreground text-sm mb-8">Last updated: February 16, 2026</p>
+        <p className="text-muted-foreground text-sm mb-8">Last updated: March 6, 2026</p>
 
         <p>
           This page highlights recent updates and improvements to Desperse. We're constantly working
@@ -20,7 +20,49 @@ function ChangelogPage() {
 
         <h2 className="text-xl font-semibold mt-8 mb-4 flex items-center gap-2">
           <Icon name="sparkles" className="text-muted-foreground" />
-          Latest Updates (February 2026)
+          Latest Updates (March 2026)
+        </h2>
+
+        <h3 className="text-lg font-semibold mt-6 mb-3">Redesigned Landing Page</h3>
+        <ul className="list-disc pl-6 space-y-1 my-4">
+          <li>
+            <strong>New Landing Experience</strong>: Animated sections with creator previews
+            that showcase what Desperse is all about
+          </li>
+        </ul>
+
+        <h3 className="text-lg font-semibold mt-6 mb-3">Post Detail Upgrades</h3>
+        <ul className="list-disc pl-6 space-y-1 my-4">
+          <li>
+            <strong>Collectors List</strong>: See who has collected a post directly on the post detail page
+          </li>
+          <li>
+            <strong>Comment Sheet</strong>: Mobile-friendly comment panel for easier conversations
+          </li>
+        </ul>
+
+        <h3 className="text-lg font-semibold mt-6 mb-3">Feed & Interaction Polish</h3>
+        <ul className="list-disc pl-6 space-y-1 my-4">
+          <li>
+            <strong>Smarter Search</strong>: Keyboard navigation and improved accessibility in the search dropdown
+          </li>
+          <li>
+            <strong>Cleaner Collect Flow</strong>: Collect button hides after you've already collected,
+            and inline comment forms feel more natural
+          </li>
+          <li>
+            <strong>Responsive Images</strong>: Media carousel now serves optimized image sizes for
+            faster loading on all devices
+          </li>
+          <li>
+            <strong>Performance</strong>: Countdown timers pause when scrolled off-screen,
+            and purchase polling uses smarter backoff to reduce network requests
+          </li>
+        </ul>
+
+        <h2 className="text-xl font-semibold mt-8 mb-4 flex items-center gap-2">
+          <Icon name="sparkles" className="text-muted-foreground" />
+          February 2026
         </h2>
 
         <h3 className="text-lg font-semibold mt-6 mb-3">Tip Your Favorite Creators</h3>

@@ -101,7 +101,7 @@ function ProfileGridItem({
       params={{ postId: post.id }}
       className="aspect-square relative overflow-hidden rounded-sm group"
     >
-      <div className="w-full h-full rounded-sm overflow-hidden">
+      <div className="w-full h-full rounded-sm overflow-hidden [&_img]:object-cover [&_img]:w-full [&_img]:h-full [&_video]:object-cover [&_video]:w-full [&_video]:h-full">
         <div className="w-full h-full transition-transform group-hover:scale-105">
           <PostMedia
             mediaUrl={post.mediaUrl}

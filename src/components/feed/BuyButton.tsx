@@ -115,7 +115,8 @@ interface BuyButtonProps {
 type ServerFnInput<T> = { data: T };
 const wrapInput = <T,>(data: T): ServerFnInput<T> => ({ data });
 
-const POLL_INTERVAL_MS = 3000;        // Poll more frequently for better UX
+const POLL_INITIAL_MS = 2000;         // Initial poll interval
+const POLL_MAX_MS = 15000;            // Max poll interval after backoff
 const MAX_POLL_TIME_MS = 120000;      // Allow longer for minting (2 minutes)
 const EXTENDED_MESSAGE_TIME_MS = 30000; // Show extended message sooner
 const SIGN_TIMEOUT_MS = 90000;        // Increased to 90s to account for slow RPC
@@ -168,13 +169,12 @@ export function BuyButton({
   const [state, setState] = useState<BuyState>('idle');
   const [purchaseId, setPurchaseId] = useState<string | null>(null);
   const [txSignature, setTxSignature] = useState<string | null>(null);
-  const [nftMint, setNftMint] = useState<string | null>(null);
   const [showExtendedMessage, setShowExtendedMessage] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
-  const [, setPollCount] = useState(0);
 
   const pollStartTime = useRef<number | null>(null);
   const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const pollDelayRef = useRef(POLL_INITIAL_MS);
   const extendedTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const mintingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -247,9 +247,10 @@ export function BuyButton({
   // Stop polling function (defined later, but referenced here)
   const stopPolling = useCallback(() => {
     if (pollIntervalRef.current) {
-      clearInterval(pollIntervalRef.current);
+      clearTimeout(pollIntervalRef.current);
       pollIntervalRef.current = null;
     }
+    pollDelayRef.current = POLL_INITIAL_MS;
     if (extendedTimeoutRef.current) {
       clearTimeout(extendedTimeoutRef.current);
       extendedTimeoutRef.current = null;
@@ -260,7 +261,6 @@ export function BuyButton({
     }
     pollStartTime.current = null;
     isPollingActiveRef.current = false;
-    setPollCount(0);
   }, []);
 
   // Handle wallet disconnection
@@ -316,7 +316,7 @@ export function BuyButton({
   // IMPORTANT: This must NOT depend on [state] — state changes were killing the polling interval
   useEffect(() => {
     return () => {
-      if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+      if (pollIntervalRef.current) clearTimeout(pollIntervalRef.current);
       if (extendedTimeoutRef.current) clearTimeout(extendedTimeoutRef.current);
       if (mintingTimeoutRef.current) clearTimeout(mintingTimeoutRef.current);
     };
@@ -333,12 +333,12 @@ export function BuyButton({
       isPollingActiveRef.current = true;
 
       if (pollIntervalRef.current) {
-        clearInterval(pollIntervalRef.current);
+        clearTimeout(pollIntervalRef.current);
       }
 
+      pollDelayRef.current = POLL_INITIAL_MS;
       pollStartTime.current = Date.now();
       setShowExtendedMessage(false);
-      setPollCount(0);
 
       extendedTimeoutRef.current = setTimeout(() => {
         setShowExtendedMessage(true);
@@ -360,7 +360,6 @@ export function BuyButton({
       // Uses REST API endpoint instead of server function to avoid TanStack Start race condition
       const doPoll = async () => {
         try {
-          setPollCount((c) => c + 1);
           const res = await fetch(`/api/v1/editions/purchase/${purchase}/status`);
           if (!res.ok) {
             console.warn(`[BuyButton] Poll HTTP error: ${res.status}`);
@@ -379,7 +378,6 @@ export function BuyButton({
 
                 // Brief delay to show "Minted!" before transitioning to success
                 setState('success');
-                setNftMint(result.nftMint);
                 onPurchased?.();
                 setTxSignature(result.txSignature || null);
                 onSuccess?.();
@@ -432,9 +430,17 @@ export function BuyButton({
         }
       };
 
-      // Call immediately, then set up interval
+      // Call immediately, then schedule next poll with exponential backoff
+      const scheduleNext = () => {
+        pollIntervalRef.current = setTimeout(() => {
+          doPoll();
+          // Exponential backoff: 2s → 4s → 8s → 15s (cap)
+          pollDelayRef.current = Math.min(pollDelayRef.current * 2, POLL_MAX_MS);
+          if (isPollingActiveRef.current) scheduleNext();
+        }, pollDelayRef.current);
+      };
       doPoll();
-      pollIntervalRef.current = setInterval(doPoll, POLL_INTERVAL_MS);
+      scheduleNext();
     },
     [onSuccess, onPurchased, stopPolling],
   );
@@ -456,7 +462,6 @@ export function BuyButton({
             // Check if NFT was actually minted (payment confirmed but fulfillment may have failed)
             if (purchase.nftMint) {
               setState('success');
-              setNftMint(purchase.nftMint);
               onPurchased?.();
             } else {
               // Payment confirmed but NFT not minted - show "Claim NFT" button
@@ -490,7 +495,7 @@ export function BuyButton({
           setTxSignature(null);
         }
       } catch (error) {
-        console.error('Error loading purchase status:', error);
+        console.error('[BuyButton] Error loading purchase status:', error);
         // On error, default to idle to allow retry
         setState('idle');
       } finally {
@@ -525,7 +530,6 @@ export function BuyButton({
 
       if (result.success && result.nftMint) {
         setState('success');
-        setNftMint(result.nftMint);
         onPurchased?.();
         toastSuccess('NFT claimed successfully!');
         onSuccess?.();
@@ -847,25 +851,9 @@ export function BuyButton({
         );
       }
 
-      // Show "Purchased" for success state or already collected
+      // Hide button when already collected
       if (state === 'success' || isPurchased) {
-        let displayCount: string | null = null
-        if (maxSupply === 1) {
-          displayCount = '1/1'
-        } else if (maxSupply !== null && maxSupply !== undefined) {
-          displayCount = `${currentSupply}/${maxSupply}`
-        } else {
-          displayCount = `${currentSupply}`
-        }
-
-        return (
-          <>
-            <span className="text-sm font-medium">{displayCount}</span>
-            <span style={toneColor ? { color: toneColor } : undefined}>
-              <Icon name={editionIcon} className="text-base" />
-            </span>
-          </>
-        );
+        return null;
       }
 
       // "ending_soon" compact — show count + icon (time shown in image pill)
@@ -976,7 +964,7 @@ export function BuyButton({
           </>
         );
       case 'success':
-        return <span className="text-sm font-semibold leading-5">Purchased</span>;
+        return <span className="text-sm font-semibold leading-5">Collected</span>;
       case 'claiming':
         // Show "Claim NFT" button text (not "Claiming..." unless actively processing)
         return <span className="text-sm font-semibold leading-5">Claim NFT</span>;
@@ -1044,7 +1032,13 @@ export function BuyButton({
   const isLoadingState = state === 'confirming' || state === 'minting' || state === 'claiming';
 
   // In compact mode, show status label to the left of button
+  // Hide entirely when already collected
+  if (isCollected) return null;
+
   if (compact) {
+    const content = renderContent();
+    if (content === null) return null;
+
     return (
       <div className="flex flex-row items-center gap-2">
         {/* Status label for processing states */}
@@ -1056,6 +1050,7 @@ export function BuyButton({
         <Button
           onClick={state === 'claiming' ? handleClaimNFT : handleBuy}
           disabled={isDisabled}
+          aria-busy={isLoadingState}
           variant={getButtonVariant()}
           className={cn(
             'gap-1 px-2 transition-all duration-200 disabled:opacity-100',
@@ -1063,7 +1058,7 @@ export function BuyButton({
           )}
           style={isLoadingState && toneColor ? { color: toneColor } : undefined}
         >
-          {renderContent()}
+          {content}
         </Button>
       </div>
     );
@@ -1074,6 +1069,7 @@ export function BuyButton({
       <Button
         onClick={state === 'claiming' ? handleClaimNFT : handleBuy}
         disabled={isDisabled}
+        aria-busy={isLoadingState}
         variant={getButtonVariant()}
         className={cn(
           'transition-all duration-200 text-sm font-semibold leading-5 px-4',

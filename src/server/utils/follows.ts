@@ -524,6 +524,144 @@ export async function getCollectorsListDirect(
 	}
 }
 
+/**
+ * Get collectors for a specific post (Direct function for REST API)
+ * Returns users who have collected (cNFT) or purchased (edition) a specific post.
+ */
+export async function getPostCollectorsListDirect(
+	postId: string,
+	currentUserId?: string,
+	cursor?: string,
+	limit: number = 50
+): Promise<FollowListResult> {
+	try {
+		const collectorMap = new Map<string, Date>()
+
+		// From collections table
+		const collectionRows = await db
+			.select({
+				userId: collections.userId,
+				createdAt: collections.createdAt,
+			})
+			.from(collections)
+			.where(
+				and(
+					eq(collections.postId, postId),
+					eq(collections.status, 'confirmed')
+				)
+			)
+
+		for (const row of collectionRows) {
+			const existing = collectorMap.get(row.userId)
+			if (!existing || row.createdAt > existing) {
+				collectorMap.set(row.userId, row.createdAt)
+			}
+		}
+
+		// From purchases table
+		const purchaseRows = await db
+			.select({
+				userId: purchases.userId,
+				createdAt: purchases.createdAt,
+			})
+			.from(purchases)
+			.where(
+				and(
+					eq(purchases.postId, postId),
+					eq(purchases.status, 'confirmed')
+				)
+			)
+
+		for (const row of purchaseRows) {
+			const existing = collectorMap.get(row.userId)
+			if (!existing || row.createdAt > existing) {
+				collectorMap.set(row.userId, row.createdAt)
+			}
+		}
+
+		if (collectorMap.size === 0) {
+			return {
+				success: true,
+				users: [],
+				hasMore: false,
+				nextCursor: null,
+			}
+		}
+
+		// Sort collectors by most recent collection
+		const sortedCollectors = Array.from(collectorMap.entries())
+			.sort((a, b) => b[1].getTime() - a[1].getTime())
+
+		// Apply cursor pagination
+		let filteredCollectors = sortedCollectors
+		if (cursor) {
+			const cursorDate = new Date(cursor)
+			filteredCollectors = sortedCollectors.filter(([_, date]) => date < cursorDate)
+		}
+
+		const hasMore = filteredCollectors.length > limit
+		const toReturn = filteredCollectors.slice(0, limit)
+
+		// Fetch user details
+		const collectorIds = toReturn.map(([id]) => id)
+		const collectorUsers = await db
+			.select({
+				id: users.id,
+				usernameSlug: users.usernameSlug,
+				displayName: users.displayName,
+				avatarUrl: users.avatarUrl,
+			})
+			.from(users)
+			.where(inArray(users.id, collectorIds))
+
+		const userLookup = new Map(collectorUsers.map((u) => [u.id, u]))
+
+		// Check if current user follows each collector
+		const followingSet = new Set<string>()
+		if (currentUserId && collectorIds.length > 0) {
+			const currentUserFollows = await db
+				.select({ followingId: follows.followingId })
+				.from(follows)
+				.where(
+					and(
+						eq(follows.followerId, currentUserId),
+						inArray(follows.followingId, collectorIds)
+					)
+				)
+
+			currentUserFollows.forEach((f) => followingSet.add(f.followingId))
+		}
+
+		const last = toReturn[toReturn.length - 1]
+		const nextCursor = hasMore && last ? last[1].toISOString() : null
+
+		return {
+			success: true,
+			users: toReturn
+				.map(([id]) => {
+					const user = userLookup.get(id)
+					if (!user) return null
+					return {
+						id: user.id,
+						slug: user.usernameSlug,
+						displayName: user.displayName,
+						avatarUrl: user.avatarUrl,
+						isFollowing: followingSet.has(user.id),
+					}
+				})
+				.filter((u): u is FollowUser => u !== null),
+			hasMore,
+			nextCursor,
+		}
+	} catch (error) {
+		console.error('Error in getPostCollectorsListDirect:', error)
+		return {
+			success: false,
+			error: error instanceof Error ? error.message : 'Failed to fetch post collectors',
+		}
+	}
+}
+
 // ============================================
 // Activity feed
 // ============================================

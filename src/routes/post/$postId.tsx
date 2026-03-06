@@ -4,7 +4,7 @@
  */
 
 import { createFileRoute, Link, Outlet, useMatchRoute } from '@tanstack/react-router'
-import { useEffect, useState } from 'react'
+import { type ReactNode, useEffect, useState } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { usePostQuery } from '@/hooks/usePostQuery'
@@ -21,13 +21,17 @@ import { EmptyState } from '@/components/shared/EmptyState'
 import { Logo } from '@/components/shared/Logo'
 import { getPostDisplayState, getEditionLabel, POST_TYPE_COLORS, formatPrice as formatPriceDisplay } from '@/components/feed/postDisplay'
 import { POST_TYPE_META } from '@/constants/postTypes'
-import { type Category, isPresetCategory, categoryToSlug } from '@/constants/categories'
-import { CategoryPill } from '@/components/ui/category-pill'
 import { MediaPill } from '@/components/ui/media-pill'
 import { cn } from '@/lib/utils'
 import { Icon } from '@/components/ui/icon'
 import { MintWindowBadge } from '@/components/feed/MintWindowBadge'
 import { useGatedDownload } from '@/hooks/useGatedDownload'
+import { CommentSheet } from '@/components/feed/CommentSheet'
+import { getExplorerUrl } from '@/server/functions/preferences'
+import { usePreferences } from '@/hooks/usePreferences'
+import { usePostCollectors, useFollowMutation } from '@/hooks/useProfileQuery'
+import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
+import { toast } from '@/hooks/use-toast'
 
 export const Route = createFileRoute('/post/$postId')({
   component: PostDetailPage,
@@ -72,6 +76,318 @@ function detectMediaType(url: string): 'image' | 'video' | 'audio' | 'document' 
 }
 
 
+function formatFileSize(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
+  if (bytes < 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+  return `${(bytes / (1024 * 1024 * 1024)).toFixed(1)} GB`
+}
+
+function getMediaLabel(mimeType: string | null | undefined): string {
+  if (!mimeType) return 'Unknown'
+  if (mimeType.startsWith('image/')) return 'Image'
+  if (mimeType.startsWith('video/')) return 'Video'
+  if (mimeType.startsWith('audio/')) return 'Audio'
+  if (mimeType === 'application/pdf') return 'PDF'
+  if (mimeType === 'model/gltf-binary' || mimeType === 'model/gltf+json') return '3D Model'
+  return 'File'
+}
+
+function PostDetails({ post, editionSupply, collectCount, showHeading = true, getTokenUrl }: {
+  post: any
+  editionSupply: number
+  collectCount: number
+  showHeading?: boolean
+  getTokenUrl?: (address: string) => string
+}) {
+  const isCollectible = post.type === 'collectible'
+  const isEdition = post.type === 'edition'
+  const isStandard = post.type === 'post'
+
+  const rows: { label: string; value: ReactNode }[] = []
+
+  // Type
+  if (isEdition) {
+    rows.push({ label: 'Type', value: getEditionLabel(post.maxSupply) })
+  } else if (isCollectible) {
+    rows.push({ label: 'Type', value: 'Collectible' })
+  } else {
+    rows.push({ label: 'Type', value: 'Post' })
+  }
+
+  // Categories
+  if (post.categories && post.categories.length > 0) {
+    const cats = post.categories.map((c: any) => typeof c === 'string' ? c : c.display).join(', ')
+    rows.push({ label: 'Categories', value: cats })
+  }
+
+  // Supply
+  if (isCollectible) {
+    rows.push({ label: 'Supply', value: `${collectCount} collected` })
+  } else if (isEdition) {
+    const supplyText = post.maxSupply
+      ? `${editionSupply}/${post.maxSupply} Minted`
+      : `${editionSupply} Minted`
+    rows.push({ label: 'Supply', value: supplyText })
+  }
+
+  // Price
+  if (isCollectible) {
+    rows.push({ label: 'Price', value: 'Free' })
+  } else if (isEdition && post.price && post.currency) {
+    rows.push({ label: 'Price', value: formatPriceDisplay(post.price, post.currency) })
+  }
+
+  // Media type
+  const mediaMimeType = (post as any).mediaMimeType
+  if (mediaMimeType) {
+    rows.push({ label: 'Media', value: getMediaLabel(mediaMimeType) })
+  }
+
+  // File size
+  const mediaFileSize = (post as any).mediaFileSize
+  if (mediaFileSize && typeof mediaFileSize === 'number') {
+    rows.push({ label: 'File Size', value: formatFileSize(mediaFileSize) })
+  }
+
+  // Storage
+  if (!isStandard) {
+    const storageType = (post as any).storageType
+    rows.push({
+      label: 'Storage',
+      value: storageType === 'arweave' ? 'Permanent (Arweave)' : 'Centralized',
+    })
+  }
+
+  // Token Standard
+  if (isCollectible) {
+    rows.push({ label: 'Token Standard', value: 'Compressed NFT' })
+  } else if (isEdition) {
+    rows.push({ label: 'Token Standard', value: 'Core' })
+  }
+
+  // Token ID
+  const tokenAddress = isEdition ? post.masterMint : (post as any).collectibleAssetId
+  if (tokenAddress && !isStandard) {
+    const tokenUrl = getTokenUrl ? getTokenUrl(tokenAddress) : `https://solscan.io/token/${tokenAddress}`
+    rows.push({
+      label: 'Token ID',
+      value: (
+        <a
+          href={tokenUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 hover:underline"
+        >
+          {tokenAddress.slice(0, 4)}...{tokenAddress.slice(-4)}
+          <Icon name="arrow-up-right-from-square" variant="regular" className="text-[10px]" />
+        </a>
+      ),
+    })
+  }
+
+  if (rows.length === 0) return null
+
+  return (
+    <div>
+      {showHeading && (
+        <div className="py-3 border-b border-border mb-1">
+          <span className="text-sm font-medium text-foreground">Details</span>
+        </div>
+      )}
+      <div>
+        {rows.map((row, i) => (
+          <div
+            key={row.label}
+            className={cn(
+              'flex justify-between py-2.5',
+              i < rows.length - 1 && 'border-b border-border',
+            )}
+          >
+            <span className="text-sm text-muted-foreground">{row.label}</span>
+            <span className="text-sm text-foreground font-medium">{row.value}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function CollectorItem({
+  collector,
+  currentUserId,
+  isAuthenticated,
+}: {
+  collector: {
+    id: string
+    usernameSlug: string
+    displayName: string | null
+    avatarUrl: string | null
+    isFollowingBack: boolean
+  }
+  currentUserId?: string
+  isAuthenticated: boolean
+}) {
+  const isOwnProfile = currentUserId === collector.id
+  const [isFollowing, setIsFollowing] = useState(collector.isFollowingBack)
+  const followMutation = useFollowMutation(collector.id, currentUserId || '')
+
+  useEffect(() => {
+    setIsFollowing(collector.isFollowingBack)
+  }, [collector.isFollowingBack])
+
+  const handleFollowToggle = async () => {
+    if (!isAuthenticated || !currentUserId) return
+    const newFollowState = !isFollowing
+    setIsFollowing(newFollowState)
+    try {
+      await followMutation.mutateAsync({
+        action: newFollowState ? 'follow' : 'unfollow',
+      })
+      toast.success(newFollowState ? 'Following' : 'Unfollowed')
+    } catch (error) {
+      setIsFollowing(!newFollowState)
+      toast.error(error instanceof Error ? error.message : 'Action failed')
+    }
+  }
+
+  return (
+    <div className="flex items-center justify-between gap-3 px-4 py-2.5">
+      <Link
+        to="/profile/$slug"
+        params={{ slug: collector.usernameSlug }}
+        className="flex items-center gap-3 flex-1 min-w-0"
+      >
+        <div className="size-8 rounded-full bg-muted flex items-center justify-center overflow-hidden shrink-0">
+          {collector.avatarUrl ? (
+            <img
+              src={collector.avatarUrl}
+              alt={collector.displayName || collector.usernameSlug}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <Icon name="user" variant="regular" className="text-sm text-muted-foreground" />
+          )}
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-medium truncate">
+            {collector.displayName || collector.usernameSlug}
+          </p>
+          <p className="text-xs text-muted-foreground truncate">
+            @{collector.usernameSlug}
+          </p>
+        </div>
+      </Link>
+      {isAuthenticated && currentUserId && !isOwnProfile && (
+        <Button
+          variant={isFollowing ? 'outline' : 'default'}
+          className="h-8 w-[76px] px-3 text-xs"
+          onClick={handleFollowToggle}
+          disabled={followMutation.isPending}
+        >
+          {followMutation.isPending ? (
+            <LoadingSpinner size="sm" />
+          ) : isFollowing ? (
+            'Unfollow'
+          ) : (
+            'Follow'
+          )}
+        </Button>
+      )}
+    </div>
+  )
+}
+
+function CollectorsList({
+  collectors,
+  isLoading,
+  currentUserId,
+  isAuthenticated,
+}: {
+  collectors?: Array<{
+    id: string
+    usernameSlug: string
+    displayName: string | null
+    avatarUrl: string | null
+    isFollowingBack: boolean
+  }>
+  isLoading: boolean
+  currentUserId?: string
+  isAuthenticated: boolean
+}) {
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-8">
+        <LoadingSpinner />
+      </div>
+    )
+  }
+
+  if (!collectors || collectors.length === 0) {
+    return (
+      <div className="text-center py-8 text-muted-foreground text-sm">
+        No collectors yet
+      </div>
+    )
+  }
+
+  return (
+    <div className="py-1">
+      {collectors.map((collector) => (
+        <CollectorItem
+          key={collector.id}
+          collector={collector}
+          currentUserId={currentUserId}
+          isAuthenticated={isAuthenticated}
+        />
+      ))}
+    </div>
+  )
+}
+
+function MobileCollectorsSection({
+  postId,
+  currentUserId,
+  isAuthenticated,
+}: {
+  postId: string
+  currentUserId?: string
+  isAuthenticated: boolean
+}) {
+  const [expanded, setExpanded] = useState(false)
+  const { data: collectors, isLoading } = usePostCollectors(
+    expanded ? postId : undefined,
+    currentUserId
+  )
+
+  return (
+    <div className="border-t border-border">
+      <button
+        type="button"
+        onClick={() => setExpanded(!expanded)}
+        className="w-full flex items-center justify-between py-3 text-sm font-medium text-foreground"
+      >
+        <span>Collectors</span>
+        <Icon
+          name={expanded ? 'chevron-up' : 'chevron-down'}
+          variant="regular"
+          className="text-xs text-muted-foreground"
+        />
+      </button>
+      {expanded && (
+        <div className="-mx-4 md:-mx-2">
+          <CollectorsList
+            collectors={collectors}
+            isLoading={isLoading}
+            currentUserId={currentUserId}
+            isAuthenticated={isAuthenticated}
+          />
+        </div>
+      )}
+    </div>
+  )
+}
+
 function PostDetailPage() {
   const { postId } = Route.useParams()
   const { isAuthenticated, isReady, login } = useAuth()
@@ -83,12 +399,22 @@ function PostDetailPage() {
   // Call all hooks first (hooks must be called unconditionally)
   const { data, isLoading, isError, error } = usePostQuery({ postId })
   const { downloadProtectedAsset, isAuthenticating: isDownloading } = useGatedDownload()
+  const { preferences } = usePreferences()
   
   // Local state for collect count (updated on successful collect)
   const [localCollectCount, setLocalCollectCount] = useState<number | null>(null)
   const [localEditionSupply, setLocalEditionSupply] = useState<number | null>(null)
   const [localIsOwned, setLocalIsOwned] = useState(false)
+  const [mobileCommentSheetOpen, setMobileCommentSheetOpen] = useState(false)
+  const [desktopTab, setDesktopTab] = useState<'comments' | 'details' | 'collectors'>('comments')
   
+  // Fetch collectors for this post (only when tab is active and post is collectible/edition)
+  const isCollectibleType = data?.post?.type === 'edition' || data?.post?.type === 'collectible'
+  const { data: postCollectors, isLoading: isLoadingCollectors } = usePostCollectors(
+    desktopTab === 'collectors' && isCollectibleType ? postId : undefined,
+    currentUser?.id
+  )
+
   // Sync ownership with fetched data to keep flag consistent
   const initialCollected = data?.post?.isCollected ?? false
 
@@ -234,9 +560,10 @@ function PostDetailPage() {
 
   // Shared action buttons component
   // skipBuy: when true, BuyButton is rendered elsewhere (e.g., timed edition dark bar)
-  const ActionButtons = ({ className, skipBuy = false }: { className?: string; skipBuy?: boolean }) => (
-    <div className={cn('flex items-center justify-between gap-0.5', className)}>
-      <div className="flex items-center gap-0.5">
+  // onCommentClick: when provided, comment button opens sheet instead of linking
+  const ActionButtons = ({ className, skipBuy = false, onCommentClick }: { className?: string; skipBuy?: boolean; onCommentClick?: () => void }) => (
+    <div className={cn('flex items-center justify-between gap-1', className)}>
+      <div className="flex items-center gap-1">
         <LikeButton
           postId={post.id}
           userId={currentUser?.id || undefined}
@@ -248,6 +575,7 @@ function PostDetailPage() {
           postId={post.id}
           variant="ghost"
           showCount={true}
+          onClick={onCommentClick}
         />
       </div>
 
@@ -357,31 +685,6 @@ function PostDetailPage() {
     ) : null
   )
 
-  // Shared categories component
-  const Categories = () => (
-    post.categories && post.categories.length > 0 ? (
-      <div className="flex flex-wrap gap-1.5 pt-2">
-        {post.categories.map((category) => {
-          const displayText = typeof category === 'string' ? category : (category as Category).display
-          const key = typeof category === 'string' ? category : (category as Category).key
-          const isPreset = isPresetCategory(displayText)
-          const slug = categoryToSlug(displayText)
-
-          if (isPreset) {
-            return (
-              <CategoryPill key={key} variant="link" asChild>
-                <Link to="/category/$categorySlug" params={{ categorySlug: slug }}>
-                  {displayText}
-                </Link>
-              </CategoryPill>
-            )
-          }
-
-          return <CategoryPill key={key}>{displayText}</CategoryPill>
-        })}
-      </div>
-    ) : null
-  )
 
   // User header component
   const UserHeader = ({ showMenu = true, showTypeBadge = true }: { showMenu?: boolean; showTypeBadge?: boolean }) => (
@@ -501,6 +804,7 @@ function PostDetailPage() {
               mediaType={mediaType}
               alt={post.caption || 'Post media'}
               aspectRatio="auto"
+              lazy={false}
               price={post.price ?? null}
               currency={post.currency ?? null}
               hasAccess={isCollected || post.type === 'post'}
@@ -525,7 +829,7 @@ function PostDetailPage() {
 
                   {/* Price / Collected info card */}
                   {priceText && (
-                    <div className="bg-muted/30 border border-border rounded-2xl px-[17px] py-[9px]">
+                    <div className="bg-muted/30 border border-border rounded-2xl px-4 py-2">
                       <div className="flex items-start justify-between text-xs">
                         <div className="flex flex-col flex-1 justify-center">
                           <span className="text-muted-foreground font-medium leading-snug">Price</span>
@@ -578,7 +882,6 @@ function PostDetailPage() {
                               isAuthenticated={isAuthenticated}
                               onSuccess={handleBuySuccess}
                               onPurchased={() => setLocalIsOwned(true)}
-                              variant="default"
                               toneColor={postTypeColor}
                               isCollected={isCollected}
                               isSoldOut={isSoldOut}
@@ -586,7 +889,8 @@ function PostDetailPage() {
                               mintWindowEnd={post.mintWindowEnd}
                               arweaveStatus={arweaveStatus}
                               label="Collect"
-                              className="!bg-background !text-foreground !rounded-full !px-3.5 !h-8 !text-xs !font-medium"
+                              variant="outline"
+                              className="rounded-full px-3.5 h-8 text-xs font-medium"
                             />
                           ) : undefined
                         }
@@ -629,12 +933,13 @@ function PostDetailPage() {
                       </Button>
                     ) : null
                   )}
+
                 </div>
 
-                {/* Post info: title + badge, description, categories */}
+                {/* Post info: title + badge, description, action buttons */}
                 <div className="px-4 py-3 border-b border-border shrink-0">
                   <div className="flex items-center gap-2.5">
-                    <span className="flex-1 font-semibold text-sm min-w-0">
+                    <span className="flex-1 font-semibold text-base min-w-0 truncate">
                       {(post as any).nftName || post.caption?.split('\n')[0] || 'Untitled'}
                     </span>
                     {typeBadge && (
@@ -654,36 +959,72 @@ function PostDetailPage() {
                       {post.caption}
                     </p>
                   )}
-                  <Categories />
+                  <ActionButtons skipBuy className="mt-2 -ml-2" />
                 </div>
 
-                {/* Scrollable middle: Comments */}
-                <div className="flex-1 overflow-y-auto min-h-0">
-                  <div className="px-4 pt-3">
-                    <span className="text-xs font-semibold text-muted-foreground">Comments</span>
-                  </div>
-                  {isAuthenticated ? (
-                    <CommentSection
-                      postId={post.id}
-                      userId={currentUser?.id || undefined}
-                      isAuthenticated={isAuthenticated}
-                      className="px-4"
-                      variant="inline"
-                    />
-                  ) : (
-                    <div className="px-4 py-8 text-center text-muted-foreground text-sm">
-                      Sign in to view and add comments
+                {/* Segment control: Comments | Details | Collectors */}
+                <div className="flex border-b border-border shrink-0" role="tablist">
+                  {(['comments', 'details', 'collectors'] as const).map((tab) => (
+                    <button
+                      key={tab}
+                      type="button"
+                      role="tab"
+                      aria-selected={desktopTab === tab}
+                      onClick={() => setDesktopTab(tab)}
+                      className={cn(
+                        'flex-1 py-3 text-sm font-medium transition-colors relative',
+                        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset',
+                        desktopTab === tab
+                          ? 'text-foreground'
+                          : 'text-muted-foreground hover:text-foreground/80',
+                      )}
+                    >
+                      <span className="relative inline-flex items-center">
+                        {tab === 'comments' ? 'Comments' : tab === 'details' ? 'Details' : 'Collectors'}
+                      </span>
+                      {desktopTab === tab && (
+                        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-foreground rounded-full" />
+                      )}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Scrollable middle: tab content */}
+                <div className="flex-1 overflow-y-auto min-h-0" role="tabpanel">
+                  {desktopTab === 'comments' ? (
+                    <>
+                      {isAuthenticated ? (
+                        <CommentSection
+                          postId={post.id}
+                          userId={currentUser?.id || undefined}
+                          isAuthenticated={isAuthenticated}
+                          className="px-4"
+                          variant="inline"
+                        />
+                      ) : (
+                        <div className="px-4 py-8 text-center text-muted-foreground text-sm">
+                          Sign in to view and add comments
+                        </div>
+                      )}
+                    </>
+                  ) : desktopTab === 'details' ? (
+                    <div className="px-4 py-3">
+                      <PostDetails post={post} editionSupply={editionSupply} collectCount={collectCount} showHeading={false} getTokenUrl={(addr) => getExplorerUrl('token', addr, preferences.explorer)} />
                     </div>
+                  ) : (
+                    <CollectorsList
+                      collectors={postCollectors}
+                      isLoading={isLoadingCollectors}
+                      currentUserId={currentUser?.id}
+                      isAuthenticated={isAuthenticated}
+                    />
                   )}
                 </div>
 
-                {/* Fixed footer: Actions + Comment input */}
+                {/* Fixed footer: Comment input */}
                 <div className="border-t border-border shrink-0">
-                  <div className="px-4 py-2">
-                    <ActionButtons skipBuy />
-                  </div>
-                  {isAuthenticated && (
-                    <div className="px-4 pb-3">
+                  {desktopTab === 'comments' && isAuthenticated && (
+                    <div className="px-4 py-3">
                       <CommentSection
                         postId={post.id}
                         userId={currentUser?.id || undefined}
@@ -692,8 +1033,8 @@ function PostDetailPage() {
                       />
                     </div>
                   )}
-                  {isReady && !isAuthenticated && (
-                    <div className="px-4 pb-3">
+                  {desktopTab === 'comments' && isReady && !isAuthenticated && (
+                    <div className="px-4 py-3">
                       <Button onClick={() => login()} className="w-full">
                         Log in or Sign up
                       </Button>
@@ -711,33 +1052,65 @@ function PostDetailPage() {
                       {post.caption}
                     </p>
                   )}
-                  <Categories />
+                  <ActionButtons className="mt-2 -ml-2" />
                 </div>
 
-                {/* Scrollable middle: Comments */}
-                <div className="flex-1 overflow-y-auto min-h-0">
-                  {isAuthenticated ? (
-                    <CommentSection
-                      postId={post.id}
-                      userId={currentUser?.id || undefined}
-                      isAuthenticated={isAuthenticated}
-                      className="px-4"
-                      variant="inline"
-                    />
+                {/* Segment control: Comments | Details */}
+                <div className="flex border-b border-border shrink-0" role="tablist">
+                  {(['comments', 'details'] as const).map((tab) => (
+                    <button
+                      key={tab}
+                      type="button"
+                      role="tab"
+                      aria-selected={desktopTab === tab}
+                      onClick={() => setDesktopTab(tab)}
+                      className={cn(
+                        'flex-1 py-3 text-sm font-medium transition-colors relative',
+                        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset',
+                        desktopTab === tab
+                          ? 'text-foreground'
+                          : 'text-muted-foreground hover:text-foreground/80',
+                      )}
+                    >
+                      <span className="relative inline-flex items-center">
+                        {tab === 'comments' ? 'Comments' : 'Details'}
+                      </span>
+                      {desktopTab === tab && (
+                        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-foreground rounded-full" />
+                      )}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Scrollable middle: tab content */}
+                <div className="flex-1 overflow-y-auto min-h-0" role="tabpanel">
+                  {desktopTab === 'comments' ? (
+                    <>
+                      {isAuthenticated ? (
+                        <CommentSection
+                          postId={post.id}
+                          userId={currentUser?.id || undefined}
+                          isAuthenticated={isAuthenticated}
+                          className="px-4"
+                          variant="inline"
+                        />
+                      ) : (
+                        <div className="px-4 py-8 text-center text-muted-foreground text-sm">
+                          Sign in to view and add comments
+                        </div>
+                      )}
+                    </>
                   ) : (
-                    <div className="px-4 py-8 text-center text-muted-foreground text-sm">
-                      Sign in to view and add comments
+                    <div className="px-4 py-3">
+                      <PostDetails post={post} editionSupply={editionSupply} collectCount={collectCount} showHeading={false} getTokenUrl={(addr) => getExplorerUrl('token', addr, preferences.explorer)} />
                     </div>
                   )}
                 </div>
 
-                {/* Fixed footer: Actions + Comment input */}
+                {/* Fixed footer: Comment input */}
                 <div className="border-t border-border shrink-0">
-                  <div className="px-4 py-2">
-                    <ActionButtons />
-                  </div>
-                  {isAuthenticated && (
-                    <div className="px-4 pb-3">
+                  {desktopTab === 'comments' && isAuthenticated && (
+                    <div className="px-4 py-3">
                       <CommentSection
                         postId={post.id}
                         userId={currentUser?.id || undefined}
@@ -746,8 +1119,8 @@ function PostDetailPage() {
                       />
                     </div>
                   )}
-                  {isReady && !isAuthenticated && (
-                    <div className="px-4 pb-3">
+                  {desktopTab === 'comments' && isReady && !isAuthenticated && (
+                    <div className="px-4 py-3">
                       <Button onClick={() => login()} className="w-full">
                         Log in or Sign up
                       </Button>
@@ -776,6 +1149,7 @@ function PostDetailPage() {
               mediaType={mediaType}
               alt={post.caption || 'Post media'}
               aspectRatio="auto"
+              lazy={false}
               className="w-full"
               price={post.price ?? null}
               currency={post.currency ?? null}
@@ -790,163 +1164,179 @@ function PostDetailPage() {
           </div>
 
           {/* Content */}
-          <div className="px-4 py-3 md:px-2 space-y-4">
+          <div className="px-4 py-3 md:px-2">
             {isCollectibleOrEdition ? (
               <>
-                {/* Price / Collected info card */}
-                {priceText && (
-                  <div className="bg-muted/30 border border-border rounded-2xl px-[17px] py-[9px]">
-                    <div className="flex items-start justify-between text-xs">
-                      <div className="flex flex-col flex-1 justify-center">
-                        <span className="text-muted-foreground font-medium leading-snug">Price</span>
-                        <span className="text-foreground font-semibold leading-tight">
-                          {priceText}
-                        </span>
-                      </div>
-                      <div className="flex flex-col flex-1 justify-center">
-                        <span className="text-muted-foreground font-medium leading-snug">Collected</span>
-                        <span className="text-foreground font-semibold leading-tight">
-                          {collectedText}
-                        </span>
+                {/* Action buttons + price + collect — single section */}
+                <div className="pb-4 border-b border-border flex flex-col gap-3">
+                  <ActionButtons skipBuy onCommentClick={() => setMobileCommentSheetOpen(true)} />
+
+                  {priceText && (
+                    <div className="bg-muted/30 border border-border rounded-2xl px-4 py-2">
+                      <div className="flex items-start justify-between text-xs">
+                        <div className="flex flex-col flex-1 justify-center">
+                          <span className="text-muted-foreground font-medium leading-snug">Price</span>
+                          <span className="text-foreground font-semibold leading-tight">
+                            {priceText}
+                          </span>
+                        </div>
+                        <div className="flex flex-col flex-1 justify-center">
+                          <span className="text-muted-foreground font-medium leading-snug">Collected</span>
+                          <span className="text-foreground font-semibold leading-tight">
+                            {collectedText}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {/* Arweave storage issue banner (mobile) */}
-                {isMintingPaused && (
-                  <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-800 dark:bg-amber-950/50 dark:text-amber-200">
-                    <Icon name="circle-info" variant="regular" className="mr-1.5 inline-block" />
-                    {arweaveStatus === 'unfunded'
-                      ? "This edition's permanent storage needs to be re-funded by the creator. Minting is temporarily paused."
-                      : "This edition is experiencing a temporary storage issue. Please try again later."}
-                  </div>
-                )}
+                  {isMintingPaused && (
+                    <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-800 dark:bg-amber-950/50 dark:text-amber-200">
+                      <Icon name="circle-info" variant="regular" className="mr-1.5 inline-block" />
+                      {arweaveStatus === 'unfunded'
+                        ? "This edition's permanent storage needs to be re-funded by the creator. Minting is temporarily paused."
+                        : "This edition is experiencing a temporary storage issue. Please try again later."}
+                    </div>
+                  )}
 
-                {/* Action area */}
-                {showDownload ? (
-                  <Button onClick={handleDownload} disabled={isDownloading} className="w-full">
-                    <Icon name="download" variant="regular" className="mr-2" />
-                    {isDownloading ? 'Verifying...' : 'Download'}
-                  </Button>
-                ) : !isNoLongerCollectible && (
-                  isTimedEdition ? (
-                    <MintWindowBadge
-                      mintWindowStart={post.mintWindowStart}
-                      mintWindowEnd={post.mintWindowEnd}
-                      mintedCount={editionSupply}
-                      variant="dark"
-                      action={
-                        isUserReady && isAuthenticated && currentUser?.id && post.price && post.currency ? (
-                          <BuyButton
-                            postId={post.id}
-                            userId={currentUser.id}
-                            price={post.price}
-                            currency={post.currency}
-                            maxSupply={post.maxSupply}
-                            currentSupply={editionSupply}
-                            isAuthenticated={isAuthenticated}
-                            onSuccess={handleBuySuccess}
-                            onPurchased={() => setLocalIsOwned(true)}
-                            variant="default"
-                            toneColor={postTypeColor}
-                            isCollected={isCollected}
-                            isSoldOut={isSoldOut}
-                            mintWindowStart={post.mintWindowStart}
-                            mintWindowEnd={post.mintWindowEnd}
-                            arweaveStatus={arweaveStatus}
-                            label="Collect"
-                            className="!bg-background !text-foreground !rounded-full !px-3.5 !h-8 !text-xs !font-medium"
-                          />
-                        ) : undefined
-                      }
-                    />
-                  ) : isUserReady && isAuthenticated && currentUser?.id ? (
-                    post.type === 'edition' && post.price && post.currency ? (
-                      <BuyButton
-                        postId={post.id}
-                        userId={currentUser.id}
-                        price={post.price}
-                        currency={post.currency}
-                        maxSupply={post.maxSupply}
-                        currentSupply={editionSupply}
-                        isAuthenticated={isAuthenticated}
-                        onSuccess={handleBuySuccess}
-                        onPurchased={() => setLocalIsOwned(true)}
-                        variant="default"
-                        toneColor={postTypeColor}
-                        isCollected={isCollected}
-                        isSoldOut={isSoldOut}
-                        arweaveStatus={arweaveStatus}
-                        label="Collect"
-                        className="w-full"
-                      />
-                    ) : post.type === 'collectible' ? (
-                      <CollectButton
-                        postId={post.id}
-                        userId={currentUser.id}
-                        isAuthenticated={isAuthenticated}
-                        currentCollectCount={collectCount}
-                        onCollectSuccess={handleCollectSuccess}
-                        onCollected={() => setLocalIsOwned(true)}
-                        variant="default"
-                        className="w-full"
-                        initialCollected={isCollected}
-                      />
-                    ) : null
-                  ) : isReady && !isAuthenticated ? (
-                    <Button onClick={() => login()} className="w-full">
-                      Log in to Collect
+                  {showDownload ? (
+                    <Button onClick={handleDownload} disabled={isDownloading} className="w-full">
+                      <Icon name="download" variant="regular" className="mr-2" />
+                      {isDownloading ? 'Verifying...' : 'Download'}
                     </Button>
-                  ) : null
-                )}
-
-                {/* Title + badge */}
-                <div className="flex items-center gap-2.5">
-                  <span className="flex-1 font-semibold text-sm min-w-0">
-                    {(post as any).nftName || post.caption?.split('\n')[0] || 'Untitled'}
-                  </span>
-                  {typeBadge && (
-                    <span
-                      className={cn(
-                        'shrink-0 text-xs font-medium px-2 py-0.5 rounded-full',
-                        POST_TYPE_META[post.type].accentBgClass,
-                        POST_TYPE_META[post.type].badgeClass,
-                      )}
-                    >
-                      {typeBadge.label}
-                    </span>
+                  ) : !isNoLongerCollectible && (
+                    isTimedEdition ? (
+                      <MintWindowBadge
+                        mintWindowStart={post.mintWindowStart}
+                        mintWindowEnd={post.mintWindowEnd}
+                        mintedCount={editionSupply}
+                        variant="dark"
+                        action={
+                          isUserReady && isAuthenticated && currentUser?.id && post.price && post.currency ? (
+                            <BuyButton
+                              postId={post.id}
+                              userId={currentUser.id}
+                              price={post.price}
+                              currency={post.currency}
+                              maxSupply={post.maxSupply}
+                              currentSupply={editionSupply}
+                              isAuthenticated={isAuthenticated}
+                              onSuccess={handleBuySuccess}
+                              onPurchased={() => setLocalIsOwned(true)}
+                              toneColor={postTypeColor}
+                              isCollected={isCollected}
+                              isSoldOut={isSoldOut}
+                              mintWindowStart={post.mintWindowStart}
+                              mintWindowEnd={post.mintWindowEnd}
+                              arweaveStatus={arweaveStatus}
+                              label="Collect"
+                              variant="outline"
+                              className="rounded-full px-3.5 h-8 text-xs font-medium"
+                            />
+                          ) : undefined
+                        }
+                      />
+                    ) : isUserReady && isAuthenticated && currentUser?.id ? (
+                      post.type === 'edition' && post.price && post.currency ? (
+                        <BuyButton
+                          postId={post.id}
+                          userId={currentUser.id}
+                          price={post.price}
+                          currency={post.currency}
+                          maxSupply={post.maxSupply}
+                          currentSupply={editionSupply}
+                          isAuthenticated={isAuthenticated}
+                          onSuccess={handleBuySuccess}
+                          onPurchased={() => setLocalIsOwned(true)}
+                          variant="default"
+                          toneColor={postTypeColor}
+                          isCollected={isCollected}
+                          isSoldOut={isSoldOut}
+                          arweaveStatus={arweaveStatus}
+                          label="Collect"
+                          className="w-full"
+                        />
+                      ) : post.type === 'collectible' ? (
+                        <CollectButton
+                          postId={post.id}
+                          userId={currentUser.id}
+                          isAuthenticated={isAuthenticated}
+                          currentCollectCount={collectCount}
+                          onCollectSuccess={handleCollectSuccess}
+                          onCollected={() => setLocalIsOwned(true)}
+                          variant="default"
+                          className="w-full"
+                          initialCollected={isCollected}
+                        />
+                      ) : null
+                    ) : isReady && !isAuthenticated ? (
+                      <Button onClick={() => login()} className="w-full">
+                        Log in to Collect
+                      </Button>
+                    ) : null
                   )}
                 </div>
 
-                {/* Description */}
-                {post.caption && (
-                  <p className="text-sm text-muted-foreground whitespace-pre-wrap wrap-break-word">
-                    {post.caption}
-                  </p>
-                )}
+                {/* Title + badge + description */}
+                <div className="py-4 border-b border-border space-y-2">
+                  <div className="flex items-center gap-2.5">
+                    <span className="flex-1 font-semibold text-base min-w-0 truncate">
+                      {(post as any).nftName || post.caption?.split('\n')[0] || 'Untitled'}
+                    </span>
+                    {typeBadge && (
+                      <span
+                        className={cn(
+                          'shrink-0 text-xs font-medium px-2 py-0.5 rounded-full',
+                          POST_TYPE_META[post.type].accentBgClass,
+                          POST_TYPE_META[post.type].badgeClass,
+                        )}
+                      >
+                        {typeBadge.label}
+                      </span>
+                    )}
+                  </div>
 
-                <Categories />
-                <ActionButtons skipBuy />
+                  {post.caption && (
+                    <p className="text-sm text-muted-foreground whitespace-pre-wrap wrap-break-word">
+                      {post.caption}
+                    </p>
+                  )}
+                </div>
+
+                {/* Details metadata section */}
+                <PostDetails post={post} editionSupply={editionSupply} collectCount={collectCount} getTokenUrl={(addr) => getExplorerUrl('token', addr, preferences.explorer)} />
+
+                {/* Collectors section */}
+                {collectCount > 0 && (
+                  <MobileCollectorsSection
+                    postId={post.id}
+                    currentUserId={currentUser?.id}
+                    isAuthenticated={isAuthenticated}
+                  />
+                )}
               </>
             ) : (
               <>
-                <ActionButtons />
-                <Caption showAvatar={true} />
-                <Categories />
+                {/* Action buttons + caption — single section */}
+                <div className="pb-4 border-b border-border space-y-2">
+                  <ActionButtons onCommentClick={() => setMobileCommentSheetOpen(true)} />
+                  <Caption showAvatar={true} />
+                </div>
+
+                {/* Details metadata section */}
+                <PostDetails post={post} editionSupply={editionSupply} collectCount={collectCount} getTokenUrl={(addr) => getExplorerUrl('token', addr, preferences.explorer)} />
               </>
             )}
-
-            {/* Comments Section - Only show when authenticated */}
-            {isAuthenticated && (
-              <CommentSection
-                postId={post.id}
-                userId={currentUser?.id || undefined}
-                isAuthenticated={isAuthenticated}
-                className="mt-4"
-              />
-            )}
           </div>
+
+          {/* Mobile comment bottom sheet */}
+          <CommentSheet
+            postId={post.id}
+            userId={currentUser?.id}
+            isAuthenticated={isAuthenticated}
+            open={mobileCommentSheetOpen}
+            onOpenChange={setMobileCommentSheetOpen}
+          />
         </article>
       </div>
 
@@ -980,7 +1370,7 @@ function PostDetailPage() {
  */
 function PostDetailSkeleton() {
   return (
-    <div className="pb-20 lg:pb-0">
+    <div className="pb-20 lg:pb-0" aria-hidden="true">
       {/* Desktop 2-column skeleton (lg+) */}
       <div className="hidden lg:flex p-4 h-screen">
         <div className="flex gap-0 w-full bg-card border border-border rounded-lg overflow-hidden">

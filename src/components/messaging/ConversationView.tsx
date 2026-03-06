@@ -15,6 +15,7 @@ import { useMessages, useSendMessage, useMarkRead, useBlockInThread, type Thread
 import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { useCreateReport } from '@/hooks/useReports'
 import { Icon } from '@/components/ui/icon'
+import { useVirtualizer } from '@tanstack/react-virtual'
 import { useMessaging } from './MessagingContext'
 
 interface ConversationViewProps {
@@ -192,23 +193,30 @@ export function ConversationView({ thread, onBack, onClose }: ConversationViewPr
     }
   }, [latestMessageId, messages, user?.id, markAsReadIfNeeded])
 
+  // Virtualizer for message list
+  const virtualizer = useVirtualizer({
+    count: messages.length,
+    getScrollElement: () => messagesContainerRef.current,
+    estimateSize: () => 60,
+    overscan: 5,
+  })
+
   // Auto-scroll to bottom on new messages
   useEffect(() => {
-    const container = messagesContainerRef.current
-    if (!container) return
-
     // Only auto-scroll if new message was added (not when loading older)
     if (messages.length > prevMessageCountRef.current) {
-      // Check if user is near bottom (within 100px)
-      const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 100
+      const container = messagesContainerRef.current
+      const isNearBottom = container
+        ? container.scrollHeight - container.scrollTop - container.clientHeight < 100
+        : true
 
       if (isNearBottom || prevMessageCountRef.current === 0) {
-        container.scrollTop = container.scrollHeight
+        virtualizer.scrollToIndex(messages.length - 1, { align: 'end' })
       }
     }
 
     prevMessageCountRef.current = messages.length
-  }, [messages.length])
+  }, [messages.length, virtualizer])
 
   // Load more when scrolling to top
   const handleScroll = useCallback(() => {
@@ -216,20 +224,20 @@ export function ConversationView({ thread, onBack, onClose }: ConversationViewPr
     if (!container) return
 
     if (container.scrollTop < 50 && hasNextPage && !isFetchingNextPage) {
-      // Store current scroll position to maintain it after loading
-      const prevScrollHeight = container.scrollHeight
-
+      const prevCount = messages.length
       fetchNextPage().then(() => {
-        // Maintain scroll position after loading older messages
+        // After loading older messages, scroll to maintain position
+        // The new messages are prepended, so offset by the new count
         requestAnimationFrame(() => {
-          if (container) {
-            const newScrollHeight = container.scrollHeight
-            container.scrollTop = newScrollHeight - prevScrollHeight
+          const newCount = prevMessageCountRef.current
+          const added = newCount - prevCount
+          if (added > 0) {
+            virtualizer.scrollToIndex(added, { align: 'start' })
           }
         })
       })
     }
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage])
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage, messages.length, virtualizer])
 
   const handleSend = useCallback((content: string) => {
     sendMessageMutation.mutate({ threadId: thread.id, content })
@@ -284,7 +292,7 @@ export function ConversationView({ thread, onBack, onClose }: ConversationViewPr
           variant="ghost"
           size="icon"
           onClick={onBack}
-          className="flex-shrink-0 md:hidden"
+          className="flex-shrink-0 md:hidden focus-visible:ring-2 focus-visible:ring-ring"
           aria-label="Back to conversations"
         >
           <Icon name="arrow-left" className="text-sm" />
@@ -348,7 +356,7 @@ export function ConversationView({ thread, onBack, onClose }: ConversationViewPr
       <div
         ref={messagesContainerRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-auto p-4 space-y-3 bg-background"
+        className="flex-1 overflow-y-auto overflow-x-hidden bg-background"
       >
         {/* Loading older messages indicator */}
         {isFetchingNextPage && (
@@ -367,37 +375,57 @@ export function ConversationView({ thread, onBack, onClose }: ConversationViewPr
             <p className="text-xs text-muted-foreground mt-1">Say hello!</p>
           </div>
         ) : (
-          messages.map((message, index) => {
-            const isOwn = message.senderId === user?.id
-            // Show "Seen" on the last own message if recipient has read it
-            const showSeen =
-              isOwn &&
-              index === lastOwnMessageIndex &&
-              !!otherLastReadAt &&
-              new Date(otherLastReadAt) >= new Date(message.createdAt)
+          <div
+            style={{
+              height: `${virtualizer.getTotalSize()}px`,
+              width: '100%',
+              position: 'relative',
+            }}
+          >
+            {virtualizer.getVirtualItems().map((virtualItem) => {
+              const index = virtualItem.index
+              const message = messages[index]
+              const isOwn = message.senderId === user?.id
+              const showSeen =
+                isOwn &&
+                index === lastOwnMessageIndex &&
+                !!otherLastReadAt &&
+                new Date(otherLastReadAt) >= new Date(message.createdAt)
 
-            // Check if we should show a date separator before this message
-            const messageDate = new Date(message.createdAt)
-            const prevMessage = index > 0 ? messages[index - 1] : null
-            const showDateSeparator = !prevMessage || isDifferentDay(messageDate, new Date(prevMessage.createdAt))
+              const messageDate = new Date(message.createdAt)
+              const prevMessage = index > 0 ? messages[index - 1] : null
+              const showDateSeparator = !prevMessage || isDifferentDay(messageDate, new Date(prevMessage.createdAt))
 
-            return (
-              <div key={message.id}>
-                {showDateSeparator && (
-                  <div className="flex items-center justify-center py-3">
-                    <span className="text-xs text-muted-foreground px-3 py-1 bg-muted rounded-full">
-                      {formatDateSeparator(messageDate)}
-                    </span>
-                  </div>
-                )}
-                <MessageBubble
-                  message={message}
-                  isOwn={isOwn}
-                  showSeen={showSeen}
-                />
-              </div>
-            )
-          })
+              return (
+                <div
+                  key={message.id}
+                  ref={virtualizer.measureElement}
+                  data-index={virtualItem.index}
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    transform: `translateY(${virtualItem.start}px)`,
+                  }}
+                  className="px-4 py-1.5"
+                >
+                  {showDateSeparator && (
+                    <div className="flex items-center justify-center py-3">
+                      <span className="text-xs text-muted-foreground px-3 py-1 bg-muted rounded-full">
+                        {formatDateSeparator(messageDate)}
+                      </span>
+                    </div>
+                  )}
+                  <MessageBubble
+                    message={message}
+                    isOwn={isOwn}
+                    showSeen={showSeen}
+                  />
+                </div>
+              )
+            })}
+          </div>
         )}
       </div>
 

@@ -41,6 +41,7 @@ export function SearchBar({
   const [debouncedQuery, setDebouncedQuery] = useState('')
   const [isOpen, setIsOpen] = useState(false)
   const [recentSearches, setRecentSearches] = useState<string[]>([])
+  const [activeIndex, setActiveIndex] = useState(-1)
 
   // Debounce search query (300ms)
   useEffect(() => {
@@ -180,6 +181,64 @@ export function SearchBar({
     }
   }, [query, navigate])
 
+  // Build flat list of actionable items for keyboard navigation
+  const isSearchLoading = (isLoading || isLoadingHashtags) && debouncedQuery.length > 0
+  const flatItems = useMemo(() => {
+    const items: Array<{ action: () => void }> = []
+    const hasQuery = query.trim().length > 0
+
+    if (!hasQuery && recentSearches.length > 0) {
+      recentSearches.forEach(search => {
+        items.push({ action: () => handleSelectRecent(search) })
+      })
+    }
+
+    if (hasQuery) {
+      items.push({ action: () => handleSelectRecent(query.trim()) })
+      if (!isSearchLoading) {
+        categoryResults.forEach(cat => items.push({ action: () => handleSelectCategory(cat) }))
+        ;(hashtagResults || []).slice(0, 3).forEach(tag => items.push({ action: () => handleSelectHashtag(tag.slug) }))
+        ;(searchResults?.users || []).slice(0, 5).forEach(user => items.push({ action: () => handleSelectUser(user.usernameSlug) }))
+      }
+      items.push({ action: handleGoToHashtag })
+      items.push({ action: handleGoToQuery })
+    }
+
+    return items
+  }, [query, recentSearches, categoryResults, hashtagResults, searchResults, isSearchLoading, handleSelectRecent, handleSelectCategory, handleSelectHashtag, handleSelectUser, handleGoToHashtag, handleGoToQuery])
+
+  // Reset activeIndex when items change or dropdown closes
+  useEffect(() => {
+    setActiveIndex(-1)
+  }, [flatItems.length, isOpen])
+
+  // Keyboard navigation
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (!isOpen) return
+
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault()
+        setActiveIndex(prev => (prev < flatItems.length - 1 ? prev + 1 : 0))
+        break
+      case 'ArrowUp':
+        e.preventDefault()
+        setActiveIndex(prev => (prev > 0 ? prev - 1 : flatItems.length - 1))
+        break
+      case 'Enter':
+        if (activeIndex >= 0 && activeIndex < flatItems.length) {
+          e.preventDefault()
+          flatItems[activeIndex].action()
+        }
+        break
+      case 'Escape':
+        e.preventDefault()
+        setIsOpen(false)
+        setActiveIndex(-1)
+        break
+    }
+  }, [isOpen, flatItems, activeIndex])
+
   return (
     <div ref={containerRef} className="relative">
       <form onSubmit={handleSubmit}>
@@ -194,10 +253,16 @@ export function SearchBar({
             value={query}
             onChange={handleChange}
             onFocus={handleFocus}
+            onKeyDown={handleKeyDown}
             placeholder={placeholder}
             autoFocus={autoFocus}
             className="pl-10 pr-10 h-11 bg-muted/50 border border-border focus-visible:ring-1 focus-visible:ring-ring rounded-full"
+            role="combobox"
             aria-label="Search"
+            aria-expanded={isOpen}
+            aria-controls="search-results"
+            aria-autocomplete="list"
+            aria-activedescendant={activeIndex >= 0 ? `search-option-${activeIndex}` : undefined}
             autoComplete="off"
           />
 
@@ -206,7 +271,7 @@ export function SearchBar({
             <button
               type="button"
               onClick={handleClear}
-              className="absolute right-3 p-1 text-muted-foreground hover:text-foreground transition-colors"
+              className="absolute right-2 p-1.5 text-muted-foreground hover:text-foreground focus-visible:text-foreground focus-visible:outline-none transition-colors"
               aria-label="Clear search"
             >
               <Icon name="circle-xmark" />
@@ -223,7 +288,8 @@ export function SearchBar({
           users={searchResults?.users || []}
           hashtags={hashtagResults || []}
           categories={categoryResults}
-          isLoading={(isLoading || isLoadingHashtags) && debouncedQuery.length > 0}
+          isLoading={isSearchLoading}
+          activeIndex={activeIndex}
           onSelectUser={handleSelectUser}
           onSelectHashtag={handleSelectHashtag}
           onSelectCategory={handleSelectCategory}

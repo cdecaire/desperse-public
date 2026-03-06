@@ -55,7 +55,7 @@ interface FeedSkeletonProps {
 
 export function FeedSkeleton({ count = 3 }: FeedSkeletonProps) {
   return (
-    <div>
+    <div aria-hidden="true">
       {Array.from({ length: count }).map((_, i) => (
         <PostCardSkeleton key={i} />
       ))}

@@ -602,6 +602,142 @@ export const getFeaturedCreators = createServerFn({
 })
 
 /**
+ * Get a featured creator profile preview for the landing page
+ * Returns one creator (with >= minPosts) plus their recent post thumbnails
+ */
+export const getLandingProfilePreview = createServerFn({
+  method: 'GET',
+}).handler(async () => {
+  try {
+    const minPosts = 3
+
+    // Find top creator with enough posts
+    const postCounts = db
+      .select({
+        userId: posts.userId,
+        count: count().as('post_count'),
+      })
+      .from(posts)
+      .where(
+        and(
+          excludeDevPosts(),
+          eq(posts.isDeleted, false),
+          eq(posts.isHidden, false)
+        )
+      )
+      .groupBy(posts.userId)
+      .as('post_counts')
+
+    const followerCounts = db
+      .select({
+        userId: follows.followingId,
+        count: count().as('follower_count'),
+      })
+      .from(follows)
+      .groupBy(follows.followingId)
+      .as('follower_counts')
+
+    const collectsByCreator = db
+      .select({
+        creatorId: posts.userId,
+        count: count().as('collect_count'),
+      })
+      .from(collections)
+      .innerJoin(posts, eq(collections.postId, posts.id))
+      .where(eq(collections.status, 'confirmed'))
+      .groupBy(posts.userId)
+      .as('collects_by_creator')
+
+    const topCreators = await db
+      .select({
+        id: users.id,
+        usernameSlug: users.usernameSlug,
+        displayName: users.displayName,
+        avatarUrl: users.avatarUrl,
+        headerBgUrl: users.headerBgUrl,
+        bio: users.bio,
+        followerCount: sql<number>`COALESCE(${followerCounts.count}, 0)`.as('follower_count'),
+        postCount: sql<number>`COALESCE(${postCounts.count}, 0)`.as('post_count'),
+        mintCount: sql<number>`COALESCE(${collectsByCreator.count}, 0)`.as('mint_count'),
+      })
+      .from(users)
+      .leftJoin(postCounts, eq(users.id, postCounts.userId))
+      .leftJoin(followerCounts, eq(users.id, followerCounts.userId))
+      .leftJoin(collectsByCreator, eq(users.id, collectsByCreator.creatorId))
+      .where(
+        and(
+          sql`COALESCE(${postCounts.count}, 0) >= ${minPosts}`,
+          isNotNull(users.avatarUrl),
+        )
+      )
+      .orderBy(
+        // Engagement quality: mints-per-post ratio + followers, not raw volume
+        desc(sql`
+          CASE WHEN COALESCE(${postCounts.count}, 0) > 0
+            THEN COALESCE(${collectsByCreator.count}, 0)::float / COALESCE(${postCounts.count}, 0)
+            ELSE 0
+          END * 10 +
+          COALESCE(${followerCounts.count}, 0) +
+          COALESCE(${collectsByCreator.count}, 0)
+        `)
+      )
+      .limit(5)
+
+    if (topCreators.length === 0) {
+      return { success: false, creator: null, posts: [] }
+    }
+
+    // Pick a random creator from the top pool
+    const creator = topCreators[Math.floor(Math.random() * topCreators.length)]!
+
+    // Get their 9 most recent posts (for a 3x3 grid)
+    const recentPosts = await db
+      .select({
+        id: posts.id,
+        mediaUrl: posts.mediaUrl,
+        coverUrl: posts.coverUrl,
+        caption: posts.caption,
+      })
+      .from(posts)
+      .where(
+        and(
+          eq(posts.userId, creator.id),
+          eq(posts.isDeleted, false),
+          eq(posts.isHidden, false),
+          isNotNull(posts.mediaUrl),
+          excludeDevPosts()
+        )
+      )
+      .orderBy(desc(posts.createdAt))
+      .limit(9)
+
+    return {
+      success: true,
+      creator: {
+        id: creator.id,
+        usernameSlug: creator.usernameSlug,
+        displayName: creator.displayName,
+        avatarUrl: creator.avatarUrl,
+        headerBgUrl: creator.headerBgUrl,
+        bio: creator.bio,
+        followerCount: Number(creator.followerCount) || 0,
+        postCount: Number(creator.postCount) || 0,
+        mintCount: Number(creator.mintCount) || 0,
+      },
+      posts: recentPosts.map(p => ({
+        id: p.id,
+        mediaUrl: p.mediaUrl!,
+        coverUrl: p.coverUrl,
+        caption: p.caption,
+      })),
+    }
+  } catch (error) {
+    console.error('Error in getLandingProfilePreview:', error)
+    return { success: false, creator: null, posts: [] }
+  }
+})
+
+/**
  * Search users and posts
  * Users: searches username_slug and display_name
  * Posts: searches caption and creator name

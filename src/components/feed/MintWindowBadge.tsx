@@ -101,7 +101,7 @@ export function MintWindowBadge({
 				className,
 			)}
 		>
-			<Icon name={iconMap[status.phase]} className="text-[10px]" />
+			<Icon name={iconMap[status.phase]} className="text-[10px]" aria-hidden="true" />
 			<span>{status.label}</span>
 			{status.phase === "ended" &&
 				mintedCount !== undefined &&

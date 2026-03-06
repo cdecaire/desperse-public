@@ -20,6 +20,8 @@ interface CommentButtonProps {
   variant?: 'default' | 'ghost' | 'outline'
   /** Show count inline or separate */
   showCount?: boolean
+  /** When provided, renders as a button instead of a Link */
+  onClick?: () => void
 }
 
 export function CommentButton({
@@ -27,9 +29,21 @@ export function CommentButton({
   className,
   variant = 'ghost',
   showCount = true,
+  onClick,
 }: CommentButtonProps) {
   const { data: commentCount, isLoading } = useCommentCount(postId)
   const { isAuthenticated, isReady } = useAuth()
+
+  const countContent = (
+    <>
+      {showCount && commentCount !== undefined && commentCount > 0 && (
+        <span className="text-sm font-medium">{commentCount}</span>
+      )}
+      {isLoading && commentCount === undefined && (
+        <span className="text-sm font-medium">-</span>
+      )}
+    </>
+  )
 
   // For unauthenticated users, show disabled button
   if (isReady && !isAuthenticated) {
@@ -38,14 +52,26 @@ export function CommentButton({
         variant={variant}
         className={cn('gap-1 px-2', className)}
         disabled
+        title="Sign in to comment"
+        aria-label="Comment (sign in required)"
       >
         <Icon name="comment" variant="regular" className="text-base" />
-        {showCount && commentCount !== undefined && commentCount > 0 && (
-          <span className="text-sm font-medium">{commentCount}</span>
-        )}
-        {isLoading && commentCount === undefined && (
-          <span className="text-sm font-medium">-</span>
-        )}
+        {countContent}
+      </Button>
+    )
+  }
+
+  // When onClick is provided, render as a button (used for sheet trigger)
+  if (onClick) {
+    return (
+      <Button
+        variant={variant}
+        className={cn('gap-1 px-2', className)}
+        onClick={onClick}
+        aria-label="Open comments"
+      >
+        <Icon name="comment" variant="regular" className="text-base" />
+        {countContent}
       </Button>
     )
   }
@@ -61,12 +87,7 @@ export function CommentButton({
         className="gap-1 px-2"
       >
         <Icon name="comment" variant="regular" className="text-base" />
-        {showCount && commentCount !== undefined && commentCount > 0 && (
-          <span className="text-sm font-medium">{commentCount}</span>
-        )}
-        {isLoading && commentCount === undefined && (
-          <span className="text-sm font-medium">-</span>
-        )}
+        {countContent}
       </Button>
     </Link>
   )

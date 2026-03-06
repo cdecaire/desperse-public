@@ -114,6 +114,14 @@ export default function AppShell({ children }: AppShellProps) {
         {/* Global route transition progress bar */}
         <RouteProgressBar />
 
+        {/* Skip to content link for keyboard/screen reader users */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:text-sm focus:font-medium"
+        >
+          Skip to content
+        </a>
+
         {/* Network and RPC status banners */}
         <NetworkBanner />
         <RpcHealthBanner />
@@ -127,7 +135,7 @@ export default function AppShell({ children }: AppShellProps) {
 
           {/* Main Content Area */}
           {/* PWA safe-area: TopNav has paddingTop for safe-area, so main content needs to account for both header height (3.5rem/56px) AND safe-area */}
-          <main className={`flex-1 min-w-0 lg:ml-64 pb-16 lg:pb-0 px-0 overflow-x-hidden ${hasCustomMobileHeader ? '' : 'pt-topnav-safe'}`}>
+          <main id="main-content" className={`flex-1 min-w-0 lg:ml-64 pb-16 lg:pb-0 px-0 overflow-x-hidden ${hasCustomMobileHeader ? '' : 'pt-topnav-safe'}`}>
             <div className={mainContainerClass}>{children}</div>
           </main>
         </div>

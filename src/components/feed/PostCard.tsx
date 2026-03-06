@@ -12,12 +12,13 @@ import { CollectButton } from './CollectButton'
 import { BuyButton } from './BuyButton'
 import { LikeButton } from './LikeButton'
 import { CommentButton } from './CommentButton'
+import { CommentSheet } from './CommentSheet'
 import { PostCardMenu } from './PostCardMenu'
 import { PriceTooltip } from './PriceTooltip'
 import { useCommentCount } from '@/hooks/useComments'
 import { useCreateReport } from '@/hooks/useReports'
 import { dmEligibilityQueryKey } from '@/hooks/useDmEligibility'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, memo } from 'react'
 import { getPostDisplayState, getEditionLabel, POST_TYPE_COLORS } from './postDisplay'
 import { POST_TYPE_META } from '@/constants/postTypes'
 import { type Category, isPresetCategory, categoryToSlug } from '@/constants/categories'
@@ -216,6 +217,7 @@ export function PostCard({
   const [localCollectCount, setLocalCollectCount] = useState(post.collectCount ?? 0)
   const [localEditionSupply, setLocalEditionSupply] = useState(post.currentSupply ?? 0)
   const [localIsOwned, setLocalIsOwned] = useState(!!post.isCollected)
+  const [commentSheetOpen, setCommentSheetOpen] = useState(false)
   
   // Get comment count
   const { data: commentCount } = useCommentCount(post.id)
@@ -254,16 +256,30 @@ export function PostCard({
     localEditionSupply,
   })
 
+  // Track visibility for pausing countdowns when off-screen
+  const articleRef = useRef<HTMLElement>(null)
+  const [isVisible, setIsVisible] = useState(true)
+  useEffect(() => {
+    const el = articleRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      { threshold: 0 }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
   // Live clock for timed edition countdowns (ticks every 30s when needed)
   const [now, setNow] = useState(() => new Date())
   const hasMintWindow = post.type === 'edition' && (post.mintWindowStart || post.mintWindowEnd)
   useEffect(() => {
-    if (!hasMintWindow) return
+    if (!hasMintWindow || !isVisible) return
     const result = getMintTimeLabel(post.mintWindowStart, post.mintWindowEnd, new Date())
     if (!result?.isLive) return
     const id = setInterval(() => setNow(new Date()), 30_000)
     return () => clearInterval(id)
-  }, [hasMintWindow, post.mintWindowStart, post.mintWindowEnd])
+  }, [hasMintWindow, isVisible, post.mintWindowStart, post.mintWindowEnd])
 
   // Time-aware pill text for timed editions
   const mintTimeResult = post.type === 'edition'
@@ -355,7 +371,7 @@ export function PostCard({
   const postTypeColor = POST_TYPE_COLORS[post.type]
 
   return (
-    <article className={cn('rounded-lg group', isPreview ? '' : 'mx-4 md:mx-0', className)}>
+    <article ref={articleRef} className={cn('rounded-lg group', isPreview ? '' : 'mx-4 md:mx-0', className)}>
       {/* Header */}
       {showHeader && user && (
         <div className="flex items-center gap-3 px-4 py-2 md:px-2 md:py-3">
@@ -530,8 +546,8 @@ export function PostCard({
         <div className={cn('px-4 md:px-2 space-y-2', isPreview ? 'pt-3 pb-0' : 'py-2 md:py-3')}>
           {/* Action Buttons Row */}
           {!isPreview && (
-          <div className="flex items-center justify-between gap-0.5">
-            <div className="flex items-center gap-0.5">
+          <div className="flex items-center justify-between gap-1">
+            <div className="flex items-center gap-1">
               <LikeButton
                 postId={post.id}
                 userId={currentUserId || undefined}
@@ -539,11 +555,23 @@ export function PostCard({
                 variant="ghost"
                 showCount={true}
               />
-              <CommentButton
-                postId={post.id}
-                variant="ghost"
-                showCount={true}
-              />
+              {/* Mobile: open comment sheet */}
+              <div className="lg:hidden">
+                <CommentButton
+                  postId={post.id}
+                  variant="ghost"
+                  showCount={true}
+                  onClick={() => setCommentSheetOpen(true)}
+                />
+              </div>
+              {/* Desktop: link to post detail */}
+              <div className="hidden lg:block">
+                <CommentButton
+                  postId={post.id}
+                  variant="ghost"
+                  showCount={true}
+                />
+              </div>
             </div>
           
           {/* Collect/Buy Button */}
@@ -623,12 +651,14 @@ export function PostCard({
               {isLongCaption && !isCaptionExpanded && '... '}
             </span>
             {isLongCaption && !isCaptionExpanded && (
-              <span
+              <button
+                type="button"
                 onClick={() => setIsCaptionExpanded(true)}
-                className="text-muted-foreground ml-1 cursor-pointer no-hover-bg"
+                className="text-muted-foreground ml-1 cursor-pointer no-hover-bg bg-transparent border-none p-0 text-inherit font-inherit"
+                aria-label="Expand caption"
               >
                 more
-              </span>
+              </button>
             )}
           </div>
         )}
@@ -679,9 +709,20 @@ export function PostCard({
         )}
         </div>
       )}
+
+      {/* Mobile comment bottom sheet */}
+      {!isPreview && (
+        <CommentSheet
+          postId={post.id}
+          userId={currentUserId}
+          isAuthenticated={isAuthenticated}
+          open={commentSheetOpen}
+          onOpenChange={setCommentSheetOpen}
+        />
+      )}
     </article>
   )
 }
 
-export default PostCard
+export default memo(PostCard)
 

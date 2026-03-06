@@ -117,7 +117,7 @@ export default function Sidebar() {
         <span
           className={`${sizeClasses} rounded-full overflow-hidden bg-muted/60 flex items-center justify-center`}
         >
-          <img src={profileAvatar} alt="Profile avatar" className="w-full h-full object-cover" loading="lazy" />
+          <img src={profileAvatar} alt={currentUser?.displayName ?? "Your profile"} className="w-full h-full object-cover" loading="lazy" />
         </span>
       )
     }

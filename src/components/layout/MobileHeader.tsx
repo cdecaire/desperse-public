@@ -44,7 +44,7 @@ export function MobileHeader({
 			className={`md:hidden fixed top-0 left-0 right-0 z-40 w-full border-b bg-background ${className}`}
 			style={{ paddingTop: "env(safe-area-inset-top)" }}
 		>
-			<div className="grid grid-cols-3 items-center h-14 px-4">
+			<div className="grid grid-cols-3 items-center min-h-14 px-4">
 				{/* Left: Back button or spacer */}
 				<div className="flex items-center">
 					{showBackButton && (

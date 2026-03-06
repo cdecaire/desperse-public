@@ -136,11 +136,15 @@ export function PostMedia({
   const [audioProgress, setAudioProgress] = useState(0)
   const [audioDuration, setAudioDuration] = useState(0)
   const [audioCurrentTime, setAudioCurrentTime] = useState(0)
-  const [_isInView, setIsInView] = useState(false)
   const [wasManuallyPlayed, setWasManuallyPlayed] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
   const audioRef = useRef<HTMLAudioElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
+  // Refs for IntersectionObserver callback — avoids recreating observer on state changes
+  const isMutedRef = useRef(isMuted)
+  const wasManuallyPlayedRef = useRef(wasManuallyPlayed)
+  isMutedRef.current = isMuted
+  wasManuallyPlayedRef.current = wasManuallyPlayed
   
   // Hook for gated downloads
   const { downloadProtectedAsset, isAuthenticating } = useGatedDownload()
@@ -196,20 +200,15 @@ export function PostMedia({
           if (!video) return
 
           if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
-            // Video is in view and at least 50% visible
-            setIsInView(true)
             // Auto-play muted videos when they come into view (only if not manually paused)
-            if (isMuted && !wasManuallyPlayed) {
+            if (isMutedRef.current && !wasManuallyPlayedRef.current) {
               video.play().catch(() => {
                 // Auto-play failed (likely due to browser policy)
-                // This is expected on some browsers/devices
               })
             }
           } else {
-            // Video is out of view or less than 50% visible
-            setIsInView(false)
             // Only auto-pause if it was auto-played (not manually played)
-            if (!wasManuallyPlayed && !video.paused) {
+            if (!wasManuallyPlayedRef.current && !video.paused) {
               video.pause()
             }
           }
@@ -226,7 +225,7 @@ export function PostMedia({
     return () => {
       observer.disconnect()
     }
-  }, [mediaType, isMuted, wasManuallyPlayed])
+  }, [mediaType])
 
   const handleAudioPlayPause = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -322,7 +321,7 @@ export function PostMedia({
                 ? 'w-full h-full object-contain relative z-10'
                 : isExtraTall
                   ? 'max-w-full max-h-full w-auto h-auto object-contain relative z-10'
-                  : 'w-full h-full object-cover',
+                  : 'w-full',
               isLoaded ? 'opacity-100' : 'opacity-0'
             )}
             onLoad={handleImageLoad}
@@ -442,7 +441,7 @@ export function PostMedia({
                   ? 'w-full h-full object-contain relative z-10'
                   : isExtraTall
                     ? 'max-w-full max-h-full w-auto h-auto object-contain relative z-10'
-                    : 'w-full h-full object-cover'
+                    : 'w-full'
               )}
               preload="auto"
               playsInline
@@ -545,7 +544,7 @@ export function PostMedia({
               ? 'w-full h-full object-contain relative z-10'
               : isExtraTall
                 ? 'max-w-full max-h-full w-auto h-auto object-contain relative z-10'
-                : 'w-full h-full object-cover',
+                : 'w-full',
             !isPlaying && coverUrl && 'opacity-0', // Hide video when poster overlay is showing
             hasError && 'hidden' // Hide video element when there's an error
           )}
@@ -684,7 +683,7 @@ export function PostMedia({
                   ? 'w-full h-full object-contain relative z-10'
                   : isExtraTall
                     ? 'max-w-full max-h-full w-auto h-auto object-contain relative z-10'
-                    : 'w-full h-full object-cover',
+                    : 'w-full',
                 isLoaded ? 'opacity-100' : 'opacity-0'
               )}
               onLoad={handleAudioCoverLoad}
@@ -778,7 +777,7 @@ export function PostMedia({
                 ? 'w-full h-full object-contain relative z-10'
                 : isExtraTall
                   ? 'max-w-full max-h-full w-auto h-auto object-contain relative z-10'
-                  : 'w-full h-full object-cover'
+                  : 'w-full'
             )}
             onLoad={handleAudioCoverLoad}
           />
@@ -946,7 +945,7 @@ export function PostMedia({
                 ? 'w-full h-full object-contain relative z-10'
                 : isExtraTall
                   ? 'max-w-full max-h-full w-auto h-auto object-contain relative z-10'
-                  : 'w-full h-full object-cover'
+                  : 'w-full'
             )}
             onLoad={handleDocCoverLoad}
           />
@@ -966,7 +965,7 @@ export function PostMedia({
             {/* Status pill (Sold, Sold Out) */}
             {statusPillText && (
               <div
-                className="inline-flex items-center h-6 px-3 rounded-full font-semibold backdrop-blur-sm text-white text-[10px] tracking-[0.2px]"
+                className="inline-flex items-center h-6 px-3 rounded-full font-semibold backdrop-blur-sm text-white text-[10px] tracking-[0.2px] drop-shadow-[0_1px_1px_rgba(0,0,0,0.3)]"
                 style={{ backgroundColor: statusPillColor }}
               >
                 {statusPillText}
@@ -1029,7 +1028,7 @@ export function PostMedia({
             {/* Status pill (Sold, Sold Out) */}
             {statusPillText && (
               <div
-                className="inline-flex items-center h-6 px-3 rounded-full font-semibold backdrop-blur-sm text-white text-[10px] tracking-[0.2px]"
+                className="inline-flex items-center h-6 px-3 rounded-full font-semibold backdrop-blur-sm text-white text-[10px] tracking-[0.2px] drop-shadow-[0_1px_1px_rgba(0,0,0,0.3)]"
                 style={{ backgroundColor: statusPillColor }}
               >
                 {statusPillText}

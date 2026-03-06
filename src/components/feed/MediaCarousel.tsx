@@ -252,6 +252,8 @@ export function MediaCarousel({
         <div className="relative w-full h-full flex items-center justify-center">
           <img
             src={optimizedProps.src}
+            srcSet={optimizedProps.srcSet || undefined}
+            sizes={optimizedProps.sizes || undefined}
             alt=""
             aria-hidden="true"
             className="absolute inset-0 w-full h-full object-cover blur-2xl scale-110 opacity-60"
@@ -273,6 +275,8 @@ export function MediaCarousel({
       <div className="relative w-full h-full">
         <img
           src={optimizedProps.src}
+          srcSet={optimizedProps.srcSet || undefined}
+          sizes={optimizedProps.sizes || undefined}
           alt=""
           aria-hidden="true"
           className="absolute inset-0 w-full h-full object-cover blur-2xl scale-110 opacity-60"
@@ -328,10 +332,7 @@ export function MediaCarousel({
     >
       {/* Slides track - transforms for navigation */}
       <div
-        className={cn(
-          'flex',
-          contained ? 'h-full' : 'h-full'
-        )}
+        className="flex h-full"
         style={{
           transform: trackTransform,
           transition: isAnimating ? 'transform 300ms ease-out' : 'none',
@@ -364,9 +365,9 @@ export function MediaCarousel({
 
       {/* Video indicator for current slide */}
       {getMediaType(currentAsset?.mimeType || '') === 'video' && (
-        <div className="absolute top-2 right-2 pointer-events-none z-20">
+        <div className="absolute top-2 right-2 pointer-events-none z-20" aria-label="Video" role="img">
           <div className="w-6 h-6 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center">
-            <Icon name="play" className="text-[10px] text-white" />
+            <Icon name="play" className="text-[10px] text-white" aria-hidden="true" />
           </div>
         </div>
       )}
@@ -434,6 +435,7 @@ export function MediaCarousel({
                 className={cn(
                   'w-1.5 h-1.5 rounded-full transition-all duration-200',
                   'focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-1',
+                  'shadow-[0_0_2px_rgba(0,0,0,0.5)]',
                   index === currentIndex
                     ? 'bg-white w-2.5'
                     : 'bg-white/50 hover:bg-white/75'

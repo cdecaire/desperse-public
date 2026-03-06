@@ -22,6 +22,7 @@ import { uploadToBlob, SUPPORTED_IMAGE_TYPES } from '@/server/storage/blob'
 import { isModeratorOrAdmin } from '@/server/utils/auth-helpers'
 import { withAuth, withOptionalAuth } from '@/server/auth'
 import { excludeDevPosts } from '@/server/utils/dev-posts'
+import { getPostCollectorsListDirect } from '@/server/utils/follows'
 
 // Shared schemas
 const cursorSchema = z.object({
@@ -1028,6 +1029,51 @@ export const getCollectorsList = createServerFn({
       error: error instanceof Error ? error.message : 'Failed to fetch collectors list.',
     }
   }
+})
+
+/**
+ * Get list of collectors for a specific post
+ * Delegates to getPostCollectorsListDirect in utils/follows.ts
+ */
+const postCollectorsSchema = z.object({
+	postId: z.string(),
+	currentUserId: z.string().optional(),
+})
+
+export const getPostCollectorsList = createServerFn({
+	method: 'GET',
+}).handler(async (input: unknown) => {
+	try {
+		const rawData = input && typeof input === 'object' && 'data' in input
+			? (input as { data: unknown }).data
+			: input
+
+		const { postId, currentUserId } = postCollectorsSchema.parse(rawData)
+
+		const result = await getPostCollectorsListDirect(postId, currentUserId, undefined, 100)
+
+		if (!result.success) {
+			return { success: false, status: 500, error: result.error }
+		}
+
+		return {
+			success: true,
+			collectors: (result.users || []).map((u) => ({
+				id: u.id,
+				usernameSlug: u.slug,
+				displayName: u.displayName,
+				avatarUrl: u.avatarUrl,
+				isFollowingBack: u.isFollowing || false,
+			})),
+		}
+	} catch (error) {
+		console.error('[getPostCollectorsList] Error:', error)
+		return {
+			success: false,
+			status: 500,
+			error: error instanceof Error ? error.message : 'Failed to fetch post collectors.',
+		}
+	}
 })
 
 /**

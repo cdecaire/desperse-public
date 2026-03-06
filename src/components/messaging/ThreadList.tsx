@@ -1,9 +1,10 @@
 /**
  * ThreadList Component
- * List of conversations with infinite scroll
+ * List of conversations with virtualized infinite scroll
  */
 
 import { useEffect, useRef, useCallback } from 'react'
+import { useVirtualizer } from '@tanstack/react-virtual'
 import { ThreadItem } from './ThreadItem'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { Icon } from '@/components/ui/icon'
@@ -28,6 +29,7 @@ export function ThreadList({
   isFetchingMore,
   onLoadMore,
 }: ThreadListProps) {
+  const parentRef = useRef<HTMLDivElement>(null)
   const observerRef = useRef<HTMLDivElement>(null)
 
   // Infinite scroll observer
@@ -53,6 +55,13 @@ export function ThreadList({
     return () => observer.disconnect()
   }, [handleObserver])
 
+  const virtualizer = useVirtualizer({
+    count: threads.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 72,
+    overscan: 3,
+  })
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-8">
@@ -76,15 +85,38 @@ export function ThreadList({
   }
 
   return (
-    <div className="flex flex-col p-1">
-      {threads.map((thread) => (
-        <ThreadItem
-          key={thread.id}
-          thread={thread}
-          isActive={thread.id === activeThreadId}
-          onClick={() => onSelectThread(thread)}
-        />
-      ))}
+    <div ref={parentRef} className="flex flex-col p-1 overflow-y-auto" role="list" aria-label="Conversations" style={{ height: '100%' }}>
+      <div
+        style={{
+          height: `${virtualizer.getTotalSize()}px`,
+          width: '100%',
+          position: 'relative',
+        }}
+      >
+        {virtualizer.getVirtualItems().map((virtualItem) => {
+          const thread = threads[virtualItem.index]
+          return (
+            <div
+              key={thread.id}
+              ref={virtualizer.measureElement}
+              data-index={virtualItem.index}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                transform: `translateY(${virtualItem.start}px)`,
+              }}
+            >
+              <ThreadItem
+                thread={thread}
+                isActive={thread.id === activeThreadId}
+                onClick={() => onSelectThread(thread)}
+              />
+            </div>
+          )
+        })}
+      </div>
 
       {/* Load more trigger */}
       <div ref={observerRef} className="h-1" />

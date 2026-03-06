@@ -92,8 +92,8 @@ function CommentItem({ comment, currentUserId, onDelete, isDeleting, onReportSub
   const [isHovered, setIsHovered] = useState(false)
 
   return (
-    <div 
-      className="flex items-start gap-3 py-2 group"
+    <div
+      className="flex items-start gap-3 py-2 group relative"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -127,7 +127,7 @@ function CommentItem({ comment, currentUserId, onDelete, isDeleting, onReportSub
               · {formatRelativeTime(comment.createdAt)}
             </span>
           </div>
-          <div className={cn('transition-opacity duration-200', isHovered ? 'opacity-100' : 'opacity-0')}>
+          <div className={cn('transition-opacity duration-200', isHovered ? 'opacity-100' : 'opacity-0 focus-within:opacity-100')}>
             <CommentMenu
               commentId={comment.id}
               commentUserId={comment.userId}
@@ -241,22 +241,37 @@ export function CommentSection({
   }
 
   // Shared form JSX - rendered inline to avoid focus loss on re-render
-  const renderCommentForm = (isCompact: boolean) => (
-    <form onSubmit={handleSubmit} className="space-y-2">
-      <MentionAutocomplete
-        value={commentText}
-        onChange={setCommentText}
-        placeholder="Add a comment..."
-        className={cn(
-          'resize-none',
-          isCompact ? 'min-h-[44px]' : 'min-h-[60px]',
-          isOverLimit && 'border-destructive focus-visible:ring-destructive'
-        )}
-        maxLength={MAX_COMMENT_LENGTH}
-        disabled={isSubmitting}
-      />
-      <div className="flex items-center justify-end gap-2">
-        {characterCount >= 250 && (
+  const renderCommentForm = () => (
+    <form onSubmit={handleSubmit}>
+      <div className="flex items-end gap-2">
+        <div className="flex-1 min-w-0">
+          <MentionAutocomplete
+            value={commentText}
+            onChange={setCommentText}
+            placeholder="Add a comment..."
+            className={cn(
+              'resize-none min-h-[40px]',
+              isOverLimit && 'border-destructive focus-visible:ring-destructive'
+            )}
+            maxLength={MAX_COMMENT_LENGTH}
+            disabled={isSubmitting}
+          />
+        </div>
+        <Button
+          type="submit"
+          variant="ghost"
+          disabled={!canSubmit || isSubmitting}
+          className="shrink-0 font-semibold text-primary px-3"
+        >
+          {isSubmitting ? (
+            <LoadingSpinner size="sm" />
+          ) : (
+            'Post'
+          )}
+        </Button>
+      </div>
+      {characterCount >= 250 && (
+        <div className="flex items-center justify-end mt-1">
           <span
             className={cn(
               'text-xs',
@@ -265,24 +280,10 @@ export function CommentSection({
           >
             {characterCount}/{MAX_COMMENT_LENGTH}
           </span>
-        )}
-        <Button
-          type="submit"
-          variant="outline"
-          disabled={!canSubmit || isSubmitting}
-        >
-          {isSubmitting ? (
-            <>
-              <LoadingSpinner size="sm" className="mr-2" />
-              Posting...
-            </>
-          ) : (
-            'Post'
-          )}
-        </Button>
-      </div>
+        </div>
+      )}
       {isOverLimit && (
-        <p className="text-xs text-destructive">
+        <p className="text-xs text-destructive mt-1">
           Comment must be {MAX_COMMENT_LENGTH} characters or less.
         </p>
       )}
@@ -328,7 +329,7 @@ export function CommentSection({
   if (variant === 'input-only') {
     return (
       <div className={className}>
-        {renderCommentForm(true)}
+        {renderCommentForm()}
       </div>
     )
   }
@@ -361,7 +362,7 @@ export function CommentSection({
               Sign in to comment
             </Button>
           ) : (
-            renderCommentForm(false)
+            renderCommentForm()
           )}
         </div>
       </div>

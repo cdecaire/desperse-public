@@ -26,6 +26,7 @@ interface SearchDropdownProps {
   hashtags: SearchHashtag[]
   categories: string[]
   isLoading: boolean
+  activeIndex?: number
   onSelectUser: (usernameSlug: string) => void
   onSelectHashtag: (tagSlug: string) => void
   onSelectCategory: (categorySlug: string) => void
@@ -43,6 +44,7 @@ export function SearchDropdown({
   hashtags,
   categories,
   isLoading,
+  activeIndex = -1,
   onSelectUser,
   onSelectHashtag,
   onSelectCategory,
@@ -64,8 +66,11 @@ export function SearchDropdown({
     return null
   }
 
+  // Track option index for ARIA active-descendant
+  let optionIndex = 0
+
   return (
-    <div className="absolute top-full left-0 right-0 mt-1 bg-background border border-border rounded-xl shadow-lg overflow-hidden z-50">
+    <div id="search-results" role="listbox" className="absolute top-full left-0 right-0 mt-1 bg-background border border-border rounded-xl shadow-lg overflow-hidden z-50">
       {/* Recent searches section - only show when no query */}
       {!hasQuery && hasRecentSearches && (
         <div>
@@ -73,17 +78,23 @@ export function SearchDropdown({
             <span className="text-sm font-semibold text-foreground">Recent</span>
             <button
               onClick={onClearAllRecent}
-              className="text-xs text-primary hover:text-primary/80 transition-colors"
+              className="text-xs text-primary hover:text-primary/80 focus-visible:outline-none focus-visible:underline transition-colors"
+              aria-label="Clear all recent searches"
             >
               Clear all
             </button>
           </div>
           <div className="py-1">
-            {recentSearches.map((search) => (
+            {recentSearches.map((search) => {
+              const idx = optionIndex++
+              return (
               <button
                 key={search}
+                id={`search-option-${idx}`}
+                role="option"
+                aria-selected={idx === activeIndex}
                 onClick={() => onSelectRecent(search)}
-                className="w-full flex items-center gap-3 px-4 py-2.5 mx-1 rounded-lg hover:bg-accent transition-colors text-left"
+                className={`w-full flex items-center gap-3 px-4 py-2.5 mx-1 rounded-lg hover:bg-accent focus-visible:bg-accent focus-visible:outline-none transition-colors text-left ${idx === activeIndex ? 'bg-accent' : ''}`}
                 style={{ width: 'calc(100% - 8px)' }}
               >
                 <Icon name="clock" variant="regular" className="text-muted-foreground w-5 text-center" />
@@ -96,7 +107,7 @@ export function SearchDropdown({
                   <Icon name="xmark" className="text-xs" />
                 </button>
               </button>
-            ))}
+            )})}
           </div>
         </div>
       )}
@@ -105,15 +116,20 @@ export function SearchDropdown({
       {hasQuery && (
         <>
           {/* Search for query option */}
+          {(() => { const idx = optionIndex++; return (
           <button
+            id={`search-option-${idx}`}
+            role="option"
+            aria-selected={idx === activeIndex}
             onClick={() => onSelectRecent(query)}
-            className="w-full flex items-center gap-3 px-4 py-3 hover:bg-accent transition-colors text-left border-b border-border/50"
+            className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-accent focus-visible:bg-accent focus-visible:outline-none transition-colors text-left border-b border-border/50 ${idx === activeIndex ? 'bg-accent' : ''}`}
           >
             <Icon name="magnifying-glass" variant="regular" className="text-muted-foreground w-5 text-center" />
             <span className="text-sm text-foreground">
               Search for "<span className="font-semibold">{query}</span>"
             </span>
           </button>
+          ); })()}
 
           {/* Loading state */}
           {isLoading && (
@@ -125,11 +141,16 @@ export function SearchDropdown({
           {/* Category results */}
           {!isLoading && hasCategoryResults && (
             <div className="py-1">
-              {categories.map((category) => (
+              {categories.map((category) => {
+                const idx = optionIndex++
+                return (
                 <button
                   key={category}
+                  id={`search-option-${idx}`}
+                  role="option"
+                  aria-selected={idx === activeIndex}
                   onClick={() => onSelectCategory(category)}
-                  className="w-full flex items-center gap-3 px-4 py-2.5 mx-1 rounded-lg hover:bg-accent transition-colors text-left"
+                  className={`w-full flex items-center gap-3 px-4 py-2.5 mx-1 rounded-lg hover:bg-accent transition-colors text-left ${idx === activeIndex ? 'bg-accent' : ''}`}
                   style={{ width: 'calc(100% - 8px)' }}
                 >
                   {/* Category icon */}
@@ -147,18 +168,23 @@ export function SearchDropdown({
                     </div>
                   </div>
                 </button>
-              ))}
+              )})}
             </div>
           )}
 
           {/* Hashtag results */}
           {!isLoading && hasHashtagResults && (
             <div className="py-1">
-              {hashtags.slice(0, 3).map((tag) => (
+              {hashtags.slice(0, 3).map((tag) => {
+                const idx = optionIndex++
+                return (
                 <button
                   key={tag.id}
+                  id={`search-option-${idx}`}
+                  role="option"
+                  aria-selected={idx === activeIndex}
                   onClick={() => onSelectHashtag(tag.slug)}
-                  className="w-full flex items-center gap-3 px-4 py-2.5 mx-1 rounded-lg hover:bg-accent transition-colors text-left"
+                  className={`w-full flex items-center gap-3 px-4 py-2.5 mx-1 rounded-lg hover:bg-accent transition-colors text-left ${idx === activeIndex ? 'bg-accent' : ''}`}
                   style={{ width: 'calc(100% - 8px)' }}
                 >
                   {/* Hashtag icon */}
@@ -178,18 +204,23 @@ export function SearchDropdown({
                     </div>
                   </div>
                 </button>
-              ))}
+              )})}
             </div>
           )}
 
           {/* User results */}
           {!isLoading && hasUserResults && (
             <div className="py-1">
-              {users.slice(0, 5).map((user) => (
+              {users.slice(0, 5).map((user) => {
+                const idx = optionIndex++
+                return (
                 <button
                   key={user.id}
+                  id={`search-option-${idx}`}
+                  role="option"
+                  aria-selected={idx === activeIndex}
                   onClick={() => onSelectUser(user.usernameSlug)}
-                  className="w-full flex items-center gap-3 px-4 py-2.5 mx-1 rounded-lg hover:bg-accent transition-colors text-left"
+                  className={`w-full flex items-center gap-3 px-4 py-2.5 mx-1 rounded-lg hover:bg-accent transition-colors text-left ${idx === activeIndex ? 'bg-accent' : ''}`}
                   style={{ width: 'calc(100% - 8px)' }}
                 >
                   {/* Avatar */}
@@ -217,7 +248,7 @@ export function SearchDropdown({
                     </div>
                   </div>
                 </button>
-              ))}
+              )})}
             </div>
           )}
 
@@ -229,30 +260,36 @@ export function SearchDropdown({
           )}
 
           {/* Go to #hashtag option */}
-          {query.length > 0 && (
+          {query.length > 0 && (() => { const idx = optionIndex++; return (
             <button
+              id={`search-option-${idx}`}
+              role="option"
+              aria-selected={idx === activeIndex}
               onClick={onGoToHashtag}
-              className="w-full flex items-center gap-3 px-4 py-3 hover:bg-accent transition-colors text-left border-t border-border/50"
+              className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-accent focus-visible:bg-accent focus-visible:outline-none transition-colors text-left border-t border-border/50 ${idx === activeIndex ? 'bg-accent' : ''}`}
             >
               <Icon name="hashtag" className="text-muted-foreground w-5 text-center" />
               <span className="text-sm text-primary">
                 Go to #{query.replace(/^#/, '').toLowerCase()}
               </span>
             </button>
-          )}
+          ); })()}
 
           {/* Go to @query option */}
-          {query.length > 0 && (
+          {query.length > 0 && (() => { const idx = optionIndex++; return (
             <button
+              id={`search-option-${idx}`}
+              role="option"
+              aria-selected={idx === activeIndex}
               onClick={onGoToQuery}
-              className="w-full flex items-center gap-3 px-4 py-3 hover:bg-accent transition-colors text-left border-t border-border/50"
+              className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-accent focus-visible:bg-accent focus-visible:outline-none transition-colors text-left border-t border-border/50 ${idx === activeIndex ? 'bg-accent' : ''}`}
             >
               <Icon name="at" variant="regular" className="text-muted-foreground w-5 text-center" />
               <span className="text-sm text-primary">
                 Go to @{query.replace(/^@/, '')}
               </span>
             </button>
-          )}
+          ); })()}
         </>
       )}
     </div>

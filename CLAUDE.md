@@ -238,3 +238,40 @@ try {
 - Tailwind CSS v4
 - @solana/kit for Solana RPC (NOT web3.js)
 - Path alias: `@/` maps to `./src/`
+
+## Design Context
+
+### Users
+Crypto-native creators who already live in Web3 and want a polished, powerful creative tool. They expect speed, precision, and respect for their time. The interface should feel like a sharp instrument — fast to learn, faster to use, never in the way of the content.
+
+### Brand Personality
+**Minimal. Focused. Sharp.**
+
+Desperse is a content-first platform. Every pixel should serve the creator's work. The UI recedes so the art advances. Confidence comes from restraint, not decoration.
+
+### Aesthetic Direction
+- **Dark by default** — zinc-950 base, purple-heart accent for interactive highlights
+- **Content is the hero** — generous whitespace, minimal chrome, let media breathe
+- **Quiet confidence** — subtle shadows, tight radius (4-8px), no gratuitous gradients or glow
+- **Typography-driven** — Figtree at medium weight, minor-third scale, tight letter-spacing
+
+**References:** Zora and Foundation (art-forward, Web3-native), SuperRare and Exchange.Art (premium collectible feel), Linear and Vercel (developer-grade polish and speed), Instagram and TikTok (proven content-first social patterns).
+
+**Anti-patterns to avoid:** Overly playful/bubbly UI, excessive animations, neon glow effects, busy dashboards, "Web3 for Web3's sake" aesthetics (wallet jargon, hex addresses in faces, blockchain-first UX).
+
+### Design Principles
+
+1. **Content over chrome** — The creator's work is the interface. Minimize UI that competes with media. Navigation, controls, and metadata should support, never overshadow.
+
+2. **Speed is a feature** — Every interaction should feel instant. Prefer skeleton states over spinners. Reduce clicks to complete actions. Perceived performance matters as much as real performance.
+
+3. **Progressive disclosure** — Show the essential, reveal the advanced. Blockchain complexity (minting, transactions, wallets) should be abstracted behind familiar patterns until the user needs detail.
+
+4. **Earned density** — Start sparse, allow density. Feeds are generous; settings and admin views can be compact. Match information density to user intent.
+
+5. **Systematic consistency** — Use the design token system (8px grid, zinc neutrals, post-type tones). Every new element should feel like it was always part of the family. When in doubt, use what exists.
+
+### Accessibility
+- Target WCAG AA compliance for contrast ratios and keyboard navigation
+- Respect `prefers-reduced-motion` for all non-essential animations
+- All interactive elements must have visible focus states and appropriate ARIA attributes

@@ -13,7 +13,8 @@ import { Switch } from '@/components/ui/switch'
 import { Logo } from '@/components/shared/Logo'
 import { OptimizedImage } from '@/components/shared/OptimizedImage'
 import { getOptimizedImageUrl } from '@/lib/imageUrl'
-import { getTrendingPosts, getFeaturedCreators } from '@/server/functions/explore'
+import { getTrendingPosts, getFeaturedCreators, getLandingProfilePreview } from '@/server/functions/explore'
+import Lenis from 'lenis'
 
 // Type for featured creator from API
 type FeaturedCreator = {
@@ -67,7 +68,7 @@ function LandingMediaThumbnail({
   imgClassName = '',
 }: {
   post: TrendingPost
-  width?: 480 | 640
+  width?: 320 | 480 | 640
   className?: string
   imgClassName?: string
 }) {
@@ -118,7 +119,37 @@ function LandingMediaThumbnail({
   )
 }
 
-// Scroll reveal hook - observes container and activates all children when visible
+// Lenis smooth scroll hook — respects prefers-reduced-motion
+function useLenis() {
+  const lenisRef = useRef<Lenis | null>(null)
+
+  useEffect(() => {
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (prefersReduced) return
+
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      touchMultiplier: 1.5,
+    })
+    lenisRef.current = lenis
+
+    function raf(time: number) {
+      lenis.raf(time)
+      requestAnimationFrame(raf)
+    }
+    requestAnimationFrame(raf)
+
+    return () => {
+      lenis.destroy()
+      lenisRef.current = null
+    }
+  }, [])
+
+  return lenisRef
+}
+
+// Scroll reveal hook - observes container and activates children with .reveal-text
 function useReveal() {
   const ref = useRef<HTMLDivElement>(null)
 
@@ -146,6 +177,7 @@ function useReveal() {
 
   return ref
 }
+
 
 // Header Component
 function Header() {
@@ -176,7 +208,7 @@ function Header() {
           Creators
         </a>
         <a href="#why" className="hover:text-zinc-500 dark:hover:text-zinc-400 transition-colors">
-          Why
+          Why Desperse
         </a>
       </nav>
       <div className="flex-1 flex items-center justify-end gap-4">
@@ -189,13 +221,20 @@ function Header() {
             className="scale-75"
           />
         </div>
-        {!authenticated && (
+        {authenticated ? (
+          <Link
+            to="/"
+            className="border border-zinc-300 dark:border-zinc-700 px-5 py-2 rounded-full text-sm font-medium hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 transition-colors duration-200"
+          >
+            Go to Feed
+          </Link>
+        ) : (
           <button
             onClick={() => login()}
             disabled={!ready}
-            className="border border-zinc-300 dark:border-zinc-700 px-5 py-2 rounded-full text-sm font-medium hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 transition-all duration-300 disabled:opacity-50"
+            className="border border-zinc-300 dark:border-zinc-700 px-5 py-2 rounded-full text-sm font-medium hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 transition-colors duration-200 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-950 dark:focus-visible:ring-white"
           >
-            Log in or Sign up
+            Log in
           </button>
         )}
       </div>
@@ -211,7 +250,7 @@ function Hero() {
   return (
     <section className="min-h-screen flex flex-col justify-center px-6 pt-20 relative overflow-hidden bg-background">
       <div
-        className="absolute inset-0 z-0 opacity-20 pointer-events-none"
+        className="absolute inset-0 z-0 opacity-20 dark:opacity-30 pointer-events-none"
         style={{
           backgroundImage: 'radial-gradient(var(--muted-foreground) 1px, transparent 1px)',
           backgroundSize: '40px 40px'
@@ -227,146 +266,207 @@ function Hero() {
 
         <div className="mt-12 flex flex-col md:flex-row md:items-end justify-between gap-8">
           <p className="text-xl md:text-2xl max-w-xl text-zinc-600 dark:text-zinc-400 font-light reveal-text" style={{ transitionDelay: '0.3s' }}>
-            A creator-first platform for digital collectibles. <br />
-            <span className="text-zinc-950 dark:text-white">Publish photos, videos, and art as onchain work.</span>
+            The platform where creative work becomes collectible.{' '}
+            <span className="text-zinc-950 dark:text-white">Publish photos, videos, and art — own them onchain.</span>
           </p>
-          <div className="reveal-text" style={{ transitionDelay: '0.4s' }}>
+          <div className="reveal-text flex items-center gap-6" style={{ transitionDelay: '0.4s' }}>
             <button
               onClick={() => login()}
               disabled={!ready}
-              className="group relative flex items-center gap-3 text-lg font-medium text-zinc-950 dark:text-zinc-50 disabled:opacity-50"
+              className="px-8 py-4 bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-bold rounded-full hover:scale-105 active:scale-[0.98] transition-all duration-200 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-950 dark:focus-visible:ring-white"
             >
-              <span className="h-px w-12 bg-zinc-950 dark:bg-white group-hover:w-20 transition-all duration-300" />
               Get Started
             </button>
+            <a
+              href="#features"
+              className="group flex items-center gap-2 text-sm font-medium text-zinc-500 hover:text-zinc-950 dark:hover:text-white transition-colors"
+            >
+              See how it works
+              <span className="group-hover:translate-x-1 transition-transform">&darr;</span>
+            </a>
           </div>
         </div>
       </div>
 
-      <style>{`
-        .reveal-text {
-          transform: translateY(100%);
-          opacity: 0;
-          transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .reveal-text.active {
-          transform: translateY(0);
-          opacity: 1;
-        }
-      `}</style>
     </section>
   )
 }
 
-// Infinite Marquee
+// Infinite Marquee — subtle divider between hero and content
 function Marquee() {
+  const items = ['PUBLISH', 'MINT', 'COLLECT', 'OWN']
+  // Render two identical halves so translateX(-50%) creates a seamless loop
+  const half = Array.from({ length: 6 }, () => items).flat()
+
   return (
-    <div className="py-12 border-y border-border overflow-hidden bg-muted/30 backdrop-blur-sm">
-      <div className="marquee-content flex whitespace-nowrap">
-        <span className="text-6xl md:text-8xl font-extrabold tracking-tighter px-8 text-transparent stroke-text">
-          CREATOR FIRST
-        </span>
-        <span className="text-6xl md:text-8xl font-extrabold tracking-tighter px-8">●</span>
-        <span className="text-6xl md:text-8xl font-extrabold tracking-tighter px-8 text-transparent stroke-text">
-          ONCHAIN OWNERSHIP
-        </span>
-        <span className="text-6xl md:text-8xl font-extrabold tracking-tighter px-8">●</span>
-        <span className="text-6xl md:text-8xl font-extrabold tracking-tighter px-8 text-transparent stroke-text">
-          BUILT ON SOLANA
-        </span>
-        <span className="text-6xl md:text-8xl font-extrabold tracking-tighter px-8">●</span>
-        <span className="text-6xl md:text-8xl font-extrabold tracking-tighter px-8 text-transparent stroke-text">
-          DIGITAL COLLECTIBLES
-        </span>
-        <span className="text-6xl md:text-8xl font-extrabold tracking-tighter px-8">●</span>
-        {/* Duplicate for seamless loop */}
-        <span className="text-6xl md:text-8xl font-extrabold tracking-tighter px-8 text-transparent stroke-text">
-          CREATOR FIRST
-        </span>
-        <span className="text-6xl md:text-8xl font-extrabold tracking-tighter px-8">●</span>
-        <span className="text-6xl md:text-8xl font-extrabold tracking-tighter px-8 text-transparent stroke-text">
-          ONCHAIN OWNERSHIP
-        </span>
-        <span className="text-6xl md:text-8xl font-extrabold tracking-tighter px-8">●</span>
-        <span className="text-6xl md:text-8xl font-extrabold tracking-tighter px-8 text-transparent stroke-text">
-          BUILT ON SOLANA
-        </span>
-        <span className="text-6xl md:text-8xl font-extrabold tracking-tighter px-8">●</span>
-        <span className="text-6xl md:text-8xl font-extrabold tracking-tighter px-8 text-transparent stroke-text">
-          DIGITAL COLLECTIBLES
-        </span>
+    <div className="py-6 border-t border-border overflow-hidden">
+      <div className="marquee-track flex whitespace-nowrap w-max">
+        {[half, half].map((group, gi) => (
+          <div key={gi} className="flex shrink-0">
+            {group.map((item, i) => (
+              <span key={i} className="flex items-center">
+                <span className="text-sm md:text-base font-mono tracking-widest px-8 text-muted-foreground/60">
+                  {item}
+                </span>
+                <span className="text-muted-foreground/30 text-xs">◆</span>
+              </span>
+            ))}
+          </div>
+        ))}
       </div>
 
-      <style>{`
-        .marquee-content {
-          animation: scroll 20s linear infinite;
-        }
-        @keyframes scroll {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        .stroke-text {
-          -webkit-text-stroke: 1px var(--muted-foreground);
-        }
-      `}</style>
     </div>
   )
 }
 
-// For Collectors Card with animated iPhone
-function ForCollectorsCard() {
-  const cardRef = useRef<HTMLDivElement>(null)
-  const [isVisible, setIsVisible] = useState(false)
+// Phone frame with live profile preview (iPhone 17 Pro proportions)
+function PhoneProfilePreview() {
+  const { data } = useQuery({
+    queryKey: ['landing-profile-preview'],
+    queryFn: async () => {
+      const result = await getLandingProfilePreview({} as never)
+      return result
+    },
+    staleTime: 1000 * 60 * 10,
+  })
 
-  useEffect(() => {
-    const card = cardRef.current
-    if (!card) return
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsVisible(true)
-          }
-        })
-      },
-      { threshold: 0.3 }
-    )
-
-    observer.observe(card)
-
-    return () => observer.disconnect()
-  }, [])
+  const creator = data?.creator
+  const creatorPosts = data?.posts ?? []
 
   return (
-    <div
-      ref={cardRef}
-      className="md:sticky md:top-16 min-h-screen md:h-screen flex items-center justify-center overflow-hidden border-t border-border bg-background z-30 transition-all duration-500 ease-out"
-    >
+    <div className="phone-frame scroll-reveal w-[260px] md:w-[280px]">
+      {/* iPhone frame — container query context */}
+      <div className="iphone-frame">
+        {/* Side buttons */}
+        <div className="iphone-btn-action" aria-hidden="true" />
+        <div className="iphone-btn-vol-up" aria-hidden="true" />
+        <div className="iphone-btn-vol-down" aria-hidden="true" />
+        <div className="iphone-btn-power" aria-hidden="true" />
+
+        {/* Screen */}
+        <div className="iphone-screen">
+          {/* Dynamic Island */}
+          <div className="iphone-dynamic-island" aria-hidden="true" />
+
+          {/* Profile content */}
+          <div className="relative w-full h-full bg-background overflow-y-hidden">
+            {creator ? (
+              <>
+                {/* Banner */}
+                <div className="h-[22%] bg-linear-to-br from-muted via-muted/80 to-muted/60 relative overflow-hidden">
+                  {creator.headerBgUrl && (
+                    <img
+                      src={getOptimizedImageUrl(creator.headerBgUrl, { width: 480, quality: 70 })}
+                      alt=""
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  )}
+                </div>
+
+                {/* Profile info */}
+                <div className="px-[5%] -mt-[10%] relative">
+                  <div className="w-[20%] aspect-square rounded-full border-[2px] border-background bg-muted overflow-hidden">
+                    {creator.avatarUrl ? (
+                      <img
+                        src={getOptimizedImageUrl(creator.avatarUrl, { width: 320, quality: 75 })}
+                        alt={creator.displayName || creator.usernameSlug}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                        <Icon name="user" variant="regular" className="text-xl" />
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="mt-1.5">
+                    <p className="font-bold text-[11px] truncate">{creator.displayName || creator.usernameSlug}</p>
+                    <p className="text-[9px] text-muted-foreground">@{creator.usernameSlug}</p>
+
+                    {creator.bio && (
+                      <p className="text-[9px] text-muted-foreground mt-1 line-clamp-2 leading-relaxed">{creator.bio}</p>
+                    )}
+
+                    <div className="flex gap-3 mt-2">
+                      <div>
+                        <span className="text-[10px] font-bold">{creator.postCount}</span>{' '}
+                        <span className="text-[8px] text-muted-foreground">posts</span>
+                      </div>
+                      <div>
+                        <span className="text-[10px] font-bold">{creator.followerCount}</span>{' '}
+                        <span className="text-[8px] text-muted-foreground">followers</span>
+                      </div>
+                      <div>
+                        <span className="text-[10px] font-bold">{creator.mintCount}</span>{' '}
+                        <span className="text-[8px] text-muted-foreground">mints</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Post grid */}
+                <div className="mt-3 px-[1%]">
+                  <div className="grid grid-cols-3 gap-px">
+                    {creatorPosts.slice(0, 9).map((post) => (
+                      <div key={post.id} className="aspect-square bg-muted overflow-hidden">
+                        <LandingMediaThumbnail
+                          post={post as TrendingPost}
+                          width={320}
+                          className="w-full h-full"
+                          imgClassName="w-full h-full object-cover"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </>
+            ) : (
+              // Skeleton
+              <div>
+                <div className="h-[22%] bg-muted animate-pulse" />
+                <div className="px-[5%] -mt-[10%]">
+                  <div className="w-[20%] aspect-square rounded-full bg-muted border-2 border-background animate-pulse" />
+                  <div className="mt-1.5 space-y-1.5">
+                    <div className="h-3 w-24 bg-muted rounded animate-pulse" />
+                    <div className="h-2 w-16 bg-muted rounded animate-pulse" />
+                  </div>
+                </div>
+                <div className="mt-3 px-[1%] grid grid-cols-3 gap-px">
+                  {[...Array(9)].map((_, i) => (
+                    <div key={i} className="aspect-square bg-muted animate-pulse" />
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// For Collectors Card with live phone preview
+function ForCollectorsCard() {
+  return (
+    <div className="md:sticky md:top-16 min-h-[80vh] md:min-h-screen md:h-screen flex items-center justify-center overflow-hidden border-t border-border bg-background z-30 transition-all duration-500 ease-out">
       <div className="max-w-7xl w-full mx-auto px-6 grid md:grid-cols-2 gap-12 items-center h-full py-20">
-        <div className="order-2 md:order-1">
+        <div className="order-2 md:order-1 scroll-reveal">
           <span className="text-sm font-mono text-zinc-600 dark:text-zinc-400 mb-4 block">03 / FOR COLLECTORS</span>
           <h2 className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight">
             Collect what <br />
             <span className="text-zinc-600 dark:text-zinc-400">you care about.</span>
           </h2>
           <p className="text-xl text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-md">
-            Discover work from creators you like, mint pieces that resonate, and own them onchain.
+            Discover work from creators you love, collect pieces that resonate, and own them onchain.
           </p>
           <p className="mt-4 text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-md">
             Every collectible is tied directly to the creator and lives in your wallet.
           </p>
         </div>
-        <div className="order-1 md:order-2 flex justify-center items-start overflow-hidden h-[500px] md:h-[600px]">
-          <img
-            src="/iphone-spin-up.png"
-            alt="Desperse app on iPhone"
-            className={`w-auto h-[550px] md:h-[700px] object-contain object-top transition-all duration-1000 ease-out ${
-              isVisible
-                ? 'translate-y-0 opacity-100'
-                : 'translate-y-24 opacity-0'
-            }`}
-          />
+        <div className="order-1 md:order-2 flex justify-center items-center">
+          <PhoneProfilePreview />
         </div>
       </div>
     </div>
@@ -412,26 +512,30 @@ function StickyCards() {
   return (
     <div id="features" className="relative">
       {/* Card 1 - What Desperse Is */}
-      <div className="md:sticky md:top-16 min-h-screen md:h-screen flex items-center justify-center overflow-hidden border-t border-border bg-background z-10 transition-all duration-500 ease-out">
+      <div className="md:sticky md:top-16 min-h-[80vh] md:min-h-screen md:h-screen flex items-center justify-center overflow-hidden border-t border-border bg-background z-10 transition-all duration-500 ease-out">
         <div className="max-w-7xl w-full mx-auto px-6 grid md:grid-cols-2 gap-12 items-center h-full py-20">
-          <div className="order-2 md:order-1">
+          <div className="order-2 md:order-1 scroll-reveal">
             <span className="text-sm font-mono text-zinc-600 dark:text-zinc-400 mb-4 block">01 / WHAT DESPERSE IS</span>
             <h2 className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight">
               Built for creators, <br />
-              <span className="text-zinc-600 dark:text-zinc-400">not feeds.</span>
+              <span className="text-zinc-600 dark:text-zinc-400">not algorithms.</span>
             </h2>
             <p className="text-xl text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-md">
               Desperse is a platform where creative work becomes collectible. Creators publish work directly, and collectors can mint and own it onchain.
             </p>
             <p className="mt-4 text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-md">
-              This isn't about chasing likes or algorithms. It's about creative output, ownership, and direct support between creators and collectors.
+              No algorithms deciding who sees your work. Just creative output and direct collector support.
             </p>
           </div>
           <div className="order-1 md:order-2 flex justify-center items-center">
             {posts.length > 0 ? (
               <div
+                role="button"
+                tabIndex={0}
+                aria-label="Shuffle featured posts"
                 className="relative w-64 h-80 md:w-80 md:h-96 cursor-pointer"
                 onClick={handleImageClick}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleImageClick() } }}
               >
                 {posts.map((post, index) => {
                   const stackPosition = (index - activeIndex + posts.length) % posts.length
@@ -469,7 +573,8 @@ function StickyCards() {
                   )
                 })}
                 <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-xs text-muted-foreground">
-                  Click to shuffle
+                  <span className="hidden md:inline">Click</span>
+                  <span className="md:hidden">Tap</span> to shuffle
                 </div>
               </div>
             ) : (
@@ -480,9 +585,9 @@ function StickyCards() {
       </div>
 
       {/* Card 2 - For Creators */}
-      <div className="md:sticky md:top-16 min-h-screen md:h-screen flex items-center justify-center overflow-hidden border-t border-border bg-card z-20 transition-all duration-500 ease-out">
+      <div className="md:sticky md:top-16 min-h-[80vh] md:min-h-screen md:h-screen flex items-center justify-center overflow-hidden border-t border-border bg-card z-20 transition-all duration-500 ease-out">
         <div className="max-w-7xl w-full mx-auto px-6 grid md:grid-cols-2 gap-12 items-center h-full py-20">
-          <div className="order-2 md:order-1">
+          <div className="order-2 md:order-1 scroll-reveal">
             <span className="text-sm font-mono text-zinc-600 dark:text-zinc-400 mb-4 block">02 / FOR CREATORS</span>
             <h2 className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight">
               Your work. <br />
@@ -492,16 +597,19 @@ function StickyCards() {
               Share your work, release free or limited editions, and earn directly from collectors who choose to support you.
             </p>
             <p className="mt-4 text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-md">
-              No ads. No middle layers. Just publishing, minting, and building a collector base around your work.
+              No ads. No intermediaries. Just publishing, minting, and building a collector base around your work.
             </p>
-            <div className="mt-8 flex gap-4">
-              <div className="border border-border p-4 rounded-lg bg-muted/30">
-                <div className="text-2xl font-extrabold">95%</div>
-                <div className="text-xs text-zinc-600 dark:text-zinc-400">Creator Share</div>
+            <div className="mt-8 flex items-baseline gap-6">
+              <div>
+                <span className="text-5xl md:text-6xl font-extrabold tracking-tight">95</span>
+                <span className="text-2xl font-extrabold text-zinc-400 dark:text-zinc-500">%</span>
+                <div className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">of every sale</div>
               </div>
-              <div className="border border-border p-4 rounded-lg bg-muted/30">
-                <div className="text-2xl font-extrabold">5%</div>
-                <div className="text-xs text-zinc-600 dark:text-zinc-400">Platform Fee</div>
+              <div className="text-zinc-300 dark:text-zinc-700 text-2xl font-light">/</div>
+              <div>
+                <span className="text-3xl font-extrabold text-zinc-400 dark:text-zinc-500">5</span>
+                <span className="text-lg font-extrabold text-zinc-400 dark:text-zinc-600">%</span>
+                <div className="text-xs text-zinc-600 dark:text-zinc-400 mt-1">platform</div>
               </div>
             </div>
           </div>
@@ -510,8 +618,9 @@ function StickyCards() {
               <>
                 {/* Back card (second creator or placeholder) */}
                 {creators[1] ? (
-                  <a
-                    href={`/profile/${creators[1].usernameSlug}`}
+                  <Link
+                    to="/profile/$slug"
+                    params={{ slug: creators[1].usernameSlug }}
                     className="w-64 h-80 rounded-xl absolute top-0 right-4 rotate-6 border border-border opacity-70 p-5 flex flex-col justify-between hover:opacity-80 transition-opacity overflow-hidden"
                     style={{
                       backgroundImage: creators[1].headerBgUrl
@@ -546,14 +655,15 @@ function StickyCards() {
                       <p className="font-semibold text-sm truncate">{creators[1].displayName || `@${creators[1].usernameSlug}`}</p>
                       <p className={`text-xs ${creators[1].headerBgUrl ? 'text-white/70' : 'text-muted-foreground'}`}>@{creators[1].usernameSlug}</p>
                     </div>
-                  </a>
+                  </Link>
                 ) : (
                   <div className="w-64 h-80 bg-muted rounded-xl absolute top-0 right-4 rotate-6 border border-border opacity-60" />
                 )}
 
                 {/* Front card (first creator) */}
-                <a
-                  href={`/profile/${creators[0].usernameSlug}`}
+                <Link
+                  to="/profile/$slug"
+                  params={{ slug: creators[0].usernameSlug }}
                   className="w-64 h-80 rounded-xl relative z-10 -rotate-3 border border-border p-5 flex flex-col justify-between shadow-2xl hover:shadow-3xl hover:scale-[1.02] hover:-rotate-1 transition-all duration-300 ease-out overflow-hidden"
                   style={{
                     backgroundImage: creators[0].headerBgUrl
@@ -605,7 +715,7 @@ function StickyCards() {
                       </div>
                     </div>
                   </div>
-                </a>
+                </Link>
               </>
             ) : (
               <>
@@ -640,9 +750,9 @@ function StickyCards() {
       <ForCollectorsCard />
 
       {/* Card 4 - How Minting Works */}
-      <div className="md:sticky md:top-16 min-h-screen md:h-screen flex items-center justify-center overflow-hidden border-t border-border bg-card z-40 transition-all duration-500 ease-out">
+      <div className="md:sticky md:top-16 min-h-[80vh] md:min-h-screen md:h-screen flex items-center justify-center overflow-hidden border-t border-border bg-card z-40 transition-all duration-500 ease-out">
         <div className="max-w-7xl w-full mx-auto px-6 grid md:grid-cols-2 gap-12 items-center h-full py-20">
-          <div className="order-2 md:order-1">
+          <div className="order-2 md:order-1 scroll-reveal">
             <span className="text-sm font-mono text-zinc-600 dark:text-zinc-400 mb-4 block">04 / HOW MINTING WORKS</span>
             <h2 className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight">
               Fast, affordable, <br />
@@ -654,38 +764,46 @@ function StickyCards() {
             <p className="mt-4 text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-md">
               The focus stays on the work, not the transaction overhead.
             </p>
-            <ul className="mt-8 space-y-3 text-zinc-950 dark:text-zinc-50/80">
-              <li className="flex items-center gap-3">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                Free mints or priced editions
-              </li>
-              <li className="flex items-center gap-3">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                Optional supply limits
-              </li>
-              <li className="flex items-center gap-3">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                SOL or USDC pricing
-              </li>
-            </ul>
           </div>
           <div className="order-1 md:order-2 flex justify-center items-center">
-            <div className="relative">
-              <div className="w-48 h-48 rounded-full border-4 border-purple-500/30 flex items-center justify-center">
-                <div className="w-32 h-32 rounded-full border-4 border-purple-500/50 flex items-center justify-center">
-                  <div className="w-16 h-16 rounded-full bg-linear-to-br from-purple-500 to-purple-700 flex items-center justify-center">
-                    <span className="text-white font-bold text-xl">◎</span>
+            <div className="w-80 scroll-reveal">
+              {/* Mint receipt card */}
+              <div className="rounded-2xl border border-border bg-card overflow-hidden shadow-2xl mint-receipt">
+                {/* Header */}
+                <div className="px-6 pt-6 pb-4 border-b border-border/50">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs font-mono text-muted-foreground">MINT CONFIRMED</span>
+                    <span className="text-xs font-mono text-emerald-500 flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block mint-pulse" />
+                      Success
+                    </span>
+                  </div>
+                  <p className="font-bold text-lg truncate">Untitled #247</p>
+                  <p className="text-sm text-muted-foreground">by @creator</p>
+                </div>
+
+                {/* Stats grid */}
+                <div className="grid grid-cols-3 divide-x divide-border/50">
+                  <div className="px-4 py-5 text-center mint-stat">
+                    <p className="text-2xl font-extrabold tracking-tight">0.01</p>
+                    <p className="text-[10px] font-mono text-muted-foreground mt-1">SOL COST</p>
+                  </div>
+                  <div className="px-4 py-5 text-center mint-stat" style={{ transitionDelay: '100ms' }}>
+                    <p className="text-2xl font-extrabold tracking-tight">0.4s</p>
+                    <p className="text-[10px] font-mono text-muted-foreground mt-1">FINALITY</p>
+                  </div>
+                  <div className="px-4 py-5 text-center mint-stat" style={{ transitionDelay: '200ms' }}>
+                    <p className="text-2xl font-extrabold tracking-tight">1/50</p>
+                    <p className="text-[10px] font-mono text-muted-foreground mt-1">EDITION</p>
                   </div>
                 </div>
-              </div>
-              <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 text-sm font-mono text-zinc-600 dark:text-zinc-400">
-                SOLANA
+
+                {/* Transaction hash footer */}
+                <div className="px-6 py-3 bg-muted/30 border-t border-border/50">
+                  <p className="text-[10px] font-mono text-muted-foreground/60 truncate">
+                    tx: 4sGjM...vK9nR2...confirmed
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -693,101 +811,113 @@ function StickyCards() {
       </div>
 
       {/* Card 5 - Easy to Get Started */}
-      <div className="md:sticky md:top-16 min-h-screen md:h-screen flex items-center justify-center overflow-hidden border-t border-border bg-background z-50 transition-all duration-500 ease-out">
+      <div className="md:sticky md:top-16 min-h-[80vh] md:min-h-screen md:h-screen flex items-center justify-center overflow-hidden border-t border-border bg-background z-50 transition-all duration-500 ease-out">
         <div className="max-w-7xl w-full mx-auto px-6 grid md:grid-cols-2 gap-12 items-center h-full py-20">
-          <div className="order-2 md:order-1">
-            <span className="text-sm font-mono text-zinc-600 dark:text-zinc-400 mb-4 block">05 / EASY TO GET STARTED</span>
+          <div className="order-2 md:order-1 scroll-reveal">
+            <span className="text-sm font-mono text-zinc-600 dark:text-zinc-400 mb-4 block">05 / GET STARTED IN SECONDS</span>
             <h2 className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight">
               No friction <br />
               <span className="text-zinc-600 dark:text-zinc-400">to try it.</span>
             </h2>
             <p className="text-xl text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-md">
-              You can get started without installing or setting up a wallet first. When you sign up, Desperse creates an embedded wallet for you automatically, and you can connect your own wallet anytime when you're ready.
+              Sign up and start collecting immediately — Desperse creates a wallet for you. Connect your own wallet anytime you're ready.
             </p>
             <p className="mt-4 text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-md">
               Lower friction for newcomers. Full ownership when you want it.
             </p>
+            <button
+              onClick={() => login()}
+              disabled={!ready}
+              className="mt-8 px-6 py-3 border-2 border-zinc-950 dark:border-white rounded-full text-sm font-bold hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 transition-all duration-200 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-950 dark:focus-visible:ring-white"
+            >
+              Try it now — it's free
+            </button>
           </div>
           <div className="order-1 md:order-2 flex justify-center items-center">
-            <div className="space-y-4 w-72">
-              <div className="border border-border rounded-xl p-4 bg-card/50 backdrop-blur flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-(--blue-gem-600) flex items-center justify-center">
-                  <Icon name="user-plus" variant="regular" className="text-white text-lg" />
-                </div>
-                <div>
-                  <div className="font-semibold text-sm">Sign Up</div>
-                  <div className="text-xs text-zinc-600 dark:text-zinc-400">Wallet created for you</div>
-                </div>
-              </div>
-              <div className="border border-border rounded-xl p-4 bg-card/50 backdrop-blur flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-(--flush-orange-500) flex items-center justify-center">
-                  <Icon name="wallet" variant="regular" className="text-white text-lg" />
-                </div>
-                <div>
-                  <div className="font-semibold text-sm">Connect Wallet</div>
-                  <div className="text-xs text-zinc-600 dark:text-zinc-400">Bring your own</div>
-                </div>
-              </div>
-              <div className="border border-border rounded-xl p-4 bg-card/50 backdrop-blur flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-(--caribbean-green-500) flex items-center justify-center">
-                  <Icon name="key" variant="regular" className="text-white text-lg" />
-                </div>
-                <div>
-                  <div className="font-semibold text-sm">Full Ownership</div>
-                  <div className="text-xs text-zinc-600 dark:text-zinc-400">Your keys, your collectibles</div>
-                </div>
+            <div className="w-80 scroll-reveal">
+              {/* Vertical timeline */}
+              <div className="relative pl-8">
+                {/* Connecting line */}
+                <div className="absolute left-[15px] top-6 bottom-6 w-px bg-border timeline-line" />
+
+                {[
+                  {
+                    icon: 'envelope' as const,
+                    color: 'var(--blue-gem-600)',
+                    title: 'Sign up with email',
+                    desc: 'Or Google, Apple, X — no wallet needed',
+                    tag: null,
+                  },
+                  {
+                    icon: 'wallet' as const,
+                    color: 'var(--purple-heart-500)',
+                    title: 'Wallet ready instantly',
+                    desc: 'Created for you, secured by Privy',
+                    tag: 'Automatic',
+                  },
+                  {
+                    icon: 'link-simple' as const,
+                    color: 'var(--flush-orange-500)',
+                    title: 'Connect your own wallet',
+                    desc: 'Phantom, Solflare, or any Solana wallet',
+                    tag: 'Optional',
+                  },
+                  {
+                    icon: 'key' as const,
+                    color: 'var(--caribbean-green-500)',
+                    title: 'You own everything',
+                    desc: 'Your keys, your collectibles, your data',
+                    tag: null,
+                  },
+                ].map((step, i) => (
+                  <div key={step.title} className="relative flex items-start gap-4 pb-8 last:pb-0 timeline-step" style={{ transitionDelay: `${i * 120}ms` }}>
+                    {/* Node */}
+                    <div
+                      className="w-8 h-8 shrink-0 rounded-full flex items-center justify-center z-10 -ml-8 timeline-node"
+                      style={{ backgroundColor: step.color }}
+                    >
+                      <Icon name={step.icon} variant="regular" className="text-white text-sm" />
+                    </div>
+
+                    {/* Content */}
+                    <div className="pt-1">
+                      <div className="flex items-center gap-2">
+                        <p className="font-bold text-sm">{step.title}</p>
+                        {step.tag && (
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
+                            {step.tag}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-0.5">{step.desc}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Card 6 - Why It Matters */}
-      <div className="md:sticky md:top-16 min-h-screen md:h-screen flex items-center justify-center overflow-hidden border-t border-border bg-card z-60 transition-all duration-500 ease-out">
+      {/* Card 6 - Why Desperse (merged: value prop + comparison table + CTA) */}
+      <div id="why" className="md:sticky md:top-16 min-h-[80vh] md:min-h-screen md:h-screen flex items-center justify-center overflow-hidden border-t border-border bg-card z-60 transition-all duration-500 ease-out">
         <div className="max-w-7xl w-full mx-auto px-6 grid md:grid-cols-2 gap-12 items-center h-full py-20">
-          <div className="order-2 md:order-1">
-            <span className="text-sm font-mono text-zinc-600 dark:text-zinc-400 mb-4 block">06 / WHY IT MATTERS</span>
+          <div className="order-2 md:order-1 scroll-reveal">
+            <span className="text-sm font-mono text-zinc-600 dark:text-zinc-400 mb-4 block">06 / WHY DESPERSE</span>
             <h2 className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight">
               Creators deserve <br />
               <span className="text-zinc-600 dark:text-zinc-400">more than likes.</span>
             </h2>
             <p className="text-xl text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-md">
-              Traditional social platforms optimize for engagement. Desperse is built around ownership, value, and direct relationships between creators and collectors.
-            </p>
-            <p className="mt-4 text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-md">
-              It's a different model for sharing work online — one where creative output has lasting value.
+              Traditional platforms optimize for engagement. Desperse is built around ownership, value, and direct relationships between creators and collectors.
             </p>
             <button
               onClick={() => login()}
               disabled={!ready}
-              className="mt-8 inline-block px-8 py-4 bg-primary text-primary-foreground font-extrabold rounded-full hover:bg-primary/90 transition-colors disabled:opacity-50"
+              className="mt-8 px-8 py-4 bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-bold rounded-full hover:scale-105 active:scale-[0.98] transition-all duration-200 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-950 dark:focus-visible:ring-white"
             >
               Join the Beta
             </button>
-          </div>
-          <div className="order-1 md:order-2 flex justify-center items-center">
-            <div className="text-center">
-              <div className="text-8xl md:text-9xl font-extrabold text-zinc-200 dark:text-zinc-800">
-                ♾
-              </div>
-              <p className="mt-4 text-sm font-mono text-zinc-600 dark:text-zinc-400">LASTING VALUE</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Card 7 - Why Desperse */}
-      <div id="why" className="md:sticky md:top-16 min-h-screen md:h-screen flex items-center justify-center overflow-hidden border-t border-border bg-background z-70 transition-all duration-500 ease-out">
-        <div className="max-w-7xl w-full mx-auto px-6 grid md:grid-cols-2 gap-12 items-center h-full py-20">
-          <div className="order-2 md:order-1">
-            <span className="text-sm font-mono text-zinc-600 dark:text-zinc-400 mb-4 block">07 / WHY DESPERSE</span>
-            <h2 className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight">
-              We're not another <br />
-              <span className="text-zinc-600 dark:text-zinc-400">social platform.</span>
-            </h2>
-            <p className="text-xl text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-md">
-              Traditional social platforms optimize for engagement. They want your attention, your data, and your eyeballs on ads. We want none of that.
-            </p>
           </div>
           <div className="order-1 md:order-2 flex justify-center items-center">
             <div className="w-full max-w-lg border border-border rounded-xl overflow-hidden bg-card/50">
@@ -800,18 +930,18 @@ function StickyCards() {
                 </div>
               </div>
               {[
-                { bad: 'Ads', good: 'Never. Your feed is just work from creators you follow.' },
-                { bad: 'Data harvesting', good: "We don't scrape, sell, or share your personal information. Ever." },
+                { bad: 'Ads', good: 'Never. You only see creators you follow.' },
+                { bad: 'Data harvesting', good: "We don't scrape, sell, or share your data. Ever." },
                 { bad: 'Algorithmic feeds', good: 'You see what you follow. No engagement tricks.' },
-                { bad: 'Spam DMs', good: 'Messages are payment-gated. No unsolicited contact.' },
-                { bad: 'Influencer chasing', good: "We're built for creators making work, not personalities farming engagement." },
-              ].map((row, i) => (
-                <div key={i} className="grid grid-cols-2">
+                { bad: 'Spam DMs', good: 'Messaging costs a small fee. No spam.' },
+                { bad: 'Influencer chasing', good: "Built for creators making work, not farming engagement." },
+              ].map((row, i, arr) => (
+                <div key={i} className={`grid grid-cols-2 ${i < arr.length - 1 ? 'border-b border-border' : ''}`}>
                   <div className="px-4 py-4 border-r border-border flex items-center gap-2">
-                    <span className="text-red-500 text-lg">×</span>
+                    <span className="text-red-500 text-lg">&times;</span>
                     <span className="text-sm text-zinc-600 dark:text-zinc-400">{row.bad}</span>
                   </div>
-                  <div className="px-4 py-4 border-b border-border last:border-b-0">
+                  <div className="px-4 py-4">
                     <span className="text-sm">{row.good}</span>
                   </div>
                 </div>
@@ -841,12 +971,12 @@ function Gallery() {
 
   return (
     <section id="creators" className="py-32 px-6 bg-card/30">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto scroll-reveal-stagger">
         <div className="flex flex-col md:flex-row justify-between items-end mb-16">
-          <h3 className="text-4xl font-extrabold tracking-tight">Discover <br />Creators</h3>
+          <h3 className="text-4xl font-extrabold tracking-tight stagger-item">Discover <br />Creators</h3>
           <Link
             to="/explore"
-            className="text-sm border-b border-zinc-950 dark:border-zinc-50 pb-1 hover:text-zinc-600 dark:hover:text-zinc-400 hover:border-zinc-600 dark:hover:border-zinc-400 transition-all mt-4 md:mt-0"
+            className="text-sm border-b border-zinc-950 dark:border-zinc-50 pb-1 hover:text-zinc-600 dark:hover:text-zinc-400 hover:border-zinc-600 dark:hover:border-zinc-400 transition-all mt-4 md:mt-0 stagger-item"
           >
             Explore Feed →
           </Link>
@@ -854,15 +984,16 @@ function Gallery() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {isLoading ? (
-            [1, 2, 3].map((i) => (
-              <div key={i} className={`relative aspect-4/5 bg-muted rounded-xl overflow-hidden animate-pulse ${i === 2 ? 'lg:mt-12' : ''}`} />
+            [0, 1, 2].map((i) => (
+              <div key={i} className={`relative aspect-4/5 bg-muted rounded-xl overflow-hidden animate-pulse ${i === 1 ? 'lg:mt-12' : ''}`} />
             ))
           ) : posts.length > 0 ? (
             posts.map((post, i) => (
-              <a
+              <Link
                 key={post.id}
-                href={`/post/${post.id}`}
-                className={`group relative aspect-4/5 bg-muted rounded-xl overflow-hidden ${i === 1 ? 'lg:mt-12' : ''}`}
+                to="/post/$postId"
+                params={{ postId: post.id }}
+                className={`group relative aspect-4/5 bg-muted rounded-xl overflow-hidden stagger-item ${i === 1 ? 'lg:mt-12' : ''}`}
               >
                 <LandingMediaThumbnail
                   post={post}
@@ -870,7 +1001,7 @@ function Gallery() {
                   className="w-full h-full opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
                   imgClassName="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
                 />
-                <div className="absolute bottom-0 left-0 w-full p-6 bg-linear-to-t from-black/80 to-transparent translate-y-4 group-hover:translate-y-0 transition-transform">
+                <div className="absolute bottom-0 left-0 w-full p-6 bg-linear-to-t from-black/80 to-transparent md:translate-y-4 md:group-hover:translate-y-0 transition-transform duration-300">
                   <p className="font-extrabold text-lg text-white truncate mb-2">
                     {post.caption || 'Untitled'}
                   </p>
@@ -893,11 +1024,11 @@ function Gallery() {
                     <p className="text-sm text-zinc-300">@{post.user?.usernameSlug}</p>
                   </div>
                 </div>
-              </a>
+              </Link>
             ))
           ) : (
-            [1, 2, 3].map((i) => (
-              <div key={i} className={`group relative aspect-4/5 bg-muted rounded-xl overflow-hidden ${i === 2 ? 'lg:mt-12' : ''}`}>
+            [0, 1, 2].map((i) => (
+              <div key={i} className={`group relative aspect-4/5 bg-muted rounded-xl overflow-hidden ${i === 1 ? 'lg:mt-12' : ''}`}>
                 <PlaceholderImage className="w-full h-full opacity-60" />
                 <div className="absolute bottom-0 left-0 w-full p-6 bg-linear-to-t from-background to-transparent">
                   <p className="font-extrabold text-lg">Coming Soon</p>
@@ -945,40 +1076,40 @@ function PrivyLogo({ className, style }: { className?: string; style?: React.CSS
 function TechSpecs() {
   return (
     <section id="tech" className="py-24 border-y border-border bg-background">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-6 scroll-reveal-stagger">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="border border-border rounded-xl p-6 bg-card/50">
+          <div className="border border-border rounded-xl p-6 bg-card/50 stagger-item">
             <div
               className="w-12 h-12 rounded-full flex items-center justify-center mb-6"
               style={{ backgroundColor: 'color-mix(in srgb, var(--purple-heart-500) 20%, transparent)' }}
             >
               <SolanaLogo className="w-6 h-6" style={{ color: 'var(--purple-heart-500)' }} />
             </div>
-            <h4 className="text-zinc-500 dark:text-zinc-500 text-xs font-mono mb-2">NETWORK</h4>
+            <p className="text-zinc-500 dark:text-zinc-500 text-xs font-mono mb-2">NETWORK</p>
             <p className="text-2xl font-extrabold mb-2">Solana</p>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">Built on the fastest chain for low-cost, high-throughput transactions.</p>
+            <p className="text-sm text-zinc-600 dark:text-zinc-400">Built on the fastest chain for fast, low-cost transactions.</p>
           </div>
 
-          <div className="border border-border rounded-xl p-6 bg-card/50">
+          <div className="border border-border rounded-xl p-6 bg-card/50 stagger-item">
             <div
               className="w-12 h-12 rounded-full flex items-center justify-center mb-6"
               style={{ backgroundColor: 'color-mix(in srgb, var(--caribbean-green-500) 20%, transparent)' }}
             >
               <MetaplexLogo className="w-6 h-6" style={{ color: 'var(--caribbean-green-500)' }} />
             </div>
-            <h4 className="text-zinc-500 dark:text-zinc-500 text-xs font-mono mb-2">STANDARD</h4>
+            <p className="text-zinc-500 dark:text-zinc-500 text-xs font-mono mb-2">STANDARD</p>
             <p className="text-2xl font-extrabold mb-2">Metaplex</p>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">Industry-standard NFTs with verifiable ownership and metadata.</p>
+            <p className="text-sm text-zinc-600 dark:text-zinc-400">The NFT standard. Interoperable across the Solana ecosystem.</p>
           </div>
 
-          <div className="border border-border rounded-xl p-6 bg-card/50">
+          <div className="border border-border rounded-xl p-6 bg-card/50 stagger-item">
             <div
               className="w-12 h-12 rounded-full flex items-center justify-center mb-6"
               style={{ backgroundColor: 'color-mix(in srgb, var(--blue-gem-500) 20%, transparent)' }}
             >
               <PrivyLogo className="w-6 h-6" style={{ color: 'var(--blue-gem-500)' }} />
             </div>
-            <h4 className="text-zinc-500 dark:text-zinc-500 text-xs font-mono mb-2">SECURITY</h4>
+            <p className="text-zinc-500 dark:text-zinc-500 text-xs font-mono mb-2">SECURITY</p>
             <p className="text-2xl font-extrabold mb-2">Non-Custodial</p>
             <p className="text-sm text-zinc-600 dark:text-zinc-400">You own your keys. Embedded wallets powered by Privy.</p>
           </div>
@@ -990,31 +1121,33 @@ function TechSpecs() {
 
 // Footer (exported for use in other layouts)
 export function Footer({ showCta = true }: { showCta?: boolean }) {
+  const { login, ready } = usePrivy()
   return (
     <footer className={`${showCta ? 'py-20' : 'py-12'} px-6 bg-background relative overflow-hidden`}>
       <div className="max-w-7xl mx-auto relative z-10">
         {showCta && (
           <>
             <div className="text-center mb-16">
-              <p className="text-2xl md:text-3xl font-light text-zinc-600 dark:text-zinc-400 mb-6">
-                Join the beta at{' '}
-                <Link to="/" className="text-zinc-950 dark:text-zinc-50 font-semibold hover:underline">
-                  desperse.com
-                </Link>
+              <p className="text-2xl md:text-3xl font-light text-zinc-600 dark:text-zinc-400 mb-8">
+                Start creating and collecting today.
               </p>
-              <p className="text-lg text-zinc-500 dark:text-zinc-500">
-                Creators and collectors helping shape what comes next.
-              </p>
+              <button
+                onClick={() => login()}
+                disabled={!ready}
+                className="px-10 py-4 bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-bold rounded-full text-lg hover:scale-105 active:scale-[0.98] transition-all duration-200 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-950 dark:focus-visible:ring-white"
+              >
+                Get Started — It's Free
+              </button>
             </div>
 
-            <h2 className="text-[15vw] xl:text-[12rem] 2xl:text-[14rem] leading-none font-extrabold tracking-tighter text-center whitespace-nowrap opacity-20 hover:opacity-100 transition-opacity duration-700 cursor-default select-none">
+            <p aria-hidden="true" className="text-[15vw] xl:text-[12rem] 2xl:text-[14rem] leading-none font-extrabold tracking-tighter text-center whitespace-nowrap opacity-10 cursor-default select-none mt-8">
               DESPERSE
-            </h2>
+            </p>
           </>
         )}
 
         <div className={`flex flex-col md:flex-row justify-between items-start md:items-end ${showCta ? 'mt-12 pt-12 border-t border-border' : ''}`}>
-          <div className="space-y-4">
+          <nav aria-label="Footer" className="space-y-4">
             <Link to="/privacy" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors">
               Privacy Policy
             </Link>
@@ -1024,13 +1157,13 @@ export function Footer({ showCta = true }: { showCta?: boolean }) {
             <Link to="/fees" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors">
               Fees
             </Link>
-          </div>
+          </nav>
 
           <div className="mt-8 md:mt-0 text-right">
             <div className="flex gap-6 mb-4 md:justify-end">
               <a href="https://x.com/DesperseApp" target="_blank" rel="noopener noreferrer" className="text-zinc-950 dark:text-zinc-50 hover:opacity-70">Twitter/X</a>
             </div>
-            <p className="text-zinc-600 dark:text-zinc-400/60 text-sm">© {new Date().getFullYear()} Desperse. All rights reserved.</p>
+            <p className="text-zinc-500 dark:text-zinc-500 text-sm">© {new Date().getFullYear()} Desperse. All rights reserved.</p>
           </div>
         </div>
       </div>
@@ -1038,10 +1171,77 @@ export function Footer({ showCta = true }: { showCta?: boolean }) {
   )
 }
 
+// Floating CTA that appears after scrolling past hero
+function FloatingCta({ lenisRef }: { lenisRef: React.RefObject<Lenis | null> }) {
+  const { login, ready } = usePrivy()
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    const threshold = window.innerHeight * 0.8
+
+    // If Lenis is active, use its scroll event; otherwise fall back to native scroll
+    const lenis = lenisRef.current
+    if (lenis) {
+      const onLenisScroll = ({ scroll }: { scroll: number }) => {
+        setVisible(scroll > threshold)
+      }
+      lenis.on('scroll', onLenisScroll)
+      return () => lenis.off('scroll', onLenisScroll)
+    }
+
+    const handleScroll = () => {
+      setVisible(window.scrollY > threshold)
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [lenisRef])
+
+  return (
+    <div
+      className={`fixed bottom-6 right-6 z-40 transition-all duration-300 ${
+        visible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0 pointer-events-none'
+      }`}
+    >
+      <button
+        onClick={() => login()}
+        disabled={!ready}
+        className="px-6 py-3 bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-bold rounded-full shadow-2xl hover:scale-105 active:scale-[0.98] transition-all duration-200 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-950 dark:focus-visible:ring-white"
+      >
+        Get Started
+      </button>
+    </div>
+  )
+}
+
+// Global scroll reveal observer — activates .scroll-reveal and .scroll-reveal-stagger elements
+function useGlobalRevealObserver() {
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('active')
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.12 }
+    )
+
+    const elements = document.querySelectorAll('.scroll-reveal, .scroll-reveal-stagger')
+    elements.forEach((el) => observer.observe(el))
+
+    return () => observer.disconnect()
+  }, [])
+}
+
 // Main Landing Page Component
 export function LandingPage() {
+  const lenisRef = useLenis()
+  useGlobalRevealObserver()
+
   return (
-    <div className="min-h-screen bg-background text-zinc-950 dark:text-zinc-50 scroll-smooth">
+    <div className="min-h-screen bg-background text-zinc-950 dark:text-zinc-50">
       <Header />
       <main>
         <Hero />
@@ -1051,7 +1251,226 @@ export function LandingPage() {
         <TechSpecs />
       </main>
       <Footer />
+      <FloatingCta lenisRef={lenisRef} />
+      <LandingAnimationStyles />
     </div>
+  )
+}
+
+// Consolidated animation styles
+function LandingAnimationStyles() {
+  return (
+    <style>{`
+      /* Hero text reveal */
+      .reveal-text {
+        transform: translateY(100%);
+        opacity: 0;
+        transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .reveal-text.active {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      /* Marquee */
+      .marquee-track {
+        animation: marquee-scroll 30s linear infinite;
+      }
+      @keyframes marquee-scroll {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+      }
+
+      /* Scroll reveal — fade + slide up */
+      .scroll-reveal {
+        opacity: 0;
+        transform: translateY(24px);
+        transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .scroll-reveal.active {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* Staggered reveal container */
+      .scroll-reveal-stagger .stagger-item {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .scroll-reveal-stagger.active .stagger-item:nth-child(1) { transition-delay: 0ms; }
+      .scroll-reveal-stagger.active .stagger-item:nth-child(2) { transition-delay: 100ms; }
+      .scroll-reveal-stagger.active .stagger-item:nth-child(3) { transition-delay: 200ms; }
+      .scroll-reveal-stagger.active .stagger-item:nth-child(4) { transition-delay: 300ms; }
+      .scroll-reveal-stagger.active .stagger-item:nth-child(5) { transition-delay: 400ms; }
+      .scroll-reveal-stagger.active .stagger-item {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* iPhone 17 Pro frame — cqi-based responsive mockup */
+      .phone-frame {
+        container-type: inline-size;
+        position: relative;
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .phone-frame:hover {
+        transform: translateY(-6px) rotate(-1deg);
+      }
+      .iphone-frame {
+        position: relative;
+        aspect-ratio: 16 / 33;
+        width: 100%;
+        background: #080808;
+        border-radius: 17.5cqi;
+        padding: 3.125cqi;
+        box-sizing: border-box;
+        box-shadow:
+          0 0 0 1.25cqi light-dark(#6a6a6c, #4a4a4c),
+          0 0 0 1.56cqi light-dark(#555, #111);
+      }
+      .iphone-screen {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        background: #000;
+        border-radius: 14.375cqi;
+        overflow: hidden;
+      }
+      .iphone-dynamic-island {
+        position: absolute;
+        top: 4.375cqi;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 21.25cqi;
+        height: 8.125cqi;
+        background: #000;
+        border-radius: 6.25cqi;
+        z-index: 2;
+      }
+      .iphone-btn-action {
+        position: absolute;
+        width: 0.94cqi;
+        height: 7.5cqi;
+        left: -2.19cqi;
+        top: 39.06cqi;
+        background: light-dark(#6a6a6c, #4a4a4c);
+        border-radius: 2px 0 0 2px;
+      }
+      .iphone-btn-vol-up {
+        position: absolute;
+        width: 0.94cqi;
+        height: 14.06cqi;
+        left: -2.19cqi;
+        top: 53.13cqi;
+        background: light-dark(#6a6a6c, #4a4a4c);
+        border-radius: 2px 0 0 2px;
+      }
+      .iphone-btn-vol-down {
+        position: absolute;
+        width: 0.94cqi;
+        height: 14.06cqi;
+        left: -2.19cqi;
+        top: 70.31cqi;
+        background: light-dark(#6a6a6c, #4a4a4c);
+        border-radius: 2px 0 0 2px;
+      }
+      .iphone-btn-power {
+        position: absolute;
+        width: 0.94cqi;
+        height: 23.44cqi;
+        right: -2.19cqi;
+        top: 59.38cqi;
+        background: light-dark(#6a6a6c, #4a4a4c);
+        border-radius: 0 2px 2px 0;
+      }
+
+      /* Mint receipt — stats count up feel */
+      .mint-receipt .mint-stat {
+        opacity: 0;
+        transform: translateY(8px);
+        transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .scroll-reveal.active .mint-receipt .mint-stat {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* Mint pulse dot */
+      .mint-pulse {
+        animation: mint-pulse-anim 2s ease-in-out infinite;
+      }
+      @keyframes mint-pulse-anim {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+      }
+
+      /* Mint receipt hover */
+      .mint-receipt {
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                    box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .mint-receipt:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 32px 64px -16px rgba(0, 0, 0, 0.3);
+      }
+
+      /* Timeline — line draws down */
+      .timeline-line {
+        transform-origin: top;
+        transform: scaleY(0);
+        transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .scroll-reveal.active .timeline-line {
+        transform: scaleY(1);
+      }
+
+      /* Timeline steps stagger in */
+      .timeline-step {
+        opacity: 0;
+        transform: translateX(-12px);
+        transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .scroll-reveal.active .timeline-step {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      /* Timeline node pulse on hover */
+      .timeline-node {
+        transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                    box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .timeline-step:hover .timeline-node {
+        transform: scale(1.15);
+        box-shadow: 0 0 0 4px color-mix(in srgb, currentColor 15%, transparent);
+      }
+
+      /* Reduced motion */
+      @media (prefers-reduced-motion: reduce) {
+        .reveal-text,
+        .scroll-reveal,
+        .scroll-reveal-stagger .stagger-item,
+        .mint-receipt .mint-stat,
+        .timeline-step {
+          opacity: 1;
+          transform: none;
+          transition: none;
+        }
+        .timeline-line {
+          transform: scaleY(1);
+          transition: none;
+        }
+        .mint-pulse,
+        .marquee-track {
+          animation: none;
+        }
+      }
+    `}</style>
   )
 }
 

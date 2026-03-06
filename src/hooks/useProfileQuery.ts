@@ -10,6 +10,7 @@ import {
   getUserCollections,
   getUserForSale,
   getCollectorsList,
+  getPostCollectorsList,
   updateProfile,
   uploadAvatar,
   uploadHeaderBg,
@@ -215,6 +216,8 @@ export function useFollowMutation(targetUserId: string, currentUserId: string) {
       queryClient.invalidateQueries({ queryKey: ['feed', 'following'] })
       // Invalidate followers list queries (since isFollowingBack status changes)
       queryClient.invalidateQueries({ queryKey: ['followersList'] })
+      // Invalidate post collectors list (since isFollowingBack status changes)
+      queryClient.invalidateQueries({ queryKey: ['postCollectors'] })
     },
   })
 }
@@ -485,6 +488,30 @@ export function useCollectorsList(userId: string | undefined, currentUserId: str
     },
     enabled: !!userId,
     staleTime: 30 * 1000, // 30 seconds
+  })
+}
+
+export function usePostCollectors(postId: string | undefined, currentUserId: string | undefined) {
+  return useQuery({
+    queryKey: ['postCollectors', postId, currentUserId],
+    queryFn: async () => {
+      if (!postId) throw new Error('Post ID required')
+
+      const result = await getPostCollectorsList({
+        data: {
+          postId,
+          currentUserId: currentUserId || undefined,
+        },
+      } as never)
+
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to fetch post collectors')
+      }
+
+      return result.collectors
+    },
+    enabled: !!postId,
+    staleTime: 30 * 1000,
   })
 }
 

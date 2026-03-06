@@ -172,12 +172,13 @@ export function EditionOptions({
       
       {/* Price & Currency */}
       <div>
-        <label className="text-sm text-foreground mb-2 block">
+        <label htmlFor="edition-price" className="text-sm text-foreground mb-2 block">
           Price per edition <span className="text-destructive">*</span>
         </label>
         <div className="flex gap-2">
           <div className="relative flex-1 max-w-[200px]">
             <Input
+              id="edition-price"
               type="number"
               step="any"
               min={0}
@@ -185,6 +186,9 @@ export function EditionOptions({
               onChange={(e) => handlePriceInput(e.target.value)}
               placeholder="0.00"
               disabled={isPricingDisabled}
+              aria-required="true"
+              aria-invalid={!!validatePrice(displayPrice, currency)}
+              aria-describedby={validatePrice(displayPrice, currency) ? 'edition-price-error' : undefined}
               className={`pr-16 ${validatePrice(displayPrice, currency) ? 'border-destructive' : ''}`}
             />
 
@@ -208,7 +212,7 @@ export function EditionOptions({
         </div>
         {/* Price validation error */}
         {validatePrice(displayPrice, currency) && (
-          <p className="text-sm text-destructive mt-1.5">
+          <p id="edition-price-error" className="text-sm text-destructive mt-1.5" role="alert">
             {validatePrice(displayPrice, currency)}
           </p>
         )}
@@ -234,6 +238,7 @@ export function EditionOptions({
         {!isUnlimited && (
           <div className="space-y-1.5">
             <Input
+              id="edition-max-supply"
               type="number"
               min={1}
               value={maxSupply || ''}
@@ -250,6 +255,7 @@ export function EditionOptions({
               }}
               placeholder="Enter max supply"
               disabled={isPricingDisabled}
+              aria-label="Maximum supply"
               className="max-w-[200px]"
             />
           </div>

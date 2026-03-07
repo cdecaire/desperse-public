@@ -320,7 +320,7 @@ export function PostMedia({
               contained
                 ? 'w-full h-full object-contain relative z-10'
                 : isExtraTall
-                  ? 'max-w-full max-h-full w-auto h-auto object-contain relative z-10'
+                  ? 'w-full h-full object-cover relative z-10'
                   : 'w-full',
               isLoaded ? 'opacity-100' : 'opacity-0'
             )}
@@ -440,7 +440,7 @@ export function PostMedia({
                 contained
                   ? 'w-full h-full object-contain relative z-10'
                   : isExtraTall
-                    ? 'max-w-full max-h-full w-auto h-auto object-contain relative z-10'
+                    ? 'w-full h-full object-cover relative z-10'
                     : 'w-full'
               )}
               preload="auto"
@@ -543,7 +543,7 @@ export function PostMedia({
             contained
               ? 'w-full h-full object-contain relative z-10'
               : isExtraTall
-                ? 'max-w-full max-h-full w-auto h-auto object-contain relative z-10'
+                ? 'w-full h-full object-cover relative z-10'
                 : 'w-full',
             !isPlaying && coverUrl && 'opacity-0', // Hide video when poster overlay is showing
             hasError && 'hidden' // Hide video element when there's an error
@@ -682,7 +682,7 @@ export function PostMedia({
                 contained
                   ? 'w-full h-full object-contain relative z-10'
                   : isExtraTall
-                    ? 'max-w-full max-h-full w-auto h-auto object-contain relative z-10'
+                    ? 'w-full h-full object-cover relative z-10'
                     : 'w-full',
                 isLoaded ? 'opacity-100' : 'opacity-0'
               )}
@@ -776,7 +776,7 @@ export function PostMedia({
               contained
                 ? 'w-full h-full object-contain relative z-10'
                 : isExtraTall
-                  ? 'max-w-full max-h-full w-auto h-auto object-contain relative z-10'
+                  ? 'w-full h-full object-cover relative z-10'
                   : 'w-full'
             )}
             onLoad={handleAudioCoverLoad}
@@ -944,7 +944,7 @@ export function PostMedia({
               contained
                 ? 'w-full h-full object-contain relative z-10'
                 : isExtraTall
-                  ? 'max-w-full max-h-full w-auto h-auto object-contain relative z-10'
+                  ? 'w-full h-full object-cover relative z-10'
                   : 'w-full'
             )}
             onLoad={handleDocCoverLoad}

@@ -288,7 +288,7 @@ export function MediaCarousel({
           alt={`${alt} ${realIndex + 1}`}
           loading={shouldLoadEager && !lazy ? 'eager' : 'lazy'}
           decoding="async"
-          className="relative w-full h-full object-contain"
+          className="relative w-full h-full object-cover"
         />
       </div>
     )

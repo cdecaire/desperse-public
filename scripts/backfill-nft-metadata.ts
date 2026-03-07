@@ -67,7 +67,7 @@ async function main() {
 	if (postIdArg) {
 		conditions.push(eq(posts.id, postIdArg));
 	}
-	if (typeArg) {
+	if (typeArg === 'collectible' || typeArg === 'edition') {
 		conditions.push(eq(posts.type, typeArg));
 	}
 	// Only include minted posts (have at least been collected/purchased once)

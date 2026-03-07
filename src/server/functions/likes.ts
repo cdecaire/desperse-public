@@ -42,11 +42,17 @@ export const likePost = createServerFn({
     const { postId } = data
     const userId = auth.userId
 
-    // Check if post exists and get owner
+    // Check if post exists, is not deleted/hidden, and get owner
     const [post] = await db
       .select({ id: posts.id, userId: posts.userId })
       .from(posts)
-      .where(eq(posts.id, postId))
+      .where(
+        and(
+          eq(posts.id, postId),
+          eq(posts.isDeleted, false),
+          eq(posts.isHidden, false),
+        )
+      )
       .limit(1)
 
     if (!post) {

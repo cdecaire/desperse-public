@@ -52,11 +52,17 @@ export const createComment = createServerFn({
     const { postId, content } = data
     const userId = auth.userId
 
-    // Check if post exists and get owner
+    // Check if post exists, is not deleted/hidden, and get owner
     const [post] = await db
       .select({ id: posts.id, userId: posts.userId })
       .from(posts)
-      .where(eq(posts.id, postId))
+      .where(
+        and(
+          eq(posts.id, postId),
+          eq(posts.isDeleted, false),
+          eq(posts.isHidden, false),
+        )
+      )
       .limit(1)
 
     if (!post) {
@@ -231,9 +237,9 @@ export const getPostComments = createServerFn({
       ? (input as { data: unknown }).data
       : input
     
-    const { postId, cursor: _cursor, limit = 50 } = z.object({
+    const { postId, cursor, limit = 50 } = z.object({
       postId: z.string().uuid(),
-      cursor: z.string().optional(),
+      cursor: z.string().datetime().optional(),
       limit: z.number().int().positive().max(100).optional(),
     }).parse(rawData)
 
@@ -255,18 +261,28 @@ export const getPostComments = createServerFn({
       })
       .from(comments)
       .innerJoin(users, eq(comments.userId, users.id))
-      .where(eq(comments.postId, postId))
+      .where(
+        and(
+          eq(comments.postId, postId),
+          eq(comments.isDeleted, false),
+          eq(comments.isHidden, false),
+          ...(cursor ? [lt(comments.createdAt, new Date(cursor))] : []),
+        )
+      )
       .orderBy(desc(comments.createdAt))
-      .limit(limit)
-
-    // TODO: Add cursor pagination if needed in future
-    // For now, we'll just return the most recent comments
+      .limit(limit + 1)
 
     const postComments = await query
+    const hasMore = postComments.length > limit
+    const toReturn = hasMore ? postComments.slice(0, limit) : postComments
+    const last = toReturn[toReturn.length - 1]
+    const nextCursor = hasMore && last ? last.createdAt.toISOString() : null
 
     return {
       success: true,
-      comments: postComments,
+      comments: toReturn,
+      hasMore,
+      nextCursor,
     }
   } catch (error) {
     console.error('Error in getPostComments:', error)
@@ -302,11 +318,17 @@ export const getCommentCount = createServerFn({
 
     const { postId } = parseResult.data
 
-    // Count comments for this post
+    // Count comments for this post (exclude moderated)
     const result = await db
       .select({ count: count() })
       .from(comments)
-      .where(eq(comments.postId, postId))
+      .where(
+        and(
+          eq(comments.postId, postId),
+          eq(comments.isDeleted, false),
+          eq(comments.isHidden, false),
+        )
+      )
 
     return {
       success: true,

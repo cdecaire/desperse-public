@@ -280,13 +280,13 @@ export function PostMedia({
       <div
         className={cn(
           containerClass,
-          (isExtraTall || contained) && 'flex items-center justify-center'
+          contained && 'flex items-center justify-center'
         )}
         style={isExtraTall && maxAspectRatio ? { aspectRatio: `1 / ${maxAspectRatio}` } : undefined}
         onClick={onClick}
       >
-        {/* Blurred background for extra-tall images or contained mode */}
-        {(isExtraTall || contained) && isLoaded && (
+        {/* Blurred background for contained mode (detail view) */}
+        {contained && isLoaded && (
           <img
             src={optimizedImageProps.src}
             srcSet={optimizedImageProps.srcSet || undefined}
@@ -397,7 +397,7 @@ export function PostMedia({
           ref={containerRef}
           className={cn(
             containerClass,
-            (isExtraTall || contained) && 'flex items-center justify-center',
+            contained && 'flex items-center justify-center',
             // Add aspect-video fallback for videos without cover to ensure container has height
             !coverUrl && !isLoaded && 'aspect-video'
           )}
@@ -405,7 +405,7 @@ export function PostMedia({
           onClick={onClick}
         >
           {/* Blurred background for extra-tall videos or contained mode */}
-          {(isExtraTall || contained) && coverUrl && optimizedCoverProps && (
+          {contained && coverUrl && optimizedCoverProps && (
             <img
               src={optimizedCoverProps.src}
               srcSet={optimizedCoverProps.srcSet || undefined}
@@ -474,14 +474,14 @@ export function PostMedia({
         ref={containerRef}
         className={cn(
           containerClass,
-          (isExtraTall || contained) && 'flex items-center justify-center',
+          contained && 'flex items-center justify-center',
           // Add aspect-video fallback for videos without cover to ensure container has height
           !coverUrl && !isLoaded && 'aspect-video'
         )}
         style={isExtraTall && maxAspectRatio ? { aspectRatio: `1 / ${maxAspectRatio}` } : undefined}
       >
         {/* Blurred background for extra-tall videos or contained mode */}
-        {(isExtraTall || contained) && coverUrl && optimizedCoverProps && (
+        {contained && coverUrl && optimizedCoverProps && (
           <img
             src={optimizedCoverProps.src}
             srcSet={optimizedCoverProps.srcSet || undefined}
@@ -510,7 +510,7 @@ export function PostMedia({
                 decoding="async"
                 className={cn(
                   'absolute inset-0 w-full h-full transition-opacity duration-300',
-                  (isExtraTall || contained) ? 'object-contain z-10' : 'object-cover z-10'
+                  contained ? 'object-contain z-10' : 'object-cover z-10'
                 )}
                 aria-hidden="true"
               />
@@ -628,12 +628,12 @@ export function PostMedia({
     if (preview) {
       const previewContent = (
         <div
-          className={cn(containerClass, !displayImage && 'aspect-square', (isExtraTall || contained) && 'flex items-center justify-center')}
+          className={cn(containerClass, !displayImage && 'aspect-square', contained && 'flex items-center justify-center')}
           style={isExtraTall && maxAspectRatio ? { aspectRatio: `1 / ${maxAspectRatio}` } : undefined}
           onClick={onClick}
         >
           {/* Blurred background for extra-tall audio covers or contained mode */}
-          {(isExtraTall || contained) && displayImage && optimizedAudioCoverProps && (
+          {contained && displayImage && optimizedAudioCoverProps && (
             <img
               src={optimizedAudioCoverProps.src}
               srcSet={optimizedAudioCoverProps.srcSet || undefined}
@@ -715,11 +715,11 @@ export function PostMedia({
 
     const audioContent = (
       <div
-        className={cn(containerClass, !displayImage && 'aspect-square', (isExtraTall || contained) && 'flex items-center justify-center')}
+        className={cn(containerClass, !displayImage && 'aspect-square', contained && 'flex items-center justify-center')}
         style={isExtraTall && maxAspectRatio ? { aspectRatio: `1 / ${maxAspectRatio}` } : undefined}
       >
         {/* Blurred background for extra-tall audio covers or contained mode */}
-        {(isExtraTall || contained) && displayImage && optimizedAudioCoverProps && (
+        {contained && displayImage && optimizedAudioCoverProps && (
           <img
             src={optimizedAudioCoverProps.src}
             srcSet={optimizedAudioCoverProps.srcSet || undefined}
@@ -873,14 +873,14 @@ export function PostMedia({
         className={cn(
           containerClass,
           !displayImage && 'aspect-square',
-          (isExtraTall || contained) && 'flex items-center justify-center',
+          contained && 'flex items-center justify-center',
           !isLocked && 'cursor-pointer'
         )}
         style={isExtraTall && maxAspectRatio ? { aspectRatio: `1 / ${maxAspectRatio}` } : undefined}
         onClick={!isLocked ? handleDocumentClick : undefined}
       >
         {/* Blurred background for extra-tall document covers or contained mode */}
-        {(isExtraTall || contained) && displayImage && optimizedDocCoverProps && (
+        {contained && displayImage && optimizedDocCoverProps && (
           <img
             src={optimizedDocCoverProps.src}
             srcSet={optimizedDocCoverProps.srcSet || undefined}

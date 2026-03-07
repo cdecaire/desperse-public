@@ -23,7 +23,7 @@ import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
 import { db } from '@/server/db'
 import { postAssets, downloadNonces, downloadTokens } from '@/server/db/schema'
-import { eq, and, isNull } from 'drizzle-orm'
+import { eq, and, isNull, gt } from 'drizzle-orm'
 import { verifyNftOwnership, isPostCreator } from '@/server/services/blockchain/ownershipCheck'
 import { addressToBytes } from '@/server/services/blockchain/addressUtils'
 // ed25519, bs58, randomBytes are dynamically imported inside handlers
@@ -232,33 +232,25 @@ export const verifyAndIssueToken = createServerFn({
       return { success: false, error: 'Invalid signature' }
     }
 
-    // 3. Verify nonce exists, not expired, not used
-    const [nonceRecord] = await db
-      .select()
-      .from(downloadNonces)
+    // 3. Atomically claim nonce (verify exists + not expired + not used, and mark used in one step)
+    const now = new Date()
+    const [claimedNonce] = await db
+      .update(downloadNonces)
+      .set({ usedAt: now })
       .where(
         and(
           eq(downloadNonces.nonce, parsed.nonce),
           eq(downloadNonces.assetId, assetId),
           eq(downloadNonces.wallet, wallet),
           isNull(downloadNonces.usedAt),
+          gt(downloadNonces.expiresAt, now),
         )
       )
-      .limit(1)
+      .returning({ id: downloadNonces.id })
 
-    if (!nonceRecord) {
-      return { success: false, error: 'Nonce not found or already used' }
+    if (!claimedNonce) {
+      return { success: false, error: 'Nonce not found, already used, or expired' }
     }
-
-    if (nonceRecord.expiresAt < new Date()) {
-      return { success: false, error: 'Nonce has expired' }
-    }
-
-    // 4. Mark nonce as used
-    await db
-      .update(downloadNonces)
-      .set({ usedAt: new Date() })
-      .where(eq(downloadNonces.id, nonceRecord.id))
 
     // 5. Get asset and post info
     const [asset] = await db

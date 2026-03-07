@@ -697,7 +697,7 @@ export const getFeed = createServerFn({
 }).handler(async (input: unknown) => {
   try {
     const authResult = await withOptionalAuth(feedQuerySchema, input)
-    const { tab, cursor, limit, userId, categories } = authResult.input
+    const { tab, cursor, limit, categories } = authResult.input
 
     // Check if current user is moderator/admin (can see hidden posts)
     // Uses verified userId from token instead of client-provided value
@@ -731,12 +731,17 @@ export const getFeed = createServerFn({
     }
 
     // For "following" feed, filter by followed users
-    if (tab === 'following' && userId) {
+    // Derive follower ID from auth token, not client-supplied userId
+    const followerId = authResult.auth?.userId
+    if (tab === 'following' && !followerId) {
+      return { success: true, posts: [], hasMore: false, nextCursor: null }
+    }
+    if (tab === 'following' && followerId) {
       // Get the list of user IDs that the current user follows
       const followingList = await db
         .select({ followingId: follows.followingId })
         .from(follows)
-        .where(eq(follows.followerId, userId))
+        .where(eq(follows.followerId, followerId))
 
       const followingIds = followingList.map(f => f.followingId)
 

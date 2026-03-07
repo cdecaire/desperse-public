@@ -15,7 +15,7 @@ import { Link } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icon'
 import { cn } from '@/lib/utils'
-import { usePostComments, useDeleteCommentMutation, MAX_COMMENT_LENGTH, createCommentWithMutation } from '@/hooks/useComments'
+import { usePostComments, getAllComments, useDeleteCommentMutation, MAX_COMMENT_LENGTH, createCommentWithMutation } from '@/hooks/useComments'
 import { useAuth } from '@/hooks/useAuth'
 import { useQueryClient } from '@tanstack/react-query'
 import { toast } from '@/hooks/use-toast'
@@ -158,7 +158,8 @@ export function CommentSection({
 }: CommentSectionProps) {
   const { isReady, getAuthHeaders, login } = useAuth()
   const queryClient = useQueryClient()
-  const { data: comments, isLoading } = usePostComments(postId)
+  const { data, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage } = usePostComments(postId)
+  const comments = getAllComments(data)
   const deleteMutation = useDeleteCommentMutation(postId)
   const createReportMutation = useCreateReport()
   const [commentText, setCommentText] = useState('')
@@ -169,12 +170,29 @@ export function CommentSection({
   const isOverLimit = characterCount > MAX_COMMENT_LENGTH
   const canSubmit = commentText.trim().length > 0 && !isOverLimit && isAuthenticated && userId
 
-  // Scroll to bottom when new comments are added
+  // Intersection observer for infinite scroll
+  const loadMoreRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
-    if (comments && comments.length > 0) {
+    const el = loadMoreRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage()
+        }
+      },
+      { threshold: 0.1 }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage])
+
+  // Scroll to bottom when new comments are added (first page only)
+  useEffect(() => {
+    if (comments.length > 0 && !hasNextPage) {
       commentsEndRef.current?.scrollIntoView({ behavior: 'smooth' })
     }
-  }, [comments?.length])
+  }, [comments.length])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -299,7 +317,7 @@ export function CommentSection({
         </div>
       )}
 
-      {!isLoading && comments && (
+      {!isLoading && (
         <>
           {comments.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground text-sm">
@@ -317,6 +335,13 @@ export function CommentSection({
                   onReportSubmit={handleReportSubmit}
                 />
               ))}
+              {/* Infinite scroll sentinel */}
+              <div ref={loadMoreRef} className="h-1" />
+              {isFetchingNextPage && (
+                <div className="flex items-center justify-center py-4">
+                  <LoadingSpinner size="sm" />
+                </div>
+              )}
               <div ref={commentsEndRef} />
             </div>
           )}

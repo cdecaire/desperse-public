@@ -2,7 +2,7 @@
  * Hooks for comments functionality
  */
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useInfiniteQuery, useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { createComment, deleteComment, getPostComments, getCommentCount } from '@/server/functions/comments'
 import { useAuth } from '@/hooks/useAuth'
 import { toast } from '@/hooks/use-toast'
@@ -11,30 +11,56 @@ import { toast } from '@/hooks/use-toast'
 export const MAX_COMMENT_LENGTH = 280
 
 /**
- * Get all comments for a post
+ * Get all comments for a post (infinite scroll)
  */
 export function usePostComments(postId: string | undefined) {
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: ['postComments', postId],
-    queryFn: async () => {
+    queryFn: async ({ pageParam }) => {
       if (!postId) throw new Error('Post ID required')
-      
+
       const result = await (getPostComments as any)({
         data: {
           postId,
           limit: 50,
+          cursor: pageParam || undefined,
         },
       })
-      
+
       if (!result.success) {
         throw new Error(result.error || 'Failed to fetch comments')
       }
-      
-      return result.comments
+
+      return result as {
+        comments: Comment[]
+        hasMore: boolean
+        nextCursor: string | null
+      }
     },
+    initialPageParam: null as string | null,
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
     enabled: !!postId,
     staleTime: 30 * 1000, // 30 seconds
   })
+}
+
+/** Flatten paginated comments into a single array */
+export function getAllComments(data: ReturnType<typeof usePostComments>['data']) {
+  if (!data) return []
+  return data.pages.flatMap((page) => page.comments)
+}
+
+interface Comment {
+  id: string
+  userId: string
+  content: string
+  createdAt: Date | string
+  user: {
+    id: string
+    usernameSlug: string
+    displayName: string | null
+    avatarUrl: string | null
+  }
 }
 
 /**
@@ -107,21 +133,27 @@ export function useDeleteCommentMutation(postId: string) {
     onMutate: async ({ commentId }) => {
       // Cancel outgoing refetches
       await queryClient.cancelQueries({ queryKey: ['postComments', postId] })
-      
+
       // Snapshot previous value
       const previousComments = queryClient.getQueryData(['postComments', postId])
-      
-      // Optimistically remove comment
-      queryClient.setQueryData(['postComments', postId], (old: any[] | undefined) => {
-        if (!old) return []
-        return old.filter((comment) => comment.id !== commentId)
+
+      // Optimistically remove comment from infinite query pages
+      queryClient.setQueryData(['postComments', postId], (old: any) => {
+        if (!old?.pages) return old
+        return {
+          ...old,
+          pages: old.pages.map((page: any) => ({
+            ...page,
+            comments: page.comments.filter((c: any) => c.id !== commentId),
+          })),
+        }
       })
-      
+
       // Optimistically update count
       queryClient.setQueryData(['commentCount', postId], (old: number | undefined) => {
         return Math.max(0, (old || 0) - 1)
       })
-      
+
       return { previousComments }
     },
     onError: (error, _variables, context) => {

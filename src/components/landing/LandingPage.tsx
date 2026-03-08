@@ -201,6 +201,9 @@ function Header() {
         <span className="text-xl font-extrabold">Desperse</span>
       </Link>
       <nav className="hidden md:flex gap-8 text-sm font-medium">
+        <Link to="/browse" className="hover:text-zinc-500 dark:hover:text-zinc-400 transition-colors">
+          Browse
+        </Link>
         <a href="#features" className="hover:text-zinc-500 dark:hover:text-zinc-400 transition-colors">
           Features
         </a>
@@ -975,10 +978,10 @@ function Gallery() {
         <div className="flex flex-col md:flex-row justify-between items-end mb-16">
           <h3 className="text-4xl font-extrabold tracking-tight stagger-item">Discover <br />Creators</h3>
           <Link
-            to="/explore"
+            to="/browse"
             className="text-sm border-b border-zinc-950 dark:border-zinc-50 pb-1 hover:text-zinc-600 dark:hover:text-zinc-400 hover:border-zinc-600 dark:hover:border-zinc-400 transition-all mt-4 md:mt-0 stagger-item"
           >
-            Explore Feed →
+            Browse Posts →
           </Link>
         </div>
 

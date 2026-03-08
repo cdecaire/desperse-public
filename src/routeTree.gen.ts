@@ -16,6 +16,7 @@ import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as FeesRouteImport } from './routes/fees'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as ChangelogRouteImport } from './routes/changelog'
+import { Route as BrowseRouteImport } from './routes/browse'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as SplatRouteImport } from './routes/$'
@@ -86,6 +87,11 @@ const ExploreRoute = ExploreRouteImport.update({
 const ChangelogRoute = ChangelogRouteImport.update({
   id: '/changelog',
   path: '/changelog',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BrowseRoute = BrowseRouteImport.update({
+  id: '/browse',
+  path: '/browse',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -278,6 +284,7 @@ export interface FileRoutesByFullPath {
   '/$': typeof SplatRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
+  '/browse': typeof BrowseRoute
   '/changelog': typeof ChangelogRoute
   '/explore': typeof ExploreRoute
   '/fees': typeof FeesRoute
@@ -322,6 +329,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/about': typeof AboutRoute
+  '/browse': typeof BrowseRoute
   '/changelog': typeof ChangelogRoute
   '/explore': typeof ExploreRoute
   '/fees': typeof FeesRoute
@@ -367,6 +375,7 @@ export interface FileRoutesById {
   '/$': typeof SplatRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
+  '/browse': typeof BrowseRoute
   '/changelog': typeof ChangelogRoute
   '/explore': typeof ExploreRoute
   '/fees': typeof FeesRoute
@@ -414,6 +423,7 @@ export interface FileRouteTypes {
     | '/$'
     | '/about'
     | '/admin'
+    | '/browse'
     | '/changelog'
     | '/explore'
     | '/fees'
@@ -458,6 +468,7 @@ export interface FileRouteTypes {
     | '/'
     | '/$'
     | '/about'
+    | '/browse'
     | '/changelog'
     | '/explore'
     | '/fees'
@@ -502,6 +513,7 @@ export interface FileRouteTypes {
     | '/$'
     | '/about'
     | '/admin'
+    | '/browse'
     | '/changelog'
     | '/explore'
     | '/fees'
@@ -548,6 +560,7 @@ export interface RootRouteChildren {
   SplatRoute: typeof SplatRoute
   AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRouteWithChildren
+  BrowseRoute: typeof BrowseRoute
   ChangelogRoute: typeof ChangelogRoute
   ExploreRoute: typeof ExploreRoute
   FeesRoute: typeof FeesRoute
@@ -624,6 +637,13 @@ declare module '@tanstack/react-router' {
       path: '/changelog'
       fullPath: '/changelog'
       preLoaderRoute: typeof ChangelogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/browse': {
+      id: '/browse'
+      path: '/browse'
+      fullPath: '/browse'
+      preLoaderRoute: typeof BrowseRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -962,6 +982,7 @@ const rootRouteChildren: RootRouteChildren = {
   SplatRoute: SplatRoute,
   AboutRoute: AboutRoute,
   AdminRoute: AdminRouteWithChildren,
+  BrowseRoute: BrowseRoute,
   ChangelogRoute: ChangelogRoute,
   ExploreRoute: ExploreRoute,
   FeesRoute: FeesRoute,

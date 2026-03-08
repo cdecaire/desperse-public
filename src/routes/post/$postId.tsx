@@ -345,49 +345,6 @@ function CollectorsList({
   )
 }
 
-function MobileCollectorsSection({
-  postId,
-  currentUserId,
-  isAuthenticated,
-}: {
-  postId: string
-  currentUserId?: string
-  isAuthenticated: boolean
-}) {
-  const [expanded, setExpanded] = useState(false)
-  const { data: collectors, isLoading } = usePostCollectors(
-    expanded ? postId : undefined,
-    currentUserId
-  )
-
-  return (
-    <div className="border-t border-border">
-      <button
-        type="button"
-        onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-center justify-between py-3 text-sm font-medium text-foreground"
-      >
-        <span>Collectors</span>
-        <Icon
-          name={expanded ? 'chevron-up' : 'chevron-down'}
-          variant="regular"
-          className="text-xs text-muted-foreground"
-        />
-      </button>
-      {expanded && (
-        <div className="-mx-4 md:-mx-2">
-          <CollectorsList
-            collectors={collectors}
-            isLoading={isLoading}
-            currentUserId={currentUserId}
-            isAuthenticated={isAuthenticated}
-          />
-        </div>
-      )}
-    </div>
-  )
-}
-
 function PostDetailPage() {
   const { postId } = Route.useParams()
   const { isAuthenticated, isReady, login } = useAuth()
@@ -407,11 +364,12 @@ function PostDetailPage() {
   const [localIsOwned, setLocalIsOwned] = useState(false)
   const [mobileCommentSheetOpen, setMobileCommentSheetOpen] = useState(false)
   const [desktopTab, setDesktopTab] = useState<'comments' | 'details' | 'collectors'>('comments')
-  
+  const [mobileTab, setMobileTab] = useState<'details' | 'collectors'>('details')
+
   // Fetch collectors for this post (only when tab is active and post is collectible/edition)
   const isCollectibleType = data?.post?.type === 'edition' || data?.post?.type === 'collectible'
   const { data: postCollectors, isLoading: isLoadingCollectors } = usePostCollectors(
-    desktopTab === 'collectors' && isCollectibleType ? postId : undefined,
+    (desktopTab === 'collectors' || mobileTab === 'collectors') && isCollectibleType ? postId : undefined,
     currentUser?.id
   )
 
@@ -1303,13 +1261,40 @@ function PostDetailPage() {
                   )}
                 </div>
 
-                {/* Details metadata section */}
-                <PostDetails post={post} editionSupply={editionSupply} collectCount={collectCount} getTokenUrl={(addr) => getExplorerUrl('token', addr, preferences.explorer)} />
+                {/* Segment control: Details | Collectors */}
+                <div className="flex border-b border-border" role="tablist">
+                  {(['details', 'collectors'] as const).map((tab) => (
+                    <button
+                      key={tab}
+                      type="button"
+                      role="tab"
+                      aria-selected={mobileTab === tab}
+                      onClick={() => setMobileTab(tab)}
+                      className={cn(
+                        'flex-1 py-3 text-sm font-medium transition-colors relative',
+                        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset',
+                        mobileTab === tab
+                          ? 'text-foreground'
+                          : 'text-muted-foreground hover:text-foreground/80',
+                      )}
+                    >
+                      <span className="relative inline-flex items-center">
+                        {tab === 'details' ? 'Details' : 'Collectors'}
+                      </span>
+                      {mobileTab === tab && (
+                        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-foreground rounded-full" />
+                      )}
+                    </button>
+                  ))}
+                </div>
 
-                {/* Collectors section */}
-                {collectCount > 0 && (
-                  <MobileCollectorsSection
-                    postId={post.id}
+                {/* Tab content */}
+                {mobileTab === 'details' ? (
+                  <PostDetails post={post} editionSupply={editionSupply} collectCount={collectCount} getTokenUrl={(addr) => getExplorerUrl('token', addr, preferences.explorer)} />
+                ) : (
+                  <CollectorsList
+                    collectors={postCollectors}
+                    isLoading={isLoadingCollectors}
                     currentUserId={currentUser?.id}
                     isAuthenticated={isAuthenticated}
                   />

@@ -127,6 +127,13 @@ export function CommentSheet({
 	// Detect if keyboard is likely open (viewport significantly smaller than window)
 	const keyboardOpen = viewportHeight != null && window.innerHeight - viewportHeight > 100
 
+	// In PWA standalone mode, the sheet covers the full screen including the home
+	// indicator area — no need for extra safe-area padding which creates dead space.
+	const isStandalone = typeof window !== 'undefined' && (
+		window.matchMedia('(display-mode: standalone)').matches ||
+		(navigator as any).standalone === true
+	)
+
 	// Portal to document.body so the sheet escapes any ancestor stacking contexts
 	// (e.g. transforms on PostCard or article wrappers) and reliably covers nav bars
 	return createPortal(
@@ -191,7 +198,7 @@ export function CommentSheet({
 						ref={inputRef}
 						className="shrink-0 border-t border-border px-4 py-3"
 						style={{
-							paddingBottom: keyboardOpen
+							paddingBottom: keyboardOpen || isStandalone
 								? '0.75rem'
 								: 'calc(0.75rem + env(safe-area-inset-bottom, 0px))',
 						}}

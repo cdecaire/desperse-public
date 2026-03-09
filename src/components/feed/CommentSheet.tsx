@@ -10,6 +10,7 @@
  */
 
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import { XIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { CommentSection } from './CommentSection'
@@ -126,7 +127,9 @@ export function CommentSheet({
 	// Detect if keyboard is likely open (viewport significantly smaller than window)
 	const keyboardOpen = viewportHeight != null && window.innerHeight - viewportHeight > 100
 
-	return (
+	// Portal to document.body so the sheet escapes any ancestor stacking contexts
+	// (e.g. transforms on PostCard or article wrappers) and reliably covers nav bars
+	return createPortal(
 		<>
 			{/* Backdrop */}
 			<div
@@ -202,6 +205,7 @@ export function CommentSheet({
 					</div>
 				)}
 			</div>
-		</>
+		</>,
+		document.body
 	)
 }

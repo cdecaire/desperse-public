@@ -32,6 +32,8 @@ export interface TrendingPost {
   collectCount: number
   purchaseCount: number
   trendingScore: number
+  isLiked: boolean
+  isCollected: boolean
   collectibleAssetId?: string
   assetId?: string
   userNftMint?: string
@@ -71,6 +73,8 @@ export interface SearchResultPost {
   likeCount: number
   commentCount: number
   collectCount: number
+  isLiked: boolean
+  isCollected: boolean
   assets?: Array<{
     id: string
     url: string
@@ -418,8 +422,55 @@ export async function getTrendingPostsDirect(
       )
     }
 
-    // Batch fetch assets for multi-asset posts
+    // Query viewer's likes and collections if authenticated
+    const likedPostIds = new Set<string>()
+    const collectedPostIds = new Set<string>()
     const allPostIds = finalPosts.map(p => p.post.id)
+
+    if (currentUserId && allPostIds.length > 0) {
+      const userLikes = await db
+        .select({ postId: likes.postId })
+        .from(likes)
+        .where(
+          and(
+            eq(likes.userId, currentUserId),
+            inArray(likes.postId, allPostIds)
+          )
+        )
+      for (const like of userLikes) {
+        likedPostIds.add(like.postId)
+      }
+
+      const userCollections = await db
+        .select({ postId: collections.postId })
+        .from(collections)
+        .where(
+          and(
+            eq(collections.userId, currentUserId),
+            inArray(collections.postId, allPostIds),
+            eq(collections.status, 'confirmed')
+          )
+        )
+      for (const collection of userCollections) {
+        collectedPostIds.add(collection.postId)
+      }
+
+      const userPurchasesForViewer = await db
+        .select({ postId: purchases.postId })
+        .from(purchases)
+        .where(
+          and(
+            eq(purchases.userId, currentUserId),
+            inArray(purchases.postId, allPostIds),
+            eq(purchases.status, 'confirmed')
+          )
+        )
+      for (const purchase of userPurchasesForViewer) {
+        collectedPostIds.add(purchase.postId)
+      }
+    }
+
+    // Batch fetch assets for multi-asset posts
     let postAssetsMap: Record<string, Array<{
       id: string
       url: string
@@ -484,6 +535,8 @@ export async function getTrendingPostsDirect(
           collectCount: Number(p.collectCount) || 0,
           purchaseCount: Number(p.purchaseCount) || 0,
           trendingScore: Number(p.trendingScore) || 0,
+          isLiked: likedPostIds.has(p.post.id),
+          isCollected: collectedPostIds.has(p.post.id),
           ...(p.post.type === 'collectible' && collectibleAssetIds[p.post.id]
             ? { collectibleAssetId: collectibleAssetIds[p.post.id] }
             : {}),
@@ -528,11 +581,13 @@ export async function searchDirect(
 }> {
   try {
     // Get current user if authenticated
+    let currentUserId: string | undefined
     let canSeeHidden = false
     if (token) {
       const auth = await authenticateWithToken(token)
-      if (auth?.userId) {
-        canSeeHidden = await isModeratorOrAdmin(auth.userId)
+      currentUserId = auth?.userId
+      if (currentUserId) {
+        canSeeHidden = await isModeratorOrAdmin(currentUserId)
       }
     }
 
@@ -681,6 +736,54 @@ export async function searchDirect(
         }
       }
 
+      // Query viewer's likes and collections for search results
+      const searchLikedPostIds = new Set<string>()
+      const searchCollectedPostIds = new Set<string>()
+      const searchPostIds = posts_result.map(p => p.id)
+
+      if (currentUserId && searchPostIds.length > 0) {
+        const userLikes = await db
+          .select({ postId: likes.postId })
+          .from(likes)
+          .where(
+            and(
+              eq(likes.userId, currentUserId),
+              inArray(likes.postId, searchPostIds)
+            )
+          )
+        for (const like of userLikes) {
+          searchLikedPostIds.add(like.postId)
+        }
+
+        const userCollections = await db
+          .select({ postId: collections.postId })
+          .from(collections)
+          .where(
+            and(
+              eq(collections.userId, currentUserId),
+              inArray(collections.postId, searchPostIds),
+              eq(collections.status, 'confirmed')
+            )
+          )
+        for (const collection of userCollections) {
+          searchCollectedPostIds.add(collection.postId)
+        }
+
+        const userPurchases = await db
+          .select({ postId: purchases.postId })
+          .from(purchases)
+          .where(
+            and(
+              eq(purchases.userId, currentUserId),
+              inArray(purchases.postId, searchPostIds),
+              eq(purchases.status, 'confirmed')
+            )
+          )
+        for (const purchase of userPurchases) {
+          searchCollectedPostIds.add(purchase.postId)
+        }
+      }
+
       postResults = posts_result.map(p => {
         const assets = searchPostAssetsMap[p.id]
         return {
@@ -693,6 +796,8 @@ export async function searchDirect(
           likeCount: Number(p.likeCount) || 0,
           commentCount: Number(p.commentCount) || 0,
           collectCount: Number(p.collectCount) || 0,
+          isLiked: searchLikedPostIds.has(p.id),
+          isCollected: searchCollectedPostIds.has(p.id),
           user: p.user,
           ...(assets && assets.length > 1 ? { assets } : {}),
         }

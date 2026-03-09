@@ -31,14 +31,14 @@ export function CommentSheet({
 	onOpenChange,
 }: CommentSheetProps) {
 	const [keyboardOffset, setKeyboardOffset] = useState(0)
-	const [vvHeight, setVvHeight] = useState<number | null>(null)
+	const [visibleHeight, setVisibleHeight] = useState(0)
 	const rafRef = useRef(0)
 
-	// Track visual viewport to resize/reposition when mobile keyboard opens
+	// Track visual viewport to detect mobile keyboard height
 	useEffect(() => {
 		if (!open) {
 			setKeyboardOffset(0)
-			setVvHeight(null)
+			setVisibleHeight(0)
 			return
 		}
 
@@ -51,7 +51,7 @@ export function CommentSheet({
 				// Distance from bottom of layout viewport to bottom of visual viewport
 				const offset = window.innerHeight - (vv.height + vv.offsetTop)
 				setKeyboardOffset(Math.max(0, offset))
-				setVvHeight(vv.height)
+				setVisibleHeight(vv.height)
 			})
 		}
 
@@ -65,11 +65,12 @@ export function CommentSheet({
 		}
 	}, [open])
 
-	// When keyboard is open, shrink sheet to fit visual viewport; otherwise 85dvh
+	// When keyboard is open: visible portion = 85% of area above keyboard,
+	// plus the keyboard offset so the sheet extends behind the keyboard (no gap).
 	const keyboardOpen = keyboardOffset > 50
-	const sheetHeight = keyboardOpen && vvHeight
-		? `${Math.max(150, Math.min(vvHeight * 0.85, vvHeight - 40))}px`
-		: '85dvh'
+	const sheetHeight = keyboardOpen && visibleHeight
+		? `${visibleHeight * 0.85 + keyboardOffset}px`
+		: undefined
 
 	return (
 		<Sheet open={open} onOpenChange={onOpenChange}>
@@ -77,10 +78,7 @@ export function CommentSheet({
 				side="bottom"
 				showClose={false}
 				className="flex flex-col rounded-t-2xl px-0"
-				style={{
-					height: sheetHeight,
-					bottom: keyboardOpen ? `${keyboardOffset}px` : undefined,
-				}}
+				style={{ height: sheetHeight ?? '85dvh' }}
 			>
 				<SheetHeader className="px-4 pb-2 pt-1 shrink-0">
 					{/* Drag handle */}
@@ -98,9 +96,16 @@ export function CommentSheet({
 					/>
 				</div>
 
-				{/* Fixed input at bottom */}
+				{/* Input at bottom — padded above keyboard when open */}
 				{isAuthenticated && (
-					<div className="shrink-0 border-t border-border px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]">
+					<div
+						className="shrink-0 border-t border-border px-4 pt-3"
+						style={{
+							paddingBottom: keyboardOffset > 0
+								? `${keyboardOffset + 12}px`
+								: 'calc(0.75rem + env(safe-area-inset-bottom, 0px))',
+						}}
+					>
 						<CommentSection
 							postId={postId}
 							userId={userId}

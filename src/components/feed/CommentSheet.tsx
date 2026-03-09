@@ -3,13 +3,13 @@
  * Full-page comment view for mobile, matching the messaging UI pattern.
  *
  * - Backdrop: fixed inset-0, separate from the sheet
- * - Sheet: fixed full-screen, height tracks visualViewport
+ * - Sheet: fixed top-0, height tracks visualViewport so input stays above keyboard
  * - Body scroll lock while open
  * - Flex column: header → scrollable comments (flex-1) → sticky input
- * - Input stays above keyboard naturally via viewport tracking
+ * - Uses top-0 positioning so the sheet shrinks upward from the keyboard, not downward from the top
  */
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { XIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { CommentSection } from './CommentSection'
@@ -30,10 +30,12 @@ export function CommentSheet({
 	onOpenChange,
 }: CommentSheetProps) {
 	const [viewportHeight, setViewportHeight] = useState<number | null>(null)
+	const [viewportOffsetTop, setViewportOffsetTop] = useState(0)
 	const [isClosing, setIsClosing] = useState(false)
 	const inputRef = useRef<HTMLDivElement>(null)
+	const commentsScrollRef = useRef<HTMLDivElement>(null)
 
-	// Lock body scroll while open (same as messaging UI)
+	// Lock body scroll while open
 	useEffect(() => {
 		if (!open) return
 
@@ -54,24 +56,37 @@ export function CommentSheet({
 		}
 	}, [open])
 
-	// Track visual viewport height (same as messaging UI)
+	// Track visual viewport height AND offsetTop (keyboard open/close)
+	// Listen to both resize and scroll events — iOS may scroll the visual viewport
+	// without resizing it when an input is focused.
+	const handleViewportChange = useCallback(() => {
+		const vv = window.visualViewport
+		if (!vv) return
+		requestAnimationFrame(() => {
+			setViewportHeight(vv.height)
+			setViewportOffsetTop(vv.offsetTop)
+		})
+	}, [])
+
 	useEffect(() => {
 		if (!open) {
 			setViewportHeight(null)
+			setViewportOffsetTop(0)
 			return
 		}
 
 		const vv = window.visualViewport
 		if (!vv) return
 
-		const handleResize = () => {
-			setViewportHeight(vv.height)
-		}
-
 		setViewportHeight(vv.height)
-		vv.addEventListener('resize', handleResize)
-		return () => vv.removeEventListener('resize', handleResize)
-	}, [open])
+		setViewportOffsetTop(vv.offsetTop)
+		vv.addEventListener('resize', handleViewportChange)
+		vv.addEventListener('scroll', handleViewportChange)
+		return () => {
+			vv.removeEventListener('resize', handleViewportChange)
+			vv.removeEventListener('scroll', handleViewportChange)
+		}
+	}, [open, handleViewportChange])
 
 	// Auto-focus the textarea when sheet opens
 	useEffect(() => {
@@ -82,6 +97,21 @@ export function CommentSheet({
 		}, 300)
 		return () => clearTimeout(timer)
 	}, [open, isAuthenticated])
+
+	// Scroll comments to bottom when keyboard opens so user sees latest + input
+	const prevHeightRef = useRef<number | null>(null)
+	useEffect(() => {
+		if (viewportHeight == null) return
+		const prev = prevHeightRef.current
+		prevHeightRef.current = viewportHeight
+		// Keyboard opened — viewport got significantly smaller
+		if (prev != null && prev - viewportHeight > 100) {
+			requestAnimationFrame(() => {
+				const el = commentsScrollRef.current
+				if (el) el.scrollTop = el.scrollHeight
+			})
+		}
+	}, [viewportHeight])
 
 	const handleClose = () => {
 		setIsClosing(true)
@@ -107,15 +137,16 @@ export function CommentSheet({
 				onClick={handleClose}
 			/>
 
-			{/* Full-screen sheet */}
+			{/* Full-screen sheet — anchored to top so it shrinks above keyboard */}
 			<div
 				className={cn(
-					'fixed inset-x-0 bottom-0 z-50 flex flex-col bg-background rounded-t-xl shadow-lg',
+					'fixed inset-x-0 top-0 z-50 flex flex-col bg-background shadow-lg',
 					isClosing
 						? 'animate-out slide-out-to-bottom duration-200'
 						: 'animate-in slide-in-from-bottom duration-200'
 				)}
 				style={{
+					top: viewportOffsetTop,
 					height: viewportHeight ? `${viewportHeight}px` : '100dvh',
 					maxHeight: '100dvh',
 					paddingTop: 'env(safe-area-inset-top, 0px)',
@@ -136,7 +167,11 @@ export function CommentSheet({
 				</div>
 
 				{/* Scrollable comments list */}
-				<div className="flex-1 overflow-y-auto px-4 min-h-0">
+				<div
+					ref={commentsScrollRef}
+					className="flex-1 overflow-y-auto px-4 min-h-0"
+					style={{ overscrollBehavior: 'contain' }}
+				>
 					<CommentSection
 						postId={postId}
 						userId={userId}

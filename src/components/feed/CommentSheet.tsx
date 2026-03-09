@@ -2,12 +2,16 @@
  * CommentSheet Component
  * Floating modal for comments on mobile devices.
  *
- * The overlay and modal panel are fully separated:
- * - Overlay: plain div rendered outside Dialog.Portal, sized to the
- *   initial viewport height (captured before keyboard). Stays full-screen
- *   regardless of iOS PWA viewport resizing.
- * - Panel: inside Dialog.Portal, tracks current viewport height so it
- *   shrinks/grows with the keyboard naturally.
+ * Keyboard handling:
+ * 1. VirtualKeyboard API (Chrome/Edge): sets overlaysContent=true so the
+ *    viewport doesn't resize. Uses env(keyboard-inset-height) in CSS
+ *    to add bottom padding that pushes content above the keyboard.
+ * 2. Viewport resize fallback (Safari/iOS PWA): viewport resizes with
+ *    keyboard, panel tracks window height and shrinks naturally.
+ *
+ * Overlay is rendered as a standalone portal (outside Radix Dialog)
+ * with a fixed pixel height captured before the keyboard opens,
+ * so it stays full-screen regardless of viewport resizing.
  */
 
 import { useState, useEffect, useRef } from 'react'
@@ -35,7 +39,20 @@ export function CommentSheet({
 	const [windowHeight, setWindowHeight] = useState(0)
 	const [overlayHeight, setOverlayHeight] = useState(0)
 	const [mounted, setMounted] = useState(false)
+	const [hasVKApi, setHasVKApi] = useState(false)
 	const inputRef = useRef<HTMLDivElement>(null)
+
+	// Enable VirtualKeyboard API when available (Chrome/Edge)
+	useEffect(() => {
+		const vk = (navigator as any).virtualKeyboard
+		if (vk) {
+			vk.overlaysContent = true
+			setHasVKApi(true)
+		}
+		return () => {
+			if (vk) vk.overlaysContent = false
+		}
+	}, [])
 
 	// Capture full viewport height on open (before keyboard) for the overlay
 	useEffect(() => {
@@ -43,14 +60,13 @@ export function CommentSheet({
 			setOverlayHeight(window.innerHeight)
 			setMounted(true)
 		} else {
-			// Delay unmount to allow fade-out animation
 			const timer = setTimeout(() => setMounted(false), 300)
 			setOverlayHeight(0)
 			return () => clearTimeout(timer)
 		}
 	}, [open])
 
-	// Track current window height for the modal panel
+	// Track current window height for the modal panel (Safari/iOS fallback)
 	useEffect(() => {
 		if (!open) {
 			setWindowHeight(0)
@@ -87,14 +103,17 @@ export function CommentSheet({
 		return () => clearTimeout(timer)
 	}, [open, isAuthenticated])
 
-	const panelHeight = windowHeight > 0
-		? `${windowHeight * 0.85}px`
-		: '85dvh'
+	// With VK API: viewport doesn't resize, use full height.
+	// Without: viewport resizes with keyboard, track it.
+	const panelHeight = hasVKApi
+		? '85dvh'
+		: windowHeight > 0
+			? `${windowHeight * 0.85}px`
+			: '85dvh'
 
 	return (
 		<>
-			{/* Overlay — rendered outside Dialog.Portal via its own portal.
-			    Uses the initial (pre-keyboard) height so it never shrinks. */}
+			{/* Overlay — standalone portal, fixed to pre-keyboard height */}
 			{mounted && createPortal(
 				<div
 					className={cn(
@@ -108,7 +127,6 @@ export function CommentSheet({
 				document.body
 			)}
 
-			{/* Dialog — only the panel, no Radix overlay */}
 			<Dialog.Root open={open} onOpenChange={onOpenChange}>
 				<Dialog.Portal>
 					<Dialog.Content
@@ -136,9 +154,16 @@ export function CommentSheet({
 							/>
 						</div>
 
-						{/* Input area */}
+						{/* Input area — env(keyboard-inset-height) adds padding
+						    on browsers with VirtualKeyboard API support */}
 						{isAuthenticated && (
-							<div ref={inputRef} className="shrink-0 border-t border-border px-4 py-3">
+							<div
+								ref={inputRef}
+								className="shrink-0 border-t border-border px-4 py-3"
+								style={{
+									paddingBottom: 'calc(0.75rem + env(keyboard-inset-height, 0px))',
+								}}
+							>
 								<CommentSection
 									postId={postId}
 									userId={userId}

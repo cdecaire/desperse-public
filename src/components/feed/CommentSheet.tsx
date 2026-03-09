@@ -9,9 +9,11 @@ import { useState, useEffect, useRef } from 'react'
 import {
 	Sheet,
 	SheetContent,
+	SheetClose,
 	SheetHeader,
 	SheetTitle,
 } from '@/components/ui/sheet'
+import { XIcon } from 'lucide-react'
 import { CommentSection } from './CommentSection'
 
 interface CommentSheetProps {
@@ -65,12 +67,13 @@ export function CommentSheet({
 		}
 	}, [open])
 
-	// When keyboard is open: visible portion = 85% of area above keyboard,
-	// plus the keyboard offset so the sheet extends behind the keyboard (no gap).
-	const keyboardOpen = keyboardOffset > 50
-	const sheetHeight = keyboardOpen && visibleHeight
+	// Always compute height from visual viewport — no threshold switching.
+	// Sheet = 85% of visible area + keyboard offset (hidden behind keyboard).
+	// When keyboard is closed, keyboardOffset ≈ 0 and visibleHeight ≈ window.innerHeight,
+	// so this naturally equals ~85% of the full viewport.
+	const sheetHeight = visibleHeight > 0
 		? `${visibleHeight * 0.85 + keyboardOffset}px`
-		: undefined
+		: '85dvh'
 
 	return (
 		<Sheet open={open} onOpenChange={onOpenChange}>
@@ -78,12 +81,14 @@ export function CommentSheet({
 				side="bottom"
 				showClose={false}
 				className="flex flex-col rounded-t-2xl px-0"
-				style={{ height: sheetHeight ?? '85dvh' }}
+				style={{ height: sheetHeight }}
 			>
-				<SheetHeader className="px-4 pb-2 pt-1 shrink-0">
-					{/* Drag handle */}
-					<div className="mx-auto w-10 h-1 rounded-full bg-muted-foreground/30 mb-1" />
-					<SheetTitle className="sr-only">Comments</SheetTitle>
+				<SheetHeader className="px-4 pb-2 pt-2 shrink-0 flex flex-row items-center justify-between">
+					<SheetTitle className="text-sm font-semibold">Comments</SheetTitle>
+					<SheetClose className="rounded-full p-1 hover:bg-muted transition-colors">
+						<XIcon className="size-4 text-muted-foreground" />
+						<span className="sr-only">Close</span>
+					</SheetClose>
 				</SheetHeader>
 
 				{/* Scrollable comments list */}

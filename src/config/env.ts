@@ -34,7 +34,7 @@ export const env = {
   // Per-IP daily limit: protects against wallet rotation attacks
   COLLECT_IP_RATE_LIMIT: getEnvVarAsNumber('VITE_COLLECT_IP_RATE_LIMIT', 30),
   // Burst limit: max collects per user per minute (prevents rapid-fire bot behavior)
-  COLLECT_BURST_LIMIT: getEnvVarAsNumber('VITE_COLLECT_BURST_LIMIT', 2),
+  COLLECT_BURST_LIMIT: getEnvVarAsNumber('VITE_COLLECT_BURST_LIMIT', 5),
   COLLECT_BURST_WINDOW_SECONDS: getEnvVarAsNumber('VITE_COLLECT_BURST_WINDOW_SECONDS', 60),
 
   POST_RATE_LIMIT: getEnvVarAsNumber('VITE_POST_RATE_LIMIT', 10),

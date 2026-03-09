@@ -1,11 +1,15 @@
 /**
  * CommentSheet Component
  * Floating modal for comments on mobile devices.
- * Built directly on Radix Dialog — separate overlay and panel
- * so they can be sized/positioned independently.
+ * Built on Radix Dialog for independent overlay + panel control.
  *
- * The overlay covers the full viewport (including behind the iOS keyboard).
- * The modal panel floats above the keyboard with its own sizing.
+ * Keyboard strategy:
+ * - Overlay: fixed inset-0, covers the visible viewport
+ * - Panel (keyboard closed): floating card with 4px inset + rounded corners
+ * - Panel (keyboard open): extends to bottom-0 (behind keyboard) so its
+ *   background fills behind the iOS keyboard accessory bar. A spacer div
+ *   pushes the input above the keyboard. Top corners stay rounded,
+ *   bottom corners go flush.
  */
 
 import { useState, useEffect, useRef } from 'react'
@@ -75,25 +79,30 @@ export function CommentSheet({
 
 	const keyboardOpen = keyboardOffset > 50
 
-	// Modal = 85% of visible area, positioned above keyboard
+	// Keyboard open: panel extends behind keyboard, spacer pushes input up
+	// Keyboard closed: floating card with margin
 	const panelHeight = visibleHeight > 0
-		? `${visibleHeight * 0.85}px`
+		? keyboardOpen
+			? `${visibleHeight * 0.85 + keyboardOffset}px`
+			: `${visibleHeight * 0.85}px`
 		: '85dvh'
-	const panelBottom = keyboardOpen ? keyboardOffset : 4
 
 	return (
 		<Dialog.Root open={open} onOpenChange={onOpenChange}>
 			<Dialog.Portal>
-				{/* Overlay — covers the ENTIRE viewport including behind keyboard */}
-				<Dialog.Overlay
-					className="fixed z-50 bg-black/50 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
-					style={{ top: 0, left: 0, right: 0, bottom: '-500px' }}
-				/>
+				{/* Overlay — standard full-viewport coverage */}
+				<Dialog.Overlay className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
 
-				{/* Modal panel — positioned independently above keyboard */}
+				{/* Modal panel */}
 				<Dialog.Content
-					className="fixed z-50 left-1 right-1 flex flex-col bg-background rounded-2xl overflow-hidden shadow-2xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:slide-in-from-bottom data-[state=closed]:slide-out-to-bottom data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0 data-[state=open]:duration-300 data-[state=closed]:duration-200"
-					style={{ height: panelHeight, bottom: `${panelBottom}px` }}
+					className="fixed z-50 flex flex-col bg-background overflow-hidden shadow-2xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:slide-in-from-bottom data-[state=closed]:slide-out-to-bottom data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0 data-[state=open]:duration-300 data-[state=closed]:duration-200"
+					style={{
+						height: panelHeight,
+						left: '4px',
+						right: '4px',
+						bottom: keyboardOpen ? '0px' : '4px',
+						borderRadius: keyboardOpen ? '1rem 1rem 0 0' : '1rem',
+					}}
 				>
 					{/* Header */}
 					<div className="px-4 py-3 shrink-0 flex items-center justify-between border-b border-border">
@@ -126,6 +135,11 @@ export function CommentSheet({
 								variant="input-only"
 							/>
 						</div>
+					)}
+
+					{/* Keyboard spacer — fills behind keyboard so bg covers the accessory bar */}
+					{keyboardOpen && (
+						<div className="shrink-0" style={{ height: `${keyboardOffset}px` }} />
 					)}
 				</Dialog.Content>
 			</Dialog.Portal>

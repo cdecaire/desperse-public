@@ -1,18 +1,15 @@
 /**
  * CommentSheet Component
- * Floating modal for comments on mobile devices.
+ * Full-page comment view for mobile, matching the messaging UI pattern.
  *
- * Overlay: standalone portal using height:100lvh (large viewport height)
- * which never shrinks when the keyboard opens on any platform.
- *
- * Panel: inside Radix Dialog.Portal, tracks the current viewport height
- * via window/visualViewport resize events so it shrinks/grows with
- * the keyboard naturally on all platforms.
+ * - Backdrop: fixed inset-0, separate from the sheet
+ * - Sheet: fixed full-screen, height tracks visualViewport
+ * - Body scroll lock while open
+ * - Flex column: header → scrollable comments (flex-1) → sticky input
+ * - Input stays above keyboard naturally via viewport tracking
  */
 
 import { useState, useEffect, useRef } from 'react'
-import { createPortal } from 'react-dom'
-import * as Dialog from '@radix-ui/react-dialog'
 import { XIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { CommentSection } from './CommentSection'
@@ -32,45 +29,48 @@ export function CommentSheet({
 	open,
 	onOpenChange,
 }: CommentSheetProps) {
-	const [windowHeight, setWindowHeight] = useState(0)
-	const [mounted, setMounted] = useState(false)
+	const [viewportHeight, setViewportHeight] = useState<number | null>(null)
+	const [isClosing, setIsClosing] = useState(false)
 	const inputRef = useRef<HTMLDivElement>(null)
 
-	// Mount/unmount overlay with animation delay
+	// Lock body scroll while open (same as messaging UI)
 	useEffect(() => {
-		if (open) {
-			setMounted(true)
-		} else {
-			const timer = setTimeout(() => setMounted(false), 300)
-			return () => clearTimeout(timer)
+		if (!open) return
+
+		const scrollY = window.scrollY
+		document.body.style.position = 'fixed'
+		document.body.style.top = `-${scrollY}px`
+		document.body.style.left = '0'
+		document.body.style.right = '0'
+		document.body.style.overflow = 'hidden'
+
+		return () => {
+			document.body.style.position = ''
+			document.body.style.top = ''
+			document.body.style.left = ''
+			document.body.style.right = ''
+			document.body.style.overflow = ''
+			window.scrollTo(0, scrollY)
 		}
 	}, [open])
 
-	// Track current window height for the modal panel
+	// Track visual viewport height (same as messaging UI)
 	useEffect(() => {
 		if (!open) {
-			setWindowHeight(0)
+			setViewportHeight(null)
 			return
 		}
 
-		const update = () => {
-			const vv = window.visualViewport
-			const h = vv ? Math.min(vv.height, window.innerHeight) : window.innerHeight
-			setWindowHeight(h)
-		}
-
-		update()
-
 		const vv = window.visualViewport
-		window.addEventListener('resize', update)
-		vv?.addEventListener('resize', update)
-		vv?.addEventListener('scroll', update)
+		if (!vv) return
 
-		return () => {
-			window.removeEventListener('resize', update)
-			vv?.removeEventListener('resize', update)
-			vv?.removeEventListener('scroll', update)
+		const handleResize = () => {
+			setViewportHeight(vv.height)
 		}
+
+		setViewportHeight(vv.height)
+		vv.addEventListener('resize', handleResize)
+		return () => vv.removeEventListener('resize', handleResize)
 	}, [open])
 
 	// Auto-focus the textarea when sheet opens
@@ -79,71 +79,94 @@ export function CommentSheet({
 		const timer = setTimeout(() => {
 			const textarea = inputRef.current?.querySelector('textarea')
 			textarea?.focus()
-		}, 400)
+		}, 300)
 		return () => clearTimeout(timer)
 	}, [open, isAuthenticated])
 
-	const panelHeight = windowHeight > 0
-		? `${windowHeight * 0.85}px`
-		: '85dvh'
+	const handleClose = () => {
+		setIsClosing(true)
+		setTimeout(() => {
+			setIsClosing(false)
+			onOpenChange?.(false)
+		}, 200)
+	}
+
+	if (!open && !isClosing) return null
+
+	// Detect if keyboard is likely open (viewport significantly smaller than window)
+	const keyboardOpen = viewportHeight != null && window.innerHeight - viewportHeight > 100
 
 	return (
 		<>
-			{/* Overlay — standalone portal, 100lvh never shrinks with keyboard */}
-			{mounted && createPortal(
-				<div
-					className={cn(
-						'fixed top-0 left-0 w-full z-50 bg-black/50 backdrop-blur-sm transition-opacity duration-300',
-						open ? 'opacity-100' : 'opacity-0 pointer-events-none'
-					)}
-					style={{ height: '100lvh' }}
-					onClick={() => onOpenChange?.(false)}
-					aria-hidden
-				/>,
-				document.body
-			)}
+			{/* Backdrop */}
+			<div
+				className={cn(
+					'fixed inset-0 z-50 bg-black/50 backdrop-blur-sm transition-opacity duration-200',
+					isClosing ? 'opacity-0' : 'opacity-100'
+				)}
+				onClick={handleClose}
+			/>
 
-			<Dialog.Root open={open} onOpenChange={onOpenChange}>
-				<Dialog.Portal>
-					<Dialog.Content
-						className="fixed z-50 left-1 right-1 bottom-1 flex flex-col bg-background rounded-2xl overflow-hidden shadow-2xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:slide-in-from-bottom data-[state=closed]:slide-out-to-bottom data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0 data-[state=open]:duration-300 data-[state=closed]:duration-200"
-						style={{ height: panelHeight }}
+			{/* Full-screen sheet */}
+			<div
+				className={cn(
+					'fixed inset-x-0 bottom-0 z-50 flex flex-col bg-background rounded-t-xl shadow-lg',
+					isClosing
+						? 'animate-out slide-out-to-bottom duration-200'
+						: 'animate-in slide-in-from-bottom duration-200'
+				)}
+				style={{
+					height: viewportHeight ? `${viewportHeight}px` : '100dvh',
+					maxHeight: '100dvh',
+					paddingTop: 'env(safe-area-inset-top, 0px)',
+				}}
+				role="dialog"
+				aria-label="Comments"
+			>
+				{/* Header */}
+				<div className="px-4 py-3 shrink-0 flex items-center justify-between border-b border-border">
+					<span className="text-sm font-semibold text-foreground">Comments</span>
+					<button
+						onClick={handleClose}
+						className="rounded-full p-1.5 hover:bg-muted active:bg-muted transition-colors -mr-1"
 					>
-						{/* Header */}
-						<div className="px-4 py-3 shrink-0 flex items-center justify-between border-b border-border">
-							<Dialog.Title className="text-sm font-semibold text-foreground">
-								Comments
-							</Dialog.Title>
-							<Dialog.Close className="rounded-full p-1.5 hover:bg-muted active:bg-muted transition-colors -mr-1">
-								<XIcon className="size-4 text-muted-foreground" />
-								<span className="sr-only">Close</span>
-							</Dialog.Close>
-						</div>
+						<XIcon className="size-4 text-muted-foreground" />
+						<span className="sr-only">Close</span>
+					</button>
+				</div>
 
-						{/* Scrollable comments list */}
-						<div className="flex-1 overflow-y-auto px-4 min-h-0">
-							<CommentSection
-								postId={postId}
-								userId={userId}
-								isAuthenticated={isAuthenticated}
-								variant="inline"
-							/>
-						</div>
+				{/* Scrollable comments list */}
+				<div className="flex-1 overflow-y-auto px-4 min-h-0">
+					<CommentSection
+						postId={postId}
+						userId={userId}
+						isAuthenticated={isAuthenticated}
+						variant="inline"
+					/>
+				</div>
 
-						{/* Input area */}
-						{isAuthenticated && (
-							<div ref={inputRef} className="shrink-0 border-t border-border px-4 py-3">
-								<CommentSection
-									postId={postId}
-									userId={userId}
-									isAuthenticated={isAuthenticated}
-									variant="input-only"
-								/>
-							</div>
-						)}
-					</Dialog.Content>
-				</Dialog.Portal>
-			</Dialog.Root>
+				{/* Input — sticks above keyboard via flex layout.
+				    Only add safe-area bottom padding when keyboard is closed
+				    (home bar visible). When keyboard is open, no extra padding. */}
+				{isAuthenticated && (
+					<div
+						ref={inputRef}
+						className="shrink-0 border-t border-border px-4 py-3"
+						style={{
+							paddingBottom: keyboardOpen
+								? '0.75rem'
+								: 'calc(0.75rem + env(safe-area-inset-bottom, 0px))',
+						}}
+					>
+						<CommentSection
+							postId={postId}
+							userId={userId}
+							isAuthenticated={isAuthenticated}
+							variant="input-only"
+						/>
+					</div>
+				)}
+			</div>
 		</>
 	)
 }

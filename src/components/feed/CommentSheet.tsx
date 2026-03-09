@@ -3,13 +3,11 @@
  * Floating modal for comments on mobile devices.
  * Built on Radix Dialog for independent overlay + panel control.
  *
- * Keyboard strategy:
- * - Overlay: fixed inset-0, covers the visible viewport
- * - Panel (keyboard closed): floating card with 4px inset + rounded corners
- * - Panel (keyboard open): extends to bottom-0 (behind keyboard) so its
- *   background fills behind the iOS keyboard accessory bar. A spacer div
- *   pushes the input above the keyboard. Top corners stay rounded,
- *   bottom corners go flush.
+ * Keyboard detection inspired by react-modal-sheet:
+ * - Captures initial viewport height on open (before keyboard)
+ * - Compares against current height to detect keyboard
+ * - Uses navigator.virtualKeyboard.overlaysContent when available
+ * - Tracks focus state to avoid false positives from URL bar changes
  */
 
 import { useState, useEffect, useRef } from 'react'
@@ -25,6 +23,9 @@ interface CommentSheetProps {
 	onOpenChange?: (open: boolean) => void
 }
 
+// Minimum height diff to consider keyboard visible (filters URL bar changes)
+const KEYBOARD_THRESHOLD = 100
+
 export function CommentSheet({
 	postId,
 	userId,
@@ -32,38 +33,101 @@ export function CommentSheet({
 	open,
 	onOpenChange,
 }: CommentSheetProps) {
-	const [keyboardOffset, setKeyboardOffset] = useState(0)
-	const [visibleHeight, setVisibleHeight] = useState(0)
-	const rafRef = useRef(0)
+	const [keyboardHeight, setKeyboardHeight] = useState(0)
+	const initialHeightRef = useRef(0)
+	const inputFocusedRef = useRef(false)
+	const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 	const inputRef = useRef<HTMLDivElement>(null)
 
-	// Track visual viewport to detect mobile keyboard
+	// Keyboard detection: capture initial height, track focus + viewport changes
 	useEffect(() => {
 		if (!open) {
-			setKeyboardOffset(0)
-			setVisibleHeight(0)
+			setKeyboardHeight(0)
+			initialHeightRef.current = 0
+			inputFocusedRef.current = false
 			return
 		}
 
-		const vv = window.visualViewport
-		if (!vv) return
+		// Capture the "no keyboard" height immediately on open
+		initialHeightRef.current = window.innerHeight
 
-		const handleResize = () => {
-			cancelAnimationFrame(rafRef.current)
-			rafRef.current = requestAnimationFrame(() => {
-				const offset = window.innerHeight - (vv.height + vv.offsetTop)
-				setKeyboardOffset(Math.max(0, offset))
-				setVisibleHeight(vv.height)
-			})
+		// Enable overlaysContent if VirtualKeyboard API available (Chrome)
+		const vk = (navigator as any).virtualKeyboard
+		let prevOverlaysContent = false
+		if (vk) {
+			prevOverlaysContent = vk.overlaysContent
+			vk.overlaysContent = true
 		}
 
-		handleResize()
-		vv.addEventListener('resize', handleResize)
-		vv.addEventListener('scroll', handleResize)
+		const vv = window.visualViewport
+
+		function isTextInput(el: Element | null) {
+			return el?.tagName === 'INPUT' || el?.tagName === 'TEXTAREA' ||
+				(el instanceof HTMLElement && el.isContentEditable)
+		}
+
+		function handleFocusIn(e: FocusEvent) {
+			if (e.target instanceof HTMLElement && isTextInput(e.target)) {
+				inputFocusedRef.current = true
+				updateKeyboardState()
+			}
+		}
+
+		function handleFocusOut() {
+			inputFocusedRef.current = false
+			updateKeyboardState()
+		}
+
+		function updateKeyboardState() {
+			if (debounceRef.current) clearTimeout(debounceRef.current)
+			debounceRef.current = setTimeout(() => {
+				if (!inputFocusedRef.current) {
+					setKeyboardHeight(0)
+					return
+				}
+
+				// Use the smaller of visualViewport.height and window.innerHeight
+				// to handle both "viewport resizes" and "viewport overlays" modes
+				const currentHeight = vv
+					? Math.min(vv.height, window.innerHeight)
+					: window.innerHeight
+
+				const diff = initialHeightRef.current - currentHeight
+
+				if (diff > KEYBOARD_THRESHOLD) {
+					setKeyboardHeight(diff)
+				} else {
+					setKeyboardHeight(0)
+				}
+			}, 100)
+		}
+
+		window.addEventListener('focusin', handleFocusIn)
+		window.addEventListener('focusout', handleFocusOut)
+
+		if (vv) {
+			vv.addEventListener('resize', updateKeyboardState)
+			vv.addEventListener('scroll', updateKeyboardState)
+		}
+
+		// Also listen for window resize (covers iOS PWA viewport resizing)
+		window.addEventListener('resize', updateKeyboardState)
+
 		return () => {
-			cancelAnimationFrame(rafRef.current)
-			vv.removeEventListener('resize', handleResize)
-			vv.removeEventListener('scroll', handleResize)
+			window.removeEventListener('focusin', handleFocusIn)
+			window.removeEventListener('focusout', handleFocusOut)
+			window.removeEventListener('resize', updateKeyboardState)
+
+			if (vv) {
+				vv.removeEventListener('resize', updateKeyboardState)
+				vv.removeEventListener('scroll', updateKeyboardState)
+			}
+
+			if (vk) {
+				vk.overlaysContent = prevOverlaysContent
+			}
+
+			if (debounceRef.current) clearTimeout(debounceRef.current)
 		}
 	}, [open])
 
@@ -77,20 +141,18 @@ export function CommentSheet({
 		return () => clearTimeout(timer)
 	}, [open, isAuthenticated])
 
-	const keyboardOpen = keyboardOffset > 50
+	const keyboardOpen = keyboardHeight > 0
 
-	// Keyboard open: panel extends behind keyboard, spacer pushes input up
-	// Keyboard closed: floating card with margin
-	const panelHeight = visibleHeight > 0
-		? keyboardOpen
-			? `${visibleHeight * 0.85 + keyboardOffset}px`
-			: `${visibleHeight * 0.85}px`
+	// When keyboard open: panel extends behind keyboard, spacer pushes input up
+	// When keyboard closed: floating card with margins
+	const panelHeight = keyboardOpen
+		? `calc(${initialHeightRef.current - keyboardHeight}px * 0.85 + ${keyboardHeight}px)`
 		: '85dvh'
 
 	return (
 		<Dialog.Root open={open} onOpenChange={onOpenChange}>
 			<Dialog.Portal>
-				{/* Overlay — standard full-viewport coverage */}
+				{/* Overlay */}
 				<Dialog.Overlay className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
 
 				{/* Modal panel */}
@@ -137,9 +199,9 @@ export function CommentSheet({
 						</div>
 					)}
 
-					{/* Keyboard spacer — fills behind keyboard so bg covers the accessory bar */}
+					{/* Spacer behind keyboard — modal bg covers the accessory bar gap */}
 					{keyboardOpen && (
-						<div className="shrink-0" style={{ height: `${keyboardOffset}px` }} />
+						<div className="shrink-0" style={{ height: `${keyboardHeight}px` }} />
 					)}
 				</Dialog.Content>
 			</Dialog.Portal>

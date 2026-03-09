@@ -5,10 +5,10 @@
  * Auto-focuses input on open to trigger keyboard.
  *
  * Layout strategy:
- * - Sheet is anchored at bottom:0, height covers visible area + keyboard
- * - A spacer div at the bottom pushes content above the keyboard
- * - The sheet's own background fills behind the keyboard (no gaps)
- * - Inset margins + rounded corners create a floating card look
+ * - Sheet is sized to 85% of visible area (above keyboard)
+ * - Positioned with bottom offset: flush at keyboard top when open,
+ *   4px margin when closed
+ * - No extending behind keyboard — the body bg fills that area naturally
  */
 
 import { useState, useEffect, useRef } from 'react'
@@ -73,8 +73,7 @@ export function CommentSheet({
 	}, [open])
 
 	// Auto-focus the textarea when sheet opens to trigger keyboard.
-	// Longer delay to let the sheet animation fully settle on iOS PWA
-	// before focusing — prevents caret from rendering at stale position.
+	// Delay lets the sheet animation settle on iOS PWA before focusing.
 	useEffect(() => {
 		if (!open || !isAuthenticated) return
 		const timer = setTimeout(() => {
@@ -84,19 +83,23 @@ export function CommentSheet({
 		return () => clearTimeout(timer)
 	}, [open, isAuthenticated])
 
-	// Sheet = 85% of visible area + keyboard spacer behind keyboard.
-	// When keyboard closed: keyboardOffset ≈ 0, so ≈ 85% of viewport.
+	const keyboardOpen = keyboardOffset > 50
+
+	// Sheet = 85% of visible area, positioned above the keyboard
 	const sheetHeight = visibleHeight > 0
-		? `${visibleHeight * 0.85 + keyboardOffset}px`
+		? `${visibleHeight * 0.85}px`
 		: '85dvh'
+
+	// Flush at keyboard when open, 4px margin when closed
+	const bottomOffset = keyboardOpen ? keyboardOffset : 4
 
 	return (
 		<Sheet open={open} onOpenChange={onOpenChange}>
 			<SheetContent
 				side="bottom"
 				showClose={false}
-				className="!inset-x-1 !bottom-1 !rounded-2xl !border-0 flex flex-col px-0 !gap-0 overflow-hidden"
-				style={{ height: sheetHeight }}
+				className="!inset-x-1 !rounded-2xl !border-0 flex flex-col px-0 !gap-0 overflow-hidden"
+				style={{ height: sheetHeight, bottom: `${bottomOffset}px` }}
 			>
 				{/* Header */}
 				<div className="px-4 py-3 shrink-0 flex items-center justify-between border-b border-border">
@@ -127,11 +130,6 @@ export function CommentSheet({
 							variant="input-only"
 						/>
 					</div>
-				)}
-
-				{/* Keyboard spacer — pushes content above keyboard, background fills the gap */}
-				{keyboardOffset > 0 && (
-					<div className="shrink-0" style={{ height: `${keyboardOffset}px` }} />
 				)}
 			</SheetContent>
 		</Sheet>

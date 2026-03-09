@@ -3,6 +3,12 @@
  * Bottom sheet modal for comments on mobile devices.
  * Tracks visualViewport to stay above the mobile keyboard.
  * Auto-focuses input on open to trigger keyboard.
+ *
+ * Layout strategy:
+ * - Sheet is anchored at bottom:0, height covers visible area + keyboard
+ * - A spacer div at the bottom pushes content above the keyboard
+ * - The sheet's own background fills behind the keyboard (no gaps)
+ * - Inset margins + rounded corners create a floating card look
  */
 
 import { useState, useEffect, useRef } from 'react'
@@ -66,19 +72,20 @@ export function CommentSheet({
 		}
 	}, [open])
 
-	// Auto-focus the textarea when sheet opens to trigger keyboard
+	// Auto-focus the textarea when sheet opens to trigger keyboard.
+	// Longer delay to let the sheet animation fully settle on iOS PWA
+	// before focusing — prevents caret from rendering at stale position.
 	useEffect(() => {
 		if (!open || !isAuthenticated) return
-		// Small delay to let the sheet animation start before focusing
 		const timer = setTimeout(() => {
 			const textarea = inputRef.current?.querySelector('textarea')
 			textarea?.focus()
-		}, 100)
+		}, 400)
 		return () => clearTimeout(timer)
 	}, [open, isAuthenticated])
 
-	// Sheet height: 85% of visible area + keyboard offset (hidden behind keyboard).
-	// When keyboard is closed, keyboardOffset ≈ 0, so this ≈ 85% of full viewport.
+	// Sheet = 85% of visible area + keyboard spacer behind keyboard.
+	// When keyboard closed: keyboardOffset ≈ 0, so ≈ 85% of viewport.
 	const sheetHeight = visibleHeight > 0
 		? `${visibleHeight * 0.85 + keyboardOffset}px`
 		: '85dvh'
@@ -88,50 +95,44 @@ export function CommentSheet({
 			<SheetContent
 				side="bottom"
 				showClose={false}
-				className="flex flex-col px-0 !border-0 !shadow-2xl !bg-transparent !gap-0"
-				style={{ height: sheetHeight, bottom: '4px' }}
+				className="!inset-x-1 !bottom-1 !rounded-2xl !border-0 flex flex-col px-0 !gap-0 overflow-hidden"
+				style={{ height: sheetHeight }}
 			>
-				{/* Modal card with inset margin and fully rounded corners */}
-				<div className="flex flex-col flex-1 min-h-0 mx-1 bg-background rounded-2xl overflow-hidden shadow-2xl">
-					{/* Header */}
-					<div className="px-4 py-3 shrink-0 flex items-center justify-between border-b border-border">
-						<SheetTitle className="text-sm font-semibold">Comments</SheetTitle>
-						<SheetClose className="rounded-full p-1.5 hover:bg-muted active:bg-muted transition-colors -mr-1">
-							<XIcon className="size-4 text-muted-foreground" />
-							<span className="sr-only">Close</span>
-						</SheetClose>
-					</div>
+				{/* Header */}
+				<div className="px-4 py-3 shrink-0 flex items-center justify-between border-b border-border">
+					<SheetTitle className="text-sm font-semibold">Comments</SheetTitle>
+					<SheetClose className="rounded-full p-1.5 hover:bg-muted active:bg-muted transition-colors -mr-1">
+						<XIcon className="size-4 text-muted-foreground" />
+						<span className="sr-only">Close</span>
+					</SheetClose>
+				</div>
 
-					{/* Scrollable comments list */}
-					<div className="flex-1 overflow-y-auto px-4 min-h-0">
+				{/* Scrollable comments list */}
+				<div className="flex-1 overflow-y-auto px-4 min-h-0">
+					<CommentSection
+						postId={postId}
+						userId={userId}
+						isAuthenticated={isAuthenticated}
+						variant="inline"
+					/>
+				</div>
+
+				{/* Input area */}
+				{isAuthenticated && (
+					<div ref={inputRef} className="shrink-0 border-t border-border px-4 py-3">
 						<CommentSection
 							postId={postId}
 							userId={userId}
 							isAuthenticated={isAuthenticated}
-							variant="inline"
+							variant="input-only"
 						/>
 					</div>
+				)}
 
-					{/* Input area — padded above keyboard when open */}
-					{isAuthenticated && (
-						<div
-							ref={inputRef}
-							className="shrink-0 border-t border-border px-4 py-3"
-							style={{
-								paddingBottom: keyboardOffset > 0
-									? `${keyboardOffset + 12}px`
-									: 'calc(0.75rem + env(safe-area-inset-bottom, 0px))',
-							}}
-						>
-							<CommentSection
-								postId={postId}
-								userId={userId}
-								isAuthenticated={isAuthenticated}
-								variant="input-only"
-							/>
-						</div>
-					)}
-				</div>
+				{/* Keyboard spacer — pushes content above keyboard, background fills the gap */}
+				{keyboardOffset > 0 && (
+					<div className="shrink-0" style={{ height: `${keyboardOffset}px` }} />
+				)}
 			</SheetContent>
 		</Sheet>
 	)

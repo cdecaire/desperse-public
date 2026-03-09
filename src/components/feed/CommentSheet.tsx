@@ -131,7 +131,7 @@ export function CommentSheet({
 			{/* Backdrop */}
 			<div
 				className={cn(
-					'fixed inset-0 z-50 bg-black/50 backdrop-blur-sm transition-opacity duration-200',
+					'fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm transition-opacity duration-200',
 					isClosing ? 'opacity-0' : 'opacity-100'
 				)}
 				onClick={handleClose}
@@ -140,7 +140,7 @@ export function CommentSheet({
 			{/* Full-screen sheet — anchored to top so it shrinks above keyboard */}
 			<div
 				className={cn(
-					'fixed inset-x-0 top-0 z-50 flex flex-col bg-background shadow-lg',
+					'fixed inset-x-0 top-0 z-[60] flex flex-col bg-background shadow-lg',
 					isClosing
 						? 'animate-out slide-out-to-bottom duration-200'
 						: 'animate-in slide-in-from-bottom duration-200'

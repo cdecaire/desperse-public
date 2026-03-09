@@ -2,8 +2,10 @@
  * CommentSheet Component
  * Bottom sheet wrapper for comments on mobile devices.
  * Uses the existing Sheet (Radix Dialog) with side="bottom".
+ * Tracks visualViewport to stay above the mobile keyboard.
  */
 
+import { useState, useEffect, useRef } from 'react'
 import {
 	Sheet,
 	SheetContent,
@@ -28,12 +30,57 @@ export function CommentSheet({
 	open,
 	onOpenChange,
 }: CommentSheetProps) {
+	const [keyboardOffset, setKeyboardOffset] = useState(0)
+	const [vvHeight, setVvHeight] = useState<number | null>(null)
+	const rafRef = useRef(0)
+
+	// Track visual viewport to resize/reposition when mobile keyboard opens
+	useEffect(() => {
+		if (!open) {
+			setKeyboardOffset(0)
+			setVvHeight(null)
+			return
+		}
+
+		const vv = window.visualViewport
+		if (!vv) return
+
+		const handleResize = () => {
+			cancelAnimationFrame(rafRef.current)
+			rafRef.current = requestAnimationFrame(() => {
+				// Distance from bottom of layout viewport to bottom of visual viewport
+				const offset = window.innerHeight - (vv.height + vv.offsetTop)
+				setKeyboardOffset(Math.max(0, offset))
+				setVvHeight(vv.height)
+			})
+		}
+
+		handleResize()
+		vv.addEventListener('resize', handleResize)
+		vv.addEventListener('scroll', handleResize)
+		return () => {
+			cancelAnimationFrame(rafRef.current)
+			vv.removeEventListener('resize', handleResize)
+			vv.removeEventListener('scroll', handleResize)
+		}
+	}, [open])
+
+	// When keyboard is open, shrink sheet to fit visual viewport; otherwise 85dvh
+	const keyboardOpen = keyboardOffset > 50
+	const sheetHeight = keyboardOpen && vvHeight
+		? `${Math.max(150, Math.min(vvHeight * 0.85, vvHeight - 40))}px`
+		: '85dvh'
+
 	return (
 		<Sheet open={open} onOpenChange={onOpenChange}>
 			<SheetContent
 				side="bottom"
 				showClose={false}
-				className="h-[85vh] flex flex-col rounded-t-2xl px-0"
+				className="flex flex-col rounded-t-2xl px-0"
+				style={{
+					height: sheetHeight,
+					bottom: keyboardOpen ? `${keyboardOffset}px` : undefined,
+				}}
 			>
 				<SheetHeader className="px-4 pb-2 pt-1 shrink-0">
 					{/* Drag handle */}

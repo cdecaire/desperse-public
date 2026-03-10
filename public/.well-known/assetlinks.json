@@ -1,0 +1,15 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls",
+      "delegate_permission/common.get_login_creds"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.desperse.android",
+      "sha256_cert_fingerprints": [
+        "54:6A:16:2D:D5:F8:89:0B:93:55:DF:F6:78:BC:A4:CD:46:8B:4B:72:59:AF:66:B7:27:09:29:0F:89:D9:0A:EA"
+      ]
+    }
+  }
+]

@@ -5,6 +5,7 @@
 
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { getFeed } from '@/server/functions/posts'
+import { useAuth } from '@/hooks/useAuth'
 import type { FeedTab } from '@/components/feed/FeedTabs'
 
 interface UseFeedQueryOptions {
@@ -15,10 +16,14 @@ interface UseFeedQueryOptions {
 }
 
 export function useFeedQuery({ tab, userId, currentUserId, enabled = true }: UseFeedQueryOptions) {
+  const { isAuthenticated, getAuthHeaders } = useAuth()
+
   return useInfiniteQuery({
     // Use 'public' as a stable key when not authenticated to prevent key changes on logout
     queryKey: ['feed', tab, currentUserId || 'public'],
     queryFn: async ({ pageParam }) => {
+      const authHeaders = isAuthenticated ? await getAuthHeaders() : undefined
+
       const result = await getFeed({
         data: {
           tab,
@@ -26,6 +31,7 @@ export function useFeedQuery({ tab, userId, currentUserId, enabled = true }: Use
           limit: 20,
           userId: tab === 'following' ? userId : undefined,
           currentUserId: currentUserId || undefined,
+          ...(authHeaders ? { _authorization: authHeaders.Authorization } : {}),
         },
       } as never)
 

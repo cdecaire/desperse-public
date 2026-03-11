@@ -56,7 +56,6 @@ const fonts = [
 // Import templates
 const {
 	postTemplate,
-	postTemplateAlt,
 	profileTemplate,
 	defaultTemplate,
 } = await import("../server/utils/og/templates")
@@ -145,7 +144,7 @@ if (command === "post" && arg) {
 		Buffer.from(
 			'<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1a0533"/><stop offset="50%" stop-color="#4a0e8f"/><stop offset="100%" stop-color="#7c1fff"/></linearGradient></defs><rect width="1200" height="630" fill="url(#g)"/><circle cx="800" cy="300" r="200" fill="#a213ff" opacity="0.3"/><circle cx="400" cy="400" r="150" fill="#c86fff" opacity="0.2"/></svg>',
 		).toString("base64")
-	const mock = postTemplateAlt(
+	const mock = postTemplate(
 		{
 			title: "Genesis Drop by pixeljedi",
 			shortTitle: "Genesis Drop",

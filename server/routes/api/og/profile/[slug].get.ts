@@ -35,7 +35,7 @@ export default defineEventHandler(async (event) => {
 
 		return new Response(png as unknown as BodyInit, {
 			headers: {
-				"Content-Type": "image/png",
+				"Content-Type": "image/jpeg",
 				"Cache-Control":
 					"public, s-maxage=3600, stale-while-revalidate=86400",
 			},

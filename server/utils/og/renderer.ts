@@ -1,7 +1,8 @@
-/** Core OG image rendering pipeline: JSX → SVG (satori) → PNG (resvg-wasm) */
+/** Core OG image rendering pipeline: JSX → SVG (satori) → PNG (resvg-wasm) → JPEG (sharp) */
 
 import satori from "satori"
 import { Resvg, initWasm } from "@resvg/resvg-wasm"
+import sharp from "sharp"
 import { OG_WIDTH, OG_HEIGHT } from "./constants"
 import { loadFonts } from "./fonts"
 
@@ -57,7 +58,11 @@ export async function renderOgImage(
 	})
 
 	const pngData = resvg.render()
-	return pngData.asPng()
+	const png = pngData.asPng()
+
+	// Convert PNG → JPEG for ~10x smaller file size (critical for WhatsApp, iMessage, etc.)
+	const jpeg = await sharp(png).jpeg({ quality: 80 }).toBuffer()
+	return new Uint8Array(jpeg)
 }
 
 /**

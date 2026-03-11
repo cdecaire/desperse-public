@@ -27,12 +27,13 @@ export default defineEventHandler(async (event) => {
 			return Response.redirect("/api/og/default", 302)
 		}
 
-		// Pre-fetch media image as data URI (with timeout)
-		const imageDataUri = meta.imageUrl
-			? await fetchImageAsDataUri(meta.imageUrl)
-			: null
+		// Pre-fetch media image and creator avatar as data URIs (with timeout)
+		const [imageDataUri, avatarDataUri] = await Promise.all([
+			meta.imageUrl ? fetchImageAsDataUri(meta.imageUrl) : null,
+			meta.creatorAvatar ? fetchImageAsDataUri(meta.creatorAvatar) : null,
+		])
 
-		const png = await renderOgImage(postTemplate(meta, imageDataUri))
+		const png = await renderOgImage(postTemplate(meta, imageDataUri, avatarDataUri))
 
 		return new Response(png as unknown as BodyInit, {
 			headers: {

@@ -5,10 +5,8 @@ import { Resvg, initWasm } from "@resvg/resvg-wasm"
 import { OG_WIDTH, OG_HEIGHT } from "./constants"
 import { loadFonts } from "./fonts"
 
-// Nitro auto-imports useStorage at runtime — declare for TypeScript
-declare function useStorage<T = unknown>(base?: string): {
-	getItemRaw<R = T>(key: string): Promise<R | null>
-}
+// @ts-expect-error — Nitro runtime module, types not exposed but resolves at build time
+import { useStorage } from "nitro/storage"
 
 let wasmInitialized = false
 

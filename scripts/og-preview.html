@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>OG Image Preview</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #1a1a1a; padding: 40px; font-family: 'Figtree', sans-serif; color: #fff; }
+  h2 { margin: 30px 0 10px; font-size: 14px; color: #a1a1aa; text-transform: uppercase; letter-spacing: 0.1em; }
+  h2:first-child { margin-top: 0; }
+  .card {
+    width: 1200px;
+    height: 630px;
+    border-radius: 8px;
+    overflow: hidden;
+    transform-origin: top left;
+    transform: scale(0.6);
+    margin-bottom: -252px; /* compensate for scale */
+    box-shadow: 0 4px 40px rgba(0,0,0,0.5);
+  }
+
+  /* ─── Colors ─── */
+  :root {
+    --bg: #09090b;
+    --bg-subtle: #18181b;
+    --accent: #7c3aed;
+    --accent-light: #a78bfa;
+    --text: #fafafa;
+    --text-muted: #a1a1aa;
+    --text-dim: #71717a;
+    --border: #27272a;
+    /* Post type tones */
+    --tone-post-bg: rgba(0,203,162,0.2);
+    --tone-post-text: #27e4b8;
+    --tone-collectible-bg: rgba(98,33,255,0.2);
+    --tone-collectible-text: #7346ff;
+    --tone-edition-bg: rgba(141,4,236,0.2);
+    --tone-edition-text: #a213ff;
+  }
+
+  /* ─── Shared components ─── */
+  .watermark {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .watermark svg { width: 24px; height: 24px; }
+  .watermark span {
+    font-size: 18px;
+    color: var(--text-dim);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .badge.post { background: var(--tone-post-bg); color: var(--tone-post-text); }
+  .badge.collectible { background: var(--tone-collectible-bg); color: var(--tone-collectible-text); }
+  .badge.edition { background: var(--tone-edition-bg); color: var(--tone-edition-text); }
+  .logo-svg { fill: var(--accent-light); }
+  .creator-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .creator-row .creator-avatar {
+    width: 36px; height: 36px; border-radius: 18px; object-fit: cover;
+  }
+  .creator-row .creator-avatar.large {
+    width: 44px; height: 44px; border-radius: 22px;
+  }
+  .creator-row .creator-initials {
+    display: flex; align-items: center; justify-content: center;
+    width: 36px; height: 36px; border-radius: 18px;
+    background: var(--accent); font-size: 14px; font-weight: 700; color: var(--text);
+  }
+  .creator-row .creator-initials.large {
+    width: 44px; height: 44px; border-radius: 22px; font-size: 18px;
+  }
+  .creator-row .creator-name {
+    font-size: 18px; color: var(--text-muted); font-weight: 500;
+  }
+
+  /* ─── Post with image ─── */
+  .post-with-image {
+    position: relative;
+    display: flex;
+    width: 1200px;
+    height: 630px;
+    background: var(--bg);
+    font-family: 'Figtree', sans-serif;
+  }
+  .post-with-image .accent-line {
+    position: absolute; top: 0; left: 0; right: 0; height: 4px; z-index: 2;
+  }
+  .post-with-image .accent-line.post { background: var(--tone-post-text); }
+  .post-with-image .accent-line.edition { background: var(--tone-edition-text); }
+  .post-with-image .accent-line.collectible { background: var(--tone-collectible-text); }
+  .post-with-image .media {
+    position: absolute; right: 0; top: 0; bottom: 0; width: 60%;
+  }
+  .post-with-image .media img {
+    width: 100%; height: 100%; object-fit: cover;
+  }
+  .post-with-image .media .gradient {
+    position: absolute; left: 0; top: 0; bottom: 0; width: 200px;
+    background: linear-gradient(to right, var(--bg), transparent);
+  }
+  .post-with-image .content {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column; justify-content: space-between;
+    padding: 48px 56px; width: 50%;
+  }
+  .post-with-image .top { display: flex; align-items: center; gap: 16px; }
+  .post-with-image .middle { display: flex; flex-direction: column; gap: 16px; }
+  .post-with-image .title {
+    font-size: 36px; font-weight: 700; color: var(--text);
+    line-height: 1.2; letter-spacing: -0.02em;
+    overflow: hidden; text-overflow: ellipsis;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  }
+  .post-with-image .desc {
+    font-size: 18px; color: var(--text-muted); line-height: 1.5;
+    overflow: hidden; text-overflow: ellipsis;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  }
+
+  /* ─── Post no image ─── */
+  .post-no-image {
+    position: relative;
+    display: flex; flex-direction: column; justify-content: space-between;
+    width: 1200px; height: 630px;
+    background: var(--bg); font-family: 'Figtree', sans-serif;
+    padding: 48px 64px;
+  }
+  .post-no-image .accent-line {
+    position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  }
+  .post-no-image .top { display: flex; align-items: center; gap: 16px; }
+  .post-no-image .middle { display: flex; flex-direction: column; gap: 20px; }
+  .post-no-image .title {
+    font-size: 48px; font-weight: 700; color: var(--text);
+    line-height: 1.15; letter-spacing: -0.025em;
+    overflow: hidden; text-overflow: ellipsis;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  }
+  .post-no-image .desc {
+    font-size: 22px; color: var(--text-muted); line-height: 1.5;
+    overflow: hidden; text-overflow: ellipsis;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  }
+
+  /* ─── Profile ─── */
+  .profile {
+    position: relative;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    width: 1200px; height: 630px; gap: 24px;
+    background: var(--bg); font-family: 'Figtree', sans-serif;
+  }
+  .profile .accent-line {
+    position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: linear-gradient(to right, var(--accent), var(--accent-light));
+  }
+  .profile .avatar {
+    width: 140px; height: 140px; border-radius: 70px;
+    background: var(--accent); display: flex; align-items: center; justify-content: center;
+    font-size: 48px; font-weight: 700; color: var(--text);
+  }
+  .profile .avatar img {
+    width: 100%; height: 100%; border-radius: 70px; object-fit: cover;
+    border: 3px solid var(--border);
+  }
+  .profile .name { font-size: 40px; font-weight: 700; color: var(--text); letter-spacing: -0.02em; }
+  .profile .handle { font-size: 22px; color: var(--text-dim); margin-top: -16px; }
+  .profile .bio { font-size: 20px; color: var(--text-muted); text-align: center; max-width: 700px; line-height: 1.5; }
+  .profile .bottom-watermark { position: absolute; bottom: 32px; }
+
+  /* ─── Default ─── */
+  .default {
+    position: relative;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    width: 1200px; height: 630px; gap: 28px;
+    background: var(--bg); font-family: 'Figtree', sans-serif;
+  }
+  .default .accent-line {
+    position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: linear-gradient(to right, var(--accent), var(--accent-light));
+  }
+  .default .brand { font-size: 56px; font-weight: 700; color: var(--text); letter-spacing: -0.03em; }
+  .default .tagline { font-size: 22px; color: var(--text-muted); text-align: center; max-width: 600px; line-height: 1.5; }
+</style>
+</head>
+<body>
+
+<!-- Logo SVG template (reused) -->
+<svg style="display:none">
+  <symbol id="logo" viewBox="0 0 473 500">
+    <path d="M237.841 497.826C268.168 493.915 290.894 488.335 314.722 478.948C389.042 449.671 443.371 391.778 463.561 320.347C476.573 274.312 476.111 220.907 462.305 175.021C450.144 134.603 424.171 95.1888 390.847 66.582C373.509 51.6991 357.556 41.3516 334.416 29.9808C302.689 14.3902 276.507 7.08708 232.16 1.45806C227.42 0.856436 191.01 0.502448 112.671 0.296378L0 0V250V500L112.671 499.719C222.301 499.445 225.68 499.394 237.841 497.826ZM23.4811 449.187V424.572L196.503 251.571L369.526 78.5699L372.422 80.7653C374.015 81.9727 379.75 87.3003 385.166 92.6043L395.013 102.248L209.247 288.025L23.4811 473.801V449.187ZM23.4811 367.769V342.776L171.171 195.104L318.862 47.4325L325.503 50.6948C333.115 54.4344 350.701 64.5299 350.701 65.1605C350.701 65.3927 277.077 139.198 187.091 229.172L23.4811 392.762V367.769ZM23.4811 286.731V261.737L140.344 144.89L257.206 28.0434L262.799 29.2199C275.371 31.8642 296.165 37.7264 296.165 38.6264C296.165 38.8732 234.811 100.421 159.823 175.399L23.4811 311.724V286.731ZM23.4811 205.313V180.698L102.566 101.625L181.652 22.5514L202.74 23.0471C214.338 23.3197 224.937 23.7995 226.293 24.1132L228.759 24.6836L126.12 127.306L23.4811 229.928V205.313ZM23.4811 124.273V99.6572L61.9354 61.213L100.39 22.7687L124.806 22.9687L149.223 23.1688L86.352 86.0285L23.4811 148.888V124.273ZM23.4811 46.2685V22.7901H47.147H70.8128L47.3409 46.2685C34.4313 59.1816 23.7817 69.7468 23.675 69.7468C23.5684 69.7468 23.4811 59.1816 23.4811 46.2685Z" fill="currentColor"/>
+  </symbol>
+</svg>
+
+<!-- ════════════════════════════════════════ -->
+<h2>Post with Image (edition)</h2>
+<div class="card">
+  <div class="post-with-image">
+    <div class="accent-line edition"></div>
+    <div class="media">
+      <img src="https://4swlq9hweqtpslft.public.blob.vercel-storage.com/media/1773194264399-x9b4m1-breakout_image_1773187865182.jpg" />
+      <div class="gradient"></div>
+    </div>
+    <div class="content">
+      <div class="top">
+        <svg width="36" height="36" class="logo-svg"><use href="#logo"/></svg>
+        <span class="badge edition">Edition</span>
+      </div>
+      <div class="middle">
+        <div class="creator-row">
+          <img class="creator-avatar" src="https://4swlq9hweqtpslft.public.blob.vercel-storage.com/avatars/1773037848829-cb0quf-36.jpg" />
+          <span class="creator-name">pixeljedi</span>
+        </div>
+        <div class="title">Genesis Drop by pixeljedi</div>
+        <div class="desc">A stunning pixel art piece capturing the essence of Times Square at night. Limited edition collectible on Solana.</div>
+      </div>
+      <div class="watermark">
+        <svg width="24" height="24" class="logo-svg"><use href="#logo"/></svg>
+        <span>desperse.com</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════ -->
+<h2>Post with Image (standard post — real data)</h2>
+<div class="card">
+  <div class="post-with-image">
+    <div class="accent-line post"></div>
+    <div class="media">
+      <img src="https://4swlq9hweqtpslft.public.blob.vercel-storage.com/media/1773194264399-x9b4m1-breakout_image_1773187865182.jpg" />
+      <div class="gradient"></div>
+    </div>
+    <div class="content">
+      <div class="top">
+        <svg width="36" height="36" class="logo-svg"><use href="#logo"/></svg>
+        <span class="badge post">Post</span>
+      </div>
+      <div class="middle">
+        <div class="creator-row">
+          <img class="creator-avatar" src="https://4swlq9hweqtpslft.public.blob.vercel-storage.com/avatars/1773037848829-cb0quf-36.jpg" />
+          <span class="creator-name">pixeljedi</span>
+        </div>
+        <div class="title">Post by pixeljedi</div>
+        <div class="desc">GN Fam ✌️ 🥱 Work in progress 🌇 Capturing Times Square NY in pixelart 👾 In the morning I'm gonna make an animation &amp; mix in some 🎶🎵🎶</div>
+      </div>
+      <div class="watermark">
+        <svg width="24" height="24" class="logo-svg"><use href="#logo"/></svg>
+        <span>desperse.com</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════ -->
+<h2>Post without Image</h2>
+<div class="card">
+  <div class="post-no-image">
+    <div class="accent-line edition" style="background: #a213ff"></div>
+    <div class="top">
+      <svg width="36" height="36" class="logo-svg"><use href="#logo"/></svg>
+      <span class="badge edition">Edition</span>
+    </div>
+    <div class="middle">
+      <div class="creator-row">
+        <img class="creator-avatar large" src="https://4swlq9hweqtpslft.public.blob.vercel-storage.com/avatars/1773037848829-cb0quf-36.jpg" />
+        <span class="creator-name">pixeljedi</span>
+      </div>
+      <div class="title">Genesis Drop by pixeljedi</div>
+      <div class="desc">A stunning pixel art piece capturing the essence of Times Square at night. Limited edition collectible on Solana.</div>
+    </div>
+    <div class="watermark">
+      <svg width="24" height="24" class="logo-svg"><use href="#logo"/></svg>
+      <span>desperse.com</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════ -->
+<h2>Profile (with avatar — real data)</h2>
+<div class="card">
+  <div class="profile">
+    <div class="accent-line"></div>
+    <div class="avatar"><img src="https://4swlq9hweqtpslft.public.blob.vercel-storage.com/avatars/1773037848829-cb0quf-36.jpg" /></div>
+    <div class="name">pixeljedi</div>
+    <div class="handle">@pixeljedi</div>
+    <div class="bio">Pixel artist & collector. Building in public on Solana. GM every day.</div>
+    <div class="bottom-watermark">
+      <div class="watermark">
+        <svg width="24" height="24" class="logo-svg"><use href="#logo"/></svg>
+        <span>desperse.com</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════ -->
+<h2>Profile (no avatar — initials fallback)</h2>
+<div class="card">
+  <div class="profile">
+    <div class="accent-line"></div>
+    <div class="avatar">P</div>
+    <div class="name">pixeljedi</div>
+    <div class="handle">@pixeljedi</div>
+    <div class="bio">Pixel artist & collector. Building in public on Solana. GM every day.</div>
+    <div class="bottom-watermark">
+      <div class="watermark">
+        <svg width="24" height="24" class="logo-svg"><use href="#logo"/></svg>
+        <span>desperse.com</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════ -->
+<h2>Default</h2>
+<div class="card">
+  <div class="default">
+    <div class="accent-line"></div>
+    <svg width="100" height="100" class="logo-svg"><use href="#logo"/></svg>
+    <div class="brand">Desperse</div>
+    <div class="tagline">A Web3 creative platform for artists and collectors on Solana</div>
+  </div>
+</div>
+
+</body>
+</html>

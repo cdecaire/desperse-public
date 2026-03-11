@@ -78,14 +78,77 @@ function getTypeTone(type: string) {
 	return TYPE_COLORS[type as keyof typeof TYPE_COLORS] || TYPE_COLORS.post
 }
 
-export function postTemplate(meta: PostMeta, imageDataUri: string | null) {
+export function postTemplate(
+	meta: PostMeta,
+	imageDataUri: string | null,
+	avatarDataUri?: string | null,
+) {
 	if (imageDataUri) {
-		return postTemplateWithImage(meta, imageDataUri)
+		return postTemplateWithImage(meta, imageDataUri, avatarDataUri)
 	}
-	return postTemplateNoImage(meta)
+	return postTemplateNoImage(meta, avatarDataUri)
 }
 
-function postTemplateWithImage(meta: PostMeta, imageDataUri: string) {
+function CreatorRow({
+	meta,
+	avatarDataUri,
+	size = 36,
+}: {
+	meta: PostMeta
+	avatarDataUri?: string | null
+	size?: number
+}) {
+	return (
+		<div
+			style={{
+				display: "flex",
+				alignItems: "center",
+				gap: 12,
+			}}
+		>
+			{avatarDataUri ? (
+				<img
+					src={avatarDataUri}
+					width={size}
+					height={size}
+					style={{
+						borderRadius: size / 2,
+						objectFit: "cover",
+					}}
+				/>
+			) : (
+				<div
+					style={{
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "center",
+						width: size,
+						height: size,
+						borderRadius: size / 2,
+						backgroundColor: COLORS.accent,
+						fontSize: size * 0.4,
+						fontWeight: 700,
+						color: COLORS.text,
+					}}
+				>
+					{(meta.creatorName || meta.creatorSlug)[0].toUpperCase()}
+				</div>
+			)}
+			<div
+				style={{
+					display: "flex",
+					fontSize: 18,
+					color: COLORS.textMuted,
+					fontWeight: 500,
+				}}
+			>
+				{meta.creatorName || meta.creatorSlug}
+			</div>
+		</div>
+	)
+}
+
+function postTemplateWithImage(meta: PostMeta, imageDataUri: string, avatarDataUri?: string | null) {
 	const tone = getTypeTone(meta.type)
 	return (
 		<div
@@ -170,7 +233,7 @@ function postTemplateWithImage(meta: PostMeta, imageDataUri: string) {
 					<TypeBadge type={meta.type} />
 				</div>
 
-				{/* Middle: title + creator */}
+				{/* Middle: avatar + title + description */}
 				<div
 					style={{
 						display: "flex",
@@ -178,6 +241,7 @@ function postTemplateWithImage(meta: PostMeta, imageDataUri: string) {
 						gap: 16,
 					}}
 				>
+					<CreatorRow meta={meta} avatarDataUri={avatarDataUri} size={36} />
 					<div
 						style={{
 							fontSize: 36,
@@ -213,7 +277,7 @@ function postTemplateWithImage(meta: PostMeta, imageDataUri: string) {
 	)
 }
 
-function postTemplateNoImage(meta: PostMeta) {
+function postTemplateNoImage(meta: PostMeta, avatarDataUri?: string | null) {
 	const tone = getTypeTone(meta.type)
 	return (
 		<div
@@ -253,7 +317,7 @@ function postTemplateNoImage(meta: PostMeta) {
 				<TypeBadge type={meta.type} />
 			</div>
 
-			{/* Center: title + description */}
+			{/* Center: avatar + title + description */}
 			<div
 				style={{
 					display: "flex",
@@ -261,6 +325,7 @@ function postTemplateNoImage(meta: PostMeta) {
 					gap: 20,
 				}}
 			>
+				<CreatorRow meta={meta} avatarDataUri={avatarDataUri} size={44} />
 				<div
 					style={{
 						fontSize: 48,

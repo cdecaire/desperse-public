@@ -23,12 +23,15 @@ export default defineEventHandler(async (event) => {
 			return Response.redirect("/api/og/default", 302)
 		}
 
-		// Pre-fetch avatar as data URI (with timeout)
-		const avatarDataUri = meta.avatarUrl
-			? await fetchImageAsDataUri(meta.avatarUrl)
-			: null
+		// Pre-fetch avatar and header as data URIs (with timeout)
+		const [avatarDataUri, headerDataUri] = await Promise.all([
+			meta.avatarUrl ? fetchImageAsDataUri(meta.avatarUrl) : null,
+			meta.headerUrl ? fetchImageAsDataUri(meta.headerUrl) : null,
+		])
 
-		const png = await renderOgImage(profileTemplate(meta, avatarDataUri))
+		const png = await renderOgImage(
+			profileTemplate(meta, avatarDataUri, headerDataUri),
+		)
 
 		return new Response(png as unknown as BodyInit, {
 			headers: {

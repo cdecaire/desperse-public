@@ -182,6 +182,20 @@
   .profile .handle { font-size: 22px; color: var(--text-dim); margin-top: -16px; }
   .profile .bio { font-size: 20px; color: var(--text-muted); text-align: center; max-width: 700px; line-height: 1.5; }
   .profile .bottom-watermark { position: absolute; bottom: 32px; }
+  .profile .header-bg {
+    position: absolute; top: 0; left: 0; right: 0; height: 260px; overflow: hidden;
+  }
+  .profile .header-bg img {
+    width: 100%; height: 100%; object-fit: cover;
+  }
+  .profile .header-bg .header-darken {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(9, 9, 11, 0.4);
+  }
+  .profile .header-bg .header-fade {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 160px;
+    background: linear-gradient(to bottom, transparent, var(--bg));
+  }
 
   /* ─── Default ─── */
   .default {
@@ -292,14 +306,36 @@
 </div>
 
 <!-- ════════════════════════════════════════ -->
-<h2>Profile (with avatar — real data)</h2>
+<h2>Profile (with avatar + header image)</h2>
+<div class="card">
+  <div class="profile">
+    <div class="header-bg">
+      <img src="https://4swlq9hweqtpslft.public.blob.vercel-storage.com/media/1773194264399-x9b4m1-breakout_image_1773187865182.jpg" />
+      <div class="header-darken"></div>
+      <div class="header-fade"></div>
+    </div>
+    <div class="avatar"><img src="https://4swlq9hweqtpslft.public.blob.vercel-storage.com/avatars/1773037848829-cb0quf-36.jpg" /></div>
+    <div class="name">pixeljedi</div>
+    <div class="handle">@pixeljedi</div>
+    <div class="bio">Digital Artist & Musician | Project Management | Husband & Father</div>
+    <div class="bottom-watermark">
+      <div class="watermark">
+        <svg width="24" height="24" class="logo-svg"><use href="#logo"/></svg>
+        <span>desperse.com</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════ -->
+<h2>Profile (with avatar, no header)</h2>
 <div class="card">
   <div class="profile">
     <div class="accent-line"></div>
     <div class="avatar"><img src="https://4swlq9hweqtpslft.public.blob.vercel-storage.com/avatars/1773037848829-cb0quf-36.jpg" /></div>
     <div class="name">pixeljedi</div>
     <div class="handle">@pixeljedi</div>
-    <div class="bio">Pixel artist & collector. Building in public on Solana. GM every day.</div>
+    <div class="bio">Digital Artist & Musician | Project Management | Husband & Father</div>
     <div class="bottom-watermark">
       <div class="watermark">
         <svg width="24" height="24" class="logo-svg"><use href="#logo"/></svg>
@@ -317,7 +353,7 @@
     <div class="avatar">P</div>
     <div class="name">pixeljedi</div>
     <div class="handle">@pixeljedi</div>
-    <div class="bio">Pixel artist & collector. Building in public on Solana. GM every day.</div>
+    <div class="bio">Digital Artist & Musician | Project Management | Husband & Father</div>
     <div class="bottom-watermark">
       <div class="watermark">
         <svg width="24" height="24" class="logo-svg"><use href="#logo"/></svg>

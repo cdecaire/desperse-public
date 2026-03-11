@@ -11,6 +11,7 @@ export interface ProfileMeta {
 	slug: string
 	bio: string | null
 	avatarUrl: string | null
+	headerUrl: string | null
 }
 
 /**
@@ -26,6 +27,7 @@ export async function getProfileMeta(
 				usernameSlug: users.usernameSlug,
 				bio: users.bio,
 				avatarUrl: users.avatarUrl,
+				headerBgUrl: users.headerBgUrl,
 			})
 			.from(users)
 			.where(eq(users.usernameSlug, slug))
@@ -39,6 +41,7 @@ export async function getProfileMeta(
 			slug: row.usernameSlug,
 			bio: row.bio,
 			avatarUrl: row.avatarUrl,
+			headerUrl: row.headerBgUrl,
 		}
 	} catch (error) {
 		console.error("[getProfileMeta] Failed to fetch profile metadata:", error)

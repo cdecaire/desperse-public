@@ -365,6 +365,7 @@ function postTemplateNoImage(meta: PostMeta, avatarDataUri?: string | null) {
 export function profileTemplate(
 	meta: ProfileMeta,
 	avatarDataUri: string | null,
+	headerDataUri?: string | null,
 ) {
 	const initials = (meta.displayName || meta.slug)
 		.split(/\s+/)
@@ -385,20 +386,69 @@ export function profileTemplate(
 				backgroundColor: COLORS.bg,
 				fontFamily: "Figtree",
 				gap: 24,
+				position: "relative",
 			}}
 		>
-			{/* Subtle accent line at top */}
-			<div
-				style={{
-					display: "flex",
-					position: "absolute",
-					top: 0,
-					left: 0,
-					right: 0,
-					height: 4,
-					background: `linear-gradient(to right, ${COLORS.accent}, ${COLORS.accentLight})`,
-				}}
-			/>
+			{/* Header background image */}
+			{headerDataUri ? (
+				<div
+					style={{
+						display: "flex",
+						position: "absolute",
+						top: 0,
+						left: 0,
+						right: 0,
+						height: 260,
+					}}
+				>
+					<img
+						src={headerDataUri}
+						width={OG_WIDTH}
+						height={260}
+						style={{
+							objectFit: "cover",
+							width: "100%",
+							height: "100%",
+						}}
+					/>
+					{/* Gradient fade into background */}
+					<div
+						style={{
+							display: "flex",
+							position: "absolute",
+							left: 0,
+							right: 0,
+							bottom: 0,
+							height: 160,
+							background: `linear-gradient(to bottom, ${COLORS.bg}00, ${COLORS.bg})`,
+						}}
+					/>
+					{/* Darken overlay for readability */}
+					<div
+						style={{
+							display: "flex",
+							position: "absolute",
+							top: 0,
+							left: 0,
+							right: 0,
+							bottom: 0,
+							backgroundColor: "rgba(9, 9, 11, 0.4)",
+						}}
+					/>
+				</div>
+			) : (
+				<div
+					style={{
+						display: "flex",
+						position: "absolute",
+						top: 0,
+						left: 0,
+						right: 0,
+						height: 4,
+						background: `linear-gradient(to right, ${COLORS.accent}, ${COLORS.accentLight})`,
+					}}
+				/>
+			)}
 
 			{/* Avatar */}
 			{avatarDataUri ? (

@@ -23,7 +23,7 @@ function Watermark() {
 		<span
 			style={{
 				fontSize: 18,
-				color: COLORS.textMuted,
+				color: "#ffffff",
 				fontWeight: 500,
 				letterSpacing: "-0.01em",
 			}}
@@ -494,7 +494,7 @@ export function defaultTemplate() {
 					zIndex: 1,
 				}}
 			>
-				<DesperseLogoMark size={32} />
+				<DesperseLogoMark size={32} color="#ffffff" />
 				<span
 					style={{
 						fontSize: 28,

@@ -1,5 +1,4 @@
 node_modules
-scripts/og-output*.png
 .DS_Store
 dist
 dist-ssr

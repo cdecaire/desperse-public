@@ -48,7 +48,7 @@ export const Route = createRootRoute({
       },
       {
         property: 'og:image',
-        content: 'https://desperse.app/api/og/default',
+        content: 'https://desperse.com/api/og/default',
       },
       {
         property: 'og:image:width',
@@ -60,7 +60,7 @@ export const Route = createRootRoute({
       },
       {
         property: 'og:url',
-        content: 'https://desperse.app',
+        content: 'https://desperse.com',
       },
       {
         property: 'og:type',
@@ -89,7 +89,7 @@ export const Route = createRootRoute({
       },
       {
         name: 'twitter:image',
-        content: 'https://desperse.app/api/og/default',
+        content: 'https://desperse.com/api/og/default',
       },
       // PWA iOS meta tags
       {

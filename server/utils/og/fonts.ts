@@ -1,26 +1,39 @@
 /** Font loading for Satori OG image generation */
 
-import { readFileSync } from "node:fs"
-import { resolve } from "node:path"
 import type { SatoriOptions } from "satori"
 
 let fontsCache: SatoriOptions["fonts"] | null = null
 
-export function loadFonts(): SatoriOptions["fonts"] {
+// Nitro auto-imports useStorage at runtime — declare for TypeScript
+declare function useStorage<T = unknown>(base?: string): {
+	getItemRaw<R = T>(key: string): Promise<R | null>
+}
+
+export async function loadFonts(): Promise<SatoriOptions["fonts"]> {
 	if (fontsCache) return fontsCache
 
-	const fontsDir = resolve(process.cwd(), "server/assets/fonts")
+	// Use Nitro's storage API to access serverAssets (works on Vercel)
+	const storage = useStorage("assets")
+
+	const [mediumFont, boldFont] = await Promise.all([
+		storage.getItemRaw<ArrayBuffer>("fonts:Figtree-Medium.ttf"),
+		storage.getItemRaw<ArrayBuffer>("fonts:Figtree-Bold.ttf"),
+	])
+
+	if (!mediumFont || !boldFont) {
+		throw new Error("[OG] Font files not found in server assets")
+	}
 
 	fontsCache = [
 		{
 			name: "Figtree",
-			data: readFileSync(resolve(fontsDir, "Figtree-Medium.ttf")),
+			data: Buffer.from(mediumFont),
 			weight: 500,
 			style: "normal" as const,
 		},
 		{
 			name: "Figtree",
-			data: readFileSync(resolve(fontsDir, "Figtree-Bold.ttf")),
+			data: Buffer.from(boldFont),
 			weight: 700,
 			style: "normal" as const,
 		},

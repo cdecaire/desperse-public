@@ -34,7 +34,7 @@ import { usePostCollectors, useFollowMutation } from '@/hooks/useProfileQuery'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { toast } from '@/hooks/use-toast'
 
-const BASE_URL = "https://desperse.app"
+const BASE_URL = "https://desperse.com"
 
 export const Route = createFileRoute('/post/$postId')({
   component: PostDetailPage,

@@ -130,6 +130,12 @@ const config = defineConfig({
     // TanStack Start will handle its own server function routes via middleware
     nitro({
       serverDir: 'server',
+      serverAssets: [
+        {
+          baseName: 'fonts',
+          dir: './server/assets/fonts',
+        },
+      ],
     }),
     // Path aliases
     viteTsConfigPaths({

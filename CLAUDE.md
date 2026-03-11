@@ -2,6 +2,8 @@
 
 Desperse is a Web3 social media platform on Solana. See `memory/ARCHITECTURE.md` for full system documentation.
 
+**Production URL:** `https://desperse.com` (primary). `desperse.app` redirects to `www.desperse.app` — do not use `.app` domain for canonical URLs or OG tags.
+
 **Tech Stack:** TanStack Start (Vite + React 19 + SSR), TanStack Router (file-based), TanStack Query v5, PostgreSQL (Neon) + Drizzle ORM, Privy auth, Solana mainnet via Helius RPC, Metaplex (Bubblegum cNFTs + Core editions), Ably real-time, Vercel Blob storage.
 
 ## Commands

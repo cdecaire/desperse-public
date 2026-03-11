@@ -2,8 +2,6 @@
 
 import satori from "satori"
 import { Resvg, initWasm } from "@resvg/resvg-wasm"
-import { readFileSync } from "node:fs"
-import { resolve } from "node:path"
 import { OG_WIDTH, OG_HEIGHT } from "./constants"
 import { loadFonts } from "./fonts"
 
@@ -11,13 +9,24 @@ let wasmInitialized = false
 
 async function ensureWasm() {
 	if (wasmInitialized) return
-	// Load the WASM binary from node_modules
-	const wasmPath = resolve(
-		process.cwd(),
-		"node_modules/@resvg/resvg-wasm/index_bg.wasm",
-	)
-	const wasmBinary = readFileSync(wasmPath)
-	await initWasm(wasmBinary)
+	// Load WASM from node_modules via fs — works in Node serverless runtime
+	const { readFileSync } = await import("node:fs")
+	const { createRequire } = await import("node:module")
+	try {
+		const require = createRequire(import.meta.url)
+		const wasmPath = require.resolve("@resvg/resvg-wasm/index_bg.wasm")
+		const wasmBinary = readFileSync(wasmPath)
+		await initWasm(wasmBinary)
+	} catch (e) {
+		// Fallback: try process.cwd()
+		const { join } = await import("node:path")
+		const wasmPath = join(
+			process.cwd(),
+			"node_modules/@resvg/resvg-wasm/index_bg.wasm",
+		)
+		const wasmBinary = readFileSync(wasmPath)
+		await initWasm(wasmBinary)
+	}
 	wasmInitialized = true
 }
 
@@ -25,7 +34,7 @@ export async function renderOgImage(
 	element: React.ReactNode,
 ): Promise<Uint8Array> {
 	await ensureWasm()
-	const fonts = loadFonts()
+	const fonts = await loadFonts()
 
 	const svg = await satori(element, {
 		width: OG_WIDTH,

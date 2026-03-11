@@ -36,7 +36,7 @@ function Watermark() {
 					letterSpacing: "-0.01em",
 				}}
 			>
-				desperse.app
+				desperse.com
 			</span>
 		</div>
 	)
@@ -369,6 +369,7 @@ export function profileTemplate(
 			{/* Name */}
 			<div
 				style={{
+					display: "flex",
 					fontSize: 40,
 					fontWeight: 700,
 					color: COLORS.text,
@@ -381,6 +382,7 @@ export function profileTemplate(
 			{/* Username */}
 			<div
 				style={{
+					display: "flex",
 					fontSize: 22,
 					color: COLORS.textDim,
 					marginTop: -16,
@@ -390,9 +392,10 @@ export function profileTemplate(
 			</div>
 
 			{/* Bio */}
-			{meta.bio && (
+			{meta.bio ? (
 				<div
 					style={{
+						display: "flex",
 						fontSize: 20,
 						color: COLORS.textMuted,
 						textAlign: "center",
@@ -405,7 +408,7 @@ export function profileTemplate(
 				>
 					{meta.bio}
 				</div>
-			)}
+			) : null}
 
 			{/* Watermark at bottom */}
 			<div

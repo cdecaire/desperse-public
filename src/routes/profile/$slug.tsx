@@ -37,7 +37,7 @@ import { getResponsiveImageProps } from '@/lib/imageUrl'
 
 type ProfileTab = 'posts' | 'collected' | 'for-sale'
 
-const BASE_URL = "https://desperse.app"
+const BASE_URL = "https://desperse.com"
 
 export const Route = createFileRoute('/profile/$slug')({
   component: ProfilePage,

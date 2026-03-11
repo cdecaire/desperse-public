@@ -42,7 +42,9 @@ export default defineEventHandler(async (event) => {
 			},
 		})
 	} catch (error) {
-		console.error("[OG/post] Failed to generate image:", error)
-		return new Response("Failed to generate image", { status: 500 })
+		const msg = error instanceof Error ? error.message : String(error)
+		const stack = error instanceof Error ? error.stack : ""
+		console.error("[OG/post] Failed to generate image:", msg, stack)
+		return new Response(`Failed to generate image: ${msg}`, { status: 500 })
 	}
 })

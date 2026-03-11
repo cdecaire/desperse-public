@@ -250,10 +250,10 @@ code {
   --destructive: var(--torch-red-500);
   --destructive-foreground: #ffffff;
 
-  /* Post type tones - for dark mode */
+  /* Post type tones - for dark mode (one step lighter for readability on dark bg) */
   --tone-standard: var(--caribbean-green-400);
-  --tone-collectible: var(--blue-gem-500);
-  --tone-edition: var(--purple-heart-600);
+  --tone-collectible: var(--blue-gem-400);
+  --tone-edition: var(--purple-heart-500);
   --tone-warning: var(--flush-orange-500);
   --tone-info: var(--azure-radiance-400);
   --highlight: var(--purple-heart-600);

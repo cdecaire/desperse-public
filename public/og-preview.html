@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>OG Image Preview — Bold</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #1a1a1a; padding: 40px; font-family: 'Figtree', sans-serif; color: #fff; }
+  h2 { margin: 30px 0 10px; font-size: 14px; color: #a1a1aa; text-transform: uppercase; letter-spacing: 0.1em; }
+  h2:first-child { margin-top: 0; }
+  .card {
+    width: 1200px;
+    height: 630px;
+    border-radius: 8px;
+    overflow: hidden;
+    transform-origin: top left;
+    transform: scale(0.6);
+    margin-bottom: -252px; /* compensate for scale */
+    box-shadow: 0 4px 40px rgba(0,0,0,0.5);
+  }
+
+  /* ─── Colors ─── */
+  :root {
+    --bg: #09090b;
+    --bg-subtle: #18181b;
+    --accent: #a213ff;
+    --accent-light: #c86fff;
+    --text: #fafafa;
+    --text-muted: #a1a1aa;
+    --text-dim: #71717a;
+    --border: #27272a;
+    /* Post type tones (matches dark mode --tone-* from src/styles.css) */
+    --tone-post-text: #27e4b8;
+    --tone-collectible-text: #947bff;
+    --tone-edition-text: #b439ff;
+  }
+
+  /* ─── Shared components ─── */
+  .watermark {
+    display: flex;
+    align-items: center;
+  }
+  .watermark span {
+    font-size: 18px;
+    color: var(--text-muted);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .type-badge {
+    display: inline-flex;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 6px 14px;
+    border-radius: 6px;
+  }
+  .type-badge.collectible { color: var(--tone-collectible-text); background: rgba(148,123,255,0.12); }
+  .type-badge.edition { color: var(--tone-edition-text); background: rgba(180,57,255,0.12); }
+  .logo-svg { fill: var(--accent-light); }
+  .creator-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .creator-row .creator-avatar {
+    width: 48px; height: 48px; border-radius: 24px; object-fit: cover;
+    border: 2px solid rgba(162,19,255,0.27);
+  }
+  .creator-row .creator-avatar.xl {
+    width: 56px; height: 56px; border-radius: 28px;
+  }
+  .creator-row .creator-name {
+    font-size: 22px; color: var(--text); font-weight: 500;
+  }
+
+  .dot-pattern {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background-image: radial-gradient(var(--text-muted) 1px, transparent 1px);
+    background-size: 40px 40px;
+    opacity: 0.25;
+  }
+
+  /* ─── Post with image ─── */
+  .post-with-image {
+    position: relative;
+    display: flex;
+    width: 1200px;
+    height: 630px;
+    background: var(--bg);
+    font-family: 'Figtree', sans-serif;
+  }
+  .post-with-image .accent-bar {
+    position: absolute; top: 0; left: 0; right: 0; height: 12px; z-index: 2;
+  }
+  .post-with-image .accent-bar.post { background: linear-gradient(to right, var(--tone-post-text), rgba(39,228,184,0.25)); }
+  .post-with-image .accent-bar.edition { background: linear-gradient(to right, var(--tone-edition-text), rgba(180,57,255,0.25)); }
+  .post-with-image .accent-bar.collectible { background: linear-gradient(to right, var(--tone-collectible-text), rgba(148,123,255,0.25)); }
+  .post-with-image .media {
+    position: absolute; right: 0; top: 0; bottom: 0; width: 60%;
+  }
+  .post-with-image .media img {
+    width: 100%; height: 100%; object-fit: cover;
+  }
+  .post-with-image .media .gradient {
+    position: absolute; left: 0; top: 0; bottom: 0; width: 360px;
+    background: linear-gradient(to right, var(--bg), transparent);
+  }
+  .post-with-image .accent-glow {
+    position: absolute; left: 0; bottom: 0; width: 50%; height: 200px; z-index: 1;
+  }
+  .post-with-image .accent-glow.post { background: linear-gradient(to top, rgba(39,228,184,0.04), transparent); }
+  .post-with-image .accent-glow.edition { background: linear-gradient(to top, rgba(180,57,255,0.04), transparent); }
+  .post-with-image .accent-glow.collectible { background: linear-gradient(to top, rgba(148,123,255,0.04), transparent); }
+  .post-with-image .content {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column; justify-content: space-between;
+    padding: 52px 56px; width: 50%;
+  }
+  .post-with-image .middle { display: flex; flex-direction: column; gap: 18px; }
+  .post-with-image .title {
+    font-size: 48px; font-weight: 700; color: var(--text);
+    line-height: 1.1; letter-spacing: -0.03em;
+    overflow: hidden; text-overflow: ellipsis;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  }
+  .post-with-image .desc {
+    font-size: 18px; color: var(--text-muted); line-height: 1.5;
+    overflow: hidden; text-overflow: ellipsis;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  }
+
+  /* ─── Profile ─── */
+  .profile {
+    position: relative;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    width: 1200px; height: 630px; gap: 24px;
+    background: var(--bg); font-family: 'Figtree', sans-serif;
+  }
+  .profile .accent-bar {
+    position: absolute; top: 0; left: 0; right: 0; height: 12px;
+    background: linear-gradient(to right, var(--accent), var(--accent-light));
+  }
+  .profile .accent-glow {
+    position: absolute; left: 0; right: 0; top: 0; height: 300px;
+    background: linear-gradient(to bottom, rgba(162,19,255,0.05), transparent);
+  }
+  .profile .profile-content {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 24px; width: 100%; height: 100%;
+  }
+  .profile.has-header .profile-content {
+    padding-top: 40px;
+  }
+  .profile .avatar-ring {
+    width: 168px; height: 168px; border-radius: 84px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-light));
+    display: flex; align-items: center; justify-content: center;
+  }
+  .profile .avatar-ring img {
+    width: 160px; height: 160px; border-radius: 80px; object-fit: cover;
+    border: 3px solid var(--bg);
+  }
+  .profile .avatar-fallback {
+    width: 160px; height: 160px; border-radius: 80px;
+    background: var(--accent); display: flex; align-items: center; justify-content: center;
+    font-size: 56px; font-weight: 700; color: var(--text);
+  }
+  .profile .name { font-size: 52px; font-weight: 700; color: var(--text); letter-spacing: -0.03em; }
+  .profile .handle { font-size: 24px; color: var(--text-muted); margin-top: -16px; }
+  .profile .bio { font-size: 20px; color: var(--text-muted); text-align: center; max-width: 700px; line-height: 1.5; }
+  .profile .bottom-watermark { position: absolute; bottom: 32px; z-index: 1; }
+  .profile .header-bg {
+    position: absolute; top: 0; left: 0; right: 0; height: 340px; overflow: hidden;
+  }
+  .profile .header-bg img {
+    width: 100%; height: 100%; object-fit: cover;
+  }
+  .profile .header-bg .header-darken {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(9, 9, 11, 0.2);
+  }
+  .profile .header-bg .header-fade {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 220px;
+    background: linear-gradient(to bottom, transparent, var(--bg));
+  }
+
+  /* ─── Default ─── */
+  .default {
+    position: relative;
+    display: flex;
+    width: 1200px; height: 630px;
+    background: var(--bg); font-family: 'Figtree', sans-serif;
+  }
+  .default .dot-pattern {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background-image: radial-gradient(var(--text-muted) 1px, transparent 1px);
+    background-size: 40px 40px;
+    opacity: 0.25;
+  }
+  .default .default-content {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 0 80px; width: 100%; height: 100%; gap: 40px;
+  }
+  .default .tagline-stack { display: flex; flex-direction: column; }
+  .default .tagline-line {
+    font-size: 128px; font-weight: 900; line-height: 0.9; letter-spacing: -0.04em;
+    color: var(--text);
+  }
+  .default .tagline-line.muted { color: var(--text-muted); }
+</style>
+</head>
+<body>
+
+<!-- Logo SVG template (reused) -->
+<svg style="display:none">
+  <symbol id="logo" viewBox="0 0 473 500">
+    <path d="M237.841 497.826C268.168 493.915 290.894 488.335 314.722 478.948C389.042 449.671 443.371 391.778 463.561 320.347C476.573 274.312 476.111 220.907 462.305 175.021C450.144 134.603 424.171 95.1888 390.847 66.582C373.509 51.6991 357.556 41.3516 334.416 29.9808C302.689 14.3902 276.507 7.08708 232.16 1.45806C227.42 0.856436 191.01 0.502448 112.671 0.296378L0 0V250V500L112.671 499.719C222.301 499.445 225.68 499.394 237.841 497.826ZM23.4811 449.187V424.572L196.503 251.571L369.526 78.5699L372.422 80.7653C374.015 81.9727 379.75 87.3003 385.166 92.6043L395.013 102.248L209.247 288.025L23.4811 473.801V449.187ZM23.4811 367.769V342.776L171.171 195.104L318.862 47.4325L325.503 50.6948C333.115 54.4344 350.701 64.5299 350.701 65.1605C350.701 65.3927 277.077 139.198 187.091 229.172L23.4811 392.762V367.769ZM23.4811 286.731V261.737L140.344 144.89L257.206 28.0434L262.799 29.2199C275.371 31.8642 296.165 37.7264 296.165 38.6264C296.165 38.8732 234.811 100.421 159.823 175.399L23.4811 311.724V286.731ZM23.4811 205.313V180.698L102.566 101.625L181.652 22.5514L202.74 23.0471C214.338 23.3197 224.937 23.7995 226.293 24.1132L228.759 24.6836L126.12 127.306L23.4811 229.928V205.313ZM23.4811 124.273V99.6572L61.9354 61.213L100.39 22.7687L124.806 22.9687L149.223 23.1688L86.352 86.0285L23.4811 148.888V124.273ZM23.4811 46.2685V22.7901H47.147H70.8128L47.3409 46.2685C34.4313 59.1816 23.7817 69.7468 23.675 69.7468C23.5684 69.7468 23.4811 59.1816 23.4811 46.2685Z" fill="currentColor"/>
+  </symbol>
+</svg>
+
+<!-- ════════════════════════════════════════ -->
+<h2>Post with Image (edition)</h2>
+<div class="card">
+  <div class="post-with-image">
+    <div class="dot-pattern"></div>
+    <div class="accent-bar edition"></div>
+    <div class="media">
+      <img src="https://4swlq9hweqtpslft.public.blob.vercel-storage.com/media/1773194264399-x9b4m1-breakout_image_1773187865182.jpg" />
+      <div class="gradient"></div>
+    </div>
+    <div class="accent-glow edition"></div>
+    <div class="content">
+      <div><span class="type-badge edition">Edition</span></div>
+      <div class="middle">
+        <div class="creator-row">
+          <img class="creator-avatar" src="https://4swlq9hweqtpslft.public.blob.vercel-storage.com/avatars/1773037848829-cb0quf-36.jpg" />
+          <span class="creator-name">pixeljedi</span>
+        </div>
+        <div class="title">Genesis Drop</div>
+        <div class="desc">A stunning pixel art piece capturing the essence of Times Square at night. Limited edition collectible on Solana.</div>
+      </div>
+      <div class="watermark">
+        <span>desperse.com</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════ -->
+<h2>Post with Image (standard post)</h2>
+<div class="card">
+  <div class="post-with-image">
+    <div class="dot-pattern"></div>
+    <div class="accent-bar post"></div>
+    <div class="media">
+      <img src="https://4swlq9hweqtpslft.public.blob.vercel-storage.com/media/1773194264399-x9b4m1-breakout_image_1773187865182.jpg" />
+      <div class="gradient"></div>
+    </div>
+    <div class="accent-glow post"></div>
+    <div class="content">
+      <div></div>
+      <div class="middle">
+        <div class="creator-row">
+          <img class="creator-avatar" src="https://4swlq9hweqtpslft.public.blob.vercel-storage.com/avatars/1773037848829-cb0quf-36.jpg" />
+          <span class="creator-name">pixeljedi</span>
+        </div>
+        <div class="title">GN Fam ✌️ 🥱 Work in progress 🌇 Capturing Times Square NY in pixe...</div>
+      </div>
+      <div class="watermark">
+        <span>desperse.com</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════ -->
+<h2>Post with Image (collectible)</h2>
+<div class="card">
+  <div class="post-with-image">
+    <div class="dot-pattern"></div>
+    <div class="accent-bar collectible"></div>
+    <div class="media">
+      <img src="https://4swlq9hweqtpslft.public.blob.vercel-storage.com/media/1773194264399-x9b4m1-breakout_image_1773187865182.jpg" />
+      <div class="gradient"></div>
+    </div>
+    <div class="accent-glow collectible"></div>
+    <div class="content">
+      <div><span class="type-badge collectible">Collectible</span></div>
+      <div class="middle">
+        <div class="creator-row">
+          <img class="creator-avatar" src="https://4swlq9hweqtpslft.public.blob.vercel-storage.com/avatars/1773037848829-cb0quf-36.jpg" />
+          <span class="creator-name">pixeljedi</span>
+        </div>
+        <div class="title">Times Square at Night</div>
+        <div class="desc">1/1 pixel art collectible. Capturing the neon glow of NYC after dark.</div>
+      </div>
+      <div class="watermark">
+        <span>desperse.com</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════ -->
+<h2>Profile (with avatar + header image)</h2>
+<div class="card">
+  <div class="profile has-header">
+    <div class="dot-pattern"></div>
+    <div class="header-bg">
+      <img src="https://4swlq9hweqtpslft.public.blob.vercel-storage.com/media/1773194264399-x9b4m1-breakout_image_1773187865182.jpg" />
+      <div class="header-darken"></div>
+      <div class="header-fade"></div>
+    </div>
+    <div class="profile-content">
+      <div class="avatar-ring"><img src="https://4swlq9hweqtpslft.public.blob.vercel-storage.com/avatars/1773037848829-cb0quf-36.jpg" /></div>
+      <div class="name">pixeljedi</div>
+      <div class="handle">@pixeljedi</div>
+      <div class="bio">Digital Artist & Musician | Project Management | Husband & Father</div>
+    </div>
+    <div class="bottom-watermark">
+      <div class="watermark">
+        <span>desperse.com</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════ -->
+<h2>Profile (with avatar, no header)</h2>
+<div class="card">
+  <div class="profile">
+    <div class="dot-pattern"></div>
+    <div class="accent-bar"></div>
+    <div class="accent-glow"></div>
+    <div class="profile-content">
+      <div class="avatar-ring"><img src="https://4swlq9hweqtpslft.public.blob.vercel-storage.com/avatars/1773037848829-cb0quf-36.jpg" /></div>
+      <div class="name">pixeljedi</div>
+      <div class="handle">@pixeljedi</div>
+      <div class="bio">Digital Artist & Musician | Project Management | Husband & Father</div>
+    </div>
+    <div class="bottom-watermark">
+      <div class="watermark">
+        <span>desperse.com</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════ -->
+<h2>Profile (no avatar — initials fallback)</h2>
+<div class="card">
+  <div class="profile">
+    <div class="dot-pattern"></div>
+    <div class="accent-bar"></div>
+    <div class="accent-glow"></div>
+    <div class="profile-content">
+      <div class="avatar-fallback">P</div>
+      <div class="name">pixeljedi</div>
+      <div class="handle">@pixeljedi</div>
+      <div class="bio">Digital Artist & Musician | Project Management | Husband & Father</div>
+    </div>
+    <div class="bottom-watermark">
+      <div class="watermark">
+        <span>desperse.com</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════ -->
+<h2>Default</h2>
+<div class="card">
+  <div class="default">
+    <div class="dot-pattern"></div>
+    <div style="display:flex;align-items:center;gap:10px;position:absolute;top:48px;left:80px;z-index:1">
+      <svg width="32" height="32" class="logo-svg"><use href="#logo"/></svg>
+      <span style="font-size:28px;font-weight:800;color:var(--text);letter-spacing:-0.02em">Desperse</span>
+    </div>
+    <div style="position:absolute;bottom:48px;right:80px;z-index:1">
+      <span style="font-size:18px;color:var(--text-muted);font-weight:500;letter-spacing:-0.01em">desperse.com</span>
+    </div>
+    <div class="default-content">
+      <div class="tagline-stack">
+        <div class="tagline-line">CREATE.</div>
+        <div class="tagline-line">COLLECT.</div>
+        <div class="tagline-line muted">OWN.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

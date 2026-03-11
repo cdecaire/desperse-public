@@ -5,7 +5,6 @@ import { Resvg, initWasm } from "@resvg/resvg-wasm"
 import { OG_WIDTH, OG_HEIGHT } from "./constants"
 import { loadFonts } from "./fonts"
 
-// @ts-expect-error — Nitro runtime module, types not exposed but resolves at build time
 import { useStorage } from "nitro/storage"
 
 let wasmInitialized = false
@@ -33,8 +32,7 @@ async function ensureWasm() {
 export async function renderOgImage(
 	element: React.ReactNode,
 ): Promise<Uint8Array> {
-	await ensureWasm()
-	const fonts = await loadFonts()
+	const [, fonts] = await Promise.all([ensureWasm(), loadFonts()])
 
 	const svg = await satori(element, {
 		width: OG_WIDTH,

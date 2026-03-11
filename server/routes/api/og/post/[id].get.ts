@@ -33,6 +33,11 @@ export default defineEventHandler(async (event) => {
 			meta.creatorAvatar ? fetchImageAsDataUri(meta.creatorAvatar) : null,
 		])
 
+		if (!imageDataUri) {
+			// All posts should have a cover/media image — fall back to default if fetch failed
+			return Response.redirect("/api/og/default", 302)
+		}
+
 		const png = await renderOgImage(postTemplate(meta, imageDataUri, avatarDataUri))
 
 		return new Response(png as unknown as BodyInit, {

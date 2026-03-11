@@ -39,6 +39,18 @@ const fonts = [
 		weight: 700 as const,
 		style: "normal" as const,
 	},
+	{
+		name: "Figtree",
+		data: readFileSync(resolve(fontsDir, "Figtree-ExtraBold.ttf")),
+		weight: 800 as const,
+		style: "normal" as const,
+	},
+	{
+		name: "Figtree",
+		data: readFileSync(resolve(fontsDir, "Figtree-Black.ttf")),
+		weight: 900 as const,
+		style: "normal" as const,
+	},
 ]
 
 // Import templates
@@ -80,7 +92,11 @@ if (command === "post" && arg) {
 	}
 	console.log("Post meta:", meta)
 	const imageDataUri = meta.imageUrl ? await fetchImage(meta.imageUrl) : null
-	console.log("Image fetched:", imageDataUri ? "yes" : "no")
+	if (!imageDataUri) {
+		console.error("No image available for post — all posts must have a cover/media image")
+		process.exit(1)
+	}
+	console.log("Image fetched: yes")
 	const png = await render(postTemplate(meta, imageDataUri))
 	writeFileSync(outputPath, png)
 	console.log(`Saved to ${outputPath}`)
@@ -98,33 +114,16 @@ if (command === "post" && arg) {
 	writeFileSync(outputPath, png)
 	console.log(`Saved to ${outputPath}`)
 } else if (command === "mock-post") {
-	// Mock post with image
-	const mockWithImage = postTemplate(
-		{
-			title: "Genesis Drop by pixeljedi",
-			description:
-				"A stunning pixel art piece capturing the essence of Times Square at night. Limited edition collectible on Solana.",
-			imageUrl: null,
-			type: "edition",
-			creatorName: "pixeljedi",
-			creatorSlug: "pixeljedi",
-			creatorAvatar: null,
-		},
-		null, // No image for this mock — test the no-image variant
-	)
-	const png = await render(mockWithImage)
-	writeFileSync(outputPath, png)
-	console.log(`Saved mock post (no image) to ${outputPath}`)
-
-	// Also generate with-image variant using a placeholder
+	// Mock post with placeholder image
 	const mockImageUri =
 		"data:image/svg+xml;base64," +
 		Buffer.from(
-			'<svg width="720" height="630" xmlns="http://www.w3.org/2000/svg"><rect width="720" height="630" fill="#7c3aed"/><text x="360" y="315" text-anchor="middle" fill="white" font-size="48">Artwork</text></svg>',
+			'<svg width="720" height="630" xmlns="http://www.w3.org/2000/svg"><rect width="720" height="630" fill="#a213ff"/><text x="360" y="315" text-anchor="middle" fill="white" font-size="48">Artwork</text></svg>',
 		).toString("base64")
-	const mockWithImg = postTemplate(
+	const mock = postTemplate(
 		{
 			title: "Genesis Drop by pixeljedi",
+			shortTitle: "Genesis Drop",
 			description:
 				"A stunning pixel art piece capturing the essence of Times Square at night.",
 			imageUrl: "mock",
@@ -135,10 +134,9 @@ if (command === "post" && arg) {
 		},
 		mockImageUri,
 	)
-	const png2 = await render(mockWithImg)
-	const outputPath2 = resolve(process.cwd(), "scripts/og-output-with-image.png")
-	writeFileSync(outputPath2, png2)
-	console.log(`Saved mock post (with image) to ${outputPath2}`)
+	const png = await render(mock)
+	writeFileSync(outputPath, png)
+	console.log(`Saved mock post to ${outputPath}`)
 } else if (command === "mock-profile") {
 	// Mock profile
 	const mock = profileTemplate(
@@ -147,6 +145,7 @@ if (command === "post" && arg) {
 			slug: "pixeljedi",
 			bio: "Pixel artist & collector. Building in public on Solana. GM every day.",
 			avatarUrl: null,
+			headerUrl: null,
 		},
 		null,
 	)

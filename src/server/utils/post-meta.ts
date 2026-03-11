@@ -9,6 +9,8 @@ import { eq, and } from "drizzle-orm"
 
 export interface PostMeta {
 	title: string
+	/** Short title for OG image (no "by creator" suffix — avatar row handles attribution) */
+	shortTitle: string
 	description: string
 	imageUrl: string | null
 	type: "post" | "collectible" | "edition"
@@ -60,26 +62,37 @@ export async function getPostMeta(
 		const row = result[0]
 		const creatorName = row.displayName || row.usernameSlug
 
-		// Build title
-		let title: string
+		// Build title (full for og:title meta tag, short for OG image where avatar row shows creator)
+		let shortTitle: string
 		if (row.nftName) {
-			title = `${row.nftName} by ${creatorName}`
+			shortTitle = row.nftName
+		} else if (row.caption) {
+			// Use caption as title for standard posts (truncated)
+			shortTitle = row.caption.length > 80 ? `${row.caption.slice(0, 77)}...` : row.caption
 		} else if (row.type === "edition") {
-			title = `Edition by ${creatorName}`
+			shortTitle = "Edition"
 		} else if (row.type === "collectible") {
-			title = `Collectible by ${creatorName}`
+			shortTitle = "Collectible"
 		} else {
-			title = `Post by ${creatorName}`
+			shortTitle = "Post"
 		}
 
-		// Build description
+		const title = row.nftName
+			? `${row.nftName} by ${creatorName}`
+			: `${row.type.charAt(0).toUpperCase() + row.type.slice(1)} by ${creatorName}`
+
+		// Build description (avoid duplicating shortTitle when caption is used as both)
 		let description: string
 		if (row.nftDescription) {
 			description = row.nftDescription.slice(0, 200)
-		} else if (row.caption) {
+		} else if (row.nftName && row.caption) {
+			// NFT post: nftName is shortTitle, caption is description
 			description = row.caption.slice(0, 200)
+		} else if (!row.nftName && row.caption) {
+			// Standard post: caption is already the shortTitle — no extra description needed
+			description = ""
 		} else {
-			description = `Check out this ${row.type} by ${creatorName} on Desperse`
+			description = ""
 		}
 
 		// Choose best image for OG preview
@@ -93,6 +106,7 @@ export async function getPostMeta(
 
 		return {
 			title,
+			shortTitle,
 			description,
 			imageUrl,
 			type: row.type,

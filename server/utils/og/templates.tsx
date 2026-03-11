@@ -2,10 +2,10 @@
 
 import type { PostMeta } from "@/server/utils/post-meta"
 import type { ProfileMeta } from "@/server/utils/profile-meta"
-import { COLORS, TYPE_COLORS, LOGO_PATH, OG_WIDTH, OG_HEIGHT } from "./constants"
+import { COLORS, TYPE_COLORS, LOGO_PATH, DOT_PATTERN_URI, OG_WIDTH, OG_HEIGHT } from "./constants"
 
 /** Inline Desperse logo as SVG for satori (scaled to given size) */
-function DesperseLogoMark({ size = 40 }: { size?: number }) {
+function DesperseLogoMark({ size = 40, color }: { size?: number; color?: string }) {
 	return (
 		<svg
 			width={size}
@@ -13,43 +13,28 @@ function DesperseLogoMark({ size = 40 }: { size?: number }) {
 			viewBox="0 0 473 500"
 			fill="none"
 		>
-			<path d={LOGO_PATH} fill={COLORS.accentLight} />
+			<path d={LOGO_PATH} fill={color || COLORS.accentLight} />
 		</svg>
 	)
 }
 
 function Watermark() {
 	return (
-		<div
+		<span
 			style={{
-				display: "flex",
-				alignItems: "center",
-				gap: 10,
+				fontSize: 18,
+				color: COLORS.textMuted,
+				fontWeight: 500,
+				letterSpacing: "-0.01em",
 			}}
 		>
-			<DesperseLogoMark size={24} />
-			<span
-				style={{
-					fontSize: 18,
-					color: COLORS.textDim,
-					fontWeight: 500,
-					letterSpacing: "-0.01em",
-				}}
-			>
-				desperse.com
-			</span>
-		</div>
+			desperse.com
+		</span>
 	)
 }
 
 function TypeBadge({ type }: { type: string }) {
-	const label =
-		type === "edition"
-			? "Edition"
-			: type === "collectible"
-				? "Collectible"
-				: "Post"
-
+	const label = type === "edition" ? "Edition" : type === "collectible" ? "Collectible" : "Post"
 	const tone = TYPE_COLORS[type as keyof typeof TYPE_COLORS] || TYPE_COLORS.post
 
 	return (
@@ -57,18 +42,55 @@ function TypeBadge({ type }: { type: string }) {
 			style={{
 				display: "flex",
 				alignItems: "center",
-				backgroundColor: tone.bg,
 				color: tone.text,
 				fontSize: 14,
 				fontWeight: 700,
-				padding: "4px 12px",
-				borderRadius: 6,
 				textTransform: "uppercase" as const,
-				letterSpacing: "0.05em",
+				letterSpacing: "0.08em",
+				backgroundColor: `${tone.text}20`,
+				padding: "6px 14px",
+				borderRadius: 6,
 			}}
 		>
 			{label}
 		</div>
+	)
+}
+
+/** Dot pattern background overlay */
+function DotPattern() {
+	return (
+		<img
+			src={DOT_PATTERN_URI}
+			width={OG_WIDTH}
+			height={OG_HEIGHT}
+			style={{
+				position: "absolute",
+				top: 0,
+				left: 0,
+				opacity: 0.25,
+			}}
+		/>
+	)
+}
+
+/** Bold gradient accent bar — 12px, type-colored or accent gradient */
+function AccentBar({ color, colorEnd }: { color: string; colorEnd?: string }) {
+	return (
+		<div
+			style={{
+				display: "flex",
+				position: "absolute",
+				top: 0,
+				left: 0,
+				right: 0,
+				height: 12,
+				background: colorEnd
+					? `linear-gradient(to right, ${color}, ${colorEnd})`
+					: color,
+				zIndex: 2,
+			}}
+		/>
 	)
 }
 
@@ -80,19 +102,16 @@ function getTypeTone(type: string) {
 
 export function postTemplate(
 	meta: PostMeta,
-	imageDataUri: string | null,
+	imageDataUri: string,
 	avatarDataUri?: string | null,
 ) {
-	if (imageDataUri) {
-		return postTemplateWithImage(meta, imageDataUri, avatarDataUri)
-	}
-	return postTemplateNoImage(meta, avatarDataUri)
+	return postTemplateWithImage(meta, imageDataUri, avatarDataUri)
 }
 
 function CreatorRow({
 	meta,
 	avatarDataUri,
-	size = 36,
+	size = 48,
 }: {
 	meta: PostMeta
 	avatarDataUri?: string | null
@@ -103,7 +122,7 @@ function CreatorRow({
 			style={{
 				display: "flex",
 				alignItems: "center",
-				gap: 12,
+				gap: 14,
 			}}
 		>
 			{avatarDataUri ? (
@@ -114,6 +133,7 @@ function CreatorRow({
 					style={{
 						borderRadius: size / 2,
 						objectFit: "cover",
+						border: `2px solid ${COLORS.accent}44`,
 					}}
 				/>
 			) : (
@@ -137,9 +157,12 @@ function CreatorRow({
 			<div
 				style={{
 					display: "flex",
-					fontSize: 18,
-					color: COLORS.textMuted,
+					fontSize: 22,
+					color: COLORS.text,
 					fontWeight: 500,
+					overflow: "hidden",
+					textOverflow: "ellipsis",
+					lineClamp: 1,
 				}}
 			>
 				{meta.creatorName || meta.creatorSlug}
@@ -161,20 +184,12 @@ function postTemplateWithImage(meta: PostMeta, imageDataUri: string, avatarDataU
 				position: "relative",
 			}}
 		>
-			{/* Type-colored accent line at top */}
-			<div
-				style={{
-					display: "flex",
-					position: "absolute",
-					top: 0,
-					left: 0,
-					right: 0,
-					height: 4,
-					backgroundColor: tone.text,
-					zIndex: 2,
-				}}
-			/>
-			{/* Media image — right side, 55% width */}
+			<DotPattern />
+
+			{/* Bold gradient accent bar */}
+			<AccentBar color={tone.text} colorEnd={`${tone.text}40`} />
+
+			{/* Media image — right side */}
 			<div
 				style={{
 					display: "flex",
@@ -195,7 +210,7 @@ function postTemplateWithImage(meta: PostMeta, imageDataUri: string, avatarDataU
 						height: "100%",
 					}}
 				/>
-				{/* Gradient overlay fading into background */}
+				{/* Wide dramatic gradient fade */}
 				<div
 					style={{
 						display: "flex",
@@ -203,11 +218,25 @@ function postTemplateWithImage(meta: PostMeta, imageDataUri: string, avatarDataU
 						left: 0,
 						top: 0,
 						bottom: 0,
-						width: 200,
+						width: 360,
 						background: `linear-gradient(to right, ${COLORS.bg}, ${COLORS.bg}00)`,
 					}}
 				/>
 			</div>
+
+			{/* Accent glow zone — bottom-left depth */}
+			<div
+				style={{
+					display: "flex",
+					position: "absolute",
+					left: 0,
+					bottom: 0,
+					width: "50%",
+					height: 200,
+					background: `linear-gradient(to top, ${tone.text}0a, ${COLORS.bg}00)`,
+					zIndex: 1,
+				}}
+			/>
 
 			{/* Left panel — text content */}
 			<div
@@ -215,47 +244,39 @@ function postTemplateWithImage(meta: PostMeta, imageDataUri: string, avatarDataU
 					display: "flex",
 					flexDirection: "column",
 					justifyContent: "space-between",
-					padding: "48px 56px",
+					padding: "52px 56px",
 					width: "50%",
 					position: "relative",
 					zIndex: 1,
 				}}
 			>
-				{/* Top: logo + type badge */}
-				<div
-					style={{
-						display: "flex",
-						alignItems: "center",
-						gap: 16,
-					}}
-				>
-					<DesperseLogoMark size={36} />
-					<TypeBadge type={meta.type} />
-				</div>
+				{/* Top: type badge (only for editions/collectibles) */}
+				{meta.type !== "post" ? <TypeBadge type={meta.type} /> : null}
 
 				{/* Middle: avatar + title + description */}
 				<div
 					style={{
 						display: "flex",
 						flexDirection: "column",
-						gap: 16,
+						gap: 18,
 					}}
 				>
-					<CreatorRow meta={meta} avatarDataUri={avatarDataUri} size={36} />
+					<CreatorRow meta={meta} avatarDataUri={avatarDataUri} size={48} />
 					<div
 						style={{
-							fontSize: 36,
+							fontSize: 48,
 							fontWeight: 700,
 							color: COLORS.text,
-							lineHeight: 1.2,
-							letterSpacing: "-0.02em",
+							lineHeight: 1.1,
+							letterSpacing: "-0.03em",
 							overflow: "hidden",
 							textOverflow: "ellipsis",
 							lineClamp: 2,
 						}}
 					>
-						{meta.title}
+						{meta.shortTitle}
 					</div>
+					{meta.description ? (
 					<div
 						style={{
 							fontSize: 18,
@@ -268,94 +289,12 @@ function postTemplateWithImage(meta: PostMeta, imageDataUri: string, avatarDataU
 					>
 						{meta.description}
 					</div>
+				) : null}
 				</div>
 
 				{/* Bottom: watermark */}
 				<Watermark />
 			</div>
-		</div>
-	)
-}
-
-function postTemplateNoImage(meta: PostMeta, avatarDataUri?: string | null) {
-	const tone = getTypeTone(meta.type)
-	return (
-		<div
-			style={{
-				display: "flex",
-				flexDirection: "column",
-				justifyContent: "space-between",
-				width: OG_WIDTH,
-				height: OG_HEIGHT,
-				backgroundColor: COLORS.bg,
-				fontFamily: "Figtree",
-				padding: "48px 64px",
-				position: "relative",
-			}}
-		>
-			{/* Type-colored accent line at top */}
-			<div
-				style={{
-					display: "flex",
-					position: "absolute",
-					top: 0,
-					left: 0,
-					right: 0,
-					height: 4,
-					backgroundColor: tone.text,
-				}}
-			/>
-			{/* Top: logo + badge */}
-			<div
-				style={{
-					display: "flex",
-					alignItems: "center",
-					gap: 16,
-				}}
-			>
-				<DesperseLogoMark size={36} />
-				<TypeBadge type={meta.type} />
-			</div>
-
-			{/* Center: avatar + title + description */}
-			<div
-				style={{
-					display: "flex",
-					flexDirection: "column",
-					gap: 20,
-				}}
-			>
-				<CreatorRow meta={meta} avatarDataUri={avatarDataUri} size={44} />
-				<div
-					style={{
-						fontSize: 48,
-						fontWeight: 700,
-						color: COLORS.text,
-						lineHeight: 1.15,
-						letterSpacing: "-0.025em",
-						overflow: "hidden",
-						textOverflow: "ellipsis",
-						lineClamp: 2,
-					}}
-				>
-					{meta.title}
-				</div>
-				<div
-					style={{
-						fontSize: 22,
-						color: COLORS.textMuted,
-						lineHeight: 1.5,
-						overflow: "hidden",
-						textOverflow: "ellipsis",
-						lineClamp: 2,
-					}}
-				>
-					{meta.description}
-				</div>
-			</div>
-
-			{/* Bottom: watermark */}
-			<Watermark />
 		</div>
 	)
 }
@@ -374,6 +313,8 @@ export function profileTemplate(
 		.join("")
 		.toUpperCase()
 
+	const avatarSize = 160
+
 	return (
 		<div
 			style={{
@@ -389,6 +330,8 @@ export function profileTemplate(
 				position: "relative",
 			}}
 		>
+			<DotPattern />
+
 			{/* Header background image */}
 			{headerDataUri ? (
 				<div
@@ -398,13 +341,13 @@ export function profileTemplate(
 						top: 0,
 						left: 0,
 						right: 0,
-						height: 260,
+						height: 340,
 					}}
 				>
 					<img
 						src={headerDataUri}
 						width={OG_WIDTH}
-						height={260}
+						height={340}
 						style={{
 							objectFit: "cover",
 							width: "100%",
@@ -419,11 +362,11 @@ export function profileTemplate(
 							left: 0,
 							right: 0,
 							bottom: 0,
-							height: 160,
+							height: 220,
 							background: `linear-gradient(to bottom, ${COLORS.bg}00, ${COLORS.bg})`,
 						}}
 					/>
-					{/* Darken overlay for readability */}
+					{/* Subtle darken for readability */}
 					<div
 						style={{
 							display: "flex",
@@ -432,98 +375,135 @@ export function profileTemplate(
 							left: 0,
 							right: 0,
 							bottom: 0,
-							backgroundColor: "rgba(9, 9, 11, 0.4)",
+							backgroundColor: "rgba(9, 9, 11, 0.2)",
 						}}
 					/>
 				</div>
 			) : (
-				<div
-					style={{
-						display: "flex",
-						position: "absolute",
-						top: 0,
-						left: 0,
-						right: 0,
-						height: 4,
-						background: `linear-gradient(to right, ${COLORS.accent}, ${COLORS.accentLight})`,
-					}}
-				/>
+				<>
+					{/* Bold gradient accent bar */}
+					<AccentBar color={COLORS.accent} colorEnd={COLORS.accentLight} />
+					{/* Accent glow behind content */}
+					<div
+						style={{
+							display: "flex",
+							position: "absolute",
+							left: 0,
+							right: 0,
+							top: 0,
+							height: 300,
+							background: `linear-gradient(to bottom, ${COLORS.accent}0c, ${COLORS.bg}00)`,
+						}}
+					/>
+				</>
 			)}
 
-			{/* Avatar */}
-			{avatarDataUri ? (
-				<img
-					src={avatarDataUri}
-					width={140}
-					height={140}
-					style={{
-						borderRadius: 70,
-						objectFit: "cover",
-						border: `3px solid ${COLORS.border}`,
-					}}
-				/>
-			) : (
+			{/* Content — z-index above header bg */}
+			<div
+				style={{
+					display: "flex",
+					flexDirection: "column",
+					alignItems: "center",
+					justifyContent: "center",
+					position: "relative",
+					zIndex: 1,
+					gap: 24,
+					width: "100%",
+					height: "100%",
+					paddingTop: headerDataUri ? 40 : 0,
+				}}
+			>
+				{/* Avatar with accent ring */}
+				{avatarDataUri ? (
+					<div
+						style={{
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center",
+							width: avatarSize + 8,
+							height: avatarSize + 8,
+							borderRadius: (avatarSize + 8) / 2,
+							background: `linear-gradient(135deg, ${COLORS.accent}, ${COLORS.accentLight})`,
+						}}
+					>
+						<img
+							src={avatarDataUri}
+							width={avatarSize}
+							height={avatarSize}
+							style={{
+								borderRadius: avatarSize / 2,
+								objectFit: "cover",
+								border: `3px solid ${COLORS.bg}`,
+							}}
+						/>
+					</div>
+				) : (
+					<div
+						style={{
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center",
+							width: avatarSize,
+							height: avatarSize,
+							borderRadius: avatarSize / 2,
+							backgroundColor: COLORS.accent,
+							fontSize: 56,
+							fontWeight: 700,
+							color: COLORS.text,
+						}}
+					>
+						{initials}
+					</div>
+				)}
+
+				{/* Name */}
 				<div
 					style={{
 						display: "flex",
-						alignItems: "center",
-						justifyContent: "center",
-						width: 140,
-						height: 140,
-						borderRadius: 70,
-						backgroundColor: COLORS.accent,
-						fontSize: 48,
+						fontSize: 52,
 						fontWeight: 700,
 						color: COLORS.text,
+						letterSpacing: "-0.03em",
+						maxWidth: "90%",
+						overflow: "hidden",
+						textOverflow: "ellipsis",
+						lineClamp: 1,
 					}}
 				>
-					{initials}
+					{meta.displayName}
 				</div>
-			)}
 
-			{/* Name */}
-			<div
-				style={{
-					display: "flex",
-					fontSize: 40,
-					fontWeight: 700,
-					color: COLORS.text,
-					letterSpacing: "-0.02em",
-				}}
-			>
-				{meta.displayName}
-			</div>
-
-			{/* Username */}
-			<div
-				style={{
-					display: "flex",
-					fontSize: 22,
-					color: COLORS.textDim,
-					marginTop: -16,
-				}}
-			>
-				@{meta.slug}
-			</div>
-
-			{/* Bio */}
-			{meta.bio ? (
+				{/* Username */}
 				<div
 					style={{
 						display: "flex",
-						fontSize: 20,
+						fontSize: 24,
 						color: COLORS.textMuted,
-						textAlign: "center",
-						maxWidth: 700,
-						lineHeight: 1.5,
-						overflow: "hidden",
-						textOverflow: "ellipsis",
-						lineClamp: 2,
+						marginTop: -16,
 					}}
 				>
-					{meta.bio}
+					@{meta.slug}
 				</div>
-			) : null}
+
+				{/* Bio */}
+				{meta.bio ? (
+					<div
+						style={{
+							display: "flex",
+							fontSize: 20,
+							color: COLORS.textMuted,
+							textAlign: "center",
+							maxWidth: 700,
+							lineHeight: 1.5,
+							overflow: "hidden",
+							textOverflow: "ellipsis",
+							lineClamp: 2,
+						}}
+					>
+						{meta.bio}
+					</div>
+				) : null}
+			</div>
 
 			{/* Watermark at bottom */}
 			<div
@@ -531,6 +511,7 @@ export function profileTemplate(
 					display: "flex",
 					position: "absolute",
 					bottom: 32,
+					zIndex: 1,
 				}}
 			>
 				<Watermark />
@@ -540,61 +521,116 @@ export function profileTemplate(
 }
 
 // ─── Default OG Template ─────────────────────────────────────
+// Mirrors the landing page hero: dot pattern, stacked tagline, left-aligned
 
 export function defaultTemplate() {
 	return (
 		<div
 			style={{
 				display: "flex",
-				flexDirection: "column",
-				alignItems: "center",
-				justifyContent: "center",
 				width: OG_WIDTH,
 				height: OG_HEIGHT,
 				backgroundColor: COLORS.bg,
 				fontFamily: "Figtree",
-				gap: 28,
+				position: "relative",
 			}}
 		>
-			{/* Accent line at top */}
+			<DotPattern />
+
+			{/* Logo + brand name — top left */}
+			<div
+				style={{
+					display: "flex",
+					alignItems: "center",
+					gap: 10,
+					position: "absolute",
+					top: 48,
+					left: 80,
+					zIndex: 1,
+				}}
+			>
+				<DesperseLogoMark size={32} />
+				<span
+					style={{
+						fontSize: 28,
+						fontWeight: 800,
+						color: COLORS.text,
+						letterSpacing: "-0.02em",
+						marginTop: 4,
+					}}
+				>
+					Desperse
+				</span>
+			</div>
+
+			{/* URL — bottom right */}
 			<div
 				style={{
 					display: "flex",
 					position: "absolute",
-					top: 0,
-					left: 0,
-					right: 0,
-					height: 4,
-					background: `linear-gradient(to right, ${COLORS.accent}, ${COLORS.accentLight})`,
-				}}
-			/>
-
-			{/* Logo */}
-			<DesperseLogoMark size={100} />
-
-			{/* Brand name */}
-			<div
-				style={{
-					fontSize: 56,
-					fontWeight: 700,
-					color: COLORS.text,
-					letterSpacing: "-0.03em",
+					bottom: 48,
+					right: 80,
+					zIndex: 1,
 				}}
 			>
-				Desperse
+				<Watermark />
 			</div>
 
-			{/* Tagline */}
+			{/* Content — left-aligned like the landing hero */}
 			<div
 				style={{
-					fontSize: 22,
-					color: COLORS.textMuted,
-					textAlign: "center",
-					maxWidth: 600,
-					lineHeight: 1.5,
+					display: "flex",
+					flexDirection: "column",
+					justifyContent: "center",
+					padding: "0 80px",
+					position: "relative",
+					zIndex: 1,
+					width: "100%",
+					height: "100%",
 				}}
 			>
-				A Web3 creative platform for artists and collectors on Solana
+
+				{/* Stacked tagline — CREATE. COLLECT. OWN. */}
+				<div
+					style={{
+						display: "flex",
+						flexDirection: "column",
+					}}
+				>
+					<div
+						style={{
+							fontSize: 128,
+							fontWeight: 900,
+							color: COLORS.text,
+							lineHeight: 0.9,
+							letterSpacing: "-0.04em",
+						}}
+					>
+						CREATE.
+					</div>
+					<div
+						style={{
+							fontSize: 128,
+							fontWeight: 900,
+							color: COLORS.text,
+							lineHeight: 0.9,
+							letterSpacing: "-0.04em",
+						}}
+					>
+						COLLECT.
+					</div>
+					<div
+						style={{
+							fontSize: 128,
+							fontWeight: 900,
+							color: COLORS.textMuted,
+							lineHeight: 0.9,
+							letterSpacing: "-0.04em",
+						}}
+					>
+						OWN.
+					</div>
+				</div>
 			</div>
 		</div>
 	)

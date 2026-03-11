@@ -4,7 +4,6 @@ import type { SatoriOptions } from "satori"
 
 let fontsCache: SatoriOptions["fonts"] | null = null
 
-// @ts-expect-error — Nitro runtime module, types not exposed but resolves at build time
 import { useStorage } from "nitro/storage"
 
 export async function loadFonts(): Promise<SatoriOptions["fonts"]> {
@@ -13,12 +12,14 @@ export async function loadFonts(): Promise<SatoriOptions["fonts"]> {
 	// Use Nitro's storage API to access serverAssets (works on Vercel)
 	const storage = useStorage("assets")
 
-	const [mediumFont, boldFont] = await Promise.all([
+	const [mediumFont, boldFont, extraBoldFont, blackFont] = await Promise.all([
 		storage.getItemRaw<ArrayBuffer>("fonts:Figtree-Medium.ttf"),
 		storage.getItemRaw<ArrayBuffer>("fonts:Figtree-Bold.ttf"),
+		storage.getItemRaw<ArrayBuffer>("fonts:Figtree-ExtraBold.ttf"),
+		storage.getItemRaw<ArrayBuffer>("fonts:Figtree-Black.ttf"),
 	])
 
-	if (!mediumFont || !boldFont) {
+	if (!mediumFont || !boldFont || !extraBoldFont || !blackFont) {
 		throw new Error("[OG] Font files not found in server assets")
 	}
 
@@ -33,6 +34,18 @@ export async function loadFonts(): Promise<SatoriOptions["fonts"]> {
 			name: "Figtree",
 			data: Buffer.from(boldFont),
 			weight: 700,
+			style: "normal" as const,
+		},
+		{
+			name: "Figtree",
+			data: Buffer.from(extraBoldFont),
+			weight: 800,
+			style: "normal" as const,
+		},
+		{
+			name: "Figtree",
+			data: Buffer.from(blackFont),
+			weight: 900,
 			style: "normal" as const,
 		},
 	]

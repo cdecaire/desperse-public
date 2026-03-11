@@ -3,24 +3,38 @@
 export const OG_WIDTH = 1200
 export const OG_HEIGHT = 630
 
-// Brand colors (zinc dark theme + purple accent)
+// Brand colors (zinc dark theme + purple-heart accent — matches src/styles.css dark mode)
 export const COLORS = {
 	bg: "#09090b", // zinc-950
 	bgSubtle: "#18181b", // zinc-900
-	accent: "#7c3aed", // violet-600
-	accentLight: "#a78bfa", // violet-400
+	accent: "#a213ff", // purple-heart-600 (--highlight in dark mode)
+	accentLight: "#c86fff", // purple-heart-400
 	text: "#fafafa", // zinc-50
 	textMuted: "#a1a1aa", // zinc-400
 	textDim: "#71717a", // zinc-500
 	border: "#27272a", // zinc-800
 } as const
 
-// Post-type-specific accent colors (dark mode variants from postDisplay.ts)
+// Post-type-specific accent colors (matches dark mode --tone-* variables from src/styles.css)
 export const TYPE_COLORS = {
-	post: { bg: "#00cba233", text: "#27e4b8" }, // caribbean green
-	collectible: { bg: "#6221ff33", text: "#7346ff" }, // blue gem
-	edition: { bg: "#8d04ec33", text: "#a213ff" }, // purple heart
+	post: { text: "#27e4b8" }, // caribbean-green-400 (--tone-standard)
+	collectible: { text: "#947bff" }, // blue-gem-400 (--tone-collectible)
+	edition: { text: "#b439ff" }, // purple-heart-500 (--tone-edition)
 } as const
+
+// Dot pattern SVG data URI (matches landing page hero: 1px dots, 40px grid)
+function buildDotPatternUri(): string {
+	const dots: string[] = []
+	for (let x = 20; x < OG_WIDTH; x += 40) {
+		for (let y = 20; y < OG_HEIGHT; y += 40) {
+			dots.push(`<circle cx="${x}" cy="${y}" r="1" fill="${COLORS.textMuted}"/>`)
+		}
+	}
+	const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${OG_WIDTH}" height="${OG_HEIGHT}">${dots.join("")}</svg>`
+	return `data:image/svg+xml;base64,${Buffer.from(svg).toString("base64")}`
+}
+
+export const DOT_PATTERN_URI = buildDotPatternUri()
 
 // Desperse logo SVG path (from Logo.tsx)
 export const LOGO_PATH =

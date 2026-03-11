@@ -164,8 +164,6 @@ const config = defineConfig({
       '@ardrive/turbo-sdk/node',
       'libsodium-wrappers-sumo',
       'libsodium-sumo',
-      // Native .node binary — must be externalized, not bundled
-      '@resvg/resvg-js',
     ],
   },
   build: {

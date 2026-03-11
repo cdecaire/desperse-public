@@ -1,11 +1,30 @@
-/** Core OG image rendering pipeline: JSX → SVG (satori) → PNG (resvg) */
+/** Core OG image rendering pipeline: JSX → SVG (satori) → PNG (resvg-wasm) */
 
 import satori from "satori"
-import { Resvg } from "@resvg/resvg-js"
+import { Resvg, initWasm } from "@resvg/resvg-wasm"
+import { readFileSync } from "node:fs"
+import { resolve } from "node:path"
 import { OG_WIDTH, OG_HEIGHT } from "./constants"
 import { loadFonts } from "./fonts"
 
-export async function renderOgImage(element: React.ReactNode): Promise<Uint8Array> {
+let wasmInitialized = false
+
+async function ensureWasm() {
+	if (wasmInitialized) return
+	// Load the WASM binary from node_modules
+	const wasmPath = resolve(
+		process.cwd(),
+		"node_modules/@resvg/resvg-wasm/index_bg.wasm",
+	)
+	const wasmBinary = readFileSync(wasmPath)
+	await initWasm(wasmBinary)
+	wasmInitialized = true
+}
+
+export async function renderOgImage(
+	element: React.ReactNode,
+): Promise<Uint8Array> {
+	await ensureWasm()
 	const fonts = loadFonts()
 
 	const svg = await satori(element, {

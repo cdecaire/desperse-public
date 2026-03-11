@@ -306,6 +306,7 @@ export function postTemplateAlt(
 	imageDataUri: string,
 	avatarDataUri?: string | null,
 ) {
+	const tone = getTypeTone(meta.type)
 	return (
 		<div
 			style={{
@@ -343,6 +344,9 @@ export function postTemplateAlt(
 					backgroundColor: "rgba(9, 9, 11, 0.55)",
 				}}
 			/>
+
+			{/* Accent bar */}
+			<AccentBar color={tone.text} colorEnd={`${tone.text}40`} />
 
 			{/* Logo + brand — top left */}
 			<div
@@ -383,7 +387,7 @@ export function postTemplateAlt(
 				<span
 					style={{
 						fontSize: 16,
-						color: "rgba(255, 255, 255, 0.6)",
+						color: "#ffffff",
 						fontWeight: 500,
 						letterSpacing: "-0.01em",
 					}}
@@ -422,7 +426,7 @@ export function postTemplateAlt(
 							style={{
 								borderRadius: 20,
 								objectFit: "cover",
-								border: "2px solid rgba(255, 255, 255, 0.3)",
+								border: "2px solid rgba(255, 255, 255, 0.4)",
 							}}
 						/>
 					) : (
@@ -446,7 +450,7 @@ export function postTemplateAlt(
 					<span
 						style={{
 							fontSize: 18,
-							color: "rgba(255, 255, 255, 0.8)",
+							color: "#ffffff",
 							fontWeight: 500,
 						}}
 					>

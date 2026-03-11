@@ -22,7 +22,7 @@ function Watermark() {
 	return (
 		<span
 			style={{
-				fontSize: 18,
+				fontSize: 28,
 				color: "#ffffff",
 				fontWeight: 500,
 				letterSpacing: "-0.01em",
@@ -276,7 +276,7 @@ export function profileTemplate(
 		.join("")
 		.toUpperCase()
 
-	const avatarSize = 120
+	const avatarSize = 160
 
 	return (
 		<div
@@ -365,7 +365,7 @@ export function profileTemplate(
 					style={{
 						display: "flex",
 						flexDirection: "column",
-						gap: 18,
+						gap: 24,
 					}}
 				>
 					{/* Avatar with accent ring */}
@@ -388,7 +388,7 @@ export function profileTemplate(
 								style={{
 									borderRadius: avatarSize / 2,
 									objectFit: "cover",
-									border: `3px solid ${COLORS.bg}`,
+									border: `4px solid ${COLORS.bg}`,
 								}}
 							/>
 						</div>
@@ -402,7 +402,7 @@ export function profileTemplate(
 								height: avatarSize,
 								borderRadius: avatarSize / 2,
 								backgroundColor: COLORS.accent,
-								fontSize: 48,
+								fontSize: 64,
 								fontWeight: 700,
 								color: COLORS.text,
 							}}
@@ -415,7 +415,7 @@ export function profileTemplate(
 					<div
 						style={{
 							display: "flex",
-							fontSize: 48,
+							fontSize: 72,
 							fontWeight: 700,
 							color: COLORS.text,
 							letterSpacing: "-0.03em",
@@ -432,7 +432,7 @@ export function profileTemplate(
 					<div
 						style={{
 							display: "flex",
-							fontSize: 22,
+							fontSize: 36,
 							color: COLORS.textMuted,
 							marginTop: -8,
 						}}
@@ -445,7 +445,7 @@ export function profileTemplate(
 						<div
 							style={{
 								display: "flex",
-								fontSize: 18,
+								fontSize: 28,
 								color: COLORS.textMuted,
 								lineHeight: 1.5,
 								overflow: "hidden",
@@ -487,17 +487,17 @@ export function defaultTemplate() {
 				style={{
 					display: "flex",
 					alignItems: "center",
-					gap: 10,
+					gap: 16,
 					position: "absolute",
-					top: 48,
-					left: 80,
+					top: 40,
+					left: 48,
 					zIndex: 1,
 				}}
 			>
-				<DesperseLogoMark size={32} color="#ffffff" />
+				<DesperseLogoMark size={52} color="#ffffff" />
 				<span
 					style={{
-						fontSize: 28,
+						fontSize: 44,
 						fontWeight: 800,
 						color: COLORS.text,
 						letterSpacing: "-0.02em",
@@ -516,8 +516,8 @@ export function defaultTemplate() {
 					justifyContent: "space-between",
 					position: "absolute",
 					bottom: 48,
-					left: 80,
-					right: 80,
+					left: 48,
+					right: 48,
 					zIndex: 1,
 				}}
 			>

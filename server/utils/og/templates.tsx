@@ -299,6 +299,182 @@ function postTemplateWithImage(meta: PostMeta, imageDataUri: string, avatarDataU
 	)
 }
 
+// ─── Post OG Template (Alt: full-bleed image) ───────────────
+
+export function postTemplateAlt(
+	meta: PostMeta,
+	imageDataUri: string,
+	avatarDataUri?: string | null,
+) {
+	return (
+		<div
+			style={{
+				display: "flex",
+				width: OG_WIDTH,
+				height: OG_HEIGHT,
+				fontFamily: "Figtree",
+				position: "relative",
+			}}
+		>
+			{/* Full-bleed image */}
+			<img
+				src={imageDataUri}
+				width={OG_WIDTH}
+				height={OG_HEIGHT}
+				style={{
+					position: "absolute",
+					top: 0,
+					left: 0,
+					width: "100%",
+					height: "100%",
+					objectFit: "cover",
+				}}
+			/>
+
+			{/* Dark overlay */}
+			<div
+				style={{
+					display: "flex",
+					position: "absolute",
+					top: 0,
+					left: 0,
+					right: 0,
+					bottom: 0,
+					backgroundColor: "rgba(9, 9, 11, 0.55)",
+				}}
+			/>
+
+			{/* Logo + brand — top left */}
+			<div
+				style={{
+					display: "flex",
+					alignItems: "center",
+					gap: 10,
+					position: "absolute",
+					top: 40,
+					left: 48,
+					zIndex: 1,
+				}}
+			>
+				<DesperseLogoMark size={28} color="#ffffff" />
+				<span
+					style={{
+						fontSize: 24,
+						fontWeight: 800,
+						color: "#ffffff",
+						letterSpacing: "-0.02em",
+						marginTop: 3,
+					}}
+				>
+					Desperse
+				</span>
+			</div>
+
+			{/* URL — bottom right */}
+			<div
+				style={{
+					display: "flex",
+					position: "absolute",
+					bottom: 40,
+					right: 48,
+					zIndex: 1,
+				}}
+			>
+				<span
+					style={{
+						fontSize: 16,
+						color: "rgba(255, 255, 255, 0.6)",
+						fontWeight: 500,
+						letterSpacing: "-0.01em",
+					}}
+				>
+					desperse.com
+				</span>
+			</div>
+
+			{/* Content — bottom left */}
+			<div
+				style={{
+					display: "flex",
+					flexDirection: "column",
+					justifyContent: "flex-end",
+					padding: "0 48px 40px 48px",
+					width: "100%",
+					height: "100%",
+					position: "relative",
+					zIndex: 1,
+					gap: 16,
+				}}
+			>
+				{/* Creator row */}
+				<div
+					style={{
+						display: "flex",
+						alignItems: "center",
+						gap: 12,
+					}}
+				>
+					{avatarDataUri ? (
+						<img
+							src={avatarDataUri}
+							width={40}
+							height={40}
+							style={{
+								borderRadius: 20,
+								objectFit: "cover",
+								border: "2px solid rgba(255, 255, 255, 0.3)",
+							}}
+						/>
+					) : (
+						<div
+							style={{
+								display: "flex",
+								alignItems: "center",
+								justifyContent: "center",
+								width: 40,
+								height: 40,
+								borderRadius: 20,
+								backgroundColor: COLORS.accent,
+								fontSize: 16,
+								fontWeight: 700,
+								color: "#ffffff",
+							}}
+						>
+							{(meta.creatorName || meta.creatorSlug)[0].toUpperCase()}
+						</div>
+					)}
+					<span
+						style={{
+							fontSize: 18,
+							color: "rgba(255, 255, 255, 0.8)",
+							fontWeight: 500,
+						}}
+					>
+						{meta.creatorName || meta.creatorSlug}
+					</span>
+				</div>
+
+				{/* Title */}
+				<div
+					style={{
+						fontSize: 44,
+						fontWeight: 700,
+						color: "#ffffff",
+						lineHeight: 1.1,
+						letterSpacing: "-0.03em",
+						overflow: "hidden",
+						textOverflow: "ellipsis",
+						lineClamp: 2,
+						maxWidth: "80%",
+					}}
+				>
+					{meta.shortTitle}
+				</div>
+			</div>
+		</div>
+	)
+}
+
 // ─── Profile OG Template ─────────────────────────────────────
 
 export function profileTemplate(
@@ -313,41 +489,40 @@ export function profileTemplate(
 		.join("")
 		.toUpperCase()
 
-	const avatarSize = 160
+	const avatarSize = 120
 
 	return (
 		<div
 			style={{
 				display: "flex",
-				flexDirection: "column",
-				alignItems: "center",
-				justifyContent: "center",
 				width: OG_WIDTH,
 				height: OG_HEIGHT,
 				backgroundColor: COLORS.bg,
 				fontFamily: "Figtree",
-				gap: 24,
 				position: "relative",
 			}}
 		>
 			<DotPattern />
 
-			{/* Header background image */}
+			{/* Accent bar */}
+			<AccentBar color={COLORS.accent} colorEnd={COLORS.accentLight} />
+
+			{/* Header background image — right side */}
 			{headerDataUri ? (
 				<div
 					style={{
 						display: "flex",
 						position: "absolute",
-						top: 0,
-						left: 0,
 						right: 0,
-						height: 340,
+						top: 0,
+						bottom: 0,
+						width: "60%",
 					}}
 				>
 					<img
 						src={headerDataUri}
-						width={OG_WIDTH}
-						height={340}
+						width={720}
+						height={630}
 						style={{
 							objectFit: "cover",
 							width: "100%",
@@ -360,160 +535,143 @@ export function profileTemplate(
 							display: "flex",
 							position: "absolute",
 							left: 0,
-							right: 0,
-							bottom: 0,
-							height: 220,
-							background: `linear-gradient(to bottom, ${COLORS.bg}00, ${COLORS.bg})`,
-						}}
-					/>
-					{/* Subtle darken for readability */}
-					<div
-						style={{
-							display: "flex",
-							position: "absolute",
 							top: 0,
-							left: 0,
-							right: 0,
 							bottom: 0,
-							backgroundColor: "rgba(9, 9, 11, 0.2)",
+							width: 360,
+							background: `linear-gradient(to right, ${COLORS.bg}, ${COLORS.bg}00)`,
 						}}
 					/>
 				</div>
-			) : (
-				<>
-					{/* Bold gradient accent bar */}
-					<AccentBar color={COLORS.accent} colorEnd={COLORS.accentLight} />
-					{/* Accent glow behind content */}
-					<div
-						style={{
-							display: "flex",
-							position: "absolute",
-							left: 0,
-							right: 0,
-							top: 0,
-							height: 300,
-							background: `linear-gradient(to bottom, ${COLORS.accent}0c, ${COLORS.bg}00)`,
-						}}
-					/>
-				</>
-			)}
+			) : null}
 
-			{/* Content — z-index above header bg */}
+			{/* Accent glow — bottom-left */}
+			<div
+				style={{
+					display: "flex",
+					position: "absolute",
+					left: 0,
+					bottom: 0,
+					width: "50%",
+					height: 200,
+					background: `linear-gradient(to top, ${COLORS.accent}0a, ${COLORS.bg}00)`,
+					zIndex: 1,
+				}}
+			/>
+
+			{/* Left panel — content */}
 			<div
 				style={{
 					display: "flex",
 					flexDirection: "column",
-					alignItems: "center",
-					justifyContent: "center",
+					justifyContent: "space-between",
+					padding: "52px 56px",
+					width: headerDataUri ? "50%" : "100%",
 					position: "relative",
 					zIndex: 1,
-					gap: 24,
-					width: "100%",
-					height: "100%",
-					paddingTop: headerDataUri ? 40 : 0,
 				}}
 			>
-				{/* Avatar with accent ring */}
-				{avatarDataUri ? (
-					<div
-						style={{
-							display: "flex",
-							alignItems: "center",
-							justifyContent: "center",
-							width: avatarSize + 8,
-							height: avatarSize + 8,
-							borderRadius: (avatarSize + 8) / 2,
-							background: `linear-gradient(135deg, ${COLORS.accent}, ${COLORS.accentLight})`,
-						}}
-					>
-						<img
-							src={avatarDataUri}
-							width={avatarSize}
-							height={avatarSize}
+				{/* Top spacer */}
+				<div style={{ display: "flex" }} />
+
+				{/* Middle: avatar + name + handle + bio */}
+				<div
+					style={{
+						display: "flex",
+						flexDirection: "column",
+						gap: 18,
+					}}
+				>
+					{/* Avatar with accent ring */}
+					{avatarDataUri ? (
+						<div
 							style={{
-								borderRadius: avatarSize / 2,
-								objectFit: "cover",
-								border: `3px solid ${COLORS.bg}`,
+								display: "flex",
+								alignItems: "center",
+								justifyContent: "center",
+								width: avatarSize + 8,
+								height: avatarSize + 8,
+								borderRadius: (avatarSize + 8) / 2,
+								background: `linear-gradient(135deg, ${COLORS.accent}, ${COLORS.accentLight})`,
 							}}
-						/>
-					</div>
-				) : (
+						>
+							<img
+								src={avatarDataUri}
+								width={avatarSize}
+								height={avatarSize}
+								style={{
+									borderRadius: avatarSize / 2,
+									objectFit: "cover",
+									border: `3px solid ${COLORS.bg}`,
+								}}
+							/>
+						</div>
+					) : (
+						<div
+							style={{
+								display: "flex",
+								alignItems: "center",
+								justifyContent: "center",
+								width: avatarSize,
+								height: avatarSize,
+								borderRadius: avatarSize / 2,
+								backgroundColor: COLORS.accent,
+								fontSize: 48,
+								fontWeight: 700,
+								color: COLORS.text,
+							}}
+						>
+							{initials}
+						</div>
+					)}
+
+					{/* Name */}
 					<div
 						style={{
 							display: "flex",
-							alignItems: "center",
-							justifyContent: "center",
-							width: avatarSize,
-							height: avatarSize,
-							borderRadius: avatarSize / 2,
-							backgroundColor: COLORS.accent,
-							fontSize: 56,
+							fontSize: 48,
 							fontWeight: 700,
 							color: COLORS.text,
-						}}
-					>
-						{initials}
-					</div>
-				)}
-
-				{/* Name */}
-				<div
-					style={{
-						display: "flex",
-						fontSize: 52,
-						fontWeight: 700,
-						color: COLORS.text,
-						letterSpacing: "-0.03em",
-						maxWidth: "90%",
-						overflow: "hidden",
-						textOverflow: "ellipsis",
-						lineClamp: 1,
-					}}
-				>
-					{meta.displayName}
-				</div>
-
-				{/* Username */}
-				<div
-					style={{
-						display: "flex",
-						fontSize: 24,
-						color: COLORS.textMuted,
-						marginTop: -16,
-					}}
-				>
-					@{meta.slug}
-				</div>
-
-				{/* Bio */}
-				{meta.bio ? (
-					<div
-						style={{
-							display: "flex",
-							fontSize: 20,
-							color: COLORS.textMuted,
-							textAlign: "center",
-							maxWidth: 700,
-							lineHeight: 1.5,
+							letterSpacing: "-0.03em",
+							lineHeight: 1.1,
 							overflow: "hidden",
 							textOverflow: "ellipsis",
 							lineClamp: 2,
 						}}
 					>
-						{meta.bio}
+						{meta.displayName}
 					</div>
-				) : null}
-			</div>
 
-			{/* Watermark at bottom */}
-			<div
-				style={{
-					display: "flex",
-					position: "absolute",
-					bottom: 32,
-					zIndex: 1,
-				}}
-			>
+					{/* Username */}
+					<div
+						style={{
+							display: "flex",
+							fontSize: 22,
+							color: COLORS.textMuted,
+							marginTop: -8,
+						}}
+					>
+						@{meta.slug}
+					</div>
+
+					{/* Bio */}
+					{meta.bio ? (
+						<div
+							style={{
+								display: "flex",
+								fontSize: 18,
+								color: COLORS.textMuted,
+								lineHeight: 1.5,
+								overflow: "hidden",
+								textOverflow: "ellipsis",
+								lineClamp: 2,
+							}}
+						>
+							{meta.bio}
+						</div>
+					) : null}
+				</div>
+
+				{/* Bottom: watermark */}
 				<Watermark />
 			</div>
 		</div>

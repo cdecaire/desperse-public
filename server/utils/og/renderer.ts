@@ -14,18 +14,30 @@ async function ensureWasm() {
 
 	// Load WASM from Nitro server assets (works on Vercel serverless)
 	const storage = useStorage("assets")
-	const wasmBinary = await storage.getItemRaw<ArrayBuffer>("wasm:resvg.wasm")
+	const wasmBinary = await storage.getItemRaw<ArrayBuffer>("wasm:resvg.wasm.bin")
 
 	if (!wasmBinary) {
 		throw new Error("[OG] resvg WASM file not found in server assets")
 	}
 
-	// Nitro may return a Node Buffer — ensure it's a proper ArrayBuffer for WASM init
-	const wasmBuffer =
-		wasmBinary instanceof ArrayBuffer
+	// Ensure we have a proper Uint8Array for WASM init
+	const bytes =
+		wasmBinary instanceof Uint8Array
 			? wasmBinary
-			: new Uint8Array(wasmBinary as any).buffer
-	await initWasm(wasmBuffer)
+			: new Uint8Array(
+					wasmBinary instanceof ArrayBuffer
+						? wasmBinary
+						: (wasmBinary as Buffer),
+				)
+
+	// Validate WASM magic bytes: \0asm
+	if (bytes[0] !== 0x00 || bytes[1] !== 0x61 || bytes[2] !== 0x73 || bytes[3] !== 0x6d) {
+		throw new Error(
+			`[OG] resvg WASM has invalid magic bytes: ${bytes.slice(0, 4).join(" ")} (type: ${typeof wasmBinary}, constructor: ${wasmBinary?.constructor?.name}, length: ${bytes.length})`,
+		)
+	}
+
+	await initWasm(bytes.buffer)
 	wasmInitialized = true
 }
 

@@ -136,21 +136,21 @@ function postTemplateAlt(
 				style={{
 					display: "flex",
 					alignItems: "center",
-					gap: 10,
+					gap: 16,
 					position: "absolute",
 					top: 40,
 					left: 48,
 					zIndex: 1,
 				}}
 			>
-				<DesperseLogoMark size={28} color="#ffffff" />
+				<DesperseLogoMark size={52} color="#ffffff" />
 				<span
 					style={{
-						fontSize: 24,
+						fontSize: 44,
 						fontWeight: 800,
 						color: "#ffffff",
 						letterSpacing: "-0.02em",
-						marginTop: 3,
+						marginTop: 4,
 					}}
 				>
 					Desperse
@@ -162,14 +162,14 @@ function postTemplateAlt(
 				style={{
 					display: "flex",
 					position: "absolute",
-					bottom: 40,
+					bottom: 48,
 					right: 48,
 					zIndex: 1,
 				}}
 			>
 				<span
 					style={{
-						fontSize: 16,
+						fontSize: 28,
 						color: "#ffffff",
 						fontWeight: 500,
 						letterSpacing: "-0.01em",
@@ -185,12 +185,12 @@ function postTemplateAlt(
 					display: "flex",
 					flexDirection: "column",
 					justifyContent: "flex-end",
-					padding: "0 48px 40px 48px",
+					padding: "0 48px 48px 48px",
 					width: "100%",
 					height: "100%",
 					position: "relative",
 					zIndex: 1,
-					gap: 16,
+					gap: 20,
 				}}
 			>
 				{/* Creator row */}
@@ -198,18 +198,18 @@ function postTemplateAlt(
 					style={{
 						display: "flex",
 						alignItems: "center",
-						gap: 12,
+						gap: 18,
 					}}
 				>
 					{avatarDataUri ? (
 						<img
 							src={avatarDataUri}
-							width={40}
-							height={40}
+							width={72}
+							height={72}
 							style={{
-								borderRadius: 20,
+								borderRadius: 36,
 								objectFit: "cover",
-								border: "2px solid rgba(255, 255, 255, 0.4)",
+								border: "3px solid rgba(255, 255, 255, 0.4)",
 							}}
 						/>
 					) : (
@@ -218,11 +218,11 @@ function postTemplateAlt(
 								display: "flex",
 								alignItems: "center",
 								justifyContent: "center",
-								width: 40,
-								height: 40,
-								borderRadius: 20,
+								width: 72,
+								height: 72,
+								borderRadius: 36,
 								backgroundColor: COLORS.accent,
-								fontSize: 16,
+								fontSize: 28,
 								fontWeight: 700,
 								color: "#ffffff",
 							}}
@@ -232,7 +232,7 @@ function postTemplateAlt(
 					)}
 					<span
 						style={{
-							fontSize: 18,
+							fontSize: 32,
 							color: "#ffffff",
 							fontWeight: 500,
 						}}
@@ -244,7 +244,7 @@ function postTemplateAlt(
 				{/* Title */}
 				<div
 					style={{
-						fontSize: 44,
+						fontSize: 72,
 						fontWeight: 700,
 						color: "#ffffff",
 						lineHeight: 1.1,
@@ -508,33 +508,19 @@ export function defaultTemplate() {
 				</span>
 			</div>
 
-			{/* URL — bottom right */}
+			{/* Bottom bar: tagline left, URL right */}
 			<div
 				style={{
 					display: "flex",
+					alignItems: "flex-end",
+					justifyContent: "space-between",
 					position: "absolute",
 					bottom: 48,
+					left: 80,
 					right: 80,
 					zIndex: 1,
 				}}
 			>
-				<Watermark />
-			</div>
-
-			{/* Content — left-aligned like the landing hero */}
-			<div
-				style={{
-					display: "flex",
-					flexDirection: "column",
-					justifyContent: "center",
-					padding: "0 80px",
-					position: "relative",
-					zIndex: 1,
-					width: "100%",
-					height: "100%",
-				}}
-			>
-
 				{/* Stacked tagline — CREATE. COLLECT. OWN. */}
 				<div
 					style={{
@@ -576,6 +562,8 @@ export function defaultTemplate() {
 						OWN.
 					</div>
 				</div>
+
+				<Watermark />
 			</div>
 		</div>
 	)

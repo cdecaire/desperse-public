@@ -33,6 +33,64 @@ export const Route = createRootRoute({
       {
         title: 'Desperse',
       },
+      {
+        name: 'description',
+        content: 'A Web3 creative platform for artists and collectors on Solana.',
+      },
+      // Default Open Graph tags (overridden by child routes)
+      {
+        property: 'og:title',
+        content: 'Desperse',
+      },
+      {
+        property: 'og:description',
+        content: 'A Web3 creative platform for artists and collectors on Solana.',
+      },
+      {
+        property: 'og:image',
+        content: 'https://desperse.app/api/og/default',
+      },
+      {
+        property: 'og:image:width',
+        content: '1200',
+      },
+      {
+        property: 'og:image:height',
+        content: '630',
+      },
+      {
+        property: 'og:url',
+        content: 'https://desperse.app',
+      },
+      {
+        property: 'og:type',
+        content: 'website',
+      },
+      {
+        property: 'og:site_name',
+        content: 'Desperse',
+      },
+      // Default Twitter Card tags
+      {
+        name: 'twitter:site',
+        content: '@desperseapp',
+      },
+      {
+        name: 'twitter:card',
+        content: 'summary_large_image',
+      },
+      {
+        name: 'twitter:title',
+        content: 'Desperse',
+      },
+      {
+        name: 'twitter:description',
+        content: 'A Web3 creative platform for artists and collectors on Solana.',
+      },
+      {
+        name: 'twitter:image',
+        content: 'https://desperse.app/api/og/default',
+      },
       // PWA iOS meta tags
       {
         name: 'mobile-web-app-capable',

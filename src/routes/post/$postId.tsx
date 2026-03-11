@@ -4,6 +4,7 @@
  */
 
 import { createFileRoute, Link, Outlet, useMatchRoute } from '@tanstack/react-router'
+import { fetchPostMeta } from '@/server/functions/meta'
 import { type ReactNode, useEffect, useState } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
@@ -33,8 +34,47 @@ import { usePostCollectors, useFollowMutation } from '@/hooks/useProfileQuery'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { toast } from '@/hooks/use-toast'
 
+const BASE_URL = "https://desperse.app"
+
 export const Route = createFileRoute('/post/$postId')({
   component: PostDetailPage,
+  loader: async ({ params }) => {
+    try {
+      const meta = await (fetchPostMeta as any)({ data: { postId: params.postId } })
+      return { meta }
+    } catch {
+      return { meta: null }
+    }
+  },
+  head: ({ loaderData, params }) => {
+    const meta = loaderData?.meta
+    const title = meta ? `${meta.title} | Desperse` : "Desperse"
+    const description = meta?.description || "Explore creative work on Desperse"
+    const ogImage = `${BASE_URL}/api/og/post/${params.postId}`
+    const url = `${BASE_URL}/post/${params.postId}`
+
+    return {
+      meta: [
+        { title },
+        { name: "description", content: description },
+        // Open Graph
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
+        { property: "og:image", content: ogImage },
+        { property: "og:image:width", content: "1200" },
+        { property: "og:image:height", content: "630" },
+        { property: "og:url", content: url },
+        { property: "og:type", content: "article" },
+        { property: "og:site_name", content: "Desperse" },
+        // Twitter Card
+        { name: "twitter:site", content: "@desperseapp" },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: description },
+        { name: "twitter:image", content: ogImage },
+      ],
+    }
+  },
 })
 
 // Format relative time

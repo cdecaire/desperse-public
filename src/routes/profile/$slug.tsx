@@ -4,6 +4,7 @@
  */
 
 import { createFileRoute, Link } from '@tanstack/react-router'
+import { fetchProfileMeta } from '@/server/functions/meta'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { toast } from '@/hooks/use-toast'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
@@ -36,6 +37,8 @@ import { getResponsiveImageProps } from '@/lib/imageUrl'
 
 type ProfileTab = 'posts' | 'collected' | 'for-sale'
 
+const BASE_URL = "https://desperse.app"
+
 export const Route = createFileRoute('/profile/$slug')({
   component: ProfilePage,
   validateSearch: (search: Record<string, unknown>): { tab?: ProfileTab } => {
@@ -44,6 +47,43 @@ export const Route = createFileRoute('/profile/$slug')({
       return { tab }
     }
     return {}
+  },
+  loader: async ({ params }) => {
+    try {
+      const meta = await (fetchProfileMeta as any)({ data: { slug: params.slug } })
+      return { meta }
+    } catch {
+      return { meta: null }
+    }
+  },
+  head: ({ loaderData, params }) => {
+    const meta = loaderData?.meta
+    const title = meta ? `${meta.displayName} (@${meta.slug}) | Desperse` : "Profile | Desperse"
+    const description = meta?.bio || `Check out ${meta?.displayName || params.slug}'s profile on Desperse`
+    const ogImage = `${BASE_URL}/api/og/profile/${params.slug}`
+    const url = `${BASE_URL}/profile/${params.slug}`
+
+    return {
+      meta: [
+        { title },
+        { name: "description", content: description },
+        // Open Graph
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
+        { property: "og:image", content: ogImage },
+        { property: "og:image:width", content: "1200" },
+        { property: "og:image:height", content: "630" },
+        { property: "og:url", content: url },
+        { property: "og:type", content: "profile" },
+        { property: "og:site_name", content: "Desperse" },
+        // Twitter Card
+        { name: "twitter:site", content: "@desperseapp" },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: description },
+        { name: "twitter:image", content: ogImage },
+      ],
+    }
   },
 })
 

@@ -5,28 +5,30 @@ import { Resvg, initWasm } from "@resvg/resvg-wasm"
 import { OG_WIDTH, OG_HEIGHT } from "./constants"
 import { loadFonts } from "./fonts"
 
+// Nitro auto-imports useStorage at runtime — declare for TypeScript
+declare function useStorage<T = unknown>(base?: string): {
+	getItemRaw<R = T>(key: string): Promise<R | null>
+}
+
 let wasmInitialized = false
 
 async function ensureWasm() {
 	if (wasmInitialized) return
-	// Load WASM from node_modules via fs — works in Node serverless runtime
-	const { readFileSync } = await import("node:fs")
-	const { createRequire } = await import("node:module")
-	try {
-		const require = createRequire(import.meta.url)
-		const wasmPath = require.resolve("@resvg/resvg-wasm/index_bg.wasm")
-		const wasmBinary = readFileSync(wasmPath)
-		await initWasm(wasmBinary)
-	} catch (e) {
-		// Fallback: try process.cwd()
-		const { join } = await import("node:path")
-		const wasmPath = join(
-			process.cwd(),
-			"node_modules/@resvg/resvg-wasm/index_bg.wasm",
-		)
-		const wasmBinary = readFileSync(wasmPath)
-		await initWasm(wasmBinary)
+
+	// Load WASM from Nitro server assets (works on Vercel serverless)
+	const storage = useStorage("assets")
+	const wasmBinary = await storage.getItemRaw<ArrayBuffer>("wasm:resvg.wasm")
+
+	if (!wasmBinary) {
+		throw new Error("[OG] resvg WASM file not found in server assets")
 	}
+
+	// Nitro may return a Node Buffer — ensure it's a proper ArrayBuffer for WASM init
+	const wasmBuffer =
+		wasmBinary instanceof ArrayBuffer
+			? wasmBinary
+			: new Uint8Array(wasmBinary as any).buffer
+	await initWasm(wasmBuffer)
 	wasmInitialized = true
 }
 

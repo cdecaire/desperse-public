@@ -135,6 +135,10 @@ const config = defineConfig({
           baseName: 'fonts',
           dir: './server/assets/fonts',
         },
+        {
+          baseName: 'wasm',
+          dir: './server/assets/wasm',
+        },
       ],
     }),
     // Path aliases

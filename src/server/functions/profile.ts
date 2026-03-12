@@ -19,7 +19,6 @@ import {
 import { z } from 'zod'
 import { env } from '@/config/env'
 import { uploadToBlob, SUPPORTED_IMAGE_TYPES } from '@/server/storage/blob'
-import { isModeratorOrAdmin } from '@/server/utils/auth-helpers'
 import { withAuth, withOptionalAuth } from '@/server/auth'
 import { excludeDevPosts } from '@/server/utils/dev-posts'
 import { getPostCollectorsListDirect } from '@/server/utils/follows'
@@ -636,15 +635,11 @@ export const getUserPosts = createServerFn({
     const authResult = await withOptionalAuth(cursorSchema, input)
     const { userId, cursor, limit } = authResult.input
 
-    // Check if current user is moderator/admin (can see hidden posts)
-    // Uses verified userId from token instead of client-provided value
-    const canSeeHidden = authResult.auth ? await isModeratorOrAdmin(authResult.auth.userId) : false
-
     const conditions = [
       excludeDevPosts(),
       eq(posts.userId, userId),
       eq(posts.isDeleted, false),
-      ...(canSeeHidden ? [] : [eq(posts.isHidden, false)]),
+      eq(posts.isHidden, false),
     ]
 
     if (cursor) {

@@ -6,6 +6,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { getPost } from '@/server/functions/posts'
 import { useCurrentUser } from './useCurrentUser'
+import { useAuth } from './useAuth'
 
 interface UsePostQueryOptions {
   postId: string
@@ -14,14 +15,17 @@ interface UsePostQueryOptions {
 
 export function usePostQuery({ postId, enabled = true }: UsePostQueryOptions) {
   const { user: currentUser } = useCurrentUser()
+  const { getAuthHeaders } = useAuth()
 
   return useQuery({
     queryKey: ['post', postId],
     queryFn: async () => {
+      const authHeaders = await getAuthHeaders()
       const result = await getPost({
         data: {
           postId,
           currentUserId: currentUser?.id,
+          ...(authHeaders.Authorization ? { _authorization: authHeaders.Authorization } : {}),
         }
       } as any)
 
@@ -41,4 +45,3 @@ export function usePostQuery({ postId, enabled = true }: UsePostQueryOptions) {
 }
 
 export default usePostQuery
-

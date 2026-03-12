@@ -7,7 +7,6 @@ import { db } from '@/server/db'
 import { posts, users, follows, collections, purchases, likes, comments, postAssets } from '@/server/db/schema'
 import { eq, and, desc, sql, count, gte, notInArray, isNotNull, or, ilike, inArray } from 'drizzle-orm'
 import { authenticateWithToken } from '@/server/auth'
-import { isModeratorOrAdmin } from '@/server/utils/auth-helpers'
 import { excludeDevPosts } from '@/server/utils/dev-posts'
 
 // Types
@@ -221,13 +220,9 @@ export async function getTrendingPostsDirect(
   try {
     // Get current user if authenticated
     let currentUserId: string | undefined
-    let canSeeHidden = false
     if (token) {
       const auth = await authenticateWithToken(token)
       currentUserId = auth?.userId
-      if (currentUserId) {
-        canSeeHidden = await isModeratorOrAdmin(currentUserId)
-      }
     }
 
     const sevenDaysAgo = new Date()
@@ -273,11 +268,11 @@ export async function getTrendingPostsDirect(
       .groupBy(purchases.postId)
       .as('purchase_counts')
 
-    // Build base conditions
+    // Build base conditions — hidden posts are always excluded from explore feeds
     const baseConditions = [
       excludeDevPosts(),
       eq(posts.isDeleted, false),
-      ...(canSeeHidden ? [] : [eq(posts.isHidden, false)]),
+      eq(posts.isHidden, false),
       gte(posts.createdAt, sevenDaysAgo),
     ]
 
@@ -348,7 +343,7 @@ export async function getTrendingPostsDirect(
           and(
             excludeDevPosts(),
             eq(posts.isDeleted, false),
-            ...(canSeeHidden ? [] : [eq(posts.isHidden, false)])
+            eq(posts.isHidden, false)
           )
         )
         .orderBy(desc(posts.createdAt))
@@ -582,13 +577,9 @@ export async function searchDirect(
   try {
     // Get current user if authenticated
     let currentUserId: string | undefined
-    let canSeeHidden = false
     if (token) {
       const auth = await authenticateWithToken(token)
       currentUserId = auth?.userId
-      if (currentUserId) {
-        canSeeHidden = await isModeratorOrAdmin(currentUserId)
-      }
     }
 
     const searchTerm = `%${query}%`
@@ -657,7 +648,7 @@ export async function searchDirect(
       const postConditions = [
         excludeDevPosts(),
         eq(posts.isDeleted, false),
-        ...(canSeeHidden ? [] : [eq(posts.isHidden, false)]),
+        eq(posts.isHidden, false),
         or(
           ilike(posts.caption, searchTerm),
           ilike(users.displayName, searchTerm),

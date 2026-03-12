@@ -8,7 +8,6 @@ import { db } from '@/server/db'
 import { posts, users, follows, collections, purchases, likes, comments, postAssets } from '@/server/db/schema'
 import { eq, and, desc, sql, count, gte, notInArray, isNotNull, or, ilike, inArray } from 'drizzle-orm'
 import { z } from 'zod'
-import { isModeratorOrAdmin } from '@/server/utils/auth-helpers'
 import { withOptionalAuth } from '@/server/auth'
 import { excludeDevPosts } from '@/server/utils/dev-posts'
 
@@ -172,10 +171,6 @@ export const getTrendingPosts = createServerFn({
     const authResult = await withOptionalAuth(trendingPostsSchema, input)
     const { offset, limit } = authResult.input
 
-    // Check if current user is moderator/admin (can see hidden posts)
-    // Uses verified userId from token instead of client-provided value
-    const canSeeHidden = authResult.auth ? await isModeratorOrAdmin(authResult.auth.userId) : false
-
     const sevenDaysAgo = new Date()
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
 
@@ -227,7 +222,7 @@ export const getTrendingPosts = createServerFn({
     const baseConditions = [
       excludeDevPosts(),
       eq(posts.isDeleted, false),
-      ...(canSeeHidden ? [] : [eq(posts.isHidden, false)]),
+      eq(posts.isHidden, false),
       gte(posts.createdAt, sevenDaysAgo),
     ]
 
@@ -299,7 +294,7 @@ export const getTrendingPosts = createServerFn({
           and(
             excludeDevPosts(),
             eq(posts.isDeleted, false),
-            ...(canSeeHidden ? [] : [eq(posts.isHidden, false)])
+            eq(posts.isHidden, false)
           )
         )
         .orderBy(desc(posts.createdAt))
@@ -749,10 +744,6 @@ export const search = createServerFn({
     const authResult = await withOptionalAuth(searchSchema, input)
     const { query, type, limit } = authResult.input
 
-    // Check if current user is moderator/admin (can see hidden posts)
-    // Uses verified userId from token instead of client-provided value
-    const canSeeHidden = authResult.auth ? await isModeratorOrAdmin(authResult.auth.userId) : false
-
     const searchTerm = `%${query}%`
 
     let userResults: Array<{
@@ -813,7 +804,7 @@ export const search = createServerFn({
       const postConditions = [
         excludeDevPosts(),
         eq(posts.isDeleted, false),
-        ...(canSeeHidden ? [] : [eq(posts.isHidden, false)]),
+        eq(posts.isHidden, false),
         or(
           ilike(posts.caption, searchTerm),
           ilike(users.displayName, searchTerm),

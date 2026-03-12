@@ -10,274 +10,345 @@ function TermsPage() {
     <StaticPageLayout>
       <article className="prose prose-zinc dark:prose-invert prose-p:my-4 max-w-none">
         <h1 className="text-2xl md:text-3xl font-bold mb-2">Terms of Service</h1>
-        <p className="text-muted-foreground text-sm mb-8">Last updated: March 7, 2026</p>
+        <p className="text-muted-foreground text-sm mb-8">Last updated: March 12, 2026</p>
 
         <p>
-          By accessing or using Desperse ("Desperse," "we," "us," or "our"), including our website,
-          applications, and related services (collectively, the "Service"), you agree to these Terms
-          of Service ("Terms").
+          By accessing or using Desperse ("Desperse," the "App," "we," "us," or "our"), you agree to
+          these Terms of Service.
         </p>
 
-        <h2 className="text-xl font-semibold mt-8 mb-4">Use of the Service</h2>
+        <h2 className="text-xl font-semibold mt-8 mb-4">Use of the App</h2>
         <p>
-          You agree to use the Service only in compliance with these Terms, our policies, and all
-          applicable laws, rules, and regulations. You are solely responsible for your use of the
-          Service and for any content, assets, messages, metadata, links, files, or other materials
-          you upload, post, publish, mint, sell, share, transmit, or otherwise make available
-          through the Service.
+          You may use the App only in compliance with these Terms and all applicable laws, rules, and
+          regulations. You may not use the App if your use would violate any law, infringe the rights
+          of any person or entity, or expose Desperse to legal or regulatory risk.
         </p>
 
         <h2 className="text-xl font-semibold mt-8 mb-4">Accounts</h2>
         <p>
-          When you sign in with Instagram, wallet providers, or other third-party providers, you
-          authorize Desperse to access certain account information as permitted by those services.
+          When you sign in with Instagram or another social or authentication provider, you authorize
+          the App to access certain basic account information as permitted by that provider.
         </p>
         <p>
-          You are responsible for maintaining the security of your account, wallet connections,
-          devices, credentials, and any activity that occurs under your account. We may suspend,
-          restrict, or terminate your account at any time in accordance with these Terms.
+          You are solely responsible for maintaining the security of your account, wallet connections,
+          devices, credentials, and any linked authentication methods, and for all activity occurring
+          under your account.
         </p>
 
-        <h2 className="text-xl font-semibold mt-8 mb-4">User Content</h2>
+        <h2 className="text-xl font-semibold mt-8 mb-4">User Content, Uploads, Minted Assets, Downloads, and Messages</h2>
         <p>
-          The Service allows users to upload, publish, mint, sell, collect, download, message, and
-          otherwise make available digital content, including but not limited to images, audio,
-          video, text, compressed files, metadata, links, and other media ("User Content"),
-          including direct messages and other communications.
+          The App allows users to upload, publish, mint, collect, sell, purchase, download, exchange,
+          display, transmit, and otherwise make available digital content, including without limitation
+          images, audio, video, text, compressed files, messages, links, and other media ("User
+          Content").
         </p>
         <p>
-          Desperse does not verify, review, endorse, or confirm the ownership, authorship,
-          authenticity, legality, accuracy, licensing, or intellectual property rights associated
-          with User Content. Users are solely responsible for ensuring that they have all necessary
-          rights, permissions, and licenses to make User Content available through the Service.
+          You retain responsibility for your User Content. Desperse does not verify, authenticate,
+          endorse, guarantee, review for accuracy, or confirm ownership, authorship, provenance,
+          licensing, legality, or intellectual property rights associated with User Content.
         </p>
         <p>
-          Any representation of ownership, authenticity, originality, collectibility, utility, or
-          rights associated with User Content is made solely by the user who uploaded or minted such
-          content and not by Desperse. You acknowledge that User Content may be offensive,
-          inaccurate, misleading, infringing, harmful, unlawful, or otherwise objectionable, and
-          that Desperse is not responsible for User Content made available by users or third parties.
+          You are solely responsible for ensuring that you own or have obtained all rights, permissions,
+          consents, and licenses necessary to upload, publish, mint, display, transmit, sell, collect,
+          distribute, license, or otherwise make User Content available through the App.
+        </p>
+        <p>
+          Any statement, metadata, designation, description, rights declaration, attribution, provenance
+          record, license selection, or representation concerning ownership, authenticity, authorship,
+          copyright, licensing, or other rights is made solely by the user who submitted the content and
+          not by Desperse.
+        </p>
+        <p>
+          Desperse may preserve, retain, remove, disable access to, hide, delist, restrict, or review
+          User Content at any time and for any reason, including for moderation, legal compliance,
+          investigation, abuse prevention, safety, operational, or policy reasons.
         </p>
 
-        <h2 className="text-xl font-semibold mt-8 mb-4">Messaging</h2>
-        <p>By using messaging features, you acknowledge and agree that:</p>
+        <h2 className="text-xl font-semibold mt-8 mb-4">User Representations and Warranties</h2>
+        <p>
+          By uploading, posting, minting, messaging, transmitting, or otherwise making User Content
+          available through the App, you represent, warrant, and agree that:
+        </p>
         <ul className="list-disc pl-6 space-y-1 my-4">
-          <li>Messages are user-generated content subject to all provisions of these Terms</li>
-          <li>Desperse does not guarantee message delivery, retention, or confidentiality</li>
-          <li>Messaging is not end-to-end encrypted</li>
           <li>
-            Messages may be stored, processed, and accessed as necessary to operate the Service,
-            enforce these Terms, prevent abuse, comply with legal obligations, or respond to reports
+            you own the User Content or have all rights, licenses, permissions, and authority necessary
+            to use it and authorize its use on or through the App
+          </li>
+          <li>
+            your User Content, and your use of the App in connection with it, does not and will not
+            infringe, misappropriate, violate, or otherwise conflict with any copyright, trademark,
+            patent, trade secret, moral right, privacy right, publicity right, contract right, or other
+            right of any third party
+          </li>
+          <li>
+            any metadata, attribution, provenance information, licensing terms, copyright statements,
+            creator declarations, and related information you provide is accurate to the best of your
+            knowledge and not misleading
+          </li>
+          <li>
+            your User Content does not contain malware, malicious code, wallet drainers, deceptive
+            links, or other harmful or unlawful material
+          </li>
+          <li>
+            you will not use the App to impersonate any creator, rights holder, brand, or other person
+            or entity
           </li>
         </ul>
-        <p>
-          You are solely responsible for the content of messages you send and for your interactions
-          with other users. Desperse is not liable for any harm, loss, or dispute arising from
-          user-to-user communications.
-        </p>
 
         <h2 className="text-xl font-semibold mt-8 mb-4">Prohibited Content and Conduct</h2>
         <p>
-          You may not use the Service to upload, post, mint, share, transmit, message, promote,
-          sell, or otherwise make available any content, or engage in any conduct, that:
+          You may not use the App to upload, publish, mint, transmit, message, distribute, sell, or
+          otherwise make available any content or engage in any conduct that:
         </p>
         <ul className="list-disc pl-6 space-y-1 my-4">
-          <li>is unlawful or violates any applicable law, regulation, or third-party right</li>
           <li>
-            infringes, misappropriates, or violates any copyright, trademark, privacy, publicity,
-            or other proprietary right
+            infringes or violates the intellectual property, privacy, publicity, contractual, or other
+            rights of any person or entity
           </li>
           <li>
-            contains or promotes pornography, sexually explicit content, sexual exploitation, or
-            non-consensual intimate imagery
+            is fraudulent, deceptive, misleading, defamatory, harassing, threatening, abusive, hateful,
+            exploitative, obscene, or unlawful
           </li>
           <li>
-            contains, depicts, promotes, or facilitates child sexual abuse material or any
-            sexualized content involving minors
+            includes unauthorized copies, reposts, scraped content, pirated material, or content you do
+            not have the right to use
           </li>
           <li>
-            depicts, promotes, glorifies, threatens, or incites violence, gore, terrorism, hatred,
-            harassment, bullying, stalking, doxxing, or discrimination
+            is designed to scam, phish, drain wallets, spread malware, manipulate users, or interfere
+            with the security or operation of the App
           </li>
           <li>
-            contains hate speech, racist content, slurs, extremist content, or content targeting a
-            person or group based on protected characteristics
+            attempts to evade moderation, enforcement, restrictions, access controls, rate limits, or
+            account limitations
           </li>
           <li>
-            contains fraud, scams, impersonation, phishing, malware, wallet drainers, malicious
-            code, deceptive links, or other harmful material
+            impersonates another person or falsely suggests affiliation, endorsement, authorship, or
+            ownership
           </li>
-          <li>
-            is spam, deceptive, manipulative, or intended to artificially inflate engagement,
-            distribution, or transactions
-          </li>
-          <li>
-            scrapes, crawls, reverse engineers, probes, or attempts to gain unauthorized access to
-            the Service or related systems
-          </li>
-          <li>
-            interferes with the integrity, safety, performance, or operation of the Service
-          </li>
-          <li>
-            violates any applicable third-party platform, wallet, blockchain, or service provider
-            rules or policies
-          </li>
-          <li>otherwise violates these Terms, our policies, or applicable law</li>
         </ul>
+
+        <h2 className="text-xl font-semibold mt-8 mb-4">Messaging and User Communications</h2>
         <p>
-          We may determine, in our sole discretion, whether any content or conduct violates these
-          Terms or creates legal, safety, reputational, or operational risk.
+          The App may allow users to communicate directly through in-app messaging and other
+          communication features.
+        </p>
+        <p>
+          Messages and communications are user-generated content. Desperse does not guarantee delivery,
+          retention, confidentiality, or successful transmission of any message. Messaging is not
+          end-to-end encrypted. Messages may be stored, processed, reviewed, accessed, disclosed, or
+          preserved as reasonably necessary to operate the App, investigate misuse, enforce these Terms,
+          respond to reports, protect users, comply with legal obligations, or protect the rights,
+          property, and safety of Desperse or others.
+        </p>
+        <p>
+          You are solely responsible for the content of your messages and your interactions with other
+          users.
         </p>
 
-        <h2 className="text-xl font-semibold mt-8 mb-4">Moderation, Enforcement, and Termination</h2>
+        <h2 className="text-xl font-semibold mt-8 mb-4">Reporting, Review, and Moderation</h2>
         <p>
-          We may, at any time and in our sole discretion, with or without notice, review, monitor,
-          investigate, remove, disable access to, hide, deindex, label, restrict, refuse, or limit
-          any content, account, username, profile, message, asset, listing, transaction-related
-          display, or activity on the Service for any reason, including suspected violations of
-          these Terms, complaints from users or third parties, legal compliance, fraud prevention,
-          safety concerns, intellectual property claims, or risk to us, the Service, or any person.
+          Users may report content, accounts, messages, or other activity through available in-app
+          tools.
         </p>
-        <p>Without limiting the foregoing, we may:</p>
+        <p>
+          Desperse may, but is not obligated to, investigate reports or proactively monitor the App.
+          Desperse may take any action it deems appropriate in its sole discretion, including without
+          limitation:
+        </p>
         <ul className="list-disc pl-6 space-y-1 my-4">
-          <li>remove or hide content from feeds, profiles, search, discovery, or other surfaces</li>
-          <li>mark content as sensitive or unsafe</li>
+          <li>reviewing reported content or account activity</li>
+          <li>requesting additional information</li>
+          <li>hiding, delisting, disabling access to, or removing content</li>
           <li>
-            restrict visibility, engagement, messaging, minting, collecting, transfers, downloads,
-            monetization, or access to features
+            preserving content, reports, and account information for legal, investigative, or safety
+            purposes
           </li>
-          <li>suspend, restrict, or terminate accounts</li>
           <li>
-            report content or conduct to law enforcement, regulators, rights holders, service
-            providers, or other third parties where we believe it is necessary or appropriate
+            restricting features, limiting visibility, disabling messaging, blocking transactions, or
+            imposing account-level restrictions
+          </li>
+          <li>suspending or terminating accounts</li>
+        </ul>
+        <p>
+          Desperse may retain internal copies of removed, hidden, disabled, or soft-deleted content,
+          metadata, reports, and related records for legal, security, operational, evidentiary, or
+          enforcement purposes.
+        </p>
+        <p>
+          Desperse has no obligation to restore any content or account after moderation action.
+        </p>
+        <p className="text-sm text-muted-foreground italic">
+          Submitting a false or misleading report may result in account action.
+        </p>
+
+        <h2 className="text-xl font-semibold mt-8 mb-4">Copyright Policy and Takedown Procedure</h2>
+        <p>
+          Desperse respects intellectual property rights and responds to notices of alleged copyright
+          infringement.
+        </p>
+        <p>
+          If you believe content on the App infringes your copyright, you may send a notice to{" "}
+          <a
+            href="mailto:support@desperse.app"
+            className="text-foreground underline hover:no-underline"
+          >
+            support@desperse.app
+          </a>
+          {" "}that includes enough information for us to evaluate the claim, such as:
+        </p>
+        <ul className="list-disc pl-6 space-y-1 my-4">
+          <li>identification of the copyrighted work claimed to have been infringed</li>
+          <li>
+            identification of the allegedly infringing content and information reasonably sufficient to
+            locate it on the App
+          </li>
+          <li>your name and contact information</li>
+          <li>
+            a statement that you have a good faith belief the use is not authorized by the rights
+            holder, its agent, or the law
+          </li>
+          <li>
+            a statement that the information in your notice is accurate and that you are the copyright
+            owner or authorized to act on the owner's behalf
           </li>
         </ul>
         <p>
-          We may take action whenever we believe content, conduct, or an account may expose us, our
-          users, or third parties to harm, liability, or risk. We are not obligated to host,
-          display, maintain, or permit any content, account, or feature on the Service.
+          Upon receiving a claim, Desperse may remove, disable, hide, delist, restrict, or preserve
+          access to the content while reviewing the matter, and may request additional information from
+          any party.
+        </p>
+        <p>
+          Desperse may notify the affected user and may, in its discretion, allow that user to respond
+          or submit a counter-notice where appropriate.
+        </p>
+        <p>
+          Desperse is not required to adjudicate disputes between users or determine ultimate ownership,
+          authorship, or legal entitlement to content.
+        </p>
+        <p>
+          Removal or restriction of content does not constitute an admission of liability, fault,
+          infringement, ownership, validity of a claim, or endorsement by Desperse.
         </p>
 
-        <h2 className="text-xl font-semibold mt-8 mb-4">Reporting and Safety</h2>
+        <h2 className="text-xl font-semibold mt-8 mb-4">Repeat Infringer Policy</h2>
         <p>
-          Users may report content, accounts, or conduct that may violate these Terms or applicable
-          law. We may investigate reports and take any action we deem appropriate. We are not
-          obligated to act on every report or to disclose the outcome of any review or
-          investigation.
+          Desperse reserves the right to suspend, restrict, or terminate accounts of users who are the
+          subject of repeated infringement complaints, repeated valid takedown notices, repeated
+          unauthorized reposting claims, repeated moderation actions, or other patterns of conduct that
+          suggest misuse of the App or disregard for the rights of others.
         </p>
         <p>
-          We may preserve and disclose information, content, and account records where we believe
-          doing so is necessary to comply with law, enforce these Terms, prevent harm, protect
-          users, or protect the Service.
+          Desperse may determine, in its sole discretion, what constitutes a repeat infringer or repeat
+          offender.
         </p>
 
-        <h2 className="text-xl font-semibold mt-8 mb-4">Downloads, Minting, Transactions, and Interactions at Your Own Risk</h2>
+        <h2 className="text-xl font-semibold mt-8 mb-4">Rights Metadata, Provenance, and Platform Tools</h2>
         <p>
-          Any decision to view, download, mint, purchase, collect, transfer, message, or otherwise
-          interact with User Content or other users through the Service is made at your own risk.
+          The App may allow users to attach or display metadata, creator declarations, attribution
+          details, licensing selections, provenance information, ownership history, transfer history,
+          rights statements, verification markers, or similar information.
         </p>
         <p>
-          Desperse makes no representations or warranties regarding the legality, originality,
-          ownership, authenticity, quality, safety, value, or intellectual property rights of User
-          Content. We are not responsible for User Content, including content that is unlawful,
-          infringing, offensive, harmful, misleading, or otherwise objectionable.
+          Such information may be derived from user submissions, wallet activity, third-party services,
+          blockchain data, indexed metadata, or platform records. Desperse does not guarantee the
+          completeness, accuracy, legal sufficiency, or enforceability of any such information.
         </p>
         <p>
-          Desperse does not warrant that files, links, metadata, media, or content made available
-          through the Service are free of viruses, malware, malicious code, wallet drainers, or
-          other harmful components. You are solely responsible for taking appropriate precautions
-          before downloading, connecting a wallet, signing transactions, or using any content
-          obtained through the Service.
+          Any rights declaration, provenance display, transfer history, creator verification indicator,
+          or ownership-related platform feature is provided for informational purposes only and does not
+          constitute legal verification or a warranty by Desperse.
+        </p>
+
+        <h2 className="text-xl font-semibold mt-8 mb-4">Downloads, Minting, Transactions, and External Risk</h2>
+        <p>
+          Any decision to view, download, mint, collect, purchase, sell, message, interact with, or rely
+          on User Content is at your own risk.
+        </p>
+        <p>
+          Desperse makes no representations or warranties regarding legality, safety, originality,
+          authenticity, ownership, provenance, licensing, value, merchantability, fitness for a
+          particular purpose, non-infringement, or freedom from malware, malicious code, wallet
+          drainers, scams, or harmful components.
+        </p>
+        <p>
+          You are solely responsible for evaluating User Content and taking appropriate precautions
+          before interacting with users, wallets, files, links, or digital assets.
         </p>
 
         <h2 className="text-xl font-semibold mt-8 mb-4">Blockchain and Decentralized Storage</h2>
         <p>
-          Certain content, token metadata, transaction records, or related materials may be stored
-          on public blockchains, decentralized storage networks, or third-party systems outside our
-          control. As a result, removing content from the Service may not delete it from those
-          systems.
+          Certain content, token metadata, transaction records, or related materials may be stored on
+          public blockchains, decentralized storage networks, or third-party systems outside our
+          control. As a result, removing content from the App may not delete it from those systems.
         </p>
         <p>
-          Our enforcement actions may include removing, hiding, deindexing, restricting, or
-          disabling access to or display of such content through the Service, including feeds,
-          profiles, search, discovery, minting, collecting, and other features.
+          Our enforcement actions may include removing, hiding, deindexing, restricting, or disabling
+          access to or display of such content through the App, including feeds, profiles, search,
+          discovery, minting, collecting, and other features.
         </p>
         <p>
           Blockchain transactions may be irreversible, and we are not responsible for reversing,
           recovering, or undoing blockchain-based actions.
         </p>
 
-        <h2 className="text-xl font-semibold mt-8 mb-4">User Representations and Indemnification</h2>
+        <h2 className="text-xl font-semibold mt-8 mb-4">Availability and Service Changes</h2>
         <p>
-          By uploading, posting, minting, messaging, selling, or otherwise making User Content
-          available through the Service, you represent and warrant that:
+          The App is provided on an "as is" and "as available" basis. Desperse may modify, suspend,
+          disable, remove, or discontinue the App or any feature, workflow, marketplace function,
+          messaging tool, moderation tool, metadata field, or related service at any time, with or
+          without notice.
+        </p>
+
+        <h2 className="text-xl font-semibold mt-8 mb-4">Indemnification</h2>
+        <p>
+          You agree to defend, indemnify, and hold harmless Desperse and its owner, operators,
+          affiliates, service providers, contractors, successors, and assigns from and against any
+          claims, demands, actions, proceedings, damages, judgments, liabilities, losses, costs, and
+          expenses, including reasonable attorneys' fees, arising out of or related to:
         </p>
         <ul className="list-disc pl-6 space-y-1 my-4">
+          <li>your User Content</li>
+          <li>your use of the App</li>
+          <li>your violation of these Terms</li>
           <li>
-            you own the content or have all necessary rights, permissions, licenses, and authority
-            to use, display, distribute, mint, sell, transfer, and make it available
+            your infringement, misappropriation, or violation of any rights of any third party
           </li>
           <li>
-            your content and conduct do not violate these Terms, applicable law, or the rights of
-            any third party
+            any dispute between you and another user, rights holder, buyer, seller, collector, or other
+            third party
           </li>
-          <li>
-            your content does not contain malware, malicious code, deceptive links, or unlawful
-            material
-          </li>
-          <li>your content is not fraudulent, misleading, exploitative, or harmful</li>
         </ul>
-        <p>
-          You agree to indemnify and hold harmless Desperse and its affiliates, operators, service
-          providers, and personnel from any claims, damages, losses, liabilities, costs, and
-          expenses arising out of or related to your content, your conduct, your use of the Service,
-          your violation of these Terms, or your violation of any third-party rights.
-        </p>
-
-        <h2 className="text-xl font-semibold mt-8 mb-4">Copyright and Intellectual Property Complaints</h2>
-        <p>
-          Desperse responds to valid copyright and other intellectual property complaints and may
-          remove, disable access to, or restrict visibility of allegedly infringing or unauthorized
-          content. Removal, restriction, or investigation of content does not imply admission of
-          fault, endorsement, verification, or liability by Desperse.
-        </p>
-        <p>
-          We reserve the right to suspend, restrict, or terminate accounts of users who repeatedly
-          or seriously violate intellectual property rights or other provisions of these Terms.
-        </p>
-
-        <h2 className="text-xl font-semibold mt-8 mb-4">Availability</h2>
-        <p>
-          The Service is provided on an "as is" and "as available" basis without warranties of any
-          kind. We may modify, suspend, restrict, or discontinue any part of the Service at any time
-          without liability.
-        </p>
 
         <h2 className="text-xl font-semibold mt-8 mb-4">Limitation of Liability</h2>
         <p>
-          To the fullest extent permitted by law, Desperse is not liable for any indirect,
-          incidental, special, consequential, exemplary, or punitive damages, or for any loss of
-          data, loss of profits, loss of goodwill, loss of digital assets, loss of funds, security
-          breaches, device or software damage, or other losses arising from or related to your use
-          of the Service, your reliance on User Content, your interactions with other users, or any
-          blockchain or third-party service used in connection with the Service.
+          To the fullest extent permitted by law, Desperse is not liable for any indirect, incidental,
+          special, consequential, exemplary, punitive, or other damages, or for any loss of profits,
+          revenue, goodwill, data, digital assets, opportunities, access, accounts, wallets, content, or
+          funds, arising from or related to the use of or inability to use the App.
         </p>
         <p>
-          Desperse is not liable for any damages arising from User Content, including content that
-          is uploaded, posted, minted, sold, transferred, messaged, or downloaded through the
-          Service, even if such content is unlawful, infringing, offensive, harmful, or otherwise
-          objectionable.
+          This limitation applies whether the claim is based in contract, tort, negligence, strict
+          liability, statute, or otherwise, and includes without limitation losses arising from user
+          content, copyright disputes, takedowns, moderation actions, account restrictions, scams,
+          fraud, harassment, stolen assets, unauthorized access, wallet compromise, malicious files,
+          service interruptions, or third-party systems.
         </p>
 
-        <h2 className="text-xl font-semibold mt-8 mb-4">Changes</h2>
+        <h2 className="text-xl font-semibold mt-8 mb-4">Termination</h2>
         <p>
-          We may update these Terms from time to time. If we do, we will update the "Last updated"
-          date above. Continued use of the Service after updated Terms become effective constitutes
-          acceptance of those updated Terms.
+          Desperse may suspend, restrict, or terminate your access to the App at any time, with or
+          without notice, for any reason or no reason, including suspected infringement, repeated
+          reports, legal risk, abuse, fraud, or violation of these Terms.
+        </p>
+
+        <h2 className="text-xl font-semibold mt-8 mb-4">Changes to These Terms</h2>
+        <p>
+          We may update these Terms from time to time. Continued use of the App after updated Terms are
+          posted constitutes acceptance of those updated Terms.
         </p>
 
         <h2 className="text-xl font-semibold mt-8 mb-4">Contact</h2>
-        <p>For questions about these Terms, contact:</p>
+        <p>For questions, notices, or copyright claims, contact:</p>
         <p>
           <a
             href="mailto:support@desperse.app"
@@ -290,4 +361,3 @@ function TermsPage() {
     </StaticPageLayout>
   )
 }
-

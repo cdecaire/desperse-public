@@ -71,10 +71,12 @@ function ReportDetailPage() {
     queryKey: ['post', postId, currentUser?.id],
     queryFn: async () => {
       if (!currentUser?.id || !postId) throw new Error('Not authenticated')
+      const authHeaders = await getAuthHeaders()
       const result = await getPost({
         data: {
           postId,
           currentUserId: currentUser.id,
+          ...(authHeaders.Authorization ? { _authorization: authHeaders.Authorization } : {}),
         },
       } as any)
       if (!result.success) throw new Error(result.error || 'Post not found')

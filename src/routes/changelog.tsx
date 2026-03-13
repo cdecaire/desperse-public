@@ -11,7 +11,7 @@ function ChangelogPage() {
     <StaticPageLayout>
       <article className="prose prose-zinc dark:prose-invert prose-p:my-4 max-w-none">
         <h1 className="text-2xl md:text-3xl font-bold mb-2">Changelog</h1>
-        <p className="text-muted-foreground text-sm mb-8">Last updated: March 6, 2026</p>
+        <p className="text-muted-foreground text-sm mb-8">Last updated: March 13, 2026</p>
 
         <p>
           This page highlights recent updates and improvements to Desperse. We're constantly working
@@ -22,6 +22,34 @@ function ChangelogPage() {
           <Icon name="sparkles" className="text-muted-foreground" />
           Latest Updates (March 2026)
         </h2>
+
+        <h3 className="text-lg font-semibold mt-6 mb-3">Creator Rights & Provenance</h3>
+        <ul className="list-disc pl-6 space-y-1 my-4">
+          <li>
+            <strong>Per-Post Licensing</strong>: Choose from Creative Commons presets (CC BY, CC BY-SA,
+            CC BY-NC, CC0, and more), All Rights Reserved, or enter a custom license for each post
+          </li>
+          <li>
+            <strong>On-Chain Rights</strong>: Copyright holder, license, and rights statement are stamped
+            directly into NFT metadata when collectors mint your work
+          </li>
+          <li>
+            <strong>Default Copyright Settings</strong>: Set your preferred license, rights holder, and
+            statement once in Settings — they auto-fill on every new post
+          </li>
+          <li>
+            <strong>Provenance Display</strong>: License and rights holder shown on post detail pages,
+            with full rights statement available on hover
+          </li>
+        </ul>
+
+        <h3 className="text-lg font-semibold mt-6 mb-3">Content Moderation & Safety</h3>
+        <ul className="list-disc pl-6 space-y-1 my-4">
+          <li>
+            <strong>Updated Terms of Service</strong>: Stronger copyright protection and clearer
+            moderation policies for creators
+          </li>
+        </ul>
 
         <h3 className="text-lg font-semibold mt-6 mb-3">Redesigned Landing Page</h3>
         <ul className="list-disc pl-6 space-y-1 my-4">

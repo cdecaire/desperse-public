@@ -3,7 +3,7 @@
  * GET /api/og/profile/:slug → 1200×630 PNG
  */
 
-import { defineEventHandler, getRouterParam } from "h3"
+import { defineEventHandler, getRequestURL, getRouterParam } from "h3"
 
 export default defineEventHandler(async (event) => {
 	try {
@@ -20,7 +20,8 @@ export default defineEventHandler(async (event) => {
 
 		const meta = await getProfileMeta(slug)
 		if (!meta) {
-			return Response.redirect("/api/og/default", 302)
+			const origin = getRequestURL(event).origin
+			return Response.redirect(`${origin}/api/og/default`, 302)
 		}
 
 		// Pre-fetch avatar and header as data URIs (with timeout)

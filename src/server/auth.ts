@@ -111,7 +111,13 @@ export async function verifyPrivyToken(accessToken: string): Promise<any> {
     const verifiedClaims = await privyClient.verifyAuthToken(accessToken)
     return verifiedClaims
   } catch (error) {
-    console.error('Privy token verification failed:', error)
+    // Expired tokens are a normal lifecycle event (polling with stale token) — don't log as error
+    const message = error instanceof Error ? error.message : String(error)
+    if (message.includes('exp') || message.includes('JWTExpired') || message.includes('expired')) {
+      // Silent — expected when client tab is backgrounded or token refresh is delayed
+    } else {
+      console.warn('Privy token verification failed:', message)
+    }
     throw new Error('Invalid or expired authentication token')
   }
 }
@@ -186,7 +192,10 @@ export async function authenticateWithToken(authorizationOrToken: string | null 
     return user
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Token verification failed'
-    console.warn(`[AUTH] Privy verification failed: ${message}`)
+    // "Invalid or expired authentication token" is already handled in verifyPrivyToken — skip double-logging
+    if (!message.includes('expired')) {
+      console.warn(`[AUTH] Privy verification failed: ${message}`)
+    }
     return null
   }
 }

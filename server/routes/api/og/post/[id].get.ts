@@ -3,7 +3,7 @@
  * GET /api/og/post/:id → 1200×630 PNG
  */
 
-import { defineEventHandler, getRouterParam } from "h3"
+import { defineEventHandler, getRequestURL, getRouterParam } from "h3"
 
 const UUID_RE =
 	/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
@@ -24,7 +24,8 @@ export default defineEventHandler(async (event) => {
 		const meta = await getPostMeta(postId)
 		if (!meta) {
 			// Redirect to default OG for missing posts
-			return Response.redirect("/api/og/default", 302)
+			const origin = getRequestURL(event).origin
+			return Response.redirect(`${origin}/api/og/default`, 302)
 		}
 
 		// Pre-fetch media image and creator avatar as data URIs (with timeout)
@@ -35,7 +36,8 @@ export default defineEventHandler(async (event) => {
 
 		if (!imageDataUri) {
 			// All posts should have a cover/media image — fall back to default if fetch failed
-			return Response.redirect("/api/og/default", 302)
+			const origin = getRequestURL(event).origin
+			return Response.redirect(`${origin}/api/og/default`, 302)
 		}
 
 		const png = await renderOgImage(postTemplate(meta, imageDataUri, avatarDataUri))

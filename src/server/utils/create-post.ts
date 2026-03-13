@@ -70,6 +70,9 @@ export interface CreatePostInput {
   mintWindowDurationHours?: number | null
   storageType?: 'centralized' | 'arweave'
   isDev?: boolean
+  copyrightLicense?: string | null
+  copyrightHolder?: string | null
+  copyrightStatement?: string | null
 }
 
 export interface CreatePostResult {
@@ -224,6 +227,9 @@ export async function createPostDirect(
       storageType: data.storageType || 'centralized',
       arweaveStatus: data.storageType === 'arweave' ? 'funded' : null,
       isDev: env.DEV_POSTS || data.isDev || false,
+      copyrightLicense: data.copyrightLicense || null,
+      copyrightHolder: data.copyrightHolder || null,
+      copyrightStatement: data.copyrightStatement || null,
     })
     .returning()
 

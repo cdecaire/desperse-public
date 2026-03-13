@@ -21,6 +21,7 @@ export const LICENSE_LABELS: Record<string, string> = {
 	'CC-BY-4.0': 'CC BY 4.0 (Attribution)',
 	'CC-BY-SA-4.0': 'CC BY-SA 4.0 (Attribution-ShareAlike)',
 	'CC-BY-NC-4.0': 'CC BY-NC 4.0 (Attribution-NonCommercial)',
+	'CC-BY-NC-ND-4.0': 'CC BY-NC-ND 4.0 (NonCommercial-NoDerivatives)',
 	CUSTOM: 'Custom License',
 }
 
@@ -34,6 +35,8 @@ export const SUGGESTED_STATEMENTS: Partial<Record<string, string>> = {
 		'You are free to share and adapt this work for any purpose, including commercially, as long as you give appropriate credit and distribute any derivative works under the same license.',
 	'CC-BY-NC-4.0':
 		'You are free to share and adapt this work as long as you give appropriate credit. Commercial use is not permitted without written permission from the rights holder.',
+	'CC-BY-NC-ND-4.0':
+		'You may share this work as long as you give appropriate credit. No commercial use or derivative works are permitted without written permission from the rights holder.',
 }
 
 interface CopyrightFieldsProps {

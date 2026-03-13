@@ -20,8 +20,8 @@ import {
 	createError,
 } from 'h3'
 import { db } from '@/server/db'
-import { posts, users, postAssets, likes, collections, comments, purchases } from '@/server/db/schema'
-import { eq, and, desc, lt, inArray, asc, count } from 'drizzle-orm'
+import { posts, users, postAssets, likes, collections, comments, purchases, follows } from '@/server/db/schema'
+import { eq, and, desc, lt, inArray, asc, count, ne } from 'drizzle-orm'
 import { authenticateWithToken } from '@/server/auth'
 import { excludeDevPosts } from '@/server/utils/dev-posts'
 
@@ -81,6 +81,40 @@ export default defineEventHandler(async (event) => {
 		// Add cursor condition if provided
 		if (cursor) {
 			conditions.push(lt(posts.createdAt, new Date(cursor)))
+		}
+
+		// Following tab: only show posts from users the current user follows (excluding own posts)
+		if (tab === 'following') {
+			if (!currentUserId) {
+				// Unauthenticated users see empty following feed
+				return {
+					success: true,
+					data: { posts: [] },
+					meta: { hasMore: false, nextCursor: null },
+					requestId,
+				}
+			}
+
+			// Get IDs of users the current user follows
+			const followedUsers = await db
+				.select({ followingId: follows.followingId })
+				.from(follows)
+				.where(eq(follows.followerId, currentUserId))
+
+			const followedIds = followedUsers.map((f) => f.followingId)
+
+			if (followedIds.length === 0) {
+				return {
+					success: true,
+					data: { posts: [] },
+					meta: { hasMore: false, nextCursor: null },
+					requestId,
+				}
+			}
+
+			conditions.push(inArray(posts.userId, followedIds))
+			// Exclude own posts from following feed
+			conditions.push(ne(posts.userId, currentUserId))
 		}
 
 		// Query posts with user data (flat selection, transform after)

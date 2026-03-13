@@ -15,6 +15,7 @@ const updateCreatorSettingsSchema = z.object({
 			'CC-BY-4.0',
 			'CC-BY-SA-4.0',
 			'CC-BY-NC-4.0',
+			'CC-BY-NC-ND-4.0',
 			'CUSTOM',
 		])
 		.nullable()
@@ -32,6 +33,7 @@ export const LICENSE_PRESETS = [
 	'CC-BY-4.0',
 	'CC-BY-SA-4.0',
 	'CC-BY-NC-4.0',
+	'CC-BY-NC-ND-4.0',
 	'CUSTOM',
 ] as const
 

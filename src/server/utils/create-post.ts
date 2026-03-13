@@ -306,9 +306,14 @@ export async function createPostDirect(
         }))
       : undefined
 
-    // Fetch creator rights for metadata stamping
+    // Fetch creator rights for metadata stamping, with per-post overrides taking precedence
     const { getCreatorRightsForMint } = await import('@/server/utils/creator-settings')
-    const rights = await getCreatorRightsForMint(userId)
+    const creatorDefaults = await getCreatorRightsForMint(userId)
+    const rights = {
+      license: data.copyrightLicense ?? creatorDefaults?.license ?? null,
+      holder: data.copyrightHolder ?? creatorDefaults?.holder ?? null,
+      statement: data.copyrightStatement ?? creatorDefaults?.statement ?? null,
+    }
 
     const metadata = generateNftMetadata(
       {

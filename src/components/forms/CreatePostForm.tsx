@@ -3,14 +3,17 @@
  * Main form for creating posts with media upload, caption, and type-specific options
  */
 
-import { useState, useRef, useCallback, useMemo } from 'react'
-import { useNavigate } from '@tanstack/react-router'
+import { useState, useRef, useCallback, useMemo, useEffect } from 'react'
+import { useNavigate, useBlocker } from '@tanstack/react-router'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toastSuccess, toastError, toastInfo } from '@/lib/toast'
 import { MediaUpload, type UploadedMedia } from './MediaUpload'
 import { MultiMediaUpload, type UploadedMediaItem } from './MultiMediaUpload'
 import { isMultiAssetEnabled, isMultiAssetCollectibleEnabled, isMultiAssetEditionEnabled, isArweaveStorageEnabled } from '@/config/env'
 import { PostTypeSelector, type PostType } from './PostTypeSelector'
+import { useCreatorSettings } from '@/hooks/useCreatorSettings'
+import { LICENSE_PRESETS } from '@/server/functions/creatorSettings'
+import { CopyrightFields, SUGGESTED_STATEMENTS } from './CopyrightFields'
 type StorageType = "centralized" | "arweave"
 import { EditionOptions, type Currency, type MintWindowState } from './EditionOptions'
 import { NftMetadataOptions } from './NftMetadataOptions'
@@ -27,6 +30,7 @@ import { Switch } from '@/components/ui/switch'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icon'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
+import { cn } from '@/lib/utils'
 import {
   Dialog,
   DialogContent,
@@ -43,7 +47,6 @@ import { useAuth } from '@/hooks/useAuth'
 import { parseAppError, formatRateLimitMessage } from '@/lib/errorUtils'
 import { useUpdatePost } from '@/hooks/usePostMutations'
 import { useQuery } from '@tanstack/react-query'
-import { useEffect } from 'react'
 // Note: On-chain metadata updates for Token Metadata removed - now using Metaplex Core
 
 // Type helper for server function calls with optional headers
@@ -83,6 +86,10 @@ interface FormState {
   mintWindow: MintWindowState
   // Storage type (centralized CDN vs Arweave permanent storage)
   storageType: StorageType
+  // Per-post copyright/licensing
+  copyrightLicense: string | null
+  copyrightHolder: string | null
+  copyrightStatement: string | null
 }
 
 interface CreatePostFormProps {
@@ -103,6 +110,9 @@ interface CreatePostFormProps {
     sellerFeeBasisPoints?: number | null
     isMutable?: boolean | null
     creatorWallet?: string | null
+    copyrightLicense?: string | null
+    copyrightHolder?: string | null
+    copyrightStatement?: string | null
     // Multi-asset support
     assets?: Array<{
       id: string
@@ -115,15 +125,11 @@ interface CreatePostFormProps {
 }
 
 export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormProps = {}) {
-  // Ensure Buffer is available for Privy/Solana SDKs
-  if (typeof window !== 'undefined' && !(window as any).Buffer) {
-    (window as any).Buffer = Buffer
-  }
-  
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const { user } = useCurrentUser()
   const { getAuthHeaders } = useAuth()
+  const { settings: creatorSettings } = useCreatorSettings()
   const isEditMode = mode === 'edit'
   const updatePostMutation = useUpdatePost()
   
@@ -226,6 +232,9 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
         // Mint window: will be populated from editState once it loads
         mintWindow: { ...defaultMintWindow },
         storageType: 'centralized', // Storage type is immutable after creation
+        copyrightLicense: initialPost.copyrightLicense || null,
+        copyrightHolder: initialPost.copyrightHolder || null,
+        copyrightStatement: initialPost.copyrightStatement || null,
       }
     }
     return {
@@ -245,6 +254,9 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
       protectDownload: false, // Posts and collectibles are always free - downloads always available
       mintWindow: { ...defaultMintWindow },
       storageType: 'centralized',
+      copyrightLicense: null,
+      copyrightHolder: null,
+      copyrightStatement: null,
     }
   }
 
@@ -256,6 +268,41 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
   const [formError, setFormError] = useState<string | null>(null)
   const [isMintedDetailsOpen, setIsMintedDetailsOpen] = useState(false)
   const [justSaved, setJustSaved] = useState(false)
+
+  // Pre-populate copyright defaults from creator settings (create mode only)
+  const [copyrightDefaultsApplied, setCopyrightDefaultsApplied] = useState(false)
+  const copyrightFieldsRef = useRef({
+    license: formState.copyrightLicense,
+    holder: formState.copyrightHolder,
+    statement: formState.copyrightStatement,
+  })
+  copyrightFieldsRef.current = {
+    license: formState.copyrightLicense,
+    holder: formState.copyrightHolder,
+    statement: formState.copyrightStatement,
+  }
+  useEffect(() => {
+    if (isEditMode || copyrightDefaultsApplied || !creatorSettings) return
+    const hasAny = creatorSettings.copyrightLicensePreset || creatorSettings.copyrightHolder || creatorSettings.copyrightRights
+    if (!hasAny) return
+    // Only apply if all copyright fields are still empty (user hasn't entered values)
+    const { license, holder, statement } = copyrightFieldsRef.current
+    if (license || holder || statement) return
+    const resolvedLicense = creatorSettings.copyrightLicensePreset === 'CUSTOM'
+      ? creatorSettings.copyrightLicenseCustom || null
+      : creatorSettings.copyrightLicensePreset || null
+    // Use saved rights statement, or fall back to the license preset's default
+    const resolvedStatement = creatorSettings.copyrightRights
+      || (resolvedLicense && SUGGESTED_STATEMENTS[resolvedLicense])
+      || null
+    setFormState(prev => ({
+      ...prev,
+      copyrightLicense: resolvedLicense,
+      copyrightHolder: creatorSettings.copyrightHolder || null,
+      copyrightStatement: resolvedStatement,
+    }))
+    setCopyrightDefaultsApplied(true)
+  }, [isEditMode, copyrightDefaultsApplied, creatorSettings])
 
   // Arweave funding readiness (set by ArweaveFundingSection)
   const [isArweaveReady, setIsArweaveReady] = useState(false)
@@ -427,6 +474,12 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
           currency: formState.currency || null,
           maxSupply: formState.maxSupply || null,
         }),
+        // Copyright fields (follow same lock rules as NFT metadata)
+        ...(areNftFieldsEditable && {
+          copyrightLicense: formState.copyrightLicense || null,
+          copyrightHolder: formState.copyrightHolder || null,
+          copyrightStatement: formState.copyrightStatement || null,
+        }),
         // Edition-only: timed edition fields (locked after first purchase)
         ...(!areTimeWindowFieldsLocked && formState.type === 'edition' ? {
           mintWindowEnabled: formState.mintWindow.enabled,
@@ -481,6 +534,10 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
           nftDescription: isNftPost ? formState.nftDescription : null,
           sellerFeeBasisPoints: isNftPost ? (formState.sellerFeeBasisPoints ?? 0) : null,
           isMutable: isNftPost ? formState.isMutable : true,
+          // Per-post copyright/licensing
+          copyrightLicense: isNftPost ? (formState.copyrightLicense || null) : null,
+          copyrightHolder: isNftPost ? (formState.copyrightHolder || null) : null,
+          copyrightStatement: isNftPost ? (formState.copyrightStatement || null) : null,
           // Protect download only applies to downloadable document types (PDF, ZIP) for editions
           // Check both single-asset (uploadedMedia) and multi-asset (multiAssetItems) modes
           protectDownload: formState.type === 'edition' && (
@@ -653,6 +710,14 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
   
   const isSubmitting = createMutation.isPending || updatePostMutation.isPending
 
+  // Unsaved-changes guard: warn before navigating away with form data
+  const hasFormData = !!(formState.mediaUrl || formState.caption.trim() || multiAssetItems.length > 0)
+  useBlocker({
+    shouldBlockFn: () => hasFormData && !isSubmitting && !createMutation.isSuccess && !updatePostMutation.isSuccess,
+    enableBeforeUnload: () => hasFormData && !isSubmitting && !createMutation.isSuccess && !updatePostMutation.isSuccess,
+    disabled: !hasFormData || isSubmitting || createMutation.isSuccess || updatePostMutation.isSuccess,
+  })
+
   return (
     <>
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -743,7 +808,7 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
         )}
 
         {/* Content Card - Caption, Categories, and NFT fields */}
-        <div className="space-y-4 p-4 bg-card border border-border rounded-xl shadow-md dark:bg-card">
+        <div className="space-y-4 p-4 bg-card border border-border rounded-xl shadow-md">
           {/* Caption */}
           <div>
             <label htmlFor="caption" className="text-sm font-medium mb-2 block">
@@ -787,7 +852,8 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
                   type="text"
                   maxLength={32}
                   value={formState.nftName || ''}
-                  onChange={(e) => setFormState(prev => ({ ...prev, nftName: e.target.value.trim() || null }))}
+                  onChange={(e) => setFormState(prev => ({ ...prev, nftName: e.target.value || null }))}
+                  onBlur={(e) => setFormState(prev => ({ ...prev, nftName: e.target.value.trim() || null }))}
                   placeholder={formState.type === 'collectible' ? 'Optional - auto-generated if empty' : 'Enter NFT name'}
                   disabled={isSubmitting}
                   required={formState.type === 'edition'}
@@ -845,20 +911,25 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
           )}
         </div>
 
-
         {/* Minted Details (read-only snapshot of on-chain data) */}
         {isEditMode && isMinted && mintedMetadataJson && (
-          <div className="p-4 bg-card border border-border rounded-xl shadow-md dark:bg-card">
+          <div className="p-4 bg-card border border-border rounded-xl shadow-md">
             <button
               type="button"
               onClick={() => setIsMintedDetailsOpen(!isMintedDetailsOpen)}
               className="flex items-center justify-between w-full text-sm text-foreground transition-colors hover:text-foreground/80"
             >
               <span>Minted on-chain details</span>
-              <Icon name={isMintedDetailsOpen ? 'chevron-up' : 'chevron-down'} variant="regular" className="transition-transform" />
+              <Icon name="chevron-down" variant="regular" className={cn('transition-transform duration-200', isMintedDetailsOpen && 'rotate-180')} />
             </button>
 
-            {isMintedDetailsOpen && (
+            <div
+              className={cn(
+                'grid transition-[grid-template-rows] duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] motion-reduce:transition-none',
+                isMintedDetailsOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+              )}
+            >
+              <div className="overflow-hidden">
               <div className="grid gap-3 text-sm mt-3 pt-3 border-t border-border">
                 {typeof mintedMetadataJson.name === 'string' && mintedMetadataJson.name && (
                   <div className="flex justify-between">
@@ -956,7 +1027,8 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
                   </div>
                 )}
               </div>
-            )}
+              </div>
+            </div>
           </div>
         )}
 
@@ -990,7 +1062,7 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
 
         {/* Arweave Permanent Storage — toggle + inline funding */}
         {formState.type === 'edition' && !isEditMode && isArweaveStorageEnabled() && (
-          <div className="p-4 bg-card border border-border rounded-xl shadow-md dark:bg-card space-y-3">
+          <div className="p-4 bg-card border border-border rounded-xl shadow-md space-y-3">
             <div className="flex items-center justify-between">
               <Tooltip content="Store edition media and metadata permanently on Arweave. Requires storage credits.">
                 <label className="text-sm text-foreground cursor-help border-b border-dotted border-muted-foreground/40">
@@ -1016,6 +1088,17 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
           </div>
         )}
 
+        {/* Copyright & Licensing - shown for collectible/edition types, hidden after minting */}
+        {(formState.type === 'collectible' || formState.type === 'edition') && !(isEditMode && areNftFieldsLocked) && (
+          <CopyrightSection
+            copyrightLicense={formState.copyrightLicense}
+            copyrightHolder={formState.copyrightHolder}
+            copyrightStatement={formState.copyrightStatement}
+            onChange={(field, value) => setFormState(prev => ({ ...prev, [field]: value }))}
+            disabled={isSubmitting}
+          />
+        )}
+
         {/* Additional Details - Shown for both Collectibles and Editions, hidden after minting */}
         {(formState.type === 'collectible' || formState.type === 'edition') && !(isEditMode && areNftFieldsLocked) && (
           <NftMetadataOptions
@@ -1034,7 +1117,7 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
         
         {/* Error message (rate limit, etc.) */}
         {formError && (
-          <div className="flex items-start gap-2 p-3 rounded-lg bg-destructive/10 text-destructive text-sm">
+          <div className="flex items-start gap-2 p-3 rounded-lg bg-destructive/10 text-destructive text-sm" role="alert">
             <Icon name="circle-exclamation" variant="regular" className="mt-0.5" />
             <span>{formError}</span>
           </div>
@@ -1122,4 +1205,65 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
 }
 
 export default CreatePostForm
+
+function CopyrightSection({
+	copyrightLicense,
+	copyrightHolder,
+	copyrightStatement,
+	onChange,
+	disabled,
+}: {
+	copyrightLicense: string | null
+	copyrightHolder: string | null
+	copyrightStatement: string | null
+	onChange: (field: 'copyrightLicense' | 'copyrightHolder' | 'copyrightStatement', value: string | null) => void
+	disabled?: boolean
+}) {
+	const [isOpen, setIsOpen] = useState(false)
+
+	return (
+		<div className="p-4 bg-card border border-border rounded-xl shadow-md">
+			<button
+				type="button"
+				onClick={() => setIsOpen(!isOpen)}
+				className="flex items-center justify-between w-full text-sm text-foreground transition-colors hover:text-foreground/80"
+				aria-expanded={isOpen}
+			>
+				<span className="font-medium">Copyright & Licensing</span>
+				<Icon name="chevron-down" variant="regular" className={cn('transition-transform duration-200', isOpen && 'rotate-180')} />
+			</button>
+
+			<div
+				className={cn(
+					'grid transition-[grid-template-rows] duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] motion-reduce:transition-none',
+					isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+				)}
+			>
+				<div className="overflow-hidden">
+				<div className="space-y-4 mt-3 pt-3 border-t border-border">
+					<p className="text-xs text-muted-foreground">
+						Set rights metadata for this post's NFT. Pre-populated from your{' '}
+						<a href="/settings/account/copyright" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary/80">
+							default settings
+						</a>.
+					</p>
+
+					<CopyrightFields
+						license={copyrightLicense}
+						customLicense={(copyrightLicense && !LICENSE_PRESETS.includes(copyrightLicense as any)) ? copyrightLicense : ''}
+						holder={copyrightHolder}
+						statement={copyrightStatement}
+						onLicenseChange={(v) => onChange('copyrightLicense', v)}
+						onCustomLicenseChange={(v) => onChange('copyrightLicense', v || null)}
+						onHolderChange={(v) => onChange('copyrightHolder', v)}
+						onStatementChange={(v) => onChange('copyrightStatement', v)}
+						disabled={disabled}
+						idPrefix="post"
+					/>
+				</div>
+				</div>
+			</div>
+		</div>
+	)
+}
 

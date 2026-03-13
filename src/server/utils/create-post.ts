@@ -300,6 +300,10 @@ export async function createPostDirect(
         }))
       : undefined
 
+    // Fetch creator rights for metadata stamping
+    const { getCreatorRightsForMint } = await import('@/server/utils/creator-settings')
+    const rights = await getCreatorRightsForMint(userId)
+
     const metadata = generateNftMetadata(
       {
         id: newPost.id,
@@ -320,7 +324,17 @@ export async function createPostDirect(
         assetId: insertedAssets[0]?.id,
         assets: metadataAssets,
       },
-      user
+      user,
+      {
+        rights,
+        desperseContext: {
+          postId: newPost.id,
+          postUrl: `https://desperse.com/post/${newPost.id}`,
+          creatorHandle: `@${user.usernameSlug}`,
+          createdAt: newPost.createdAt.toISOString(),
+          mintSource: data.type as 'edition' | 'collectible',
+        },
+      },
     )
 
     const metadataResult = await uploadMetadataJson(metadata, newPost.id)

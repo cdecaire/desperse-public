@@ -34,6 +34,19 @@ export function generateNftMetadata(post: {
   displayName: string | null
   usernameSlug: string
   walletAddress: string
+}, options?: {
+  rights?: {
+    license?: string | null
+    holder?: string | null
+    statement?: string | null
+  } | null
+  desperseContext?: {
+    postId: string
+    postUrl: string
+    creatorHandle: string
+    createdAt: string
+    mintSource: 'edition' | 'collectible'
+  }
 }) {
   // Infer MIME type from file extension
   const inferMimeType = (url: string): string => {
@@ -207,11 +220,29 @@ export function generateNftMetadata(post: {
             value: cat.display, // Use display value for on-chain metadata
           }))
         : []),
+      // Include license as attribute for marketplace visibility
+      ...(options?.rights?.license ? [{
+        trait_type: 'License',
+        value: options.rights.license,
+      }] : []),
     ],
     properties: {
       files,
       category,
       creators: [{ address: creator.walletAddress, share: 100 }],
+      // Rights metadata (versioned, only included when set)
+      ...(options?.rights && (options.rights.license || options.rights.holder || options.rights.statement) ? {
+        rights: {
+          version: 1,
+          ...(options.rights.license ? { license: options.rights.license } : {}),
+          ...(options.rights.holder ? { holder: options.rights.holder } : {}),
+          ...(options.rights.statement ? { statement: options.rights.statement } : {}),
+        },
+      } : {}),
+      // Desperse provenance context
+      ...(options?.desperseContext ? {
+        desperse: options.desperseContext,
+      } : {}),
     },
   }
 

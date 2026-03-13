@@ -85,6 +85,10 @@ const createPostSchema = z.object({
   sellerFeeBasisPoints: z.number().int().min(0).max(1000).optional().nullable(), // Creator royalties (0-1000 = 0-10%)
   isMutable: z.boolean().optional().default(true), // Metadata mutability (default true)
   protectDownload: z.boolean().optional().default(true), // Whether to gate downloads (default true)
+  // Per-post copyright/licensing (pre-populated from creator settings, overridable per-post)
+  copyrightLicense: z.string().max(100).optional().nullable(),
+  copyrightHolder: z.string().max(200).optional().nullable(),
+  copyrightStatement: z.string().max(1000).optional().nullable(),
   mediaMimeType: z.string().optional().nullable(), // MIME type of uploaded media
   mediaFileSize: z.number().int().positive().optional().nullable(), // File size in bytes
   // Timed edition fields
@@ -257,6 +261,10 @@ export const createPost = createServerFn({
         // Timed edition window
         mintWindowStart,
         mintWindowEnd,
+        // Per-post copyright/licensing
+        copyrightLicense: postData.copyrightLicense || null,
+        copyrightHolder: postData.copyrightHolder || null,
+        copyrightStatement: postData.copyrightStatement || null,
         // Storage type (centralized vs Arweave)
         storageType: postData.storageType || 'centralized',
         arweaveStatus: postData.storageType === 'arweave' ? 'funded' : null,
@@ -379,7 +387,14 @@ export const createPost = createServerFn({
           assetId: newAsset.id,
           assets: metadataAssets,
         },
-        user
+        user,
+        {
+          rights: (newPost.copyrightLicense || newPost.copyrightHolder || newPost.copyrightStatement) ? {
+            license: newPost.copyrightLicense,
+            holder: newPost.copyrightHolder,
+            statement: newPost.copyrightStatement,
+          } : null,
+        }
       )
 
       const metadataResult = await uploadMetadataJson(metadata, newPost.id)
@@ -1126,103 +1141,6 @@ export const getUserPostCount = createServerFn({
 })
 
 /**
- * Regenerate metadata for a post that's missing metadataUrl
- * Useful for fixing posts created before metadata generation was added
- */
-export const regeneratePostMetadata = createServerFn({
-  method: 'POST',
-}).handler(async (input: unknown) => {
-  try {
-    const rawData = input && typeof input === 'object' && 'data' in input
-      ? (input as { data: unknown }).data
-      : input;
-
-    const { postId } = z.object({
-      postId: z.string().uuid(),
-    }).parse(rawData);
-
-    // Get post and creator
-    const postResult = await db
-      .select({
-        post: posts,
-        creator: {
-          id: users.id,
-          displayName: users.displayName,
-          usernameSlug: users.usernameSlug,
-          walletAddress: users.walletAddress,
-        },
-      })
-      .from(posts)
-      .innerJoin(users, eq(posts.userId, users.id))
-      .where(eq(posts.id, postId))
-      .limit(1);
-
-    if (!postResult.length) {
-      return {
-        success: false,
-        error: 'Post not found',
-      };
-    }
-
-    const { post, creator } = postResult[0];
-
-    if (post.type !== 'collectible' && post.type !== 'edition') {
-      return {
-        success: false,
-        error: 'Post is not an NFT type (collectible or edition)',
-      };
-    }
-
-    // Generate and upload metadata
-    const metadata = generateNftMetadata(
-      {
-        id: post.id,
-        caption: post.caption,
-        mediaUrl: post.mediaUrl,
-        coverUrl: post.coverUrl,
-        type: post.type,
-        maxSupply: post.maxSupply,
-        price: post.price,
-        currency: post.currency,
-        nftName: post.nftName,
-        nftSymbol: post.nftSymbol,
-        nftDescription: post.nftDescription,
-        sellerFeeBasisPoints: post.sellerFeeBasisPoints,
-        isMutable: post.isMutable,
-        categories: post.categories ? stringsToCategories(post.categories as string[]) : null,
-      },
-      creator
-    );
-
-    const metadataResult = await uploadMetadataJson(metadata, post.id);
-
-    if (!metadataResult.success) {
-      return {
-        success: false,
-        error: 'Failed to upload metadata',
-      };
-    }
-
-    // Update post with metadata URL
-    await db
-      .update(posts)
-      .set({ metadataUrl: metadataResult.url })
-      .where(eq(posts.id, postId));
-
-    return {
-      success: true,
-      metadataUrl: metadataResult.url,
-    };
-  } catch (error) {
-    console.error('Error regenerating post metadata:', error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Failed to regenerate metadata',
-    };
-  }
-});
-
-/**
  * Get post edit state (collects/purchases count for UI field locking)
  */
 export const getPostEditState = createServerFn({
@@ -1350,6 +1268,10 @@ const updatePostSchema = z.object({
   mintWindowStartMode: z.enum(['now', 'scheduled']).optional(),
   mintWindowStartTime: z.string().datetime().optional().nullable(),
   mintWindowDurationHours: z.number().positive().optional().nullable(),
+  // Per-post copyright/licensing
+  copyrightLicense: z.string().max(100).optional().nullable(),
+  copyrightHolder: z.string().max(200).optional().nullable(),
+  copyrightStatement: z.string().max(1000).optional().nullable(),
 })
 
 export const updatePost = createServerFn({
@@ -1479,9 +1401,10 @@ export const updatePost = createServerFn({
       // NFT metadata fields are locked after minting for collectibles
       // (no Bubblegum update support)
       if (isMinted) {
-        if (updates.nftName !== undefined || updates.nftSymbol !== undefined || 
+        if (updates.nftName !== undefined || updates.nftSymbol !== undefined ||
             updates.nftDescription !== undefined || updates.sellerFeeBasisPoints !== undefined ||
-            updates.isMutable !== undefined) {
+            updates.isMutable !== undefined || updates.copyrightLicense !== undefined ||
+            updates.copyrightHolder !== undefined || updates.copyrightStatement !== undefined) {
           return {
             success: false,
             error: 'This collectible has been minted. NFT metadata cannot be changed.',
@@ -1511,6 +1434,15 @@ export const updatePost = createServerFn({
         if (updates.isMutable !== undefined) {
           allowedUpdates.isMutable = updates.isMutable
         }
+        if (updates.copyrightLicense !== undefined) {
+          allowedUpdates.copyrightLicense = updates.copyrightLicense
+        }
+        if (updates.copyrightHolder !== undefined) {
+          allowedUpdates.copyrightHolder = updates.copyrightHolder
+        }
+        if (updates.copyrightStatement !== undefined) {
+          allowedUpdates.copyrightStatement = updates.copyrightStatement
+        }
       }
     }
 
@@ -1538,9 +1470,10 @@ export const updatePost = createServerFn({
 
       // Check NFT metadata field updates
       if (areNftFieldsLocked) {
-        if (updates.nftName !== undefined || updates.nftSymbol !== undefined || 
+        if (updates.nftName !== undefined || updates.nftSymbol !== undefined ||
             updates.nftDescription !== undefined || updates.sellerFeeBasisPoints !== undefined ||
-            updates.isMutable !== undefined) {
+            updates.isMutable !== undefined || updates.copyrightLicense !== undefined ||
+            updates.copyrightHolder !== undefined || updates.copyrightStatement !== undefined) {
           return {
             success: false,
             error: 'This edition was minted as immutable. NFT metadata cannot be edited.',
@@ -1567,6 +1500,15 @@ export const updatePost = createServerFn({
         // isMutable can only be changed pre-mint
         if (updates.isMutable !== undefined && !isMinted) {
           allowedUpdates.isMutable = updates.isMutable
+        }
+        if (updates.copyrightLicense !== undefined) {
+          allowedUpdates.copyrightLicense = updates.copyrightLicense
+        }
+        if (updates.copyrightHolder !== undefined) {
+          allowedUpdates.copyrightHolder = updates.copyrightHolder
+        }
+        if (updates.copyrightStatement !== undefined) {
+          allowedUpdates.copyrightStatement = updates.copyrightStatement
         }
       }
 
@@ -1630,7 +1572,8 @@ export const updatePost = createServerFn({
 
     // Check if metadata needs regeneration (NFT metadata fields changed)
     const metadataAffectingFields: (keyof typeof posts.$inferInsert)[] = [
-      'nftName', 'nftSymbol', 'nftDescription', 'sellerFeeBasisPoints', 'isMutable', 'mediaUrl', 'coverUrl', 'categories'
+      'nftName', 'nftSymbol', 'nftDescription', 'sellerFeeBasisPoints', 'isMutable', 'mediaUrl', 'coverUrl', 'categories',
+      'copyrightLicense', 'copyrightHolder', 'copyrightStatement',
     ]
     const needsMetadataRegen = (post.type === 'collectible' || post.type === 'edition') &&
       metadataAffectingFields.some(field => allowedUpdates[field] !== undefined && allowedUpdates[field] !== post[field as keyof typeof post])
@@ -1680,7 +1623,14 @@ export const updatePost = createServerFn({
             isMutable: updatedPost.isMutable,
             categories: updatedPost.categories ? stringsToCategories(updatedPost.categories as string[]) : null,
           },
-          creator
+          creator,
+          {
+            rights: (updatedPost.copyrightLicense || updatedPost.copyrightHolder || updatedPost.copyrightStatement) ? {
+              license: updatedPost.copyrightLicense,
+              holder: updatedPost.copyrightHolder,
+              statement: updatedPost.copyrightStatement,
+            } : null,
+          }
         )
 
         const metadataResult = await uploadMetadataJson(metadata, updatedPost.id, true) // allowOverwrite = true for edits

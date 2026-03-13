@@ -110,6 +110,10 @@ export const posts = pgTable(
     nftDescription: text('nft_description'), // Separate from caption for NFT metadata
     sellerFeeBasisPoints: integer('seller_fee_basis_points'), // Creator royalties (0-10000), separate from platform fee
     isMutable: boolean('is_mutable').notNull().default(true), // Metadata mutability (default true)
+    // Per-post copyright/licensing fields (pre-populated from creator settings, overridable per-post)
+    copyrightLicense: text('copyright_license'), // Resolved license string (e.g., "CC-BY-4.0", "All Rights Reserved", or custom text)
+    copyrightHolder: text('copyright_holder'), // Rights holder name
+    copyrightStatement: text('copyright_statement'), // Rights statement / usage terms
     // Edition master mint fields
     masterMint: text('master_mint'), // Core collection address (set on first purchase)
     creatorWallet: text('creator_wallet'), // Creator wallet address (canonical update authority target, set at post creation)
@@ -693,6 +697,26 @@ export const creatorStorageBalances = pgTable(
   }),
 );
 
+// Creator settings table (copyright/licensing preferences)
+export const creatorSettings = pgTable(
+  'creator_settings',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    copyrightLicensePreset: text('copyright_license_preset'), // "All Rights Reserved", "CC0", "CC-BY-4.0", "CC-BY-SA-4.0", "CC-BY-NC-4.0", "CUSTOM"
+    copyrightLicenseCustom: text('copyright_license_custom'), // free text, only used when preset = "CUSTOM"
+    copyrightHolder: text('copyright_holder'), // legal name, opt-in
+    copyrightRights: text('copyright_rights'), // free-text rights statement
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    updatedAt: timestamp('updated_at').notNull().defaultNow(),
+  },
+  (table) => ({
+    userIdUniqueIdx: uniqueIndex('creator_settings_user_id_unique_idx').on(table.userId),
+  }),
+);
+
 // Export types for use in queries
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
@@ -736,6 +760,8 @@ export type PushToken = typeof pushTokens.$inferSelect;
 export type NewPushToken = typeof pushTokens.$inferInsert;
 export type CreatorStorageBalance = typeof creatorStorageBalances.$inferSelect;
 export type NewCreatorStorageBalance = typeof creatorStorageBalances.$inferInsert;
+export type CreatorSetting = typeof creatorSettings.$inferSelect;
+export type NewCreatorSetting = typeof creatorSettings.$inferInsert;
 
 // Arweave storage types
 export type StorageType = 'centralized' | 'arweave';

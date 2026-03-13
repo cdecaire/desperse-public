@@ -201,6 +201,10 @@ export async function fulfillPurchaseDirect(purchaseId: string): Promise<Fulfill
       .where(eq(postAssets.postId, purchaseData.postId))
       .limit(1)
 
+    // Fetch creator rights once for metadata stamping (used in both Arweave and centralized paths)
+    const { getCreatorRightsForMint } = await import('@/server/utils/creator-settings')
+    const creatorRights = creatorData ? await getCreatorRightsForMint(postData.userId) : null
+
     // Arweave finalization: if this is an Arweave edition, finalize before minting
     let resolvedMetadataUri = postData.metadataUrl
     let resolvedMetadataJson: Record<string, unknown> | undefined
@@ -251,7 +255,17 @@ export async function fulfillPurchaseDirect(purchaseId: string): Promise<Fulfill
               protectDownload: assetResult?.isGated ?? false,
               assetId: assetResult?.id,
             },
-            creatorData
+            creatorData,
+            {
+              rights: creatorRights,
+              desperseContext: {
+                postId: postData.id,
+                postUrl: `https://desperse.com/post/${postData.id}`,
+                creatorHandle: `@${creatorData.usernameSlug}`,
+                createdAt: postData.createdAt.toISOString(),
+                mintSource: postData.type as 'edition' | 'collectible',
+              },
+            },
           )
           // Override image with Arweave URL (same logic as generateCanonicalNftMetadata)
           metadata.image = arweaveMediaUrl
@@ -297,7 +311,17 @@ export async function fulfillPurchaseDirect(purchaseId: string): Promise<Fulfill
           protectDownload: assetResult?.isGated ?? false,
           assetId: assetResult?.id,
         },
-        creatorData
+        creatorData,
+        {
+          rights: creatorRights,
+          desperseContext: {
+            postId: postData.id,
+            postUrl: `https://desperse.com/post/${postData.id}`,
+            creatorHandle: `@${creatorData.usernameSlug}`,
+            createdAt: postData.createdAt.toISOString(),
+            mintSource: postData.type as 'edition' | 'collectible',
+          },
+        },
       )
 
       const metadataUpload = await uploadMetadataJson(metadata, postData.id)

@@ -528,20 +528,34 @@ export async function getCollectorsListDirect(
  * Get collectors for a specific post (Direct function for REST API)
  * Returns users who have collected (cNFT) or purchased (edition) a specific post.
  */
+export interface CollectorUser extends FollowUser {
+	collectedAt: string
+	txSignature: string | null
+}
+
+export interface CollectorListResult {
+	success: boolean
+	error?: string
+	users?: CollectorUser[]
+	hasMore?: boolean
+	nextCursor?: string | null
+}
+
 export async function getPostCollectorsListDirect(
 	postId: string,
 	currentUserId?: string,
 	cursor?: string,
 	limit: number = 50
-): Promise<FollowListResult> {
+): Promise<CollectorListResult> {
 	try {
-		const collectorMap = new Map<string, Date>()
+		const collectorMap = new Map<string, { date: Date; txSignature: string | null }>()
 
 		// From collections table
 		const collectionRows = await db
 			.select({
 				userId: collections.userId,
 				createdAt: collections.createdAt,
+				txSignature: collections.txSignature,
 			})
 			.from(collections)
 			.where(
@@ -553,8 +567,8 @@ export async function getPostCollectorsListDirect(
 
 		for (const row of collectionRows) {
 			const existing = collectorMap.get(row.userId)
-			if (!existing || row.createdAt > existing) {
-				collectorMap.set(row.userId, row.createdAt)
+			if (!existing || row.createdAt > existing.date) {
+				collectorMap.set(row.userId, { date: row.createdAt, txSignature: row.txSignature })
 			}
 		}
 
@@ -563,6 +577,7 @@ export async function getPostCollectorsListDirect(
 			.select({
 				userId: purchases.userId,
 				createdAt: purchases.createdAt,
+				txSignature: purchases.txSignature,
 			})
 			.from(purchases)
 			.where(
@@ -574,8 +589,8 @@ export async function getPostCollectorsListDirect(
 
 		for (const row of purchaseRows) {
 			const existing = collectorMap.get(row.userId)
-			if (!existing || row.createdAt > existing) {
-				collectorMap.set(row.userId, row.createdAt)
+			if (!existing || row.createdAt > existing.date) {
+				collectorMap.set(row.userId, { date: row.createdAt, txSignature: row.txSignature })
 			}
 		}
 
@@ -590,13 +605,13 @@ export async function getPostCollectorsListDirect(
 
 		// Sort collectors by most recent collection
 		const sortedCollectors = Array.from(collectorMap.entries())
-			.sort((a, b) => b[1].getTime() - a[1].getTime())
+			.sort((a, b) => b[1].date.getTime() - a[1].date.getTime())
 
 		// Apply cursor pagination
 		let filteredCollectors = sortedCollectors
 		if (cursor) {
 			const cursorDate = new Date(cursor)
-			filteredCollectors = sortedCollectors.filter(([_, date]) => date < cursorDate)
+			filteredCollectors = sortedCollectors.filter(([_, data]) => data.date < cursorDate)
 		}
 
 		const hasMore = filteredCollectors.length > limit
@@ -633,12 +648,12 @@ export async function getPostCollectorsListDirect(
 		}
 
 		const last = toReturn[toReturn.length - 1]
-		const nextCursor = hasMore && last ? last[1].toISOString() : null
+		const nextCursor = hasMore && last ? last[1].date.toISOString() : null
 
 		return {
 			success: true,
 			users: toReturn
-				.map(([id]) => {
+				.map(([id, data]) => {
 					const user = userLookup.get(id)
 					if (!user) return null
 					return {
@@ -647,9 +662,11 @@ export async function getPostCollectorsListDirect(
 						displayName: user.displayName,
 						avatarUrl: user.avatarUrl,
 						isFollowing: followingSet.has(user.id),
+						collectedAt: data.date.toISOString(),
+						txSignature: data.txSignature,
 					}
 				})
-				.filter((u): u is FollowUser => u !== null),
+				.filter((u): u is CollectorUser => u !== null),
 			hasMore,
 			nextCursor,
 		}

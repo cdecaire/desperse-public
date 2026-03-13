@@ -45,6 +45,12 @@ const accountNavItems = [
     disabled: false,
   },
   {
+    path: '/settings/account/copyright',
+    label: 'Copyright & Licensing',
+    icon: 'fa-copyright',
+    disabled: false,
+  },
+  {
     path: '/settings/account/app',
     label: 'App Settings',
     icon: 'fa-gear',

@@ -405,30 +405,51 @@ function ModerationListPage() {
                         {report.reportCount}
                       </TableCell>
 
-                      {/* Top reason */}
-                      <TableCell className="whitespace-nowrap">
-                        {report.topReasons.length > 0 ? (
-                          <Badge variant="destructive" size="sm">
-                            {report.topReasons[0]}
-                          </Badge>
-                        ) : (
-                          <span className="text-xs text-muted-foreground">-</span>
-                        )}
+                      {/* Top reason + details */}
+                      <TableCell className="max-w-[200px]">
+                        <div className="space-y-1">
+                          {report.topReasons.length > 0 ? (
+                            <Badge variant="destructive" size="sm">
+                              {report.topReasons[0]}
+                            </Badge>
+                          ) : (
+                            <span className="text-xs text-muted-foreground">-</span>
+                          )}
+                          {(report as any).reportDetails?.length > 0 && (
+                            <p className="text-xs text-muted-foreground line-clamp-2" title={(report as any).reportDetails[0]}>
+                              {(report as any).reportDetails[0]}
+                            </p>
+                          )}
+                        </div>
                       </TableCell>
 
-                      {/* Status */}
+                      {/* Status + mint context */}
                       <TableCell className="whitespace-nowrap">
-                        <div className="flex gap-1">
-                          {report.hasOpenReports ? (
-                            <Badge variant="warning" size="sm">Open</Badge>
-                          ) : (
-                            <Badge variant="success" size="sm">Resolved</Badge>
+                        <div className="flex flex-col gap-1">
+                          <div className="flex gap-1">
+                            {report.hasOpenReports ? (
+                              <Badge variant="warning" size="sm">Open</Badge>
+                            ) : (
+                              <Badge variant="success" size="sm">Resolved</Badge>
+                            )}
+                            {report.isHidden && (
+                              <Badge variant="destructive" size="sm">Hidden</Badge>
+                            )}
+                            {report.isDeleted && (
+                              <Badge variant="destructive" size="sm">Deleted</Badge>
+                            )}
+                          </div>
+                          {/* Mint status for posts */}
+                          {report.contentType === 'post' && (report as any).isMinted && (
+                            <span className="text-[10px] text-muted-foreground">
+                              Minted: {(report as any).currentSupply || 0}{report.maxSupply ? `/${report.maxSupply}` : ''}
+                            </span>
                           )}
-                          {report.isHidden && (
-                            <Badge variant="destructive" size="sm">Hidden</Badge>
-                          )}
-                          {report.isDeleted && (
-                            <Badge variant="destructive" size="sm">Deleted</Badge>
+                          {/* Repeat offender indicator */}
+                          {((report as any).userReportsCount || 0) > 1 && (
+                            <span className="text-[10px] text-amber-500">
+                              {(report as any).userReportsCount} reported items
+                            </span>
                           )}
                         </div>
                       </TableCell>
@@ -440,15 +461,40 @@ function ModerationListPage() {
                         </span>
                       </TableCell>
 
-                      {/* Actions */}
+                      {/* Quick links + actions */}
                       <TableCell onClick={(e) => e.stopPropagation()}>
-                        <ModerationRowMenu
-                          contentType={report.contentType as 'post' | 'comment'}
-                          postId={report.postId!}
-                          commentId={report.commentId}
-                          isHidden={report.isHidden}
-                          hasOpenReports={report.hasOpenReports}
-                        />
+                        <div className="flex items-center gap-1">
+                          {/* Quick links */}
+                          {report.postId && (
+                            <a
+                              href={`/post/${report.postId}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-accent"
+                              title="View post"
+                            >
+                              <Icon name="arrow-up-right-from-square" variant="regular" className="text-xs text-muted-foreground" />
+                            </a>
+                          )}
+                          {report.creator?.usernameSlug && (
+                            <a
+                              href={`/profile/${report.creator.usernameSlug}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-accent"
+                              title="View profile"
+                            >
+                              <Icon name="user" variant="regular" className="text-xs text-muted-foreground" />
+                            </a>
+                          )}
+                          <ModerationRowMenu
+                            contentType={report.contentType as 'post' | 'comment'}
+                            postId={report.postId!}
+                            commentId={report.commentId}
+                            isHidden={report.isHidden}
+                            hasOpenReports={report.hasOpenReports}
+                          />
+                        </div>
                       </TableCell>
                     </TableRow>
                   )

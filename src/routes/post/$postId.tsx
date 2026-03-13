@@ -8,6 +8,7 @@ import { fetchPostMeta } from '@/server/functions/meta'
 import { type ReactNode, useEffect, useState } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
+import { useQueryClient } from '@tanstack/react-query'
 import { usePostQuery } from '@/hooks/usePostQuery'
 import { PostMedia } from '@/components/feed/PostMedia'
 import { CollectButton } from '@/components/feed/CollectButton'
@@ -25,10 +26,12 @@ import { POST_TYPE_META } from '@/constants/postTypes'
 import { MediaPill } from '@/components/ui/media-pill'
 import { cn } from '@/lib/utils'
 import { Icon } from '@/components/ui/icon'
+import { Tooltip } from '@/components/ui/tooltip'
 import { MintWindowBadge } from '@/components/feed/MintWindowBadge'
 import { useGatedDownload } from '@/hooks/useGatedDownload'
 import { CommentSheet } from '@/components/feed/CommentSheet'
 import { getExplorerUrl } from '@/server/functions/preferences'
+import { LICENSE_LABELS } from '@/components/forms/CopyrightFields'
 import { usePreferences } from '@/hooks/usePreferences'
 import { usePostCollectors, useFollowMutation } from '@/hooks/useProfileQuery'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
@@ -206,6 +209,24 @@ function PostDetails({ post, editionSupply, collectCount, showHeading = true, ge
     rows.push({ label: 'Token Standard', value: 'Core' })
   }
 
+  // Rights info from post-level copyright fields
+  if (post.copyrightLicense) {
+    const licenseLabel = LICENSE_LABELS[post.copyrightLicense] || post.copyrightLicense
+    rows.push({
+      label: 'License',
+      value: post.copyrightStatement ? (
+        <Tooltip content={<span className="whitespace-pre-wrap max-w-xs block">{post.copyrightStatement}</span>}>
+          <span className="cursor-help border-b border-dotted border-muted-foreground/40">
+            {licenseLabel}
+          </span>
+        </Tooltip>
+      ) : licenseLabel,
+    })
+  }
+  if (post.copyrightHolder) {
+    rows.push({ label: 'Rights Holder', value: post.copyrightHolder })
+  }
+
   // Token ID
   const tokenAddress = isEdition ? post.masterMint : (post as any).collectibleAssetId
   if (tokenAddress && !isStandard) {
@@ -253,10 +274,25 @@ function PostDetails({ post, editionSupply, collectCount, showHeading = true, ge
   )
 }
 
+function formatCollectedDate(dateStr: string): string {
+  const diffMs = Date.now() - new Date(dateStr).getTime()
+  const diffMins = Math.floor(diffMs / 60_000)
+  if (diffMins < 1) return 'just now'
+  if (diffMins < 60) return `${diffMins}m ago`
+  const diffHours = Math.floor(diffMins / 60)
+  if (diffHours < 24) return `${diffHours}h ago`
+  const diffDays = Math.floor(diffHours / 24)
+  if (diffDays < 7) return `${diffDays}d ago`
+  const diffWeeks = Math.floor(diffDays / 7)
+  if (diffWeeks < 52) return `${diffWeeks}w ago`
+  return `${Math.floor(diffDays / 365)}y ago`
+}
+
 function CollectorItem({
   collector,
   currentUserId,
   isAuthenticated,
+  getTokenUrl,
 }: {
   collector: {
     id: string
@@ -264,9 +300,12 @@ function CollectorItem({
     displayName: string | null
     avatarUrl: string | null
     isFollowingBack: boolean
+    collectedAt?: string | null
+    txSignature?: string | null
   }
   currentUserId?: string
   isAuthenticated: boolean
+  getTokenUrl?: (sig: string) => string
 }) {
   const isOwnProfile = currentUserId === collector.id
   const [isFollowing, setIsFollowing] = useState(collector.isFollowingBack)
@@ -291,14 +330,20 @@ function CollectorItem({
     }
   }
 
+  const txUrl = collector.txSignature && getTokenUrl
+    ? getTokenUrl(collector.txSignature)
+    : collector.txSignature
+      ? `https://solscan.io/tx/${collector.txSignature}`
+      : null
+
   return (
     <div className="flex items-center justify-between gap-3 px-4 py-2.5">
-      <Link
-        to="/profile/$slug"
-        params={{ slug: collector.usernameSlug }}
-        className="flex items-center gap-3 flex-1 min-w-0"
-      >
-        <div className="size-8 rounded-full bg-muted flex items-center justify-center overflow-hidden shrink-0">
+      <div className="flex items-center gap-3 flex-1 min-w-0">
+        <Link
+          to="/profile/$slug"
+          params={{ slug: collector.usernameSlug }}
+          className="size-8 rounded-full bg-muted flex items-center justify-center overflow-hidden shrink-0"
+        >
           {collector.avatarUrl ? (
             <img
               src={collector.avatarUrl}
@@ -308,16 +353,36 @@ function CollectorItem({
           ) : (
             <Icon name="user" variant="regular" className="text-sm text-muted-foreground" />
           )}
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium truncate">
+        </Link>
+        <div className="flex-1 min-w-0 leading-tight">
+          <Link
+            to="/profile/$slug"
+            params={{ slug: collector.usernameSlug }}
+            className="text-sm font-medium truncate block hover:underline"
+          >
             {collector.displayName || collector.usernameSlug}
-          </p>
-          <p className="text-xs text-muted-foreground truncate">
-            @{collector.usernameSlug}
-          </p>
+          </Link>
+          {collector.collectedAt && txUrl ? (
+            <a
+              href={txUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-muted-foreground hover:text-foreground truncate inline-flex items-center gap-1"
+            >
+              Collected {formatCollectedDate(collector.collectedAt)} · View Tx
+              <Icon name="arrow-up-right-from-square" variant="regular" className="text-[9px]" />
+            </a>
+          ) : collector.collectedAt ? (
+            <p className="text-xs text-muted-foreground truncate">
+              Collected {formatCollectedDate(collector.collectedAt)}
+            </p>
+          ) : (
+            <p className="text-xs text-muted-foreground truncate">
+              @{collector.usernameSlug}
+            </p>
+          )}
         </div>
-      </Link>
+      </div>
       {isAuthenticated && currentUserId && !isOwnProfile && (
         <Button
           variant={isFollowing ? 'outline' : 'default'}
@@ -343,6 +408,7 @@ function CollectorsList({
   isLoading,
   currentUserId,
   isAuthenticated,
+  getTokenUrl,
 }: {
   collectors?: Array<{
     id: string
@@ -350,10 +416,13 @@ function CollectorsList({
     displayName: string | null
     avatarUrl: string | null
     isFollowingBack: boolean
+    collectedAt?: string | null
+    txSignature?: string | null
   }>
   isLoading: boolean
   currentUserId?: string
   isAuthenticated: boolean
+  getTokenUrl?: (sig: string) => string
 }) {
   if (isLoading) {
     return (
@@ -379,6 +448,7 @@ function CollectorsList({
           collector={collector}
           currentUserId={currentUserId}
           isAuthenticated={isAuthenticated}
+          getTokenUrl={getTokenUrl}
         />
       ))}
     </div>
@@ -394,6 +464,7 @@ function PostDetailPage() {
   const matchRoute = useMatchRoute()
   
   // Call all hooks first (hooks must be called unconditionally)
+  const queryClient = useQueryClient()
   const { data, isLoading, isError, error } = usePostQuery({ postId })
   const { downloadProtectedAsset, isAuthenticating: isDownloading } = useGatedDownload()
   const { preferences } = usePreferences()
@@ -548,12 +619,16 @@ function PostDetailPage() {
   const handleCollectSuccess = () => {
     setLocalCollectCount(collectCount + 1)
     setLocalIsOwned(true)
+    // Refresh post data so menu shows "View on Explorer" with the new NFT mint
+    queryClient.invalidateQueries({ queryKey: ['post', post.id] })
   }
-  
+
   // Handle buy success
   const handleBuySuccess = () => {
     setLocalEditionSupply(editionSupply + 1)
     setLocalIsOwned(true)
+    // Refresh post data so menu shows "View on Explorer" with the new NFT mint
+    queryClient.invalidateQueries({ queryKey: ['post', post.id] })
   }
 
   // Shared action buttons component
@@ -1015,6 +1090,7 @@ function PostDetailPage() {
                       isLoading={isLoadingCollectors}
                       currentUserId={currentUser?.id}
                       isAuthenticated={isAuthenticated}
+                      getTokenUrl={(sig) => getExplorerUrl('tx', sig, preferences.explorer)}
                     />
                   )}
                 </div>
@@ -1337,6 +1413,7 @@ function PostDetailPage() {
                     isLoading={isLoadingCollectors}
                     currentUserId={currentUser?.id}
                     isAuthenticated={isAuthenticated}
+                    getTokenUrl={(sig) => getExplorerUrl('tx', sig, preferences.explorer)}
                   />
                 )}
               </>

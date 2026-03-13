@@ -43,6 +43,9 @@ export interface UpdatePostInput {
   mintWindowStartMode?: 'now' | 'scheduled'
   mintWindowStartTime?: string | Date | null
   mintWindowDurationHours?: number | null
+  copyrightLicense?: string | null
+  copyrightHolder?: string | null
+  copyrightStatement?: string | null
 }
 
 export interface UpdatePostResult {
@@ -118,7 +121,8 @@ export async function updatePostDirect(
     const isMinted = hasConfirmedCollects || !!post.mintedAt
     if (isMinted) {
       if (data.nftName !== undefined || data.nftSymbol !== undefined || data.nftDescription !== undefined ||
-          data.sellerFeeBasisPoints !== undefined || data.isMutable !== undefined) {
+          data.sellerFeeBasisPoints !== undefined || data.isMutable !== undefined ||
+          data.copyrightLicense !== undefined || data.copyrightHolder !== undefined || data.copyrightStatement !== undefined) {
         return { success: false, error: 'This collectible has been minted. NFT metadata cannot be changed.' }
       }
     } else {
@@ -127,6 +131,9 @@ export async function updatePostDirect(
       if (data.nftDescription !== undefined) allowedUpdates.nftDescription = data.nftDescription
       if (data.sellerFeeBasisPoints !== undefined) allowedUpdates.sellerFeeBasisPoints = data.sellerFeeBasisPoints
       if (data.isMutable !== undefined) allowedUpdates.isMutable = data.isMutable
+      if (data.copyrightLicense !== undefined) allowedUpdates.copyrightLicense = data.copyrightLicense
+      if (data.copyrightHolder !== undefined) allowedUpdates.copyrightHolder = data.copyrightHolder
+      if (data.copyrightStatement !== undefined) allowedUpdates.copyrightStatement = data.copyrightStatement
     }
   }
 
@@ -141,7 +148,8 @@ export async function updatePostDirect(
       return { success: false, error: 'This edition has been purchased. Price and supply cannot be edited.' }
     }
     if (areNftFieldsLocked && (data.nftName !== undefined || data.nftSymbol !== undefined || data.nftDescription !== undefined ||
-        data.sellerFeeBasisPoints !== undefined || data.isMutable !== undefined)) {
+        data.sellerFeeBasisPoints !== undefined || data.isMutable !== undefined ||
+        data.copyrightLicense !== undefined || data.copyrightHolder !== undefined || data.copyrightStatement !== undefined)) {
       return { success: false, error: 'This edition was minted as immutable. NFT metadata cannot be edited.' }
     }
 
@@ -151,6 +159,9 @@ export async function updatePostDirect(
       if (data.nftDescription !== undefined) allowedUpdates.nftDescription = data.nftDescription
       if (data.sellerFeeBasisPoints !== undefined) allowedUpdates.sellerFeeBasisPoints = data.sellerFeeBasisPoints
       if (data.isMutable !== undefined && !isMinted) allowedUpdates.isMutable = data.isMutable
+      if (data.copyrightLicense !== undefined) allowedUpdates.copyrightLicense = data.copyrightLicense
+      if (data.copyrightHolder !== undefined) allowedUpdates.copyrightHolder = data.copyrightHolder
+      if (data.copyrightStatement !== undefined) allowedUpdates.copyrightStatement = data.copyrightStatement
     }
     if (!arePricingFieldsLocked) {
       if (data.price !== undefined) allowedUpdates.price = data.price
@@ -189,7 +200,7 @@ export async function updatePostDirect(
   }
 
   // Metadata regeneration check
-  const metadataAffectingFields = ['nftName', 'nftSymbol', 'nftDescription', 'sellerFeeBasisPoints', 'isMutable', 'mediaUrl', 'coverUrl', 'categories']
+  const metadataAffectingFields = ['nftName', 'nftSymbol', 'nftDescription', 'sellerFeeBasisPoints', 'isMutable', 'mediaUrl', 'coverUrl', 'categories', 'copyrightLicense', 'copyrightHolder', 'copyrightStatement']
   const needsMetadataRegen = (post.type === 'collectible' || post.type === 'edition') &&
     metadataAffectingFields.some(field => allowedUpdates[field] !== undefined && allowedUpdates[field] !== (post as Record<string, unknown>)[field])
 
@@ -213,7 +224,13 @@ export async function updatePostDirect(
         nftDescription: updatedPost.nftDescription, sellerFeeBasisPoints: updatedPost.sellerFeeBasisPoints,
         isMutable: updatedPost.isMutable,
         categories: updatedPost.categories ? stringsToCategories(updatedPost.categories as string[]) : null,
-      }, creator)
+      }, creator, {
+        rights: (updatedPost.copyrightLicense || updatedPost.copyrightHolder || updatedPost.copyrightStatement) ? {
+          license: updatedPost.copyrightLicense,
+          holder: updatedPost.copyrightHolder,
+          statement: updatedPost.copyrightStatement,
+        } : null,
+      })
 
       const metadataResult = await uploadMetadataJson(metadata, updatedPost.id, true)
       if (metadataResult.success) {

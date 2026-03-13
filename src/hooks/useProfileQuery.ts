@@ -216,8 +216,12 @@ export function useFollowMutation(targetUserId: string, currentUserId: string) {
       queryClient.invalidateQueries({ queryKey: ['feed', 'following'] })
       // Invalidate followers list queries (since isFollowingBack status changes)
       queryClient.invalidateQueries({ queryKey: ['followersList'] })
+      // Invalidate following list queries
+      queryClient.invalidateQueries({ queryKey: ['followingList'] })
       // Invalidate post collectors list (since isFollowingBack status changes)
       queryClient.invalidateQueries({ queryKey: ['postCollectors'] })
+      // Invalidate profile queries so follower/following counts refresh
+      queryClient.invalidateQueries({ queryKey: ['profile'] })
     },
   })
 }

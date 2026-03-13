@@ -485,10 +485,10 @@ function ProfilePage() {
                   className="cursor-pointer hover:opacity-80 transition-opacity"
                 >
                   <span className="text-sm font-bold">
-                    {profileData?.followersCount ?? 0}
+                    {followStats?.followerCount ?? profileData?.followersCount ?? 0}
                   </span>{' '}
                   <span className="text-sm text-muted-foreground">
-                    {profileData?.followersCount === 1 ? 'follower' : 'followers'}
+                    {(followStats?.followerCount ?? profileData?.followersCount ?? 0) === 1 ? 'follower' : 'followers'}
                   </span>
                 </button>
                 <button
@@ -500,7 +500,7 @@ function ProfilePage() {
                   className="cursor-pointer hover:opacity-80 transition-opacity"
                 >
                   <span className="text-sm font-bold">
-                    {profileData?.followingCount ?? 0}
+                    {followStats?.followingCount ?? profileData?.followingCount ?? 0}
                   </span>{' '}
                   <span className="text-sm text-muted-foreground">following</span>
                 </button>

@@ -158,8 +158,10 @@ export function EditionOptions({
     }
   }
 
+  const priceError = validatePrice(displayPrice, currency)
+
   return (
-    <div className="space-y-4 p-4 bg-card border border-border rounded-xl shadow-md dark:bg-card">
+    <div className="space-y-4 p-4 bg-card border border-border rounded-xl shadow-md">
       {/* Pricing locked warning */}
       {isPricingDisabled && (
         <div className="p-3 bg-muted rounded-lg">
@@ -187,9 +189,14 @@ export function EditionOptions({
               placeholder="0.00"
               disabled={isPricingDisabled}
               aria-required="true"
-              aria-invalid={!!validatePrice(displayPrice, currency)}
-              aria-describedby={validatePrice(displayPrice, currency) ? 'edition-price-error' : undefined}
-              className={`pr-16 ${validatePrice(displayPrice, currency) ? 'border-destructive' : ''}`}
+              aria-invalid={!!priceError}
+              aria-describedby={priceError ? 'edition-price-error' : undefined}
+              onKeyDown={(e) => {
+                if (e.key === '-' || e.key === 'e' || e.key === 'E') {
+                  e.preventDefault()
+                }
+              }}
+              className={`pr-16 ${priceError ? 'border-destructive' : ''}`}
             />
 
             {/* Currency selector inside input */}
@@ -211,9 +218,9 @@ export function EditionOptions({
           </div>
         </div>
         {/* Price validation error */}
-        {validatePrice(displayPrice, currency) && (
+        {priceError && (
           <p id="edition-price-error" className="text-sm text-destructive mt-1.5" role="alert">
-            {validatePrice(displayPrice, currency)}
+            {priceError}
           </p>
         )}
       </div>

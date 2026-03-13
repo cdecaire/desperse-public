@@ -16,6 +16,7 @@ const routeTitles: Record<string, string> = {
   '/settings/account/app': 'App Settings',
   '/settings/account/messaging': 'Messaging',
   '/settings/account/notifications': 'Notifications',
+  '/settings/account/copyright': 'Copyright & Licensing',
 }
 
 function AccountLayout() {

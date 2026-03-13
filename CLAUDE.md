@@ -144,6 +144,11 @@ When adding **any** client-side `fetch`, SDK, or WebSocket connection to a new e
 - Check `DISABLE_FEE_SUBSIDY` before any subsidized mint (circuit breaker)
 - Stale claim threshold = 2 minutes (fulfillment claims and pending collects)
 
+### Buffer Polyfill
+- `Buffer` is polyfilled globally in `src/routes/__root.tsx` via dynamic `import('buffer')` on the client
+- **Never** reference `Buffer` at module scope in client components — it doesn't exist in the browser's module scope and will throw `Buffer is not defined`
+- If a component needs Buffer, rely on the root polyfill (which sets `window.Buffer`) or use `import { Buffer } from 'buffer'` explicitly
+
 ### Environment Security
 - Never prefix secrets with `VITE_` (client-exposed)
 - Never log `_authorization` tokens — use `redactSensitiveFields()` from `@/server/auth`

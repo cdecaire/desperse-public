@@ -29,11 +29,13 @@ export function CategorySelector({
 	className,
 }: CategorySelectorProps) {
 	const [open, setOpen] = useState(false)
+	const [focusedIndex, setFocusedIndex] = useState(-1)
 	const containerRef = useRef<HTMLDivElement>(null)
+	const listboxRef = useRef<HTMLDivElement>(null)
+	const triggerRef = useRef<HTMLButtonElement>(null)
 
 	const canAddMore = value.length < MAX_CATEGORIES
 
-	// Close on outside click
 	useEffect(() => {
 		if (!open) return
 		function handleClick(e: MouseEvent) {
@@ -48,15 +50,42 @@ export function CategorySelector({
 		return () => document.removeEventListener("mousedown", handleClick)
 	}, [open])
 
-	// Close on Escape
 	useEffect(() => {
 		if (!open) return
 		function handleKey(e: KeyboardEvent) {
-			if (e.key === "Escape") setOpen(false)
+			if (e.key === "Escape") {
+				setOpen(false)
+				triggerRef.current?.focus()
+			}
 		}
 		document.addEventListener("keydown", handleKey)
 		return () => document.removeEventListener("keydown", handleKey)
 	}, [open])
+
+	useEffect(() => {
+		if (open) {
+			const firstSelectedIdx = PRESET_CATEGORIES.findIndex((preset) =>
+				isSelected(preset),
+			)
+			setFocusedIndex(firstSelectedIdx >= 0 ? firstSelectedIdx : 0)
+		} else {
+			setFocusedIndex(-1)
+		}
+	}, [open])
+
+	useEffect(() => {
+		if (open && listboxRef.current) {
+			listboxRef.current.focus()
+			if (focusedIndex >= 0) {
+				const option = listboxRef.current.querySelector(
+					`#category-option-${focusedIndex}`,
+				)
+				if (option) {
+					;(option as HTMLElement).scrollIntoView({ block: "nearest" })
+				}
+			}
+		}
+	}, [open, focusedIndex])
 
 	const isSelected = (preset: string): boolean => {
 		const presetKey = normalizeCategoryKey(preset)
@@ -73,6 +102,48 @@ export function CategorySelector({
 			onChange(value.filter((cat) => cat.key !== presetKey))
 		} else if (canAddMore) {
 			onChange([...value, { display: preset, key: presetKey }])
+		}
+	}
+
+	const handleListboxKeyDown = (e: React.KeyboardEvent) => {
+		const totalItems = PRESET_CATEGORIES.length
+		switch (e.key) {
+			case "ArrowDown": {
+				e.preventDefault()
+				setFocusedIndex((prev) =>
+					prev < totalItems - 1 ? prev + 1 : 0,
+				)
+				break
+			}
+			case "ArrowUp": {
+				e.preventDefault()
+				setFocusedIndex((prev) =>
+					prev > 0 ? prev - 1 : totalItems - 1,
+				)
+				break
+			}
+			case "Enter":
+			case " ": {
+				e.preventDefault()
+				if (focusedIndex >= 0 && focusedIndex < totalItems) {
+					const preset = PRESET_CATEGORIES[focusedIndex]
+					const selected = isSelected(preset)
+					if (selected || canAddMore) {
+						toggleCategory(preset)
+					}
+				}
+				break
+			}
+			case "Home": {
+				e.preventDefault()
+				setFocusedIndex(0)
+				break
+			}
+			case "End": {
+				e.preventDefault()
+				setFocusedIndex(totalItems - 1)
+				break
+			}
 		}
 	}
 
@@ -99,8 +170,11 @@ export function CategorySelector({
 			{/* Trigger / chip area */}
 			<div className="relative">
 				<button
+					ref={triggerRef}
 					type="button"
 					disabled={disabled}
+					aria-haspopup="listbox"
+					aria-expanded={open}
 					onClick={() => setOpen((prev) => !prev)}
 					className={cn(
 						"flex w-full min-h-[42px] items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-2 text-sm transition-colors",
@@ -121,23 +195,17 @@ export function CategorySelector({
 								className="inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary px-2.5 py-0.5 text-xs font-medium"
 							>
 								{cat.display}
-								<span
-									role="button"
-									tabIndex={0}
+								<button
+									type="button"
+									aria-label={`Remove ${cat.display}`}
 									onClick={(e) => {
 										e.stopPropagation()
 										removeCategory(cat.key)
 									}}
-									onKeyDown={(e) => {
-										if (e.key === "Enter" || e.key === " ") {
-											e.stopPropagation()
-											removeCategory(cat.key)
-										}
-									}}
 									className="ml-0.5 rounded-full hover:bg-primary/20 p-0.5 cursor-pointer"
 								>
 									<X className="h-3 w-3" />
-								</span>
+								</button>
 							</span>
 						))}
 					</div>
@@ -152,21 +220,36 @@ export function CategorySelector({
 				{/* Dropdown list */}
 				{open && (
 					<div className="absolute z-50 mt-1 w-full rounded-lg border border-border bg-popover shadow-md overflow-hidden">
-						<div className="max-h-[240px] overflow-y-auto py-1">
-							{PRESET_CATEGORIES.map((preset) => {
+						<div
+							ref={listboxRef}
+							role="listbox"
+							aria-label="Categories"
+							tabIndex={0}
+							onKeyDown={handleListboxKeyDown}
+							className="max-h-[240px] overflow-y-auto py-1 focus:outline-none"
+						>
+							{PRESET_CATEGORIES.map((preset, index) => {
 								const selected = isSelected(preset)
 								const canSelect = selected || canAddMore
+								const focused = focusedIndex === index
 
 								return (
-									<button
+									<div
 										key={preset}
-										type="button"
-										disabled={disabled || !canSelect}
-										onClick={() => toggleCategory(preset)}
+										id={`category-option-${index}`}
+										role="option"
+										aria-selected={selected}
+										aria-disabled={disabled || !canSelect}
+										onClick={() => {
+											if (!disabled && canSelect) {
+												toggleCategory(preset)
+											}
+										}}
 										className={cn(
-											"flex w-full items-center justify-between px-3 py-2.5 text-sm transition-colors",
+											"flex w-full items-center justify-between px-3 py-2.5 text-sm transition-colors cursor-pointer",
 											"hover:bg-accent/50",
 											selected && "font-medium",
+											focused && "bg-accent/50",
 											!canSelect &&
 												"opacity-40 cursor-not-allowed",
 										)}
@@ -175,7 +258,7 @@ export function CategorySelector({
 										{selected && (
 											<Check className="h-4 w-4 text-primary shrink-0" />
 										)}
-									</button>
+									</div>
 								)
 							})}
 						</div>

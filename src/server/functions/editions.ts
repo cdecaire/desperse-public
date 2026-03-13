@@ -353,6 +353,10 @@ export const buyEdition = createServerFn({
     }
 
     if (!resolvedMetadataUri) {
+      // Fetch creator rights for metadata stamping
+      const { getCreatorRightsForMint } = await import('@/server/utils/creator-settings');
+      const rights = await getCreatorRightsForMint(userId);
+
       // Fallback: generate metadata JSON using the shared function to ensure consistency
       const metadata = generateNftMetadata(
         {
@@ -370,7 +374,17 @@ export const buyEdition = createServerFn({
           sellerFeeBasisPoints: post.sellerFeeBasisPoints,
           isMutable: post.isMutable,
         },
-        creator
+        creator,
+        {
+          rights,
+          desperseContext: {
+            postId: post.id,
+            postUrl: `https://desperse.com/post/${post.id}`,
+            creatorHandle: `@${creatorFromDb.usernameSlug}`,
+            createdAt: post.createdAt.toISOString(),
+            mintSource: 'edition',
+          },
+        },
       );
 
       const upload = await uploadMetadataJson(metadata, post.id);

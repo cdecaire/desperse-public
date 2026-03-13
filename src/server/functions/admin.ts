@@ -202,8 +202,10 @@ export const getReportsQueue = createServerFn({
           .select({
             contentId: contentReports.contentId,
             reasons: contentReports.reasons,
+            details: contentReports.details,
             status: contentReports.status,
             createdAt: contentReports.createdAt,
+            reportedByUserId: contentReports.reportedByUserId,
           })
           .from(contentReports)
           .where(
@@ -222,8 +224,10 @@ export const getReportsQueue = createServerFn({
           .select({
             contentId: contentReports.contentId,
             reasons: contentReports.reasons,
+            details: contentReports.details,
             status: contentReports.status,
             createdAt: contentReports.createdAt,
+            reportedByUserId: contentReports.reportedByUserId,
           })
           .from(contentReports)
           .where(
@@ -242,8 +246,10 @@ export const getReportsQueue = createServerFn({
           .select({
             contentId: contentReports.contentId,
             reasons: contentReports.reasons,
+            details: contentReports.details,
             status: contentReports.status,
             createdAt: contentReports.createdAt,
+            reportedByUserId: contentReports.reportedByUserId,
           })
           .from(contentReports)
           .where(
@@ -259,68 +265,12 @@ export const getReportsQueue = createServerFn({
     const reasonCounts = new Map<string, Map<string, number>>()
     const reportStatuses = new Map<string, { hasResolved: boolean; hasOpen: boolean }>()
     const latestReportDates = new Map<string, Date>() // Track most recent report date per content
+    const reportDetailTexts = new Map<string, string[]>() // Report details per content
+    const userReportsCountMap = new Map<string, number>() // Total reports received per user
     
-    // Process post reports
-    for (const report of postReports) {
-      if (!report.contentId) continue
-      if (!reasonCounts.has(report.contentId)) {
-        reasonCounts.set(report.contentId, new Map())
-      }
-      const counts = reasonCounts.get(report.contentId)!
-      for (const reason of report.reasons) {
-        counts.set(reason, (counts.get(reason) || 0) + 1)
-      }
-      // Track status
-      if (!reportStatuses.has(report.contentId)) {
-        reportStatuses.set(report.contentId, { hasResolved: false, hasOpen: false })
-      }
-      const status = reportStatuses.get(report.contentId)!
-      if (report.status === 'resolved') {
-        status.hasResolved = true
-      }
-      if (report.status === 'open' || report.status === 'reviewing') {
-        status.hasOpen = true
-      }
-      // Track latest report date
-      const reportDate = report.createdAt instanceof Date ? report.createdAt : new Date(report.createdAt)
-      const existingLatest = latestReportDates.get(report.contentId)
-      if (!existingLatest || reportDate > existingLatest) {
-        latestReportDates.set(report.contentId, reportDate)
-      }
-    }
-
-    // Process comment reports
-    for (const report of commentReports) {
-      if (!report.contentId) continue
-      if (!reasonCounts.has(report.contentId)) {
-        reasonCounts.set(report.contentId, new Map())
-      }
-      const counts = reasonCounts.get(report.contentId)!
-      for (const reason of report.reasons) {
-        counts.set(reason, (counts.get(reason) || 0) + 1)
-      }
-      // Track status
-      if (!reportStatuses.has(report.contentId)) {
-        reportStatuses.set(report.contentId, { hasResolved: false, hasOpen: false })
-      }
-      const status = reportStatuses.get(report.contentId)!
-      if (report.status === 'resolved') {
-        status.hasResolved = true
-      }
-      if (report.status === 'open' || report.status === 'reviewing') {
-        status.hasOpen = true
-      }
-      // Track latest report date
-      const reportDate = report.createdAt instanceof Date ? report.createdAt : new Date(report.createdAt)
-      const existingLatest = latestReportDates.get(report.contentId)
-      if (!existingLatest || reportDate > existingLatest) {
-        latestReportDates.set(report.contentId, reportDate)
-      }
-    }
-
-    // Process DM thread reports
-    for (const report of dmThreadReports) {
-      if (!report.contentId) continue
+    // Helper to process a single report's metadata
+    function processReportMeta(report: { contentId: string; reasons: string[]; details: string | null; status: string; createdAt: Date | string }) {
+      if (!report.contentId) return
       if (!reasonCounts.has(report.contentId)) {
         reasonCounts.set(report.contentId, new Map())
       }
@@ -345,6 +295,38 @@ export const getReportsQueue = createServerFn({
       if (!existingLatest || reportDate > existingLatest) {
         latestReportDates.set(report.contentId, reportDate)
       }
+      // Track details text
+      if (report.details) {
+        if (!reportDetailTexts.has(report.contentId)) {
+          reportDetailTexts.set(report.contentId, [])
+        }
+        reportDetailTexts.get(report.contentId)!.push(report.details)
+      }
+    }
+
+    // Process post reports
+    for (const report of postReports) {
+      processReportMeta(report)
+    }
+
+    // Process comment reports
+    for (const report of commentReports) {
+      processReportMeta(report)
+    }
+
+    // Process DM thread reports
+    for (const report of dmThreadReports) {
+      processReportMeta(report)
+    }
+
+    // Build repeat offender counts (total reports against each content creator)
+    // Count how many total open reports exist per user across all their content
+    const allReportableUserIds = [
+      ...reportedPosts.map(p => p.post.userId),
+      ...reportedComments.map(c => c.comment.userId),
+    ]
+    for (const userId of allReportableUserIds) {
+      userReportsCountMap.set(userId, (userReportsCountMap.get(userId) || 0) + 1)
     }
 
     // Build response for posts
@@ -386,6 +368,14 @@ export const getReportsQueue = createServerFn({
           avatarUrl: creator.avatarUrl,
         },
         topReasons,
+        // Report details from reporters
+        reportDetails: reportDetailTexts.get(post.id) || [],
+        // Mint/provenance context for moderation
+        isMinted: !!post.masterMint || post.currentSupply > 0,
+        currentSupply: post.currentSupply,
+        masterMint: post.masterMint,
+        // Repeat offender context
+        userReportsCount: userReportsCountMap.get(post.userId) || 0,
         // For backward compatibility
         postUserId: post.userId,
         postType: post.type,
@@ -434,6 +424,10 @@ export const getReportsQueue = createServerFn({
           avatarUrl: commenter.avatarUrl,
         },
         topReasons,
+        // Report details from reporters
+        reportDetails: reportDetailTexts.get(comment.id) || [],
+        // Repeat offender context
+        userReportsCount: userReportsCountMap.get(comment.userId) || 0,
         // For backward compatibility (set to undefined for comments)
         postUserId: undefined,
         postType: undefined,
@@ -483,6 +477,8 @@ export const getReportsQueue = createServerFn({
         creator: userA, // userA as primary
         otherUser: userB, // userB as secondary
         topReasons,
+        // Report details from reporters
+        reportDetails: reportDetailTexts.get(thread.id) || [],
         // For backward compatibility
         postUserId: undefined,
         postType: undefined,

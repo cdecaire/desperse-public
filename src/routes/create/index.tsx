@@ -26,9 +26,9 @@ function CreateContent() {
 
   return (
     <div className="pt-4 pb-8 px-4 md:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-2xl mx-auto">
         <div className="space-y-2 mb-6">
-          <h1 className="hidden md:block text-xl font-bold">Create Post</h1>
+          <h1 className="text-xl font-bold">Create Post</h1>
           <p className="text-sm text-muted-foreground">
             Share your work with the world.
           </p>

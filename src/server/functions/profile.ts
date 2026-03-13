@@ -1053,12 +1053,14 @@ export const getPostCollectorsList = createServerFn({
 
 		return {
 			success: true,
-			collectors: (result.users || []).map((u) => ({
+			collectors: (result.users || []).map((u: any) => ({
 				id: u.id,
 				usernameSlug: u.slug,
 				displayName: u.displayName,
 				avatarUrl: u.avatarUrl,
 				isFollowingBack: u.isFollowing || false,
+				collectedAt: u.collectedAt ?? null,
+				txSignature: u.txSignature ?? null,
 			})),
 		}
 	} catch (error) {

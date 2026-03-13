@@ -513,6 +513,8 @@ export function MediaUpload({
             onChange={handleFileChange}
             className="hidden"
             disabled={disabled}
+            aria-hidden="true"
+            tabIndex={-1}
           />
 
           {uploadState.status === 'uploading' ? (
@@ -521,7 +523,7 @@ export function MediaUpload({
               <p className="text-sm text-muted-foreground">
                 Uploading... {uploadState.progress}%
               </p>
-              <div className="w-48 h-1.5 bg-muted rounded-full overflow-hidden">
+              <div className="w-48 h-1.5 bg-muted rounded-full overflow-hidden" role="progressbar" aria-valuenow={uploadState.progress} aria-valuemin={0} aria-valuemax={100} aria-label="Upload progress">
                 <div
                   className="h-full bg-primary transition-all duration-300"
                   style={{ width: `${uploadState.progress}%` }}
@@ -623,6 +625,8 @@ export function MediaUpload({
                 onChange={handleCoverChange}
                 className="hidden"
                 disabled={disabled}
+                aria-hidden="true"
+                tabIndex={-1}
               />
 
               {coverUploadState.status === 'uploading' ? (
@@ -645,10 +649,10 @@ export function MediaUpload({
             <div className="relative rounded-lg overflow-hidden aspect-square max-w-[200px]">
               <img
                 src={coverPreviewUrl || coverUrl || ''}
-                alt="Cover"
+                alt="Cover image preview"
                 className="w-full h-full object-cover"
               />
-              
+
               {coverUploadState.status === 'uploading' && (
                 <div className="absolute inset-0 bg-background/80 flex items-center justify-center">
                   <LoadingSpinner size="md" />
@@ -748,7 +752,7 @@ function MediaPreview({ url, mediaType, fileName, coverUrl }: MediaPreviewProps)
           {/* Cover image or placeholder */}
           <div className="w-20 h-20 rounded-lg overflow-hidden bg-muted flex items-center justify-center flex-shrink-0">
             {coverUrl ? (
-              <img src={coverUrl} alt="Cover" className="w-full h-full object-cover" />
+              <img src={coverUrl} alt="Cover image" className="w-full h-full object-cover" />
             ) : (
               <Icon name="music" variant="regular" className="text-2xl text-muted-foreground" />
             )}
@@ -782,7 +786,7 @@ function MediaPreview({ url, mediaType, fileName, coverUrl }: MediaPreviewProps)
           {/* Cover image or document icon */}
           <div className="w-20 h-20 rounded-lg overflow-hidden bg-muted flex items-center justify-center flex-shrink-0">
             {coverUrl ? (
-              <img src={coverUrl} alt="Cover" className="w-full h-full object-cover" />
+              <img src={coverUrl} alt="Cover image" className="w-full h-full object-cover" />
             ) : (
               <Icon name={fileIcon} variant="regular" className="text-2xl text-muted-foreground" />
             )}
@@ -814,7 +818,7 @@ function MediaPreview({ url, mediaType, fileName, coverUrl }: MediaPreviewProps)
           {/* Cover image or 3D icon */}
           <div className="w-20 h-20 rounded-lg overflow-hidden bg-muted flex items-center justify-center flex-shrink-0">
             {coverUrl ? (
-              <img src={coverUrl} alt="Cover" className="w-full h-full object-cover" />
+              <img src={coverUrl} alt="Cover image" className="w-full h-full object-cover" />
             ) : (
               <Icon name="cube" variant="regular" className="text-2xl text-muted-foreground" />
             )}

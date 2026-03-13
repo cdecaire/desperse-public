@@ -71,6 +71,7 @@ export function ReportModal({
 
   const hasOther = selectedReasons.includes('Other')
   const isDetailsRequired = hasOther
+  const showDetails = selectedReasons.length > 0
   const canSubmit = selectedReasons.length > 0 && (!isDetailsRequired || details.trim().length > 0)
 
   const handleReasonToggle = (reason: string) => {
@@ -88,7 +89,7 @@ export function ReportModal({
 
     setIsSubmitting(true)
     try {
-      const result = onSubmit(selectedReasons, hasOther ? details.trim() : undefined)
+      const result = onSubmit(selectedReasons, details.trim() || undefined)
       // Handle both sync and async handlers
       if (result instanceof Promise) {
         await result
@@ -210,20 +211,21 @@ export function ReportModal({
           </div>
         </div>
 
-        {/* Details Input (required if "Other" selected) */}
-        {hasOther && (
+        {/* Details Input (always shown when reasons selected, required if "Other") */}
+        {showDetails && (
           <div>
             <label htmlFor="report-details" className="text-sm font-medium mb-2 block">
-              Please provide more details <span className="text-destructive">*</span>
+              Additional details {hasOther && <span className="text-destructive">*</span>}
+              {!hasOther && <span className="text-muted-foreground font-normal"> (optional)</span>}
             </label>
             <div className="relative">
               <Textarea
                 id="report-details"
                 value={details}
                 onChange={(e) => setDetails(e.target.value)}
-                placeholder="Describe the issue..."
+                placeholder={hasOther ? "Describe the issue..." : "e.g., This is my artwork reposted without permission."}
                 maxLength={500}
-                rows={4}
+                rows={3}
                 className="resize-none pb-7"
               />
               <div className="absolute bottom-2 right-3 text-xs text-muted-foreground pointer-events-none">

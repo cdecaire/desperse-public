@@ -308,6 +308,9 @@ export function PostCard({
     onCollectCountChange?.(newCount)
     onCollect?.()
 
+    // Refresh post data so menu shows "View on Explorer" with the new NFT mint
+    queryClient.invalidateQueries({ queryKey: ['post', post.id] })
+
     // Invalidate DM eligibility for this creator (they may now be messageable)
     const creatorId = user?.id
     if (creatorId) {
@@ -321,6 +324,9 @@ export function PostCard({
     setLocalEditionSupply(next)
     setLocalIsOwned(true)
     onBuy?.()
+
+    // Refresh post data so menu shows "View on Explorer" with the new NFT mint
+    queryClient.invalidateQueries({ queryKey: ['post', post.id] })
 
     // Invalidate DM eligibility for this creator (they may now be messageable)
     const creatorId = user?.id

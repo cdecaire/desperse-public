@@ -49,6 +49,7 @@ import { Route as SettingsAccountSecurityRouteImport } from './routes/settings/a
 import { Route as SettingsAccountProfileInfoRouteImport } from './routes/settings/account/profile-info'
 import { Route as SettingsAccountNotificationsRouteImport } from './routes/settings/account/notifications'
 import { Route as SettingsAccountMessagingRouteImport } from './routes/settings/account/messaging'
+import { Route as SettingsAccountCopyrightRouteImport } from './routes/settings/account/copyright'
 import { Route as SettingsAccountAppRouteImport } from './routes/settings/account/app'
 import { Route as PostPostIdEditRouteImport } from './routes/post/$postId/edit'
 import { Route as AdminModerationReportIdRouteImport } from './routes/admin/moderation/$reportId'
@@ -258,6 +259,12 @@ const SettingsAccountMessagingRoute =
     path: '/messaging',
     getParentRoute: () => SettingsAccountRoute,
   } as any)
+const SettingsAccountCopyrightRoute =
+  SettingsAccountCopyrightRouteImport.update({
+    id: '/copyright',
+    path: '/copyright',
+    getParentRoute: () => SettingsAccountRoute,
+  } as any)
 const SettingsAccountAppRoute = SettingsAccountAppRouteImport.update({
   id: '/app',
   path: '/app',
@@ -317,6 +324,7 @@ export interface FileRoutesByFullPath {
   '/admin/moderation/$reportId': typeof AdminModerationReportIdRoute
   '/post/$postId/edit': typeof PostPostIdEditRoute
   '/settings/account/app': typeof SettingsAccountAppRoute
+  '/settings/account/copyright': typeof SettingsAccountCopyrightRoute
   '/settings/account/messaging': typeof SettingsAccountMessagingRoute
   '/settings/account/notifications': typeof SettingsAccountNotificationsRoute
   '/settings/account/profile-info': typeof SettingsAccountProfileInfoRoute
@@ -361,6 +369,7 @@ export interface FileRoutesByTo {
   '/admin/moderation/$reportId': typeof AdminModerationReportIdRoute
   '/post/$postId/edit': typeof PostPostIdEditRoute
   '/settings/account/app': typeof SettingsAccountAppRoute
+  '/settings/account/copyright': typeof SettingsAccountCopyrightRoute
   '/settings/account/messaging': typeof SettingsAccountMessagingRoute
   '/settings/account/notifications': typeof SettingsAccountNotificationsRoute
   '/settings/account/profile-info': typeof SettingsAccountProfileInfoRoute
@@ -408,6 +417,7 @@ export interface FileRoutesById {
   '/admin/moderation/$reportId': typeof AdminModerationReportIdRoute
   '/post/$postId/edit': typeof PostPostIdEditRoute
   '/settings/account/app': typeof SettingsAccountAppRoute
+  '/settings/account/copyright': typeof SettingsAccountCopyrightRoute
   '/settings/account/messaging': typeof SettingsAccountMessagingRoute
   '/settings/account/notifications': typeof SettingsAccountNotificationsRoute
   '/settings/account/profile-info': typeof SettingsAccountProfileInfoRoute
@@ -456,6 +466,7 @@ export interface FileRouteTypes {
     | '/admin/moderation/$reportId'
     | '/post/$postId/edit'
     | '/settings/account/app'
+    | '/settings/account/copyright'
     | '/settings/account/messaging'
     | '/settings/account/notifications'
     | '/settings/account/profile-info'
@@ -500,6 +511,7 @@ export interface FileRouteTypes {
     | '/admin/moderation/$reportId'
     | '/post/$postId/edit'
     | '/settings/account/app'
+    | '/settings/account/copyright'
     | '/settings/account/messaging'
     | '/settings/account/notifications'
     | '/settings/account/profile-info'
@@ -546,6 +558,7 @@ export interface FileRouteTypes {
     | '/admin/moderation/$reportId'
     | '/post/$postId/edit'
     | '/settings/account/app'
+    | '/settings/account/copyright'
     | '/settings/account/messaging'
     | '/settings/account/notifications'
     | '/settings/account/profile-info'
@@ -870,6 +883,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsAccountMessagingRouteImport
       parentRoute: typeof SettingsAccountRoute
     }
+    '/settings/account/copyright': {
+      id: '/settings/account/copyright'
+      path: '/copyright'
+      fullPath: '/settings/account/copyright'
+      preLoaderRoute: typeof SettingsAccountCopyrightRouteImport
+      parentRoute: typeof SettingsAccountRoute
+    }
     '/settings/account/app': {
       id: '/settings/account/app'
       path: '/app'
@@ -953,6 +973,7 @@ const PostPostIdRouteWithChildren = PostPostIdRoute._addFileChildren(
 
 interface SettingsAccountRouteChildren {
   SettingsAccountAppRoute: typeof SettingsAccountAppRoute
+  SettingsAccountCopyrightRoute: typeof SettingsAccountCopyrightRoute
   SettingsAccountMessagingRoute: typeof SettingsAccountMessagingRoute
   SettingsAccountNotificationsRoute: typeof SettingsAccountNotificationsRoute
   SettingsAccountProfileInfoRoute: typeof SettingsAccountProfileInfoRoute
@@ -964,6 +985,7 @@ interface SettingsAccountRouteChildren {
 
 const SettingsAccountRouteChildren: SettingsAccountRouteChildren = {
   SettingsAccountAppRoute: SettingsAccountAppRoute,
+  SettingsAccountCopyrightRoute: SettingsAccountCopyrightRoute,
   SettingsAccountMessagingRoute: SettingsAccountMessagingRoute,
   SettingsAccountNotificationsRoute: SettingsAccountNotificationsRoute,
   SettingsAccountProfileInfoRoute: SettingsAccountProfileInfoRoute,

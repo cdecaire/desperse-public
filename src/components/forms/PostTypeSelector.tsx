@@ -17,19 +17,21 @@ export function PostTypeSelector({ value, onChange, disabled }: PostTypeSelector
   return (
     <div className="space-y-2">
       <label className="text-sm font-medium">Post Type</label>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3" role="radiogroup" aria-label="Post type">
         {POST_TYPE_LIST.map((type) => {
           const isSelected = value === type.id
           return (
             <button
               key={type.id}
               type="button"
+              role="radio"
+              aria-checked={isSelected}
               onClick={() => !disabled && onChange(type.id)}
               disabled={disabled}
               className={cn(
                 'relative flex flex-col items-start p-4 rounded-xl border transition-all text-left',
                 'hover:border-foreground/20',
-                isSelected ? 'bg-card shadow-md dark:bg-card' : 'border-border bg-card shadow-sm dark:bg-card',
+                isSelected ? 'bg-card shadow-md' : 'border-border bg-card shadow-sm',
                 disabled && 'opacity-50 cursor-not-allowed'
               )}
               style={isSelected ? { borderColor: type.tone } : undefined}

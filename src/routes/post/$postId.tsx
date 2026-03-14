@@ -29,7 +29,6 @@ import { Icon } from '@/components/ui/icon'
 import { Tooltip } from '@/components/ui/tooltip'
 import { MintWindowBadge } from '@/components/feed/MintWindowBadge'
 import { useGatedDownload } from '@/hooks/useGatedDownload'
-import { CommentSheet } from '@/components/feed/CommentSheet'
 import { getExplorerUrl } from '@/server/functions/preferences'
 import { formatRelativeTime } from '@/lib/dates'
 import { LICENSE_LABELS } from '@/components/forms/CopyrightFields'
@@ -436,9 +435,8 @@ function PostDetailPage() {
   const [localCollectCount, setLocalCollectCount] = useState<number | null>(null)
   const [localEditionSupply, setLocalEditionSupply] = useState<number | null>(null)
   const [localIsOwned, setLocalIsOwned] = useState(false)
-  const [mobileCommentSheetOpen, setMobileCommentSheetOpen] = useState(false)
   const [desktopTab, setDesktopTab] = useState<'comments' | 'details' | 'collectors'>('comments')
-  const [mobileTab, setMobileTab] = useState<'details' | 'collectors'>('details')
+  const [mobileTab, setMobileTab] = useState<'comments' | 'details' | 'collectors'>('comments')
 
   // Fetch collectors for this post (only when tab is active and post is collectible/edition)
   const isCollectibleType = data?.post?.type === 'edition' || data?.post?.type === 'collectible'
@@ -1133,7 +1131,7 @@ function PostDetailPage() {
               <>
                 {/* Action buttons + collect — single section */}
                 <div className="pb-4 border-b border-border flex flex-col gap-3">
-                  <ActionButtons skipBuy onCommentClick={() => setMobileCommentSheetOpen(true)} />
+                  <ActionButtons skipBuy onCommentClick={() => setMobileTab('comments')} />
 
                   {isMintingPaused && (
                     <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-800 dark:bg-amber-950/50 dark:text-amber-200">
@@ -1216,9 +1214,9 @@ function PostDetailPage() {
                   )}
                 </div>
 
-                {/* Segment control: Details | Collectors */}
+                {/* Segment control: Comments | Details | Collectors */}
                 <div className="flex border-b border-border" role="tablist">
-                  {(['details', 'collectors'] as const).map((tab) => (
+                  {(['comments', 'details', 'collectors'] as const).map((tab) => (
                     <button
                       key={tab}
                       type="button"
@@ -1234,7 +1232,7 @@ function PostDetailPage() {
                       )}
                     >
                       <span className="relative inline-flex items-center">
-                        {tab === 'details' ? 'Details' : 'Collectors'}
+                        {tab === 'comments' ? 'Comments' : tab === 'details' ? 'Details' : 'Collectors'}
                       </span>
                       {mobileTab === tab && (
                         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-foreground rounded-full" />
@@ -1244,7 +1242,28 @@ function PostDetailPage() {
                 </div>
 
                 {/* Tab content */}
-                {mobileTab === 'details' ? (
+                {mobileTab === 'comments' ? (
+                  <div className="flex flex-col flex-1 min-h-[300px]">
+                    <div className="flex-1 overflow-y-auto px-1 py-3">
+                      <CommentSection
+                        postId={post.id}
+                        userId={currentUser?.id}
+                        isAuthenticated={isAuthenticated}
+                        variant="inline"
+                      />
+                    </div>
+                    {isAuthenticated && (
+                      <div className="sticky bottom-0 border-t border-border bg-background">
+                        <CommentSection
+                          postId={post.id}
+                          userId={currentUser?.id}
+                          isAuthenticated={isAuthenticated}
+                          variant="input-only"
+                        />
+                      </div>
+                    )}
+                  </div>
+                ) : mobileTab === 'details' ? (
                   <PostDetails post={post} editionSupply={editionSupply} collectCount={collectCount} getTokenUrl={(addr) => getExplorerUrl('token', addr, preferences.explorer)} />
                 ) : (
                   <CollectorsList
@@ -1260,7 +1279,7 @@ function PostDetailPage() {
               <>
                 {/* Action buttons + caption — single section */}
                 <div className="pb-4 border-b border-border space-y-2">
-                  <ActionButtons onCommentClick={() => setMobileCommentSheetOpen(true)} />
+                  <ActionButtons onCommentClick={() => setMobileTab('comments')} />
                   <Caption showAvatar={true} />
                 </div>
 
@@ -1270,14 +1289,6 @@ function PostDetailPage() {
             )}
           </div>
 
-          {/* Mobile comment bottom sheet */}
-          <CommentSheet
-            postId={post.id}
-            userId={currentUser?.id}
-            isAuthenticated={isAuthenticated}
-            open={mobileCommentSheetOpen}
-            onOpenChange={setMobileCommentSheetOpen}
-          />
         </article>
       </div>
 

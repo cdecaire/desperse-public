@@ -3,7 +3,7 @@
  * Displays a post in the feed with media, caption, and actions
  */
 
-import { Link } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import { useQueryClient } from '@tanstack/react-query'
 import { cn } from '@/lib/utils'
 import { PostMedia } from './PostMedia'
@@ -14,12 +14,15 @@ import { BuyButton } from './BuyButton'
 import { LikeButton } from './LikeButton'
 import { CommentButton } from './CommentButton'
 import { CommentSheet } from './CommentSheet'
+import { HeartAnimation } from './HeartAnimation'
 import { PostCardMenu } from './PostCardMenu'
 import { PriceTooltip } from './PriceTooltip'
 import { useCommentCount } from '@/hooks/useComments'
 import { useCreateReport } from '@/hooks/useReports'
+import { usePostLikes, useLikeMutation } from '@/hooks/useLikes'
 import { dmEligibilityQueryKey } from '@/hooks/useDmEligibility'
-import { useState, useEffect, useRef, memo } from 'react'
+import { useDoubleTap } from '@/hooks/useDoubleTap'
+import { useState, useEffect, useRef, useCallback, memo } from 'react'
 import { getPostDisplayState, getEditionLabel, POST_TYPE_COLORS } from './postDisplay'
 import { POST_TYPE_META } from '@/constants/postTypes'
 import { type Category, isPresetCategory, categoryToSlug } from '@/constants/categories'
@@ -182,9 +185,16 @@ export function PostCard({
   const [localEditionSupply, setLocalEditionSupply] = useState(post.currentSupply ?? 0)
   const [localIsOwned, setLocalIsOwned] = useState(!!post.isCollected)
   const [commentSheetOpen, setCommentSheetOpen] = useState(false)
-  
+  const [heartTrigger, setHeartTrigger] = useState(0)
+
+  const navigate = useNavigate()
+
   // Get comment count
   const { data: commentCount } = useCommentCount(post.id)
+
+  // Like state for double-tap
+  const { data: likesData } = usePostLikes(post.id, currentUserId || undefined)
+  const likeMutation = useLikeMutation(post.id, currentUserId || undefined)
 
   // Report mutation
   const createReportMutation = useCreateReport()
@@ -211,6 +221,31 @@ export function PostCard({
   
   const user = propUser || post.user
   const mediaType = detectMediaType(post.mediaUrl)
+
+  // Media tap/click: single = open post, double = like
+  // Video/audio/3D have native controls that need tap events
+  const mediaIsInteractive = mediaType === 'video' || mediaType === 'audio' || mediaType === '3d'
+
+  const handleMediaSingleTap = useCallback(() => {
+    if (isPreview || mediaIsInteractive) return
+    navigate({ to: '/post/$postId', params: { postId: post.id } })
+  }, [isPreview, mediaIsInteractive, navigate, post.id])
+
+  const handleMediaDoubleTap = useCallback(() => {
+    if (isPreview || !isAuthenticated || !currentUserId) return
+    // Only like — don't unlike on double-tap
+    if (!likesData?.isLiked) {
+      likeMutation.mutate('like')
+    }
+    // Always show heart animation (even if already liked)
+    setHeartTrigger((t) => t + 1)
+  }, [isPreview, isAuthenticated, currentUserId, likesData?.isLiked, likeMutation])
+
+  const handleMediaClick = useDoubleTap({
+    onSingleTap: handleMediaSingleTap,
+    onDoubleTap: handleMediaDoubleTap,
+  })
+
   const computedPost = {
     ...post,
     isCollected: post.isCollected || localIsOwned,
@@ -443,7 +478,7 @@ export function PostCard({
       )}
       
       {/* Media - Full bleed on mobile */}
-      <div className="relative -mx-4 md:mx-0">
+      <div className={cn('relative -mx-4 md:mx-0', !mediaIsInteractive && !isPreview && 'cursor-pointer')}>
         <PostMedia
           mediaUrl={post.mediaUrl}
           coverUrl={post.coverUrl}
@@ -461,7 +496,9 @@ export function PostCard({
           statusPillText={(mediaType === 'document' || mediaType === '3d') ? display.statusPillText : undefined}
           statusPillColor={postTypeColor}
           assets={post.assets}
+          onClick={!isPreview && !mediaIsInteractive ? handleMediaClick : undefined}
         />
+        <HeartAnimation trigger={heartTrigger} />
 
         {(showActionButtons || display.overlayPillText || timedPillText || display.statusPillText) && (
           <div className="absolute inset-0 pointer-events-none z-20">

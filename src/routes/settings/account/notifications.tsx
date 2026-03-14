@@ -5,6 +5,7 @@ import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { Icon } from '@/components/ui/icon'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
+import { PageHeader } from '@/components/shared/PageHeader'
 
 export const Route = createFileRoute('/settings/account/notifications')({
   component: NotificationsSettingsPage,
@@ -28,12 +29,10 @@ function NotificationsSettingsPage() {
 
   return (
     <div className="space-y-4 pt-4">
-      <div className="space-y-2">
-        <h1 className="hidden md:block text-xl font-bold">Notifications</h1>
-        <p className="text-sm text-muted-foreground mb-6">
-          Choose which notifications you want to receive.
-        </p>
-      </div>
+      <PageHeader
+        title="Notifications"
+        description="Choose which notifications you want to receive."
+      />
 
       <div className="rounded-[var(--radius-lg)] bg-white dark:bg-input/30 border border-input px-5 md:px-6 lg:px-8 py-4 md:py-5">
         {isLoading ? (

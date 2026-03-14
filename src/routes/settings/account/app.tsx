@@ -7,6 +7,7 @@ import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { Icon } from '@/components/ui/icon'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
+import { PageHeader } from '@/components/shared/PageHeader'
 
 export const Route = createFileRoute('/settings/account/app')({
   component: AppSettingsPage,
@@ -49,12 +50,10 @@ function AppSettingsPage() {
 
   return (
     <div className="space-y-4 pt-4">
-        <div className="space-y-2">
-          <h1 className="hidden md:block text-xl font-bold">App Settings</h1>
-        <p className="text-sm text-muted-foreground mb-6">
-          Configure your theme and blockchain explorer preferences.
-        </p>
-      </div>
+        <PageHeader
+          title="App Settings"
+          description="Configure your theme and blockchain explorer preferences."
+        />
 
       {/* Theme Setting */}
       <div className="rounded-[var(--radius-lg)] bg-white dark:bg-input/30 border border-input px-5 md:px-6 lg:px-8 py-4 md:py-5">

@@ -13,7 +13,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { Link } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
-import { Icon } from '@/components/ui/icon'
 import { cn } from '@/lib/utils'
 import { usePostComments, getAllComments, useDeleteCommentMutation, MAX_COMMENT_LENGTH, createCommentWithMutation } from '@/hooks/useComments'
 import { useAuth } from '@/hooks/useAuth'
@@ -21,6 +20,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { toast } from '@/hooks/use-toast'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { CommentMenu } from '@/components/feed/CommentMenu'
+import { UserAvatar } from '@/components/shared/UserAvatar'
 import { useCreateReport } from '@/hooks/useReports'
 import { MentionAutocomplete } from '@/components/shared/MentionAutocomplete'
 import { TokenText } from '@/components/shared/TokenText'
@@ -84,19 +84,7 @@ function CommentItem({ comment, currentUserId, onDelete, isDeleting, onReportSub
       onMouseLeave={() => setIsHovered(false)}
     >
       <Link to="/profile/$slug" params={{ slug: comment.user.usernameSlug }}>
-        <div className="w-8 h-8 rounded-full overflow-hidden bg-muted shrink-0">
-          {comment.user.avatarUrl ? (
-            <img
-              src={comment.user.avatarUrl}
-              alt={displayName}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <Icon name="user" variant="regular" className="text-xs text-muted-foreground" />
-            </div>
-          )}
-        </div>
+        <UserAvatar src={comment.user.avatarUrl} alt={displayName} size="sm" />
       </Link>
 
       <div className="flex-1 min-w-0">

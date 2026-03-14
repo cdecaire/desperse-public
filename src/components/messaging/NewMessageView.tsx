@@ -15,6 +15,7 @@ import { UnlockMessagingCard } from './UnlockMessagingCard'
 import { useDebounce } from '@/hooks/useDebounce'
 import { cn } from '@/lib/utils'
 import { Icon } from '@/components/ui/icon'
+import { UserAvatar } from '@/components/shared/UserAvatar'
 import type { PendingMessageUser } from './MessagingContext'
 
 interface NewMessageViewProps {
@@ -98,19 +99,7 @@ export function NewMessageView({ onBack, onClose, onThreadCreated, initialUser }
         {selectedUser ? (
           // User info in header (like ConversationView)
           <div className="flex items-center gap-3 flex-1 min-w-0">
-            <div className="w-10 h-10 rounded-full bg-muted overflow-hidden flex-shrink-0">
-              {selectedUser.avatarUrl ? (
-                <img
-                  src={selectedUser.avatarUrl}
-                  alt={displayName}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                  <Icon name="user" />
-                </div>
-              )}
-            </div>
+            <UserAvatar src={selectedUser.avatarUrl} alt={displayName} size="md" />
             <div className="min-w-0">
               {profilePath ? (
                 <Link
@@ -220,19 +209,7 @@ export function NewMessageView({ onBack, onClose, onThreadCreated, initialUser }
                       'hover:bg-muted/50 transition-colors text-left'
                     )}
                   >
-                    <div className="w-9 h-9 rounded-full bg-muted overflow-hidden flex-shrink-0">
-                      {user.avatarUrl ? (
-                        <img
-                          src={user.avatarUrl}
-                          alt={user.displayName || user.usernameSlug}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                          <Icon name="user" className="text-xs" />
-                        </div>
-                      )}
-                    </div>
+                    <UserAvatar src={user.avatarUrl} alt={user.displayName || user.usernameSlug} size="sm" className="w-9 h-9" />
                     <div className="flex-1 min-w-0">
                       <p className="font-medium truncate text-sm">
                         {user.displayName || user.usernameSlug}

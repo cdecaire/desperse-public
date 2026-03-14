@@ -11,6 +11,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Tooltip } from '@/components/ui/tooltip'
 import { Icon } from '@/components/ui/icon'
 import { toastSuccess, toastError } from '@/lib/toast'
+import { PageHeader } from '@/components/shared/PageHeader'
 
 export const Route = createFileRoute('/settings/account/wallets')({
   component: WalletsPage,
@@ -213,12 +214,10 @@ function WalletsPage() {
 
   return (
     <div className="space-y-6 pt-4">
-        <div className="space-y-2">
-          <h1 className="hidden md:block text-xl font-bold">Wallets & Linked</h1>
-        <p className="text-sm text-muted-foreground mb-6">
-          Manage your connected wallets and linked social accounts.
-        </p>
-      </div>
+        <PageHeader
+          title="Wallets & Linked"
+          description="Manage your connected wallets and linked social accounts."
+        />
 
       <div className="space-y-6">
         {/* Wallets Section */}

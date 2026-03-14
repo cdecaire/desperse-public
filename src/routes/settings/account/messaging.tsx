@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Icon } from '@/components/ui/icon'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
+import { PageHeader } from '@/components/shared/PageHeader'
 
 export const Route = createFileRoute('/settings/account/messaging')({
   component: MessagingSettingsPage,
@@ -29,12 +30,10 @@ function MessagingSettingsPage() {
 
   return (
     <div className="space-y-4 pt-4">
-      <div className="space-y-2">
-        <h1 className="hidden md:block text-xl font-bold">Messaging</h1>
-        <p className="text-sm text-muted-foreground mb-6">
-          Manage who can reach out to you directly.
-        </p>
-      </div>
+      <PageHeader
+        title="Messaging"
+        description="Manage who can reach out to you directly."
+      />
 
       {/* DM Settings Card */}
       <div className="rounded-lg bg-white dark:bg-input/30 border border-input px-5 md:px-6 lg:px-8 py-4 md:py-5">

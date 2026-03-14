@@ -15,6 +15,7 @@ import { useMessages, useSendMessage, useMarkRead, useBlockInThread, type Thread
 import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { useCreateReport } from '@/hooks/useReports'
 import { Icon } from '@/components/ui/icon'
+import { UserAvatar } from '@/components/shared/UserAvatar'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import { useMessaging } from './MessagingContext'
 
@@ -300,19 +301,7 @@ export function ConversationView({ thread, onBack, onClose }: ConversationViewPr
 
         {/* User info */}
         <div className="flex items-center gap-3 flex-1 min-w-0">
-          <div className="w-10 h-10 rounded-full bg-muted overflow-hidden flex-shrink-0">
-            {otherUser.avatarUrl ? (
-              <img
-                src={otherUser.avatarUrl}
-                alt={displayName}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                <Icon name="user" />
-              </div>
-            )}
-          </div>
+          <UserAvatar src={otherUser.avatarUrl} alt={displayName} size="md" />
           <div className="min-w-0">
             {profilePath ? (
               <Link

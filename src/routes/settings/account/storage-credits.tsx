@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Icon } from "@/components/ui/icon"
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner"
+import { PageHeader } from "@/components/shared/PageHeader"
 import { useArweaveBalance } from "@/hooks/useArweaveBalance"
 import {
 	formatCredits,
@@ -165,12 +166,10 @@ function StorageCreditsPage() {
 	if (walletsReady && !hasWallet) {
 		return (
 			<div className="space-y-4 pt-4">
-				<div className="space-y-2">
-					<h1 className="hidden md:block text-xl font-bold">Storage Credits</h1>
-					<p className="text-sm text-muted-foreground">
-						Manage Turbo credits for permanent Arweave storage.
-					</p>
-				</div>
+				<PageHeader
+					title="Storage Credits"
+					description="Manage Turbo credits for permanent Arweave storage."
+				/>
 				<div className="rounded-[var(--radius-lg)] bg-white dark:bg-input/30 border border-input px-5 md:px-6 lg:px-8 py-8 text-center">
 					<Icon name="wallet" variant="regular" className="text-3xl text-muted-foreground mb-3" />
 					<p className="text-sm text-muted-foreground mb-4">
@@ -190,12 +189,10 @@ function StorageCreditsPage() {
 	return (
 		<div className="space-y-4 pt-4 pb-12">
 			{/* Header */}
-			<div className="space-y-2">
-				<h1 className="hidden md:block text-xl font-bold">Storage Credits</h1>
-				<p className="text-sm text-muted-foreground">
-					Manage Turbo credits for permanent Arweave storage.
-				</p>
-			</div>
+			<PageHeader
+				title="Storage Credits"
+				description="Manage Turbo credits for permanent Arweave storage."
+			/>
 
 			{/* === Card 1: Authorization Status + Balances === */}
 			<div className="rounded-[var(--radius-lg)] bg-white dark:bg-input/30 border border-input px-5 md:px-6 lg:px-8 py-6 md:py-8">

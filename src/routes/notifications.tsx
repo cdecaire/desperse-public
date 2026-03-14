@@ -7,6 +7,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useRef, useCallback } from 'react'
 import { AuthGuard } from '@/components/shared/AuthGuard'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
+import { PageHeader } from '@/components/shared/PageHeader'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { PullToRefresh } from '@/components/shared/PullToRefresh'
 import { useNotifications, useMarkAllNotificationsAsReadMutation, useClearAllNotificationsMutation } from '@/hooks/useNotifications'
@@ -123,12 +124,10 @@ function NotificationsContent() {
       <div className="pt-4 px-4 md:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
-          <div className="space-y-2 mb-6">
-            <h1 className="hidden md:block text-xl font-bold">Notifications</h1>
-            <p className="text-sm text-muted-foreground">
-              Stay updated on follows, likes, comments, and more.
-            </p>
-          </div>
+          <PageHeader
+            title="Notifications"
+            description="Stay updated on follows, likes, comments, and more."
+          />
 
           {/* Notifications list */}
           <div className="space-y-2">

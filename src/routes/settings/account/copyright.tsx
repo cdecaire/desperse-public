@@ -12,6 +12,7 @@ import { type LicensePreset } from '@/server/functions/creatorSettings'
 import type { CreatorSettingsInput } from '@/server/functions/creatorSettings'
 import { Button } from '@/components/ui/button'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
+import { PageHeader } from '@/components/shared/PageHeader'
 import { CopyrightFields, SUGGESTED_STATEMENTS } from '@/components/forms/CopyrightFields'
 
 export const Route = createFileRoute('/settings/account/copyright')({
@@ -27,24 +28,10 @@ function CopyrightSettingsPage() {
 
 	return (
 		<div className="pt-4 pb-12">
-			<div className="space-y-2 mb-6">
-				<h1 className="hidden md:block text-xl font-bold">
-					Copyright & Licensing
-				</h1>
-				<p className="text-sm text-muted-foreground">
-					Set default rights metadata for your minted NFTs. These are
-					creator-declared and stamped into metadata at mint time — changes
-					apply to future mints only.{' '}
-					<a
-						href="/terms"
-						target="_blank"
-						rel="noopener noreferrer"
-						className="text-primary hover:text-primary/80 transition-colors"
-					>
-						Terms of Service
-					</a>
-				</p>
-			</div>
+			<PageHeader
+				title="Copyright & Licensing"
+				description={<>Set default rights metadata for your minted NFTs. These are creator-declared and stamped into metadata at mint time — changes apply to future mints only.{' '}<a href="/terms" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary/80 transition-colors">Terms of Service</a></>}
+			/>
 
 			{isLoading ? (
 				<div className="flex justify-center py-4">

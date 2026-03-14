@@ -4,7 +4,7 @@
  */
 
 import { cn } from '@/lib/utils'
-import { Icon } from '@/components/ui/icon'
+import { UserAvatar } from '@/components/shared/UserAvatar'
 import { NotificationBadge } from '@/components/ui/notification-badge'
 import type { Thread } from '@/hooks/useMessages'
 import { formatRelativeTime } from '@/lib/dates'
@@ -34,20 +34,7 @@ export function ThreadItem({ thread, isActive = false, onClick }: ThreadItemProp
     >
       {/* Avatar */}
       <div className="relative flex-shrink-0">
-        <div className="w-12 h-12 rounded-full bg-muted overflow-hidden">
-          {avatarUrl ? (
-            <img
-              src={avatarUrl}
-              alt={displayName}
-              className="w-full h-full object-cover"
-              loading="lazy"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-              <Icon name="user" className="text-lg" />
-            </div>
-          )}
-        </div>
+        <UserAvatar src={avatarUrl} alt={displayName} size="lg" />
         {/* Unread indicator */}
         {hasUnread && (
           <NotificationBadge variant="destructive" size="dot" className="absolute -top-0.5 -right-0.5" />

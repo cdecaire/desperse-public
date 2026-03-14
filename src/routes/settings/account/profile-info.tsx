@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Icon } from '@/components/ui/icon'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
+import { PageHeader } from '@/components/shared/PageHeader'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
 import {
   useProfileUser,
@@ -339,13 +340,10 @@ function ProfileInfoPage() {
 
   return (
     <div className="pt-4 pb-12">
-        <div className="space-y-2 mb-6">
-          <h1 className="hidden md:block text-xl font-bold">Profile Info</h1>
-        <p className="text-sm text-muted-foreground">
-          Update your public profile and username. Changes apply to your public profile at
-          /profile/{profileData.user.slug}.
-        </p>
-      </div>
+        <PageHeader
+          title="Profile Info"
+          description={<>Update your public profile and username. Changes apply to your public profile at /profile/{profileData.user.slug}.</>}
+        />
 
       <div className="space-y-6">
         {/* Header Background Image */}

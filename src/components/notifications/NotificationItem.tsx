@@ -7,6 +7,7 @@ import { Link, useNavigate } from '@tanstack/react-router'
 import { Icon } from '@/components/ui/icon'
 import { cn } from '@/lib/utils'
 import { OptimizedImage } from '@/components/shared/OptimizedImage'
+import { UserAvatar } from '@/components/shared/UserAvatar'
 import { detectMediaType } from '@/lib/media'
 import { formatRelativeTime } from '@/lib/dates'
 
@@ -136,19 +137,7 @@ export function NotificationItem({ notification }: NotificationItemProps) {
         params={{ slug: actor.usernameSlug }}
         className="shrink-0"
       >
-        {actor.avatarUrl ? (
-          <OptimizedImage
-            src={actor.avatarUrl}
-            alt={actor.displayName || actor.usernameSlug}
-            className="w-10 h-10 rounded-full"
-            width={320}
-            fadeIn={false}
-          />
-        ) : (
-          <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-            <Icon name="user" className="text-muted-foreground" />
-          </div>
-        )}
+        <UserAvatar src={actor.avatarUrl} alt={actor.displayName || actor.usernameSlug} size="md" />
       </Link>
 
       {/* Content */}

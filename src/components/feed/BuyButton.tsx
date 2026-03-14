@@ -851,9 +851,27 @@ export function BuyButton({
         );
       }
 
-      // Hide button when already collected
+      // Show filled icon + count when already purchased
       if (state === 'success' || isPurchased) {
-        return null;
+        let displayCount: string | null = null
+        if (maxSupply === 1) {
+          displayCount = `${currentSupply}/1`
+        } else if (maxSupply !== null && maxSupply !== undefined) {
+          displayCount = `${currentSupply}/${maxSupply}`
+        } else {
+          displayCount = currentSupply > 0 ? `${currentSupply}` : null
+        }
+
+        return (
+          <>
+            {displayCount && (
+              <span className="text-sm font-medium">{displayCount}</span>
+            )}
+            <span style={toneColor ? { color: toneColor } : undefined}>
+              <Icon name={editionIcon} variant="solid" className="text-base" />
+            </span>
+          </>
+        );
       }
 
       // "ending_soon" compact — show count + icon (time shown in image pill)
@@ -1031,13 +1049,21 @@ export function BuyButton({
   // Check if in a loading/processing state
   const isLoadingState = state === 'confirming' || state === 'minting' || state === 'claiming';
 
-  // In compact mode, show status label to the left of button
-  // Hide entirely when already collected
-  if (isCollected) return null;
+  // In non-compact mode, hide entirely when already collected
+  if (isCollected && !compact) return null;
 
   if (compact) {
     const content = renderContent();
     if (content === null) return null;
+
+    // After purchasing, show plain icon + count (not a button)
+    if (isPurchased) {
+      return (
+        <div className={cn('flex flex-row items-center gap-1 px-2', className)}>
+          {content}
+        </div>
+      );
+    }
 
     return (
       <div className="flex flex-row items-center gap-2">

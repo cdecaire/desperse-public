@@ -547,6 +547,15 @@ export function CollectButton({
 
   // In compact mode, show status label to the left of button
   if (compact) {
+    // After collecting, show plain icon + count (not a button)
+    if (isCollected) {
+      return (
+        <div className={cn('flex flex-row items-center gap-1 px-2', className)}>
+          {renderContent()}
+        </div>
+      );
+    }
+
     return (
       <div className="flex flex-row items-center gap-2">
         {/* Status label for processing states */}

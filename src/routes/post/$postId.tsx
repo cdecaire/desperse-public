@@ -757,17 +757,6 @@ function PostDetailPage() {
               </span>
             </>
           )}
-          {showTypeBadge && post.type === 'edition' && (post.mintWindowStart || post.mintWindowEnd) && (
-            <>
-              <span>·</span>
-              <MintWindowBadge
-                mintWindowStart={post.mintWindowStart}
-                mintWindowEnd={post.mintWindowEnd}
-                mintedCount={editionSupply}
-                variant="compact"
-              />
-            </>
-          )}
         </div>
       </div>
 

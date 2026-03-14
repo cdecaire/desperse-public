@@ -1036,6 +1036,11 @@ export function BuyButton({
     switch (state) {
       case 'success':
         return 'secondary';
+      case 'preparing':
+      case 'signing':
+      case 'confirming':
+      case 'minting':
+        return 'ghost'; // Transparent bg so toneColor text isn't on gray
       case 'failed':
         return 'default'; // Keep original color for retry, not destructive
       case 'sold_out':

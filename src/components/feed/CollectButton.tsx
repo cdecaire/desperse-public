@@ -515,6 +515,10 @@ export function CollectButton({
       case 'success':
       case 'already_collected':
         return 'secondary';
+      case 'preparing':
+      case 'signing':
+      case 'confirming':
+        return 'ghost'; // Transparent bg so toneColor text isn't on gray
       case 'failed':
         return 'default'; // Keep original color for retry, not destructive
       case 'sold_out':

@@ -676,13 +676,13 @@ export function PostCard({
               {commentCount} {commentCount === 1 ? 'comment' : 'comments'}
             </span>
           ) : (
-            <Link
-              to="/post/$postId"
-              params={{ postId: post.id }}
-              className="text-sm text-muted-foreground hover:text-foreground hover:underline"
+            <button
+              type="button"
+              onClick={() => setCommentSheetOpen(true)}
+              className="text-sm text-muted-foreground hover:text-foreground hover:underline cursor-pointer bg-transparent border-none p-0 text-inherit font-inherit"
             >
               View {commentCount} {commentCount === 1 ? 'comment' : 'comments'}
-            </Link>
+            </button>
           )
         )}
 

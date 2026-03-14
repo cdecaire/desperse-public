@@ -5,6 +5,7 @@
 
 import { usePullToRefresh } from '@/hooks/usePullToRefresh'
 import { cn } from '@/lib/utils'
+import { Icon } from '@/components/ui/icon'
 
 interface PullToRefreshProps {
   onRefresh: () => Promise<void>
@@ -47,7 +48,7 @@ export function PullToRefresh({
           showIndicator ? 'opacity-100' : 'opacity-0 pointer-events-none'
         )}
         style={{
-          top: Math.max(pullDistance - 50, 8),
+          top: Math.max((pullDistance - 40) / 2, 0),
           transform: 'translateX(-50%)',
         }}
       >
@@ -65,16 +66,19 @@ export function PullToRefresh({
               aria-label="Refreshing"
             />
           ) : (
-            <i
+            <span
               className={cn(
-                'fa-regular fa-arrow-down text-base transition-all duration-150',
+                'text-base transition-all duration-150',
                 canRelease ? 'text-primary' : 'text-muted-foreground'
               )}
               style={{
                 transform: `rotate(${canRelease ? 180 : 0}deg)`,
                 transition: 'transform 0.2s ease-out',
+                display: 'inline-block',
               }}
-            />
+            >
+              <Icon name="arrow-down" variant="regular" />
+            </span>
           )}
         </div>
       </div>

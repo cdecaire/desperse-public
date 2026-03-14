@@ -898,6 +898,48 @@ export const getFeed = createServerFn({
       )
     }
 
+    // Batch-check which posts the current user has collected/purchased
+    // This prevents the UI flash where collect icons render unfilled then pop to filled
+    const userCollectedPostIds = new Set<string>()
+    if (authResult.auth?.userId) {
+      // Editions: any confirmed purchase means collected (reuse editionPostIds)
+      if (editionPostIds.length > 0) {
+        const purchasedEditions = await db
+          .select({ postId: purchases.postId })
+          .from(purchases)
+          .where(
+            and(
+              inArray(purchases.postId, editionPostIds),
+              eq(purchases.userId, authResult.auth.userId),
+              eq(purchases.status, 'confirmed')
+            )
+          )
+        for (const p of purchasedEditions) {
+          userCollectedPostIds.add(p.postId)
+        }
+      }
+
+      // Collectibles: any confirmed collection means collected
+      const collectiblePostIds = postsToReturn
+        .filter(p => p.post.type === 'collectible')
+        .map(p => p.post.id)
+      if (collectiblePostIds.length > 0) {
+        const collectedPosts = await db
+          .select({ postId: collections.postId })
+          .from(collections)
+          .where(
+            and(
+              inArray(collections.postId, collectiblePostIds),
+              eq(collections.userId, authResult.auth.userId),
+              eq(collections.status, 'confirmed')
+            )
+          )
+        for (const c of collectedPosts) {
+          userCollectedPostIds.add(c.postId)
+        }
+      }
+    }
+
     // Determine next cursor
     const lastPost = postsToReturn[postsToReturn.length - 1]
     const nextCursor = hasMore && lastPost
@@ -1000,6 +1042,8 @@ export const getFeed = createServerFn({
           ...(postAssetsList.length > 1 ? { assets: postAssetsList } : {}),
           // Add downloadable assets for download menu
           ...(postDownloadablesList.length > 0 ? { downloadableAssets: postDownloadablesList } : {}),
+          // Include whether current user has collected this post
+          isCollected: userCollectedPostIds.has(p.post.id),
           // Set isHidden LAST to ensure it's definitely included
           isHidden,
         }

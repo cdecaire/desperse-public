@@ -52,7 +52,8 @@ export const MIME_TO_EXTENSION: Record<string, string> = {
   'model/gltf+json': 'gltf',
 }
 
-export type MediaType = 'image' | 'video' | 'audio' | 'document' | '3d'
+export type { MediaType } from '@/lib/media'
+import type { MediaType } from '@/lib/media'
 
 /**
  * Determine media type from MIME type (with optional filename for extension fallback)

@@ -11,7 +11,8 @@ import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { PullToRefresh } from '@/components/shared/PullToRefresh'
 import { type PostCardData } from '@/components/feed/PostCard'
-import { PostMedia, type MediaType } from '@/components/feed/PostMedia'
+import { PostMedia } from '@/components/feed/PostMedia'
+import { detectMediaType } from '@/lib/media'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { useAuth } from '@/hooks/useAuth'
@@ -86,29 +87,6 @@ export const Route = createFileRoute('/profile/$slug')({
     }
   },
 })
-
-// Detect media type from URL
-function detectMediaType(url: string): MediaType {
-  const extension = url.split('.').pop()?.toLowerCase()?.split('?')[0]
-  
-  if (['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'].includes(extension || '')) {
-    return 'image'
-  }
-  if (['mp4', 'webm', 'mov'].includes(extension || '')) {
-    return 'video'
-  }
-  if (['mp3', 'wav', 'ogg', 'aac'].includes(extension || '')) {
-    return 'audio'
-  }
-  if (['pdf', 'zip'].includes(extension || '')) {
-    return 'document'
-  }
-  if (['glb', 'gltf'].includes(extension || '')) {
-    return '3d'
-  }
-  
-  return 'image' // Default fallback
-}
 
 function ProfileGridItem({
   post,

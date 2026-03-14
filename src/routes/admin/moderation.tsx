@@ -29,44 +29,8 @@ import {
 import { ModerationRowMenu } from '@/components/admin/ModerationRowMenu'
 import { Badge } from '@/components/ui/badge'
 import { Icon } from '@/components/ui/icon'
-
-// Detect media type from URL
-function detectMediaType(url: string): 'image' | 'video' | 'audio' | 'document' | '3d' {
-  const extension = url.split('.').pop()?.toLowerCase()?.split('?')[0]
-
-  if (['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'].includes(extension || '')) {
-    return 'image'
-  }
-  if (['mp4', 'webm', 'mov'].includes(extension || '')) {
-    return 'video'
-  }
-  if (['mp3', 'wav', 'ogg', 'aac'].includes(extension || '')) {
-    return 'audio'
-  }
-  if (['pdf', 'zip'].includes(extension || '')) {
-    return 'document'
-  }
-  if (['glb', 'gltf'].includes(extension || '')) {
-    return '3d'
-  }
-
-  return 'image'
-}
-
-// Format relative time
-function formatRelativeTime(date: Date | string): string {
-  const now = new Date()
-  const then = new Date(date)
-  const seconds = Math.floor((now.getTime() - then.getTime()) / 1000)
-
-  if (seconds < 60) return 'now'
-  if (seconds < 3600) return `${Math.floor(seconds / 60)}m`
-  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h`
-  if (seconds < 604800) return `${Math.floor(seconds / 86400)}d`
-  if (seconds < 2592000) return `${Math.floor(seconds / 604800)}w`
-
-  return then.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-}
+import { detectMediaType } from '@/lib/media'
+import { formatRelativeTime } from '@/lib/dates'
 
 type StatusFilter = 'open' | 'resolved' | 'all'
 type TypeFilter = 'all' | 'post' | 'comment' | 'dm_thread'

@@ -7,33 +7,12 @@ import { cn } from '@/lib/utils'
 import { Icon } from '@/components/ui/icon'
 import { NotificationBadge } from '@/components/ui/notification-badge'
 import type { Thread } from '@/hooks/useMessages'
+import { formatRelativeTime } from '@/lib/dates'
 
 interface ThreadItemProps {
   thread: Thread
   isActive?: boolean
   onClick: () => void
-}
-
-function formatRelativeTime(date: Date | null): string {
-  if (!date) return ''
-
-  const now = new Date()
-  const d = new Date(date)
-  const diffMs = now.getTime() - d.getTime()
-  const diffSecs = Math.floor(diffMs / 1000)
-  const diffMins = Math.floor(diffSecs / 60)
-  const diffHours = Math.floor(diffMins / 60)
-  const diffDays = Math.floor(diffHours / 24)
-
-  if (diffSecs < 60) return 'now'
-  if (diffMins < 60) return `${diffMins}m`
-  if (diffHours < 24) return `${diffHours}h`
-  if (diffDays < 7) return `${diffDays}d`
-
-  return new Intl.DateTimeFormat('en-US', {
-    month: 'short',
-    day: 'numeric',
-  }).format(d)
 }
 
 export function ThreadItem({ thread, isActive = false, onClick }: ThreadItemProps) {

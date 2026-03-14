@@ -12,6 +12,9 @@ import { Button } from '@/components/ui/button'
 import { deleteMedia } from '@/server/functions/upload'
 import { env } from '@/config/env'
 import { useAuth } from '@/hooks/useAuth'
+import type { MediaType } from '@/lib/media'
+
+export type { MediaType } from '@/lib/media'
 
 // Supported file types
 const SUPPORTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml']
@@ -56,8 +59,6 @@ const ACCEPT_IMAGE_STRING = SUPPORTED_IMAGE_TYPES.join(',')
 // Hard-cap upload size to avoid browser crashes from huge base64 conversions.
 const MAX_UPLOAD_MB = Math.min(env.MAX_FILE_SIZE_MB, 25)
 const MAX_UPLOAD_BYTES = MAX_UPLOAD_MB * 1024 * 1024
-
-export type MediaType = 'image' | 'video' | 'audio' | 'document' | '3d'
 
 /**
  * Check if file extension suggests a GLB/GLTF file

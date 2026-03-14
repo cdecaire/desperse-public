@@ -13,7 +13,7 @@ import { getExplorerUrl } from '@/server/functions/preferences'
 import { usePreferences } from '@/hooks/usePreferences'
 import { PostCardUser } from './PostCard'
 import { useGatedDownload } from '@/hooks/useGatedDownload'
-import type { MediaType } from './PostMedia'
+import type { MediaType } from '@/lib/media'
 import {
   DropdownMenu,
   DropdownMenuContent,

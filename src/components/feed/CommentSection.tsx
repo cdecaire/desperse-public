@@ -24,6 +24,7 @@ import { CommentMenu } from '@/components/feed/CommentMenu'
 import { useCreateReport } from '@/hooks/useReports'
 import { MentionAutocomplete } from '@/components/shared/MentionAutocomplete'
 import { TokenText } from '@/components/shared/TokenText'
+import { formatRelativeTime } from '@/lib/dates'
 
 interface CommentSectionProps {
   postId: string
@@ -50,21 +51,6 @@ interface Comment {
     displayName: string | null
     avatarUrl: string | null
   }
-}
-
-// Format relative time (matches PostCard format)
-function formatRelativeTime(date: Date | string): string {
-  const now = new Date()
-  const then = new Date(date)
-  const seconds = Math.floor((now.getTime() - then.getTime()) / 1000)
-
-  if (seconds < 60) return 'now'
-  if (seconds < 3600) return `${Math.floor(seconds / 60)}m`
-  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h`
-  if (seconds < 604800) return `${Math.floor(seconds / 86400)}d`
-  if (seconds < 2592000) return `${Math.floor(seconds / 604800)}w`
-
-  return then.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }
 
 interface CommentItemProps {

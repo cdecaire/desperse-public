@@ -31,10 +31,12 @@ import { MintWindowBadge } from '@/components/feed/MintWindowBadge'
 import { useGatedDownload } from '@/hooks/useGatedDownload'
 import { CommentSheet } from '@/components/feed/CommentSheet'
 import { getExplorerUrl } from '@/server/functions/preferences'
+import { formatRelativeTime } from '@/lib/dates'
 import { LICENSE_LABELS } from '@/components/forms/CopyrightFields'
 import { usePreferences } from '@/hooks/usePreferences'
 import { usePostCollectors, useFollowMutation } from '@/hooks/useProfileQuery'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
+import { detectMediaType } from '@/lib/media'
 import { toast } from '@/hooks/use-toast'
 
 const BASE_URL = "https://desperse.com"
@@ -79,45 +81,6 @@ export const Route = createFileRoute('/post/$postId')({
     }
   },
 })
-
-// Format relative time
-function formatRelativeTime(date: Date | string): string {
-  const now = new Date()
-  const then = new Date(date)
-  const seconds = Math.floor((now.getTime() - then.getTime()) / 1000)
-  
-  if (seconds < 60) return 'now'
-  if (seconds < 3600) return `${Math.floor(seconds / 60)}m`
-  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h`
-  if (seconds < 604800) return `${Math.floor(seconds / 86400)}d`
-  if (seconds < 2592000) return `${Math.floor(seconds / 604800)}w`
-  
-  return then.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-}
-
-// Detect media type from URL
-function detectMediaType(url: string): 'image' | 'video' | 'audio' | 'document' | '3d' {
-  const extension = url.split('.').pop()?.toLowerCase()?.split('?')[0]
-  
-  if (['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'].includes(extension || '')) {
-    return 'image'
-  }
-  if (['mp4', 'webm', 'mov'].includes(extension || '')) {
-    return 'video'
-  }
-  if (['mp3', 'wav', 'ogg', 'aac'].includes(extension || '')) {
-    return 'audio'
-  }
-  if (['pdf', 'zip'].includes(extension || '')) {
-    return 'document'
-  }
-  if (['glb', 'gltf'].includes(extension || '')) {
-    return '3d'
-  }
-  
-  return 'image' // Default fallback
-}
-
 
 function formatFileSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`

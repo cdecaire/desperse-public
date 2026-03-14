@@ -15,35 +15,12 @@ import { Input } from '@/components/ui/input'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { useUserLikes } from '@/hooks/useProfileQuery'
 import { type PostCardData } from '@/components/feed/PostCard'
-import { type MediaType } from '@/components/feed/PostMedia'
+import { detectMediaType } from '@/lib/media'
 
 type LikedPostsModalProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   userId: string
-}
-
-// Detect media type from URL
-function detectMediaType(url: string): MediaType {
-  const extension = url.split('.').pop()?.toLowerCase()?.split('?')[0]
-  
-  if (['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'].includes(extension || '')) {
-    return 'image'
-  }
-  if (['mp4', 'webm', 'mov'].includes(extension || '')) {
-    return 'video'
-  }
-  if (['mp3', 'wav', 'ogg', 'aac'].includes(extension || '')) {
-    return 'audio'
-  }
-  if (['pdf', 'zip'].includes(extension || '')) {
-    return 'document'
-  }
-  if (['glb', 'gltf'].includes(extension || '')) {
-    return '3d'
-  }
-  
-  return 'image' // Default fallback
 }
 
 export function LikedPostsModal({

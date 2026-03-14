@@ -6,7 +6,8 @@
 import { Link } from '@tanstack/react-router'
 import { useQueryClient } from '@tanstack/react-query'
 import { cn } from '@/lib/utils'
-import { PostMedia, type MediaType } from './PostMedia'
+import { PostMedia } from './PostMedia'
+import { detectMediaType } from '@/lib/media'
 import type { CarouselAsset } from './MediaCarousel'
 import { CollectButton } from './CollectButton'
 import { BuyButton } from './BuyButton'
@@ -27,44 +28,7 @@ import { MediaPill } from '@/components/ui/media-pill'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { TokenText } from '@/components/shared/TokenText'
 import { Icon } from '@/components/ui/icon'
-
-// Format relative time
-function formatRelativeTime(date: Date | string): string {
-  const now = new Date()
-  const then = new Date(date)
-  const seconds = Math.floor((now.getTime() - then.getTime()) / 1000)
-  
-  if (seconds < 60) return 'now'
-  if (seconds < 3600) return `${Math.floor(seconds / 60)}m`
-  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h`
-  if (seconds < 604800) return `${Math.floor(seconds / 86400)}d`
-  if (seconds < 2592000) return `${Math.floor(seconds / 604800)}w`
-  
-  return then.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-}
-
-// Detect media type from URL
-function detectMediaType(url: string): MediaType {
-  const extension = url.split('.').pop()?.toLowerCase()?.split('?')[0]
-  
-  if (['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'].includes(extension || '')) {
-    return 'image'
-  }
-  if (['mp4', 'webm', 'mov'].includes(extension || '')) {
-    return 'video'
-  }
-  if (['mp3', 'wav', 'ogg', 'aac'].includes(extension || '')) {
-    return 'audio'
-  }
-  if (['pdf', 'zip'].includes(extension || '')) {
-    return 'document'
-  }
-  if (['glb', 'gltf'].includes(extension || '')) {
-    return '3d'
-  }
-  
-  return 'image'
-}
+import { formatRelativeTime } from '@/lib/dates'
 
 // Format a millisecond countdown into a compact string
 function formatCountdownCompact(ms: number): string {

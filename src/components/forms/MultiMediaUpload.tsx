@@ -14,6 +14,9 @@ import { Tooltip } from '@/components/ui/tooltip'
 import { deleteMedia } from '@/server/functions/upload'
 import { env } from '@/config/env'
 import { useAuth } from '@/hooks/useAuth'
+import type { MediaType } from '@/lib/media'
+
+export type { MediaType } from '@/lib/media'
 
 // Max assets per post (from plan)
 const MAX_ASSETS = 10
@@ -61,8 +64,6 @@ const ACCEPT_STRING = [
 
 const MAX_UPLOAD_MB = Math.min(env.MAX_FILE_SIZE_MB, 25)
 const MAX_UPLOAD_BYTES = MAX_UPLOAD_MB * 1024 * 1024
-
-export type MediaType = 'image' | 'video' | 'audio' | 'document' | '3d'
 
 export interface UploadedMediaItem {
   id: string // Unique ID for tracking

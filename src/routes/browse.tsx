@@ -16,6 +16,7 @@ import { Logo } from '@/components/shared/Logo'
 import { Footer } from '@/components/landing/LandingPage'
 import { useTheme } from '@/components/providers/ThemeProvider'
 import { Switch } from '@/components/ui/switch'
+import { detectMediaType } from '@/lib/media'
 
 const BROWSE_LIMIT = 15
 
@@ -39,15 +40,6 @@ type BrowsePost = {
 export const Route = createFileRoute('/browse')({
 	component: BrowsePage,
 })
-
-function detectMediaType(url: string): 'image' | 'video' | 'audio' | 'other' {
-	const extension = url.split('.').pop()?.toLowerCase()?.split('?')[0]
-	if (['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'].includes(extension || ''))
-		return 'image'
-	if (['mp4', 'webm', 'mov'].includes(extension || '')) return 'video'
-	if (['mp3', 'wav', 'ogg', 'aac'].includes(extension || '')) return 'audio'
-	return 'other'
-}
 
 function BrowseMediaThumbnail({
 	post,

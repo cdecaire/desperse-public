@@ -12,10 +12,11 @@ import { PriceTooltip } from './PriceTooltip'
 import { ModelViewer } from '@/components/shared/ModelViewer'
 import { useGatedDownload } from '@/hooks/useGatedDownload'
 import { getResponsiveImageProps } from '@/lib/imageUrl'
+import { detectMediaType, type MediaType } from '@/lib/media'
 import { MediaCarousel, type CarouselAsset } from './MediaCarousel'
 import { Icon } from '@/components/ui/icon'
 
-export type MediaType = 'image' | 'video' | 'audio' | 'document' | '3d'
+export type { MediaType } from '@/lib/media'
 
 interface PostMediaProps {
   mediaUrl: string
@@ -56,31 +57,6 @@ interface PostMediaProps {
   statusPillColor?: string
   /** Multi-asset support: array of carousel assets. When provided with >1 item, renders carousel */
   assets?: CarouselAsset[]
-}
-
-/**
- * Detect media type from URL (fallback if not provided)
- */
-function detectMediaType(url: string): MediaType {
-  const extension = url.split('.').pop()?.toLowerCase()?.split('?')[0]
-  
-  if (['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'].includes(extension || '')) {
-    return 'image'
-  }
-  if (['mp4', 'webm', 'mov'].includes(extension || '')) {
-    return 'video'
-  }
-  if (['mp3', 'wav', 'ogg', 'aac'].includes(extension || '')) {
-    return 'audio'
-  }
-  if (['pdf', 'zip'].includes(extension || '')) {
-    return 'document'
-  }
-  if (['glb', 'gltf'].includes(extension || '')) {
-    return '3d'
-  }
-  
-  return 'image' // Default fallback
 }
 
 export function PostMedia({

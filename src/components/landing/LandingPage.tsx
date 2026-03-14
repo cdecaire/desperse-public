@@ -14,6 +14,7 @@ import { Logo } from '@/components/shared/Logo'
 import { OptimizedImage } from '@/components/shared/OptimizedImage'
 import { getOptimizedImageUrl } from '@/lib/imageUrl'
 import { getTrendingPosts, getFeaturedCreators, getLandingProfilePreview } from '@/server/functions/explore'
+import { detectMediaType } from '@/lib/media'
 import Lenis from 'lenis'
 
 // Type for featured creator from API
@@ -49,15 +50,6 @@ function PlaceholderImage({ className = '' }: { className?: string }) {
       className={`bg-muted border border-border rounded-lg ${className}`}
     />
   )
-}
-
-// Detect media type from URL extension
-function detectMediaType(url: string): 'image' | 'video' | 'audio' | 'other' {
-  const extension = url.split('.').pop()?.toLowerCase()?.split('?')[0]
-  if (['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'].includes(extension || '')) return 'image'
-  if (['mp4', 'webm', 'mov'].includes(extension || '')) return 'video'
-  if (['mp3', 'wav', 'ogg', 'aac'].includes(extension || '')) return 'audio'
-  return 'other'
 }
 
 // Media thumbnail for landing page - handles images, videos, and audio gracefully

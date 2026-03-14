@@ -1097,7 +1097,7 @@ function PostDetailPage() {
 
       {/* Mobile/Tablet single-column layout (<lg) */}
       <div className="lg:hidden flex justify-center px-0 md:px-3 sm:px-4">
-        <article className="w-full max-w-2xl overflow-hidden">
+        <article className="w-full max-w-2xl">
           {/* Header */}
           <div className="px-4 py-3 md:px-2">
             <UserHeader />
@@ -1243,26 +1243,38 @@ function PostDetailPage() {
 
                 {/* Tab content */}
                 {mobileTab === 'comments' ? (
-                  <div className="flex flex-col flex-1 min-h-[300px]">
-                    <div className="flex-1 overflow-y-auto px-1 py-3">
+                  <>
+                    {isAuthenticated ? (
                       <CommentSection
                         postId={post.id}
-                        userId={currentUser?.id}
+                        userId={currentUser?.id || undefined}
                         isAuthenticated={isAuthenticated}
+                        className="px-4"
                         variant="inline"
                       />
-                    </div>
+                    ) : (
+                      <div className="px-4 py-8 text-center text-muted-foreground text-sm">
+                        Sign in to view and add comments
+                      </div>
+                    )}
                     {isAuthenticated && (
-                      <div className="sticky bottom-0 border-t border-border bg-background">
+                      <div className="sticky bottom-0 border-t border-border bg-background px-4 py-3">
                         <CommentSection
                           postId={post.id}
-                          userId={currentUser?.id}
+                          userId={currentUser?.id || undefined}
                           isAuthenticated={isAuthenticated}
                           variant="input-only"
                         />
                       </div>
                     )}
-                  </div>
+                    {isReady && !isAuthenticated && (
+                      <div className="px-4 py-3">
+                        <Button onClick={() => login()} className="w-full">
+                          Log in or Sign up
+                        </Button>
+                      </div>
+                    )}
+                  </>
                 ) : mobileTab === 'details' ? (
                   <PostDetails post={post} editionSupply={editionSupply} collectCount={collectCount} getTokenUrl={(addr) => getExplorerUrl('token', addr, preferences.explorer)} />
                 ) : (
@@ -1277,14 +1289,76 @@ function PostDetailPage() {
               </>
             ) : (
               <>
-                {/* Action buttons + caption — single section */}
+                {/* Standard post: action buttons + caption */}
                 <div className="pb-4 border-b border-border space-y-2">
                   <ActionButtons onCommentClick={() => setMobileTab('comments')} />
                   <Caption showAvatar={true} />
                 </div>
 
-                {/* Details metadata section */}
-                <PostDetails post={post} editionSupply={editionSupply} collectCount={collectCount} getTokenUrl={(addr) => getExplorerUrl('token', addr, preferences.explorer)} />
+                {/* Segment control: Comments | Details */}
+                <div className="flex border-b border-border" role="tablist">
+                  {(['comments', 'details'] as const).map((tab) => (
+                    <button
+                      key={tab}
+                      type="button"
+                      role="tab"
+                      aria-selected={mobileTab === tab}
+                      onClick={() => setMobileTab(tab)}
+                      className={cn(
+                        'flex-1 py-3 text-sm font-medium transition-colors relative',
+                        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset',
+                        mobileTab === tab
+                          ? 'text-foreground'
+                          : 'text-muted-foreground hover:text-foreground/80',
+                      )}
+                    >
+                      <span className="relative inline-flex items-center">
+                        {tab === 'comments' ? 'Comments' : 'Details'}
+                      </span>
+                      {mobileTab === tab && (
+                        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-foreground rounded-full" />
+                      )}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Tab content */}
+                {mobileTab === 'comments' ? (
+                  <>
+                    {isAuthenticated ? (
+                      <CommentSection
+                        postId={post.id}
+                        userId={currentUser?.id || undefined}
+                        isAuthenticated={isAuthenticated}
+                        className="px-4"
+                        variant="inline"
+                      />
+                    ) : (
+                      <div className="px-4 py-8 text-center text-muted-foreground text-sm">
+                        Sign in to view and add comments
+                      </div>
+                    )}
+                    {isAuthenticated && (
+                      <div className="sticky bottom-0 border-t border-border bg-background px-4 py-3">
+                        <CommentSection
+                          postId={post.id}
+                          userId={currentUser?.id || undefined}
+                          isAuthenticated={isAuthenticated}
+                          variant="input-only"
+                        />
+                      </div>
+                    )}
+                    {isReady && !isAuthenticated && (
+                      <div className="px-4 py-3">
+                        <Button onClick={() => login()} className="w-full">
+                          Log in or Sign up
+                        </Button>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <PostDetails post={post} editionSupply={editionSupply} collectCount={collectCount} getTokenUrl={(addr) => getExplorerUrl('token', addr, preferences.explorer)} />
+                )}
               </>
             )}
           </div>

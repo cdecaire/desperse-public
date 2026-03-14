@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
 interface UseDoubleTapOptions {
 	onSingleTap?: () => void
@@ -18,6 +18,15 @@ export function useDoubleTap({
 }: UseDoubleTapOptions) {
 	const lastTapRef = useRef(0)
 	const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+	// Clean up pending timer on unmount to prevent stale navigation
+	useEffect(() => {
+		return () => {
+			if (timerRef.current) {
+				clearTimeout(timerRef.current)
+			}
+		}
+	}, [])
 
 	const handleClick = useCallback(() => {
 		const now = Date.now()

@@ -3,7 +3,7 @@ import { useCallback, useRef } from 'react'
 interface UseDoubleTapOptions {
 	onSingleTap?: () => void
 	onDoubleTap?: () => void
-	/** Max ms between taps to count as double. Default: 300 */
+	/** Max ms between taps to count as double. Default: 250 */
 	delay?: number
 }
 
@@ -14,7 +14,7 @@ interface UseDoubleTapOptions {
 export function useDoubleTap({
 	onSingleTap,
 	onDoubleTap,
-	delay = 300,
+	delay = 250,
 }: UseDoubleTapOptions) {
 	const lastTapRef = useRef(0)
 	const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)

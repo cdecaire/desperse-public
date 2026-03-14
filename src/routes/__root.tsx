@@ -240,6 +240,14 @@ export const Route = createRootRoute({
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+  // Disable browser's native scroll restoration — TanStack Router handles it
+  // Without this, the browser and router fight over scroll position on back/forward
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual'
+    }
+  }, [])
+
   // Load Buffer polyfill on client side only (not during SSR)
   // Note: This runs after initial render, so modules that need Buffer synchronously
   // should use the Vite alias which maps 'buffer' to 'buffer-es' in the browser

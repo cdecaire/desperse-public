@@ -564,6 +564,11 @@ function PostDetailPage() {
     }
   }
 
+  // Edition buy button label with price (e.g. "Collect 1.00 SOL")
+  const buyLabel = post.price && post.currency
+    ? `Collect ${formatPriceDisplay(post.price, post.currency)}`
+    : 'Collect'
+
   // Handle collect success
   const handleCollectSuccess = () => {
     setLocalCollectCount(collectCount + 1)
@@ -860,44 +865,22 @@ function PostDetailPage() {
                   )}
 
                   {/* Action area: download if owned + has downloads, collect/buy if not owned */}
-                  {showDownload ? (
+                  {showDownload && (
                     <Button onClick={handleDownload} disabled={isDownloading} className="w-full">
                       <Icon name="download" variant="regular" className="mr-2" />
                       {isDownloading ? 'Verifying...' : 'Download'}
                     </Button>
-                  ) : !isCollected && !isNoLongerCollectible && (
-                    isTimedEdition ? (
-                      <MintWindowBadge
-                        mintWindowStart={post.mintWindowStart}
-                        mintWindowEnd={post.mintWindowEnd}
-                        mintedCount={editionSupply}
-                        variant="dark"
-                        action={
-                          isUserReady && isAuthenticated && currentUser?.id && post.price && post.currency ? (
-                            <BuyButton
-                              postId={post.id}
-                              userId={currentUser.id}
-                              price={post.price}
-                              currency={post.currency}
-                              maxSupply={post.maxSupply}
-                              currentSupply={editionSupply}
-                              isAuthenticated={isAuthenticated}
-                              onSuccess={handleBuySuccess}
-                              onPurchased={() => setLocalIsOwned(true)}
-                              toneColor={postTypeColor}
-                              isCollected={isCollected}
-                              isSoldOut={isSoldOut}
-                              mintWindowStart={post.mintWindowStart}
-                              mintWindowEnd={post.mintWindowEnd}
-                              arweaveStatus={arweaveStatus}
-                              label="Collect"
-                              variant="outline"
-                              className="rounded-full px-3.5 h-8 text-xs font-medium"
-                            />
-                          ) : undefined
-                        }
-                      />
-                    ) : isUserReady && isAuthenticated && currentUser?.id ? (
+                  )}
+                  {!showDownload && !isCollected && !isNoLongerCollectible && isTimedEdition && (
+                    <MintWindowBadge
+                      mintWindowStart={post.mintWindowStart}
+                      mintWindowEnd={post.mintWindowEnd}
+                      mintedCount={editionSupply}
+                      variant="prominent"
+                    />
+                  )}
+                  {!showDownload && !isCollected && !isNoLongerCollectible && (
+                    isUserReady && isAuthenticated && currentUser?.id ? (
                       post.type === 'edition' && post.price && post.currency ? (
                         <BuyButton
                           postId={post.id}
@@ -913,8 +896,10 @@ function PostDetailPage() {
                           toneColor={postTypeColor}
                           isCollected={isCollected}
                           isSoldOut={isSoldOut}
+                          mintWindowStart={post.mintWindowStart}
+                          mintWindowEnd={post.mintWindowEnd}
                           arweaveStatus={arweaveStatus}
-                          label="Collect"
+                          label={buyLabel}
                           className="w-full"
                         />
                       ) : post.type === 'collectible' ? (
@@ -1171,44 +1156,22 @@ function PostDetailPage() {
                   )}
 
                   {/* Download if owned + has downloads, collect/buy if not owned */}
-                  {showDownload ? (
+                  {showDownload && (
                     <Button onClick={handleDownload} disabled={isDownloading} className="w-full">
                       <Icon name="download" variant="regular" className="mr-2" />
                       {isDownloading ? 'Verifying...' : 'Download'}
                     </Button>
-                  ) : !isCollected && !isNoLongerCollectible && (
-                    isTimedEdition ? (
-                      <MintWindowBadge
-                        mintWindowStart={post.mintWindowStart}
-                        mintWindowEnd={post.mintWindowEnd}
-                        mintedCount={editionSupply}
-                        variant="dark"
-                        action={
-                          isUserReady && isAuthenticated && currentUser?.id && post.price && post.currency ? (
-                            <BuyButton
-                              postId={post.id}
-                              userId={currentUser.id}
-                              price={post.price}
-                              currency={post.currency}
-                              maxSupply={post.maxSupply}
-                              currentSupply={editionSupply}
-                              isAuthenticated={isAuthenticated}
-                              onSuccess={handleBuySuccess}
-                              onPurchased={() => setLocalIsOwned(true)}
-                              toneColor={postTypeColor}
-                              isCollected={isCollected}
-                              isSoldOut={isSoldOut}
-                              mintWindowStart={post.mintWindowStart}
-                              mintWindowEnd={post.mintWindowEnd}
-                              arweaveStatus={arweaveStatus}
-                              label="Collect"
-                              variant="outline"
-                              className="rounded-full px-3.5 h-8 text-xs font-medium"
-                            />
-                          ) : undefined
-                        }
-                      />
-                    ) : isUserReady && isAuthenticated && currentUser?.id ? (
+                  )}
+                  {!showDownload && !isCollected && !isNoLongerCollectible && isTimedEdition && (
+                    <MintWindowBadge
+                      mintWindowStart={post.mintWindowStart}
+                      mintWindowEnd={post.mintWindowEnd}
+                      mintedCount={editionSupply}
+                      variant="prominent"
+                    />
+                  )}
+                  {!showDownload && !isCollected && !isNoLongerCollectible && (
+                    isUserReady && isAuthenticated && currentUser?.id ? (
                       post.type === 'edition' && post.price && post.currency ? (
                         <BuyButton
                           postId={post.id}
@@ -1224,8 +1187,10 @@ function PostDetailPage() {
                           toneColor={postTypeColor}
                           isCollected={isCollected}
                           isSoldOut={isSoldOut}
+                          mintWindowStart={post.mintWindowStart}
+                          mintWindowEnd={post.mintWindowEnd}
                           arweaveStatus={arweaveStatus}
-                          label="Collect"
+                          label={buyLabel}
                           className="w-full"
                         />
                       ) : post.type === 'collectible' ? (

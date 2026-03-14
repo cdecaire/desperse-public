@@ -564,20 +564,6 @@ function PostDetailPage() {
     }
   }
 
-  // Display values for Price/Collected card
-  const priceText = post.type === 'collectible'
-    ? 'Free'
-    : post.price && post.currency
-      ? formatPriceDisplay(post.price, post.currency)
-      : null
-  const collectedText = post.type === 'collectible'
-    ? collectCount.toLocaleString()
-    : post.maxSupply === 1
-      ? `${editionSupply} of 1`
-      : post.maxSupply
-        ? `${editionSupply}/${post.maxSupply} Minted`
-        : `${editionSupply} Minted`
-
   // Handle collect success
   const handleCollectSuccess = () => {
     setLocalCollectCount(collectCount + 1)
@@ -859,29 +845,9 @@ function PostDetailPage() {
           <div className="w-[340px] flex flex-col bg-background border-l border-border shrink-0">
             {isCollectibleOrEdition ? (
               <>
-                {/* Edition/Collectible: Header + price/collected + action */}
+                {/* Edition/Collectible: Header + action */}
                 <div className="px-4 pb-3 pt-3 border-b border-border shrink-0 flex flex-col gap-3">
                   <UserHeader showTypeBadge={false} />
-
-                  {/* Price / Collected info card */}
-                  {priceText && (
-                    <div className="bg-muted/30 border border-border rounded-2xl px-4 py-2">
-                      <div className="flex items-start justify-between text-xs">
-                        <div className="flex flex-col flex-1 justify-center">
-                          <span className="text-muted-foreground font-medium leading-snug">Price</span>
-                          <span className="text-foreground font-semibold leading-tight">
-                            {priceText}
-                          </span>
-                        </div>
-                        <div className="flex flex-col flex-1 justify-center">
-                          <span className="text-muted-foreground font-medium leading-snug">Collected</span>
-                          <span className="text-foreground font-semibold leading-tight">
-                            {collectedText}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
 
                   {/* Arweave storage issue banner */}
                   {isMintingPaused && (
@@ -893,13 +859,13 @@ function PostDetailPage() {
                     </div>
                   )}
 
-                  {/* Action area */}
+                  {/* Action area: download if owned + has downloads, collect/buy if not owned */}
                   {showDownload ? (
                     <Button onClick={handleDownload} disabled={isDownloading} className="w-full">
                       <Icon name="download" variant="regular" className="mr-2" />
                       {isDownloading ? 'Verifying...' : 'Download'}
                     </Button>
-                  ) : !isNoLongerCollectible && (
+                  ) : !isCollected && !isNoLongerCollectible && (
                     isTimedEdition ? (
                       <MintWindowBadge
                         mintWindowStart={post.mintWindowStart}
@@ -974,22 +940,9 @@ function PostDetailPage() {
 
                 {/* Post info: title + badge, description, action buttons */}
                 <div className="px-4 py-3 border-b border-border shrink-0">
-                  <div className="flex items-center gap-2.5">
-                    <span className="flex-1 font-semibold text-base min-w-0 truncate">
-                      {(post as any).nftName || post.caption?.split('\n')[0] || 'Untitled'}
-                    </span>
-                    {typeBadge && (
-                      <span
-                        className={cn(
-                          'shrink-0 text-xs font-medium px-2 py-0.5 rounded-full',
-                          POST_TYPE_META[post.type].accentBgClass,
-                          POST_TYPE_META[post.type].badgeClass,
-                        )}
-                      >
-                        {typeBadge.label}
-                      </span>
-                    )}
-                  </div>
+                  <span className="font-semibold text-base min-w-0 truncate block">
+                    {(post as any).nftName || post.caption?.split('\n')[0] || 'Untitled'}
+                  </span>
                   {post.caption && (
                     <p className="text-sm text-muted-foreground whitespace-pre-wrap wrap-break-word mt-2">
                       {post.caption}
@@ -1204,28 +1157,9 @@ function PostDetailPage() {
           <div className="px-4 py-3 md:px-2">
             {isCollectibleOrEdition ? (
               <>
-                {/* Action buttons + price + collect — single section */}
+                {/* Action buttons + collect — single section */}
                 <div className="pb-4 border-b border-border flex flex-col gap-3">
                   <ActionButtons skipBuy onCommentClick={() => setMobileCommentSheetOpen(true)} />
-
-                  {priceText && (
-                    <div className="bg-muted/30 border border-border rounded-2xl px-4 py-2">
-                      <div className="flex items-start justify-between text-xs">
-                        <div className="flex flex-col flex-1 justify-center">
-                          <span className="text-muted-foreground font-medium leading-snug">Price</span>
-                          <span className="text-foreground font-semibold leading-tight">
-                            {priceText}
-                          </span>
-                        </div>
-                        <div className="flex flex-col flex-1 justify-center">
-                          <span className="text-muted-foreground font-medium leading-snug">Collected</span>
-                          <span className="text-foreground font-semibold leading-tight">
-                            {collectedText}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
 
                   {isMintingPaused && (
                     <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-800 dark:bg-amber-950/50 dark:text-amber-200">
@@ -1236,12 +1170,13 @@ function PostDetailPage() {
                     </div>
                   )}
 
+                  {/* Download if owned + has downloads, collect/buy if not owned */}
                   {showDownload ? (
                     <Button onClick={handleDownload} disabled={isDownloading} className="w-full">
                       <Icon name="download" variant="regular" className="mr-2" />
                       {isDownloading ? 'Verifying...' : 'Download'}
                     </Button>
-                  ) : !isNoLongerCollectible && (
+                  ) : !isCollected && !isNoLongerCollectible && (
                     isTimedEdition ? (
                       <MintWindowBadge
                         mintWindowStart={post.mintWindowStart}
@@ -1314,24 +1249,11 @@ function PostDetailPage() {
                   )}
                 </div>
 
-                {/* Title + badge + description */}
+                {/* Title + description */}
                 <div className="py-4 border-b border-border space-y-2">
-                  <div className="flex items-center gap-2.5">
-                    <span className="flex-1 font-semibold text-base min-w-0 truncate">
-                      {(post as any).nftName || post.caption?.split('\n')[0] || 'Untitled'}
-                    </span>
-                    {typeBadge && (
-                      <span
-                        className={cn(
-                          'shrink-0 text-xs font-medium px-2 py-0.5 rounded-full',
-                          POST_TYPE_META[post.type].accentBgClass,
-                          POST_TYPE_META[post.type].badgeClass,
-                        )}
-                      >
-                        {typeBadge.label}
-                      </span>
-                    )}
-                  </div>
+                  <span className="font-semibold text-base min-w-0 truncate block">
+                    {(post as any).nftName || post.caption?.split('\n')[0] || 'Untitled'}
+                  </span>
 
                   {post.caption && (
                     <p className="text-sm text-muted-foreground whitespace-pre-wrap wrap-break-word">

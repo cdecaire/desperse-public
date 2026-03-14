@@ -188,6 +188,7 @@ export async function createCommentDirect(
 					title: `${actorName} commented on your post`,
 					body: '',
 					deepLink: `https://desperse.com/p/${postId}`,
+					actorId: userId,
 				})
 			} catch (pushErr) {
 				console.warn('[comments] Push notification error:', pushErr instanceof Error ? pushErr.message : 'Unknown error')

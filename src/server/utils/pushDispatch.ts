@@ -89,6 +89,7 @@ interface PushPayload {
   title: string
   body: string
   deepLink: string
+  actorId?: string
   actorAvatarUrl?: string
 }
 
@@ -148,6 +149,22 @@ export async function sendPushNotification(
   // Get user's registered push tokens
   const tokens = await getUserPushTokens(recipientUserId)
   if (tokens.length === 0) return
+
+  // Auto-resolve actor avatar if actorId provided but no explicit avatarUrl
+  if (payload.actorId && !payload.actorAvatarUrl) {
+    try {
+      const [actor] = await db
+        .select({ avatarUrl: users.avatarUrl })
+        .from(users)
+        .where(eq(users.id, payload.actorId))
+        .limit(1)
+      if (actor?.avatarUrl) {
+        payload.actorAvatarUrl = actor.avatarUrl
+      }
+    } catch {
+      // Non-critical, continue without avatar
+    }
+  }
 
   const accessToken = await getAccessToken()
   const projectId = getProjectId()

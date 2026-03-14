@@ -115,6 +115,7 @@ export async function likePostDirect(
 				title: `${actorName} liked your post`,
 				body: '',
 				deepLink: `https://desperse.com/p/${postId}`,
+				actorId: userId,
 			})
 		} catch (pushErr) {
 			console.warn('[likes] Push notification error:', pushErr instanceof Error ? pushErr.message : 'Unknown error')

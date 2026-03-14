@@ -499,6 +499,7 @@ export async function fulfillPurchaseDirect(purchaseId: string): Promise<Fulfill
           title: `${actorName} purchased your edition`,
           body: '',
           deepLink: `https://desperse.com/p/${purchaseData.postId}`,
+          actorId: purchaseData.userId,
         })
       } catch (pushErr) {
         console.warn('[fulfillment] Push notification error:', pushErr instanceof Error ? pushErr.message : 'Unknown error')

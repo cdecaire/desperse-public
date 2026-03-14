@@ -120,6 +120,7 @@ export async function followUserDirect(
 				title: `${actorName} started following you`,
 				body: '',
 				deepLink: `https://desperse.com`,
+				actorId: userId,
 			})
 		} catch (pushErr) {
 			console.warn('[follows] Push notification error:', pushErr instanceof Error ? pushErr.message : 'Unknown error')

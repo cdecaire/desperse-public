@@ -322,6 +322,7 @@ export async function prepareCollectDirect(
 							title: `${actorName} collected your post`,
 							body: '',
 							deepLink: `https://desperse.com/p/${existing.postId}`,
+							actorId: existing.userId,
 						})
 					}
 				} catch (notifError) {
@@ -603,6 +604,7 @@ export async function checkCollectionStatusDirect(
 							title: `${actorName} collected your post`,
 							body: '',
 							deepLink: `https://desperse.com/p/${col.postId}`,
+							actorId: col.userId,
 						})
 					}
 				} catch (notifError) {

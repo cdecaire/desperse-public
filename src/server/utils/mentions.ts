@@ -126,6 +126,7 @@ export async function processMentions(
             deepLink: referenceType === 'post'
               ? `https://desperse.com/p/${referenceId}`
               : `https://desperse.com`,
+            actorId: mentionerUserId,
           })
         }
       } catch (pushErr) {
@@ -173,6 +174,7 @@ export async function processMentions(
           deepLink: referenceType === 'post'
             ? `https://desperse.com/p/${referenceId}`
             : `https://desperse.com`,
+          actorId: mentionerUserId,
         })
       }
     } catch (pushErr) {

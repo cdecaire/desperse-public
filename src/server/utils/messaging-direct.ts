@@ -436,6 +436,7 @@ export async function sendMessageDirect(
 				title: `${actorName} sent you a message`,
 				body: truncatePreview(trimmedContent),
 				deepLink: `https://desperse.com/messages/${threadId}`,
+				actorId: userId,
 			})
 		} catch (pushErr) {
 			console.warn('[messaging] Push notification error:', pushErr instanceof Error ? pushErr.message : 'Unknown error')

@@ -1,23 +1,11 @@
 import { createFileRoute, Outlet, Link, useLocation } from '@tanstack/react-router'
 import { AuthGuard } from '@/components/shared/AuthGuard'
-import SettingsNav from '@/components/settings/SettingsNav'
+import SettingsNav, { settingsRouteTitles } from '@/components/settings/SettingsNav'
 import { Icon } from '@/components/ui/icon'
 
 export const Route = createFileRoute('/settings/account')({
   component: AccountLayout,
 })
-
-// Map routes to page titles for mobile header
-const routeTitles: Record<string, string> = {
-  '/settings/account/profile-info': 'Profile Info',
-  '/settings/account/wallets': 'Wallets & Linked',
-  '/settings/account/security': 'Security',
-  '/settings/account/storage-credits': 'Storage Credits',
-  '/settings/account/app': 'App Settings',
-  '/settings/account/messaging': 'Messaging',
-  '/settings/account/notifications': 'Notifications',
-  '/settings/account/copyright': 'Copyright & Licensing',
-}
 
 function AccountLayout() {
   const location = useLocation()
@@ -25,7 +13,7 @@ function AccountLayout() {
                        location.pathname !== '/settings/account/'
   
   // Get the page title based on current route
-  const pageTitle = routeTitles[location.pathname] || 'Account Settings'
+  const pageTitle = settingsRouteTitles[location.pathname] || 'Account Settings'
 
   return (
     <AuthGuard>

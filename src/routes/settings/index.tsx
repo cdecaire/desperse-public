@@ -3,71 +3,11 @@ import { useEffect } from 'react'
 import { AuthGuard } from '@/components/shared/AuthGuard'
 import { Icon } from '@/components/ui/icon'
 import { MobileHeader, MobileHeaderSpacer } from '@/components/layout/MobileHeader'
+import { settingsCategories } from '@/components/settings/SettingsNav'
 
 export const Route = createFileRoute('/settings/')({
   component: SettingsIndexPage,
 })
-
-const settingsCategories = [
-  {
-    title: 'Account',
-    items: [
-      {
-        path: '/settings/account/profile-info',
-        label: 'Profile Info',
-        icon: 'fa-user',
-        description: 'Update your profile and username',
-      },
-      {
-        path: '/settings/account/wallets',
-        label: 'Wallets & Linked',
-        icon: 'fa-wallet',
-        description: 'Manage connected wallets and accounts',
-      },
-      {
-        path: '/settings/account/notifications',
-        label: 'Notifications',
-        icon: 'fa-bell',
-        description: 'Choose which notifications to receive',
-      },
-      {
-        path: '/settings/account/messaging',
-        label: 'Messaging',
-        icon: 'fa-message',
-        description: 'Control who can message you',
-      },
-      {
-        path: '/settings/account/security',
-        label: 'Security',
-        icon: 'fa-shield',
-        description: 'Password and security settings',
-      },
-      {
-        path: '/settings/account/storage-credits',
-        label: 'Storage Credits',
-        icon: 'fa-hard-drive',
-        description: 'Manage Arweave storage credits and authorizations',
-      },
-      {
-        path: '/settings/account/app',
-        label: 'App Settings',
-        icon: 'fa-gear',
-        description: 'Preferences and app configuration',
-      },
-    ],
-  },
-  {
-    title: 'General',
-    items: [
-      {
-        path: '/settings/help',
-        label: 'Help & About',
-        icon: 'fa-circle-info',
-        description: 'Learn more and get support',
-      },
-    ],
-  },
-]
 
 function SettingsIndexPage() {
   const location = useLocation()

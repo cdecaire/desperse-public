@@ -1243,7 +1243,7 @@ function PostDetailPage() {
 
                 {/* Tab content */}
                 {mobileTab === 'comments' ? (
-                  <div className={isAuthenticated ? 'pb-16' : ''}>
+                  <>
                     {isAuthenticated ? (
                       <CommentSection
                         postId={post.id}
@@ -1257,6 +1257,16 @@ function PostDetailPage() {
                         Sign in to view and add comments
                       </div>
                     )}
+                    {isAuthenticated && (
+                      <div className="sticky bottom-0 border-t border-border bg-background px-4 pt-3" style={{ paddingBottom: 'calc(0.75rem + env(safe-area-inset-bottom, 0px))' }}>
+                        <CommentSection
+                          postId={post.id}
+                          userId={currentUser?.id || undefined}
+                          isAuthenticated={isAuthenticated}
+                          variant="input-only"
+                        />
+                      </div>
+                    )}
                     {isReady && !isAuthenticated && (
                       <div className="px-4 py-3">
                         <Button onClick={() => login()} className="w-full">
@@ -1264,7 +1274,7 @@ function PostDetailPage() {
                         </Button>
                       </div>
                     )}
-                  </div>
+                  </>
                 ) : mobileTab === 'details' ? (
                   <div className={isAuthenticated ? 'pb-16' : ''}>
                     <PostDetails post={post} editionSupply={editionSupply} collectCount={collectCount} getTokenUrl={(addr) => getExplorerUrl('token', addr, preferences.explorer)} />
@@ -1351,8 +1361,8 @@ function PostDetailPage() {
 
         </article>
 
-        {/* Fixed comment input — always visible at bottom */}
-        {isAuthenticated && (
+        {/* Fixed comment input — visible on non-comments tabs */}
+        {isAuthenticated && mobileTab !== 'comments' && (
           <div className="fixed bottom-0 left-0 right-0 border-t border-border bg-background px-4 pt-3 z-30" style={{ paddingBottom: 'calc(0.75rem + env(safe-area-inset-bottom, 0px))' }}>
             <div className="max-w-2xl mx-auto">
               <CommentSection

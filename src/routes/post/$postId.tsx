@@ -1280,7 +1280,7 @@ function PostDetailPage() {
                     <PostDetails post={post} editionSupply={editionSupply} collectCount={collectCount} getTokenUrl={(addr) => getExplorerUrl('token', addr, preferences.explorer)} />
                   </div>
                 ) : (
-                  <div className={isAuthenticated ? 'pb-16' : ''}>
+                  <div>
                     <CollectorsList
                       collectors={postCollectors}
                       isLoading={isLoadingCollectors}
@@ -1361,8 +1361,8 @@ function PostDetailPage() {
 
         </article>
 
-        {/* Fixed comment input — visible on non-comments tabs */}
-        {isAuthenticated && mobileTab !== 'comments' && (
+        {/* Fixed comment input — visible on details tab only */}
+        {isAuthenticated && mobileTab === 'details' && (
           <div className="fixed bottom-0 left-0 right-0 border-t border-border bg-background px-4 pt-3 z-30" style={{ paddingBottom: 'calc(0.75rem + env(safe-area-inset-bottom, 0px))' }}>
             <div className="max-w-2xl mx-auto">
               <CommentSection

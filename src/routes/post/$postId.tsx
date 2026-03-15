@@ -711,6 +711,103 @@ function PostDetailPage() {
   )
 
 
+  // Shared tab bar for both desktop and mobile
+  const tabs = isCollectibleOrEdition
+    ? (['comments', 'details', 'collectors'] as const)
+    : (['comments', 'details'] as const)
+  const tabLabels: Record<string, string> = { comments: 'Comments', details: 'Details', collectors: 'Collectors' }
+
+  const TabBar = ({ activeTab, onTabChange }: { activeTab: string; onTabChange: (tab: any) => void }) => (
+    <div className="flex border-b border-border shrink-0" role="tablist">
+      {tabs.map((tab) => (
+        <button
+          key={tab}
+          type="button"
+          role="tab"
+          aria-selected={activeTab === tab}
+          onClick={() => onTabChange(tab)}
+          className={cn(
+            'flex-1 py-3 text-sm font-medium transition-colors relative',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset',
+            activeTab === tab
+              ? 'text-foreground'
+              : 'text-muted-foreground hover:text-foreground/80',
+          )}
+        >
+          <span className="relative inline-flex items-center">
+            {tabLabels[tab]}
+          </span>
+          {activeTab === tab && (
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-foreground rounded-full" />
+          )}
+        </button>
+      ))}
+    </div>
+  )
+
+  // Shared tab content renderer
+  const TabContent = ({ activeTab, showHeading = false }: { activeTab: string; showHeading?: boolean }) => (
+    <>
+      {activeTab === 'comments' ? (
+        <>
+          {isAuthenticated ? (
+            <CommentSection
+              postId={post.id}
+              userId={currentUser?.id || undefined}
+              isAuthenticated={isAuthenticated}
+              className="px-4"
+              variant="inline"
+            />
+          ) : (
+            <div className="px-4 py-8 text-center text-muted-foreground text-sm">
+              Sign in to view and add comments
+            </div>
+          )}
+        </>
+      ) : activeTab === 'details' ? (
+        <div className="px-4 py-3">
+          <PostDetails post={post} editionSupply={editionSupply} collectCount={collectCount} showHeading={showHeading} getTokenUrl={(addr) => getExplorerUrl('token', addr, preferences.explorer)} />
+        </div>
+      ) : activeTab === 'collectors' ? (
+        <CollectorsList
+          collectors={postCollectors}
+          isLoading={isLoadingCollectors}
+          currentUserId={currentUser?.id}
+          isAuthenticated={isAuthenticated}
+          getTokenUrl={(sig) => getExplorerUrl('tx', sig, preferences.explorer)}
+        />
+      ) : null}
+    </>
+  )
+
+  // Shared comment footer (input or login CTA)
+  const CommentFooter = ({ activeTab, sticky = false }: { activeTab: string; sticky?: boolean }) => {
+    if (activeTab !== 'comments') return null
+    return (
+      <div className={cn(
+        'border-t border-border shrink-0 bg-background',
+        sticky ? 'sticky bottom-0' : '',
+      )} style={sticky ? { paddingBottom: 'env(safe-area-inset-bottom, 0px)' } : undefined}>
+        {isAuthenticated ? (
+          <div className="px-4 py-3">
+            <CommentSection
+              postId={post.id}
+              userId={currentUser?.id || undefined}
+              isAuthenticated={isAuthenticated}
+              variant="input-only"
+            />
+          </div>
+        ) : isReady ? (
+          <div className="px-4 py-3">
+            <Button onClick={() => login()} className="w-full">
+              Log in or Sign up
+            </Button>
+          </div>
+        ) : null}
+      </div>
+    )
+  }
+
   // User header component
   const UserHeader = ({ showMenu = true, showTypeBadge = true }: { showMenu?: boolean; showTypeBadge?: boolean }) => (
     <div className="flex items-center gap-3">
@@ -910,7 +1007,7 @@ function PostDetailPage() {
 
                 </div>
 
-                {/* Post info: title + badge, description, action buttons */}
+                {/* Post info: title, description, action buttons */}
                 <div className="px-4 py-3 border-b border-border shrink-0">
                   <span className="font-semibold text-base min-w-0 truncate block">
                     {(post as any).nftName || post.caption?.split('\n')[0] || 'Untitled'}
@@ -923,86 +1020,11 @@ function PostDetailPage() {
                   <ActionButtons skipBuy className="mt-2 -ml-2" />
                 </div>
 
-                {/* Segment control: Comments | Details | Collectors */}
-                <div className="flex border-b border-border shrink-0" role="tablist">
-                  {(['comments', 'details', 'collectors'] as const).map((tab) => (
-                    <button
-                      key={tab}
-                      type="button"
-                      role="tab"
-                      aria-selected={desktopTab === tab}
-                      onClick={() => setDesktopTab(tab)}
-                      className={cn(
-                        'flex-1 py-3 text-sm font-medium transition-colors relative',
-                        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset',
-                        desktopTab === tab
-                          ? 'text-foreground'
-                          : 'text-muted-foreground hover:text-foreground/80',
-                      )}
-                    >
-                      <span className="relative inline-flex items-center">
-                        {tab === 'comments' ? 'Comments' : tab === 'details' ? 'Details' : 'Collectors'}
-                      </span>
-                      {desktopTab === tab && (
-                        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-foreground rounded-full" />
-                      )}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Scrollable middle: tab content */}
+                <TabBar activeTab={desktopTab} onTabChange={setDesktopTab} />
                 <div className="flex-1 overflow-y-auto min-h-0" role="tabpanel">
-                  {desktopTab === 'comments' ? (
-                    <>
-                      {isAuthenticated ? (
-                        <CommentSection
-                          postId={post.id}
-                          userId={currentUser?.id || undefined}
-                          isAuthenticated={isAuthenticated}
-                          className="px-4"
-                          variant="inline"
-                        />
-                      ) : (
-                        <div className="px-4 py-8 text-center text-muted-foreground text-sm">
-                          Sign in to view and add comments
-                        </div>
-                      )}
-                    </>
-                  ) : desktopTab === 'details' ? (
-                    <div className="px-4 py-3">
-                      <PostDetails post={post} editionSupply={editionSupply} collectCount={collectCount} showHeading={false} getTokenUrl={(addr) => getExplorerUrl('token', addr, preferences.explorer)} />
-                    </div>
-                  ) : (
-                    <CollectorsList
-                      collectors={postCollectors}
-                      isLoading={isLoadingCollectors}
-                      currentUserId={currentUser?.id}
-                      isAuthenticated={isAuthenticated}
-                      getTokenUrl={(sig) => getExplorerUrl('tx', sig, preferences.explorer)}
-                    />
-                  )}
+                  <TabContent activeTab={desktopTab} />
                 </div>
-
-                {/* Fixed footer: Comment input */}
-                <div className="border-t border-border shrink-0">
-                  {desktopTab === 'comments' && isAuthenticated && (
-                    <div className="px-4 py-3">
-                      <CommentSection
-                        postId={post.id}
-                        userId={currentUser?.id || undefined}
-                        isAuthenticated={isAuthenticated}
-                        variant="input-only"
-                      />
-                    </div>
-                  )}
-                  {desktopTab === 'comments' && isReady && !isAuthenticated && (
-                    <div className="px-4 py-3">
-                      <Button onClick={() => login()} className="w-full">
-                        Log in or Sign up
-                      </Button>
-                    </div>
-                  )}
-                </div>
+                <CommentFooter activeTab={desktopTab} />
               </>
             ) : (
               <>
@@ -1017,78 +1039,11 @@ function PostDetailPage() {
                   <ActionButtons className="mt-2 -ml-2" />
                 </div>
 
-                {/* Segment control: Comments | Details */}
-                <div className="flex border-b border-border shrink-0" role="tablist">
-                  {(['comments', 'details'] as const).map((tab) => (
-                    <button
-                      key={tab}
-                      type="button"
-                      role="tab"
-                      aria-selected={desktopTab === tab}
-                      onClick={() => setDesktopTab(tab)}
-                      className={cn(
-                        'flex-1 py-3 text-sm font-medium transition-colors relative',
-                        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset',
-                        desktopTab === tab
-                          ? 'text-foreground'
-                          : 'text-muted-foreground hover:text-foreground/80',
-                      )}
-                    >
-                      <span className="relative inline-flex items-center">
-                        {tab === 'comments' ? 'Comments' : 'Details'}
-                      </span>
-                      {desktopTab === tab && (
-                        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-foreground rounded-full" />
-                      )}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Scrollable middle: tab content */}
+                <TabBar activeTab={desktopTab} onTabChange={setDesktopTab} />
                 <div className="flex-1 overflow-y-auto min-h-0" role="tabpanel">
-                  {desktopTab === 'comments' ? (
-                    <>
-                      {isAuthenticated ? (
-                        <CommentSection
-                          postId={post.id}
-                          userId={currentUser?.id || undefined}
-                          isAuthenticated={isAuthenticated}
-                          className="px-4"
-                          variant="inline"
-                        />
-                      ) : (
-                        <div className="px-4 py-8 text-center text-muted-foreground text-sm">
-                          Sign in to view and add comments
-                        </div>
-                      )}
-                    </>
-                  ) : (
-                    <div className="px-4 py-3">
-                      <PostDetails post={post} editionSupply={editionSupply} collectCount={collectCount} showHeading={false} getTokenUrl={(addr) => getExplorerUrl('token', addr, preferences.explorer)} />
-                    </div>
-                  )}
+                  <TabContent activeTab={desktopTab} />
                 </div>
-
-                {/* Fixed footer: Comment input */}
-                <div className="border-t border-border shrink-0">
-                  {desktopTab === 'comments' && isAuthenticated && (
-                    <div className="px-4 py-3">
-                      <CommentSection
-                        postId={post.id}
-                        userId={currentUser?.id || undefined}
-                        isAuthenticated={isAuthenticated}
-                        variant="input-only"
-                      />
-                    </div>
-                  )}
-                  {desktopTab === 'comments' && isReady && !isAuthenticated && (
-                    <div className="px-4 py-3">
-                      <Button onClick={() => login()} className="w-full">
-                        Log in or Sign up
-                      </Button>
-                    </div>
-                  )}
-                </div>
+                <CommentFooter activeTab={desktopTab} />
               </>
             )}
           </div>
@@ -1214,82 +1169,9 @@ function PostDetailPage() {
                   )}
                 </div>
 
-                {/* Segment control: Comments | Details | Collectors */}
-                <div className="flex border-b border-border" role="tablist">
-                  {(['comments', 'details', 'collectors'] as const).map((tab) => (
-                    <button
-                      key={tab}
-                      type="button"
-                      role="tab"
-                      aria-selected={mobileTab === tab}
-                      onClick={() => setMobileTab(tab)}
-                      className={cn(
-                        'flex-1 py-3 text-sm font-medium transition-colors relative',
-                        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset',
-                        mobileTab === tab
-                          ? 'text-foreground'
-                          : 'text-muted-foreground hover:text-foreground/80',
-                      )}
-                    >
-                      <span className="relative inline-flex items-center">
-                        {tab === 'comments' ? 'Comments' : tab === 'details' ? 'Details' : 'Collectors'}
-                      </span>
-                      {mobileTab === tab && (
-                        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-foreground rounded-full" />
-                      )}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Tab content */}
-                {mobileTab === 'comments' ? (
-                  <>
-                    {isAuthenticated ? (
-                      <CommentSection
-                        postId={post.id}
-                        userId={currentUser?.id || undefined}
-                        isAuthenticated={isAuthenticated}
-                        className="px-4"
-                        variant="inline"
-                      />
-                    ) : (
-                      <div className="px-4 py-8 text-center text-muted-foreground text-sm">
-                        Sign in to view and add comments
-                      </div>
-                    )}
-                    {isAuthenticated && (
-                      <div className="sticky bottom-0 border-t border-border bg-background px-4 pt-3" style={{ paddingBottom: 'calc(0.75rem + env(safe-area-inset-bottom, 0px))' }}>
-                        <CommentSection
-                          postId={post.id}
-                          userId={currentUser?.id || undefined}
-                          isAuthenticated={isAuthenticated}
-                          variant="input-only"
-                        />
-                      </div>
-                    )}
-                    {isReady && !isAuthenticated && (
-                      <div className="px-4 py-3">
-                        <Button onClick={() => login()} className="w-full">
-                          Log in or Sign up
-                        </Button>
-                      </div>
-                    )}
-                  </>
-                ) : mobileTab === 'details' ? (
-                  <div>
-                    <PostDetails post={post} editionSupply={editionSupply} collectCount={collectCount} getTokenUrl={(addr) => getExplorerUrl('token', addr, preferences.explorer)} />
-                  </div>
-                ) : (
-                  <div>
-                    <CollectorsList
-                      collectors={postCollectors}
-                      isLoading={isLoadingCollectors}
-                      currentUserId={currentUser?.id}
-                      isAuthenticated={isAuthenticated}
-                      getTokenUrl={(sig) => getExplorerUrl('tx', sig, preferences.explorer)}
-                    />
-                  </div>
-                )}
+                <TabBar activeTab={mobileTab} onTabChange={setMobileTab} />
+                <TabContent activeTab={mobileTab} />
+                <CommentFooter activeTab={mobileTab} sticky />
               </>
             ) : (
               <>
@@ -1299,62 +1181,9 @@ function PostDetailPage() {
                   <Caption showAvatar={true} />
                 </div>
 
-                {/* Segment control: Comments | Details */}
-                <div className="flex border-b border-border" role="tablist">
-                  {(['comments', 'details'] as const).map((tab) => (
-                    <button
-                      key={tab}
-                      type="button"
-                      role="tab"
-                      aria-selected={mobileTab === tab}
-                      onClick={() => setMobileTab(tab)}
-                      className={cn(
-                        'flex-1 py-3 text-sm font-medium transition-colors relative',
-                        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset',
-                        mobileTab === tab
-                          ? 'text-foreground'
-                          : 'text-muted-foreground hover:text-foreground/80',
-                      )}
-                    >
-                      <span className="relative inline-flex items-center">
-                        {tab === 'comments' ? 'Comments' : 'Details'}
-                      </span>
-                      {mobileTab === tab && (
-                        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-foreground rounded-full" />
-                      )}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Tab content */}
-                {mobileTab === 'comments' ? (
-                  <>
-                    {isAuthenticated ? (
-                      <CommentSection
-                        postId={post.id}
-                        userId={currentUser?.id || undefined}
-                        isAuthenticated={isAuthenticated}
-                        className="px-4"
-                        variant="inline"
-                      />
-                    ) : (
-                      <div className="px-4 py-8 text-center text-muted-foreground text-sm">
-                        Sign in to view and add comments
-                      </div>
-                    )}
-                    {isReady && !isAuthenticated && (
-                      <div className="px-4 py-3">
-                        <Button onClick={() => login()} className="w-full">
-                          Log in or Sign up
-                        </Button>
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <div>
-                    <PostDetails post={post} editionSupply={editionSupply} collectCount={collectCount} getTokenUrl={(addr) => getExplorerUrl('token', addr, preferences.explorer)} />
-                  </div>
-                )}
+                <TabBar activeTab={mobileTab} onTabChange={setMobileTab} />
+                <TabContent activeTab={mobileTab} />
+                <CommentFooter activeTab={mobileTab} sticky />
               </>
             )}
           </div>

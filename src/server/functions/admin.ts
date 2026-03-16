@@ -8,11 +8,13 @@
 
 import { createServerFn } from '@tanstack/react-start'
 import { db } from '@/server/db'
-import { contentReports, posts, users, comments, dmThreads } from '@/server/db/schema'
+import { contentReports, posts, users, comments, dmThreads, notifications } from '@/server/db/schema'
+import type { NotificationMetadata } from '@/server/db/schema'
 import { eq, and, desc, sql, inArray } from 'drizzle-orm'
 import { z } from 'zod'
 import { requireModerator, requireAdmin } from '@/server/utils/auth-helpers'
 import { withAuth } from '@/server/auth'
+import { sendPushNotification } from '@/server/utils/pushDispatch'
 
 // Schema for getting reports queue (no moderatorUserId - derived from auth)
 const getReportsQueueSchema = z.object({
@@ -973,7 +975,6 @@ export const getReportDetails = createServerFn({
  */
 export const hidePost = createServerFn({
   method: 'POST',
-// @ts-expect-error -- TanStack Start dual-context type inference
 }).handler(async (input: unknown) => {
   try {
     // Authenticate and verify moderator role
@@ -988,22 +989,8 @@ export const hidePost = createServerFn({
     // Check moderator/admin role using verified userId
     await requireModerator(auth.userId)
 
-    // Get post
-    const [post] = await db
-      .select()
-      .from(posts)
-      .where(eq(posts.id, postId))
-      .limit(1)
-
-    if (!post) {
-      return {
-        success: false,
-        error: 'Post not found.',
-      }
-    }
-
-    // Update post - use verified auth.userId
-    const [updatedPost] = await db
+    // Conditional update — only if not already hidden (prevents duplicate notifications)
+    const [updated] = await db
       .update(posts)
       .set({
         isHidden: true,
@@ -1012,13 +999,45 @@ export const hidePost = createServerFn({
         hiddenByUserId: auth.userId,
         updatedAt: new Date(),
       })
-      .where(eq(posts.id, postId))
-      .returning()
+      .where(and(eq(posts.id, postId), eq(posts.isHidden, false)))
+      .returning({ userId: posts.userId, caption: posts.caption })
 
-    return {
-      success: true,
-      post: updatedPost,
+    if (!updated) {
+      // Either post doesn't exist or already hidden
+      const [existing] = await db.select({ id: posts.id }).from(posts).where(eq(posts.id, postId)).limit(1)
+      if (!existing) return { success: false, error: 'Post not found.' }
+      return { success: true, message: 'Post already hidden.' }
     }
+
+    // Send moderation notification to content owner
+    if (updated.userId !== auth.userId) {
+      try {
+        const label = (updated.caption || '').replace(/\s+/g, ' ').trim().slice(0, 80) || 'Post'
+        const metadata: NotificationMetadata = { reason, contentLabel: label }
+        await db.insert(notifications).values({
+          userId: updated.userId,
+          actorId: auth.userId,
+          type: 'content_hidden',
+          referenceType: 'post',
+          referenceId: postId,
+          metadata,
+        })
+        // Push notification (privacy-safe copy)
+        await sendPushNotification(updated.userId, {
+          type: 'content_hidden',
+          title: 'Moderation notice',
+          body: 'An action was taken on your content. Tap to see details.',
+          deepLink: `https://desperse.com/post/${postId}`,
+        }).catch(() => {})
+      } catch (err) {
+        console.error('[hidePost] Moderation notification failed', {
+          actorId: auth.userId, ownerId: updated.userId, postId,
+          error: err instanceof Error ? err.message : 'Unknown',
+        })
+      }
+    }
+
+    return { success: true }
   } catch (error) {
     console.error('Error in hidePost:', error)
     return {
@@ -1093,7 +1112,6 @@ export const unhidePost = createServerFn({
  */
 export const softDeletePost = createServerFn({
   method: 'POST',
-// @ts-expect-error -- TanStack Start dual-context type inference
 }).handler(async (input: unknown) => {
   try {
     // Authenticate and verify admin role
@@ -1108,22 +1126,8 @@ export const softDeletePost = createServerFn({
     // Check admin role using verified userId
     await requireAdmin(auth.userId)
 
-    // Get post
-    const [post] = await db
-      .select()
-      .from(posts)
-      .where(eq(posts.id, postId))
-      .limit(1)
-
-    if (!post) {
-      return {
-        success: false,
-        error: 'Post not found.',
-      }
-    }
-
-    // Update post - use verified auth.userId
-    const [updatedPost] = await db
+    // Conditional update — only if not already deleted
+    const [updated] = await db
       .update(posts)
       .set({
         isDeleted: true,
@@ -1132,13 +1136,43 @@ export const softDeletePost = createServerFn({
         deleteReason: reason,
         updatedAt: new Date(),
       })
-      .where(eq(posts.id, postId))
-      .returning()
+      .where(and(eq(posts.id, postId), eq(posts.isDeleted, false)))
+      .returning({ userId: posts.userId, caption: posts.caption })
 
-    return {
-      success: true,
-      post: updatedPost,
+    if (!updated) {
+      const [existing] = await db.select({ id: posts.id }).from(posts).where(eq(posts.id, postId)).limit(1)
+      if (!existing) return { success: false, error: 'Post not found.' }
+      return { success: true, message: 'Post already deleted.' }
     }
+
+    // Send moderation notification to content owner
+    if (updated.userId !== auth.userId) {
+      try {
+        const label = (updated.caption || '').replace(/\s+/g, ' ').trim().slice(0, 80) || 'Post'
+        const metadata: NotificationMetadata = { reason, contentLabel: label }
+        await db.insert(notifications).values({
+          userId: updated.userId,
+          actorId: auth.userId,
+          type: 'content_deleted',
+          referenceType: 'post',
+          referenceId: postId,
+          metadata,
+        })
+        await sendPushNotification(updated.userId, {
+          type: 'content_deleted',
+          title: 'Moderation notice',
+          body: 'An action was taken on your content. Tap to see details.',
+          deepLink: 'https://desperse.com/notifications',
+        }).catch(() => {})
+      } catch (err) {
+        console.error('[softDeletePost] Moderation notification failed', {
+          actorId: auth.userId, ownerId: updated.userId, postId,
+          error: err instanceof Error ? err.message : 'Unknown',
+        })
+      }
+    }
+
+    return { success: true }
   } catch (error) {
     console.error('Error in softDeletePost:', error)
     return {
@@ -1217,22 +1251,8 @@ export const hideComment = createServerFn({
     // Check moderator/admin role using verified userId
     await requireModerator(auth.userId)
 
-    // Get comment
-    const [comment] = await db
-      .select()
-      .from(comments)
-      .where(eq(comments.id, commentId))
-      .limit(1)
-
-    if (!comment) {
-      return {
-        success: false,
-        error: 'Comment not found.',
-      }
-    }
-
-    // Update comment - use verified auth.userId
-    const [updatedComment] = await db
+    // Conditional update — only if not already hidden
+    const [updated] = await db
       .update(comments)
       .set({
         isHidden: true,
@@ -1241,13 +1261,43 @@ export const hideComment = createServerFn({
         hiddenByUserId: auth.userId,
         updatedAt: new Date(),
       })
-      .where(eq(comments.id, commentId))
-      .returning()
+      .where(and(eq(comments.id, commentId), eq(comments.isHidden, false)))
+      .returning({ userId: comments.userId, content: comments.content, postId: comments.postId })
 
-    return {
-      success: true,
-      comment: updatedComment,
+    if (!updated) {
+      const [existing] = await db.select({ id: comments.id }).from(comments).where(eq(comments.id, commentId)).limit(1)
+      if (!existing) return { success: false, error: 'Comment not found.' }
+      return { success: true, message: 'Comment already hidden.' }
     }
+
+    // Send moderation notification to content owner
+    if (updated.userId !== auth.userId) {
+      try {
+        const label = (updated.content || '').replace(/\s+/g, ' ').trim().slice(0, 80) || 'Comment'
+        const metadata: NotificationMetadata = { reason, contentLabel: label, parentPostId: updated.postId }
+        await db.insert(notifications).values({
+          userId: updated.userId,
+          actorId: auth.userId,
+          type: 'content_hidden',
+          referenceType: 'comment',
+          referenceId: commentId,
+          metadata,
+        })
+        await sendPushNotification(updated.userId, {
+          type: 'content_hidden',
+          title: 'Moderation notice',
+          body: 'An action was taken on your content. Tap to see details.',
+          deepLink: `https://desperse.com/post/${updated.postId}`,
+        }).catch(() => {})
+      } catch (err) {
+        console.error('[hideComment] Moderation notification failed', {
+          actorId: auth.userId, ownerId: updated.userId, commentId,
+          error: err instanceof Error ? err.message : 'Unknown',
+        })
+      }
+    }
+
+    return { success: true }
   } catch (error) {
     console.error('Error in hideComment:', error)
     return {
@@ -1335,22 +1385,8 @@ export const softDeleteComment = createServerFn({
     // Check admin role using verified userId
     await requireAdmin(auth.userId)
 
-    // Get comment
-    const [comment] = await db
-      .select()
-      .from(comments)
-      .where(eq(comments.id, commentId))
-      .limit(1)
-
-    if (!comment) {
-      return {
-        success: false,
-        error: 'Comment not found.',
-      }
-    }
-
-    // Update comment - use verified auth.userId
-    const [updatedComment] = await db
+    // Conditional update — only if not already deleted
+    const [updated] = await db
       .update(comments)
       .set({
         isDeleted: true,
@@ -1359,13 +1395,43 @@ export const softDeleteComment = createServerFn({
         deleteReason: reason,
         updatedAt: new Date(),
       })
-      .where(eq(comments.id, commentId))
-      .returning()
+      .where(and(eq(comments.id, commentId), eq(comments.isDeleted, false)))
+      .returning({ userId: comments.userId, content: comments.content, postId: comments.postId })
 
-    return {
-      success: true,
-      comment: updatedComment,
+    if (!updated) {
+      const [existing] = await db.select({ id: comments.id }).from(comments).where(eq(comments.id, commentId)).limit(1)
+      if (!existing) return { success: false, error: 'Comment not found.' }
+      return { success: true, message: 'Comment already deleted.' }
     }
+
+    // Send moderation notification to content owner
+    if (updated.userId !== auth.userId) {
+      try {
+        const label = (updated.content || '').replace(/\s+/g, ' ').trim().slice(0, 80) || 'Comment'
+        const metadata: NotificationMetadata = { reason, contentLabel: label, parentPostId: updated.postId }
+        await db.insert(notifications).values({
+          userId: updated.userId,
+          actorId: auth.userId,
+          type: 'content_deleted',
+          referenceType: 'comment',
+          referenceId: commentId,
+          metadata,
+        })
+        await sendPushNotification(updated.userId, {
+          type: 'content_deleted',
+          title: 'Moderation notice',
+          body: 'An action was taken on your content. Tap to see details.',
+          deepLink: `https://desperse.com/post/${updated.postId}`,
+        }).catch(() => {})
+      } catch (err) {
+        console.error('[softDeleteComment] Moderation notification failed', {
+          actorId: auth.userId, ownerId: updated.userId, commentId,
+          error: err instanceof Error ? err.message : 'Unknown',
+        })
+      }
+    }
+
+    return { success: true }
   } catch (error) {
     console.error('Error in softDeleteComment:', error)
     return {

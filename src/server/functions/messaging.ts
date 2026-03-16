@@ -11,6 +11,7 @@ import { eq, and, or, desc, lt, count, sql, gt } from 'drizzle-orm'
 import { z } from 'zod'
 import { withAuth } from '@/server/auth'
 import { checkDmEligibility } from '@/server/utils/dm-eligibility-internal'
+import { isModeratorOrAdmin } from '@/server/utils/auth-helpers'
 import { publishNewMessage, publishReadReceipt } from '@/server/utils/ably-publish'
 import { sendPushNotification, getActorDisplayName } from '@/server/utils/pushDispatch'
 
@@ -215,22 +216,25 @@ export const getOrCreateThread = createServerFn({
       }
     }
 
-    // Check rate limit (max 5 new threads per day)
-    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000)
-    const [rateCheck] = await db
-      .select({ count: count() })
-      .from(dmThreads)
-      .where(
-        and(
-          eq(dmThreads.createdByUserId, userId),
-          gt(dmThreads.createdAt, oneDayAgo)
+    // Check rate limit (max 5 new threads per day) - staff bypass
+    const isStaff = await isModeratorOrAdmin(userId)
+    if (!isStaff) {
+      const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000)
+      const [rateCheck] = await db
+        .select({ count: count() })
+        .from(dmThreads)
+        .where(
+          and(
+            eq(dmThreads.createdByUserId, userId),
+            gt(dmThreads.createdAt, oneDayAgo)
+          )
         )
-      )
 
-    if (rateCheck && rateCheck.count >= MAX_THREADS_PER_DAY) {
-      return {
-        success: false,
-        error: `You can only start ${MAX_THREADS_PER_DAY} new conversations per day`,
+      if (rateCheck && rateCheck.count >= MAX_THREADS_PER_DAY) {
+        return {
+          success: false,
+          error: `You can only start ${MAX_THREADS_PER_DAY} new conversations per day`,
+        }
       }
     }
 

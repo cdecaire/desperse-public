@@ -42,6 +42,8 @@ export const notificationTypeEnum = pgEnum('notification_type_enum', [
   'collect',
   'purchase',
   'mention',
+  'content_hidden',
+  'content_deleted',
 ]);
 
 export const notificationReferenceTypeEnum = pgEnum('notification_reference_type_enum', [
@@ -358,6 +360,7 @@ export const notifications = pgTable(
     type: notificationTypeEnum('type').notNull(),
     referenceType: notificationReferenceTypeEnum('reference_type'),
     referenceId: uuid('reference_id'),
+    metadata: jsonb('metadata').$type<NotificationMetadata | null>().default(null),
     isRead: boolean('is_read').notNull().default(false),
     createdAt: timestamp('created_at').notNull().defaultNow(),
   },
@@ -762,6 +765,16 @@ export type CreatorStorageBalance = typeof creatorStorageBalances.$inferSelect;
 export type NewCreatorStorageBalance = typeof creatorStorageBalances.$inferInsert;
 export type CreatorSetting = typeof creatorSettings.$inferSelect;
 export type NewCreatorSetting = typeof creatorSettings.$inferInsert;
+
+// Notification metadata type (stored as JSONB in notifications.metadata)
+export type NotificationMetadata = {
+  /** User-facing reason for moderation actions */
+  reason?: string
+  /** Content type context (for rendering without needing the referenced record) */
+  contentLabel?: string
+  /** Parent post ID (for comment moderation — so notification can link to post) */
+  parentPostId?: string
+}
 
 // Arweave storage types
 export type StorageType = 'centralized' | 'arweave';

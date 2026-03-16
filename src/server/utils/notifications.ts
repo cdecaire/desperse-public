@@ -9,7 +9,7 @@ import { eq, and, gt, lt, desc, count, inArray, or, isNull } from 'drizzle-orm'
 import { excludeDevPosts } from '@/server/utils/dev-posts'
 
 // Types for user notifications
-export type NotificationType = 'follow' | 'like' | 'comment' | 'collect' | 'purchase' | 'mention'
+export type NotificationType = 'follow' | 'like' | 'comment' | 'collect' | 'purchase' | 'mention' | 'content_hidden' | 'content_deleted'
 export type NotificationReferenceType = 'post' | 'comment'
 
 export interface NotificationWithActor {
@@ -32,6 +32,11 @@ export interface NotificationWithActor {
     content?: string
     postId?: string
   }
+  metadata?: {
+    reason?: string
+    contentLabel?: string
+    parentPostId?: string
+  } | null
 }
 
 // Notification retention period (30 days)
@@ -153,8 +158,11 @@ export async function getUserNotificationsDirect(
 
     const notificationsWithActors: NotificationWithActor[] = notificationRows
       // Filter out notifications where the referenced post/comment was deleted
+      // Moderation notifications are exempt — they render from metadata alone
       .filter(row => {
         const n = row.notification
+        // Moderation notifications always pass through
+        if (n.type === 'content_hidden' || n.type === 'content_deleted') return true
         // If it references a post that no longer exists, filter it out
         if (n.referenceType === 'post' && n.referenceId && !existingPostIds.has(n.referenceId)) {
           return false
@@ -184,6 +192,7 @@ export async function getUserNotificationsDirect(
           createdAt: n.createdAt,
           actor: row.actor,
           reference,
+          metadata: n.metadata as NotificationWithActor['metadata'],
         }
       })
 

@@ -12,7 +12,7 @@ import { detectMediaType } from '@/lib/media'
 import { formatRelativeTime } from '@/lib/dates'
 
 // Types defined locally to avoid importing from server functions
-export type NotificationType = 'follow' | 'like' | 'comment' | 'collect' | 'purchase' | 'mention'
+export type NotificationType = 'follow' | 'like' | 'comment' | 'collect' | 'purchase' | 'mention' | 'content_hidden' | 'content_deleted'
 export type NotificationReferenceType = 'post' | 'comment'
 
 export interface NotificationWithActor {
@@ -35,6 +35,11 @@ export interface NotificationWithActor {
     content?: string
     postId?: string
   }
+  metadata?: {
+    reason?: string
+    contentLabel?: string
+    parentPostId?: string
+  } | null
 }
 
 interface NotificationItemProps {
@@ -58,6 +63,14 @@ function getNotificationText(type: NotificationType, referenceType?: Notificatio
       return referenceType === 'comment'
         ? 'mentioned you in a comment'
         : 'mentioned you in a post'
+    case 'content_hidden':
+      return referenceType === 'comment'
+        ? 'Your comment was hidden by a moderator'
+        : 'Your post was hidden by a moderator'
+    case 'content_deleted':
+      return referenceType === 'comment'
+        ? 'Your comment was removed by a moderator'
+        : 'Your post was removed by a moderator'
     default:
       return 'interacted with you'
   }
@@ -95,31 +108,86 @@ function getNotificationLink(notification: NotificationWithActor): NotificationL
       return referenceId
         ? { to: '/post/$postId', params: { postId: referenceId } }
         : { to: '/profile/$slug', params: { slug: actor.usernameSlug } }
+    case 'content_hidden':
+      // Hidden posts still exist — link to them
+      if (referenceType === 'comment' && notification.metadata?.parentPostId) {
+        return { to: '/post/$postId', params: { postId: notification.metadata.parentPostId } }
+      }
+      return referenceId
+        ? { to: '/post/$postId', params: { postId: referenceId } }
+        : { to: '/profile/$slug', params: { slug: actor.usernameSlug } }
+    case 'content_deleted':
+      // Deleted posts are gone — link to parent post for comments, otherwise no meaningful destination
+      if (referenceType === 'comment' && notification.metadata?.parentPostId) {
+        return { to: '/post/$postId', params: { postId: notification.metadata.parentPostId } }
+      }
+      // For deleted posts, no link target — fall back to profile
+      return { to: '/profile/$slug', params: { slug: actor.usernameSlug } }
     default:
       return { to: '/profile/$slug', params: { slug: actor.usernameSlug } }
   }
 }
 
 export function NotificationItem({ notification }: NotificationItemProps) {
-  const { actor, type, referenceType, isRead, createdAt, reference } = notification
+  const { actor, type, referenceType, isRead, createdAt, reference, metadata } = notification
   const navigate = useNavigate()
 
   const linkInfo = getNotificationLink(notification)
   const actionText = getNotificationText(type, referenceType)
 
-  // Determine thumbnail URL
-  const thumbnailUrl = reference?.coverUrl || reference?.mediaUrl
-  const mediaType = thumbnailUrl ? detectMediaType(thumbnailUrl) : null
-
   const handleContainerClick = (e: React.MouseEvent) => {
-    // Don't navigate if clicking on a link inside
-    if ((e.target as HTMLElement).closest('a')) {
-      return
-    }
-
-    // Navigate to the notification destination
+    if ((e.target as HTMLElement).closest('a')) return
     navigate({ to: linkInfo.to, params: linkInfo.params })
   }
+
+  // Moderation notifications use a dedicated layout
+  if (type === 'content_hidden' || type === 'content_deleted') {
+    return (
+      <div
+        onClick={handleContainerClick}
+        className={cn(
+          'flex items-start gap-3 px-4 py-3 rounded-md transition-colors cursor-pointer',
+          isRead
+            ? 'border border-border/60 bg-card dark:bg-transparent hover:bg-accent'
+            : 'bg-accent/50 hover:bg-accent'
+        )}
+      >
+        {/* Shield icon instead of actor avatar */}
+        <div className="shrink-0 w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+          <Icon name="shield-halved" className="text-muted-foreground text-lg" />
+        </div>
+
+        <div className="flex-1 min-w-0">
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+            Desperse moderation
+          </p>
+          <p className="text-sm mt-0.5">{actionText}</p>
+
+          {/* Content preview */}
+          {metadata?.contentLabel && (
+            <p className="text-sm text-muted-foreground mt-0.5 line-clamp-1 italic">
+              {metadata.contentLabel}
+            </p>
+          )}
+
+          {/* Reason */}
+          {metadata?.reason && (
+            <p className="text-sm text-muted-foreground mt-1 line-clamp-3">
+              Reason: {metadata.reason}
+            </p>
+          )}
+
+          <p className="text-xs text-muted-foreground mt-0.5">
+            {formatRelativeTime(createdAt)}
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  // Standard notification layout
+  const thumbnailUrl = reference?.coverUrl || reference?.mediaUrl
+  const mediaType = thumbnailUrl ? detectMediaType(thumbnailUrl) : null
 
   return (
     <div

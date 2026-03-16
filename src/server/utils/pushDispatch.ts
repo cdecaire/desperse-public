@@ -113,6 +113,9 @@ async function isNotificationTypeEnabled(
   const notifPrefs = prefs?.notifications
   if (!notifPrefs) return true
 
+  // Moderation notifications are always delivered (not user-configurable)
+  if (type === 'content_hidden' || type === 'content_deleted') return true
+
   // Map push type to preference key
   const prefKeyMap: Record<string, string> = {
     like: 'likes',

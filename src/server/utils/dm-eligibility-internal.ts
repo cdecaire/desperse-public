@@ -8,6 +8,7 @@ import { db } from '@/server/db'
 import { users, posts, purchases, collections, dmThreads } from '@/server/db/schema'
 import type { UserPreferencesJson } from '@/server/db/schema'
 import { eq, and, count, sql } from 'drizzle-orm'
+import { isModeratorOrAdmin } from '@/server/utils/auth-helpers'
 
 // Default DM preferences (applied when messaging key is missing)
 const DM_DEFAULTS = {
@@ -87,6 +88,11 @@ export async function checkDmEligibility(
           unlockPaths: [],
         },
       }
+    }
+
+    // Moderators/admins bypass monetization/social eligibility gates
+    if (await isModeratorOrAdmin(viewerId)) {
+      return { success: true, data: { allowed: true, eligibleVia: ['admin'], unlockPaths: [] } }
     }
 
     // Get creator's DM preferences

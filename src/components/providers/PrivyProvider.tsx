@@ -2,12 +2,14 @@
 
 import { PrivyProvider as PrivySDKProvider } from '@privy-io/react-auth'
 import { toSolanaWalletConnectors } from '@privy-io/react-auth/solana'
-import { createSolanaRpc } from '@solana/kit'
+import { createSolanaRpc, createSolanaRpcSubscriptions } from '@solana/kit'
 import { useTheme } from './ThemeProvider'
 import { getClientRpcUrl } from '@/lib/rpc'
 
 interface PrivyProviderProps {
   children: React.ReactNode
+  /** Helius WebSocket URL passed from server (keeps API key out of client bundle) */
+  heliusWsUrl?: string | null
 }
 
 /**
@@ -24,7 +26,7 @@ interface PrivyProviderProps {
  * - This ensures every user has an embedded wallet for NFT minting/collecting
  * - Ethereum wallets are explicitly disabled to match app requirements
  */
-export function PrivyProvider({ children }: PrivyProviderProps) {
+export function PrivyProvider({ children, heliusWsUrl }: PrivyProviderProps) {
   // Buffer polyfill is now loaded synchronously via buffer-polyfill.ts import in __root.tsx
   // No need for async loading here
 
@@ -76,12 +78,17 @@ export function PrivyProvider({ children }: PrivyProviderProps) {
           walletChainType: 'solana-only', // Required for Solana wallet connections
         },
         // Solana RPC configuration for embedded wallet UIs (required for transactions)
-        // Uses our server proxy — no WS subscriptions needed (Privy falls back to HTTP polling)
+        // HTTP RPC goes through our server proxy (keeps Helius API key out of client bundle)
+        // WebSocket URL is passed from the server via root loader (same Helius key, no VITE_ exposure)
+        // Without rpcSubscriptions, Privy's signing modal shows "Something went wrong"
         solana: {
           rpcs: {
             'solana:mainnet': {
               rpc: createSolanaRpc(rpcUrl),
-            } as any, // rpcSubscriptions is optional at runtime; Privy falls back to HTTP polling
+              ...(heliusWsUrl
+                ? { rpcSubscriptions: createSolanaRpcSubscriptions(heliusWsUrl) }
+                : {}),
+            } as any,
           },
         },
         // Embedded wallet configuration - create Solana wallets for ALL users automatically

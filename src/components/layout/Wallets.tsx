@@ -29,6 +29,9 @@ import { getResponsiveImageProps, resolveDecentralizedUri } from '@/lib/imageUrl
 import { usePreferences } from '@/hooks/usePreferences'
 import { getExplorerUrl } from '@/server/functions/preferences'
 import { SeekerIcon } from '@/components/tipping/SeekerIcon'
+import { SendDialog } from '@/components/wallet/SendDialog'
+import { SOL_NATIVE_MINT, USDC_MAINNET_MINT, SKR_MINT } from '@/constants/tokens'
+import type { SendableAsset } from '@/server/utils/transfer-transaction'
 
 interface WalletsProps {
   /** Display variant - sidebar for desktop, bottomnav for mobile */
@@ -39,6 +42,7 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [activeTab, setActiveTab] = useState<'tokens' | 'nfts' | 'activity'>('tokens')
   const [nftLayout, setNftLayout] = useState<'grid' | 'list'>('grid')
+  const [sendAsset, setSendAsset] = useState<{ asset: SendableAsset; balance: number; symbol: string; iconUrl: string | null } | null>(null)
   const menuRef = useRef<HTMLDivElement>(null)
   const { wallets } = useWallets()
   const { user } = usePrivy()
@@ -300,6 +304,18 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
       }
     }
 
+    // Mint → sendable asset key mapping
+    const MINT_TO_ASSET: Record<string, SendableAsset> = {
+      [SOL_NATIVE_MINT]: 'sol',
+      [USDC_MAINNET_MINT]: 'usdc',
+      [SKR_MINT]: 'skr',
+    }
+
+    const handleTokenClick = (asset: SendableAsset, balance: number, symbol: string, iconUrl: string | null) => {
+      setSendAsset({ asset, balance, symbol, iconUrl })
+      setIsOpen(false)
+    }
+
     const TokensView = () => {
       const tokens = data.tokens || []
       const solPrice = typeof data.solPriceUsd === 'number' && !isNaN(data.solPriceUsd) ? data.solPriceUsd : 0
@@ -317,6 +333,8 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
         const balance = token.balance
         const priceUsd = token.priceUsd ?? 0
         const totalValue = token.totalValueUsd ?? balance * priceUsd
+        const sendableAsset = MINT_TO_ASSET[token.mint]
+        const isClickable = !!sendableAsset
 
         // Format balance based on size
         const formatBalance = (bal: number, decimals: number) => {
@@ -328,7 +346,16 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
         }
 
         return (
-          <div className="flex items-center justify-between rounded-md border border-border bg-card dark:bg-transparent px-3 py-2">
+          <div
+            className={cn(
+              "flex items-center justify-between rounded-md border border-border bg-card dark:bg-transparent px-3 py-2",
+              isClickable && "cursor-pointer hover:border-foreground/20 transition-colors"
+            )}
+            onClick={isClickable ? () => handleTokenClick(sendableAsset, balance, token.symbol, token.iconUrl) : undefined}
+            role={isClickable ? "button" : undefined}
+            tabIndex={isClickable ? 0 : undefined}
+            onKeyDown={isClickable ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleTokenClick(sendableAsset, balance, token.symbol, token.iconUrl) } } : undefined}
+          >
             <div className="flex items-center gap-3">
               <div className="h-8 w-8 shrink-0 rounded-full bg-background dark:bg-muted border border-border flex items-center justify-center overflow-hidden">
                 {token.iconUrl ? (
@@ -391,7 +418,7 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
       }
 
       // Fallback card for when API doesn't return tokens
-      const FallbackCard = ({ symbol, name, iconUrl, balance, priceUsd, showPriceChange, decimals = 4 }: {
+      const FallbackCard = ({ symbol, name, iconUrl, balance, priceUsd, showPriceChange, decimals = 4, asset }: {
         symbol: string
         name: string
         iconUrl: string
@@ -399,8 +426,20 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
         priceUsd: number
         showPriceChange?: { value: number } | null
         decimals?: number
-      }) => (
-        <div className="flex items-center justify-between rounded-md border border-border bg-card dark:bg-transparent px-3 py-2">
+        asset?: SendableAsset
+      }) => {
+        const isClickable = !!asset
+        return (
+        <div
+          className={cn(
+            "flex items-center justify-between rounded-md border border-border bg-card dark:bg-transparent px-3 py-2",
+            isClickable && "cursor-pointer hover:border-foreground/20 transition-colors"
+          )}
+          onClick={isClickable ? () => handleTokenClick(asset, balance, symbol, iconUrl) : undefined}
+          role={isClickable ? "button" : undefined}
+          tabIndex={isClickable ? 0 : undefined}
+          onKeyDown={isClickable ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleTokenClick(asset, balance, symbol, iconUrl) } } : undefined}
+        >
           <div className="flex items-center gap-3">
             <div className="h-8 w-8 shrink-0 rounded-full bg-background dark:bg-muted border border-border flex items-center justify-center overflow-hidden">
               <img
@@ -441,7 +480,8 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
             </p>
           </div>
         </div>
-      )
+        )
+      }
 
       return (
         <div className="space-y-4">
@@ -457,6 +497,7 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
                   balance={fallbackWallet.sol}
                   priceUsd={solPrice}
                   showPriceChange={typeof data.solChangePct24h === 'number' ? { value: data.solChangePct24h } : null}
+                  asset="sol"
                 />
                 <FallbackCard
                   symbol="USDC"
@@ -466,6 +507,7 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
                   priceUsd={1}
                   showPriceChange={{ value: 0 }}
                   decimals={2}
+                  asset="usdc"
                 />
               </>
             ) : (
@@ -1138,73 +1180,91 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
             </Button>
           </div>
         )}
+
       </div>
     )
   }
 
+  const sendDialog = (
+    <SendDialog
+      open={!!sendAsset}
+      onOpenChange={(open) => { if (!open) setSendAsset(null) }}
+      asset={sendAsset?.asset ?? null}
+      balance={sendAsset?.balance ?? 0}
+      symbol={sendAsset?.symbol ?? ''}
+      iconUrl={sendAsset?.iconUrl ?? null}
+    />
+  )
+
   // Mobile: Bottom Sheet
   if (isMobile) {
     return (
-      <Sheet open={isOpen} onOpenChange={setIsOpen}>
-        <SheetTrigger asChild>
-          <button
-            className="flex items-center justify-center rounded-lg transition-colors min-w-[44px] min-h-[44px] text-foreground"
-            aria-label="Wallets"
+      <>
+        <Sheet open={isOpen} onOpenChange={setIsOpen}>
+          <SheetTrigger asChild>
+            <button
+              className="flex items-center justify-center rounded-lg transition-colors min-w-[44px] min-h-[44px] text-foreground"
+              aria-label="Wallets"
+            >
+              <span className="w-6 h-6 grid place-items-center">
+                <Icon name="wallet" variant={isOpen ? 'solid' : 'regular'} className="text-xl" />
+              </span>
+            </button>
+          </SheetTrigger>
+          <SheetContent
+            side="bottom"
+            className="rounded-t-3xl pb-8 max-h-[80vh] overflow-hidden flex flex-col"
+            showClose={false}
           >
-            <span className="w-6 h-6 grid place-items-center">
-              <Icon name="wallet" variant={isOpen ? 'solid' : 'regular'} className="text-xl" />
-            </span>
-          </button>
-        </SheetTrigger>
-        <SheetContent
-          side="bottom"
-          className="rounded-t-3xl pb-8 max-h-[80vh] overflow-hidden flex flex-col"
-          showClose={false}
-        >
-          <SheetHeader className="sr-only">
-            <SheetTitle>Wallets</SheetTitle>
-          </SheetHeader>
-          <div className="px-3 pt-4 flex flex-col flex-1 min-h-0" role="menu">
-            <MenuContent />
-          </div>
-        </SheetContent>
-      </Sheet>
+            <SheetHeader className="sr-only">
+              <SheetTitle>Wallets</SheetTitle>
+            </SheetHeader>
+            <div className="px-3 pt-4 flex flex-col flex-1 min-h-0" role="menu">
+              <MenuContent />
+            </div>
+          </SheetContent>
+        </Sheet>
+        {sendDialog}
+      </>
     )
   }
 
   // Desktop: Popover Menu
   return (
-    <div ref={menuRef} className="relative">
-      {/* Menu Dropdown */}
-      {isOpen && (
-        <div
-          className="absolute bottom-full left-3 mb-2 w-[340px] max-w-[90vw] bg-popover border border-border rounded-xl shadow-lg overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-200 h-[480px] z-300 flex flex-col"
-          role="menu"
-          aria-orientation="vertical"
-          aria-labelledby="wallets-button"
-        >
-          <div className="p-4 flex flex-col flex-1 min-h-0">
-            <MenuContent />
+    <>
+      <div ref={menuRef} className="relative">
+        {/* Menu Dropdown */}
+        {isOpen && (
+          <div
+            className="absolute bottom-full left-3 mb-2 w-[340px] max-w-[90vw] bg-popover border border-border rounded-xl shadow-lg overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-200 h-[480px] z-300 flex flex-col"
+            role="menu"
+            aria-orientation="vertical"
+            aria-labelledby="wallets-button"
+          >
+            <div className="p-4 flex flex-col flex-1 min-h-0">
+              <MenuContent />
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Wallets Button */}
-      <button
-        id="wallets-button"
-        onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center gap-3 px-3 py-2.5 mx-3 w-[calc(100%-1.5rem)] text-left rounded-md hover-fade text-foreground hover:bg-accent hover:text-accent-foreground ${
-          isOpen ? 'font-semibold' : 'font-medium'
-        }`}
-        aria-expanded={isOpen}
-        aria-haspopup="menu"
-      >
-        <span className="w-6 h-6 grid place-items-center">
-          <Icon name="wallet" variant={isOpen ? 'solid' : 'regular'} className="text-xl" />
-        </span>
-        <span className="text-sm leading-none">Wallets</span>
-      </button>
-    </div>
+        {/* Wallets Button */}
+        <button
+          id="wallets-button"
+          onClick={() => setIsOpen(!isOpen)}
+          className={`flex items-center gap-3 px-3 py-2.5 mx-3 w-[calc(100%-1.5rem)] text-left rounded-md hover-fade text-foreground hover:bg-accent hover:text-accent-foreground ${
+            isOpen ? 'font-semibold' : 'font-medium'
+          }`}
+          aria-expanded={isOpen}
+          aria-haspopup="menu"
+        >
+          <span className="w-6 h-6 grid place-items-center">
+            <Icon name="wallet" variant={isOpen ? 'solid' : 'regular'} className="text-xl" />
+          </span>
+          <span className="text-sm leading-none">Wallets</span>
+        </button>
+      </div>
+      {sendDialog}
+    </>
   )
 }
 

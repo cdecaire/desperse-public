@@ -1,4 +1,5 @@
 import { HeadContent, Scripts, createRootRoute, useRouterState } from '@tanstack/react-router'
+import { createServerFn } from '@tanstack/react-start'
 import { useEffect, useState, useRef } from 'react'
 import { Analytics } from '@vercel/analytics/react'
 
@@ -19,7 +20,18 @@ import { useAuth } from '../hooks/useAuth'
 
 import appCss from '../styles.css?url'
 
+// Server-side loader: pass the Helius WebSocket URL to the client
+// so PrivyProvider can configure rpcSubscriptions without exposing the API key via VITE_
+const getRpcConfig = createServerFn({ method: 'GET' }).handler(async () => {
+  const { getHeliusRpcUrl } = await import('@/config/env')
+  const httpUrl = getHeliusRpcUrl()
+  // Convert https:// → wss:// for WebSocket subscriptions
+  const wsUrl = httpUrl ? httpUrl.replace('https://', 'wss://').replace('http://', 'ws://') : null
+  return { heliusWsUrl: wsUrl }
+})
+
 export const Route = createRootRoute({
+  loader: () => getRpcConfig(),
   notFoundComponent: NotFoundPage,
   head: () => ({
     meta: [
@@ -240,6 +252,7 @@ export const Route = createRootRoute({
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+  const { heliusWsUrl } = Route.useLoaderData()
   // Disable browser's native scroll restoration — TanStack Router handles it
   // Without this, the browser and router fight over scroll position on back/forward
   useEffect(() => {
@@ -293,7 +306,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <ErrorBoundary>
           <ThemeProvider>
             <QueryProvider>
-              <PrivyProvider>
+              <PrivyProvider heliusWsUrl={heliusWsUrl}>
                 <RpcHealthProviderWrapper>
                   {children}
                 </RpcHealthProviderWrapper>

@@ -1,30 +1,29 @@
 /**
- * Tip Hook
- * Manages the tip transaction lifecycle: prepare -> sign -> submit -> confirm
+ * Send Hook
+ * Manages the wallet send lifecycle: prepare -> sign -> submit
+ * No server-side confirm — activity view picks up sends via Helius TX history.
  */
 
 import { useState, useCallback, useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-	useWallets as useSolanaWallets,
-} from "@privy-io/react-auth/solana";
+import { useWallets as useSolanaWallets } from "@privy-io/react-auth/solana";
 import {
 	useSignTransaction,
 	useSignAndSendTransaction,
 } from "@privy-io/react-auth/solana";
 import { createSolanaRpc } from "@solana/kit";
-import { prepareTip, confirmTip } from "@/server/functions/tips";
+import { prepareSend } from "@/server/functions/send";
 import { useAuth } from "./useAuth";
 import { useActiveWallet } from "./useActiveWallet";
 import { toastError, toastSuccess } from "@/lib/toast";
 import { getClientRpcUrl } from "@/lib/rpc";
 import { Buffer } from "buffer";
-import bs58 from "bs58";
+import type { SendableAsset } from "@/server/utils/transfer-transaction";
 
 type ServerFnInput<T> = { data: T };
 const wrapInput = <T,>(data: T): ServerFnInput<T> => ({ data });
 
-export type TipState =
+export type SendState =
 	| "idle"
 	| "preparing"
 	| "signing"
@@ -32,11 +31,17 @@ export type TipState =
 	| "success"
 	| "failed";
 
+const ASSET_SYMBOLS: Record<SendableAsset, string> = {
+	sol: "SOL",
+	usdc: "USDC",
+	skr: "SKR",
+};
+
 const SIGN_TIMEOUT_MS = 120_000;
 const SEND_TX_TIMEOUT_MS = 30_000;
 
-export function useTip() {
-	const [state, setState] = useState<TipState>("idle");
+export function useSend() {
+	const [state, setState] = useState<SendState>("idle");
 	const { isAuthenticated, getAuthHeaders } = useAuth();
 	const { activeAddress, activePrivyWallet, solanaWalletsReady } =
 		useActiveWallet();
@@ -44,22 +49,22 @@ export function useTip() {
 	const { signTransaction } = useSignTransaction();
 	const { signAndSendTransaction } = useSignAndSendTransaction();
 	const queryClient = useQueryClient();
-	const isTippingRef = useRef(false);
+	const isSendingRef = useRef(false);
 
-	const sendTip = useCallback(
+	const send = useCallback(
 		async ({
-			toUserId,
+			toAddress,
 			amount,
-			context,
+			asset,
 			onSuccess,
 		}: {
-			toUserId: string;
-			amount: number;
-			context: "profile" | "message_unlock";
+			toAddress: string;
+			amount: string;
+			asset: SendableAsset;
 			onSuccess?: () => void;
 		}) => {
 			if (!isAuthenticated || !activeAddress) {
-				toastError("Please connect your wallet to send a tip.");
+				toastError("Please connect your wallet to send.");
 				return false;
 			}
 
@@ -70,34 +75,34 @@ export function useTip() {
 				return false;
 			}
 
-			if (isTippingRef.current) return false;
-			isTippingRef.current = true;
+			if (isSendingRef.current) return false;
+			isSendingRef.current = true;
 
 			setState("preparing");
 
+			// Declared outside try so catch can check if tx was already sent
+			let txSubmitted = false;
+
 			try {
 				const authHeaders = await getAuthHeaders();
+				const symbol = ASSET_SYMBOLS[asset];
 
 				// Step 1: Prepare the transaction on the server
-				const prepareResult = await prepareTip(
+				const prepareResult = await prepareSend(
 					wrapInput({
-						toUserId,
+						toAddress,
 						amount,
-						context,
+						asset,
 						walletAddress: activeAddress,
 						_authorization: authHeaders.Authorization,
 					}) as never,
 				);
 
-				if (
-					!prepareResult.success ||
-					!prepareResult.transaction ||
-					!prepareResult.tipId
-				) {
+				if (!prepareResult.success || !prepareResult.transactionBase64) {
 					setState("failed");
 					toastError(
 						prepareResult.error ||
-							"Failed to prepare tip. Please try again.",
+							"Failed to prepare transfer. Please try again.",
 					);
 					return false;
 				}
@@ -105,27 +110,20 @@ export function useTip() {
 				setState("signing");
 
 				// Step 2: Find the correct wallet to sign with
-				// The transaction is built for activeAddress, so we must sign with a wallet matching that address
 				const currentWallet =
 					activePrivyWallet ||
 					solanaWallets.find((w) => w.address === activeAddress) ||
 					null;
 
 				if (!currentWallet?.address) {
-					// The active wallet's address doesn't match any connected Privy wallet
-					// This typically means an external wallet is set as active but not connected to the site
 					setState("failed");
 					toastError(
-						"Your active wallet is not connected. Please connect it via your browser extension and try again.",
+						"Your active wallet is not connected. Please connect it and try again.",
 					);
 					return false;
 				}
 
-				// Verify the signing wallet matches the transaction's sender address
 				if (currentWallet.address !== activeAddress) {
-					console.warn(
-						`[useTip] Wallet mismatch: transaction built for ${activeAddress}, but signing with ${currentWallet.address}`,
-					);
 					setState("failed");
 					toastError(
 						"Wallet mismatch. Please ensure your active wallet matches the connected wallet.",
@@ -134,22 +132,15 @@ export function useTip() {
 				}
 
 				const txBytes = Uint8Array.from(
-					Buffer.from(prepareResult.transaction, "base64"),
+					Buffer.from(prepareResult.transactionBase64, "base64"),
 				);
-
-				const modalUiOptions = {
-					title: "Sign tip transaction",
-					description: `Sending ${amount} SKR tip`,
-					showWalletUIs: true,
-				};
 
 				const isEmbeddedWallet =
 					(currentWallet as any).walletClientType === "privy";
-				let signature: string;
 
 				if (isEmbeddedWallet) {
-					// For embedded wallets: sign + manually send via RPC
-					const signed = await Promise.race([
+					// For embedded wallets: sign + manually send via HTTP RPC
+					await Promise.race([
 						(async () => {
 							const signedTx = await signTransaction({
 								transaction: txBytes,
@@ -171,13 +162,13 @@ export function useTip() {
 							).toString("base64");
 							const sendTxPromise = (rpc
 								.sendTransaction as any)(base64Tx, {
-									encoding: "base64",
-									skipPreflight: false,
-									maxRetries: 3,
-								})
+								encoding: "base64",
+								skipPreflight: false,
+								maxRetries: 3,
+							})
 								.send();
 
-							const txSignature = await Promise.race([
+							await Promise.race([
 								sendTxPromise,
 								new Promise<never>((_, reject) =>
 									setTimeout(
@@ -192,11 +183,7 @@ export function useTip() {
 								),
 							]);
 
-							return {
-								signature: bs58.decode(
-									txSignature,
-								),
-							};
+							txSubmitted = true;
 						})(),
 						new Promise<never>((_, reject) =>
 							setTimeout(
@@ -210,17 +197,14 @@ export function useTip() {
 							),
 						),
 					]);
-
-					signature = bs58.encode(signed.signature);
 				} else {
 					// For external wallets: signAndSend
-					const signed = await Promise.race([
+					await Promise.race([
 						signAndSendTransaction({
 							transaction: txBytes,
 							wallet: currentWallet,
 							chain: "solana:mainnet",
-							options: { uiOptions: modalUiOptions },
-						}),
+						} as any),
 						new Promise<never>((_, reject) =>
 							setTimeout(
 								() =>
@@ -234,37 +218,15 @@ export function useTip() {
 						),
 					]);
 
-					signature = bs58.encode(signed.signature);
-				}
-
-				// Step 3: Confirm on server
-				setState("confirming");
-
-				const confirmResult = await confirmTip(
-					wrapInput({
-						tipId: prepareResult.tipId,
-						txSignature: signature,
-						_authorization: authHeaders.Authorization,
-					}) as never,
-				);
-
-				if (!confirmResult.success) {
-					setState("failed");
-					toastError(
-						confirmResult.error || "Tip sent but confirmation failed.",
-					);
-					return false;
+					txSubmitted = true;
 				}
 
 				setState("success");
-				toastSuccess(`Sent ${amount} SKR tip!`);
+				toastSuccess(`Sent ${amount} ${symbol}!`);
 
-				// Invalidate eligibility queries so the UI updates
+				// Invalidate wallet data so balances + activity refresh
 				queryClient.invalidateQueries({
-					queryKey: ["dm-eligibility"],
-				});
-				queryClient.invalidateQueries({
-					queryKey: ["tip-stats"],
+					queryKey: ["wallets-overview"],
 				});
 
 				onSuccess?.();
@@ -273,37 +235,75 @@ export function useTip() {
 				setTimeout(() => setState("idle"), 2000);
 				return true;
 			} catch (error) {
-				console.error("[useTip] Error:", error);
-				setState("failed");
+				console.error("[useSend] Error:", error);
 
 				const errorMessage =
 					error instanceof Error ? error.message : "Unknown error";
+				const symbol = ASSET_SYMBOLS[asset];
 
-				// Check for user rejection
-				if (
+				// Check for user rejection FIRST — before WebSocket error recovery
+				const isUserRejection =
 					errorMessage.includes("rejected") ||
 					errorMessage.includes("cancelled") ||
 					errorMessage.includes("canceled") ||
-					errorMessage.includes("User rejected")
-				) {
+					errorMessage.includes("User rejected");
+
+				if (isUserRejection) {
+					setState("failed");
 					toastError("Transaction was cancelled.");
-				} else if (
+					return false;
+				}
+
+				// Privy throws "Failed to connect to wallet" (WebSocket issue)
+				// even when the transaction was already submitted successfully.
+				// Same pattern as BuyButton — treat as success if RPC send completed.
+				const isPrivyWebSocketError =
+					errorMessage.includes("Failed to connect to wallet") ||
+					errorMessage.includes("WebSocket") ||
+					errorMessage.includes("websocket");
+
+				if (txSubmitted || isPrivyWebSocketError) {
+					setState("success");
+					toastSuccess(`Sent ${amount} ${symbol}!`);
+
+					queryClient.invalidateQueries({
+						queryKey: ["wallets-overview"],
+					});
+
+					onSuccess?.();
+					setTimeout(() => setState("idle"), 2000);
+					return true;
+				}
+
+				setState("failed");
+
+				if (
 					errorMessage.includes("insufficient funds") ||
 					errorMessage.includes("0x1")
 				) {
-					toastError(
-						"Insufficient SKR balance. Please add funds and try again.",
-					);
+					if (asset !== "sol") {
+						toastError(
+							"Not enough SOL to cover network fees. You need a small SOL balance to send tokens.",
+						);
+					} else {
+						toastError(`Insufficient ${symbol} balance.`);
+					}
 				} else if (errorMessage.includes("Simulation failed")) {
-					toastError(
-						"Transaction simulation failed. This may be a temporary issue — please try again.",
-					);
+					if (asset !== "sol") {
+						toastError(
+							"Not enough SOL to cover network fees. You need a small SOL balance to send tokens.",
+						);
+					} else {
+						toastError(
+							"Transaction simulation failed. Please try again.",
+						);
+					}
 				} else {
-					toastError(`Tip failed: ${errorMessage}`);
+					toastError(`Send failed: ${errorMessage}`);
 				}
 				return false;
 			} finally {
-				isTippingRef.current = false;
+				isSendingRef.current = false;
 			}
 		},
 		[
@@ -325,7 +325,7 @@ export function useTip() {
 
 	return {
 		state,
-		sendTip,
+		send,
 		reset,
 		isPending: state !== "idle" && state !== "success" && state !== "failed",
 	};

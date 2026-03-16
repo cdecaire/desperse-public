@@ -3,15 +3,14 @@
  * Extracted from server functions to avoid createServerFn return issues
  *
  * Uses the Helius Wallet API (v1) for unified balance + NFT fetching,
- * CoinGecko for 24h price changes, and Helius parsed transactions for history.
+ * CoinGecko for 24h price changes, and Helius Wallet API Transfers for history.
  */
 
 import { db } from '@/server/db'
 import { collections, posts, users, userWallets } from '@/server/db/schema'
 import { eq, and, desc } from 'drizzle-orm'
 import { authenticateWithToken } from '@/server/auth'
-import { getHeliusApiUrl, getHeliusRpcUrl, env } from '@/config/env'
-import { LAMPORTS_PER_SOL } from '@/server/services/blockchain/solanaClient'
+import { getHeliusRpcUrl, env } from '@/config/env'
 import { USDC_MAINNET_MINT, SOL_NATIVE_MINT, SOL_NATIVE_MINT_HELIUS, SKR_MINT, APP_TOKEN_MINTS, COINGECKO_IDS } from '@/constants/tokens'
 import {
 	enrichTransactionHistory,
@@ -20,7 +19,6 @@ import {
 	fetchUserTips,
 	mergeActivityEntries,
 	type RawHistoryEntry,
-	type TxDirection,
 	type ActivityEntry,
 } from '@/server/utils/enrichTransactionHistory'
 
@@ -68,7 +66,6 @@ export interface WalletOverviewResult {
 	nfts?: NFTAsset[]
 }
 
-const heliusApiBase = getHeliusApiUrl()
 const heliusApiKey = env.HELIUS_API_KEY
 
 // ─── Token Price Data (CoinGecko) ────────────────────────────────────────────
@@ -339,85 +336,59 @@ async function fetchWalletData(
 	}
 }
 
-// ─── Transaction History (Helius Parsed Transactions API) ────────────────────
+// ─── Transaction History (Helius Wallet API Transfers) ───────────────────────
 
-function mapTransferDirection(address: string, from?: string | null, to?: string | null): TxDirection {
-	if (to === address) return 'in'
-	if (from === address) return 'out'
-	return 'out'
+/** Map mint address to our known token labels; returns null for unknown tokens. */
+function mintToTokenLabel(mint: string | null | undefined): RawHistoryEntry['token'] | null {
+	if (!mint) return null
+	if (mint === SOL_NATIVE_MINT || mint === SOL_NATIVE_MINT_HELIUS || mint === 'So11111111111111111111111111111111111111112') return 'SOL'
+	if (mint === USDC_MAINNET_MINT) return 'USDC'
+	if (mint === SKR_MINT) return 'SKR'
+	return null
 }
 
 async function fetchHistory(address: string): Promise<RawHistoryEntry[]> {
 	if (!isValidSolanaAddress(address)) return []
 
 	try {
-		const url = `${heliusApiBase}/addresses/${address}/transactions?api-key=${heliusApiKey}&limit=20`
+		// Wallet API v1 Transfers endpoint — returns pre-parsed transfers with
+		// direction, counterparty, human-readable amounts, and all token types.
+		const url = `https://api.helius.xyz/v1/wallet/${address}/transfers?api-key=${heliusApiKey}&limit=50`
 		const res = await fetch(url)
 		if (!res.ok) return []
 
-		const data = (await res.json()) as Array<{
-			signature: string
-			timestamp: number
-			nativeTransfers?: Array<{ amount: number; fromUserAccount?: string | null; toUserAccount?: string | null }>
-			tokenTransfers?: Array<{
-				tokenAmount: number
-				mint: string
-				decimals: number
-				fromUserAccount?: string | null
-				toUserAccount?: string | null
+		const json = (await res.json()) as {
+			data?: Array<{
+				signature: string
+				timestamp: number | null
+				direction: 'in' | 'out'
+				counterparty?: string | null
+				mint?: string | null
+				symbol?: string | null
+				amount?: number | null
+				amountRaw?: string | null
+				decimals?: number | null
 			}>
-		}>
+		}
+
+		if (!json.data) return []
 
 		const entries: RawHistoryEntry[] = []
 
-		for (const tx of data) {
-			if (tx.nativeTransfers) {
-				tx.nativeTransfers.forEach((t) => {
-					if (!t || typeof t.amount !== 'number') return
-					entries.push({
-						signature: tx.signature,
-						address,
-						token: 'SOL',
-						amount: t.amount / LAMPORTS_PER_SOL,
-						direction: mapTransferDirection(address, t.fromUserAccount, t.toUserAccount),
-						timestamp: tx.timestamp * 1000,
-					})
-				})
-			}
+		for (const tx of json.data) {
+			if (!tx.signature || tx.amount == null || tx.amount === 0) continue
 
-			if (tx.tokenTransfers) {
-				tx.tokenTransfers.forEach((t) => {
-					if (!t) return
-					// Only include USDC and SKR token transfers
-					let tokenLabel: 'USDC' | 'SKR'
-					if (t.mint === USDC_MAINNET_MINT) {
-						tokenLabel = 'USDC'
-					} else if (t.mint === SKR_MINT) {
-						tokenLabel = 'SKR'
-					} else {
-						return
-					}
-					let amount: number
-					if (typeof t.tokenAmount === 'number' && !isNaN(t.tokenAmount)) {
-						if (typeof t.decimals === 'number' && !isNaN(t.decimals) && t.decimals > 0) {
-							amount = t.tokenAmount / 10 ** t.decimals
-						} else {
-							amount = t.tokenAmount
-						}
-					} else {
-						return
-					}
-					if (isNaN(amount) || amount === 0) return
-					entries.push({
-						signature: tx.signature,
-						address,
-						token: tokenLabel,
-						amount,
-						direction: mapTransferDirection(address, t.fromUserAccount, t.toUserAccount),
-						timestamp: tx.timestamp * 1000,
-					})
-				})
-			}
+			const token = mintToTokenLabel(tx.mint)
+			if (!token) continue // Skip unknown tokens
+
+			entries.push({
+				signature: tx.signature,
+				address,
+				token,
+				amount: Math.abs(tx.amount),
+				direction: tx.direction,
+				timestamp: tx.timestamp ? tx.timestamp * 1000 : Date.now(),
+			})
 		}
 
 		return entries

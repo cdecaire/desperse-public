@@ -387,23 +387,32 @@ async function fetchHistory(address: string): Promise<RawHistoryEntry[]> {
 
 			if (tx.tokenTransfers) {
 				tx.tokenTransfers.forEach((t) => {
-					if (!t || t.mint !== USDC_MAINNET_MINT) return
-					let amountUsdc: number
+					if (!t) return
+					// Only include USDC and SKR token transfers
+					let tokenLabel: 'USDC' | 'SKR'
+					if (t.mint === USDC_MAINNET_MINT) {
+						tokenLabel = 'USDC'
+					} else if (t.mint === SKR_MINT) {
+						tokenLabel = 'SKR'
+					} else {
+						return
+					}
+					let amount: number
 					if (typeof t.tokenAmount === 'number' && !isNaN(t.tokenAmount)) {
 						if (typeof t.decimals === 'number' && !isNaN(t.decimals) && t.decimals > 0) {
-							amountUsdc = t.tokenAmount / 10 ** t.decimals
+							amount = t.tokenAmount / 10 ** t.decimals
 						} else {
-							amountUsdc = t.tokenAmount
+							amount = t.tokenAmount
 						}
 					} else {
 						return
 					}
-					if (isNaN(amountUsdc) || amountUsdc === 0) return
+					if (isNaN(amount) || amount === 0) return
 					entries.push({
 						signature: tx.signature,
 						address,
-						token: 'USDC',
-						amount: amountUsdc,
+						token: tokenLabel,
+						amount,
 						direction: mapTransferDirection(address, t.fromUserAccount, t.toUserAccount),
 						timestamp: tx.timestamp * 1000,
 					})

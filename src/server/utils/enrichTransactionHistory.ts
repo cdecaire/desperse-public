@@ -58,7 +58,7 @@ export type ActivityEntry = {
 export type RawHistoryEntry = {
 	signature: string
 	address: string
-	token: 'SOL' | 'USDC'
+	token: 'SOL' | 'USDC' | 'SKR'
 	amount: number
 	direction: TxDirection
 	timestamp: number

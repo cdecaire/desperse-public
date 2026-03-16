@@ -14,6 +14,7 @@ import { Route as SearchRouteImport } from './routes/search'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as FeesRouteImport } from './routes/fees'
+import { Route as ExportWalletRouteImport } from './routes/export-wallet'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as ChangelogRouteImport } from './routes/changelog'
 import { Route as BrowseRouteImport } from './routes/browse'
@@ -78,6 +79,11 @@ const NotificationsRoute = NotificationsRouteImport.update({
 const FeesRoute = FeesRouteImport.update({
   id: '/fees',
   path: '/fees',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExportWalletRoute = ExportWalletRouteImport.update({
+  id: '/export-wallet',
+  path: '/export-wallet',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExploreRoute = ExploreRouteImport.update({
@@ -294,6 +300,7 @@ export interface FileRoutesByFullPath {
   '/browse': typeof BrowseRoute
   '/changelog': typeof ChangelogRoute
   '/explore': typeof ExploreRoute
+  '/export-wallet': typeof ExportWalletRoute
   '/fees': typeof FeesRoute
   '/notifications': typeof NotificationsRoute
   '/privacy': typeof PrivacyRoute
@@ -340,6 +347,7 @@ export interface FileRoutesByTo {
   '/browse': typeof BrowseRoute
   '/changelog': typeof ChangelogRoute
   '/explore': typeof ExploreRoute
+  '/export-wallet': typeof ExportWalletRoute
   '/fees': typeof FeesRoute
   '/notifications': typeof NotificationsRoute
   '/privacy': typeof PrivacyRoute
@@ -387,6 +395,7 @@ export interface FileRoutesById {
   '/browse': typeof BrowseRoute
   '/changelog': typeof ChangelogRoute
   '/explore': typeof ExploreRoute
+  '/export-wallet': typeof ExportWalletRoute
   '/fees': typeof FeesRoute
   '/notifications': typeof NotificationsRoute
   '/privacy': typeof PrivacyRoute
@@ -436,6 +445,7 @@ export interface FileRouteTypes {
     | '/browse'
     | '/changelog'
     | '/explore'
+    | '/export-wallet'
     | '/fees'
     | '/notifications'
     | '/privacy'
@@ -482,6 +492,7 @@ export interface FileRouteTypes {
     | '/browse'
     | '/changelog'
     | '/explore'
+    | '/export-wallet'
     | '/fees'
     | '/notifications'
     | '/privacy'
@@ -528,6 +539,7 @@ export interface FileRouteTypes {
     | '/browse'
     | '/changelog'
     | '/explore'
+    | '/export-wallet'
     | '/fees'
     | '/notifications'
     | '/privacy'
@@ -576,6 +588,7 @@ export interface RootRouteChildren {
   BrowseRoute: typeof BrowseRoute
   ChangelogRoute: typeof ChangelogRoute
   ExploreRoute: typeof ExploreRoute
+  ExportWalletRoute: typeof ExportWalletRoute
   FeesRoute: typeof FeesRoute
   NotificationsRoute: typeof NotificationsRoute
   PrivacyRoute: typeof PrivacyRoute
@@ -636,6 +649,13 @@ declare module '@tanstack/react-router' {
       path: '/fees'
       fullPath: '/fees'
       preLoaderRoute: typeof FeesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/export-wallet': {
+      id: '/export-wallet'
+      path: '/export-wallet'
+      fullPath: '/export-wallet'
+      preLoaderRoute: typeof ExportWalletRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/explore': {
@@ -1007,6 +1027,7 @@ const rootRouteChildren: RootRouteChildren = {
   BrowseRoute: BrowseRoute,
   ChangelogRoute: ChangelogRoute,
   ExploreRoute: ExploreRoute,
+  ExportWalletRoute: ExportWalletRoute,
   FeesRoute: FeesRoute,
   NotificationsRoute: NotificationsRoute,
   PrivacyRoute: PrivacyRoute,

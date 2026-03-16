@@ -14,11 +14,11 @@ function ExportWalletPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col items-center">
-      <header className="pt-8 pb-4">
+      <header className="absolute top-8 left-0 right-0 flex justify-center">
         <Logo size={20} className="text-foreground" />
       </header>
 
-      <main className="flex-1 flex items-center justify-center px-4">
+      <main className="flex-1 flex items-center justify-center px-4 min-h-screen">
         {!ready ? (
           <Icon name="spinner-third" spin className="text-2xl text-muted-foreground" />
         ) : authenticated ? (

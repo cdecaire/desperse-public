@@ -10,7 +10,7 @@ function TermsPage() {
     <StaticPageLayout>
       <article className="prose prose-zinc dark:prose-invert prose-p:my-4 max-w-none">
         <h1 className="text-2xl md:text-3xl font-bold mb-2">Terms of Service</h1>
-        <p className="text-muted-foreground text-sm mb-8">Last updated: March 12, 2026</p>
+        <p className="text-muted-foreground text-sm mb-8">Last updated: March 16, 2026</p>
 
         <p>
           By accessing or using Desperse ("Desperse," the "App," "we," "us," or "our"), you agree to
@@ -26,7 +26,7 @@ function TermsPage() {
 
         <h2 className="text-xl font-semibold mt-8 mb-4">Accounts</h2>
         <p>
-          When you sign in with Instagram or another social or authentication provider, you authorize
+          When you sign in with X, Google, or another social or authentication provider, you authorize
           the App to access certain basic account information as permitted by that provider.
         </p>
         <p>
@@ -59,9 +59,10 @@ function TermsPage() {
           not by Desperse.
         </p>
         <p>
-          Desperse may preserve, retain, remove, disable access to, hide, delist, restrict, or review
-          User Content at any time and for any reason, including for moderation, legal compliance,
-          investigation, abuse prevention, safety, operational, or policy reasons.
+          Desperse may preserve, retain, review, label, blur, age-gate, remove, disable access to,
+          hide, delist, or restrict User Content at any time and for any reason, including for
+          moderation, legal compliance, investigation, abuse prevention, safety, operational,
+          reputational, or policy reasons.
         </p>
 
         <h2 className="text-xl font-semibold mt-8 mb-4">User Representations and Warranties</h2>
@@ -125,7 +126,23 @@ function TermsPage() {
             impersonates another person or falsely suggests affiliation, endorsement, authorship, or
             ownership
           </li>
+          <li>
+            is pornographic, sexually explicit, sexually exploitative, or primarily intended for sexual
+            arousal or sexual gratification, including explicit sexual acts, graphic sexual content,
+            fetish content, sexual solicitation, or non-consensual intimate imagery
+          </li>
+          <li>
+            sexualizes, exploits, or depicts minors in a sexualized manner, or appears to do so
+          </li>
         </ul>
+        <p>
+          Non-explicit nudity may be permitted in limited contexts, including artistic, documentary,
+          editorial, or educational expression. Because context matters and these judgments can be
+          subjective, Desperse may determine in its sole discretion whether nudity or sexual content is
+          permitted on the App and may label, blur, age-gate, reduce visibility of, hide, delist,
+          restrict, or remove such content where it is graphic, gratuitous, exploitative, misleading,
+          unsafe, or otherwise inappropriate for the App.
+        </p>
 
         <h2 className="text-xl font-semibold mt-8 mb-4">Messaging and User Communications</h2>
         <p>
@@ -156,8 +173,15 @@ function TermsPage() {
           limitation:
         </p>
         <ul className="list-disc pl-6 space-y-1 my-4">
-          <li>reviewing reported content or account activity</li>
+          <li>
+            reviewing reported content, account activity, messages, metadata, previews, thumbnails,
+            profile images, cover images, and other surfaced content
+          </li>
           <li>requesting additional information</li>
+          <li>
+            labeling content as sensitive or mature, blurring previews, age-gating content, or limiting
+            its visibility in feeds, profiles, search, discovery, messaging, or other features
+          </li>
           <li>hiding, delisting, disabling access to, or removing content</li>
           <li>
             preserving content, reports, and account information for legal, investigative, or safety

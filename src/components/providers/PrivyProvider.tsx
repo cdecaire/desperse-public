@@ -30,6 +30,13 @@ export function PrivyProvider({ children, heliusWsUrl }: PrivyProviderProps) {
   // Buffer polyfill is now loaded synchronously via buffer-polyfill.ts import in __root.tsx
   // No need for async loading here
 
+  // Detect PWA standalone mode — wallet extensions don't work in PWAs on mobile,
+  // so we hide wallet login and show only social/email methods
+  const isPWA = typeof window !== 'undefined' && (
+    window.matchMedia('(display-mode: standalone)').matches ||
+    (navigator as any).standalone === true
+  )
+
   // Get current theme from ThemeProvider to sync Privy's theme
   const { resolvedTheme } = useTheme()
   // resolvedTheme will be 'light' or 'dark' (never 'system')
@@ -61,21 +68,20 @@ export function PrivyProvider({ children, heliusWsUrl }: PrivyProviderProps) {
     <PrivySDKProvider
       appId={appId}
       config={{
-        // Configure login methods (wallets enabled for Solana-only)
-        loginMethods: ['wallet', 'email', 'google', 'twitter'],
-        // Appearance settings - synced with app theme
+        // In PWA mode, hide wallet login — extensions don't work, deep links open wallet's
+        // in-app browser instead of returning to the PWA. Users get an embedded wallet via social login.
+        loginMethods: isPWA
+          ? ['email', 'google', 'twitter']
+          : ['wallet', 'email', 'google', 'twitter'],
         appearance: {
-          // Theme matches app's dark/light mode
           theme: privyTheme,
-          // Use purple-heart-600 as accent color (matches --highlight)
           accentColor: '#a213ff',
-          // Logo configuration
           logo: logoUrl,
-          // Surface wallet sign-in prominently while keeping only Solana wallets available
-          showWalletLoginFirst: true,
-          // Show only Solana wallets (detected first, plus common options)
-          walletList: ['detected_solana_wallets', 'phantom', 'solflare', 'backpack', 'okx_wallet'],
-          walletChainType: 'solana-only', // Required for Solana wallet connections
+          showWalletLoginFirst: !isPWA,
+          ...(isPWA ? {} : {
+            walletList: ['detected_solana_wallets', 'phantom', 'solflare', 'backpack', 'okx_wallet'],
+          }),
+          walletChainType: 'solana-only',
         },
         // Solana RPC configuration for embedded wallet UIs (required for transactions)
         // HTTP RPC goes through our server proxy (keeps Helius API key out of client bundle)
@@ -104,12 +110,14 @@ export function PrivyProvider({ children, heliusWsUrl }: PrivyProviderProps) {
           // Enable wallet UI modals for signing operations
           showWalletUIs: true,
         },
-        // External Solana wallet connectors (Phantom, etc.)
-        externalWallets: {
-          solana: {
-            connectors: toSolanaWalletConnectors(),
+        // External Solana wallet connectors — skip in PWA mode (no extensions available)
+        ...(isPWA ? {} : {
+          externalWallets: {
+            solana: {
+              connectors: toSolanaWalletConnectors(),
+            },
           },
-        },
+        }),
       }}
     >
       {children}

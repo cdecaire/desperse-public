@@ -75,7 +75,7 @@ export function PrivyProvider({ children, heliusWsUrl }: PrivyProviderProps) {
           : ['wallet', 'email', 'google', 'twitter'],
         appearance: {
           theme: privyTheme,
-          accentColor: '#a213ff',
+          accentColor: privyTheme === 'dark' ? '#fafafa' : '#09090b',
           logo: logoUrl,
           showWalletLoginFirst: !isPWA,
           ...(isPWA ? {} : {

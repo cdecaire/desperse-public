@@ -18,6 +18,7 @@ import { Route as ExportWalletRouteImport } from './routes/export-wallet'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as ChangelogRouteImport } from './routes/changelog'
 import { Route as BrowseRouteImport } from './routes/browse'
+import { Route as ArtistApplicationRouteImport } from './routes/artist-application'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as SplatRouteImport } from './routes/$'
@@ -99,6 +100,11 @@ const ChangelogRoute = ChangelogRouteImport.update({
 const BrowseRoute = BrowseRouteImport.update({
   id: '/browse',
   path: '/browse',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArtistApplicationRoute = ArtistApplicationRouteImport.update({
+  id: '/artist-application',
+  path: '/artist-application',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -297,6 +303,7 @@ export interface FileRoutesByFullPath {
   '/$': typeof SplatRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
+  '/artist-application': typeof ArtistApplicationRoute
   '/browse': typeof BrowseRoute
   '/changelog': typeof ChangelogRoute
   '/explore': typeof ExploreRoute
@@ -344,6 +351,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/about': typeof AboutRoute
+  '/artist-application': typeof ArtistApplicationRoute
   '/browse': typeof BrowseRoute
   '/changelog': typeof ChangelogRoute
   '/explore': typeof ExploreRoute
@@ -392,6 +400,7 @@ export interface FileRoutesById {
   '/$': typeof SplatRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
+  '/artist-application': typeof ArtistApplicationRoute
   '/browse': typeof BrowseRoute
   '/changelog': typeof ChangelogRoute
   '/explore': typeof ExploreRoute
@@ -442,6 +451,7 @@ export interface FileRouteTypes {
     | '/$'
     | '/about'
     | '/admin'
+    | '/artist-application'
     | '/browse'
     | '/changelog'
     | '/explore'
@@ -489,6 +499,7 @@ export interface FileRouteTypes {
     | '/'
     | '/$'
     | '/about'
+    | '/artist-application'
     | '/browse'
     | '/changelog'
     | '/explore'
@@ -536,6 +547,7 @@ export interface FileRouteTypes {
     | '/$'
     | '/about'
     | '/admin'
+    | '/artist-application'
     | '/browse'
     | '/changelog'
     | '/explore'
@@ -585,6 +597,7 @@ export interface RootRouteChildren {
   SplatRoute: typeof SplatRoute
   AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRouteWithChildren
+  ArtistApplicationRoute: typeof ArtistApplicationRoute
   BrowseRoute: typeof BrowseRoute
   ChangelogRoute: typeof ChangelogRoute
   ExploreRoute: typeof ExploreRoute
@@ -677,6 +690,13 @@ declare module '@tanstack/react-router' {
       path: '/browse'
       fullPath: '/browse'
       preLoaderRoute: typeof BrowseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/artist-application': {
+      id: '/artist-application'
+      path: '/artist-application'
+      fullPath: '/artist-application'
+      preLoaderRoute: typeof ArtistApplicationRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -1024,6 +1044,7 @@ const rootRouteChildren: RootRouteChildren = {
   SplatRoute: SplatRoute,
   AboutRoute: AboutRoute,
   AdminRoute: AdminRouteWithChildren,
+  ArtistApplicationRoute: ArtistApplicationRoute,
   BrowseRoute: BrowseRoute,
   ChangelogRoute: ChangelogRoute,
   ExploreRoute: ExploreRoute,

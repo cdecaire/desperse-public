@@ -757,8 +757,10 @@ export function BuyButton({
           errorMsg = 'Wallet connection failed. Please ensure your wallet is connected and try again.';
         } else if (errMsg.includes('timeout') || errMsg.includes('timed out')) {
           errorMsg = 'Transaction signing timed out. Please try again.';
+        } else if (errMsg.includes('preflight') || errMsg.includes('-32002') || errMsg.includes('simulation failed') || errMsg.includes('blockhash')) {
+          errorMsg = 'Transaction was signed but failed to send — you were not charged. Please try again.';
         } else {
-          errorMsg = error.message;
+          errorMsg = 'Transaction was signed but didn\'t go through — no funds were taken. Please try again.';
         }
       }
       toastError(errorMsg);

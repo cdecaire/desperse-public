@@ -711,11 +711,13 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
   const isSubmitting = createMutation.isPending || updatePostMutation.isPending
 
   // Unsaved-changes guard: warn before navigating away with form data
+  // In edit mode, only block if the user has actually changed something
   const hasFormData = !!(formState.mediaUrl || formState.caption.trim() || multiAssetItems.length > 0)
+  const shouldBlock = isEditMode ? hasChanges() : hasFormData
   useBlocker({
-    shouldBlockFn: () => hasFormData && !isSubmitting && !createMutation.isSuccess && !updatePostMutation.isSuccess,
-    enableBeforeUnload: () => hasFormData && !isSubmitting && !createMutation.isSuccess && !updatePostMutation.isSuccess,
-    disabled: !hasFormData || isSubmitting || createMutation.isSuccess || updatePostMutation.isSuccess,
+    shouldBlockFn: () => shouldBlock && !isSubmitting && !createMutation.isSuccess && !updatePostMutation.isSuccess,
+    enableBeforeUnload: () => shouldBlock && !isSubmitting && !createMutation.isSuccess && !updatePostMutation.isSuccess,
+    disabled: !shouldBlock || isSubmitting || createMutation.isSuccess || updatePostMutation.isSuccess,
   })
 
   return (

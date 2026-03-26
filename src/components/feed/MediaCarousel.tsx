@@ -8,6 +8,7 @@
 
 import { useState, useRef, useCallback, useEffect, useMemo } from 'react'
 import { Icon } from '@/components/ui/icon'
+import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { getResponsiveImageProps } from '@/lib/imageUrl'
 
@@ -52,6 +53,8 @@ export function MediaCarousel({
   const [isAnimating, setIsAnimating] = useState(false)
   const [showControls, setShowControls] = useState(false)
   const [hoverSide, setHoverSide] = useState<'left' | 'right' | null>(null)
+  const [videoPlaying, setVideoPlaying] = useState<Map<number, boolean>>(new Map())
+  const [videoMuted, setVideoMuted] = useState(true)
   const containerRef = useRef<HTMLDivElement>(null)
   const videoRefs = useRef<Map<number, HTMLVideoElement>>(new Map())
 
@@ -127,6 +130,7 @@ export function MediaCarousel({
   }, [isAnimating, hasMultiple, currentIndex])
 
   // Handle click/tap - zones for prev/next/open
+  // For video slides, middle zone toggles play/pause instead of opening post
   const handleInteraction = useCallback(
     (clientX: number) => {
       if (!containerRef.current) return
@@ -141,10 +145,23 @@ export function MediaCarousel({
       } else if (x > width - zone && hasMultiple) {
         goNext()
       } else {
-        onClick?.()
+        const currentMediaType = getMediaType(currentAsset?.mimeType || '')
+        if (currentMediaType === 'video') {
+          // Toggle play/pause for video slides — use trackOffset (array index of visible slide)
+          const video = videoRefs.current.get(trackOffset)
+          if (video) {
+            if (video.paused) {
+              video.play()
+            } else {
+              video.pause()
+            }
+          }
+        } else {
+          onClick?.()
+        }
       }
     },
-    [hasMultiple, goPrev, goNext, onClick]
+    [hasMultiple, goPrev, goNext, onClick, currentAsset, trackOffset]
   )
 
   const handleClick = useCallback(
@@ -180,59 +197,149 @@ export function MediaCarousel({
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [goPrev, goNext])
 
-  // Pause all videos except current
+  // Pause non-visible videos and auto-play the current video slide (muted)
   useEffect(() => {
     videoRefs.current.forEach((video, index) => {
-      if (index !== currentIndex && !video.paused) {
+      if (index !== trackOffset && !video.paused) {
         video.pause()
       }
     })
-  }, [currentIndex])
+    // Auto-play current slide if it's a video and muted
+    const video = videoRefs.current.get(trackOffset)
+    const asset = hasMultiple ? extendedAssets[trackOffset] : sortedAssets[trackOffset]
+    if (video && asset && getMediaType(asset.mimeType) === 'video' && video.muted) {
+      video.play().catch(() => {})
+    }
+  }, [trackOffset, hasMultiple, extendedAssets, sortedAssets])
+
+  // Auto-play muted videos when carousel is >50% visible (Instagram-like)
+  useEffect(() => {
+    if (!containerRef.current) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+            // Auto-play the current slide's video if it's a video and muted
+            const video = videoRefs.current.get(trackOffset)
+            const asset = hasMultiple ? extendedAssets[trackOffset] : sortedAssets[trackOffset]
+            if (video && asset && getMediaType(asset.mimeType) === 'video' && video.muted) {
+              video.play().catch(() => {})
+            }
+          } else {
+            // Pause all videos when carousel scrolls out of view
+            videoRefs.current.forEach((video) => {
+              if (!video.paused) {
+                video.pause()
+              }
+            })
+          }
+        })
+      },
+      { threshold: [0, 0.5, 1] }
+    )
+
+    observer.observe(containerRef.current)
+    return () => observer.disconnect()
+  }, [trackOffset, hasMultiple, extendedAssets, sortedAssets])
 
   // Render a single media item
   const renderMedia = (asset: CarouselAsset, index: number, isContained: boolean = false) => {
     const mediaType = getMediaType(asset.mimeType)
     // For extended assets, map back to real index for video refs
     const realIndex = index === 0 ? totalCount - 1 : index === extendedAssets.length - 1 ? 0 : index - 1
+    const isClone = hasMultiple && (index === 0 || index === extendedAssets.length - 1)
     const isActive = realIndex === currentIndex
     const shouldLoadEager = Math.abs(realIndex - currentIndex) <= 1 || realIndex === 0
 
     if (mediaType === 'video') {
-      if (isContained) {
-        return (
-          <div className="relative w-full h-full flex items-center justify-center">
-            <video
-              ref={(el) => {
-                if (el) videoRefs.current.set(realIndex, el)
-              }}
-              src={asset.url}
-              className="relative w-full h-full object-contain z-10"
-              preload={shouldLoadEager ? 'auto' : 'none'}
-              playsInline
-              loop
-              muted
-              autoPlay={isActive && preview}
-            >
-              <track kind="captions" />
-            </video>
-          </div>
-        )
+      // Use array index (not realIndex) for video refs to avoid clones overwriting real elements
+      const isCurrentlyPlaying = videoPlaying.get(index) ?? false
+
+      const handlePlayPause = (e: React.MouseEvent) => {
+        e.stopPropagation()
+        const video = videoRefs.current.get(index)
+        if (!video) return
+        if (isCurrentlyPlaying) {
+          video.pause()
+        } else {
+          video.play()
+        }
       }
+
+      const handleMuteToggle = (e: React.MouseEvent) => {
+        e.stopPropagation()
+        const newMuted = !videoMuted
+        setVideoMuted(newMuted)
+        videoRefs.current.forEach((video) => {
+          video.muted = newMuted
+        })
+      }
+
       return (
-        <video
-          ref={(el) => {
-            if (el) videoRefs.current.set(realIndex, el)
-          }}
-          src={asset.url}
-          className="w-full h-full object-cover"
-          preload={shouldLoadEager ? 'auto' : 'none'}
-          playsInline
-          loop
-          muted
-          autoPlay={isActive && preview}
-        >
-          <track kind="captions" />
-        </video>
+        <div className="relative w-full h-full bg-black">
+          <video
+            ref={(el) => {
+              if (el) {
+                videoRefs.current.set(index, el)
+                el.onplay = () => setVideoPlaying((prev) => new Map(prev).set(index, true))
+                el.onpause = () => setVideoPlaying((prev) => new Map(prev).set(index, false))
+              }
+            }}
+            src={asset.url}
+            className="absolute inset-0 w-full h-full object-contain"
+            preload={isClone ? 'none' : (shouldLoadEager ? 'auto' : 'none')}
+            playsInline
+            loop
+            muted={videoMuted}
+            autoPlay={!isClone && isActive && preview}
+          >
+            <track kind="captions" />
+          </video>
+
+          {/* Play/Pause center overlay */}
+          {!preview && !isCurrentlyPlaying && (
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
+              <Button
+                variant="ghost"
+                size="icon-lg"
+                className="rounded-full bg-black/50 backdrop-blur-sm hover:bg-black/60 text-white pointer-events-auto"
+                onClick={handlePlayPause}
+                aria-label="Play video"
+              >
+                <Icon name="play" className="text-2xl ml-1" />
+              </Button>
+            </div>
+          )}
+
+          {/* Bottom controls */}
+          {!preview && (
+            <div className="absolute bottom-0 left-0 right-0 p-3 bg-linear-to-t from-black/60 to-transparent pointer-events-none z-20">
+              <div className="flex items-center justify-end gap-2 pointer-events-auto">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-9 w-9 rounded-full bg-black/50 backdrop-blur-sm hover:bg-black/60 text-white"
+                  onClick={handleMuteToggle}
+                  aria-label={videoMuted ? 'Unmute video' : 'Mute video'}
+                >
+                  <Icon name={videoMuted ? "volume-xmark" : "volume-high"} />
+                </Button>
+                {isCurrentlyPlaying && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9 rounded-full bg-black/50 backdrop-blur-sm hover:bg-black/60 text-white"
+                    onClick={handlePlayPause}
+                    aria-label="Pause video"
+                  >
+                    <Icon name="pause" />
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
       )
     }
 
@@ -337,8 +444,6 @@ export function MediaCarousel({
           transform: trackTransform,
           transition: isAnimating ? 'transform 300ms ease-out' : 'none',
           willChange: 'transform',
-          backfaceVisibility: 'hidden',
-          WebkitBackfaceVisibility: 'hidden',
         }}
       >
         {(hasMultiple ? extendedAssets : sortedAssets).map((asset, index) => (
@@ -346,13 +451,8 @@ export function MediaCarousel({
             key={asset.id}
             className={cn(
               'w-full flex-shrink-0',
-              contained ? 'h-full flex items-center justify-center' : 'aspect-square'
+              contained ? 'h-full flex items-center justify-center' : 'aspect-square',
             )}
-            style={{
-              // Force each slide onto its own GPU layer for smoother animation
-              transform: 'translate3d(0, 0, 0)',
-              backfaceVisibility: 'hidden',
-            }}
             role="group"
             aria-roledescription="slide"
             aria-label={`Slide ${(hasMultiple ? (index === 0 ? totalCount : index === extendedAssets.length - 1 ? 1 : index) : index + 1)} of ${totalCount}`}

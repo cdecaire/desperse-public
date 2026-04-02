@@ -473,7 +473,15 @@ code {
   --privy-color-link: var(--foreground);
   --privy-color-error: var(--destructive);
   --privy-color-success: var(--caribbean-green-400);
+  --privy-color-success-foreground: #ffffff;
   --privy-border-radius: var(--radius-sm);
   --privy-font-family-body: 'Figtree', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --privy-font-family-mono: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
+/* Fix Privy success checkmark icon visibility in dark mode */
+.dark [data-privy-dialog] svg[class*="success"],
+.dark [data-privy-dialog] [class*="success"] svg {
+  color: #ffffff;
+  fill: #ffffff;
 }

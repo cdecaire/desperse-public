@@ -1,3 +1,7 @@
+// Buffer polyfill — must be the first import to ensure Buffer is available
+// before any Privy/Solana code that uses it (e.g., signing modal)
+import '@/lib/buffer-polyfill'
+
 import { HeadContent, Scripts, createRootRoute, useRouterState } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 import { useEffect, useState, useRef } from 'react'
@@ -7,7 +11,7 @@ import AppShell from '../components/layout/AppShell'
 
 // Routes that should not be wrapped in the AppShell (standalone pages)
 // Note: '/' is conditionally standalone based on auth state (see RpcHealthProviderWrapper)
-const STANDALONE_ROUTES = ['/about', '/privacy', '/terms', '/fees', '/changelog', '/browse', '/export-wallet', '/artist-application']
+const STANDALONE_ROUTES = ['/about', '/privacy', '/terms', '/fees', '/changelog', '/browse', '/export-wallet', '/echoes']
 import { PrivyProvider } from '../components/providers/PrivyProvider'
 import { QueryProvider } from '../components/providers/QueryProvider'
 import { RpcHealthProvider } from '../components/providers/RpcHealthProvider'
@@ -259,33 +263,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
     if (typeof window !== 'undefined' && 'scrollRestoration' in window.history) {
       window.history.scrollRestoration = 'manual'
     }
-  }, [])
-
-  // Load Buffer polyfill on client side only (not during SSR)
-  // Note: This runs after initial render, so modules that need Buffer synchronously
-  // should use the Vite alias which maps 'buffer' to 'buffer-es' in the browser
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-    if ((window as typeof window & { Buffer?: typeof Buffer }).Buffer) return
-    
-    // Import buffer-es only on client (Vite will handle the alias)
-    import('buffer-es')
-      .then(({ Buffer }) => {
-        // Make Buffer available globally on client
-        ;(window as typeof window & { Buffer: typeof Buffer }).Buffer = Buffer
-        
-        if (typeof globalThis !== 'undefined') {
-          ;(globalThis as typeof globalThis & { Buffer: typeof Buffer }).Buffer = Buffer
-        }
-        
-        // For Node.js-style code that checks global
-        if (typeof global !== 'undefined') {
-          ;(global as typeof global & { Buffer: typeof Buffer }).Buffer = Buffer
-        }
-      })
-      .catch((err) => {
-        console.error('Failed to load Buffer polyfill:', err)
-      })
   }, [])
 
   // Temporary: Figma capture script for html-to-design

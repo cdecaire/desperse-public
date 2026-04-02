@@ -246,6 +246,13 @@
       "when": 1773692479011,
       "tag": "0034_sticky_stature",
       "breakpoints": true
+    },
+    {
+      "idx": 35,
+      "version": "7",
+      "when": 1775003979555,
+      "tag": "0035_chemical_captain_midlands",
+      "breakpoints": true
     }
   ]
 }

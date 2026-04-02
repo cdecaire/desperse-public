@@ -1,0 +1,822 @@
+/* KH Interference — display/headline font for Echoes
+ * Body: Figtree (loaded globally via styles.css)
+ * Labels/numbers: DM Mono (loaded globally via styles.css)
+ */
+@font-face {
+	font-family: 'KH Interference';
+	src: url('/fonts/kh-interference/KHInterferenceTRIAL-Light.woff2') format('woff2');
+	font-weight: 300;
+	font-display: swap;
+}
+@font-face {
+	font-family: 'KH Interference';
+	src: url('/fonts/kh-interference/KHInterferenceTRIAL-Regular.woff2') format('woff2');
+	font-weight: 400;
+	font-display: swap;
+}
+@font-face {
+	font-family: 'KH Interference';
+	src: url('/fonts/kh-interference/KHInterferenceTRIAL-Bold.woff2') format('woff2');
+	font-weight: 700;
+	font-display: swap;
+}
+/*
+ * Echoes — Fully scoped theme for the PFP mint landing page.
+ * All custom properties are prefixed with --nx- and scoped under .echoes (Echoes collection)
+ * so they never leak into the main Desperse app.
+ */
+
+.echoes {
+	/* Surface / Background — blue-tinted noir blacks */
+	--nx-surface: #0D0F12;
+	--nx-surface-dim: #0D0F12;
+	--nx-surface-bright: #343840;
+	--nx-surface-container-lowest: #08090C;
+	--nx-surface-container-low: #151820;
+	--nx-surface-container: #1A1D24;
+	--nx-surface-container-high: #22262E;
+	--nx-surface-container-highest: #2C3038;
+	--nx-surface-variant: #2C3038;
+	--nx-surface-tint: #00BFA6;
+
+	/* On-surface — warm stone, not sterile white */
+	--nx-on-surface: #CCC8C2;
+	--nx-on-surface-variant: #7E8A94;
+	--nx-on-background: #CCC8C2;
+	--nx-inverse-surface: #CCC8C2;
+	--nx-inverse-on-surface: #1A1D24;
+
+	/* Primary — desaturated seafoam/teal (terminal glow) */
+	--nx-primary: #A3E4D7;
+	--nx-primary-container: #00BFA6;
+	--nx-primary-fixed: #7DD8C8;
+	--nx-primary-fixed-dim: #00B39A;
+	--nx-on-primary: #00302A;
+	--nx-on-primary-container: #005A4F;
+	--nx-on-primary-fixed: #001A16;
+	--nx-on-primary-fixed-variant: #004840;
+	--nx-inverse-primary: #006B5E;
+
+	/* Secondary — warm amber (heat signatures, warnings) */
+	--nx-secondary: #E8C9A0;
+	--nx-secondary-container: #D4882A;
+	--nx-secondary-fixed: #F0D4AD;
+	--nx-secondary-fixed-dim: #D4A050;
+	--nx-on-secondary: #2E1A00;
+	--nx-on-secondary-container: #5C3600;
+	--nx-on-secondary-fixed: #2A1800;
+	--nx-on-secondary-fixed-variant: #7A4A00;
+
+	/* Tertiary — dusty mauve (organic, human) */
+	--nx-tertiary: #D4B8CF;
+	--nx-tertiary-container: #A87CA0;
+	--nx-tertiary-fixed: #DFC6DA;
+	--nx-tertiary-fixed-dim: #C4A0BD;
+	--nx-on-tertiary: #3E2039;
+	--nx-on-tertiary-container: #6E4468;
+	--nx-on-tertiary-fixed: #2D1228;
+	--nx-on-tertiary-fixed-variant: #5A3654;
+
+	/* Error — muted crimson */
+	--nx-error: #E8A099;
+	--nx-error-container: #7A1A12;
+	--nx-on-error: #560A05;
+	--nx-on-error-container: #F0C8C4;
+
+	/* Outline — steel blue-gray */
+	--nx-outline: #6E7E88;
+	--nx-outline-variant: #303840;
+
+	/* Rank tier colors */
+	--nx-rank-legendary: #eab308;
+	--nx-rank-legendary-bg: rgba(234, 179, 8, 0.12);
+	--nx-rank-legendary-bg-solid: rgba(234, 179, 8, 0.2);
+	--nx-rank-elite: #a855f7;
+	--nx-rank-elite-bg: rgba(168, 85, 247, 0.12);
+	--nx-rank-elite-bg-solid: rgba(168, 85, 247, 0.2);
+	--nx-rank-rare: #3b82f6;
+	--nx-rank-rare-bg: rgba(59, 130, 246, 0.12);
+	--nx-rank-rare-bg-solid: rgba(59, 130, 246, 0.2);
+	--nx-rank-uncommon: #22c55e;
+	--nx-rank-uncommon-bg: rgba(34, 197, 94, 0.1);
+	--nx-rank-uncommon-bg-solid: rgba(34, 197, 94, 0.18);
+	--nx-rank-common: #71717a;
+	--nx-rank-common-bg: rgba(113, 113, 122, 0.08);
+	--nx-rank-common-bg-solid: rgba(113, 113, 122, 0.14);
+
+	/* Faction accent colors */
+	--nx-faction-corporate: #4A90C2;
+	--nx-faction-militia: #C24A4A;
+	--nx-faction-underground: #00BFA6;
+	--nx-faction-fringe: #A87CA0;
+	--nx-faction-zealot: #D4A050;
+
+	/* RGB channels — for rgba() with token colors at variable opacity */
+	--nx-primary-container-rgb: 0, 191, 166;
+	--nx-secondary-container-rgb: 212, 136, 42;
+	--nx-secondary-rgb: 232, 201, 160;
+	--nx-on-tertiary-container-rgb: 110, 68, 104;
+	--nx-on-surface-rgb: 204, 200, 194;
+	--nx-surface-rgb: 13, 15, 18;
+	--nx-inverse-primary-rgb: 0, 107, 94;
+	--nx-outline-rgb: 110, 126, 136;
+
+	/* Typography */
+	--nx-font-headline: 'KH Interference', 'Space Grotesk', system-ui, sans-serif;
+	--nx-font-body: 'Figtree', system-ui, sans-serif;
+	--nx-font-label: 'DM Mono', 'Space Grotesk', monospace;
+
+	/* Override Desperse defaults within this scope */
+	font-family: var(--nx-font-body);
+	font-weight: 400;
+	background-color: var(--nx-surface);
+	color: var(--nx-on-surface);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	scroll-behavior: smooth;
+}
+
+/* ── Typography utilities ── */
+.echoes .font-headline { font-family: var(--nx-font-headline); font-weight: 400; }
+.echoes .font-body { font-family: var(--nx-font-body); }
+.echoes .font-label { font-family: var(--nx-font-label); }
+
+/* ── Color utilities ── */
+/* Text */
+.echoes .nx-text-on-surface { color: var(--nx-on-surface); }
+.echoes .nx-text-on-surface-variant { color: var(--nx-on-surface-variant); }
+.echoes .nx-text-primary { color: var(--nx-primary); }
+.echoes .nx-text-primary-container { color: var(--nx-primary-container); }
+.echoes .nx-text-primary-fixed { color: var(--nx-primary-fixed); }
+.echoes .nx-text-on-primary { color: var(--nx-on-primary); }
+.echoes .nx-text-on-primary-fixed { color: var(--nx-on-primary-fixed); }
+.echoes .nx-text-on-primary-fixed-variant { color: var(--nx-on-primary-fixed-variant); }
+.echoes .nx-text-secondary { color: var(--nx-secondary); }
+.echoes .nx-text-secondary-container { color: var(--nx-secondary-container); }
+.echoes .nx-text-on-secondary { color: var(--nx-on-secondary); }
+.echoes .nx-text-on-tertiary-container { color: var(--nx-on-tertiary-container); }
+.echoes .nx-text-outline { color: var(--nx-outline); }
+.echoes .nx-text-muted { color: rgba(204, 200, 194, 0.55); }
+.echoes .nx-text-muted-40 { color: rgba(204, 200, 194, 0.45); }
+
+/* Backgrounds */
+.echoes .nx-bg-surface { background-color: var(--nx-surface); }
+.echoes .nx-bg-surface-dim { background-color: var(--nx-surface-dim); }
+.echoes .nx-bg-surface-lowest { background-color: var(--nx-surface-container-lowest); }
+.echoes .nx-bg-surface-low { background-color: var(--nx-surface-container-low); }
+.echoes .nx-bg-surface-container { background-color: var(--nx-surface-container); }
+.echoes .nx-bg-surface-high { background-color: var(--nx-surface-container-high); }
+.echoes .nx-bg-surface-highest { background-color: var(--nx-surface-container-highest); }
+.echoes .nx-bg-primary-container { background-color: var(--nx-primary-container); }
+.echoes .nx-bg-secondary-container { background-color: var(--nx-secondary-container); }
+.echoes .nx-bg-on-primary-fixed { background-color: var(--nx-on-primary-fixed); }
+
+/* Borders */
+.echoes .nx-border-primary-container { border-color: var(--nx-primary-container); }
+.echoes .nx-border-outline-variant { border-color: var(--nx-outline-variant); }
+.echoes .nx-border-subtle { border-color: rgba(48, 56, 64, 0.3); }
+.echoes .nx-border-subtle-10 { border-color: rgba(48, 56, 64, 0.15); }
+.echoes .nx-border-subtle-30 { border-color: rgba(48, 56, 64, 0.4); }
+
+/* Hover states — proper CSS instead of JS handlers */
+.echoes .nx-hover-text:hover { color: var(--nx-on-surface); }
+.echoes .nx-hover-cyan:hover { color: var(--nx-primary-container); letter-spacing: 0.3em; }
+
+/* ── Scanline overlay ── */
+.echoes .scanline-overlay {
+	background: repeating-linear-gradient(to bottom, transparent 0px, transparent 2px, rgba(var(--nx-primary-container-rgb), 0.02) 2px, rgba(var(--nx-primary-container-rgb), 0.02) 4px);
+	pointer-events: none;
+	contain: strict;
+	will-change: auto;
+}
+
+/* ── Film grain noise ── */
+.echoes .noise-grain {
+	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+	opacity: 0.02;
+	pointer-events: none;
+	contain: strict;
+}
+
+/* ── Skew hover ── */
+.echoes .skew-hover { transition: transform 0.15s ease; }
+.echoes .skew-hover:hover { transform: skewX(-2deg); }
+
+/* ── Glitch / static effect for sealed cards ── */
+.echoes .nx-glitch {
+	position: relative;
+	overflow: hidden;
+	contain: layout style;
+}
+.echoes .nx-glitch::before,
+.echoes .nx-glitch::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+}
+/* Horizontal scan lines — denser than the page-wide overlay */
+.echoes .nx-glitch::before {
+	background: repeating-linear-gradient(
+		to bottom,
+		transparent 0px,
+		transparent 2px,
+		rgba(var(--nx-primary-container-rgb), 0.03) 2px,
+		rgba(var(--nx-primary-container-rgb), 0.03) 4px
+	);
+	z-index: 2;
+}
+/* Animated noise / static grain */
+.echoes .nx-glitch::after {
+	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+	opacity: 0.06;
+	z-index: 3;
+	animation: nx-static 8s steps(10) infinite;
+	mix-blend-mode: overlay;
+}
+
+/* Animated tear / displacement line */
+.echoes .nx-glitch-active::before {
+	animation: nx-glitch-tear 4s steps(1) infinite;
+}
+
+@keyframes nx-static {
+	0% { transform: translate(0, 0); }
+	10% { transform: translate(-2%, -1%); }
+	20% { transform: translate(1%, 2%); }
+	30% { transform: translate(-1%, -2%); }
+	40% { transform: translate(2%, 1%); }
+	50% { transform: translate(-2%, 2%); }
+	60% { transform: translate(1%, -1%); }
+	70% { transform: translate(-1%, 1%); }
+	80% { transform: translate(2%, -2%); }
+	90% { transform: translate(-2%, -1%); }
+	100% { transform: translate(0, 0); }
+}
+
+@keyframes nx-glitch-tear {
+	0%, 92% { clip-path: inset(0 0 100% 0); }
+	93% { clip-path: inset(35% 0 60% 0); background: rgba(var(--nx-primary-container-rgb), 0.08); }
+	94% { clip-path: inset(70% 0 20% 0); background: rgba(var(--nx-secondary-container-rgb), 0.06); }
+	95% { clip-path: inset(15% 0 80% 0); background: rgba(var(--nx-primary-container-rgb), 0.05); }
+	96%, 100% { clip-path: inset(0 0 100% 0); }
+}
+
+/* Variant: heavier glitch for hover / featured cards */
+.echoes .nx-glitch-heavy::after {
+	opacity: 0.1;
+	animation: nx-static 3s steps(10) infinite;
+}
+.echoes .nx-glitch-heavy:hover::after {
+	opacity: 0.15;
+}
+
+/* ── Corrupted image treatment (unresolved states) ── */
+
+/* Base corrupted image — extreme contrast crushes detail */
+.echoes .nx-corrupted-base {
+	filter: contrast(4) saturate(0.05) brightness(0.75);
+}
+
+/* RGB channel ghost — heavy offset for strong chromatic aberration */
+.echoes .nx-corrupted-shift {
+	filter: contrast(3) saturate(8) brightness(0.5) hue-rotate(120deg);
+	opacity: 0.45;
+	transform: translate(14px, -6px) scale(1.06);
+	mix-blend-mode: screen;
+	pointer-events: none;
+}
+
+/* Second channel shift — opposite direction, different hue */
+.echoes .nx-corrupted-shift-b {
+	filter: contrast(3) saturate(8) brightness(0.45) hue-rotate(-80deg);
+	opacity: 0.35;
+	transform: translate(-12px, 5px) scale(1.04);
+	mix-blend-mode: screen;
+	pointer-events: none;
+}
+
+/* Animated horizontal displacement bars — periodic glitch tears */
+.echoes .nx-corrupt-bars {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	z-index: 4;
+	overflow: hidden;
+}
+.echoes .nx-corrupt-bars::before,
+.echoes .nx-corrupt-bars::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+}
+.echoes .nx-corrupt-bars::before {
+	animation: nx-corrupt-tear-a 4s steps(1) infinite;
+}
+.echoes .nx-corrupt-bars::after {
+	animation: nx-corrupt-tear-b 4s steps(1) infinite;
+	animation-delay: -2s;
+}
+
+@keyframes nx-corrupt-tear-a {
+	0%, 78% { clip-path: inset(0 0 100% 0); }
+	79% {
+		clip-path: inset(15% 0 75% 0);
+		background: linear-gradient(90deg, transparent 5%, rgba(var(--nx-primary-container-rgb), 0.25) 35%, transparent 85%);
+		transform: translateX(16px);
+	}
+	81% {
+		clip-path: inset(52% 0 38% 0);
+		background: linear-gradient(90deg, transparent 5%, rgba(var(--nx-secondary-container-rgb), 0.2) 50%, transparent 90%);
+		transform: translateX(-20px);
+	}
+	83% {
+		clip-path: inset(35% 0 55% 0);
+		background: linear-gradient(90deg, transparent 15%, rgba(var(--nx-primary-container-rgb), 0.18) 55%, transparent 75%);
+		transform: translateX(10px);
+	}
+	84% {
+		clip-path: inset(70% 0 20% 0);
+		background: linear-gradient(90deg, transparent 10%, rgba(var(--nx-secondary-container-rgb), 0.15) 40%, transparent 90%);
+		transform: translateX(-8px);
+	}
+	86%, 100% { clip-path: inset(0 0 100% 0); }
+}
+
+@keyframes nx-corrupt-tear-b {
+	0%, 82% { clip-path: inset(0 0 100% 0); }
+	83% {
+		clip-path: inset(60% 0 28% 0);
+		background: linear-gradient(90deg, transparent 10%, rgba(var(--nx-secondary-container-rgb), 0.22) 45%, transparent 80%);
+		transform: translateX(-14px);
+	}
+	85% {
+		clip-path: inset(8% 0 82% 0);
+		background: linear-gradient(90deg, transparent 5%, rgba(var(--nx-primary-container-rgb), 0.2) 50%, transparent 90%);
+		transform: translateX(18px);
+	}
+	87% {
+		clip-path: inset(42% 0 48% 0);
+		background: linear-gradient(90deg, transparent 20%, rgba(var(--nx-primary-container-rgb), 0.15) 60%, transparent 85%);
+		transform: translateX(-10px);
+	}
+	89%, 100% { clip-path: inset(0 0 100% 0); }
+}
+
+/* Denser scanlines for corrupted containers */
+.echoes .nx-corrupt-scanlines {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	z-index: 3;
+	background: repeating-linear-gradient(
+		to bottom,
+		transparent 0px,
+		transparent 1px,
+		rgba(0, 0, 0, 0.22) 1px,
+		rgba(0, 0, 0, 0.22) 2px
+	);
+	mix-blend-mode: multiply;
+}
+
+/* ── Marquee ── */
+@keyframes nx-marquee {
+	0% { transform: translateX(0); }
+	100% { transform: translateX(-50%); }
+}
+.echoes .animate-nx-marquee {
+	animation: nx-marquee 40s linear infinite;
+	will-change: transform;
+}
+.echoes .animate-nx-marquee:hover {
+	animation-play-state: paused;
+}
+
+/* ── Pulse ── */
+@keyframes nx-pulse {
+	0%, 100% { opacity: 1; }
+	50% { opacity: 0.5; }
+}
+.echoes .animate-nx-pulse {
+	animation: nx-pulse 2s ease-in-out infinite;
+}
+
+/* ── Selection ── */
+.echoes ::selection {
+	background-color: var(--nx-primary-container);
+	color: var(--nx-on-primary-fixed);
+}
+
+/* ── Focus indicators ── */
+.echoes :focus-visible {
+	outline: 2px solid var(--nx-primary-container);
+	outline-offset: 2px;
+}
+.echoes button:focus-visible {
+	outline-offset: 0;
+}
+.echoes details summary:focus-visible {
+	outline: 2px solid var(--nx-primary-container);
+	outline-offset: 2px;
+}
+
+/* ── Content visibility — skip rendering offscreen sections ── */
+/* Exclude sections with scroll reveal (IO needs them rendered to observe) */
+.echoes main > section:nth-child(n+3):not([data-revealed]) {
+	content-visibility: auto;
+	contain-intrinsic-size: auto 600px;
+}
+
+/* ── Section divider — gradient accent line between sections ── */
+.echoes .nx-section-divider {
+	position: relative;
+}
+.echoes .nx-section-divider::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 1px;
+	background: linear-gradient(
+		to right,
+		transparent 0%,
+		var(--nx-primary-container) 30%,
+		var(--nx-primary-container) 70%,
+		transparent 100%
+	);
+	opacity: 0.25;
+}
+
+/* ── Faction accent borders ── */
+.echoes .faction-corporate { border-left-color: #4A90C2; }
+.echoes .faction-militia { border-left-color: #C24A4A; }
+.echoes .faction-underground { border-left-color: #00BFA6; }
+.echoes .faction-fringe { border-left-color: #A87CA0; }
+.echoes .faction-zealot { border-left-color: #D4A050; }
+
+/* ── Ghost-Class hover reveal ── */
+.echoes .ghost-reveal {
+	opacity: 0;
+	transition: opacity 0.3s ease;
+}
+.echoes .ghost-trigger:hover .ghost-reveal {
+	opacity: 0.6;
+}
+
+/* ── Page fade-in transition ── */
+.echoes .page-enter {
+	animation: nx-fade-in 0.3s ease;
+}
+@keyframes nx-fade-in {
+	from { opacity: 0; transform: translateY(4px); }
+	to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Glitch active variant (mild continuous) ── */
+.echoes .nx-glitch-active::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background: repeating-linear-gradient(
+		0deg,
+		transparent 0,
+		transparent 3px,
+		rgba(var(--nx-primary-container-rgb), 0.01) 3px,
+		rgba(var(--nx-primary-container-rgb), 0.01) 4px
+	);
+	pointer-events: none;
+	animation: nx-glitch-tear 8s linear infinite;
+}
+
+/* ── Scroll Reveal System ── */
+
+/* Base reveal: fade up */
+.echoes [data-reveal] {
+	opacity: 0;
+	transform: translateY(24px);
+	transition:
+		opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+		transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.echoes [data-revealed="true"] [data-reveal],
+.echoes [data-revealed="true"][data-reveal] {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+/* Directional variants */
+.echoes [data-reveal="left"] {
+	transform: translateX(-30px);
+}
+.echoes [data-reveal="right"] {
+	transform: translateX(30px);
+}
+.echoes [data-revealed="true"] [data-reveal="left"],
+.echoes [data-revealed="true"][data-reveal="left"],
+.echoes [data-revealed="true"] [data-reveal="right"],
+.echoes [data-revealed="true"][data-reveal="right"] {
+	transform: translateX(0);
+}
+
+/* Scale variant */
+.echoes [data-reveal="scale"] {
+	transform: scale(0.92);
+	opacity: 0;
+	transition:
+		opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+		transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.echoes [data-revealed="true"] [data-reveal="scale"],
+.echoes [data-revealed="true"][data-reveal="scale"] {
+	opacity: 1;
+	transform: scale(1);
+}
+
+/* Clip-path wipe reveal (left to right) */
+.echoes [data-reveal="wipe"] {
+	clip-path: inset(0 100% 0 0);
+	opacity: 1;
+	transform: none;
+	transition: clip-path 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.echoes [data-revealed="true"] [data-reveal="wipe"],
+.echoes [data-revealed="true"][data-reveal="wipe"] {
+	clip-path: inset(0 0 0 0);
+}
+
+/* Clip-path wipe up */
+.echoes [data-reveal="wipe-up"] {
+	clip-path: inset(100% 0 0 0);
+	opacity: 1;
+	transform: none;
+	transition: clip-path 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.echoes [data-revealed="true"] [data-reveal="wipe-up"],
+.echoes [data-revealed="true"][data-reveal="wipe-up"] {
+	clip-path: inset(0 0 0 0);
+}
+
+/* Clip-path wipe from right */
+.echoes [data-reveal="wipe-right"] {
+	clip-path: inset(0 0 0 100%);
+	opacity: 1;
+	transform: none;
+	transition: clip-path 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.echoes [data-revealed="true"] [data-reveal="wipe-right"],
+.echoes [data-revealed="true"][data-reveal="wipe-right"] {
+	clip-path: inset(0 0 0 0);
+}
+
+/* Line draw (vertical) */
+.echoes [data-reveal="line-draw"] {
+	transform-origin: top;
+	transform: scaleY(0);
+	opacity: 1;
+	transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.echoes [data-revealed="true"] [data-reveal="line-draw"],
+.echoes [data-revealed="true"][data-reveal="line-draw"] {
+	transform: scaleY(1);
+}
+
+/* Stagger children: same base as reveal, with computed delay */
+.echoes [data-reveal-stagger] {
+	opacity: 0;
+	transform: translateY(20px);
+	transition:
+		opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+		transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+	transition-delay: calc(var(--stagger-index, 0) * 80ms);
+}
+.echoes [data-revealed="true"] [data-reveal-stagger] {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+/* Scroll-linked grow effect */
+.echoes [data-reveal-grow] {
+	transform: scale(calc(0.85 + 0.15 * var(--reveal-progress, 0)));
+	transition: transform 0.15s ease-out;
+	will-change: transform;
+}
+
+/* ── Global corruption burst ──
+ * Applied briefly to random elements by useCorruptionEffect.
+ * Uses only GPU-composited properties: clip-path, transform, opacity. */
+.echoes .nx-corrupt {
+	animation: nx-corrupt-burst 0.3s steps(2, jump-none);
+}
+
+@keyframes nx-corrupt-burst {
+	0% {
+		clip-path: inset(0 0 0 0);
+		transform: translate(0);
+	}
+	15% {
+		clip-path: inset(20% 0 40% 0);
+		transform: translate(-4px, 1px);
+	}
+	30% {
+		clip-path: inset(60% 0 5% 0);
+		transform: translate(3px, -1px);
+	}
+	45% {
+		clip-path: inset(0 0 0 0);
+		transform: translate(0);
+	}
+	60% {
+		clip-path: inset(35% 0 30% 0);
+		transform: translate(-2px, 0);
+	}
+	75% {
+		clip-path: inset(0 0 70% 0);
+		transform: translate(2px, 1px);
+	}
+	100% {
+		clip-path: inset(0 0 0 0);
+		transform: translate(0);
+	}
+}
+
+/* Variant: subtle for text — just horizontal offset, no clip */
+.echoes h1.nx-corrupt,
+.echoes h2.nx-corrupt,
+.echoes h3.nx-corrupt,
+.echoes p.nx-corrupt,
+.echoes .font-headline.nx-corrupt,
+.echoes .font-label.nx-corrupt {
+	animation: nx-corrupt-text 0.2s steps(3, jump-none);
+}
+
+@keyframes nx-corrupt-text {
+	0% { transform: translate(0); opacity: 1; }
+	25% { transform: translate(-3px, 0); opacity: 0.8; }
+	50% { transform: translate(2px, 1px); opacity: 0.6; }
+	75% { transform: translate(-1px, -1px); opacity: 0.9; }
+	100% { transform: translate(0); opacity: 1; }
+}
+
+/* ── Hover corruption — interactive glitch on hover ── */
+.echoes .nx-hover-corrupt {
+	position: relative;
+}
+.echoes .nx-hover-corrupt::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	opacity: 0;
+	z-index: 5;
+}
+.echoes .nx-hover-corrupt:hover::after {
+	animation: nx-corrupt-burst 0.3s steps(2, jump-none);
+	opacity: 1;
+}
+
+/* Generic hover glitch — add to any interactive element */
+.echoes .nx-hover-glitch:hover {
+	animation: nx-corrupt-text 0.25s steps(3, jump-none);
+}
+
+/* ── Hero: prevent content flash on load ──
+ * The hero is always in-viewport, so the IO fires within one frame.
+ * Use a tiny animation-delay to bridge the gap instead of starting at opacity:0.
+ * This means the hero stagger still animates but doesn't flash invisible first. */
+.echoes #hero [data-reveal-stagger] {
+	opacity: 1;
+	transform: translateY(0);
+	animation: echoes-hero-stagger-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+	animation-delay: calc(var(--stagger-index, 0) * 80ms + 0.1s);
+}
+@keyframes echoes-hero-stagger-in {
+	from {
+		opacity: 0;
+		transform: translateY(16px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* ── Collection card scroll reveal ── */
+.echoes .echo-card {
+	opacity: 0;
+	translate: 0 20px;
+	scale: 0.97;
+	transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+	            translate 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+	            scale 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+	            transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+	            box-shadow 0.3s ease-out;
+}
+.echoes .echo-card.echo-visible {
+	opacity: 1;
+	translate: 0 0;
+	scale: 1;
+	will-change: transform;
+}
+.echoes .echo-card.echo-visible:hover {
+	transform: var(--hover-transform, translateY(-4px) scale(1.03));
+	box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5),
+	            0 0 0 1px rgba(var(--nx-primary-container-rgb), 0.1);
+	z-index: 10;
+}
+
+/* ── Hero image entrance ── */
+@keyframes echoes-hero-img-in {
+	0% {
+		opacity: 0;
+		transform: translateY(30px) scale(0.95);
+		filter: brightness(0.3) saturate(0);
+	}
+	60% {
+		opacity: 0.85;
+		filter: brightness(0.9) saturate(0.7);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+		filter: brightness(1) saturate(1);
+	}
+}
+
+.echoes .echoes-hero-img {
+	opacity: 0;
+	animation: echoes-hero-img-in 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+	animation-delay: var(--img-delay, 0.3s);
+}
+.echoes .echoes-hero-img:nth-child(1) { --img-delay: 0.2s; }
+.echoes .echoes-hero-img:nth-child(2) { --img-delay: 0.5s; }
+.echoes .echoes-hero-img:nth-child(3) { --img-delay: 0.35s; }
+.echoes .echoes-hero-img:nth-child(4) { --img-delay: 0.65s; }
+.echoes .echoes-hero-img:nth-child(5) { --img-delay: 0.8s; }
+
+/* ── Privy modal overrides (Echoes pages only) ──
+ * Privy modals render as portals outside .echoes scope,
+ * so we use a body-level data attribute set by the echoes layout.
+ * This keeps Desperse app modals completely unaffected. */
+body[data-echoes] {
+	--privy-border-radius-sm: 2px;
+	--privy-border-radius-md: 4px;
+	--privy-border-radius-lg: 6px;
+	--privy-border-radius-full: 6px;
+	--privy-color-background: #08090C;
+	--privy-color-background-2: #151820;
+	--privy-color-background-3: #1A1D24;
+	--privy-color-foreground: #CCC8C2;
+	--privy-color-foreground-2: #CCC8C2;
+	--privy-color-foreground-3: #7E8A94;
+	--privy-color-foreground-4: #6E7E88;
+	--privy-color-foreground-accent: #08090C;
+	--privy-color-accent: #00BFA6;
+	--privy-color-accent-light: rgba(0, 191, 166, 0.15);
+	--privy-color-accent-lightest: rgba(0, 191, 166, 0.08);
+	--privy-color-accent-dark: #009E89;
+	--privy-color-accent-darkest: #006B5E;
+	--privy-color-success: #00BFA6;
+	--privy-color-error: #E8A099;
+	--privy-color-error-light: rgba(232, 160, 153, 0.15);
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+	.echoes .echoes-hero-img {
+		opacity: 1;
+		animation: none;
+		filter: none;
+		transform: none;
+	}
+	.echoes .echo-card {
+		opacity: 1;
+		transform: none;
+		transition: none;
+	}
+	.echoes .animate-nx-marquee,
+	.echoes .animate-nx-pulse,
+	.echoes .nx-glitch::after,
+	.echoes .nx-glitch-active::before {
+		animation: none;
+	}
+	.echoes .skew-hover:hover {
+		transform: none;
+	}
+	.echoes .page-enter {
+		animation: none;
+	}
+	/* Scroll reveal: show everything immediately */
+	.echoes [data-reveal],
+	.echoes [data-reveal-stagger] {
+		opacity: 1 !important;
+		transform: none !important;
+		clip-path: none !important;
+		transition: none !important;
+	}
+	.echoes [data-reveal-grow] {
+		transform: none !important;
+		transition: none !important;
+	}
+}

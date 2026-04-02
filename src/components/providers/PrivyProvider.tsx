@@ -5,6 +5,7 @@ import { toSolanaWalletConnectors } from '@privy-io/react-auth/solana'
 import { createSolanaRpc, createSolanaRpcSubscriptions } from '@solana/kit'
 import { useTheme } from './ThemeProvider'
 import { getClientRpcUrl } from '@/lib/rpc'
+import { getEchoesClientRpcUrl } from '@/lib/echoes-rpc'
 
 interface PrivyProviderProps {
   children: React.ReactNode
@@ -39,8 +40,9 @@ export function PrivyProvider({ children, heliusWsUrl }: PrivyProviderProps) {
 
   // Get current theme from ThemeProvider to sync Privy's theme
   const { resolvedTheme } = useTheme()
-  // resolvedTheme will be 'light' or 'dark' (never 'system')
-  const privyTheme = (resolvedTheme === 'dark' ? 'dark' : 'light') as 'light' | 'dark'
+  // Echoes pages are always dark — force Privy modals to dark mode on /echoes routes
+  const isEchoes = typeof window !== 'undefined' && window.location.pathname.startsWith('/echoes')
+  const privyTheme: 'light' | 'dark' = isEchoes ? 'dark' : (resolvedTheme === 'dark' ? 'dark' : 'light')
 
   // Get app ID from environment - uses Vite's import.meta.env for client-side access
   const appId = import.meta.env.VITE_PRIVY_APP_ID
@@ -75,9 +77,13 @@ export function PrivyProvider({ children, heliusWsUrl }: PrivyProviderProps) {
           : ['wallet', 'email', 'google', 'twitter'],
         appearance: {
           theme: privyTheme,
-          accentColor: privyTheme === 'dark' ? '#fafafa' : '#09090b',
+          accentColor: isEchoes ? '#00BFA6' : (privyTheme === 'dark' ? '#fafafa' : '#09090b'),
           logo: logoUrl,
           showWalletLoginFirst: !isPWA,
+          ...(isEchoes ? {
+            landingHeader: 'Connect to Tessera',
+            loginMessage: 'Link a wallet or sign in to recover your Echo.',
+          } : {}),
           ...(isPWA ? {} : {
             walletList: ['detected_solana_wallets', 'phantom', 'solflare', 'backpack', 'okx_wallet'],
           }),
@@ -94,6 +100,10 @@ export function PrivyProvider({ children, heliusWsUrl }: PrivyProviderProps) {
               ...(heliusWsUrl
                 ? { rpcSubscriptions: createSolanaRpcSubscriptions(heliusWsUrl) }
                 : {}),
+            } as any,
+            // Echoes PFP mint uses devnet — separate RPC proxy keeps devnet API key server-side
+            'solana:devnet': {
+              rpc: createSolanaRpc(getEchoesClientRpcUrl()),
             } as any,
           },
         },

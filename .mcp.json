@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "privy-docs": {
+      "url": "https://docs.privy.io/mcp"
+    },
+    "helius": {
+      "command": "npx",
+      "args": ["helius-mcp@latest"],
+      "env": {
+        "HELIUS_API_KEY": "7e82fd34-b153-4641-ba48-61633cd94f04"
+      }
+    }
+  }
+}

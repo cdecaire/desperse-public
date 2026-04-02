@@ -3,10 +3,12 @@ node_modules
 dist
 dist-ssr
 *.local
+echoes-fee-payer.json
 count.txt
 .env
 .nitro
 .tanstack
+echoes-dev
 .wrangler
 .output
 .vinxi

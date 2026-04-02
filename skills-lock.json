@@ -10,6 +10,11 @@
       "source": "metaplex-foundation/skill",
       "sourceType": "github",
       "computedHash": "9f9a34cc6bba79229a8df54fbe4d43d89445c68fb75d909acb1ba7a07a09d976"
+    },
+    "privy": {
+      "source": "docs.privy.io",
+      "sourceType": "well-known",
+      "computedHash": "56987432e6da6b2c90118093d53cd2dd47e4e6f3da639614d6b1a3b4faafe0ea"
     }
   }
 }

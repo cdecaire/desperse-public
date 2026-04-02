@@ -16,15 +16,16 @@ import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as FeesRouteImport } from './routes/fees'
 import { Route as ExportWalletRouteImport } from './routes/export-wallet'
 import { Route as ExploreRouteImport } from './routes/explore'
+import { Route as EchoesRouteImport } from './routes/echoes'
 import { Route as ChangelogRouteImport } from './routes/changelog'
 import { Route as BrowseRouteImport } from './routes/browse'
-import { Route as ArtistApplicationRouteImport } from './routes/artist-application'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as SplatRouteImport } from './routes/$'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SettingsIndexRouteImport } from './routes/settings/index'
 import { Route as ProfileIndexRouteImport } from './routes/profile/index'
+import { Route as EchoesIndexRouteImport } from './routes/echoes/index'
 import { Route as CreateIndexRouteImport } from './routes/create/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as TagTagSlugRouteImport } from './routes/tag/$tagSlug'
@@ -33,6 +34,11 @@ import { Route as SettingsHelpRouteImport } from './routes/settings/help'
 import { Route as SettingsAccountRouteImport } from './routes/settings/account'
 import { Route as ProfileSlugRouteImport } from './routes/profile/$slug'
 import { Route as PostPostIdRouteImport } from './routes/post/$postId'
+import { Route as EchoesMintRouteImport } from './routes/echoes/mint'
+import { Route as EchoesLoreRouteImport } from './routes/echoes/lore'
+import { Route as EchoesFaqRouteImport } from './routes/echoes/faq'
+import { Route as EchoesFactionsRouteImport } from './routes/echoes/factions'
+import { Route as EchoesCollectionRouteImport } from './routes/echoes/collection'
 import { Route as DevWalletTestRouteImport } from './routes/dev/wallet-test'
 import { Route as DevToastTestRouteImport } from './routes/dev/toast-test'
 import { Route as DevInputsTestRouteImport } from './routes/dev/inputs-test'
@@ -92,6 +98,11 @@ const ExploreRoute = ExploreRouteImport.update({
   path: '/explore',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EchoesRoute = EchoesRouteImport.update({
+  id: '/echoes',
+  path: '/echoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ChangelogRoute = ChangelogRouteImport.update({
   id: '/changelog',
   path: '/changelog',
@@ -100,11 +111,6 @@ const ChangelogRoute = ChangelogRouteImport.update({
 const BrowseRoute = BrowseRouteImport.update({
   id: '/browse',
   path: '/browse',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ArtistApplicationRoute = ArtistApplicationRouteImport.update({
-  id: '/artist-application',
-  path: '/artist-application',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -136,6 +142,11 @@ const ProfileIndexRoute = ProfileIndexRouteImport.update({
   id: '/profile/',
   path: '/profile/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const EchoesIndexRoute = EchoesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => EchoesRoute,
 } as any)
 const CreateIndexRoute = CreateIndexRouteImport.update({
   id: '/create/',
@@ -176,6 +187,31 @@ const PostPostIdRoute = PostPostIdRouteImport.update({
   id: '/post/$postId',
   path: '/post/$postId',
   getParentRoute: () => rootRouteImport,
+} as any)
+const EchoesMintRoute = EchoesMintRouteImport.update({
+  id: '/mint',
+  path: '/mint',
+  getParentRoute: () => EchoesRoute,
+} as any)
+const EchoesLoreRoute = EchoesLoreRouteImport.update({
+  id: '/lore',
+  path: '/lore',
+  getParentRoute: () => EchoesRoute,
+} as any)
+const EchoesFaqRoute = EchoesFaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => EchoesRoute,
+} as any)
+const EchoesFactionsRoute = EchoesFactionsRouteImport.update({
+  id: '/factions',
+  path: '/factions',
+  getParentRoute: () => EchoesRoute,
+} as any)
+const EchoesCollectionRoute = EchoesCollectionRouteImport.update({
+  id: '/collection',
+  path: '/collection',
+  getParentRoute: () => EchoesRoute,
 } as any)
 const DevWalletTestRoute = DevWalletTestRouteImport.update({
   id: '/dev/wallet-test',
@@ -303,9 +339,9 @@ export interface FileRoutesByFullPath {
   '/$': typeof SplatRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
-  '/artist-application': typeof ArtistApplicationRoute
   '/browse': typeof BrowseRoute
   '/changelog': typeof ChangelogRoute
+  '/echoes': typeof EchoesRouteWithChildren
   '/explore': typeof ExploreRoute
   '/export-wallet': typeof ExportWalletRoute
   '/fees': typeof FeesRoute
@@ -324,6 +360,11 @@ export interface FileRoutesByFullPath {
   '/dev/inputs-test': typeof DevInputsTestRoute
   '/dev/toast-test': typeof DevToastTestRoute
   '/dev/wallet-test': typeof DevWalletTestRoute
+  '/echoes/collection': typeof EchoesCollectionRoute
+  '/echoes/factions': typeof EchoesFactionsRoute
+  '/echoes/faq': typeof EchoesFaqRoute
+  '/echoes/lore': typeof EchoesLoreRoute
+  '/echoes/mint': typeof EchoesMintRoute
   '/post/$postId': typeof PostPostIdRouteWithChildren
   '/profile/$slug': typeof ProfileSlugRoute
   '/settings/account': typeof SettingsAccountRouteWithChildren
@@ -332,6 +373,7 @@ export interface FileRoutesByFullPath {
   '/tag/$tagSlug': typeof TagTagSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/create/': typeof CreateIndexRoute
+  '/echoes/': typeof EchoesIndexRoute
   '/profile/': typeof ProfileIndexRoute
   '/settings/': typeof SettingsIndexRoute
   '/admin/feedback/$feedbackId': typeof AdminFeedbackFeedbackIdRoute
@@ -351,7 +393,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/about': typeof AboutRoute
-  '/artist-application': typeof ArtistApplicationRoute
   '/browse': typeof BrowseRoute
   '/changelog': typeof ChangelogRoute
   '/explore': typeof ExploreRoute
@@ -372,6 +413,11 @@ export interface FileRoutesByTo {
   '/dev/inputs-test': typeof DevInputsTestRoute
   '/dev/toast-test': typeof DevToastTestRoute
   '/dev/wallet-test': typeof DevWalletTestRoute
+  '/echoes/collection': typeof EchoesCollectionRoute
+  '/echoes/factions': typeof EchoesFactionsRoute
+  '/echoes/faq': typeof EchoesFaqRoute
+  '/echoes/lore': typeof EchoesLoreRoute
+  '/echoes/mint': typeof EchoesMintRoute
   '/post/$postId': typeof PostPostIdRouteWithChildren
   '/profile/$slug': typeof ProfileSlugRoute
   '/settings/help': typeof SettingsHelpRoute
@@ -379,6 +425,7 @@ export interface FileRoutesByTo {
   '/tag/$tagSlug': typeof TagTagSlugRoute
   '/admin': typeof AdminIndexRoute
   '/create': typeof CreateIndexRoute
+  '/echoes': typeof EchoesIndexRoute
   '/profile': typeof ProfileIndexRoute
   '/settings': typeof SettingsIndexRoute
   '/admin/feedback/$feedbackId': typeof AdminFeedbackFeedbackIdRoute
@@ -400,9 +447,9 @@ export interface FileRoutesById {
   '/$': typeof SplatRoute
   '/about': typeof AboutRoute
   '/admin': typeof AdminRouteWithChildren
-  '/artist-application': typeof ArtistApplicationRoute
   '/browse': typeof BrowseRoute
   '/changelog': typeof ChangelogRoute
+  '/echoes': typeof EchoesRouteWithChildren
   '/explore': typeof ExploreRoute
   '/export-wallet': typeof ExportWalletRoute
   '/fees': typeof FeesRoute
@@ -421,6 +468,11 @@ export interface FileRoutesById {
   '/dev/inputs-test': typeof DevInputsTestRoute
   '/dev/toast-test': typeof DevToastTestRoute
   '/dev/wallet-test': typeof DevWalletTestRoute
+  '/echoes/collection': typeof EchoesCollectionRoute
+  '/echoes/factions': typeof EchoesFactionsRoute
+  '/echoes/faq': typeof EchoesFaqRoute
+  '/echoes/lore': typeof EchoesLoreRoute
+  '/echoes/mint': typeof EchoesMintRoute
   '/post/$postId': typeof PostPostIdRouteWithChildren
   '/profile/$slug': typeof ProfileSlugRoute
   '/settings/account': typeof SettingsAccountRouteWithChildren
@@ -429,6 +481,7 @@ export interface FileRoutesById {
   '/tag/$tagSlug': typeof TagTagSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/create/': typeof CreateIndexRoute
+  '/echoes/': typeof EchoesIndexRoute
   '/profile/': typeof ProfileIndexRoute
   '/settings/': typeof SettingsIndexRoute
   '/admin/feedback/$feedbackId': typeof AdminFeedbackFeedbackIdRoute
@@ -451,9 +504,9 @@ export interface FileRouteTypes {
     | '/$'
     | '/about'
     | '/admin'
-    | '/artist-application'
     | '/browse'
     | '/changelog'
+    | '/echoes'
     | '/explore'
     | '/export-wallet'
     | '/fees'
@@ -472,6 +525,11 @@ export interface FileRouteTypes {
     | '/dev/inputs-test'
     | '/dev/toast-test'
     | '/dev/wallet-test'
+    | '/echoes/collection'
+    | '/echoes/factions'
+    | '/echoes/faq'
+    | '/echoes/lore'
+    | '/echoes/mint'
     | '/post/$postId'
     | '/profile/$slug'
     | '/settings/account'
@@ -480,6 +538,7 @@ export interface FileRouteTypes {
     | '/tag/$tagSlug'
     | '/admin/'
     | '/create/'
+    | '/echoes/'
     | '/profile/'
     | '/settings/'
     | '/admin/feedback/$feedbackId'
@@ -499,7 +558,6 @@ export interface FileRouteTypes {
     | '/'
     | '/$'
     | '/about'
-    | '/artist-application'
     | '/browse'
     | '/changelog'
     | '/explore'
@@ -520,6 +578,11 @@ export interface FileRouteTypes {
     | '/dev/inputs-test'
     | '/dev/toast-test'
     | '/dev/wallet-test'
+    | '/echoes/collection'
+    | '/echoes/factions'
+    | '/echoes/faq'
+    | '/echoes/lore'
+    | '/echoes/mint'
     | '/post/$postId'
     | '/profile/$slug'
     | '/settings/help'
@@ -527,6 +590,7 @@ export interface FileRouteTypes {
     | '/tag/$tagSlug'
     | '/admin'
     | '/create'
+    | '/echoes'
     | '/profile'
     | '/settings'
     | '/admin/feedback/$feedbackId'
@@ -547,9 +611,9 @@ export interface FileRouteTypes {
     | '/$'
     | '/about'
     | '/admin'
-    | '/artist-application'
     | '/browse'
     | '/changelog'
+    | '/echoes'
     | '/explore'
     | '/export-wallet'
     | '/fees'
@@ -568,6 +632,11 @@ export interface FileRouteTypes {
     | '/dev/inputs-test'
     | '/dev/toast-test'
     | '/dev/wallet-test'
+    | '/echoes/collection'
+    | '/echoes/factions'
+    | '/echoes/faq'
+    | '/echoes/lore'
+    | '/echoes/mint'
     | '/post/$postId'
     | '/profile/$slug'
     | '/settings/account'
@@ -576,6 +645,7 @@ export interface FileRouteTypes {
     | '/tag/$tagSlug'
     | '/admin/'
     | '/create/'
+    | '/echoes/'
     | '/profile/'
     | '/settings/'
     | '/admin/feedback/$feedbackId'
@@ -597,9 +667,9 @@ export interface RootRouteChildren {
   SplatRoute: typeof SplatRoute
   AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRouteWithChildren
-  ArtistApplicationRoute: typeof ArtistApplicationRoute
   BrowseRoute: typeof BrowseRoute
   ChangelogRoute: typeof ChangelogRoute
+  EchoesRoute: typeof EchoesRouteWithChildren
   ExploreRoute: typeof ExploreRoute
   ExportWalletRoute: typeof ExportWalletRoute
   FeesRoute: typeof FeesRoute
@@ -678,6 +748,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExploreRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/echoes': {
+      id: '/echoes'
+      path: '/echoes'
+      fullPath: '/echoes'
+      preLoaderRoute: typeof EchoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/changelog': {
       id: '/changelog'
       path: '/changelog'
@@ -690,13 +767,6 @@ declare module '@tanstack/react-router' {
       path: '/browse'
       fullPath: '/browse'
       preLoaderRoute: typeof BrowseRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/artist-application': {
-      id: '/artist-application'
-      path: '/artist-application'
-      fullPath: '/artist-application'
-      preLoaderRoute: typeof ArtistApplicationRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -740,6 +810,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/profile/'
       preLoaderRoute: typeof ProfileIndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/echoes/': {
+      id: '/echoes/'
+      path: '/'
+      fullPath: '/echoes/'
+      preLoaderRoute: typeof EchoesIndexRouteImport
+      parentRoute: typeof EchoesRoute
     }
     '/create/': {
       id: '/create/'
@@ -796,6 +873,41 @@ declare module '@tanstack/react-router' {
       fullPath: '/post/$postId'
       preLoaderRoute: typeof PostPostIdRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/echoes/mint': {
+      id: '/echoes/mint'
+      path: '/mint'
+      fullPath: '/echoes/mint'
+      preLoaderRoute: typeof EchoesMintRouteImport
+      parentRoute: typeof EchoesRoute
+    }
+    '/echoes/lore': {
+      id: '/echoes/lore'
+      path: '/lore'
+      fullPath: '/echoes/lore'
+      preLoaderRoute: typeof EchoesLoreRouteImport
+      parentRoute: typeof EchoesRoute
+    }
+    '/echoes/faq': {
+      id: '/echoes/faq'
+      path: '/faq'
+      fullPath: '/echoes/faq'
+      preLoaderRoute: typeof EchoesFaqRouteImport
+      parentRoute: typeof EchoesRoute
+    }
+    '/echoes/factions': {
+      id: '/echoes/factions'
+      path: '/factions'
+      fullPath: '/echoes/factions'
+      preLoaderRoute: typeof EchoesFactionsRouteImport
+      parentRoute: typeof EchoesRoute
+    }
+    '/echoes/collection': {
+      id: '/echoes/collection'
+      path: '/collection'
+      fullPath: '/echoes/collection'
+      preLoaderRoute: typeof EchoesCollectionRouteImport
+      parentRoute: typeof EchoesRoute
     }
     '/dev/wallet-test': {
       id: '/dev/wallet-test'
@@ -999,6 +1111,27 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface EchoesRouteChildren {
+  EchoesCollectionRoute: typeof EchoesCollectionRoute
+  EchoesFactionsRoute: typeof EchoesFactionsRoute
+  EchoesFaqRoute: typeof EchoesFaqRoute
+  EchoesLoreRoute: typeof EchoesLoreRoute
+  EchoesMintRoute: typeof EchoesMintRoute
+  EchoesIndexRoute: typeof EchoesIndexRoute
+}
+
+const EchoesRouteChildren: EchoesRouteChildren = {
+  EchoesCollectionRoute: EchoesCollectionRoute,
+  EchoesFactionsRoute: EchoesFactionsRoute,
+  EchoesFaqRoute: EchoesFaqRoute,
+  EchoesLoreRoute: EchoesLoreRoute,
+  EchoesMintRoute: EchoesMintRoute,
+  EchoesIndexRoute: EchoesIndexRoute,
+}
+
+const EchoesRouteWithChildren =
+  EchoesRoute._addFileChildren(EchoesRouteChildren)
+
 interface PostPostIdRouteChildren {
   PostPostIdEditRoute: typeof PostPostIdEditRoute
 }
@@ -1044,9 +1177,9 @@ const rootRouteChildren: RootRouteChildren = {
   SplatRoute: SplatRoute,
   AboutRoute: AboutRoute,
   AdminRoute: AdminRouteWithChildren,
-  ArtistApplicationRoute: ArtistApplicationRoute,
   BrowseRoute: BrowseRoute,
   ChangelogRoute: ChangelogRoute,
+  EchoesRoute: EchoesRouteWithChildren,
   ExploreRoute: ExploreRoute,
   ExportWalletRoute: ExportWalletRoute,
   FeesRoute: FeesRoute,

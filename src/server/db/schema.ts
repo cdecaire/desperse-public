@@ -803,3 +803,32 @@ export type UserPreferencesJson = {
   }
 }
 
+// ---------------------------------------------------------------------------
+// PFP Mints — Echoes PFP collection mint receipt log
+// Tracks in-flight mint transactions only. Live ownership queries use DAS API.
+// ---------------------------------------------------------------------------
+export const pfpMints = pgTable(
+  'pfp_mints',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    walletAddress: text('wallet_address').notNull(),
+    nftMintAddress: text('nft_mint_address'),
+    txSignature: text('tx_signature'),
+    status: text('status').notNull().default('pending'), // 'pending' | 'confirmed' | 'failed'
+    network: text('network').notNull().default('devnet'), // 'devnet' | 'mainnet-beta'
+    ipAddress: text('ip_address'),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    confirmedAt: timestamp('confirmed_at'),
+  },
+  (table) => ({
+    userIdIdx: index('pfp_mints_user_id_idx').on(table.userId),
+    walletAddressIdx: index('pfp_mints_wallet_address_idx').on(table.walletAddress),
+    statusIdx: index('pfp_mints_status_idx').on(table.status),
+    networkIdx: index('pfp_mints_network_idx').on(table.network),
+    txSignatureIdx: index('pfp_mints_tx_signature_idx').on(table.txSignature),
+  }),
+)
+

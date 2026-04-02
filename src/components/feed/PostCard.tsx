@@ -677,13 +677,24 @@ export function PostCard({
               {commentCount} {commentCount === 1 ? 'comment' : 'comments'}
             </span>
           ) : (
-            <button
-              type="button"
-              onClick={() => setCommentSheetOpen(true)}
-              className="text-sm text-muted-foreground hover:text-foreground hover:underline cursor-pointer bg-transparent border-none p-0 text-inherit font-inherit"
-            >
-              View {commentCount} {commentCount === 1 ? 'comment' : 'comments'}
-            </button>
+            <>
+              {/* Mobile: open comment sheet */}
+              <button
+                type="button"
+                onClick={() => setCommentSheetOpen(true)}
+                className="lg:hidden text-sm text-muted-foreground hover:text-foreground hover:underline cursor-pointer bg-transparent border-none p-0 text-inherit font-inherit"
+              >
+                View {commentCount} {commentCount === 1 ? 'comment' : 'comments'}
+              </button>
+              {/* Desktop: link to post detail */}
+              <Link
+                to="/post/$postId"
+                params={{ postId: post.id }}
+                className="hidden lg:inline text-sm text-muted-foreground hover:text-foreground hover:underline"
+              >
+                View {commentCount} {commentCount === 1 ? 'comment' : 'comments'}
+              </Link>
+            </>
           )
         )}
 

@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router"
-import { useCountdown, pad, MINT_TARGET } from "./hooks/useCountdown"
+import { useCountdown, pad } from "./hooks/useCountdown"
 import { useMintPhase } from "./hooks/useMintPhase"
 import { useEchoesMintInfo } from "./hooks/useEchoesMintInfo"
 import { getRevealedImagesSeeded } from "@/data/echoes-images"
@@ -66,7 +66,10 @@ function HeroImages({ p1, p2, heroImages }: { p1: { x: number; y: number }; p2: 
 export function EchoesHero() {
 	const phase = useMintPhase()
 	const { data: mintInfo } = useEchoesMintInfo()
-	const { days, hours, minutes, seconds } = useCountdown(MINT_TARGET)
+	const countdownTarget = mintInfo?.windows?.publicStart
+		? new Date(mintInfo.windows.publicStart)
+		: new Date(0)
+	const { days, hours, minutes, seconds } = useCountdown(countdownTarget)
 	const { data: mintedData } = useEchoesMintedItems()
 	const mintedIndices = useMemo(() => mintedData ? new Set(mintedData.mintedIndices) : null, [mintedData])
 	const heroImages = useMemo(() => getRevealedImagesSeeded(5, 0, mintedIndices).map((r) => r.src), [mintedIndices])

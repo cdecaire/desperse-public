@@ -30,7 +30,8 @@ export function EchoesMintHero() {
 		!walletConnected ? "CONNECT WALLET" :
 		"MINT NOW"
 
-	const mintAddresses = userMints?.map((m) => m.nftMintAddress) ?? []
+	// Only show user's mints when CM is live or postmint — premint has no valid CM
+	const mintAddresses = phase !== "premint" ? (userMints?.map((m) => m.nftMintAddress) ?? []) : []
 
 	return (
 		<header ref={heroRef} className="relative min-h-[70vh] flex flex-col justify-center pt-24 md:pt-32 pb-16 md:pb-20 px-4 md:px-20 nx-bg-surface-lowest overflow-hidden" aria-label="Mint">

@@ -21,7 +21,7 @@ const ECHOES_NETWORK = 'devnet' as const
 // Types
 // ---------------------------------------------------------------------------
 
-export type MintPhaseServer = 'og-free' | 'og-discount' | 'whitelist' | 'public' | 'closed'
+export type MintPhaseServer = 'og-free' | 'og-discount' | 'whitelist' | 'public' | 'closed' | 'not-configured'
 
 export interface MintStatusResponse {
 	phase: MintPhaseServer
@@ -197,7 +197,7 @@ export async function getPfpMintStatus(userId: string, walletAddress: string): P
 	// Fetch CM state + guard phase from chain
 	let supply = { total: 0, minted: 0, remaining: 0 }
 	let guardPhase: GuardPhaseResult = {
-		phase: 'closed',
+		phase: 'not-configured',
 		windows: { ogFreeStart: null, ogFreeEnd: null, ogDiscountStart: null, ogDiscountEnd: null, wlStart: null, wlEnd: null, publicStart: null },
 		price: null,
 	}

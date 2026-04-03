@@ -9,10 +9,10 @@ export type MintPhase = "premint" | "minting" | "postmint"
  * Map server CM phase → client UI phase.
  * Any active mint phase → minting (breach window active)
  * closed → postmint (archive resolved)
- * null (loading / unauthenticated) → premint
+ * null / not-configured (loading / unauthenticated / no CM) → premint
  */
 function cmPhaseToUiPhase(cmPhase: string | null): MintPhase {
-	if (!cmPhase) return "premint"
+	if (!cmPhase || cmPhase === "not-configured") return "premint"
 	if (cmPhase === "closed") return "postmint"
 	return "minting"
 }

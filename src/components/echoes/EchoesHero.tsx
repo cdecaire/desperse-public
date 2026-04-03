@@ -4,7 +4,8 @@ import { useMintPhase } from "./hooks/useMintPhase"
 import { useEchoesMintInfo } from "./hooks/useEchoesMintInfo"
 import { getRevealedImagesSeeded } from "@/data/echoes-images"
 import { useScrollReveal } from "./hooks/useScrollReveal"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import { useQueryClient } from "@tanstack/react-query"
 import { useEchoesMintedItems } from "./hooks/useEchoesMintedItems"
 
 function useMouseParallax(strength = 0.02) {
@@ -65,11 +66,15 @@ function HeroImages({ p1, p2, heroImages }: { p1: { x: number; y: number }; p2: 
 
 export function EchoesHero() {
 	const phase = useMintPhase()
+	const queryClient = useQueryClient()
 	const { data: mintInfo } = useEchoesMintInfo()
 	const countdownTarget = mintInfo?.windows?.publicStart
 		? new Date(mintInfo.windows.publicStart)
 		: new Date(0)
-	const { days, hours, minutes, seconds } = useCountdown(countdownTarget)
+	const onCountdownComplete = useCallback(() => {
+		queryClient.invalidateQueries({ queryKey: ["pfp-mint-status"] })
+	}, [queryClient])
+	const { days, hours, minutes, seconds } = useCountdown(countdownTarget, onCountdownComplete)
 	const { data: mintedData } = useEchoesMintedItems()
 	const mintedIndices = useMemo(() => mintedData ? new Set(mintedData.mintedIndices) : null, [mintedData])
 	const heroImages = useMemo(() => getRevealedImagesSeeded(5, 0, mintedIndices).map((r) => r.src), [mintedIndices])

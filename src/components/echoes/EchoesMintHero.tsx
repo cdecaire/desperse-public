@@ -1,4 +1,5 @@
-import { useState } from "react"
+import { useCallback, useState } from "react"
+import { useQueryClient } from "@tanstack/react-query"
 import { Link } from "@tanstack/react-router"
 import { useCountdown, pad } from "./hooks/useCountdown"
 import { useMintPhase } from "./hooks/useMintPhase"
@@ -11,11 +12,15 @@ import { MintHeroCards } from "./EchoesArchive"
 
 export function EchoesMintHero() {
 	const phase = useMintPhase()
+	const queryClient = useQueryClient()
 	const { data: mintInfoForCountdown } = useEchoesMintInfo()
 	const countdownTarget = mintInfoForCountdown?.windows?.publicStart
 		? new Date(mintInfoForCountdown.windows.publicStart)
-		: new Date(0) // fallback — will show 00:00:00:00
-	const { days, hours, minutes, seconds } = useCountdown(countdownTarget)
+		: new Date(0)
+	const onCountdownComplete = useCallback(() => {
+		queryClient.invalidateQueries({ queryKey: ["pfp-mint-status"] })
+	}, [queryClient])
+	const { days, hours, minutes, seconds } = useCountdown(countdownTarget, onCountdownComplete)
 	const heroRef = useScrollReveal<HTMLElement>({ threshold: 0.1 })
 	const { step, mint, reset, error, walletConnected, nftMintAddress } = useEchoesMint()
 	const { data: mintInfo } = useEchoesMintInfo()

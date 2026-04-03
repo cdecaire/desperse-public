@@ -11,7 +11,7 @@ function calculateTimeLeft(target: Date) {
 	}
 }
 
-export function useCountdown(targetDate: Date) {
+export function useCountdown(targetDate: Date, onComplete?: () => void) {
 	const [timeLeft, setTimeLeft] = useState(() => calculateTimeLeft(targetDate))
 
 	useEffect(() => {
@@ -25,10 +25,13 @@ export function useCountdown(targetDate: Date) {
 		const timer = setInterval(() => {
 			const next = calculateTimeLeft(targetDate)
 			setTimeLeft(next)
-			if (next.total <= 0) clearInterval(timer)
+			if (next.total <= 0) {
+				clearInterval(timer)
+				onComplete?.()
+			}
 		}, 1000)
 		return () => clearInterval(timer)
-	}, [targetDate])
+	}, [targetDate, onComplete])
 
 	return timeLeft
 }

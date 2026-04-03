@@ -76,7 +76,7 @@ export const OG_DISCOUNT_PRICE_SOL = 0.005
 export const WL_PRICE_SOL = 0.01
 
 /** Public tier price in SOL */
-export const PUBLIC_PRICE_SOL = 0.01
+export const PUBLIC_PRICE_SOL = 0.1
 
 // ---------------------------------------------------------------------------
 // Phase dates — start/end times for sequential tiers
@@ -97,7 +97,7 @@ export const OG_DISCOUNT_END_DATE: string | null = null
 export const WL_START_DATE: string | null = null
 export const WL_END_DATE: string | null = null
 
-export const PUBLIC_START_DATE: string | null = null
+export const PUBLIC_START_DATE: string | null = '2026-04-03T23:30:00Z'
 // Public has no end date — runs until sold out
 
 // ---------------------------------------------------------------------------

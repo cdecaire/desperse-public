@@ -108,6 +108,15 @@ function isGroupActive(guards: any, now: bigint): boolean {
 	return started && !ended
 }
 
+/** Check if an allowlist guard has a non-zero Merkle root (i.e., wallets are configured) */
+function hasAllowlistWallets(guards: any): boolean {
+	if (guards?.allowList?.__option !== 'Some') return false // No allowList guard = not an allowlist phase
+	const root = guards.allowList.value.merkleRoot
+	if (!root) return false
+	// A zero-filled Merkle root means the list was empty
+	return Array.isArray(root) ? root.some((b: number) => b !== 0) : true
+}
+
 /** Extract a guard's date as ISO string */
 function guardDateToIso(guards: any, field: 'startDate' | 'endDate'): string | null {
 	const val = guards?.[field]?.__option === 'Some' ? guards[field].value.date : null
@@ -134,8 +143,8 @@ async function getPhaseFromGuards(
 	}
 
 	// Extract all groups
-	const ogFreeGroup = guard.groups.find((g) => g.label === 'og-free')
-	const ogDiscGroup = guard.groups.find((g) => g.label === 'og-disc')
+	const ogFreeGroup = guard.groups.find((g) => g.label === 'ogfree')
+	const ogDiscGroup = guard.groups.find((g) => g.label === 'ogdisc')
 	const wlGroup = guard.groups.find((g) => g.label === 'wl')
 	const publicGroup = guard.groups.find((g) => g.label === 'public')
 
@@ -157,13 +166,14 @@ async function getPhaseFromGuards(
 	}
 
 	// Check groups in sequential order — first active group wins
-	if (ogFreeGroup && isGroupActive(ogFreeGroup.guards, now)) {
+	// Skip allowlist-gated phases that have an empty Merkle root (no wallets configured)
+	if (ogFreeGroup && isGroupActive(ogFreeGroup.guards, now) && hasAllowlistWallets(ogFreeGroup.guards)) {
 		return { phase: 'og-free', windows, price: null } // Free — no price
 	}
-	if (ogDiscGroup && isGroupActive(ogDiscGroup.guards, now)) {
+	if (ogDiscGroup && isGroupActive(ogDiscGroup.guards, now) && hasAllowlistWallets(ogDiscGroup.guards)) {
 		return { phase: 'og-discount', windows, price: extractPrice(ogDiscGroup.guards) }
 	}
-	if (wlGroup && isGroupActive(wlGroup.guards, now)) {
+	if (wlGroup && isGroupActive(wlGroup.guards, now) && hasAllowlistWallets(wlGroup.guards)) {
 		return { phase: 'whitelist', windows, price: extractPrice(wlGroup.guards) }
 	}
 	if (publicGroup && isGroupActive(publicGroup.guards, now)) {
@@ -330,7 +340,7 @@ export async function buildPfpMintTransaction(
 			mintLimit: { id: 1 },
 			// No solPayment — free mint
 		}
-		group = 'og-free'
+		group = 'ogfree'
 	} else if (phase === 'og-discount') {
 		const proof = await getMerkleProofForWallet(walletAddress, 'og')
 		if (!proof) throw new Error('Wallet is not on the OG allowlist')
@@ -339,7 +349,7 @@ export async function buildPfpMintTransaction(
 			solPayment: { destination: paymentDest },
 			mintLimit: { id: 2 },
 		}
-		group = 'og-disc'
+		group = 'ogdisc'
 	} else if (phase === 'whitelist') {
 		const proof = await getMerkleProofForWallet(walletAddress, 'wl')
 		if (!proof) throw new Error('Wallet is not on the whitelist')

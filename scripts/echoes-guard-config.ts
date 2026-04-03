@@ -97,7 +97,7 @@ export const OG_DISCOUNT_END_DATE: string | null = null
 export const WL_START_DATE: string | null = null
 export const WL_END_DATE: string | null = null
 
-export const PUBLIC_START_DATE: string | null = '2026-04-03T23:30:00Z'
+export const PUBLIC_START_DATE: string | null = '2026-04-03T23:00:00Z'
 // Public has no end date — runs until sold out
 
 // ---------------------------------------------------------------------------

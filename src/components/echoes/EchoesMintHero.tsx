@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Link } from "@tanstack/react-router"
-import { useCountdown, pad, MINT_TARGET } from "./hooks/useCountdown"
+import { useCountdown, pad } from "./hooks/useCountdown"
 import { useMintPhase } from "./hooks/useMintPhase"
 import { useScrollReveal } from "./hooks/useScrollReveal"
 import { useEchoesMint } from "./hooks/useEchoesMint"
@@ -11,7 +11,11 @@ import { MintHeroCards } from "./EchoesArchive"
 
 export function EchoesMintHero() {
 	const phase = useMintPhase()
-	const { days, hours, minutes, seconds } = useCountdown(MINT_TARGET)
+	const { data: mintInfoForCountdown } = useEchoesMintInfo()
+	const countdownTarget = mintInfoForCountdown?.windows?.publicStart
+		? new Date(mintInfoForCountdown.windows.publicStart)
+		: new Date(0) // fallback — will show 00:00:00:00
+	const { days, hours, minutes, seconds } = useCountdown(countdownTarget)
 	const heroRef = useScrollReveal<HTMLElement>({ threshold: 0.1 })
 	const { step, mint, reset, error, walletConnected, nftMintAddress } = useEchoesMint()
 	const { data: mintInfo } = useEchoesMintInfo()

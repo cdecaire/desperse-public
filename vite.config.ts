@@ -120,6 +120,9 @@ const config = defineConfig({
       // race condition where function IDs aren't registered in time (TanStack/router#4486)
       ssrFiles: ['./src/server/functions/*.ts'],
     },
+    watch: {
+      ignored: ['**/echoes-dev/**'],
+    },
   },
   plugins: [
     // Shim Node built-ins → browser stubs for arbundles/turbo-sdk in client builds

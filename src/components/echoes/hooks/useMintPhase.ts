@@ -1,20 +1,20 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
+import { createContext, useContext, type ReactNode } from "react"
 import { createElement } from "react"
 import { useSearch } from "@tanstack/react-router"
+import { useEchoesMintInfo } from "./useEchoesMintInfo"
 
 export type MintPhase = "premint" | "minting" | "postmint"
 
-/** Configure these dates as mint schedule is finalized */
-const PHASE_DATES = {
-	mintStart: new Date("2026-05-01T00:00:00Z"),
-	mintEnd: new Date("2026-05-08T00:00:00Z"),
-}
-
-function getPhaseFromDate(): MintPhase {
-	const now = Date.now()
-	if (now < PHASE_DATES.mintStart.getTime()) return "premint"
-	if (now < PHASE_DATES.mintEnd.getTime()) return "minting"
-	return "postmint"
+/**
+ * Map server CM phase → client UI phase.
+ * Any active mint phase → minting (breach window active)
+ * closed → postmint (archive resolved)
+ * null (loading / unauthenticated) → premint
+ */
+function cmPhaseToUiPhase(cmPhase: string | null): MintPhase {
+	if (!cmPhase) return "premint"
+	if (cmPhase === "closed") return "postmint"
+	return "minting"
 }
 
 const MintPhaseContext = createContext<MintPhase>("premint")
@@ -38,18 +38,9 @@ export function MintPhaseProvider({ children }: { children: ReactNode }) {
 		? (devOverride as MintPhase)
 		: undefined
 
-	const [phase, setPhase] = useState<MintPhase>(overridePhase ?? getPhaseFromDate())
-
-	useEffect(() => {
-		if (overridePhase) {
-			setPhase(overridePhase)
-			return
-		}
-		// Re-check phase every minute
-		setPhase(getPhaseFromDate())
-		const interval = setInterval(() => setPhase(getPhaseFromDate()), 60_000)
-		return () => clearInterval(interval)
-	}, [overridePhase])
+	// Derive phase from server CM status
+	const { data: mintInfo } = useEchoesMintInfo()
+	const phase = overridePhase ?? cmPhaseToUiPhase(mintInfo?.phase ?? null)
 
 	return createElement(MintPhaseContext.Provider, { value: phase }, children)
 }

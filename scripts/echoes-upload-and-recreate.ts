@@ -18,6 +18,7 @@ import {
 	deleteCandyMachine,
 	deleteCandyGuard,
 	fetchCandyMachine,
+	getMerkleRoot,
 } from '@metaplex-foundation/mpl-core-candy-machine'
 import {
 	updateCollectionV1,
@@ -30,14 +31,34 @@ import {
 	signerIdentity,
 	sol,
 	some,
+
 	createGenericFile,
 } from '@metaplex-foundation/umi'
 import { pluginAuthorityPair } from '@metaplex-foundation/mpl-core'
 import { getDb } from '../src/server/db/index.ts'
 import { pfpMints } from '../src/server/db/schema.ts'
-import { eq, and } from 'drizzle-orm'
+import { eq } from 'drizzle-orm'
 import fs from 'node:fs'
 import path from 'node:path'
+import {
+	loadOgAllowlistWallets,
+	loadWlAllowlistWallets,
+	dateToTimestamp,
+	OG_FREE_MINT_LIMIT,
+	OG_DISCOUNT_MINT_LIMIT,
+	OG_DISCOUNT_PRICE_SOL,
+	WL_MINT_LIMIT,
+	WL_PRICE_SOL,
+	PUBLIC_PRICE_SOL,
+	OG_FREE_START_DATE,
+	OG_FREE_END_DATE,
+	OG_DISCOUNT_START_DATE,
+	OG_DISCOUNT_END_DATE,
+	WL_START_DATE,
+	WL_END_DATE,
+	PUBLIC_START_DATE,
+	BOT_TAX_SOL,
+} from './echoes-guard-config'
 
 // ---------------------------------------------------------------------------
 // Config
@@ -244,16 +265,68 @@ async function main() {
 
 	// 4. Create new CM with real URIs
 	log('\nCreating new Candy Machine...')
+	log('Guard groups: OG Free → OG Discount → Whitelist → Public')
 	const candyMachineSigner = generateSigner(umi)
 
 	// Calculate URI prefix and length from uploaded URIs
-	// Irys devnet returns https://gateway.irys.xyz/<HASH>, mainnet returns https://arweave.net/<HASH>
-	// Detect the common prefix from the first uploaded URI
 	const firstUri = uploadedUris[0]
 	const lastSlash = firstUri.lastIndexOf('/') + 1
 	const prefix = firstUri.substring(0, lastSlash)
 	log(`Detected URI prefix: ${prefix}`)
 	const maxUriLength = Math.max(...uploadedUris.map(u => u.replace(prefix, '').length))
+
+	const nowTimestamp = BigInt(Math.floor(Date.now() / 1000))
+	const configLineSettings = some({
+		prefixName: 'Echo #',
+		nameLength: 4,
+		prefixUri: prefix,
+		uriLength: maxUriLength,
+		isSequential: false,
+	})
+
+	const ogWallets = loadOgAllowlistWallets()
+	const wlWallets = loadWlAllowlistWallets()
+	log(`OG allowlist: ${ogWallets.length} wallets`)
+	log(`WL allowlist: ${wlWallets.length} wallets`)
+
+	// OG Free
+	const ogFreeGuards: Record<string, any> = {
+		botTax: some({ lamports: sol(BOT_TAX_SOL), lastInstruction: true }),
+		startDate: some({ date: dateToTimestamp(OG_FREE_START_DATE) ?? nowTimestamp }),
+		mintLimit: some({ id: 1, limit: OG_FREE_MINT_LIMIT }),
+	}
+	if (OG_FREE_END_DATE) ogFreeGuards.endDate = some({ date: dateToTimestamp(OG_FREE_END_DATE)! })
+	if (ogWallets.length > 0) ogFreeGuards.allowList = some({ merkleRoot: getMerkleRoot(ogWallets) })
+
+	// OG Discount
+	const ogDiscountGuards: Record<string, any> = {
+		botTax: some({ lamports: sol(BOT_TAX_SOL), lastInstruction: true }),
+		solPayment: some({ lamports: sol(OG_DISCOUNT_PRICE_SOL), destination: signer.publicKey }),
+		startDate: some({ date: dateToTimestamp(OG_DISCOUNT_START_DATE) ?? nowTimestamp }),
+		mintLimit: some({ id: 2, limit: OG_DISCOUNT_MINT_LIMIT }),
+	}
+	if (OG_DISCOUNT_END_DATE) ogDiscountGuards.endDate = some({ date: dateToTimestamp(OG_DISCOUNT_END_DATE)! })
+	if (ogWallets.length > 0) ogDiscountGuards.allowList = some({ merkleRoot: getMerkleRoot(ogWallets) })
+
+	// WL
+	const wlGuards: Record<string, any> = {
+		botTax: some({ lamports: sol(BOT_TAX_SOL), lastInstruction: true }),
+		solPayment: some({ lamports: sol(WL_PRICE_SOL), destination: signer.publicKey }),
+		startDate: some({ date: dateToTimestamp(WL_START_DATE) ?? nowTimestamp }),
+		mintLimit: some({ id: 3, limit: WL_MINT_LIMIT }),
+	}
+	if (WL_END_DATE) wlGuards.endDate = some({ date: dateToTimestamp(WL_END_DATE)! })
+	if (wlWallets.length > 0) wlGuards.allowList = some({ merkleRoot: getMerkleRoot(wlWallets) })
+
+	// Public
+	const publicGuards: Record<string, any> = {
+		botTax: some({ lamports: sol(BOT_TAX_SOL), lastInstruction: true }),
+		solPayment: some({ lamports: sol(PUBLIC_PRICE_SOL), destination: signer.publicKey }),
+		startDate: some({ date: dateToTimestamp(PUBLIC_START_DATE) ?? nowTimestamp }),
+	}
+
+	log(`OG Free: free, ${OG_FREE_MINT_LIMIT}/wallet | OG Discount: ${OG_DISCOUNT_PRICE_SOL} SOL, ${OG_DISCOUNT_MINT_LIMIT}/wallet`)
+	log(`WL: ${WL_PRICE_SOL} SOL, ${WL_MINT_LIMIT}/wallet | Public: ${PUBLIC_PRICE_SOL} SOL, unlimited`)
 
 	const createCmTx = await createCandyMachine(umi, {
 		candyMachine: candyMachineSigner,
@@ -261,19 +334,14 @@ async function main() {
 		collectionUpdateAuthority: signer,
 		itemsAvailable: ITEM_COUNT,
 		isMutable: true,
-		configLineSettings: some({
-			prefixName: 'Echo #',
-			nameLength: 4,
-			prefixUri: prefix,
-			uriLength: maxUriLength,
-			isSequential: false,
-		}),
-		guards: {
-			botTax: some({ lamports: sol(0.01), lastInstruction: true }),
-			solPayment: some({ lamports: sol(0.01), destination: signer.publicKey }),
-			startDate: some({ date: BigInt(Math.floor(Date.now() / 1000)) }),
-		},
-		groups: [],
+		configLineSettings,
+		guards: {},
+		groups: [
+			{ label: 'og-free', guards: ogFreeGuards },
+			{ label: 'og-disc', guards: ogDiscountGuards },
+			{ label: 'wl', guards: wlGuards },
+			{ label: 'public', guards: publicGuards },
+		],
 	})
 	await createCmTx.sendAndConfirm(umi)
 

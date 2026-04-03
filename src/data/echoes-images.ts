@@ -60,7 +60,11 @@ export function getEchoImagesSeeded(count: number, seed: number = 0): string[] {
 	const results: string[] = []
 	for (let i = 0; i < count; i++) {
 		const echoIndex = (seed + i * 7) % DEV_IMAGE_COUNT
-		const variantOffset = i % 4 // Cycle through variants 1-4
+		if (echoIndex >= ECHOES_METADATA.length) {
+			results.push(`${IMAGE_PROXY_BASE}/${echoIndex}`)
+			continue
+		}
+		const variantOffset = i % 4
 		const paths = getDevImagePaths(ECHOES_METADATA[echoIndex])
 		results.push(paths[variantOffset] ?? paths[0])
 	}
@@ -97,9 +101,15 @@ export function getRevealedImagesSeeded(
 		if (mintedArr.length > 0) {
 			const pickIdx = (seed + i * 7) % mintedArr.length
 			const echoIndex = mintedArr[pickIdx]
-			const variantOffset = i % 4
-			const paths = getDevImagePaths(ECHOES_METADATA[echoIndex])
-			results.push({ src: paths[variantOffset] ?? paths[0], index: echoIndex, revealed: true })
+			const meta = echoIndex < ECHOES_METADATA.length ? ECHOES_METADATA[echoIndex] : undefined
+			if (meta) {
+				const variantOffset = i % 4
+				const paths = getDevImagePaths(meta)
+				results.push({ src: paths[variantOffset] ?? paths[0], index: echoIndex, revealed: true })
+			} else {
+				// Index out of metadata bounds — show as placeholder
+				results.push({ src: getEchoPlaceholder(echoIndex), index: echoIndex, revealed: false })
+			}
 			// Remove to avoid duplicates (if count <= minted)
 			mintedArr.splice(pickIdx, 1)
 		} else {

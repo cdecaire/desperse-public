@@ -18,6 +18,7 @@ import {
 	mplCandyMachine,
 	create as createCandyMachine,
 	addConfigLines,
+	getMerkleRoot,
 } from '@metaplex-foundation/mpl-core-candy-machine'
 import {
 	createCollectionV2,
@@ -28,11 +29,31 @@ import {
 	signerIdentity,
 	sol,
 	some,
+
 } from '@metaplex-foundation/umi'
 import { pluginAuthorityPair } from '@metaplex-foundation/mpl-core'
 import bs58 from 'bs58'
 import fs from 'node:fs'
 import path from 'node:path'
+import {
+	loadOgAllowlistWallets,
+	loadWlAllowlistWallets,
+	dateToTimestamp,
+	OG_FREE_MINT_LIMIT,
+	OG_DISCOUNT_MINT_LIMIT,
+	OG_DISCOUNT_PRICE_SOL,
+	WL_MINT_LIMIT,
+	WL_PRICE_SOL,
+	PUBLIC_PRICE_SOL,
+	OG_FREE_START_DATE,
+	OG_FREE_END_DATE,
+	OG_DISCOUNT_START_DATE,
+	OG_DISCOUNT_END_DATE,
+	WL_START_DATE,
+	WL_END_DATE,
+	PUBLIC_START_DATE,
+	BOT_TAX_SOL,
+} from './echoes-guard-config'
 
 // ---------------------------------------------------------------------------
 // Config
@@ -162,7 +183,78 @@ async function main() {
 
 	// 5. Create Candy Machine
 	log(`Creating Candy Machine with ${TEST_ITEM_COUNT} items...`)
+	log('Guard groups: OG Free → OG Discount → Whitelist → Public')
 	const candyMachineSigner = generateSigner(umi)
+
+	// Build 4-tier guard configuration
+	const nowTimestamp = BigInt(Math.floor(Date.now() / 1000))
+
+	const ogWallets = loadOgAllowlistWallets()
+	const wlWallets = loadWlAllowlistWallets()
+	log(`OG allowlist: ${ogWallets.length} wallets`)
+	log(`WL allowlist: ${wlWallets.length} wallets`)
+
+	// --- OG Free group: free mint for OGs ---
+	const ogFreeGuards: Record<string, any> = {
+		botTax: some({ lamports: sol(BOT_TAX_SOL), lastInstruction: true }),
+		startDate: some({ date: dateToTimestamp(OG_FREE_START_DATE) ?? nowTimestamp }),
+		mintLimit: some({ id: 1, limit: OG_FREE_MINT_LIMIT }),
+		// No solPayment — truly free
+	}
+	if (OG_FREE_END_DATE) {
+		ogFreeGuards.endDate = some({ date: dateToTimestamp(OG_FREE_END_DATE)! })
+	}
+	if (ogWallets.length > 0) {
+		ogFreeGuards.allowList = some({ merkleRoot: getMerkleRoot(ogWallets) })
+		log(`OG Merkle root: ${Buffer.from(getMerkleRoot(ogWallets)).toString('hex').slice(0, 16)}...`)
+	} else {
+		log('WARNING: No OG wallets — og-free/og-discount groups will have no allowList guard')
+	}
+	log(`OG Free: free, ${OG_FREE_MINT_LIMIT} per wallet`)
+
+	// --- OG Discount group: discounted mint for OGs ---
+	const ogDiscountGuards: Record<string, any> = {
+		botTax: some({ lamports: sol(BOT_TAX_SOL), lastInstruction: true }),
+		solPayment: some({ lamports: sol(OG_DISCOUNT_PRICE_SOL), destination: signer.publicKey }),
+		startDate: some({ date: dateToTimestamp(OG_DISCOUNT_START_DATE) ?? nowTimestamp }),
+		mintLimit: some({ id: 2, limit: OG_DISCOUNT_MINT_LIMIT }),
+	}
+	if (OG_DISCOUNT_END_DATE) {
+		ogDiscountGuards.endDate = some({ date: dateToTimestamp(OG_DISCOUNT_END_DATE)! })
+	}
+	if (ogWallets.length > 0) {
+		ogDiscountGuards.allowList = some({ merkleRoot: getMerkleRoot(ogWallets) })
+	}
+	log(`OG Discount: ${OG_DISCOUNT_PRICE_SOL} SOL, ${OG_DISCOUNT_MINT_LIMIT} per wallet`)
+
+	// --- WL group: standard mint for whitelisted wallets ---
+	const wlGuards: Record<string, any> = {
+		botTax: some({ lamports: sol(BOT_TAX_SOL), lastInstruction: true }),
+		solPayment: some({ lamports: sol(WL_PRICE_SOL), destination: signer.publicKey }),
+		startDate: some({ date: dateToTimestamp(WL_START_DATE) ?? nowTimestamp }),
+		mintLimit: some({ id: 3, limit: WL_MINT_LIMIT }),
+	}
+	if (WL_END_DATE) {
+		wlGuards.endDate = some({ date: dateToTimestamp(WL_END_DATE)! })
+	}
+	if (wlWallets.length > 0) {
+		wlGuards.allowList = some({ merkleRoot: getMerkleRoot(wlWallets) })
+		log(`WL Merkle root: ${Buffer.from(getMerkleRoot(wlWallets)).toString('hex').slice(0, 16)}...`)
+	} else {
+		log('WARNING: No WL wallets — wl group will have no allowList guard')
+	}
+	log(`WL: ${WL_PRICE_SOL} SOL, ${WL_MINT_LIMIT} per wallet`)
+
+	// --- Public group: open to everyone ---
+	const publicGuards: Record<string, any> = {
+		botTax: some({ lamports: sol(BOT_TAX_SOL), lastInstruction: true }),
+		solPayment: some({ lamports: sol(PUBLIC_PRICE_SOL), destination: signer.publicKey }),
+		startDate: some({ date: dateToTimestamp(PUBLIC_START_DATE) ?? nowTimestamp }),
+		// No mintLimit — unlimited
+		// No endDate — runs until sold out
+		// No allowList — open to everyone
+	}
+	log(`Public: ${PUBLIC_PRICE_SOL} SOL, unlimited`)
 
 	const createCmTx = await createCandyMachine(umi, {
 		candyMachine: candyMachineSigner,
@@ -177,12 +269,13 @@ async function main() {
 			uriLength: 47,
 			isSequential: false,
 		}),
-		guards: {
-			botTax: some({ lamports: sol(0.01), lastInstruction: true }),
-			solPayment: some({ lamports: sol(0.01), destination: signer.publicKey }),
-			startDate: some({ date: BigInt(Math.floor(Date.now() / 1000)) }),
-		},
-		groups: [],
+		guards: {},
+		groups: [
+			{ label: 'og-free', guards: ogFreeGuards },
+			{ label: 'og-disc', guards: ogDiscountGuards },
+			{ label: 'wl', guards: wlGuards },
+			{ label: 'public', guards: publicGuards },
+		],
 	})
 	await createCmTx.sendAndConfirm(umi)
 
@@ -218,7 +311,6 @@ async function main() {
 	console.log(`PFP_COLLECTION_ADDRESS=${collectionAddress}`)
 	console.log(`PFP_PAYMENT_WALLET=${feePayerAddress}`)
 	console.log(`VITE_PFP_MINT_ENABLED=true`)
-	console.log(`VITE_PFP_MINT_PHASE=public`)
 	console.log('='.repeat(60))
 	console.log('\nAlso ensure ECHOES_HELIUS_API_KEY is set (your existing Helius key works for devnet)')
 	console.log(`\nFee payer address: ${feePayerAddress}`)

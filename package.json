@@ -23,7 +23,8 @@
     "retry:fulfillment": "tsx scripts/retry-fulfillment.ts",
     "list:purchases": "tsx scripts/list-purchases.ts",
     "repair:master-mints": "tsx scripts/repair-phantom-master-mints.ts",
-    "promote-user": "tsx scripts/promote-user.ts"
+    "promote-user": "tsx scripts/promote-user.ts",
+    "echoes:sync-metadata": "tsx scripts/echoes-sync-metadata.ts"
   },
   "dependencies": {
     "@ardrive/turbo-sdk": "^1.41.0",

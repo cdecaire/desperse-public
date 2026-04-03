@@ -1,14 +1,22 @@
 /**
  * TanStack Query hook for fetching which echo indices have been minted.
- * Returns a Set<number> of minted item indices for reveal logic.
+ * Returns minted indices + on-chain metadata for revealed items.
  */
 
 import { useQuery } from "@tanstack/react-query"
+
+export interface MintedItemMetadata {
+	index: number
+	name: string
+	image: string
+	attributes: { trait_type: string; value: string | number; display_type?: string }[]
+}
 
 interface MintedItemsResponse {
 	mintedIndices: number[]
 	total: number
 	minted: number
+	mintedMetadata: MintedItemMetadata[]
 }
 
 export function useEchoesMintedItems() {

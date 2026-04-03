@@ -7,12 +7,17 @@ import { useQuery } from "@tanstack/react-query"
 import { usePrivy } from "@privy-io/react-auth"
 
 export interface PfpMintStatus {
-	phase: "whitelist" | "public" | "closed"
+	phase: "og-free" | "og-discount" | "whitelist" | "public" | "closed"
 	isEligible: boolean
 	mintCount: number
 	supply: { total: number; minted: number; remaining: number }
 	price: { lamports: number; sol: number; display: string } | null
-	windows: { wlStart: string | null; wlEnd: string | null; publicStart: string | null }
+	windows: {
+		ogFreeStart: string | null; ogFreeEnd: string | null
+		ogDiscountStart: string | null; ogDiscountEnd: string | null
+		wlStart: string | null; wlEnd: string | null
+		publicStart: string | null
+	}
 	collection: { name: string; description: string; imageUrl: string }
 }
 

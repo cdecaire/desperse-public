@@ -9,7 +9,7 @@ import {
 } from "@/data/echoes-metadata"
 import { getEchoPlaceholder } from "@/data/echoes-images"
 import { Icon } from "@/components/ui/icon"
-import { useEchoesMintedItems } from "./hooks/useEchoesMintedItems"
+import { useEchoesMintedItems, type MintedItemMetadata } from "./hooks/useEchoesMintedItems"
 
 // --- Performance constants ---
 const CHUNK_SIZE = 60
@@ -276,6 +276,7 @@ function Sidebar({
 	resultCount,
 	dynamicDistributions,
 	resolvedCount,
+	totalSupply,
 	baseDistributions,
 }: {
 	filters: Filters
@@ -284,6 +285,7 @@ function Sidebar({
 	resultCount: number
 	dynamicDistributions: Record<string, TraitDist>
 	resolvedCount: number | null
+	totalSupply: number
 	baseDistributions: Record<string, TraitDist>
 }) {
 	const rankDist = baseDistributions["Rank"]
@@ -298,7 +300,7 @@ function Sidebar({
 						Filters
 					</h3>
 					<span className="font-label text-[10px] nx-text-on-surface-variant">
-						{resultCount} / {ECHOES_METADATA.length}
+						{resultCount} / {totalSupply}
 					</span>
 				</div>
 				{activeCount > 0 && (
@@ -344,11 +346,11 @@ function Sidebar({
 					Archive Index
 				</h2>
 				<span className="block text-[10px] nx-text-primary-container mt-1 tracking-[0.2em] font-label">
-					{ECHOES_METADATA.length} IDENTITIES
+					{totalSupply} IDENTITIES
 				</span>
 				{resolvedCount !== null && (
 					<span className="block text-[10px] nx-text-on-surface-variant mt-0.5 tracking-[0.15em] font-label">
-						{resolvedCount} RESOLVED · {ECHOES_METADATA.length - resolvedCount} UNRESOLVED
+						{resolvedCount} RESOLVED · {totalSupply - resolvedCount} UNRESOLVED
 					</span>
 				)}
 			</div>
@@ -1431,12 +1433,52 @@ export function EchoesCollection() {
 		return new Set(mintedData.mintedIndices)
 	}, [mintedData])
 
+	// Build full item list — local metadata + on-chain metadata for minted items + placeholders
+	const totalSupply = mintedData?.total ?? ECHOES_METADATA.length
+	const onChainMetadataMap = useMemo(() => {
+		if (!mintedData?.mintedMetadata) return new Map<number, MintedItemMetadata>()
+		return new Map(mintedData.mintedMetadata.map((m) => [m.index, m]))
+	}, [mintedData?.mintedMetadata])
+
+	const fullMetadata = useMemo(() => {
+		if (totalSupply <= ECHOES_METADATA.length && onChainMetadataMap.size === 0) return ECHOES_METADATA
+		const items = [...ECHOES_METADATA]
+		for (let i = ECHOES_METADATA.length; i < totalSupply; i++) {
+			const onChain = onChainMetadataMap.get(i)
+			if (onChain) {
+				items.push({
+					name: onChain.name,
+					description: "",
+					image: onChain.image,
+					external_url: "",
+					attributes: onChain.attributes,
+					properties: { files: [], category: "image" },
+				})
+			} else {
+				items.push({
+					name: `Echo #${i}`,
+					description: "Unresolved identity",
+					image: `${i}.png`,
+					external_url: "",
+					attributes: REDACTED_ATTRIBUTES,
+					properties: { files: [], category: "image" },
+				})
+			}
+		}
+		return items
+	}, [totalSupply, onChainMetadataMap])
+
 	// Redacted metadata — unrevealed items have traits stripped so sort/filter can't leak
-	const metadata = useMemo(() => redactMetadata(ECHOES_METADATA, mintedIndices), [mintedIndices])
+	const metadata = useMemo(() => redactMetadata(fullMetadata, mintedIndices), [fullMetadata, mintedIndices])
 	const searchableText = useMemo(() => buildSearchableText(metadata), [metadata])
+	// Base distributions — only count revealed (minted) items so unrevealed don't skew stats
+	const revealedMetadata = useMemo(() => {
+		if (!mintedIndices) return []
+		return metadata.filter((item) => mintedIndices.has(getEchoId(item)))
+	}, [metadata, mintedIndices])
 	const allDistributions = useMemo<Record<string, TraitDist>>(() =>
-		Object.fromEntries(TRAIT_TYPES.map((t) => [t, computeTraitDistribution(t, metadata)])),
-	[metadata])
+		Object.fromEntries(TRAIT_TYPES.map((t) => [t, computeTraitDistribution(t, revealedMetadata)])),
+	[revealedMetadata])
 
 	// Debounced search — input stays responsive, filtering is deferred
 	const handleSearchChange = useCallback((value: string) => {
@@ -1642,6 +1684,7 @@ export function EchoesCollection() {
 							resultCount={filtered.length}
 							dynamicDistributions={dynamicDistributions}
 							resolvedCount={mintedIndices ? mintedIndices.size : null}
+							totalSupply={totalSupply}
 							baseDistributions={allDistributions}
 						/>
 					</div>

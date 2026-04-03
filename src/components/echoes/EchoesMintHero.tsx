@@ -11,8 +11,7 @@ import { MintHeroCards } from "./EchoesArchive"
 
 export function EchoesMintHero() {
 	const phase = useMintPhase()
-	const { total, days, hours, minutes, seconds } = useCountdown(MINT_TARGET)
-	const isComplete = total <= 0
+	const { days, hours, minutes, seconds } = useCountdown(MINT_TARGET)
 	const heroRef = useScrollReveal<HTMLElement>({ threshold: 0.1 })
 	const { step, mint, reset, error, walletConnected, nftMintAddress } = useEchoesMint()
 	const { data: mintInfo } = useEchoesMintInfo()
@@ -75,21 +74,14 @@ export function EchoesMintHero() {
 						{phase === "premint" && (
 							<>
 								<span className="block font-label text-[10px] tracking-widest mb-2 uppercase nx-text-primary-fixed">
-									{isComplete ? "ARCHIVE STATUS" : "BREACH WINDOW OPENS IN"}
+									BREACH WINDOW OPENS IN
 								</span>
-								{/* Countdown values differ between server and client renders */}
 								<div
 									className="font-headline text-3xl md:text-4xl tracking-tighter"
 									suppressHydrationWarning
-									aria-label={isComplete
-										? "Breach window open"
-										: `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`}
+									aria-label={`${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`}
 								>
-									{isComplete ? (
-										<span className="nx-text-primary-container">ACCESS OPEN</span>
-									) : (
-										<>{pad(days)}:{pad(hours)}:{pad(minutes)}:{pad(seconds)}</>
-									)}
+									{pad(days)}:{pad(hours)}:{pad(minutes)}:{pad(seconds)}
 								</div>
 							</>
 						)}
@@ -99,7 +91,7 @@ export function EchoesMintHero() {
 									BREACH WINDOW: ACTIVE
 								</span>
 								<div className="font-headline text-2xl nx-text-primary-container">
-									MINTING NOW
+									{mintInfo?.supply ? `${mintInfo.supply.minted} / ${mintInfo.supply.total}` : "MINTING NOW"}
 								</div>
 							</>
 						)}

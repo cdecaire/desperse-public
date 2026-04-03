@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router"
 import { useCountdown, pad, MINT_TARGET } from "./hooks/useCountdown"
 import { useMintPhase } from "./hooks/useMintPhase"
+import { useEchoesMintInfo } from "./hooks/useEchoesMintInfo"
 import { getRevealedImagesSeeded } from "@/data/echoes-images"
 import { useScrollReveal } from "./hooks/useScrollReveal"
 import { useEffect, useMemo, useState } from "react"
@@ -64,11 +65,13 @@ function HeroImages({ p1, p2, heroImages }: { p1: { x: number; y: number }; p2: 
 
 export function EchoesHero() {
 	const phase = useMintPhase()
-	const { total, days, hours, minutes, seconds } = useCountdown(MINT_TARGET)
+	const { data: mintInfo } = useEchoesMintInfo()
+	const { days, hours, minutes, seconds } = useCountdown(MINT_TARGET)
 	const { data: mintedData } = useEchoesMintedItems()
 	const mintedIndices = useMemo(() => mintedData ? new Set(mintedData.mintedIndices) : null, [mintedData])
 	const heroImages = useMemo(() => getRevealedImagesSeeded(5, 0, mintedIndices).map((r) => r.src), [mintedIndices])
-	const isComplete = total <= 0
+	// Show countdown only in premint; once CM is live or closed, show status
+	const isLive = phase === "minting" || phase === "postmint"
 	const heroRef = useScrollReveal<HTMLElement>({ threshold: 0.1 })
 	const p1 = useMouseParallax(0.012)
 	const p2 = useMouseParallax(0.025)
@@ -112,18 +115,22 @@ export function EchoesHero() {
 					<div className="flex flex-col sm:flex-row gap-4 sm:gap-6 sm:items-end" data-reveal-stagger style={{ "--stagger-index": 3 } as React.CSSProperties}>
 						<div className="p-4 md:p-6 min-w-0 sm:min-w-[240px] nx-bg-surface-high border-l-4 border-[var(--nx-primary-container)]">
 							<span className="block font-label text-[10px] tracking-widest mb-2 uppercase nx-text-primary-fixed">
-								{isComplete ? "ARCHIVE STATUS" : "BREACH WINDOW OPENS IN"}
+								{phase === "postmint" ? "ARCHIVE STATUS" : phase === "minting" ? "BREACH WINDOW" : "BREACH WINDOW OPENS IN"}
 							</span>
 							<div
 								className="font-headline text-3xl md:text-4xl tracking-tighter"
 								suppressHydrationWarning
-								aria-label={isComplete
-									? "Archive access live"
+								aria-label={isLive
+									? phase === "minting" ? "Minting live" : "Archive resolved"
 									: `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds remaining`
 								}
 							>
-								{isComplete ? (
-									<span className="nx-text-primary-container">ACCESS OPEN</span>
+								{phase === "postmint" ? (
+									<span className="nx-text-primary-container">RESOLVED</span>
+								) : phase === "minting" ? (
+									<span className="nx-text-primary-container">
+										{mintInfo?.supply ? `${mintInfo.supply.minted} / ${mintInfo.supply.total}` : "ACTIVE"}
+									</span>
 								) : (
 									<>{pad(days)}:{pad(hours)}:{pad(minutes)}:{pad(seconds)}</>
 								)}

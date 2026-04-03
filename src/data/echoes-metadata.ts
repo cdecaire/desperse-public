@@ -1,4 +1,4 @@
-// Re-export from the symlinked ComfyUI output — generated automatically by the image pipeline
+// Re-export from the synced metadata copy (run `pnpm echoes:sync-metadata` after ComfyUI generation)
 export {
 	type EchoAttribute,
 	type EchoMetadata,
@@ -7,9 +7,9 @@ export {
 	FACTION_COLORS,
 	RANK_COLORS,
 	TRAIT_TYPES,
-} from "../../echoes-dev/echoes-metadata"
+} from "./echoes-metadata-generated"
 
-import type { EchoMetadata } from "../../echoes-dev/echoes-metadata"
+import type { EchoMetadata } from "./echoes-metadata-generated"
 
 /**
  * Resolve image path for an echo via the server proxy.

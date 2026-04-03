@@ -180,6 +180,9 @@ async function getPhaseFromGuards(
 		return { phase: 'public', windows, price: extractPrice(publicGroup.guards) }
 	}
 
+	// No active phase — return closed with the public price for display purposes
+	const publicPrice = publicGroup ? extractPrice(publicGroup.guards) : null
+
 	// Fallback: no groups (simple mode) — check default guards
 	if (guard.groups.length === 0) {
 		const defaultGuards = guard.guards as any
@@ -188,7 +191,7 @@ async function getPhaseFromGuards(
 		}
 	}
 
-	return { phase: 'closed', windows, price: null }
+	return { phase: 'closed', windows, price: publicPrice }
 }
 
 // ---------------------------------------------------------------------------

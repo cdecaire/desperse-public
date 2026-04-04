@@ -1051,12 +1051,13 @@ function GalleryGrid({ items, selectedId, onSelect, onClearFilters, hasFilters, 
 
 // --- Detail Modal ---
 
-function DetailModal({ item, onClose, onNext, onPrev, isRevealed }: {
+function DetailModal({ item, onClose, onNext, onPrev, isRevealed, nftMintAddress }: {
 	item: EchoMetadata
 	onClose: () => void
 	onNext: (() => void) | null
 	onPrev: (() => void) | null
 	isRevealed: boolean
+	nftMintAddress?: string
 }) {
 	const faction = isRevealed ? getTrait(item, "Faction") : null
 	const rank = isRevealed ? getTrait(item, "Rank") : null
@@ -1219,6 +1220,21 @@ function DetailModal({ item, onClose, onNext, onPrev, isRevealed }: {
 											</span>
 										</div>
 									))}
+									{nftMintAddress && (
+										<div className="flex items-baseline justify-between py-2.5">
+											<span className="font-label text-[10px] nx-text-on-surface-variant uppercase tracking-wider">
+												Mint ID
+											</span>
+											<a
+												href={`https://explorer.solana.com/address/${nftMintAddress}?cluster=devnet`}
+												target="_blank"
+												rel="noopener noreferrer"
+												className="font-mono text-sm nx-text-primary-container hover:underline"
+											>
+												{nftMintAddress.slice(0, 4)}...{nftMintAddress.slice(-4)} ↗
+											</a>
+										</div>
+									)}
 								</div>
 							</>
 						) : (
@@ -1703,6 +1719,7 @@ export function EchoesCollection() {
 					onNext={handleNext}
 					onPrev={handlePrev}
 					isRevealed={mintedIndices === null || mintedIndices.has(getEchoId(selectedItem))}
+					nftMintAddress={onChainMetadataMap.get(getEchoId(selectedItem))?.nftMintAddress}
 				/>
 			)}
 		</div>

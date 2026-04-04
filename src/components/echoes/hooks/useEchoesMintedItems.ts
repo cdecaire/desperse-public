@@ -10,6 +10,7 @@ export interface MintedItemMetadata {
 	name: string
 	image: string
 	attributes: { trait_type: string; value: string | number; display_type?: string }[]
+	nftMintAddress?: string
 }
 
 interface MintedItemsResponse {

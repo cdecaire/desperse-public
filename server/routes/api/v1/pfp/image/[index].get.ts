@@ -12,6 +12,7 @@
 import {
 	defineEventHandler,
 	getRouterParam,
+	getQuery,
 	setHeaders,
 	setResponseStatus,
 	sendRedirect,
@@ -94,6 +95,10 @@ function isLocalPath(url: string): boolean {
 export default defineEventHandler(async (event) => {
 	const rawIndex = getRouterParam(event, "index")
 	const index = Number.parseInt(rawIndex ?? "", 10)
+	// Optional width param for Vercel image optimizer (default 640)
+	const ALLOWED_WIDTHS = [320, 480, 640, 800, 1200, 1600]
+	const rawW = Number.parseInt((getQuery(event) as any).w ?? "", 10)
+	const width = ALLOWED_WIDTHS.includes(rawW) ? rawW : 640
 
 	// Validate index
 	if (Number.isNaN(index) || index < 0 || index > 9999) {
@@ -128,8 +133,8 @@ export default defineEventHandler(async (event) => {
 			setHeaders(event, {
 				"Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
 			})
-			// Use Vercel's on-the-fly optimizer: serves WebP/AVIF at constrained width
-			const optimizedUrl = `/_vercel/image?url=${encodeURIComponent(imagePath)}&w=640&q=75`
+			// Use Vercel's on-the-fly optimizer: serves WebP/AVIF at requested width
+			const optimizedUrl = `/_vercel/image?url=${encodeURIComponent(imagePath)}&w=${width}&q=75`
 			return sendRedirect(event, optimizedUrl, 302)
 		}
 

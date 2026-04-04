@@ -168,10 +168,11 @@ export function getRevealedImagesByFaction(
 
 /**
  * Get all variant paths for a specific echo index.
+ * @param width — override width (default 480 for grids, use 800 for detail/modal views)
  */
-export function getEchoVariants(index: number): string[] {
+export function getEchoVariants(index: number, width?: ImageWidth): string[] {
 	if (index >= ECHOES_METADATA.length) return [getEchoImage(index)]
-	return getDevImagePaths(ECHOES_METADATA[index]).map((p) => optimizeEchoUrl(p))
+	return getDevImagePaths(ECHOES_METADATA[index]).map((p) => optimizeEchoUrl(p, width))
 }
 
 /**

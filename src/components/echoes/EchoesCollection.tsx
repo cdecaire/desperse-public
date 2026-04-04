@@ -7,6 +7,7 @@ import {
 	type EchoMetadata,
 } from "@/data/echoes-metadata"
 import { getEchoPlaceholder, getEchoVariants } from "@/data/echoes-images"
+import { getOptimizedImageUrl } from "@/lib/imageUrl"
 import { Icon } from "@/components/ui/icon"
 import { useEchoesMintedItems, type MintedItemMetadata } from "./hooks/useEchoesMintedItems"
 
@@ -1061,8 +1062,11 @@ function DetailModal({ item, onClose, onNext, onPrev, isRevealed, nftMintAddress
 }) {
 	const faction = isRevealed ? getTrait(item, "Faction") : null
 	const rank = isRevealed ? getTrait(item, "Rank") : null
-	const imagePaths = isRevealed ? getCachedImagePaths(item) : null
 	const echoId = getEchoId(item)
+	const imagePaths = useMemo(() => {
+		if (!isRevealed) return null
+		return getEchoVariants(echoId, 800)
+	}, [isRevealed, echoId])
 	const [activeVariant, setActiveVariant] = useState(0)
 	const [isVisible, setIsVisible] = useState(false)
 	const overlayRef = useOverlay()
@@ -1085,8 +1089,8 @@ function DetailModal({ item, onClose, onNext, onPrev, isRevealed, nftMintAddress
 		return () => document.removeEventListener("keydown", onKeyDown)
 	}, [onClose, onNext, onPrev])
 
-	// Unrevealed placeholder
-	const placeholderSrc = getEchoPlaceholder(echoId)
+	// Unrevealed placeholder — optimize since source is 15MB+
+	const placeholderSrc = getOptimizedImageUrl(getEchoPlaceholder(echoId), { width: 800 })
 
 	return (
 		<div ref={overlayRef} className="fixed inset-0 z-50 flex flex-col items-center justify-center p-4 md:p-6">

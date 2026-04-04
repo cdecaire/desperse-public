@@ -4,10 +4,9 @@ import {
 	FACTION_COLORS,
 	RANK_COLORS,
 	TRAIT_TYPES,
-	getDevImagePaths,
 	type EchoMetadata,
 } from "@/data/echoes-metadata"
-import { getEchoPlaceholder } from "@/data/echoes-images"
+import { getEchoPlaceholder, getEchoVariants } from "@/data/echoes-images"
 import { Icon } from "@/components/ui/icon"
 import { useEchoesMintedItems, type MintedItemMetadata } from "./hooks/useEchoesMintedItems"
 
@@ -19,7 +18,8 @@ const imagePathCache = new Map<string, string[]>()
 function getCachedImagePaths(item: EchoMetadata): string[] {
 	const cached = imagePathCache.get(item.name)
 	if (cached) return cached
-	const paths = getDevImagePaths(item)
+	const index = Number.parseInt(item.image.replace(/\.png$/, ""), 10)
+	const paths = getEchoVariants(index)
 	imagePathCache.set(item.name, paths)
 	return paths
 }

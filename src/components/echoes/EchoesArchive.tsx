@@ -8,6 +8,7 @@ import { useState } from "react"
 import { useEchoesNftMetadata } from "./hooks/useEchoesNftMetadata"
 import { FACTION_COLORS } from "@/data/echoes-metadata"
 import { ECHO_PLACEHOLDER_MASC } from "@/data/echoes-images"
+import { getOptimizedImageUrl } from "@/lib/imageUrl"
 import { Icon } from "@/components/ui/icon"
 
 const heroPlaceholder = ECHO_PLACEHOLDER_MASC
@@ -47,7 +48,7 @@ function ArchiveCard({
 				<div className="w-full h-full nx-bg-surface-highest animate-pulse" />
 			) : (
 				<img
-					src={metadata.image}
+					src={getOptimizedImageUrl(metadata.image, { width: 480 })}
 					alt={metadata.name}
 					className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.05]"
 					draggable={false}

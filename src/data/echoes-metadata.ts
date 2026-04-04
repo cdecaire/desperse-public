@@ -18,7 +18,7 @@ import type { EchoMetadata } from "./echoes-metadata-generated"
 export function getDevImagePaths(item: EchoMetadata): string[] {
 	// Extract numeric index from the image filename (e.g. "0.png" → 0)
 	const index = item.image.replace(/\.png$/, "")
-	return [`/api/v1/pfp/image/${index}`]
+	return [`/api/v1/pfp/image/${index}?v=2`]
 }
 
 /** Ghost-class and classification traits — present only on some echoes, not used for filtering */

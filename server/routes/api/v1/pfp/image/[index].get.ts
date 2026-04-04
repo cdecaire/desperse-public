@@ -12,7 +12,6 @@
 import {
 	defineEventHandler,
 	getRouterParam,
-	getQuery,
 	setHeaders,
 	setResponseStatus,
 	sendRedirect,
@@ -95,10 +94,6 @@ function isLocalPath(url: string): boolean {
 export default defineEventHandler(async (event) => {
 	const rawIndex = getRouterParam(event, "index")
 	const index = Number.parseInt(rawIndex ?? "", 10)
-	// Optional width param for Vercel image optimizer (default 640)
-	const ALLOWED_WIDTHS = [320, 480, 640, 800, 1200, 1600]
-	const rawW = Number.parseInt((getQuery(event) as any).w ?? "", 10)
-	const width = ALLOWED_WIDTHS.includes(rawW) ? rawW : 640
 
 	// Validate index
 	if (Number.isNaN(index) || index < 0 || index > 9999) {
@@ -130,13 +125,7 @@ export default defineEventHandler(async (event) => {
 			}
 
 			// Fetch from Blob storage and stream to client (never expose Blob URL)
-			// On Vercel: fetch via image optimizer for WebP/AVIF + resizing
-			// Locally: fetch directly from Blob URL
-			const fetchUrl = process.env.VERCEL
-				? `https://${process.env.VERCEL_URL}/_vercel/image?url=${encodeURIComponent(imagePath)}&w=${width}&q=75`
-				: imagePath
-
-			const imgRes = await fetch(fetchUrl)
+			const imgRes = await fetch(imagePath)
 			if (!imgRes.ok || !imgRes.body) {
 				return sendRedirect(event, getPlaceholder(index), 302)
 			}

@@ -1226,7 +1226,7 @@ function DetailModal({ item, onClose, onNext, onPrev, isRevealed, nftMintAddress
 												Mint ID
 											</span>
 											<a
-												href={`https://explorer.solana.com/address/${nftMintAddress}?cluster=devnet`}
+												href={`https://core.metaplex.com/explorer/${nftMintAddress}?env=devnet`}
 												target="_blank"
 												rel="noopener noreferrer"
 												className="font-mono text-sm nx-text-primary-container hover:underline"

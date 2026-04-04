@@ -48,13 +48,22 @@ export function arweaveTxIdToUrl(txId: string): string {
  * where image optimization is available
  */
 function isVercelProduction(): boolean {
-  // In development mode, skip optimization
-  if (import.meta.env.DEV) {
-    return false
+  // Client-side: Vite reliably sets import.meta.env.PROD
+  if (import.meta.env.PROD) {
+    return true
   }
-  
-  // In production, assume Vercel (or check for VERCEL env if needed)
-  return true
+
+  // Server-side (SSR): Nitro may not set import.meta.env correctly,
+  // so fall back to the VERCEL env var which is always present on Vercel
+  try {
+    if (typeof process !== 'undefined' && process.env?.VERCEL) {
+      return true
+    }
+  } catch {
+    // process not available (browser without polyfill) — ignore
+  }
+
+  return false
 }
 
 // Allowed widths - constrained set to maximize CDN cache hits

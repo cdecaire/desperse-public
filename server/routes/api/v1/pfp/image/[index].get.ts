@@ -116,32 +116,62 @@ export default defineEventHandler(async (event) => {
 					setHeaders(event, {
 						"Content-Type": "image/png",
 						"Cache-Control": "public, max-age=3600",
+						"Vercel-Cache-Tag": `pfp,pfp-${index},pfp-minted`,
 					})
 					return sendStream(event, fs.createReadStream(absolutePath) as any)
 				}
 
-				// File not found locally — fall through to placeholder
+				// File not found locally — serve placeholder
+				const fallback = await fetch(getPlaceholder(index))
+				if (fallback.ok && fallback.body) {
+					setHeaders(event, {
+						"Content-Type": fallback.headers.get("content-type") ?? "image/png",
+						"Cache-Control": "public, s-maxage=60, stale-while-revalidate=120",
+						"Vercel-Cache-Tag": `pfp,pfp-${index},pfp-unminted`,
+					})
+					return sendStream(event, fallback.body as any)
+				}
 				return sendRedirect(event, getPlaceholder(index), 302)
 			}
 
 			// Fetch from Blob storage and stream to client (never expose Blob URL)
 			const imgRes = await fetch(imagePath)
 			if (!imgRes.ok || !imgRes.body) {
+				// Image not in Blob — serve placeholder with short cache
+				const fallback = await fetch(getPlaceholder(index))
+				if (fallback.ok && fallback.body) {
+					setHeaders(event, {
+						"Content-Type": fallback.headers.get("content-type") ?? "image/png",
+						"Cache-Control": "public, s-maxage=60, stale-while-revalidate=120",
+						"Vercel-Cache-Tag": `pfp,pfp-${index},pfp-unminted`,
+					})
+					return sendStream(event, fallback.body as any)
+				}
 				return sendRedirect(event, getPlaceholder(index), 302)
 			}
 
 			setHeaders(event, {
 				"Content-Type": imgRes.headers.get("content-type") ?? "image/png",
 				"Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
+				"Vercel-Cache-Tag": `pfp,pfp-${index},pfp-minted`,
 			})
 			return sendStream(event, imgRes.body as any)
 		}
 
-		// Not minted — redirect to placeholder
+		// Not minted — stream placeholder directly (don't redirect, so our
+		// Cache-Control headers are what /_vercel/image sees, not Blob's)
+		const placeholderUrl = getPlaceholder(index)
+		const placeholderRes = await fetch(placeholderUrl)
+		if (!placeholderRes.ok || !placeholderRes.body) {
+			return sendRedirect(event, placeholderUrl, 302)
+		}
+
 		setHeaders(event, {
+			"Content-Type": placeholderRes.headers.get("content-type") ?? "image/png",
 			"Cache-Control": "public, s-maxage=60, stale-while-revalidate=120",
+			"Vercel-Cache-Tag": `pfp,pfp-${index},pfp-unminted`,
 		})
-		return sendRedirect(event, getPlaceholder(index), 302)
+		return sendStream(event, placeholderRes.body as any)
 
 	} catch (error) {
 		console.error(

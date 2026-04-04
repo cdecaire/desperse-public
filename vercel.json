@@ -12,7 +12,7 @@
         "hostname": "**.blob.vercel-storage.com"
       }
     ],
-    "minimumCacheTTL": 31536000,
+    "minimumCacheTTL": 3600,
     "formats": ["image/avif", "image/webp"],
     "dangerouslyAllowSVG": false,
     "contentSecurityPolicy": "default-src 'self'; script-src 'none'; sandbox;"

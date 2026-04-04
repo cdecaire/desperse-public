@@ -1,7 +1,19 @@
 import { ECHOES_METADATA, getDevImagePaths } from "./echoes-metadata"
+import { getOptimizedImageUrl, type ImageWidth } from "@/lib/imageUrl"
 
 const DEV_IMAGE_COUNT = 300
 const IMAGE_PROXY_BASE = "/api/v1/pfp/image"
+
+/** Default width for echo images in grid/gallery views */
+const ECHO_IMAGE_WIDTH: ImageWidth = 480
+
+/**
+ * Wrap an echo image URL through Vercel's image optimizer.
+ * In dev mode this is a no-op (returns the original URL).
+ */
+function optimizeEchoUrl(url: string, width: ImageWidth = ECHO_IMAGE_WIDTH): string {
+	return getOptimizedImageUrl(url, { width })
+}
 
 /** Placeholder images for premint, missing, or unavailable echo images */
 export const ECHO_PLACEHOLDER_MASC = "/echoes-unresolved.png"
@@ -29,9 +41,9 @@ export function getEchoPlaceholder(index: number): string {
 export function getEchoImage(index: number): string {
 	if (index < ECHOES_METADATA.length) {
 		const paths = getDevImagePaths(ECHOES_METADATA[index])
-		return paths[0]
+		return optimizeEchoUrl(paths[0])
 	}
-	return `${IMAGE_PROXY_BASE}/${index}`
+	return optimizeEchoUrl(`${IMAGE_PROXY_BASE}/${index}`)
 }
 
 /**
@@ -45,7 +57,7 @@ export function getEchoImagesByFaction(faction: string): string[] {
 		const echo = ECHOES_METADATA[i]
 		const factionAttr = echo.attributes.find((a) => a.trait_type === "Faction")
 		if (factionAttr && factionAttr.value === faction) {
-			results.push(getEchoImage(i))
+			results.push(getEchoImage(i)) // already optimized via getEchoImage
 		}
 	}
 	return results
@@ -61,12 +73,12 @@ export function getEchoImagesSeeded(count: number, seed: number = 0): string[] {
 	for (let i = 0; i < count; i++) {
 		const echoIndex = (seed + i * 7) % DEV_IMAGE_COUNT
 		if (echoIndex >= ECHOES_METADATA.length) {
-			results.push(`${IMAGE_PROXY_BASE}/${echoIndex}`)
+			results.push(optimizeEchoUrl(`${IMAGE_PROXY_BASE}/${echoIndex}`))
 			continue
 		}
 		const variantOffset = i % 4
 		const paths = getDevImagePaths(ECHOES_METADATA[echoIndex])
-		results.push(paths[variantOffset] ?? paths[0])
+		results.push(optimizeEchoUrl(paths[variantOffset] ?? paths[0]))
 	}
 	return results
 }
@@ -105,7 +117,7 @@ export function getRevealedImagesSeeded(
 			if (meta) {
 				const variantOffset = i % 4
 				const paths = getDevImagePaths(meta)
-				results.push({ src: paths[variantOffset] ?? paths[0], index: echoIndex, revealed: true })
+				results.push({ src: optimizeEchoUrl(paths[variantOffset] ?? paths[0]), index: echoIndex, revealed: true })
 			} else {
 				// Index out of metadata bounds — show as placeholder
 				results.push({ src: getEchoPlaceholder(echoIndex), index: echoIndex, revealed: false })
@@ -159,7 +171,7 @@ export function getRevealedImagesByFaction(
  */
 export function getEchoVariants(index: number): string[] {
 	if (index >= ECHOES_METADATA.length) return [getEchoImage(index)]
-	return getDevImagePaths(ECHOES_METADATA[index])
+	return getDevImagePaths(ECHOES_METADATA[index]).map((p) => optimizeEchoUrl(p))
 }
 
 /**
@@ -181,7 +193,7 @@ export function getEchoWithMeta(index: number) {
 	return {
 		index,
 		name: echo.name,
-		image: getEchoImage(index),
+		image: getEchoImage(index), // already optimized via getEchoImage
 		faction: echo.attributes.find((a) => a.trait_type === "Faction")?.value as string,
 		rank: echo.attributes.find((a) => a.trait_type === "Rank")?.value as string,
 		role: echo.attributes.find((a) => a.trait_type === "Role")?.value as string,

@@ -79,11 +79,16 @@ const OPTIMIZABLE_DOMAINS = [
 
 /**
  * Check if a URL is from a domain we can optimize via Vercel's image API.
+ * Relative URLs (same-origin) are always allowed.
  * Only Vercel Blob Storage URLs are in our remotePatterns — external NFT images
  * from arbitrary domains (arweave, IPFS gateways, creator sites, etc.) would
  * get 400 errors if routed through /_vercel/image.
  */
 function isAllowedDomain(url: string): boolean {
+  // Relative URLs are same-origin — always optimizable by Vercel
+  if (url.startsWith('/')) {
+    return true
+  }
   try {
     const hostname = new URL(url).hostname
     return OPTIMIZABLE_DOMAINS.some((domain) => hostname.endsWith(domain))
@@ -126,16 +131,23 @@ function shouldSkipOptimization(url: string): boolean {
 }
 
 /**
- * Check if a URL points to an image that can be optimized
+ * Check if a URL points to an image that can be optimized.
+ * Relative URLs from our own image proxy are always optimizable
+ * (they serve images with correct Content-Type even without file extensions).
  */
 function isOptimizableImage(url: string): boolean {
   if (shouldSkipOptimization(url)) {
     return false
   }
 
+  // Same-origin image proxy routes — no file extension but serve images
+  if (url.startsWith('/api/v1/pfp/image/')) {
+    return true
+  }
+
   const imageExtensions = ['.jpg', '.jpeg', '.png', '.webp']
   const lowerUrl = url.toLowerCase()
-  
+
   return imageExtensions.some(ext => lowerUrl.includes(ext))
 }
 

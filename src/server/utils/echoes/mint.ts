@@ -43,6 +43,8 @@ export interface BuildMintResult {
 	unsignedTxBase64: string
 	blockhash: string
 	lastValidBlockHeight: number
+	phase: string
+	price: { lamports: number; sol: number; display: string } | null
 }
 
 export interface MintCheckResult {
@@ -425,6 +427,8 @@ export async function buildPfpMintTransaction(
 		unsignedTxBase64: txBase64,
 		blockhash: blockhashResult.blockhash,
 		lastValidBlockHeight: Number(blockhashResult.lastValidBlockHeight),
+		phase,
+		price: guardPhaseResult.price,
 	}
 }
 

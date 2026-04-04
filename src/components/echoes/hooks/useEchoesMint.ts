@@ -4,7 +4,7 @@
  */
 
 import { useState, useCallback } from "react"
-import { useWallets } from "@privy-io/react-auth/solana"
+import { useWallets, useSignTransaction } from "@privy-io/react-auth/solana"
 import { usePrivy } from "@privy-io/react-auth"
 import { useQueryClient } from "@tanstack/react-query"
 
@@ -45,6 +45,7 @@ export function useEchoesMint() {
 	const [state, setState] = useState<EchoesMintState>(INITIAL_STATE)
 	const { getAccessToken, authenticated } = usePrivy()
 	const { wallets } = useWallets()
+	const { signTransaction } = useSignTransaction()
 	const queryClient = useQueryClient()
 
 	// Prefer embedded wallet, fall back to first connected
@@ -78,7 +79,7 @@ export function useEchoesMint() {
 
 			const buildJson = await buildRes.json() as {
 				success: boolean
-				data?: { mintId: string; unsignedTxBase64: string; blockhash: string; lastValidBlockHeight: number }
+				data?: { mintId: string; unsignedTxBase64: string; blockhash: string; lastValidBlockHeight: number; phase: string; price: { lamports: number; sol: number; display: string } | null }
 				error?: { code: string; message: string }
 			}
 
@@ -91,17 +92,24 @@ export function useEchoesMint() {
 				return
 			}
 
-			const { mintId, unsignedTxBase64 } = buildJson.data
+			const { mintId, unsignedTxBase64, price } = buildJson.data
 
 			// Step 2: Sign with Privy wallet
 			setState((s) => ({ ...s, step: "signing", mintId }))
 
 			const txBytes = Uint8Array.from(atob(unsignedTxBase64), (c) => c.charCodeAt(0))
 
-			// Sign with Privy wallet — signTransaction is available on ConnectedStandardSolanaWallet
-			const { signedTransaction } = await activeWallet.signTransaction({
+			// Sign with Privy's useSignTransaction hook — shows fee info in the confirmation modal
+			const priceLabel = price ? price.display : "Free"
+			const { signedTransaction } = await signTransaction({
 				transaction: txBytes,
+				wallet: activeWallet,
 				chain: "solana:devnet",
+				options: {
+					uiOptions: {
+						description: `Mint Echoes PFP — ${priceLabel}`,
+					},
+				},
 			})
 
 			const signedTxBase64 = btoa(

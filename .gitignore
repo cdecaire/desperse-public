@@ -10,6 +10,7 @@ count.txt
 .tanstack
 echoes-dev
 public/echoes-districts
+public/echoes-unresolved*.png
 .wrangler
 .output
 .vinxi

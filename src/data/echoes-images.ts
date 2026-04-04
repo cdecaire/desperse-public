@@ -15,9 +15,9 @@ function optimizeEchoUrl(url: string, width: ImageWidth = ECHO_IMAGE_WIDTH): str
 	return getOptimizedImageUrl(url, { width })
 }
 
-/** Placeholder images for premint, missing, or unavailable echo images */
-export const ECHO_PLACEHOLDER_MASC = "/echoes-unresolved.png"
-export const ECHO_PLACEHOLDER_FEM = "/echoes-unresolved-fem.png"
+/** Placeholder images for premint, missing, or unavailable echo images (Vercel Blob) */
+export const ECHO_PLACEHOLDER_MASC = "https://4swlq9hweqtpslft.public.blob.vercel-storage.com/echoes/echoes-unresolved.png"
+export const ECHO_PLACEHOLDER_FEM = "https://4swlq9hweqtpslft.public.blob.vercel-storage.com/echoes/echoes-unresolved-fem.png"
 
 /**
  * Get the appropriate placeholder image for an echo.

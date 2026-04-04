@@ -73,8 +73,8 @@ async function getMintedSet(): Promise<Set<number>> {
 // Placeholder paths (served from public/ — always accessible)
 // ---------------------------------------------------------------------------
 
-const PLACEHOLDER_MASC = "/echoes-unresolved.png"
-const PLACEHOLDER_FEM = "/echoes-unresolved-fem.png"
+const PLACEHOLDER_MASC = "https://4swlq9hweqtpslft.public.blob.vercel-storage.com/echoes/echoes-unresolved.png"
+const PLACEHOLDER_FEM = "https://4swlq9hweqtpslft.public.blob.vercel-storage.com/echoes/echoes-unresolved-fem.png"
 
 function getPlaceholder(index: number): string {
 	return index % 2 === 0 ? PLACEHOLDER_MASC : PLACEHOLDER_FEM

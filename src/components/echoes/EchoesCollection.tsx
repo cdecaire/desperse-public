@@ -25,6 +25,22 @@ function getCachedImagePaths(item: EchoMetadata): string[] {
 	return paths
 }
 
+/** Preload an image URL into browser cache */
+const preloadedUrls = new Set<string>()
+function preloadImage(url: string) {
+	if (preloadedUrls.has(url)) return
+	preloadedUrls.add(url)
+	const img = new Image()
+	img.src = url
+}
+
+/** Preload 800px detail variants for an echo */
+function preloadDetailImages(item: EchoMetadata) {
+	const index = Number.parseInt(item.image.replace(/\.png$/, ""), 10)
+	const paths = getEchoVariants(index, 800)
+	for (const p of paths) preloadImage(p)
+}
+
 // --- Hooks ---
 
 /** Trap focus within a container and lock body scroll. Returns a ref to attach to the container. */
@@ -883,6 +899,7 @@ function GalleryGrid({ items, selectedId, onSelect, onClearFilters, hasFilters, 
 								data-echo-key={item.name}
 								type="button"
 								onClick={() => onSelect(isSelected ? null : item.name)}
+								onPointerEnter={isRevealed ? () => preloadDetailImages(item) : undefined}
 								className={`echo-card group text-left border-b nx-border-subtle-10 transition-all duration-150 ${visible.has(item.name) ? "echo-visible" : ""} ${
 									isSelected
 										? "nx-bg-surface-low border-l-2 border-l-[var(--nx-primary-container)]"
@@ -974,6 +991,7 @@ function GalleryGrid({ items, selectedId, onSelect, onClearFilters, hasFilters, 
 								data-echo-key={item.name}
 								type="button"
 								onClick={() => onSelect(isSelected ? null : item.name)}
+								onPointerEnter={isRevealed ? () => preloadDetailImages(item) : undefined}
 								className={`echo-card group relative text-left aspect-[3/4] nx-bg-surface-highest overflow-visible border transition-all duration-200 ${visible.has(item.name) ? "echo-visible" : ""} ${
 									isSelected
 										? "border-[var(--nx-primary-container)] shadow-[0_0_20px_rgba(var(--nx-primary-container-rgb),0.15)] ring-1 ring-[var(--nx-primary-container)]"
@@ -1052,13 +1070,14 @@ function GalleryGrid({ items, selectedId, onSelect, onClearFilters, hasFilters, 
 
 // --- Detail Modal ---
 
-function DetailModal({ item, onClose, onNext, onPrev, isRevealed, nftMintAddress }: {
+function DetailModal({ item, onClose, onNext, onPrev, isRevealed, nftMintAddress, adjacentItems }: {
 	item: EchoMetadata
 	onClose: () => void
 	onNext: (() => void) | null
 	onPrev: (() => void) | null
 	isRevealed: boolean
 	nftMintAddress?: string
+	adjacentItems?: EchoMetadata[]
 }) {
 	const faction = isRevealed ? getTrait(item, "Faction") : null
 	const rank = isRevealed ? getTrait(item, "Rank") : null
@@ -1088,6 +1107,12 @@ function DetailModal({ item, onClose, onNext, onPrev, isRevealed, nftMintAddress
 		document.addEventListener("keydown", onKeyDown)
 		return () => document.removeEventListener("keydown", onKeyDown)
 	}, [onClose, onNext, onPrev])
+
+	// Preload adjacent echo detail images for instant navigation
+	useEffect(() => {
+		if (!adjacentItems) return
+		for (const adj of adjacentItems) preloadDetailImages(adj)
+	}, [adjacentItems])
 
 	// Unrevealed placeholder — optimize since source is 15MB+
 	const placeholderSrc = getOptimizedImageUrl(getEchoPlaceholder(echoId), { width: 800 })
@@ -1724,6 +1749,7 @@ export function EchoesCollection() {
 					onPrev={handlePrev}
 					isRevealed={mintedIndices === null || mintedIndices.has(getEchoId(selectedItem))}
 					nftMintAddress={onChainMetadataMap.get(getEchoId(selectedItem))?.nftMintAddress}
+					adjacentItems={[filtered[selectedIndex - 1], filtered[selectedIndex + 1]].filter(Boolean)}
 				/>
 			)}
 		</div>

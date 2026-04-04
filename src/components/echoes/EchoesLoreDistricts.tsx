@@ -8,7 +8,7 @@ import { useMemo } from "react"
 import { useEchoesMintedItems } from "./hooks/useEchoesMintedItems"
 
 function optimizeDistrictImage(src: string, width: ImageWidth): string {
-	return getOptimizedImageUrl(src, { width, quality: 85 })
+	return getOptimizedImageUrl(src, { width })
 }
 
 function getFactionColor(name: string): string {

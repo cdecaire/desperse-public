@@ -336,7 +336,7 @@ export function EchoesMintSuccess({
 						{metadata && (
 							<img
 								ref={imgRef}
-								src={getOptimizedImageUrl(metadata.image, { width: 800, quality: 85 })}
+								src={getOptimizedImageUrl(metadata.image, { width: 800 })}
 								alt=""
 								className="absolute w-0 h-0 opacity-0 pointer-events-none"
 								onLoad={() => setImageLoaded(true)}
@@ -367,7 +367,7 @@ export function EchoesMintSuccess({
 
 							{/* The image */}
 							<img
-								src={getOptimizedImageUrl(metadata.image, { width: 800, quality: 85 })}
+								src={getOptimizedImageUrl(metadata.image, { width: 800 })}
 								alt={metadata.name}
 								className={`w-full h-full object-cover ${
 									phase === "glitching"

@@ -129,17 +129,23 @@ export default defineEventHandler(async (event) => {
 				return sendRedirect(event, getPlaceholder(index), 302)
 			}
 
-			// External URL (Blob storage)
+			// Fetch from Blob storage and stream to client (never expose Blob URL)
+			// On Vercel: fetch via image optimizer for WebP/AVIF + resizing
+			// Locally: fetch directly from Blob URL
+			const fetchUrl = process.env.VERCEL
+				? `https://${process.env.VERCEL_URL}/_vercel/image?url=${encodeURIComponent(imagePath)}&w=${width}&q=75`
+				: imagePath
+
+			const imgRes = await fetch(fetchUrl)
+			if (!imgRes.ok || !imgRes.body) {
+				return sendRedirect(event, getPlaceholder(index), 302)
+			}
+
 			setHeaders(event, {
+				"Content-Type": imgRes.headers.get("content-type") ?? "image/png",
 				"Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
 			})
-			// On Vercel: route through image optimizer for WebP/AVIF + resizing
-			// Locally: redirect directly to Blob URL (/_vercel/image doesn't exist)
-			if (process.env.VERCEL) {
-				const optimizedUrl = `/_vercel/image?url=${encodeURIComponent(imagePath)}&w=${width}&q=75`
-				return sendRedirect(event, optimizedUrl, 302)
-			}
-			return sendRedirect(event, imagePath, 302)
+			return sendStream(event, imgRes.body as any)
 		}
 
 		// Not minted — redirect to placeholder

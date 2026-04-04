@@ -10,15 +10,18 @@ export {
 } from "./echoes-metadata-generated"
 
 import type { EchoMetadata } from "./echoes-metadata-generated"
+import { getImageToken } from "./echoes-image-tokens"
 
 /**
  * Resolve image path for an echo via the server proxy.
- * All image requests go through /api/v1/pfp/image/:index which gates by mint status.
+ * All image requests go through /api/v1/pfp/image/:index?t=<token> which gates by mint status.
+ * Token is sourced from the global token store (populated by minted-items API).
  */
 export function getDevImagePaths(item: EchoMetadata): string[] {
 	// Extract numeric index from the image filename (e.g. "0.png" → 0)
 	const index = item.image.replace(/\.png$/, "")
-	return [`/api/v1/pfp/image/${index}?v=2`]
+	const token = getImageToken(Number(index))
+	return [`/api/v1/pfp/image/${index}?t=${token}`]
 }
 
 /** Ghost-class and classification traits — present only on some echoes, not used for filtering */

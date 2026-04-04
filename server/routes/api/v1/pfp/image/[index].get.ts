@@ -1,24 +1,25 @@
 /**
- * GET /api/v1/pfp/image/:index
+ * GET /api/v1/pfp/image/:index?t=<token>
  *
  * Server image proxy for echo PFP images.
- * - Minted items: serve the real image (streamed from disk or redirected to Blob)
- * - Unminted items: redirect to unresolved placeholder
+ * - Validates HMAC token (prevents URL enumeration)
+ * - Minted items: serve the real image (streamed from Blob, long-lived cache)
+ * - Unminted items: stream unresolved placeholder
  *
- * This prevents users from enumerating all images via DevTools.
  * The actual image storage location (ECHOES_IMAGE_BASE_URL) is server-only.
  */
 
 import {
 	defineEventHandler,
 	getRouterParam,
+	getQuery,
 	setHeaders,
 	setResponseStatus,
-	sendRedirect,
 	sendStream,
 } from "h3"
 import { getEchoesUmi, getCandyMachinePublicKey } from "@/server/services/blockchain/echoes/echoesUmiClient"
 import { fetchCandyMachine } from "@metaplex-foundation/mpl-core-candy-machine"
+import { validateImageToken } from "@/server/utils/echoes/image-tokens"
 import { echoesEnv } from "@/config/echoes-env"
 import fs from "node:fs"
 import path from "node:path"
@@ -70,7 +71,7 @@ async function getMintedSet(): Promise<Set<number>> {
 }
 
 // ---------------------------------------------------------------------------
-// Placeholder paths (served from public/ — always accessible)
+// Placeholder paths (served from Blob — always accessible)
 // ---------------------------------------------------------------------------
 
 const PLACEHOLDER_MASC = "https://4swlq9hweqtpslft.public.blob.vercel-storage.com/echoes/echoes-unresolved.png"
@@ -87,6 +88,14 @@ function isLocalPath(url: string): boolean {
 	return !url.startsWith("http://") && !url.startsWith("https://")
 }
 
+async function fetchWithRetry(url: string): Promise<Response> {
+	try {
+		return await fetch(url, { signal: AbortSignal.timeout(8_000) })
+	} catch {
+		return fetch(url, { signal: AbortSignal.timeout(10_000) })
+	}
+}
+
 // ---------------------------------------------------------------------------
 // Route handler
 // ---------------------------------------------------------------------------
@@ -99,6 +108,14 @@ export default defineEventHandler(async (event) => {
 	if (Number.isNaN(index) || index < 0 || index > 9999) {
 		setResponseStatus(event, 400)
 		return { success: false, error: { code: "INVALID_INDEX", message: "Invalid image index" } }
+	}
+
+	// Validate HMAC token — reject unsigned requests
+	const query = getQuery(event)
+	const token = typeof query.t === "string" ? query.t : ""
+	if (!validateImageToken(index, token)) {
+		setResponseStatus(event, 403)
+		return { success: false, error: { code: "INVALID_TOKEN", message: "Forbidden" } }
 	}
 
 	try {
@@ -115,14 +132,15 @@ export default defineEventHandler(async (event) => {
 				if (fs.existsSync(absolutePath)) {
 					setHeaders(event, {
 						"Content-Type": "image/png",
-						"Cache-Control": "public, max-age=3600",
+						// Minted images never change — cache aggressively
+						"Cache-Control": "public, max-age=31536000, s-maxage=31536000, immutable",
 						"Vercel-Cache-Tag": `pfp,pfp-${index},pfp-minted`,
 					})
 					return sendStream(event, fs.createReadStream(absolutePath) as any)
 				}
 
 				// File not found locally — serve placeholder
-				const fallback = await fetch(getPlaceholder(index))
+				const fallback = await fetchWithRetry(getPlaceholder(index))
 				if (fallback.ok && fallback.body) {
 					setHeaders(event, {
 						"Content-Type": fallback.headers.get("content-type") ?? "image/png",
@@ -131,14 +149,15 @@ export default defineEventHandler(async (event) => {
 					})
 					return sendStream(event, fallback.body as any)
 				}
-				return sendRedirect(event, getPlaceholder(index), 302)
+				setResponseStatus(event, 502)
+				return { success: false, error: { code: "IMAGE_UNAVAILABLE", message: "Image not found" } }
 			}
 
 			// Fetch from Blob storage and stream to client (never expose Blob URL)
-			const imgRes = await fetch(imagePath)
+			const imgRes = await fetchWithRetry(imagePath)
 			if (!imgRes.ok || !imgRes.body) {
 				// Image not in Blob — serve placeholder with short cache
-				const fallback = await fetch(getPlaceholder(index))
+				const fallback = await fetchWithRetry(getPlaceholder(index))
 				if (fallback.ok && fallback.body) {
 					setHeaders(event, {
 						"Content-Type": fallback.headers.get("content-type") ?? "image/png",
@@ -147,12 +166,14 @@ export default defineEventHandler(async (event) => {
 					})
 					return sendStream(event, fallback.body as any)
 				}
-				return sendRedirect(event, getPlaceholder(index), 302)
+				setResponseStatus(event, 502)
+				return { success: false, error: { code: "IMAGE_UNAVAILABLE", message: "Image not found" } }
 			}
 
 			setHeaders(event, {
 				"Content-Type": imgRes.headers.get("content-type") ?? "image/png",
-				"Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
+				// Minted images never change — cache for 1 year
+				"Cache-Control": "public, max-age=31536000, s-maxage=31536000, immutable",
 				"Vercel-Cache-Tag": `pfp,pfp-${index},pfp-minted`,
 			})
 			return sendStream(event, imgRes.body as any)
@@ -161,9 +182,10 @@ export default defineEventHandler(async (event) => {
 		// Not minted — stream placeholder directly (don't redirect, so our
 		// Cache-Control headers are what /_vercel/image sees, not Blob's)
 		const placeholderUrl = getPlaceholder(index)
-		const placeholderRes = await fetch(placeholderUrl)
+		const placeholderRes = await fetchWithRetry(placeholderUrl)
 		if (!placeholderRes.ok || !placeholderRes.body) {
-			return sendRedirect(event, placeholderUrl, 302)
+			setResponseStatus(event, 502)
+			return { success: false, error: { code: "PLACEHOLDER_UNAVAILABLE", message: "Placeholder not found" } }
 		}
 
 		setHeaders(event, {
@@ -178,7 +200,8 @@ export default defineEventHandler(async (event) => {
 			"[pfp-image-proxy] Error:",
 			error instanceof Error ? error.message : error,
 		)
-		// On error, fail gracefully — show placeholder rather than breaking the page
-		return sendRedirect(event, getPlaceholder(index), 302)
+		// On error, return proper error status instead of silently redirecting
+		setResponseStatus(event, 502)
+		return { success: false, error: { code: "PROXY_ERROR", message: "Image proxy error" } }
 	}
 })

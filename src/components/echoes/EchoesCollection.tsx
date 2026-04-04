@@ -8,15 +8,23 @@ import {
 } from "@/data/echoes-metadata"
 import { getEchoPlaceholder, getEchoVariants } from "@/data/echoes-images"
 import { getOptimizedImageUrl } from "@/lib/imageUrl"
+import { getTokenVersion } from "@/data/echoes-image-tokens"
 import { Icon } from "@/components/ui/icon"
 import { useEchoesMintedItems, type MintedItemMetadata } from "./hooks/useEchoesMintedItems"
 
 // --- Performance constants ---
 const CHUNK_SIZE = 60
 
-/** Memoized image path lookup — avoids recomputing paths on every render */
+/** Memoized image path lookup — avoids recomputing paths on every render.
+ *  Cache is keyed by name + token version so it invalidates when tokens refresh. */
 const imagePathCache = new Map<string, string[]>()
+let cachedTokenVersion = -1
 function getCachedImagePaths(item: EchoMetadata): string[] {
+	const currentVersion = getTokenVersion()
+	if (currentVersion !== cachedTokenVersion) {
+		imagePathCache.clear()
+		cachedTokenVersion = currentVersion
+	}
 	const cached = imagePathCache.get(item.name)
 	if (cached) return cached
 	const index = Number.parseInt(item.image.replace(/\.png$/, ""), 10)
@@ -911,7 +919,7 @@ function GalleryGrid({ items, selectedId, onSelect, onClearFilters, hasFilters, 
 								{/* Mobile list row */}
 								<div className="md:hidden flex items-center gap-3 px-3 min-h-[100px]">
 									<div className="w-[72px] h-[88px] shrink-0 overflow-hidden nx-bg-surface-highest" style={{ borderLeft: `3px solid ${isRevealed ? (FACTION_COLORS[faction!] ?? "transparent") : "var(--nx-outline)"}` }}>
-										<img src={imgSrc} alt="" className={`w-full h-full object-cover ${!isRevealed ? "grayscale-[0.3] opacity-80" : ""}`} loading="lazy" width={72} height={88} />
+										<img src={imgSrc} alt="" className={`w-full h-full object-cover ${!isRevealed ? "grayscale-[0.3] opacity-80" : ""}`} loading="lazy" decoding="async" width={72} height={88} />
 									</div>
 									<div className="flex-1 min-w-0">
 										{isRevealed ? (
@@ -935,7 +943,7 @@ function GalleryGrid({ items, selectedId, onSelect, onClearFilters, hasFilters, 
 								{/* Desktop list row */}
 								<div className="hidden md:grid grid-cols-[100px_1fr_8rem_10rem_6rem_5rem] gap-3 items-center px-3 min-h-[100px]">
 									<div className="w-[80px] h-[88px] shrink-0 overflow-hidden nx-bg-surface-highest" style={{ borderLeft: `3px solid ${isRevealed ? (FACTION_COLORS[faction!] ?? "transparent") : "var(--nx-outline)"}` }}>
-										<img src={imgSrc} alt="" className={`w-full h-full object-cover ${!isRevealed ? "grayscale-[0.3] opacity-80" : ""}`} loading="lazy" width={80} height={88} />
+										<img src={imgSrc} alt="" className={`w-full h-full object-cover ${!isRevealed ? "grayscale-[0.3] opacity-80" : ""}`} loading="lazy" decoding="async" width={80} height={88} />
 									</div>
 									{isRevealed ? (
 										<>
@@ -1008,6 +1016,7 @@ function GalleryGrid({ items, selectedId, onSelect, onClearFilters, hasFilters, 
 										alt=""
 										className={`absolute inset-0 w-full h-full object-cover ${!isRevealed ? "grayscale-[0.3] opacity-80" : ""}`}
 										aria-hidden="true"
+										decoding="async"
 									/>
 									{isRevealed && imagePaths && (
 										<img
@@ -1015,6 +1024,7 @@ function GalleryGrid({ items, selectedId, onSelect, onClearFilters, hasFilters, 
 											alt=""
 											className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.04]"
 											loading="lazy"
+											decoding="async"
 											width={viewMode === "small" ? 200 : 400}
 											height={viewMode === "small" ? 267 : 533}
 											onError={(e) => { e.currentTarget.hidden = true }}
@@ -1151,6 +1161,7 @@ function DetailModal({ item, onClose, onNext, onPrev, isRevealed, nftMintAddress
 											alt={`${item.name} variant ${i + 1}`}
 											className="w-full h-full object-cover shrink-0"
 											draggable={false}
+											decoding="async"
 											onError={(e) => { e.currentTarget.src = placeholderSrc }}
 										/>
 									))}
@@ -1207,6 +1218,7 @@ function DetailModal({ item, onClose, onNext, onPrev, isRevealed, nftMintAddress
 									alt="Unresolved echo"
 									className="w-full h-full object-cover grayscale-[0.3] opacity-80"
 									draggable={false}
+									decoding="async"
 								/>
 								<div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[var(--nx-outline)]" />
 							</>

@@ -14,6 +14,7 @@ import { getEchoesUmi, getCandyMachinePublicKey } from "@/server/services/blockc
 import { fetchCandyMachine } from "@metaplex-foundation/mpl-core-candy-machine";
 import { echoesEnv } from "@/config/echoes-env";
 import { getEchoesHeliusRpcUrl } from "@/config/echoes-env";
+import { generateAllImageTokens } from "@/server/utils/echoes/image-tokens";
 
 interface EchoAttribute {
 	trait_type: string
@@ -127,6 +128,10 @@ export default defineEventHandler(async (event) => {
 			}
 		}
 
+		const totalItems = Number(cm.data.itemsAvailable)
+
+		const imageTokens = generateAllImageTokens(totalItems)
+
 		// Fetch all metadata + mint addresses in parallel
 		const [metadataResults, mintAddressMap] = await Promise.all([
 			Promise.all(metadataFetches),
@@ -140,9 +145,10 @@ export default defineEventHandler(async (event) => {
 			success: true,
 			data: {
 				mintedIndices,
-				total: Number(cm.data.itemsAvailable),
+				total: totalItems,
 				minted: mintedIndices.length,
 				mintedMetadata,
+				imageTokens,
 			},
 			requestId,
 		};
@@ -159,6 +165,7 @@ export default defineEventHandler(async (event) => {
 				total: 0,
 				minted: 0,
 				mintedMetadata: [],
+				imageTokens: {},
 			},
 			requestId,
 		};

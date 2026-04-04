@@ -14,6 +14,7 @@ import {
 import { getEchoesUmi } from "@/server/services/blockchain/echoes/echoesUmiClient"
 import { fetchAssetV1 } from "@metaplex-foundation/mpl-core"
 import { publicKey as umiPublicKey } from "@metaplex-foundation/umi"
+import { generateImageToken } from "@/server/utils/echoes/image-tokens"
 
 export default defineEventHandler(async (event) => {
 	const requestId = `req_${crypto.randomUUID().slice(0, 12)}`
@@ -50,7 +51,8 @@ export default defineEventHandler(async (event) => {
 		// Override image URL to use optimized proxy instead of raw Arweave/Irys
 		const itemIndex = parseInt(asset.name.replace(/\D/g, ''), 10)
 		if (!isNaN(itemIndex)) {
-			metadata.image = `/api/v1/pfp/image/${itemIndex}`
+			const token = generateImageToken(itemIndex)
+			metadata.image = `/api/v1/pfp/image/${itemIndex}?t=${token}`
 		}
 
 		return {

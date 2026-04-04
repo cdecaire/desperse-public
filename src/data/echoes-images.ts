@@ -1,5 +1,6 @@
 import { ECHOES_METADATA, getDevImagePaths } from "./echoes-metadata"
 import { getOptimizedImageUrl, type ImageWidth } from "@/lib/imageUrl"
+import { getImageToken } from "./echoes-image-tokens"
 
 const DEV_IMAGE_COUNT = 300
 const IMAGE_PROXY_BASE = "/api/v1/pfp/image"
@@ -7,12 +8,15 @@ const IMAGE_PROXY_BASE = "/api/v1/pfp/image"
 /** Default width for echo images in grid/gallery views */
 const ECHO_IMAGE_WIDTH: ImageWidth = 480
 
+/** Quality for echo images — 85 with WebP/AVIF is visually lossless, much smaller files */
+const ECHO_IMAGE_QUALITY = 85
+
 /**
  * Wrap an echo image URL through Vercel's image optimizer.
  * In dev mode this is a no-op (returns the original URL).
  */
 function optimizeEchoUrl(url: string, width: ImageWidth = ECHO_IMAGE_WIDTH): string {
-	return getOptimizedImageUrl(url, { width })
+	return getOptimizedImageUrl(url, { width, quality: ECHO_IMAGE_QUALITY })
 }
 
 /** Placeholder images for premint, missing, or unavailable echo images (Vercel Blob) */
@@ -43,7 +47,8 @@ export function getEchoImage(index: number): string {
 		const paths = getDevImagePaths(ECHOES_METADATA[index])
 		return optimizeEchoUrl(paths[0])
 	}
-	return optimizeEchoUrl(`${IMAGE_PROXY_BASE}/${index}`)
+	const token = getImageToken(index)
+	return optimizeEchoUrl(`${IMAGE_PROXY_BASE}/${index}?t=${token}`)
 }
 
 /**
@@ -73,7 +78,7 @@ export function getEchoImagesSeeded(count: number, seed: number = 0): string[] {
 	for (let i = 0; i < count; i++) {
 		const echoIndex = (seed + i * 7) % DEV_IMAGE_COUNT
 		if (echoIndex >= ECHOES_METADATA.length) {
-			results.push(optimizeEchoUrl(`${IMAGE_PROXY_BASE}/${echoIndex}`))
+			results.push(getEchoImage(echoIndex))
 			continue
 		}
 		const variantOffset = i % 4

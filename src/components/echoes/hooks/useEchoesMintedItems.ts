@@ -4,6 +4,7 @@
  */
 
 import { useQuery } from "@tanstack/react-query"
+import { setImageTokens } from "@/data/echoes-image-tokens"
 
 export interface MintedItemMetadata {
 	index: number
@@ -18,6 +19,7 @@ interface MintedItemsResponse {
 	total: number
 	minted: number
 	mintedMetadata: MintedItemMetadata[]
+	imageTokens: Record<number, string>
 }
 
 export function useEchoesMintedItems() {
@@ -34,6 +36,10 @@ export function useEchoesMintedItems() {
 			}
 			if (!json.success || !json.data) {
 				throw new Error("Invalid response")
+			}
+			// Populate the global token store so image URL helpers can include tokens
+			if (json.data.imageTokens) {
+				setImageTokens(json.data.imageTokens)
 			}
 			return json.data
 		},

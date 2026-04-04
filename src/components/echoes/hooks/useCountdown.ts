@@ -12,18 +12,19 @@ function calculateTimeLeft(target: Date) {
 }
 
 export function useCountdown(targetDate: Date, onComplete?: () => void) {
+	const targetMs = targetDate.getTime()
 	const [timeLeft, setTimeLeft] = useState(() => calculateTimeLeft(targetDate))
 
 	useEffect(() => {
-		// If already past, set zeros immediately and skip the interval
-		const initial = calculateTimeLeft(targetDate)
+		const target = new Date(targetMs)
+		const initial = calculateTimeLeft(target)
 		if (initial.total <= 0) {
 			setTimeLeft({ total: 0, days: 0, hours: 0, minutes: 0, seconds: 0 })
 			return
 		}
 
 		const timer = setInterval(() => {
-			const next = calculateTimeLeft(targetDate)
+			const next = calculateTimeLeft(target)
 			setTimeLeft(next)
 			if (next.total <= 0) {
 				clearInterval(timer)
@@ -31,7 +32,7 @@ export function useCountdown(targetDate: Date, onComplete?: () => void) {
 			}
 		}, 1000)
 		return () => clearInterval(timer)
-	}, [targetDate, onComplete])
+	}, [targetMs, onComplete])
 
 	return timeLeft
 }

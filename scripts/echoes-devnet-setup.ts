@@ -271,8 +271,8 @@ async function main() {
 		}),
 		guards: {},
 		groups: [
-			{ label: 'og-free', guards: ogFreeGuards },
-			{ label: 'og-disc', guards: ogDiscountGuards },
+			{ label: 'ogfree', guards: ogFreeGuards },
+			{ label: 'ogdisc', guards: ogDiscountGuards },
 			{ label: 'wl', guards: wlGuards },
 			{ label: 'public', guards: publicGuards },
 		],

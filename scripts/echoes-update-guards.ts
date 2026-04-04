@@ -20,6 +20,7 @@ import {
 	signerIdentity,
 	sol,
 	some,
+	publicKey as umiPublicKey,
 } from '@metaplex-foundation/umi'
 import fs from 'node:fs'
 import path from 'node:path'
@@ -76,8 +77,16 @@ async function main() {
 	const signer = createSignerFromKeypair(umi, keypair)
 	umi.use(signerIdentity(signer))
 
+	const paymentWallet = readEnvAddress('PFP_PAYMENT_WALLET')
+	if (!paymentWallet) {
+		console.error('PFP_PAYMENT_WALLET not found in .env.local')
+		process.exit(1)
+	}
+	const paymentDest = umiPublicKey(paymentWallet)
+
 	log(`CM: ${cmAddress}`)
 	log(`Fee payer: ${signer.publicKey.toString()}`)
+	log(`Payment destination: ${paymentWallet}`)
 
 	// Fetch CM + guard
 	const cm = await fetchCandyMachine(umi, cmAddress as any)
@@ -101,7 +110,7 @@ async function main() {
 
 	const ogDiscountGuards: Record<string, any> = {
 		botTax: some({ lamports: sol(BOT_TAX_SOL), lastInstruction: true }),
-		solPayment: some({ lamports: sol(OG_DISCOUNT_PRICE_SOL), destination: signer.publicKey }),
+		solPayment: some({ lamports: sol(OG_DISCOUNT_PRICE_SOL), destination: paymentDest }),
 		startDate: some({ date: dateToTimestamp(OG_DISCOUNT_START_DATE) ?? nowTimestamp }),
 		mintLimit: some({ id: 2, limit: OG_DISCOUNT_MINT_LIMIT }),
 	}
@@ -110,7 +119,7 @@ async function main() {
 
 	const wlGuards: Record<string, any> = {
 		botTax: some({ lamports: sol(BOT_TAX_SOL), lastInstruction: true }),
-		solPayment: some({ lamports: sol(WL_PRICE_SOL), destination: signer.publicKey }),
+		solPayment: some({ lamports: sol(WL_PRICE_SOL), destination: paymentDest }),
 		startDate: some({ date: dateToTimestamp(WL_START_DATE) ?? nowTimestamp }),
 		mintLimit: some({ id: 3, limit: WL_MINT_LIMIT }),
 	}
@@ -119,7 +128,7 @@ async function main() {
 
 	const publicGuards: Record<string, any> = {
 		botTax: some({ lamports: sol(BOT_TAX_SOL), lastInstruction: true }),
-		solPayment: some({ lamports: sol(PUBLIC_PRICE_SOL), destination: signer.publicKey }),
+		solPayment: some({ lamports: sol(PUBLIC_PRICE_SOL), destination: paymentDest }),
 		startDate: some({ date: dateToTimestamp(PUBLIC_START_DATE) ?? nowTimestamp }),
 	}
 	if (PUBLIC_MINT_LIMIT != null) publicGuards.mintLimit = some({ id: 4, limit: PUBLIC_MINT_LIMIT })

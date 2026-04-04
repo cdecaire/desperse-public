@@ -47,6 +47,12 @@ export default defineEventHandler(async (event) => {
 
 		const metadata = await metadataRes.json()
 
+		// Override image URL to use optimized proxy instead of raw Arweave/Irys
+		const itemIndex = parseInt(asset.name.replace(/\D/g, ''), 10)
+		if (!isNaN(itemIndex)) {
+			metadata.image = `/api/v1/pfp/image/${itemIndex}`
+		}
+
 		return {
 			success: true,
 			data: {

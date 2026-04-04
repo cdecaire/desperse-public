@@ -124,11 +124,13 @@ export default defineEventHandler(async (event) => {
 				return sendRedirect(event, getPlaceholder(index), 302)
 			}
 
-			// Staging/prod — redirect to external Blob URL (not guessable)
+			// Staging/prod — redirect through Vercel image optimizer for resizing/format conversion
 			setHeaders(event, {
 				"Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
 			})
-			return sendRedirect(event, imagePath, 302)
+			// Use Vercel's on-the-fly optimizer: serves WebP/AVIF at constrained width
+			const optimizedUrl = `/_vercel/image?url=${encodeURIComponent(imagePath)}&w=640&q=75`
+			return sendRedirect(event, optimizedUrl, 302)
 		}
 
 		// Not minted — redirect to placeholder

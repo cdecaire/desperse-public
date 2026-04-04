@@ -284,6 +284,11 @@ async function main() {
 		isSequential: false,
 	})
 
+	// Payment destination — use PFP_PAYMENT_WALLET from env to match mint server
+	const paymentWallet = readEnvAddress('PFP_PAYMENT_WALLET')
+	const paymentDest = paymentWallet ? (paymentWallet as any) : signer.publicKey
+	log(`Payment destination: ${paymentWallet || feePayerAddress} ${paymentWallet ? '' : '(fee payer fallback)'}`)
+
 	const ogWallets = loadOgAllowlistWallets()
 	const wlWallets = loadWlAllowlistWallets()
 	log(`OG allowlist: ${ogWallets.length} wallets`)
@@ -301,7 +306,7 @@ async function main() {
 	// OG Discount
 	const ogDiscountGuards: Record<string, any> = {
 		botTax: some({ lamports: sol(BOT_TAX_SOL), lastInstruction: true }),
-		solPayment: some({ lamports: sol(OG_DISCOUNT_PRICE_SOL), destination: signer.publicKey }),
+		solPayment: some({ lamports: sol(OG_DISCOUNT_PRICE_SOL), destination: paymentDest }),
 		startDate: some({ date: dateToTimestamp(OG_DISCOUNT_START_DATE) ?? nowTimestamp }),
 		mintLimit: some({ id: 2, limit: OG_DISCOUNT_MINT_LIMIT }),
 	}
@@ -311,7 +316,7 @@ async function main() {
 	// WL
 	const wlGuards: Record<string, any> = {
 		botTax: some({ lamports: sol(BOT_TAX_SOL), lastInstruction: true }),
-		solPayment: some({ lamports: sol(WL_PRICE_SOL), destination: signer.publicKey }),
+		solPayment: some({ lamports: sol(WL_PRICE_SOL), destination: paymentDest }),
 		startDate: some({ date: dateToTimestamp(WL_START_DATE) ?? nowTimestamp }),
 		mintLimit: some({ id: 3, limit: WL_MINT_LIMIT }),
 	}
@@ -321,7 +326,7 @@ async function main() {
 	// Public
 	const publicGuards: Record<string, any> = {
 		botTax: some({ lamports: sol(BOT_TAX_SOL), lastInstruction: true }),
-		solPayment: some({ lamports: sol(PUBLIC_PRICE_SOL), destination: signer.publicKey }),
+		solPayment: some({ lamports: sol(PUBLIC_PRICE_SOL), destination: paymentDest }),
 		startDate: some({ date: dateToTimestamp(PUBLIC_START_DATE) ?? nowTimestamp }),
 	}
 
@@ -337,8 +342,8 @@ async function main() {
 		configLineSettings,
 		guards: {},
 		groups: [
-			{ label: 'og-free', guards: ogFreeGuards },
-			{ label: 'og-disc', guards: ogDiscountGuards },
+			{ label: 'ogfree', guards: ogFreeGuards },
+			{ label: 'ogdisc', guards: ogDiscountGuards },
 			{ label: 'wl', guards: wlGuards },
 			{ label: 'public', guards: publicGuards },
 		],

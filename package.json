@@ -24,7 +24,8 @@
     "list:purchases": "tsx scripts/list-purchases.ts",
     "repair:master-mints": "tsx scripts/repair-phantom-master-mints.ts",
     "promote-user": "tsx scripts/promote-user.ts",
-    "echoes:sync-metadata": "tsx scripts/echoes-sync-metadata.ts"
+    "echoes:sync-metadata": "tsx scripts/echoes-sync-metadata.ts",
+    "echoes:upload-blob": "tsx --env-file=.env.local scripts/echoes-upload-blob.ts"
   },
   "dependencies": {
     "@ardrive/turbo-sdk": "^1.41.0",

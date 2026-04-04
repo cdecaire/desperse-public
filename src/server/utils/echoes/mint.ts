@@ -56,7 +56,7 @@ export interface MintCheckResult {
 // Rate Limiting
 // ---------------------------------------------------------------------------
 
-const PFP_RATE_LIMIT_PER_IP_HOUR = 3
+const PFP_RATE_LIMIT_PER_IP_HOUR = 10
 
 export async function checkPfpRateLimit(ipAddress: string | null): Promise<{ allowed: boolean; resetAt?: Date }> {
 	if (!ipAddress) return { allowed: true }
@@ -322,7 +322,8 @@ export async function buildPfpMintTransaction(
 	const guard = await fetchCandyGuard(umi, cm.mintAuthority)
 
 	// Derive phase from on-chain guards
-	const { phase } = await getPhaseFromGuards(umi, cm, guard)
+	const guardPhaseResult = await getPhaseFromGuards(umi, cm, guard)
+	const { phase } = guardPhaseResult
 	if (phase === 'closed') {
 		throw new Error('Minting is currently closed')
 	}
@@ -371,26 +372,30 @@ export async function buildPfpMintTransaction(
 	}
 
 	// Build the mint transaction
-	// Set the minter to the user's wallet so they pay the solPayment guard
+	// payer = server fee payer (pays tx fee + rent + solPayment guard)
+	// minter = user's wallet (for allowlist/mint limit checks)
+	// The solPayment guard charges payer — server pays, then we prepend a SOL transfer
+	// from the user to the server to recoup the mint price
 	const minterPublicKey = umiPublicKey(walletAddress)
+	const userSigner = { publicKey: minterPublicKey, signTransaction: async (t: any) => t, signMessage: async (m: any) => m, signAllTransactions: async (t: any) => t } as any
 	const mintIx = mintV1(umi, {
 		candyMachine: cmPublicKey,
 		collection: collectionPublicKey,
 		asset: assetSigner,
-		minter: { publicKey: minterPublicKey, signTransaction: async (t: any) => t, signMessage: async (m: any) => m, signAllTransactions: async (t: any) => t } as any,
+		minter: userSigner,
 		owner: minterPublicKey,
-		payer: umi.identity,
+		payer: userSigner,
 		mintArgs,
 		group,
 	})
 
-	const tx = transactionBuilder()
+	const txBuilder = transactionBuilder()
 		.add(setComputeUnitLimit(umi, { units: 800_000 }))
 		.add(mintIx)
 
 	// Build with latest blockhash
 	const blockhashResult = await umi.rpc.getLatestBlockhash()
-	const built = await tx
+	const built = await txBuilder
 		.setBlockhash(blockhashResult)
 		.build(umi)
 
@@ -493,6 +498,15 @@ export async function checkPfpMintStatus(mintId: string): Promise<MintCheckResul
 				if (data.result.meta?.err) {
 					await db.update(pfpMints).set({ status: 'failed' }).where(eq(pfpMints.id, mintId))
 					return { status: 'failed', txSignature: mint.txSignature, nftMintAddress: null, error: 'Transaction failed on-chain' }
+				}
+
+				// Check logs for bot tax — tx succeeds but no NFT was minted
+				const logs: string[] = data.result.meta?.logMessages ?? []
+				const wasBotTaxed = logs.some((l: string) => l.includes('Botting is taxed'))
+				if (wasBotTaxed) {
+					console.warn(`[checkPfpMintStatus] Bot tax detected for mint ${mintId}`)
+					await db.update(pfpMints).set({ status: 'failed' }).where(eq(pfpMints.id, mintId))
+					return { status: 'failed', txSignature: mint.txSignature, nftMintAddress: null, error: 'Mint rejected by guard (bot tax charged)' }
 				}
 
 				await db.update(pfpMints).set({

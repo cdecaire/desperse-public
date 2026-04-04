@@ -70,8 +70,8 @@ function isVercelProduction(): boolean {
 export const IMAGE_WIDTHS = [320, 480, 640, 800, 1200, 1600] as const
 export type ImageWidth = (typeof IMAGE_WIDTHS)[number]
 
-// Default quality for JPEG/WebP output (70-80 is good for photos)
-export const DEFAULT_QUALITY = 75
+// Default quality for JPEG/WebP output — high enough to preserve detail
+export const DEFAULT_QUALITY = 85
 
 // DPR values we support (1x and 2x only to limit cache explosion)
 export const SUPPORTED_DPR = [1, 2] as const

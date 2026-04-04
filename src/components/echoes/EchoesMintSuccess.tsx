@@ -12,6 +12,7 @@
 
 import { useEffect, useRef, useState, useCallback } from "react"
 import { FACTION_COLORS, RANK_COLORS } from "@/data/echoes-metadata"
+import { getOptimizedImageUrl } from "@/lib/imageUrl"
 import { Icon } from "@/components/ui/icon"
 import type { EchoesMintStep } from "./hooks/useEchoesMint"
 
@@ -335,7 +336,7 @@ export function EchoesMintSuccess({
 						{metadata && (
 							<img
 								ref={imgRef}
-								src={metadata.image}
+								src={getOptimizedImageUrl(metadata.image, { width: 800, quality: 85 })}
 								alt=""
 								className="absolute w-0 h-0 opacity-0 pointer-events-none"
 								onLoad={() => setImageLoaded(true)}
@@ -366,7 +367,7 @@ export function EchoesMintSuccess({
 
 							{/* The image */}
 							<img
-								src={metadata.image}
+								src={getOptimizedImageUrl(metadata.image, { width: 800, quality: 85 })}
 								alt={metadata.name}
 								className={`w-full h-full object-cover ${
 									phase === "glitching"

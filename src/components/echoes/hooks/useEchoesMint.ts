@@ -4,9 +4,10 @@
  */
 
 import { useState, useCallback } from "react"
-import { useWallets, useSignTransaction } from "@privy-io/react-auth/solana"
+import { useSignTransaction } from "@privy-io/react-auth/solana"
 import { usePrivy } from "@privy-io/react-auth"
 import { useQueryClient } from "@tanstack/react-query"
+import { useActiveWallet } from "@/hooks/useActiveWallet"
 
 // ---------------------------------------------------------------------------
 // State
@@ -44,16 +45,12 @@ const INITIAL_STATE: EchoesMintState = {
 export function useEchoesMint() {
 	const [state, setState] = useState<EchoesMintState>(INITIAL_STATE)
 	const { getAccessToken, authenticated } = usePrivy()
-	const { wallets } = useWallets()
+	const { activePrivyWallet, activeAddress } = useActiveWallet()
 	const { signTransaction } = useSignTransaction()
 	const queryClient = useQueryClient()
 
-	// Prefer embedded wallet, fall back to first connected
-	const embeddedWallet = wallets.find((w) => (w as any).walletClientType === "privy")
-	const activeWallet = embeddedWallet ?? wallets[0] ?? null
-
 	const mint = useCallback(async () => {
-		if (!authenticated || !activeWallet) {
+		if (!authenticated || !activePrivyWallet || !activeAddress) {
 			setState({ ...INITIAL_STATE, step: "failed", error: "Wallet not connected" })
 			return
 		}
@@ -74,7 +71,7 @@ export function useEchoesMint() {
 					"Content-Type": "application/json",
 					Authorization: `Bearer ${accessToken}`,
 				},
-				body: JSON.stringify({ walletAddress: activeWallet.address }),
+				body: JSON.stringify({ walletAddress: activeAddress }),
 			})
 
 			const buildJson = await buildRes.json() as {
@@ -103,7 +100,7 @@ export function useEchoesMint() {
 			const priceLabel = price ? price.display : "Free"
 			const { signedTransaction } = await signTransaction({
 				transaction: txBytes,
-				wallet: activeWallet,
+				wallet: activePrivyWallet,
 				chain: "solana:devnet",
 				options: {
 					uiOptions: {
@@ -178,7 +175,7 @@ export function useEchoesMint() {
 				error: message,
 			}))
 		}
-	}, [authenticated, getAccessToken, activeWallet, queryClient])
+	}, [authenticated, getAccessToken, activePrivyWallet, activeAddress, queryClient])
 
 	const reset = useCallback(() => {
 		setState(INITIAL_STATE)
@@ -188,7 +185,7 @@ export function useEchoesMint() {
 		...state,
 		mint,
 		reset,
-		walletConnected: !!activeWallet,
+		walletConnected: !!activePrivyWallet,
 	}
 }
 

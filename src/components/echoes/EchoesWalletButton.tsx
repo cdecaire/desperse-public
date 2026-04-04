@@ -14,6 +14,7 @@ import { useState, useCallback, useRef, useEffect, useMemo, forwardRef } from "r
 import { useWallets } from "@privy-io/react-auth/solana"
 import { useConnectWallet, usePrivy } from "@privy-io/react-auth"
 import { useQuery } from "@tanstack/react-query"
+import { useActiveWallet } from "@/hooks/useActiveWallet"
 
 function truncateAddress(address: string): string {
 	if (address.length <= 10) return address
@@ -58,18 +59,15 @@ function useWalletMeta(address: string | undefined) {
 
 export function EchoesWalletButton() {
 	const { user } = usePrivy()
-	const { wallets, ready } = useWallets()
+	const { ready } = useWallets()
 	const { connectWallet } = useConnectWallet()
+	const { activeAddress, activePrivyWallet, solanaWalletsReady } = useActiveWallet()
 	const [popoverOpen, setPopoverOpen] = useState(false)
 	const buttonRef = useRef<HTMLButtonElement>(null)
 	const popoverRef = useRef<HTMLDivElement>(null)
 
-	// Prefer embedded wallet, fall back to first connected
-	const embeddedWallet = wallets.find(
-		(w) => (w as any).walletClientType === "privy",
-	)
-	const activeWallet = embeddedWallet ?? wallets[0] ?? null
-	const walletAddress = activeWallet?.address
+	// Use the user's preferred wallet from DB (respects wallet switching)
+	const walletAddress = activeAddress
 
 	// Resolve metadata from linked accounts
 	const { isEmbedded, walletName, walletIcon } = useWalletMeta(walletAddress)
@@ -91,7 +89,7 @@ export function EchoesWalletButton() {
 		: null
 
 	const hasDisconnectedExternal =
-		!activeWallet && !!externalLinkedAddress
+		!activePrivyWallet && !!externalLinkedAddress
 
 	// Close popover on outside click / escape
 	useEffect(() => {
@@ -126,7 +124,7 @@ export function EchoesWalletButton() {
 	}, [hasDisconnectedExternal, connectWallet])
 
 	// Loading state
-	if (!ready) {
+	if (!ready || !solanaWalletsReady) {
 		return (
 			<div className="font-label text-[0.6875rem] px-4 py-2.5 min-h-[44px] uppercase tracking-widest nx-bg-primary-container/10 nx-text-primary-container flex items-center gap-2">
 				<div className="h-3 w-3 animate-spin rounded-full border border-current border-t-transparent" />
@@ -164,7 +162,7 @@ export function EchoesWalletButton() {
 	}
 
 	// Connected state
-	if (activeWallet && walletAddress) {
+	if (activePrivyWallet && walletAddress) {
 		return (
 			<div className="relative">
 				<button

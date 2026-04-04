@@ -1,9 +1,15 @@
 import { DISTRICTS } from "@/data/echoes-districts"
 import { FACTIONS } from "@/data/echoes-factions"
 import { getRevealedImagesSeeded } from "@/data/echoes-images"
+import { getOptimizedImageUrl } from "@/lib/imageUrl"
+import type { ImageWidth } from "@/lib/imageUrl"
 import { useScrollReveal } from "./hooks/useScrollReveal"
 import { useMemo } from "react"
 import { useEchoesMintedItems } from "./hooks/useEchoesMintedItems"
+
+function optimizeDistrictImage(src: string, width: ImageWidth): string {
+	return getOptimizedImageUrl(src, { width, quality: 70 })
+}
 
 function getFactionColor(name: string): string {
 	if (name === "Contested") return "var(--nx-outline)"
@@ -49,7 +55,7 @@ export function EchoesLoreDistricts() {
 								<div className="relative h-48 md:h-64 overflow-hidden">
 									{district.image && (
 										<img
-											src={district.image}
+											src={optimizeDistrictImage(district.image, 800)}
 											alt=""
 											className="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:opacity-40 transition-opacity scale-110"
 											loading="lazy"
@@ -87,7 +93,7 @@ export function EchoesLoreDistricts() {
 								<div className="relative h-36 md:h-44 overflow-hidden">
 									{district.image && (
 										<img
-											src={district.image}
+											src={optimizeDistrictImage(district.image, 640)}
 											alt=""
 											className="absolute inset-0 w-full h-full object-cover opacity-25 group-hover:opacity-35 transition-opacity scale-110"
 											loading="lazy"

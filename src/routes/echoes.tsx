@@ -11,6 +11,7 @@ import { EchoesFooter } from "@/components/echoes/EchoesFooter"
 import { MintPhaseProvider } from "@/components/echoes/hooks/useMintPhase"
 import { useCorruptionEffect } from "@/components/echoes/hooks/useCorruptionEffect"
 import { EchoesGate } from "@/components/echoes/EchoesGate"
+import { EchoesBootScreen } from "@/components/echoes/EchoesBootScreen"
 
 import echoesCss from "@/styles-echoes.css?url"
 
@@ -51,8 +52,9 @@ function EchoesLayout() {
 
 	return (
 		<EchoesGate>
-			<MintPhaseProvider>
-				<div className="echoes min-h-screen overflow-x-clip">
+			<EchoesBootScreen>
+				<MintPhaseProvider>
+					<div className="echoes min-h-screen overflow-x-clip">
 					{/* Skip to content */}
 					<a
 						href="#echoes-content"
@@ -71,7 +73,8 @@ function EchoesLayout() {
 					</main>
 					<EchoesFooter />
 				</div>
-			</MintPhaseProvider>
+				</MintPhaseProvider>
+			</EchoesBootScreen>
 		</EchoesGate>
 	)
 }

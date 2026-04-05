@@ -68,8 +68,9 @@ export function EchoesHero() {
 	const phase = useMintPhase()
 	const queryClient = useQueryClient()
 	const { data: mintInfo } = useEchoesMintInfo()
-	const countdownTarget = mintInfo?.windows?.publicStart
-		? new Date(mintInfo.windows.publicStart)
+	const hasCountdownTarget = !!mintInfo?.windows?.publicStart
+	const countdownTarget = hasCountdownTarget
+		? new Date(mintInfo.windows.publicStart!)
 		: new Date(0)
 	const onCountdownComplete = useCallback(() => {
 		queryClient.invalidateQueries({ queryKey: ["pfp-mint-status"] })
@@ -123,14 +124,14 @@ export function EchoesHero() {
 					<div className="flex flex-col sm:flex-row gap-4 sm:gap-6 sm:items-end" data-reveal-stagger style={{ "--stagger-index": 3 } as React.CSSProperties}>
 						<div className="p-4 md:p-6 min-w-0 sm:min-w-[240px] nx-bg-surface-high border-l-4 border-[var(--nx-primary-container)]">
 							<span className="block font-label text-[10px] tracking-widest mb-2 uppercase nx-text-primary-fixed">
-								{phase === "postmint" ? "ARCHIVE STATUS" : phase === "minting" ? "BREACH WINDOW" : "BREACH WINDOW OPENS IN"}
+								{phase === "postmint" ? "ARCHIVE STATUS" : phase === "minting" ? "BREACH WINDOW" : hasCountdownTarget ? "BREACH WINDOW OPENS IN" : "BREACH WINDOW"}
 							</span>
 							<div
 								className="font-headline text-3xl md:text-4xl tracking-tighter"
 								suppressHydrationWarning
 								aria-label={isLive
 									? phase === "minting" ? "Minting live" : "Archive resolved"
-									: `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds remaining`
+									: hasCountdownTarget ? `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds remaining` : "To be announced"
 								}
 							>
 								{phase === "postmint" ? (
@@ -139,8 +140,10 @@ export function EchoesHero() {
 									<span className="nx-text-primary-container">
 										{mintInfo?.supply ? `${mintInfo.supply.minted} / ${mintInfo.supply.total}` : "ACTIVE"}
 									</span>
-								) : (
+								) : hasCountdownTarget ? (
 									<>{pad(days)}:{pad(hours)}:{pad(minutes)}:{pad(seconds)}</>
+								) : (
+									<span className="nx-text-primary-container">TBA</span>
 								)}
 							</div>
 						</div>

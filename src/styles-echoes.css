@@ -782,6 +782,371 @@ body[data-echoes] {
 	--privy-color-error-light: rgba(232, 160, 153, 0.15);
 }
 
+/* ── Boot screen ── */
+.echoes-boot-overlay {
+	position: fixed;
+	inset: 0;
+	z-index: 100;
+	background-color: #05060a;
+	display: flex;
+	flex-direction: column;
+	cursor: pointer;
+	overflow: hidden;
+}
+
+.echoes-boot-terminal {
+	flex: 1;
+	overflow-y: auto;
+	padding: 2rem 1.5rem;
+	padding-bottom: 4rem;
+	max-width: 56rem;
+	font-family: 'DM Mono', 'Courier New', monospace;
+	font-size: 0.8125rem;
+	line-height: 1.45;
+	letter-spacing: 0.03em;
+	color: rgba(204, 200, 194, 0.6);
+	scrollbar-width: none;
+}
+.echoes-boot-terminal::-webkit-scrollbar { display: none; }
+
+@media (min-width: 768px) {
+	.echoes-boot-terminal {
+		padding: 3rem 4rem;
+	}
+}
+
+/* Line entrance */
+.echoes-boot-line {
+	animation: echoes-boot-line-in 0.15s ease-out both;
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+/* Line style variants */
+.echoes-boot-system { color: rgba(204, 200, 194, 0.45); }
+.echoes-boot-warn { color: var(--nx-secondary-container, #D4882A); }
+.echoes-boot-error { color: var(--nx-error, #E8A099); }
+.echoes-boot-lore {
+	color: var(--nx-primary, #A3E4D7);
+	padding-left: 1rem;
+	border-left: 1px solid rgba(0, 191, 166, 0.2);
+	margin: 0.15rem 0;
+}
+.echoes-boot-signal {
+	color: var(--nx-primary-container, #00BFA6);
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.15em;
+	text-shadow: 0 0 8px rgba(0, 191, 166, 0.4);
+}
+.echoes-boot-ascii {
+	color: var(--nx-primary-container, #00BFA6);
+	font-size: 0.6rem;
+	line-height: 1.1;
+	letter-spacing: 0;
+	white-space: pre;
+	text-shadow: 0 0 10px rgba(0, 191, 166, 0.5);
+}
+.echoes-boot-header {
+	color: var(--nx-on-surface-variant, #7E8A94);
+	text-transform: uppercase;
+	letter-spacing: 0.2em;
+	margin-top: 0.25rem;
+}
+.echoes-boot-line-accent {
+	color: rgba(0, 191, 166, 0.3);
+}
+
+/* Redacted lines — extra flicker */
+.echoes-boot-redacted {
+	color: rgba(204, 200, 194, 0.25);
+	animation: echoes-boot-line-in 0.15s ease-out both, echoes-boot-flicker 0.3s steps(2) 2;
+}
+
+/* Blinking cursor */
+.echoes-boot-cursor {
+	display: inline-block;
+	color: var(--nx-primary-container, #00BFA6);
+	animation: echoes-boot-blink 0.7s steps(2) infinite;
+	font-weight: 700;
+}
+.echoes-boot-cursor-active {
+	margin-left: 0.25rem;
+}
+
+/* Enter prompt — shown after sequence completes */
+.echoes-boot-enter-prompt {
+	margin-top: 1.5rem;
+	animation: echoes-boot-fade-up 0.5s ease-out both;
+}
+
+.echoes-boot-enter-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.15rem;
+	background: none;
+	border: none;
+	padding: 0.5rem 0;
+	cursor: pointer;
+	font-family: 'DM Mono', monospace;
+	font-size: inherit;
+	letter-spacing: 0.2em;
+	transition: all 0.2s ease;
+}
+.echoes-boot-enter-btn:hover .echoes-boot-enter-text,
+.echoes-boot-enter-btn:focus-visible .echoes-boot-enter-text {
+	color: #fff;
+	text-shadow: 0 0 12px rgba(0, 191, 166, 0.6), 0 0 24px rgba(0, 191, 166, 0.3);
+}
+.echoes-boot-enter-btn:hover .echoes-boot-enter-bracket,
+.echoes-boot-enter-btn:focus-visible .echoes-boot-enter-bracket {
+	color: var(--nx-primary-container, #00BFA6);
+}
+.echoes-boot-enter-btn:focus-visible {
+	outline: 1px solid var(--nx-primary-container, #00BFA6);
+	outline-offset: 4px;
+}
+
+.echoes-boot-enter-text {
+	color: var(--nx-primary-container, #00BFA6);
+	animation: echoes-boot-blink 1.2s steps(2) infinite;
+}
+
+.echoes-boot-enter-bracket {
+	color: rgba(204, 200, 194, 0.3);
+}
+
+
+/* Terminal command prompt (ready phase) */
+.echoes-boot-cmd-line {
+	display: flex;
+	align-items: center;
+	position: relative;
+	font-family: 'DM Mono', monospace;
+	font-size: 0.75rem;
+	line-height: 1.6;
+	cursor: text;
+}
+
+.echoes-boot-cmd-prompt {
+	color: var(--nx-primary-container, #00BFA6);
+	margin-right: 0.5em;
+	flex-shrink: 0;
+}
+
+.echoes-boot-cmd-input-display {
+	color: rgba(204, 200, 194, 0.8);
+	white-space: pre;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+}
+
+/* Terminal auth prompt */
+.echoes-boot-auth-prompt {
+	display: flex;
+	align-items: center;
+	gap: 0;
+	position: relative;
+	font-family: 'DM Mono', monospace;
+	font-size: 0.75rem;
+	line-height: 1.6;
+}
+
+.echoes-boot-auth-label {
+	color: var(--nx-primary-container, #00BFA6);
+	text-transform: uppercase;
+	letter-spacing: 0.1em;
+	white-space: nowrap;
+}
+
+.echoes-boot-auth-value {
+	color: rgba(204, 200, 194, 0.7);
+	letter-spacing: 0.15em;
+}
+
+.echoes-boot-auth-input {
+	position: absolute;
+	inset: 0;
+	opacity: 0;
+	width: 100%;
+	height: 100%;
+	cursor: text;
+	font-size: 16px; /* prevent iOS zoom */
+}
+
+/* Skip hint */
+.echoes-boot-skip {
+	position: fixed;
+	bottom: 1.5rem;
+	left: 50%;
+	transform: translateX(-50%);
+	font-family: 'DM Mono', monospace;
+	font-size: 0.625rem;
+	text-transform: uppercase;
+	letter-spacing: 0.25em;
+	color: rgba(204, 200, 194, 0.2);
+	pointer-events: none;
+	animation: echoes-boot-blink 2s ease-in-out infinite;
+}
+
+/* ── Tearout transition — signal interference dissolve ── */
+
+.echoes-boot-tearout {
+	animation: echoes-tearout-overlay 2.4s ease-out forwards;
+}
+
+/* Terminal text fades during tearout */
+.echoes-boot-tearout .echoes-boot-terminal {
+	animation: echoes-tearout-text 0.6s ease-out forwards;
+}
+
+/* Suppress boot pseudo-overlays during tearout */
+.echoes-boot-tearout::before,
+.echoes-boot-tearout::after {
+	display: none;
+}
+
+/* ── Band container ── */
+.echoes-tearout-bands {
+	position: fixed;
+	inset: 0;
+	z-index: 55;
+	display: flex;
+	pointer-events: none;
+}
+
+/* ── Individual bands ── */
+.echoes-tearout-band {
+	flex: 1;
+	opacity: 0;
+	animation:
+		echoes-band-in 0.4s ease-out forwards,
+		echoes-band-hold 0.6s linear forwards,
+		echoes-band-out 0.7s ease-in forwards;
+	animation-delay:
+		calc(var(--band-index) * 80ms),
+		calc(0.4s + var(--band-index) * 80ms),
+		calc(1.4s + var(--band-index) * 60ms);
+}
+
+/* Dot grid pattern — pixel raster */
+.echoes-tearout-band-dots {
+	background:
+		radial-gradient(circle 1.2px, rgba(0, 191, 166, 0.5) 1px, transparent 1px);
+	background-size: 6px 6px;
+}
+
+/* Horizontal scan lines */
+.echoes-tearout-band-hlines {
+	background: repeating-linear-gradient(
+		to bottom,
+		transparent 0px,
+		transparent 2px,
+		rgba(0, 191, 166, 0.35) 2px,
+		rgba(0, 191, 166, 0.35) 3px
+	);
+}
+
+/* Fine grid / crosshatch */
+.echoes-tearout-band-grid {
+	background:
+		repeating-linear-gradient(
+			to bottom,
+			transparent 0px,
+			transparent 4px,
+			rgba(0, 191, 166, 0.25) 4px,
+			rgba(0, 191, 166, 0.25) 5px
+		),
+		repeating-linear-gradient(
+			to right,
+			transparent 0px,
+			transparent 4px,
+			rgba(0, 191, 166, 0.18) 4px,
+			rgba(0, 191, 166, 0.18) 5px
+		);
+}
+
+/* Diagonal hatching */
+.echoes-tearout-band-diag {
+	background: repeating-linear-gradient(
+		-45deg,
+		transparent 0px,
+		transparent 4px,
+		rgba(0, 191, 166, 0.35) 4px,
+		rgba(0, 191, 166, 0.35) 5px
+	);
+}
+
+/* ── Tearout keyframes ── */
+
+/* Main overlay: holds dark while bands play, then dissolves */
+@keyframes echoes-tearout-overlay {
+	0%   { opacity: 1; }
+	60%  { opacity: 1; }
+	85%  { opacity: 0.4; }
+	100% { opacity: 0; visibility: hidden; }
+}
+
+/* Terminal text dissolves */
+@keyframes echoes-tearout-text {
+	0%   { opacity: 1; filter: blur(0); }
+	100% { opacity: 0; filter: blur(4px); }
+}
+
+/* Bands fade in */
+@keyframes echoes-band-in {
+	0%   { opacity: 0; transform: scaleX(0.92); }
+	100% { opacity: 1; transform: scaleX(1); }
+}
+
+/* Bands hold visible */
+@keyframes echoes-band-hold {
+	0%   { opacity: 1; }
+	100% { opacity: 1; }
+}
+
+/* Bands dissolve out */
+@keyframes echoes-band-out {
+	0%   { opacity: 1; transform: translateY(0); }
+	100% { opacity: 0; transform: translateY(-16px); }
+}
+
+
+@keyframes echoes-boot-line-in {
+	from {
+		opacity: 0;
+		transform: translateY(2px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes echoes-boot-blink {
+	0%, 49% { opacity: 1; }
+	50%, 100% { opacity: 0; }
+}
+
+@keyframes echoes-boot-flicker {
+	0% { opacity: 0.4; }
+	25% { opacity: 0; }
+	50% { opacity: 0.6; }
+	75% { opacity: 0.1; }
+	100% { opacity: 0.4; }
+}
+
+@keyframes echoes-boot-fade-up {
+	from {
+		opacity: 0;
+		transform: translateY(6px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
 /* ── Reduced motion ── */
 @media (prefers-reduced-motion: reduce) {
 	.echoes .echoes-hero-img {
@@ -818,5 +1183,9 @@ body[data-echoes] {
 	.echoes [data-reveal-grow] {
 		transform: none !important;
 		transition: none !important;
+	}
+	/* Boot screen: skipped entirely via JS (prefers-reduced-motion check) */
+	.echoes-boot-overlay {
+		display: none !important;
 	}
 }

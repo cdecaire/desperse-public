@@ -14,8 +14,9 @@ export function EchoesMintHero() {
 	const phase = useMintPhase()
 	const queryClient = useQueryClient()
 	const { data: mintInfoForCountdown } = useEchoesMintInfo()
-	const countdownTarget = mintInfoForCountdown?.windows?.publicStart
-		? new Date(mintInfoForCountdown.windows.publicStart)
+	const hasCountdownTarget = !!mintInfoForCountdown?.windows?.publicStart
+	const countdownTarget = hasCountdownTarget
+		? new Date(mintInfoForCountdown.windows.publicStart!)
 		: new Date(0)
 	const onCountdownComplete = useCallback(() => {
 		queryClient.invalidateQueries({ queryKey: ["pfp-mint-status"] })
@@ -84,14 +85,17 @@ export function EchoesMintHero() {
 						{phase === "premint" && (
 							<>
 								<span className="block font-label text-[10px] tracking-widest mb-2 uppercase nx-text-primary-fixed">
-									BREACH WINDOW OPENS IN
+									{hasCountdownTarget ? "BREACH WINDOW OPENS IN" : "BREACH WINDOW"}
 								</span>
 								<div
 									className="font-headline text-3xl md:text-4xl tracking-tighter"
 									suppressHydrationWarning
-									aria-label={`${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`}
+									aria-label={hasCountdownTarget ? `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds` : "To be announced"}
 								>
-									{pad(days)}:{pad(hours)}:{pad(minutes)}:{pad(seconds)}
+									{hasCountdownTarget
+										? <>{pad(days)}:{pad(hours)}:{pad(minutes)}:{pad(seconds)}</>
+										: <span className="nx-text-primary-container">TBA</span>
+									}
 								</div>
 							</>
 						)}

@@ -236,39 +236,18 @@ function PostDetails({ post, editionSupply, collectCount, showHeading = true, ge
   )
 }
 
-function CollapsibleCaption({ caption, className, muted = false, maxExpandedHeight = 'max-h-48' }: { caption: string; className?: string; muted?: boolean; maxExpandedHeight?: string }) {
-  const [expanded, setExpanded] = useState(false)
-  const [clamped, setClamped] = useState(false)
-
-  const refCallback = (el: HTMLParagraphElement | null) => {
-    if (!el) return
-    requestAnimationFrame(() => {
-      setClamped(el.scrollHeight > el.clientHeight + 1)
-    })
-  }
-
+function CaptionBlock({ caption, className, muted = false, maxHeight = 'max-h-48' }: { caption: string; className?: string; muted?: boolean; maxHeight?: string }) {
   return (
-    <div className={className}>
-      <p
-        ref={refCallback}
-        className={cn(
-          'text-sm whitespace-pre-wrap wrap-break-word',
-          muted ? 'text-muted-foreground' : 'text-foreground',
-          expanded ? `${maxExpandedHeight} overflow-y-auto scrollbar-hide` : 'line-clamp-6',
-        )}
-      >
-        {caption}
-      </p>
-      {(clamped || expanded) && (
-        <button
-          type="button"
-          onClick={() => setExpanded(!expanded)}
-          className="text-sm text-muted-foreground hover:text-foreground mt-1"
-        >
-          {expanded ? 'Show less' : 'Show more'}
-        </button>
+    <p
+      className={cn(
+        'text-sm whitespace-pre-wrap wrap-break-word overflow-y-auto scrollbar-hide',
+        muted ? 'text-muted-foreground' : 'text-foreground',
+        maxHeight,
+        className,
       )}
-    </div>
+    >
+      {caption}
+    </p>
   )
 }
 
@@ -738,7 +717,7 @@ function PostDetailPage() {
               </Link>
             </div>
           )}
-          {post.caption && <CollapsibleCaption caption={post.caption} maxExpandedHeight="max-h-[60vh]" />}
+          {post.caption && <CaptionBlock caption={post.caption} maxHeight="max-h-[60vh]" />}
         </div>
       </div>
     ) : null
@@ -1046,7 +1025,7 @@ function PostDetailPage() {
                   <span className="font-semibold text-base min-w-0 truncate block">
                     {(post as any).nftName || post.caption?.split('\n')[0] || 'Untitled'}
                   </span>
-                  {post.caption && <CollapsibleCaption caption={post.caption} className="mt-2" muted />}
+                  {post.caption && <CaptionBlock caption={post.caption} className="mt-2" muted />}
                   <ActionButtons skipBuy className="mt-2 -ml-2" />
                 </div>
 
@@ -1061,7 +1040,7 @@ function PostDetailPage() {
                 {/* Standard layout for plain posts */}
                 <div className="px-4 py-3 border-b border-border min-h-0">
                   <UserHeader />
-                  {post.caption && <CollapsibleCaption caption={post.caption} className="mt-3" />}
+                  {post.caption && <CaptionBlock caption={post.caption} className="mt-3" />}
                   <ActionButtons className="mt-2 -ml-2" />
                 </div>
 
@@ -1187,7 +1166,7 @@ function PostDetailPage() {
                   <span className="font-semibold text-base min-w-0 truncate block">
                     {(post as any).nftName || post.caption?.split('\n')[0] || 'Untitled'}
                   </span>
-                  {post.caption && <CollapsibleCaption caption={post.caption} muted maxExpandedHeight="max-h-[60vh]" />}
+                  {post.caption && <CaptionBlock caption={post.caption} muted maxHeight="max-h-[60vh]" />}
                 </div>
 
                 <TabBar activeTab={mobileTab} onTabChange={setMobileTab} />

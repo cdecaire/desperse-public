@@ -74,8 +74,8 @@ async function getMintedSet(): Promise<Set<number>> {
 // Placeholder paths (served from public/ — deployed as static assets on CDN)
 // ---------------------------------------------------------------------------
 
-const PLACEHOLDER_MASC = "echoes-unresolved.png"
-const PLACEHOLDER_FEM = "echoes-unresolved-fem.png"
+const PLACEHOLDER_MASC = "echoes-unresolved.jpg"
+const PLACEHOLDER_FEM = "echoes-unresolved-fem.jpg"
 
 function getPlaceholderFilename(index: number): string {
 	return index % 2 === 0 ? PLACEHOLDER_MASC : PLACEHOLDER_FEM
@@ -88,7 +88,7 @@ async function streamPlaceholder(event: any, index: number) {
 	const localPath = path.resolve(process.cwd(), "public", filename)
 	if (fs.existsSync(localPath)) {
 		setHeaders(event, {
-			"Content-Type": "image/png",
+			"Content-Type": "image/jpeg",
 			"Cache-Control": "public, s-maxage=60, stale-while-revalidate=120",
 			"Vercel-Cache-Tag": `pfp,pfp-${index},pfp-unminted`,
 		})

@@ -71,14 +71,46 @@ async function getMintedSet(): Promise<Set<number>> {
 }
 
 // ---------------------------------------------------------------------------
-// Placeholder paths (served from Blob — always accessible)
+// Placeholder paths (served from public/ — deployed as static assets on CDN)
 // ---------------------------------------------------------------------------
 
-const PLACEHOLDER_MASC = "https://4swlq9hweqtpslft.public.blob.vercel-storage.com/echoes/echoes-unresolved.png"
-const PLACEHOLDER_FEM = "https://4swlq9hweqtpslft.public.blob.vercel-storage.com/echoes/echoes-unresolved-fem.png"
+const PLACEHOLDER_MASC = "echoes-unresolved.png"
+const PLACEHOLDER_FEM = "echoes-unresolved-fem.png"
 
-function getPlaceholder(index: number): string {
+function getPlaceholderFilename(index: number): string {
 	return index % 2 === 0 ? PLACEHOLDER_MASC : PLACEHOLDER_FEM
+}
+
+async function streamPlaceholder(event: any, index: number) {
+	const filename = getPlaceholderFilename(index)
+
+	// In dev, read from public/ on disk
+	const localPath = path.resolve(process.cwd(), "public", filename)
+	if (fs.existsSync(localPath)) {
+		setHeaders(event, {
+			"Content-Type": "image/png",
+			"Cache-Control": "public, s-maxage=60, stale-while-revalidate=120",
+			"Vercel-Cache-Tag": `pfp,pfp-${index},pfp-unminted`,
+		})
+		return sendStream(event, fs.createReadStream(localPath) as any)
+	}
+
+	// On Vercel, public/ is on the CDN — self-fetch the static asset
+	const origin = process.env.VERCEL_URL
+		? `https://${process.env.VERCEL_URL}`
+		: `http://localhost:${process.env.PORT || 3000}`
+	const res = await fetchWithRetry(`${origin}/${filename}`)
+	if (res.ok && res.body) {
+		setHeaders(event, {
+			"Content-Type": res.headers.get("content-type") ?? "image/png",
+			"Cache-Control": "public, s-maxage=60, stale-while-revalidate=120",
+			"Vercel-Cache-Tag": `pfp,pfp-${index},pfp-unminted`,
+		})
+		return sendStream(event, res.body as any)
+	}
+
+	setResponseStatus(event, 502)
+	return { success: false, error: { code: "PLACEHOLDER_UNAVAILABLE", message: "Placeholder not found" } }
 }
 
 /**
@@ -140,34 +172,14 @@ export default defineEventHandler(async (event) => {
 				}
 
 				// File not found locally — serve placeholder
-				const fallback = await fetchWithRetry(getPlaceholder(index))
-				if (fallback.ok && fallback.body) {
-					setHeaders(event, {
-						"Content-Type": fallback.headers.get("content-type") ?? "image/png",
-						"Cache-Control": "public, s-maxage=60, stale-while-revalidate=120",
-						"Vercel-Cache-Tag": `pfp,pfp-${index},pfp-unminted`,
-					})
-					return sendStream(event, fallback.body as any)
-				}
-				setResponseStatus(event, 502)
-				return { success: false, error: { code: "IMAGE_UNAVAILABLE", message: "Image not found" } }
+				return streamPlaceholder(event, index)
 			}
 
 			// Fetch from Blob storage and stream to client (never expose Blob URL)
 			const imgRes = await fetchWithRetry(imagePath)
 			if (!imgRes.ok || !imgRes.body) {
-				// Image not in Blob — serve placeholder with short cache
-				const fallback = await fetchWithRetry(getPlaceholder(index))
-				if (fallback.ok && fallback.body) {
-					setHeaders(event, {
-						"Content-Type": fallback.headers.get("content-type") ?? "image/png",
-						"Cache-Control": "public, s-maxage=60, stale-while-revalidate=120",
-						"Vercel-Cache-Tag": `pfp,pfp-${index},pfp-unminted`,
-					})
-					return sendStream(event, fallback.body as any)
-				}
-				setResponseStatus(event, 502)
-				return { success: false, error: { code: "IMAGE_UNAVAILABLE", message: "Image not found" } }
+				// Image not in Blob — serve placeholder
+				return streamPlaceholder(event, index)
 			}
 
 			setHeaders(event, {
@@ -179,21 +191,8 @@ export default defineEventHandler(async (event) => {
 			return sendStream(event, imgRes.body as any)
 		}
 
-		// Not minted — stream placeholder directly (don't redirect, so our
-		// Cache-Control headers are what /_vercel/image sees, not Blob's)
-		const placeholderUrl = getPlaceholder(index)
-		const placeholderRes = await fetchWithRetry(placeholderUrl)
-		if (!placeholderRes.ok || !placeholderRes.body) {
-			setResponseStatus(event, 502)
-			return { success: false, error: { code: "PLACEHOLDER_UNAVAILABLE", message: "Placeholder not found" } }
-		}
-
-		setHeaders(event, {
-			"Content-Type": placeholderRes.headers.get("content-type") ?? "image/png",
-			"Cache-Control": "public, s-maxage=60, stale-while-revalidate=120",
-			"Vercel-Cache-Tag": `pfp,pfp-${index},pfp-unminted`,
-		})
-		return sendStream(event, placeholderRes.body as any)
+		// Not minted — stream placeholder from public/
+		return streamPlaceholder(event, index)
 
 	} catch (error) {
 		console.error(

@@ -426,10 +426,8 @@ export function EchoesBootScreen({
 			.then((result: { success: boolean }) => {
 				if (cancelled) return
 				if (result.success) {
-					const skipBoot = !hasBootParam() && (
-						sessionStorage.getItem(SESSION_KEY) ||
+					const skipBoot =
 						window.matchMedia("(prefers-reduced-motion: reduce)").matches
-					)
 					setPhase(skipBoot ? "done" : "boot")
 				} else {
 					clearStoredCode()

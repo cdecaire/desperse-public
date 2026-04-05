@@ -7,18 +7,18 @@ export type District = {
 	placeholderImage: string
 }
 
-/** Vercel Blob URLs for district images (uploaded once, optimized via /_vercel/image) */
-const DISTRICT_BLOB_URLS: Record<string, string> = {
-	"registry-spire": "https://4swlq9hweqtpslft.public.blob.vercel-storage.com/echoes/districts/registry-spire.png",
-	"ward-delta": "https://4swlq9hweqtpslft.public.blob.vercel-storage.com/echoes/districts/ward-delta.png",
-	"the-conduits": "https://4swlq9hweqtpslft.public.blob.vercel-storage.com/echoes/districts/the-conduits.png",
-	"black-clinic-row": "https://4swlq9hweqtpslft.public.blob.vercel-storage.com/echoes/districts/black-clinic-row.png",
-	"the-vault-below": "https://4swlq9hweqtpslft.public.blob.vercel-storage.com/echoes/districts/the-vault-below.png",
+/** District image paths (served from public/) */
+const DISTRICT_IMAGES: Record<string, string> = {
+	"registry-spire": "/registry-spire.jpg",
+	"ward-delta": "/ward-delta.jpg",
+	"the-conduits": "/the-conduits.jpg",
+	"black-clinic-row": "/black-clinic-row.jpg",
+	"the-vault-below": "/the-vault-below.jpg",
 }
 
-/** Resolve a district image from Blob storage */
+/** Resolve a district image path */
 export function getDistrictImage(slug: string): string | undefined {
-	return DISTRICT_BLOB_URLS[slug]
+	return DISTRICT_IMAGES[slug]
 }
 
 export const DISTRICTS: District[] = [
@@ -28,7 +28,7 @@ export const DISTRICTS: District[] = [
 		controllingFaction: "Syre Group",
 		description:
 			"The central tower complex where identity verification, access licensing, and continuity archives are administered. Black glass facades reflect nothing back. Entry requires clearance. Exit requires permission.",
-		image: DISTRICT_BLOB_URLS["registry-spire"],
+		image: DISTRICT_IMAGES["registry-spire"],
 		placeholderImage: "Black glass towers rising through low neon fog, biometric scanners flanking every entrance",
 	},
 	{
@@ -37,7 +37,7 @@ export const DISTRICTS: District[] = [
 		controllingFaction: "Tessera Wardens",
 		description:
 			"The enforcement perimeter. Floodlit checkpoints, armored barricade lanes, and scanning corridors divide Tessera into controllable sectors. Transit is a negotiation. Every crossing is logged.",
-		image: DISTRICT_BLOB_URLS["ward-delta"],
+		image: DISTRICT_IMAGES["ward-delta"],
 		placeholderImage: "Floodlit checkpoint corridor with armored barricades and scanner arrays",
 	},
 	{
@@ -46,7 +46,7 @@ export const DISTRICTS: District[] = [
 		controllingFaction: "The Siphon",
 		description:
 			"A network of service tunnels, relay towers, rooftop antenna rigs, and dead-drop nodes. Tessera's unofficial nervous system. If something moves without the Registry seeing it, it moves through the Conduits.",
-		image: DISTRICT_BLOB_URLS["the-conduits"],
+		image: DISTRICT_IMAGES["the-conduits"],
 		placeholderImage: "Rooftop antenna rigs silhouetted against ad-screen spill, service tunnel entrance below",
 	},
 	{
@@ -55,7 +55,7 @@ export const DISTRICTS: District[] = [
 		controllingFaction: "The Unwritten",
 		description:
 			"Unlicensed modification labs, wetware stitchers, and neural grafting operations. Where bodies are rebuilt outside sanctioned systems. The lights are surgical. The work is not.",
-		image: DISTRICT_BLOB_URLS["black-clinic-row"],
+		image: DISTRICT_IMAGES["black-clinic-row"],
 		placeholderImage: "Narrow alley lined with neon medical crosses, surgical light spilling from unmarked doorways",
 	},
 	{
@@ -64,7 +64,7 @@ export const DISTRICTS: District[] = [
 		controllingFaction: "The Witnesses",
 		description:
 			"Deep infrastructure layers where legacy archive systems still run. Signal shrines, continuity chambers, and transmission halls. The Witnesses believe something woke here during the Cascade. They come to listen.",
-		image: DISTRICT_BLOB_URLS["the-vault-below"],
+		image: DISTRICT_IMAGES["the-vault-below"],
 		placeholderImage: "Vast underground chamber with server monoliths, pale signal light, and ceremonial techwear figures",
 	},
 	{

@@ -9,8 +9,6 @@ count.txt
 .nitro
 .tanstack
 echoes-dev
-public/echoes-districts
-public/echoes-unresolved*.png
 .wrangler
 .output
 .vinxi

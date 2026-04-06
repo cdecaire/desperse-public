@@ -51,7 +51,9 @@ export function useEchoesMint() {
 
 	const mint = useCallback(async () => {
 		if (!authenticated || !activePrivyWallet || !activeAddress) {
-			setState({ ...INITIAL_STATE, step: "failed", error: "Wallet not connected" })
+			const reason = !authenticated ? "Not authenticated" : !activePrivyWallet ? "No signing wallet" : "No wallet address"
+			console.warn('[useEchoesMint] Mint blocked:', { authenticated, hasPrivyWallet: !!activePrivyWallet, activeAddress: activeAddress?.slice(0, 8) })
+			setState({ ...INITIAL_STATE, step: "failed", error: reason })
 			return
 		}
 

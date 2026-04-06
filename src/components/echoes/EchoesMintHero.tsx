@@ -34,6 +34,7 @@ export function EchoesMintHero() {
 
 	const isMinting = step === "preparing" || step === "signing" || step === "submitting" || step === "confirming"
 	const isSoldOut = mintInfo?.supply ? mintInfo.supply.remaining <= 0 : false
+	const isEligible = mintInfo?.isEligible ?? true // default true while loading
 	const mintButtonLabel =
 		isSoldOut ? "SOLD OUT" :
 		step === "preparing" ? "BUILDING TX..." :
@@ -42,6 +43,7 @@ export function EchoesMintHero() {
 		step === "confirming" ? "CONFIRMING..." :
 		step === "success" ? "MINTED!" :
 		!walletConnected ? "CONNECT WALLET" :
+		!isEligible ? "NOT ELIGIBLE" :
 		"MINT NOW"
 
 	// Only show user's mints when CM is live or postmint — premint has no valid CM
@@ -163,10 +165,10 @@ export function EchoesMintHero() {
 						<div className="flex flex-col gap-2">
 							<button
 								type="button"
-								onClick={isSoldOut ? undefined : !walletConnected ? () => connectWallet({ walletChainType: "solana-only" }) : step === "success" ? reset : mint}
-								disabled={isMinting || isSoldOut}
+								onClick={isSoldOut || (walletConnected && !isEligible) ? undefined : !walletConnected ? () => connectWallet({ walletChainType: "solana-only" }) : step === "success" ? reset : mint}
+								disabled={isMinting || isSoldOut || (walletConnected && !isEligible)}
 								className={`font-headline text-base md:text-lg px-8 md:px-10 py-4 md:py-5 min-h-[48px] uppercase ${
-									isSoldOut ? "opacity-50 cursor-not-allowed nx-bg-surface-high nx-text-outline border nx-border-subtle" :
+									isSoldOut || (walletConnected && !isEligible) ? "opacity-50 cursor-not-allowed nx-bg-surface-high nx-text-outline border nx-border-subtle" :
 									isMinting ? "opacity-70 cursor-wait nx-bg-primary-container nx-text-on-primary-fixed" :
 									step === "success" ? "nx-bg-secondary-container nx-text-on-primary-fixed skew-hover" :
 									"skew-hover nx-bg-primary-container nx-text-on-primary-fixed"
@@ -174,6 +176,15 @@ export function EchoesMintHero() {
 							>
 								{isSoldOut ? "SOLD OUT" : step === "success" ? "MINT ANOTHER" : mintButtonLabel}
 							</button>
+							{walletConnected && !isEligible && step === "idle" && (
+								<span className="font-label text-[10px] tracking-widest uppercase nx-text-outline">
+									{mintInfo?.phase === "og-free" || mintInfo?.phase === "og-discount"
+										? "YOUR WALLET IS NOT ON THE OG LIST"
+										: mintInfo?.phase === "whitelist"
+										? "YOUR WALLET IS NOT ON THE WHITELIST"
+										: "YOUR WALLET IS NOT ELIGIBLE FOR THIS PHASE"}
+								</span>
+							)}
 							{step === "failed" && error && (
 								<div className="flex items-center gap-2">
 									<span className="font-label text-[10px] tracking-widest uppercase text-red-400">{error}</span>

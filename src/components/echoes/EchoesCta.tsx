@@ -56,7 +56,7 @@ export function EchoesCta() {
 						to="/echoes/mint"
 						className="font-headline px-8 md:px-12 py-4 md:py-6 min-h-[48px] uppercase skew-hover transition-colors nx-bg-on-primary-fixed nx-text-primary-container text-center"
 					>
-						{phase === "minting" ? "MINT NOW" : phase === "postmint" ? "VIEW GALLERY" : "VIEW MINT"}
+						{phase === "postmint" ? "VIEW GALLERY" : "VIEW MINT"}
 					</Link>
 					<Link
 						to="/echoes/collection"

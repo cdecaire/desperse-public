@@ -35,6 +35,7 @@ export function useUserEchoesMints() {
 		},
 		enabled: authenticated,
 		staleTime: 30_000,
+		refetchOnMount: "always",
 		refetchInterval: 60_000,
 	})
 }

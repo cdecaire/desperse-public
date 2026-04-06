@@ -152,7 +152,7 @@ export function EchoesHero() {
 							to="/echoes/mint"
 							className="font-headline text-base md:text-lg px-8 md:px-10 py-4 md:py-5 min-h-[48px] uppercase skew-hover nx-bg-primary-container nx-text-on-primary-fixed text-center"
 						>
-							{phase === "minting" ? "MINT NOW" : "VIEW MINT"}
+							VIEW MINT
 						</Link>
 					</div>
 				</div>

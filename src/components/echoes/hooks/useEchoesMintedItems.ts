@@ -44,6 +44,7 @@ export function useEchoesMintedItems() {
 			return json.data
 		},
 		staleTime: 30_000,
+		refetchOnMount: "always",
 		refetchInterval: 60_000,
 	})
 }

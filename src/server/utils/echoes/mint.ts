@@ -197,20 +197,33 @@ async function getPhaseFromGuards(
 		windows.publicStart = guardDateToIso(publicGroup.guards, 'startDate')
 	}
 
-	// Check groups in sequential order — first active group wins
-	// Skip allowlist-gated phases that have an empty Merkle root (no wallets configured)
-	// Skip phases where the wallet has hit the mint limit
+	// Check groups in sequential order — first active group wins.
+	// When a wallet is connected, skip phases the wallet isn't eligible for
+	// (not on allowlist or mint limit hit) so they see the best phase for them.
+	// When no wallet is connected, show the first active phase for display.
 	if (ogFreeGroup && isGroupActive(ogFreeGroup.guards, now) && hasAllowlistWallets(ogFreeGroup.guards)) {
-		const limitHit = walletAddress ? await isWalletMintLimitHit(umi, ogFreeGroup.guards, walletAddress, guard.publicKey, cm.publicKey) : false
-		if (!limitHit) return { phase: 'og-free', windows, price: null }
+		if (!walletAddress) return { phase: 'og-free', windows, price: null }
+		const onList = await getMerkleProofForWallet(walletAddress, 'og')
+		if (onList) {
+			const limitHit = await isWalletMintLimitHit(umi, ogFreeGroup.guards, walletAddress, guard.publicKey, cm.publicKey)
+			if (!limitHit) return { phase: 'og-free', windows, price: null }
+		}
 	}
 	if (ogDiscGroup && isGroupActive(ogDiscGroup.guards, now) && hasAllowlistWallets(ogDiscGroup.guards)) {
-		const limitHit = walletAddress ? await isWalletMintLimitHit(umi, ogDiscGroup.guards, walletAddress, guard.publicKey, cm.publicKey) : false
-		if (!limitHit) return { phase: 'og-discount', windows, price: extractPrice(ogDiscGroup.guards) }
+		if (!walletAddress) return { phase: 'og-discount', windows, price: extractPrice(ogDiscGroup.guards) }
+		const onList = await getMerkleProofForWallet(walletAddress, 'og')
+		if (onList) {
+			const limitHit = await isWalletMintLimitHit(umi, ogDiscGroup.guards, walletAddress, guard.publicKey, cm.publicKey)
+			if (!limitHit) return { phase: 'og-discount', windows, price: extractPrice(ogDiscGroup.guards) }
+		}
 	}
 	if (wlGroup && isGroupActive(wlGroup.guards, now) && hasAllowlistWallets(wlGroup.guards)) {
-		const limitHit = walletAddress ? await isWalletMintLimitHit(umi, wlGroup.guards, walletAddress, guard.publicKey, cm.publicKey) : false
-		if (!limitHit) return { phase: 'whitelist', windows, price: extractPrice(wlGroup.guards) }
+		if (!walletAddress) return { phase: 'whitelist', windows, price: extractPrice(wlGroup.guards) }
+		const onList = await getMerkleProofForWallet(walletAddress, 'wl')
+		if (onList) {
+			const limitHit = await isWalletMintLimitHit(umi, wlGroup.guards, walletAddress, guard.publicKey, cm.publicKey)
+			if (!limitHit) return { phase: 'whitelist', windows, price: extractPrice(wlGroup.guards) }
+		}
 	}
 	if (publicGroup && isGroupActive(publicGroup.guards, now)) {
 		return { phase: 'public', windows, price: extractPrice(publicGroup.guards) }

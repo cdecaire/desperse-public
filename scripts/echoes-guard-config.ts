@@ -29,7 +29,7 @@ export const OG_ALLOWLIST_WALLETS: string[] = [
  * Optional: path to a JSON file containing OG wallet addresses.
  * If set, overrides OG_ALLOWLIST_WALLETS above.
  */
-export const OG_ALLOWLIST_FILE: string | null = 'D:/dev/ai-art/whitelist-wallets.json'
+export const OG_ALLOWLIST_FILE: string | null = 'scripts/allowlists/og-wallets.json'
 
 /**
  * Whitelist wallet addresses — separate from OG list.
@@ -44,7 +44,7 @@ export const WL_ALLOWLIST_WALLETS: string[] = [
  * Optional: path to a JSON file containing WL wallet addresses.
  * If set, overrides WL_ALLOWLIST_WALLETS above.
  */
-export const WL_ALLOWLIST_FILE: string | null = null
+export const WL_ALLOWLIST_FILE: string | null = 'scripts/allowlists/wl-wallets.json'
 
 // ---------------------------------------------------------------------------
 // Mint limits — max mints per wallet per tier

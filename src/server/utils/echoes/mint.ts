@@ -217,9 +217,13 @@ async function getPhaseFromGuards(
 			if (!limitHit) return { phase: 'og-discount', windows, price: extractPrice(ogDiscGroup.guards) }
 		}
 	}
-	if (wlGroup && isGroupActive(wlGroup.guards, now) && hasAllowlistWallets(wlGroup.guards)) {
+	const wlActive = wlGroup ? isGroupActive(wlGroup.guards, now) : false
+	const wlHasWallets = wlGroup ? hasAllowlistWallets(wlGroup.guards) : false
+	console.log('[getPhaseFromGuards] WL check:', { wlGroupExists: !!wlGroup, wlActive, wlHasWallets, walletAddress: walletAddress?.slice(0, 8) })
+	if (wlGroup && wlActive && wlHasWallets) {
 		if (!walletAddress) return { phase: 'whitelist', windows, price: extractPrice(wlGroup.guards) }
 		const onList = await getMerkleProofForWallet(walletAddress, 'wl')
+		console.log('[getPhaseFromGuards] WL merkle proof result:', { onList: !!onList, walletAddress: walletAddress.slice(0, 8) })
 		if (onList) {
 			const limitHit = await isWalletMintLimitHit(umi, wlGroup.guards, walletAddress, guard.publicKey, cm.publicKey)
 			if (!limitHit) return { phase: 'whitelist', windows, price: extractPrice(wlGroup.guards) }

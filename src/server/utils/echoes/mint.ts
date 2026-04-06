@@ -8,8 +8,8 @@ import { pfpMints } from '@/server/db/schema'
 import { eq, and, gte, count, desc } from 'drizzle-orm'
 import { getEchoesUmi, getCandyMachinePublicKey, getCollectionPublicKey } from '@/server/services/blockchain/echoes/echoesUmiClient'
 import { echoesEnv, getEchoesHeliusRpcUrl } from '@/config/echoes-env'
-import { fetchCandyMachine, fetchCandyGuard, mintV1 } from '@metaplex-foundation/mpl-core-candy-machine'
-import { generateSigner, transactionBuilder, publicKey as umiPublicKey } from '@metaplex-foundation/umi'
+import { fetchCandyMachine, fetchCandyGuard, mintV1, route } from '@metaplex-foundation/mpl-core-candy-machine'
+import { generateSigner, transactionBuilder, publicKey as umiPublicKey, some } from '@metaplex-foundation/umi'
 import { setComputeUnitLimit } from '@metaplex-foundation/mpl-toolbox'
 import bs58 from 'bs58'
 import { getMerkleProofForWallet } from './allowlist'
@@ -330,41 +330,77 @@ export async function buildPfpMintTransaction(
 		throw new Error('Minting is currently closed')
 	}
 
-	// Generate a new keypair for the Core asset being minted
-	const assetSigner = generateSigner(umi)
-
 	// Build guard args based on active phase
 	let mintArgs: Parameters<typeof mintV1>[1]['mintArgs'] = {}
 	let group: string | undefined
+	let routeBuilder: ReturnType<typeof route> | null = null
 	const paymentDest = umiPublicKey(echoesEnv.PFP_PAYMENT_WALLET)
+	const minterPublicKey = umiPublicKey(walletAddress)
 
 	if (phase === 'og-free') {
 		const proof = await getMerkleProofForWallet(walletAddress, 'og')
 		if (!proof) throw new Error('Wallet is not on the OG allowlist')
-		mintArgs = {
-			allowList: { merkleRoot: proof.merkleRoot, merkleProof: proof.proof },
-			mintLimit: { id: 1 },
-			// No solPayment — free mint
-		}
 		group = 'ogfree'
+		// Step 1: route instruction to validate Merkle proof → creates PDA
+		routeBuilder = route(umi, {
+			candyMachine: cmPublicKey,
+			candyGuard: guard.publicKey,
+			guard: 'allowList',
+			group: some(group),
+			routeArgs: {
+				path: 'proof',
+				merkleRoot: proof.merkleRoot,
+				merkleProof: proof.proof,
+				minter: minterPublicKey,
+			},
+		})
+		// Step 2: mintV1 only needs merkleRoot (PDA proves eligibility)
+		mintArgs = {
+			allowList: { merkleRoot: proof.merkleRoot },
+			mintLimit: { id: 1 },
+		}
 	} else if (phase === 'og-discount') {
 		const proof = await getMerkleProofForWallet(walletAddress, 'og')
 		if (!proof) throw new Error('Wallet is not on the OG allowlist')
+		group = 'ogdisc'
+		routeBuilder = route(umi, {
+			candyMachine: cmPublicKey,
+			candyGuard: guard.publicKey,
+			guard: 'allowList',
+			group: some(group),
+			routeArgs: {
+				path: 'proof',
+				merkleRoot: proof.merkleRoot,
+				merkleProof: proof.proof,
+				minter: minterPublicKey,
+			},
+		})
 		mintArgs = {
-			allowList: { merkleRoot: proof.merkleRoot, merkleProof: proof.proof },
+			allowList: { merkleRoot: proof.merkleRoot },
 			solPayment: { destination: paymentDest },
 			mintLimit: { id: 2 },
 		}
-		group = 'ogdisc'
 	} else if (phase === 'whitelist') {
 		const proof = await getMerkleProofForWallet(walletAddress, 'wl')
 		if (!proof) throw new Error('Wallet is not on the whitelist')
+		group = 'wl'
+		routeBuilder = route(umi, {
+			candyMachine: cmPublicKey,
+			candyGuard: guard.publicKey,
+			guard: 'allowList',
+			group: some(group),
+			routeArgs: {
+				path: 'proof',
+				merkleRoot: proof.merkleRoot,
+				merkleProof: proof.proof,
+				minter: minterPublicKey,
+			},
+		})
 		mintArgs = {
-			allowList: { merkleRoot: proof.merkleRoot, merkleProof: proof.proof },
+			allowList: { merkleRoot: proof.merkleRoot },
 			solPayment: { destination: paymentDest },
 			mintLimit: { id: 3 },
 		}
-		group = 'wl'
 	} else {
 		// Public — no allowlist, no mint limit
 		mintArgs = {
@@ -376,10 +412,17 @@ export async function buildPfpMintTransaction(
 	// Build the mint transaction
 	// payer = server fee payer (pays tx fee + rent + solPayment guard)
 	// minter = user's wallet (for allowlist/mint limit checks)
-	// The solPayment guard charges payer — server pays, then we prepend a SOL transfer
-	// from the user to the server to recoup the mint price
-	const minterPublicKey = umiPublicKey(walletAddress)
 	const userSigner = { publicKey: minterPublicKey, signTransaction: async (t: any) => t, signMessage: async (m: any) => m, signAllTransactions: async (t: any) => t } as any
+
+	// For allowlist phases, send the route instruction first to create the proof PDA,
+	// then the server can include the mint in the same or subsequent transaction
+	if (routeBuilder) {
+		console.log(`[buildPfpMintTransaction] Sending allowList route for ${walletAddress} (group: ${group})`)
+		await routeBuilder.sendAndConfirm(umi)
+		console.log(`[buildPfpMintTransaction] Route confirmed — allowList PDA created`)
+	}
+
+	const assetSigner = generateSigner(umi)
 	const mintIx = mintV1(umi, {
 		candyMachine: cmPublicKey,
 		collection: collectionPublicKey,

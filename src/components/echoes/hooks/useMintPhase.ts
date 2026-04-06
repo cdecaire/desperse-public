@@ -15,12 +15,16 @@ export type MintPhase = "premint" | "minting" | "postmint"
 function cmPhaseToUiPhase(cmPhase: string | null, mintInfo?: PfpMintStatus | null): MintPhase {
 	if (!cmPhase || cmPhase === "not-configured") return "premint"
 	if (cmPhase === "closed") {
-		// If there's a future public start date and nothing minted yet, it's premint (countdown)
-		if (mintInfo?.windows?.publicStart) {
-			const publicStart = new Date(mintInfo.windows.publicStart).getTime()
-			if (publicStart > Date.now() && mintInfo.supply.minted === 0) {
-				return "premint"
-			}
+		// If any future phase start date exists and nothing minted yet, it's premint (countdown)
+		if (mintInfo?.windows && mintInfo.supply.minted === 0) {
+			const now = Date.now()
+			const hasUpcoming = [
+				mintInfo.windows.ogFreeStart,
+				mintInfo.windows.ogDiscountStart,
+				mintInfo.windows.wlStart,
+				mintInfo.windows.publicStart,
+			].some(d => d && new Date(d).getTime() > now)
+			if (hasUpcoming) return "premint"
 		}
 		return "postmint"
 	}

@@ -112,8 +112,8 @@ async function main() {
 		botTax: some({ lamports: sol(BOT_TAX_SOL), lastInstruction: true }),
 		solPayment: some({ lamports: sol(OG_DISCOUNT_PRICE_SOL), destination: paymentDest }),
 		startDate: some({ date: dateToTimestamp(OG_DISCOUNT_START_DATE) ?? nowTimestamp }),
-		mintLimit: some({ id: 2, limit: OG_DISCOUNT_MINT_LIMIT }),
 	}
+	if (OG_DISCOUNT_MINT_LIMIT != null) ogDiscountGuards.mintLimit = some({ id: 2, limit: OG_DISCOUNT_MINT_LIMIT })
 	if (OG_DISCOUNT_END_DATE) ogDiscountGuards.endDate = some({ date: dateToTimestamp(OG_DISCOUNT_END_DATE)! })
 	if (ogWallets.length > 0) ogDiscountGuards.allowList = some({ merkleRoot: getMerkleRoot(ogWallets) })
 
@@ -135,7 +135,7 @@ async function main() {
 
 	log(`\nNew config:`)
 	log(`  OG Free: free, ${OG_FREE_MINT_LIMIT}/wallet, start: ${OG_FREE_START_DATE ?? 'now'}`)
-	log(`  OG Discount: ${OG_DISCOUNT_PRICE_SOL} SOL, ${OG_DISCOUNT_MINT_LIMIT}/wallet, start: ${OG_DISCOUNT_START_DATE ?? 'now'}`)
+	log(`  OG Discount: ${OG_DISCOUNT_PRICE_SOL} SOL, ${OG_DISCOUNT_MINT_LIMIT ?? 'unlimited'}/wallet, start: ${OG_DISCOUNT_START_DATE ?? 'now'}`)
 	log(`  WL: ${WL_PRICE_SOL} SOL, ${WL_MINT_LIMIT}/wallet, start: ${WL_START_DATE ?? 'now'}`)
 	log(`  Public: ${PUBLIC_PRICE_SOL} SOL, ${PUBLIC_MINT_LIMIT ?? 'unlimited'}/wallet, start: ${PUBLIC_START_DATE ?? 'now'}`)
 

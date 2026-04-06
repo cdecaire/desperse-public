@@ -29,7 +29,7 @@ export const OG_ALLOWLIST_WALLETS: string[] = [
  * Optional: path to a JSON file containing OG wallet addresses.
  * If set, overrides OG_ALLOWLIST_WALLETS above.
  */
-export const OG_ALLOWLIST_FILE: string | null = null
+export const OG_ALLOWLIST_FILE: string | null = 'D:/dev/ai-art/whitelist-wallets.json'
 
 /**
  * Whitelist wallet addresses — separate from OG list.
@@ -53,8 +53,8 @@ export const WL_ALLOWLIST_FILE: string | null = null
 /** OG Free: 1 free mint per OG wallet */
 export const OG_FREE_MINT_LIMIT = 1
 
-/** OG Discount: 3 discounted mints per OG wallet */
-export const OG_DISCOUNT_MINT_LIMIT = 3
+/** OG Discount: unlimited mints per OG wallet */
+export const OG_DISCOUNT_MINT_LIMIT: number | null = null
 
 /** Whitelist: 2 mints per WL wallet */
 export const WL_MINT_LIMIT = 2
@@ -70,7 +70,7 @@ export const PUBLIC_MINT_LIMIT: number | null = null
 // No price config needed — og-free group has no solPayment guard
 
 /** OG Discount tier price in SOL */
-export const OG_DISCOUNT_PRICE_SOL = 0.005
+export const OG_DISCOUNT_PRICE_SOL = 0.05
 
 /** Whitelist tier price in SOL */
 export const WL_PRICE_SOL = 0.01
@@ -88,16 +88,16 @@ export const PUBLIC_PRICE_SOL = 0.1
  * Examples: '2026-05-01T18:00:00Z', null
  */
 
-export const OG_FREE_START_DATE: string | null = null
+export const OG_FREE_START_DATE: string | null = '2026-04-05T23:30:00Z' // April 5 5:30 PM MDT
 export const OG_FREE_END_DATE: string | null = null
 
-export const OG_DISCOUNT_START_DATE: string | null = null
+export const OG_DISCOUNT_START_DATE: string | null = '2026-04-05T23:30:00Z' // April 5 5:30 PM MDT
 export const OG_DISCOUNT_END_DATE: string | null = null
 
 export const WL_START_DATE: string | null = null
 export const WL_END_DATE: string | null = null
 
-export const PUBLIC_START_DATE: string | null = '2026-04-03T23:00:00Z'
+export const PUBLIC_START_DATE: string | null = '2026-04-08T18:00:00Z' // April 8 12:00 PM MDT
 // Public has no end date — runs until sold out
 
 // ---------------------------------------------------------------------------

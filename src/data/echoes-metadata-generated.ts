@@ -46,11 +46,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Ghost-Class Anomaly"
+				"value": "Corrupted"
 			},
 			{
 				"trait_type": "Rank",
@@ -62,31 +62,31 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Evangelist"
+				"value": "Transmission Guard"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Red Braid"
+				"value": "Grey Short Hair"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Heterochromia"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Closed Mouth"
+				"value": "Serious"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Bodysuit"
+				"value": "White Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Hood Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Stud Earrings"
+				"value": "Id Badge"
 			},
 			{
 				"trait_type": "Special",
@@ -94,12 +94,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 63,
+				"value": 171,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 4,
+				"value": 3,
 				"display_type": "number"
 			}
 		],
@@ -121,11 +121,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Synthetic"
 			},
 			{
 				"trait_type": "Signal",
@@ -137,27 +137,27 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Transmission Guard"
+				"value": "Data Analyst"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blonde Medium Hair"
+				"value": "None"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Glowing"
+				"value": "Purple"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Serious"
+				"value": "Neutral"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Jacket"
+				"value": "Long Coat"
 			},
 			{
 				"trait_type": "Headwear",
@@ -165,7 +165,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Armband"
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -178,7 +178,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 37,
+				"value": 39,
 				"display_type": "number"
 			}
 		],
@@ -200,11 +200,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Human"
 			},
 			{
 				"trait_type": "Signal",
@@ -212,7 +212,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Rare"
 			},
 			{
 				"trait_type": "Frame",
@@ -220,31 +220,31 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Surveillance Marksman"
+				"value": "Broker"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Pink Long Hair"
+				"value": "Red Hime Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Natural"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Serious"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Body Armor"
+				"value": "Bomber Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Scouter"
+				"value": "Headphones"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Dog Tags"
+				"value": "Gold Necklace"
 			},
 			{
 				"trait_type": "Special",
@@ -252,12 +252,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 50,
+				"value": 70,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 13,
+				"value": 24,
 				"display_type": "number"
 			}
 		],
@@ -279,15 +279,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
@@ -299,11 +299,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Surveillance Marksman"
+				"value": "Strategist"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Aqua Braid"
+				"value": "Purple Braid"
 			},
 			{
 				"trait_type": "Eyes",
@@ -311,19 +311,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Smirk"
+				"value": "Confident"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Armored Bodysuit"
+				"value": "Turtleneck Blazer"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Scouter"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Dog Tags"
+				"value": "Necktie"
 			},
 			{
 				"trait_type": "Special",
@@ -331,12 +331,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 89,
+				"value": 193,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 1,
+				"value": 2,
 				"display_type": "number"
 			}
 		],
@@ -358,7 +358,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
@@ -370,7 +370,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
@@ -378,15 +378,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Surveillance Marksman"
+				"value": "Infiltrator"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Aqua Medium Hair"
+				"value": "White Hime Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Glowing"
 			},
 			{
 				"trait_type": "Demeanor",
@@ -394,11 +394,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Armored Bodysuit"
+				"value": "Vest"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Scouter"
+				"value": "Mask"
 			},
 			{
 				"trait_type": "Accessory",
@@ -410,12 +410,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 90,
+				"value": 125,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 1,
+				"value": 13,
 				"display_type": "number"
 			}
 		],
@@ -437,11 +437,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Human"
 			},
 			{
 				"trait_type": "Signal",
@@ -457,31 +457,31 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Evangelist"
+				"value": "Data Analyst"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Medium Hair"
+				"value": "Red Short Hair"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Blue"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Grin"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Bodysuit"
+				"value": "Vest"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Glasses"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Stud Earrings"
+				"value": "Necktie"
 			},
 			{
 				"trait_type": "Special",
@@ -489,12 +489,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 77,
+				"value": 242,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 2,
+				"value": 0,
 				"display_type": "number"
 			}
 		],
@@ -516,11 +516,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Synthetic"
+				"value": "Human"
 			},
 			{
 				"trait_type": "Signal",
@@ -528,7 +528,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Rare"
 			},
 			{
 				"trait_type": "Frame",
@@ -536,23 +536,23 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Surveillance Marksman"
+				"value": "Executive"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Black Bob Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Red"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Frown"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Armored Vest"
+				"value": "Structured Coat"
 			},
 			{
 				"trait_type": "Headwear",
@@ -560,7 +560,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "None"
+				"value": "Gold Necklace"
 			},
 			{
 				"trait_type": "Special",
@@ -568,12 +568,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 67,
+				"value": 71,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 3,
+				"value": 24,
 				"display_type": "number"
 			}
 		],
@@ -595,7 +595,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
@@ -603,7 +603,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Corrupted"
 			},
 			{
 				"trait_type": "Rank",
@@ -615,7 +615,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Data Analyst"
+				"value": "Prototype Host"
 			},
 			{
 				"trait_type": "Hair",
@@ -631,15 +631,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Blazer"
+				"value": "Sleeveless Bodysuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Goggles"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Necktie"
+				"value": "Metal Collar"
 			},
 			{
 				"trait_type": "Special",
@@ -647,12 +647,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 68,
+				"value": 151,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 3,
+				"value": 5,
 				"display_type": "number"
 			}
 		],
@@ -686,7 +686,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Elite"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -694,19 +694,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Riot Enforcer"
+				"value": "Breach Unit"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Purple Pixie Cut"
+				"value": "Black Short Hair"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Heterochromia"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Serious"
+				"value": "Smirk"
 			},
 			{
 				"trait_type": "Outfit",
@@ -714,7 +714,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Glasses"
+				"value": "Helmet"
 			},
 			{
 				"trait_type": "Accessory",
@@ -726,12 +726,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 7,
+				"value": 194,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 38,
+				"value": 2,
 				"display_type": "number"
 			}
 		],
@@ -753,11 +753,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Synthetic"
 			},
 			{
 				"trait_type": "Signal",
@@ -765,7 +765,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Rare"
 			},
 			{
 				"trait_type": "Frame",
@@ -773,31 +773,31 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Strategist"
+				"value": "Archive Seer"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Messy Hair"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Yellow"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Serious"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Structured Coat"
-			},
-			{
-				"trait_type": "Headwear",
 				"value": "None"
 			},
 			{
+				"trait_type": "Eyes",
+				"value": "Aqua"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "White Vest"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Hood Up"
+			},
+			{
 				"trait_type": "Accessory",
-				"value": "Stud Earrings"
+				"value": "Gold Choker"
 			},
 			{
 				"trait_type": "Special",
@@ -805,12 +805,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 78,
+				"value": 31,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 2,
+				"value": 29,
 				"display_type": "number"
 			}
 		],
@@ -840,43 +840,43 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Elite"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Runner"
+				"value": "Broker"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Grey Undercut"
+				"value": "Red Medium Hair"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Grey"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Serious"
+				"value": "Grin"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Bomber Jacket"
+				"value": "Long Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Headset"
+				"value": "Tech Headband"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Metal Collar"
+				"value": "Pendant Necklace"
 			},
 			{
 				"trait_type": "Special",
@@ -884,12 +884,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 8,
+				"value": 243,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 38,
+				"value": 0,
 				"display_type": "number"
 			}
 		],
@@ -911,11 +911,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Synthetic"
 			},
 			{
 				"trait_type": "Signal",
@@ -923,23 +923,23 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Elite"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Riot Enforcer"
+				"value": "Archive Seer"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Brown Slicked Back Hair"
+				"value": "None"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Aqua"
 			},
 			{
 				"trait_type": "Demeanor",
@@ -947,15 +947,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Dark Uniform"
+				"value": "White Vest"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Mask"
+				"value": "Hood Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Dog Tags"
+				"value": "Pearl Necklace"
 			},
 			{
 				"trait_type": "Special",
@@ -963,12 +963,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 69,
+				"value": 8,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 3,
+				"value": 41,
 				"display_type": "number"
 			}
 		],
@@ -990,15 +990,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Synthetic"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Ghost-Class Anomaly"
+				"value": "Corrupted"
 			},
 			{
 				"trait_type": "Rank",
@@ -1006,15 +1006,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Smuggler"
+				"value": "Breach Unit"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Purple Short Hair"
+				"value": "None"
 			},
 			{
 				"trait_type": "Eyes",
@@ -1022,19 +1022,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Closed Mouth"
+				"value": "Neutral"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Bodysuit"
+				"value": "Armored Bodysuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
+				"value": "Glowing Forehead Sensor"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Multiple Earrings"
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -1042,12 +1042,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 14,
+				"value": 34,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 29,
+				"value": 28,
 				"display_type": "number"
 			}
 		],
@@ -1081,15 +1081,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Elite"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Security Director"
+				"value": "Data Analyst"
 			},
 			{
 				"trait_type": "Hair",
@@ -1097,7 +1097,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
@@ -1105,7 +1105,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Formal Suit"
+				"value": "Blazer"
 			},
 			{
 				"trait_type": "Headwear",
@@ -1113,7 +1113,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Shoulder Armor"
+				"value": "Necktie"
 			},
 			{
 				"trait_type": "Special",
@@ -1121,12 +1121,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 4,
+				"value": 172,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 39,
+				"value": 3,
 				"display_type": "number"
 			}
 		],
@@ -1148,11 +1148,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Human"
 			},
 			{
 				"trait_type": "Signal",
@@ -1160,7 +1160,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Elite"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -1168,31 +1168,31 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Glitch Runner"
+				"value": "Transmission Guard"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Pink Spiked Hair"
+				"value": "White Shaved Head"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Red"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Grin"
+				"value": "Frown"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Torn Jacket"
+				"value": "White Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Goggles"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Multiple Earrings"
+				"value": "Shoulder Armor"
 			},
 			{
 				"trait_type": "Special",
@@ -1200,12 +1200,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 5,
+				"value": 214,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 39,
+				"value": 1,
 				"display_type": "number"
 			}
 		],
@@ -1227,7 +1227,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
@@ -1235,43 +1235,43 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Transmission Guard"
+				"value": "Signal Smuggler"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "White Hime Cut"
+				"value": "Grey Asymmetrical Hair"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Red"
+				"value": "Grey"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Grin"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Bodysuit"
+				"value": "Utility Jumpsuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Hood Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Shoulder Armor"
+				"value": "Black Bandana Around Neck"
 			},
 			{
 				"trait_type": "Special",
@@ -1279,12 +1279,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 51,
+				"value": 195,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 13,
+				"value": 2,
 				"display_type": "number"
 			}
 		],
@@ -1302,6 +1302,401 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"name": "Echoes #16",
 		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
 		"image": "16.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Siphon"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Infiltrator"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Aqua Medium Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Blue"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Street Hoodie"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Mask"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Dog Tags"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 215,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 1,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "16.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #17",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "17.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Synthetic"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Archive Seer"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "None"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Green"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "White Vest"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Circlet"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Pendant Necklace"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 76,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 17,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "17.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #18",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "18.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Siphon"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Hacker"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Blonde Shaved Head"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Red"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Closed Mouth"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Leather Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Hood Up"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Black Bandana Around Neck"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 196,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 2,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "18.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #19",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "19.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Syre Group"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Elite"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Data Analyst"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "White Shaved Head"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Blue"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Closed Mouth"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Structured Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Glasses"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Pocket Square"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 24,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 37,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "19.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #20",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "20.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Siphon"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Hacker"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Grey Short Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Green"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Smirk"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Vest"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Hood Up"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Ear Piercing"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 244,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 0,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "20.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #21",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "21.png",
 		"external_url": "",
 		"attributes": [
 			{
@@ -1326,90 +1721,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Riot Enforcer"
+				"value": "Breach Unit"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Messy Hair"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Green"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Grin"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Long Coat"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "None"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Badge Lanyard"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 23,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 26,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "16.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #17",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "17.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "The Unwritten"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Human"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Stable"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Uncommon"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Masculine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Prototype Host"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "Brown Medium Hair"
+				"value": "White Medium Hair"
 			},
 			{
 				"trait_type": "Eyes",
@@ -1417,94 +1733,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Focused"
+				"value": "Calm"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Sleeveless Shirt"
+				"value": "Dark Uniform"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Earpiece"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 58,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 12,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "17.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #18",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "18.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "Tessera Wardens"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Synthetic"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Stable"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Uncommon"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Feminine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Checkpoint Officer"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "None"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Red"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Neutral"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Wired Bodysuit"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Helmet"
 			},
 			{
 				"trait_type": "Accessory",
@@ -1516,19 +1753,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 32,
+				"value": 59,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 17,
+				"value": 25,
 				"display_type": "number"
 			}
 		],
 		"properties": {
 			"files": [
 				{
-					"uri": "18.png",
+					"uri": "21.png",
 					"type": "image/png"
 				}
 			],
@@ -1536,9 +1773,9 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		}
 	},
 	{
-		"name": "Echoes #19",
+		"name": "Echoes #22",
 		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "19.png",
+		"image": "22.png",
 		"external_url": "",
 		"attributes": [
 			{
@@ -1567,19 +1804,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Grey Medium Hair"
+				"value": "Black Messy Hair"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Blue"
+				"value": "Grey"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Frown"
+				"value": "Closed Mouth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Tactical Vest"
+				"value": "Body Armor"
 			},
 			{
 				"trait_type": "Headwear",
@@ -1587,7 +1824,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Dog Tags"
+				"value": "Id Badge"
 			},
 			{
 				"trait_type": "Special",
@@ -1595,249 +1832,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 70,
+				"value": 197,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 3,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "19.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #20",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "20.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "The Unwritten"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Synthetic"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Stable"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Common"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Masculine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Signal Smuggler"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "None"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Red"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Neutral"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Sleeveless Bodysuit"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "Hood Up"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "None"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 61,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 5,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "20.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #21",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "21.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "The Unwritten"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Synthetic"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Signal-Burned"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Common"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Feminine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Prototype Host"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "None"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "White"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Neutral"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Sleeveless Bodysuit"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "None"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Metal Collar"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 62,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 5,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "21.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #22",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "22.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "The Siphon"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Human"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Corrupted"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Uncommon"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Masculine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Net Diver"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "Aqua Short Hair"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Blue"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Smirk"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Bomber Jacket"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "Headphones"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Metal Collar"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 52,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 13,
+				"value": 2,
 				"display_type": "number"
 			}
 		],
@@ -1859,7 +1859,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
@@ -1867,11 +1867,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Elite"
 			},
 			{
 				"trait_type": "Frame",
@@ -1879,31 +1879,31 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Strategist"
+				"value": "Signal Runner"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Grey Medium Hair"
+				"value": "Black Undercut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Glowing"
+				"value": "Heterochromia"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Focused"
+				"value": "Closed Mouth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Formal Suit"
+				"value": "Street Hoodie"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Headset"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Necktie"
+				"value": "Metal Collar"
 			},
 			{
 				"trait_type": "Special",
@@ -1911,12 +1911,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 91,
+				"value": 25,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 1,
+				"value": 37,
 				"display_type": "number"
 			}
 		],
@@ -1938,7 +1938,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
@@ -1950,7 +1950,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
@@ -1958,7 +1958,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Evangelist"
+				"value": "Hacker"
 			},
 			{
 				"trait_type": "Hair",
@@ -1966,7 +1966,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Blue"
+				"value": "Aqua"
 			},
 			{
 				"trait_type": "Demeanor",
@@ -1974,15 +1974,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Coat"
+				"value": "Wired Bodysuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Hood Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Metal Collar"
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -1990,12 +1990,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 15,
+				"value": 77,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 28,
+				"value": 17,
 				"display_type": "number"
 			}
 		],
@@ -2017,11 +2017,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Human"
 			},
 			{
 				"trait_type": "Signal",
@@ -2033,35 +2033,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Prototype Host"
+				"value": "Signal Runner"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Green Pixie Cut"
+				"value": "Red Undercut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Glowing"
+				"value": "Red"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Clenched Teeth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Sleeveless Shirt"
+				"value": "Leather Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Mask"
+				"value": "Headset"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Earpiece"
+				"value": "Metal Collar"
 			},
 			{
 				"trait_type": "Special",
@@ -2069,12 +2069,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 24,
+				"value": 72,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 26,
+				"value": 24,
 				"display_type": "number"
 			}
 		],
@@ -2096,15 +2096,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Synthetic"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
@@ -2112,19 +2112,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Checkpoint Officer"
+				"value": "Wetware Mechanic"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Red Wavy Hair"
+				"value": "None"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Aqua"
+				"value": "Green"
 			},
 			{
 				"trait_type": "Demeanor",
@@ -2132,15 +2132,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Body Armor"
+				"value": "Armored Bodysuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Visor"
+				"value": "Goggles"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Dog Tags"
+				"value": "Shoulder Armor"
 			},
 			{
 				"trait_type": "Special",
@@ -2148,12 +2148,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 71,
+				"value": 157,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 3,
+				"value": 4,
 				"display_type": "number"
 			}
 		],
@@ -2175,7 +2175,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
@@ -2183,11 +2183,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Corrupted"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Elite"
 			},
 			{
 				"trait_type": "Frame",
@@ -2195,31 +2195,31 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Data Analyst"
+				"value": "Interface Disciple"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blonde Medium Hair"
+				"value": "Brown Slicked Back Hair"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Serious"
+				"value": "Calm"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Jacket"
+				"value": "White Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Glasses"
+				"value": "Mechanical Halo"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Necktie"
+				"value": "Diamond Earrings"
 			},
 			{
 				"trait_type": "Special",
@@ -2227,12 +2227,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 92,
+				"value": 12,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 1,
+				"value": 39,
 				"display_type": "number"
 			}
 		],
@@ -2254,19 +2254,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Signal-Burned"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
@@ -2274,31 +2274,31 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Glitch Runner"
+				"value": "Breach Unit"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Asymmetrical Hair"
+				"value": "Blonde Medium Hair"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Serious"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Jacket"
+				"value": "Armored Bodysuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Goggles"
+				"value": "Helmet"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "One Black Bandana Around Neck"
+				"value": "Dog Tags"
 			},
 			{
 				"trait_type": "Special",
@@ -2306,12 +2306,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 79,
+				"value": 89,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 2,
+				"value": 15,
 				"display_type": "number"
 			}
 		],
@@ -2333,7 +2333,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
@@ -2353,31 +2353,31 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Runner"
+				"value": "Interface Disciple"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Hair Over One Eye"
+				"value": "Aqua Bob Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Yellow"
+				"value": "Glowing"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Focused"
+				"value": "Smirk"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Bomber Jacket"
+				"value": "White Bodysuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Headset"
+				"value": "Plain Baseball Cap"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Id Badge"
+				"value": "Hoop Earrings"
 			},
 			{
 				"trait_type": "Special",
@@ -2385,7 +2385,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 45,
+				"value": 105,
 				"display_type": "number"
 			},
 			{
@@ -2412,11 +2412,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Synthetic"
 			},
 			{
 				"trait_type": "Signal",
@@ -2424,23 +2424,23 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Elite"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Prototype Host"
+				"value": "Hacker"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Grey Mohawk"
+				"value": "None"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "White"
 			},
 			{
 				"trait_type": "Demeanor",
@@ -2448,15 +2448,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Torn Jacket"
+				"value": "Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Mask"
+				"value": "Hood Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Earpiece"
+				"value": "Skull Print Bandana Around Neck"
 			},
 			{
 				"trait_type": "Special",
@@ -2464,12 +2464,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 80,
+				"value": 13,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 2,
+				"value": 39,
 				"display_type": "number"
 			}
 		],
@@ -2491,7 +2491,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
@@ -2507,35 +2507,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Wetware Mechanic"
+				"value": "Checkpoint Officer"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blue Undercut"
+				"value": "Brown Shaved Head"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "White"
+				"value": "Aqua"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Grin"
+				"value": "Frown"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Torn Jacket"
+				"value": "Long Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Goggles"
+				"value": "Helmet"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Badge Lanyard"
+				"value": "Dog Tags"
 			},
 			{
 				"trait_type": "Special",
@@ -2543,7 +2543,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 93,
+				"value": 216,
 				"display_type": "number"
 			},
 			{
@@ -2570,11 +2570,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Human"
 			},
 			{
 				"trait_type": "Signal",
@@ -2582,7 +2582,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -2590,31 +2590,31 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Precinct Commander"
+				"value": "Interface Disciple"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Pink Asymmetrical Hair"
+				"value": "Blonde Ponytail"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Glowing"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Calm"
+				"value": "Slight Frown"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Dark Uniform"
+				"value": "White Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Goggles"
+				"value": "Mechanical Halo"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Shoulder Armor"
+				"value": "Single Earring"
 			},
 			{
 				"trait_type": "Special",
@@ -2622,12 +2622,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 16,
+				"value": 198,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 28,
+				"value": 2,
 				"display_type": "number"
 			}
 		],
@@ -2649,15 +2649,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Synthetic"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Signal-Burned"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
@@ -2669,15 +2669,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Smuggler"
+				"value": "Data Analyst"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Short Hair"
+				"value": "None"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Blue"
+				"value": "Red"
 			},
 			{
 				"trait_type": "Demeanor",
@@ -2685,15 +2685,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Utility Jumpsuit"
+				"value": "Long Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Choker"
+				"value": "Pocket Square"
 			},
 			{
 				"trait_type": "Special",
@@ -2701,12 +2701,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 46,
+				"value": 90,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 14,
+				"value": 15,
 				"display_type": "number"
 			}
 		],
@@ -2728,15 +2728,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Human"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Ghost-Class Anomaly"
 			},
 			{
 				"trait_type": "Rank",
@@ -2748,31 +2748,31 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Dead Channel Prophet"
+				"value": "Strategist"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Grey Messy Hair"
+				"value": "Black Shaved Head"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Grin"
+				"value": "Confident"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Jacket"
+				"value": "Structured Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Mechanical Halo"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Multiple Earrings"
+				"value": "Bowtie"
 			},
 			{
 				"trait_type": "Special",
@@ -2780,12 +2780,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 17,
+				"value": 39,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 28,
+				"value": 27,
 				"display_type": "number"
 			}
 		],
@@ -2819,39 +2819,39 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Interface Disciple"
+				"value": "Signal Evangelist"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blue Short Hair"
+				"value": "White Bob Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Red"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Serious"
+				"value": "Grin"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Vest"
+				"value": "White Bodysuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
+				"value": "Helmet"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Gold Choker"
+				"value": "Necklace"
 			},
 			{
 				"trait_type": "Special",
@@ -2859,12 +2859,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 28,
+				"value": 217,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 25,
+				"value": 1,
 				"display_type": "number"
 			}
 		],
@@ -2890,39 +2890,39 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Synthetic"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Elite"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Prototype Host"
+				"value": "Black Clinic Broker"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Pink Curly Hair"
+				"value": "None"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Aqua"
+				"value": "Green"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Angry"
+				"value": "Neutral"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Long Coat"
+				"value": "Armored Jacket"
 			},
 			{
 				"trait_type": "Headwear",
@@ -2938,12 +2938,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 9,
+				"value": 80,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 38,
+				"value": 16,
 				"display_type": "number"
 			}
 		],
@@ -2965,7 +2965,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
@@ -2973,11 +2973,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Elite"
 			},
 			{
 				"trait_type": "Frame",
@@ -2985,11 +2985,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Infiltrator"
+				"value": "Wetware Mechanic"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Ponytail"
+				"value": "Purple Short Hair"
 			},
 			{
 				"trait_type": "Eyes",
@@ -3001,15 +3001,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Leather Jacket"
+				"value": "Utility Jumpsuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Mask"
+				"value": "Goggles"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Dog Tags"
+				"value": "Metal Collar"
 			},
 			{
 				"trait_type": "Special",
@@ -3017,12 +3017,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 37,
+				"value": 26,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 15,
+				"value": 37,
 				"display_type": "number"
 			}
 		],
@@ -3044,11 +3044,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
@@ -3056,39 +3056,39 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Elite"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Runner"
+				"value": "Precinct Commander"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Medium Hair"
+				"value": "Aqua Short Hair"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Blue"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Calm"
+				"value": "Neutral"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Leather Jacket"
+				"value": "Long Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Headset"
+				"value": "Visor"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Id Badge"
+				"value": "Dog Tags"
 			},
 			{
 				"trait_type": "Special",
@@ -3096,12 +3096,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 53,
+				"value": 14,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 13,
+				"value": 39,
 				"display_type": "number"
 			}
 		],
@@ -3123,11 +3123,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
@@ -3135,7 +3135,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Rare"
 			},
 			{
 				"trait_type": "Frame",
@@ -3143,15 +3143,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Infiltrator"
+				"value": "Glitch Runner"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Aqua Short Hair"
+				"value": "Black Curly Hair"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Red"
 			},
 			{
 				"trait_type": "Demeanor",
@@ -3159,15 +3159,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Long Coat"
+				"value": "Torn Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Mask"
+				"value": "Goggles"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Dog Tags"
+				"value": "Camo Bandana Around Neck"
 			},
 			{
 				"trait_type": "Special",
@@ -3175,12 +3175,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 94,
+				"value": 40,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 1,
+				"value": 27,
 				"display_type": "number"
 			}
 		],
@@ -3202,11 +3202,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Synthetic"
+				"value": "Human"
 			},
 			{
 				"trait_type": "Signal",
@@ -3214,23 +3214,23 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Rare"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Runner"
+				"value": "Black Clinic Broker"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Blonde Medium Hair"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Grey"
 			},
 			{
 				"trait_type": "Demeanor",
@@ -3238,15 +3238,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Armored Jacket"
+				"value": "Sleeveless Shirt"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Headset"
+				"value": "Mask"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "None"
+				"value": "Gold Necklace"
 			},
 			{
 				"trait_type": "Special",
@@ -3254,12 +3254,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 72,
+				"value": 60,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 3,
+				"value": 25,
 				"display_type": "number"
 			}
 		],
@@ -3281,15 +3281,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
@@ -3297,35 +3297,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Data Analyst"
+				"value": "Signal Runner"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blue Curly Hair"
+				"value": "White Messy Hair"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Aqua"
+				"value": "Grey"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Smirk"
+				"value": "Neutral"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Vest"
+				"value": "Leather Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Glasses"
+				"value": "Headset"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Necktie"
+				"value": "Badge Lanyard"
 			},
 			{
 				"trait_type": "Special",
@@ -3333,7 +3333,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 81,
+				"value": 199,
 				"display_type": "number"
 			},
 			{
@@ -3360,19 +3360,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Synthetic"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Ghost-Class Anomaly"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Legendary"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
@@ -3380,44 +3380,44 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Hacker"
+				"value": "Riot Enforcer"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Red Medium Hair"
+				"value": "None"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Aqua"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Glowing Circuit Lines On Face"
+				"value": "Neutral"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Vest"
+				"value": "Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
+				"value": "Sunglasses"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Skull Print On Bandana One Bandana Around Neck"
+				"value": "Id Badge"
 			},
 			{
 				"trait_type": "Special",
-				"value": "Weapon On Back"
+				"value": "None"
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 1,
+				"value": 81,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 54,
+				"value": 16,
 				"display_type": "number"
 			}
 		],
@@ -3439,19 +3439,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Human"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Corrupted"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Elite"
+				"value": "Rare"
 			},
 			{
 				"trait_type": "Frame",
@@ -3459,11 +3459,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Data Analyst"
+				"value": "Interface Disciple"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Brown Short Hair"
+				"value": "Grey Shaved Head"
 			},
 			{
 				"trait_type": "Eyes",
@@ -3471,19 +3471,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Frown"
+				"value": "Grin"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Jacket"
+				"value": "White Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Glasses"
+				"value": "Circlet"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Bowtie"
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -3491,12 +3491,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 12,
+				"value": 61,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 37,
+				"value": 25,
 				"display_type": "number"
 			}
 		],
@@ -3518,11 +3518,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
@@ -3534,35 +3534,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Transmission Guard"
+				"value": "Broker"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Red Crew Cut"
+				"value": "Aqua Messy Hair"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Grey"
+				"value": "Glowing"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Frown"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Bodysuit"
+				"value": "Bomber Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Gas Mask"
+				"value": "Headset"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Id Badge"
+				"value": "Pendant Necklace"
 			},
 			{
 				"trait_type": "Special",
@@ -3570,12 +3570,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 100,
+				"value": 200,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 0,
+				"value": 2,
 				"display_type": "number"
 			}
 		],
@@ -3597,7 +3597,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
@@ -3609,15 +3609,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Elite"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Archive Seer"
+				"value": "Breach Unit"
 			},
 			{
 				"trait_type": "Hair",
@@ -3625,7 +3625,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Red"
 			},
 			{
 				"trait_type": "Demeanor",
@@ -3633,15 +3633,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Coat"
+				"value": "Armored Bodysuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Glowing Forehead Sensor"
+				"value": "Dual Radio Antenna"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "None"
+				"value": "Neck Cable"
 			},
 			{
 				"trait_type": "Special",
@@ -3649,12 +3649,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 38,
+				"value": 9,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 15,
+				"value": 40,
 				"display_type": "number"
 			}
 		],
@@ -3676,11 +3676,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Synthetic"
 			},
 			{
 				"trait_type": "Signal",
@@ -3696,31 +3696,31 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Broker"
+				"value": "Data Analyst"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Spiked Hair"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Yellow"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Closed Mouth"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Leather Jacket"
-			},
-			{
-				"trait_type": "Headwear",
 				"value": "None"
 			},
 			{
+				"trait_type": "Eyes",
+				"value": "Red"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "High Collar Bodysuit"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Dual Radio Antenna"
+			},
+			{
 				"trait_type": "Accessory",
-				"value": "Necklace"
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -3728,7 +3728,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 73,
+				"value": 173,
 				"display_type": "number"
 			},
 			{
@@ -3755,19 +3755,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Ghost-Class Anomaly"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -3775,15 +3775,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Transmission Guard"
+				"value": "Checkpoint Officer"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Grey Spiked Hair"
+				"value": "Brown Crew Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Red"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
@@ -3791,7 +3791,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Bodysuit"
+				"value": "Long Coat"
 			},
 			{
 				"trait_type": "Headwear",
@@ -3799,7 +3799,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Id Badge"
+				"value": "Dog Tags"
 			},
 			{
 				"trait_type": "Special",
@@ -3807,12 +3807,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 31,
+				"value": 201,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 18,
+				"value": 2,
 				"display_type": "number"
 			}
 		],
@@ -3838,7 +3838,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Synthetic"
 			},
 			{
 				"trait_type": "Signal",
@@ -3846,7 +3846,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -3854,31 +3854,31 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Surveillance Marksman"
+				"value": "Checkpoint Officer"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Medium Hair"
+				"value": "None"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Aqua"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Focused"
+				"value": "Neutral"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Dark Uniform"
+				"value": "Armored Bodysuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Scouter"
+				"value": "Visor"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Shoulder Armor"
+				"value": "Id Badge"
 			},
 			{
 				"trait_type": "Special",
@@ -3886,12 +3886,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 25,
+				"value": 152,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 26,
+				"value": 5,
 				"display_type": "number"
 			}
 		],
@@ -3933,19 +3933,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Transmission Guard"
+				"value": "Archive Seer"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "White Half Updo"
+				"value": "Orange Bob Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Purple"
+				"value": "Red"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Closed Mouth"
+				"value": "Frown"
 			},
 			{
 				"trait_type": "Outfit",
@@ -3953,11 +3953,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Hood Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Id Badge"
+				"value": "Pendant Necklace"
 			},
 			{
 				"trait_type": "Special",
@@ -3965,12 +3965,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 39,
+				"value": 126,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 15,
+				"value": 13,
 				"display_type": "number"
 			}
 		],
@@ -3992,11 +3992,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Human"
 			},
 			{
 				"trait_type": "Signal",
@@ -4004,7 +4004,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -4012,27 +4012,27 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Riot Enforcer"
+				"value": "Infiltrator"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Medium Hair"
+				"value": "Red Messy Hair"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Blue"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Serious"
+				"value": "Neutral"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Armored Bodysuit"
+				"value": "Long Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Glowing Led Headband"
+				"value": "Mask"
 			},
 			{
 				"trait_type": "Accessory",
@@ -4044,12 +4044,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 40,
+				"value": 218,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 15,
+				"value": 1,
 				"display_type": "number"
 			}
 		],
@@ -4071,11 +4071,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Human"
 			},
 			{
 				"trait_type": "Signal",
@@ -4091,31 +4091,31 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Runner"
+				"value": "Strategist"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blue Braid"
+				"value": "Brown Medium Hair"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Blue"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Focused"
+				"value": "Serious"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Bomber Jacket"
+				"value": "Structured Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Headset"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Id Badge"
+				"value": "Necktie"
 			},
 			{
 				"trait_type": "Special",
@@ -4123,12 +4123,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 82,
+				"value": 245,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 2,
+				"value": 0,
 				"display_type": "number"
 			}
 		],
@@ -4150,7 +4150,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
@@ -4158,23 +4158,23 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Signal-Burned"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Rare"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Black Clinic Broker"
+				"value": "Surveillance Marksman"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Brown Crew Cut"
+				"value": "Green Ponytail"
 			},
 			{
 				"trait_type": "Eyes",
@@ -4182,19 +4182,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Smirk"
+				"value": "Clenched Teeth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Bodysuit"
+				"value": "Long Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Scouter"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Silver Necklace"
+				"value": "Dog Tags"
 			},
 			{
 				"trait_type": "Special",
@@ -4202,12 +4202,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 33,
+				"value": 49,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 16,
+				"value": 26,
 				"display_type": "number"
 			}
 		],
@@ -4229,7 +4229,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
@@ -4249,7 +4249,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Evangelist"
+				"value": "Strategist"
 			},
 			{
 				"trait_type": "Hair",
@@ -4257,7 +4257,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Aqua"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
@@ -4265,7 +4265,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Bodysuit"
+				"value": "Turtleneck Jacket"
 			},
 			{
 				"trait_type": "Headwear",
@@ -4273,7 +4273,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Necklace"
+				"value": "Necktie"
 			},
 			{
 				"trait_type": "Special",
@@ -4281,12 +4281,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 64,
+				"value": 174,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 4,
+				"value": 3,
 				"display_type": "number"
 			}
 		],
@@ -4308,7 +4308,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
@@ -4316,43 +4316,43 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Infiltrator"
+				"value": "Black Clinic Broker"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Purple Short Hair"
+				"value": "Grey Undercut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Serious"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Bomber Jacket"
+				"value": "Bodysuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Mask"
+				"value": "Earpiece"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Dog Tags"
+				"value": "Pendant Necklace"
 			},
 			{
 				"trait_type": "Special",
@@ -4360,12 +4360,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 20,
+				"value": 91,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 27,
+				"value": 15,
 				"display_type": "number"
 			}
 		],
@@ -4387,7 +4387,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
@@ -4395,11 +4395,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
@@ -4407,31 +4407,31 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Wetware Mechanic"
+				"value": "Hacker"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Purple Very Short Hair, Buzz Cut"
+				"value": "Brown Messy Hair"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "White"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Grin"
+				"value": "Smirk"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Jacket"
+				"value": "Bomber Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Goggles"
+				"value": "Hood Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Badge Lanyard"
+				"value": "Choker"
 			},
 			{
 				"trait_type": "Special",
@@ -4439,12 +4439,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 74,
+				"value": 106,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 3,
+				"value": 14,
 				"display_type": "number"
 			}
 		],
@@ -4466,7 +4466,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
@@ -4474,7 +4474,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Corrupted"
 			},
 			{
 				"trait_type": "Rank",
@@ -4486,31 +4486,31 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Archive Seer"
+				"value": "Checkpoint Officer"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Shaved Head"
+				"value": "Brown Crew Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Purple"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Serious"
+				"value": "Smirk"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Bodysuit"
+				"value": "Body Armor"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Gold Circlet"
+				"value": "Plain Baseball Cap"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Choker"
+				"value": "Dog Tags"
 			},
 			{
 				"trait_type": "Special",
@@ -4518,12 +4518,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 59,
+				"value": 107,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 12,
+				"value": 14,
 				"display_type": "number"
 			}
 		],
@@ -4545,7 +4545,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
@@ -4557,7 +4557,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Legendary"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -4565,44 +4565,44 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Data Analyst"
+				"value": "Signal Runner"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Red Half Updo"
+				"value": "Blue Asymmetrical Hair"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Grey"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Frown"
+				"value": "Neutral"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Structured Coat"
+				"value": "Bomber Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Spiked Metal Headband"
+				"value": "Headset"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Ornate Shoulder Mantle"
+				"value": "Badge Lanyard"
 			},
 			{
 				"trait_type": "Special",
-				"value": "Floating Holographic Screen Near Face"
+				"value": "None"
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 3,
+				"value": 219,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 49,
+				"value": 1,
 				"display_type": "number"
 			}
 		],
@@ -4624,35 +4624,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Synthetic"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Rare"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Riot Enforcer"
+				"value": "Systems Architect"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Cornrows"
+				"value": "None"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Natural"
+				"value": "Red"
 			},
 			{
 				"trait_type": "Demeanor",
@@ -4660,7 +4660,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Body Armor"
+				"value": "Blazer"
 			},
 			{
 				"trait_type": "Headwear",
@@ -4668,7 +4668,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Armband"
+				"value": "Metal Collar"
 			},
 			{
 				"trait_type": "Special",
@@ -4676,12 +4676,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 75,
+				"value": 41,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 3,
+				"value": 27,
 				"display_type": "number"
 			}
 		],
@@ -4703,15 +4703,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Human"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Ghost-Class Anomaly"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
@@ -4723,7 +4723,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Systems Architect"
+				"value": "Hacker"
 			},
 			{
 				"trait_type": "Hair",
@@ -4731,23 +4731,23 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Heterochromia"
+				"value": "Purple"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Grin"
+				"value": "Closed Mouth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Structured Coat"
+				"value": "Bomber Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Hood Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Metal Collar"
+				"value": "Choker"
 			},
 			{
 				"trait_type": "Special",
@@ -4755,12 +4755,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 34,
+				"value": 146,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 16,
+				"value": 12,
 				"display_type": "number"
 			}
 		],
@@ -4778,243 +4778,6 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"name": "Echoes #60",
 		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
 		"image": "60.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "The Unwritten"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Augmented"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Corrupted"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Uncommon"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Masculine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Glitch Runner"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "Brown Slicked Back Hair"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Blue"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Closed Mouth"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Street Hoodie"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "Goggles"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Hoop Earrings"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 47,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 14,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "60.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #61",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "61.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "The Witnesses"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Cyborg"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Stable"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Common"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Masculine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Interface Disciple"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "Blonde Medium Hair"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Grey"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Neutral"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "White Bodysuit"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "Visor"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Stud Earrings"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 83,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 2,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "61.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #62",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "62.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "Tessera Wardens"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Augmented"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Corrupted"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Elite"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Masculine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Precinct Commander"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "White Short Hair"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Brown"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Neutral"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Long Coat"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "Visor"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Shoulder Armor"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 6,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 39,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "62.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #63",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "63.png",
 		"external_url": "",
 		"attributes": [
 			{
@@ -5039,19 +4802,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Hacker"
+				"value": "Signal Runner"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Red Short Hair"
+				"value": "Grey Short Hair"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Red"
+				"value": "Purple"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Angry"
 			},
 			{
 				"trait_type": "Outfit",
@@ -5059,11 +4822,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
+				"value": "Headset"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Choker"
+				"value": "Metal Collar"
 			},
 			{
 				"trait_type": "Special",
@@ -5071,12 +4834,249 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 26,
+				"value": 50,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
 				"value": 26,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "60.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #61",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "61.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Syre Group"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Data Analyst"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Brown Medium Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Yellow"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Smirk"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Glasses"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Necktie"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 220,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 1,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "61.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #62",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "62.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Signal Smuggler"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Aqua Crew Cut"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Torn Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Hood Up"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Red Bandana Around Neck"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 108,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 14,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "62.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #63",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "63.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Wetware Mechanic"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Grey Mohawk"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Natural"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Torn Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Goggles"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Earpiece"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 109,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 14,
 				"display_type": "number"
 			}
 		],
@@ -5098,7 +5098,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
@@ -5114,11 +5114,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Broker"
+				"value": "Systems Architect"
 			},
 			{
 				"trait_type": "Hair",
@@ -5126,7 +5126,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "White"
+				"value": "Green"
 			},
 			{
 				"trait_type": "Demeanor",
@@ -5134,7 +5134,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Jacket"
+				"value": "Blazer"
 			},
 			{
 				"trait_type": "Headwear",
@@ -5142,7 +5142,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Silver Necklace"
+				"value": "Metal Collar"
 			},
 			{
 				"trait_type": "Special",
@@ -5150,7 +5150,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 41,
+				"value": 92,
 				"display_type": "number"
 			},
 			{
@@ -5177,11 +5177,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Human"
 			},
 			{
 				"trait_type": "Signal",
@@ -5189,7 +5189,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
@@ -5197,15 +5197,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Smuggler"
+				"value": "Infiltrator"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "White Short Hair"
+				"value": "Brown Medium Hair"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
@@ -5213,15 +5213,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Utility Jumpsuit"
+				"value": "Bomber Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
+				"value": "Mask"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Ear Piercing"
+				"value": "Shoulder Armor"
 			},
 			{
 				"trait_type": "Special",
@@ -5229,12 +5229,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 76,
+				"value": 127,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 3,
+				"value": 13,
 				"display_type": "number"
 			}
 		],
@@ -5256,7 +5256,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
@@ -5264,7 +5264,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Corrupted"
 			},
 			{
 				"trait_type": "Rank",
@@ -5276,11 +5276,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Broker"
+				"value": "Breach Unit"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Brown Braid"
+				"value": "Blonde Braid"
 			},
 			{
 				"trait_type": "Eyes",
@@ -5296,11 +5296,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Visor"
+				"value": "Helmet"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Necklace"
+				"value": "Dog Tags"
 			},
 			{
 				"trait_type": "Special",
@@ -5308,12 +5308,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 95,
+				"value": 202,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 1,
+				"value": 2,
 				"display_type": "number"
 			}
 		],
@@ -5335,19 +5335,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Synthetic"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Signal-Burned"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -5355,23 +5355,23 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Black Clinic Broker"
+				"value": "Transmission Guard"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Blonde Medium Hair"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Yellow"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Calm"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Armored Bodysuit"
+				"value": "White Jacket"
 			},
 			{
 				"trait_type": "Headwear",
@@ -5387,12 +5387,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 13,
+				"value": 203,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 30,
+				"value": 2,
 				"display_type": "number"
 			}
 		],
@@ -5426,15 +5426,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Systems Architect"
+				"value": "Strategist"
 			},
 			{
 				"trait_type": "Hair",
@@ -5442,7 +5442,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
@@ -5450,11 +5450,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Long Coat"
+				"value": "Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Glowing Forehead Sensor"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
@@ -5466,12 +5466,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 42,
+				"value": 175,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 15,
+				"value": 3,
 				"display_type": "number"
 			}
 		],
@@ -5501,11 +5501,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
@@ -5513,7 +5513,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Executive"
+				"value": "Data Analyst"
 			},
 			{
 				"trait_type": "Hair",
@@ -5521,7 +5521,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Red"
 			},
 			{
 				"trait_type": "Demeanor",
@@ -5529,11 +5529,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Blazer"
+				"value": "Long Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Sunglasses"
 			},
 			{
 				"trait_type": "Accessory",
@@ -5545,12 +5545,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 18,
+				"value": 93,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 28,
+				"value": 15,
 				"display_type": "number"
 			}
 		],
@@ -5572,11 +5572,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
@@ -5592,31 +5592,31 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Strategist"
+				"value": "Signal Evangelist"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "White Short Hair"
+				"value": "Blonde Mohawk"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Focused"
+				"value": "Neutral"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Turtleneck Blazer"
+				"value": "White Bodysuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Mask"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Necktie"
+				"value": "Single Earring"
 			},
 			{
 				"trait_type": "Special",
@@ -5624,12 +5624,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 84,
+				"value": 176,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 2,
+				"value": 3,
 				"display_type": "number"
 			}
 		],
@@ -5663,27 +5663,27 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Security Director"
+				"value": "Data Analyst"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Brown Short Hair"
+				"value": "Brown Hair Over One Eye"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Red"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Grin"
+				"value": "Focused"
 			},
 			{
 				"trait_type": "Outfit",
@@ -5691,11 +5691,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Sunglasses"
+				"value": "Glasses"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Id Badge"
+				"value": "Necktie"
 			},
 			{
 				"trait_type": "Special",
@@ -5703,12 +5703,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 54,
+				"value": 221,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 13,
+				"value": 1,
 				"display_type": "number"
 			}
 		],
@@ -5730,51 +5730,51 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Broker"
+				"value": "Signal Evangelist"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blonde Slicked Back Hair"
+				"value": "Blue Hime Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Glowing"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Grin"
+				"value": "Closed Mouth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Vest"
+				"value": "White Vest"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Glowing Led Headband"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Necklace"
+				"value": "Hoop Earrings"
 			},
 			{
 				"trait_type": "Special",
@@ -5782,12 +5782,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 96,
+				"value": 94,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 1,
+				"value": 15,
 				"display_type": "number"
 			}
 		],
@@ -5813,7 +5813,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
@@ -5821,39 +5821,39 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Checkpoint Officer"
+				"value": "Riot Enforcer"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "White Crew Cut"
+				"value": "Black Short Hair"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Smirk"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Body Armor"
+				"value": "Armored Bodysuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Glowing Led Headband"
+				"value": "Helmet"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Armband"
+				"value": "Id Badge"
 			},
 			{
 				"trait_type": "Special",
@@ -5861,12 +5861,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 97,
+				"value": 110,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 1,
+				"value": 14,
 				"display_type": "number"
 			}
 		],
@@ -5892,7 +5892,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
@@ -5904,15 +5904,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Executive"
+				"value": "Data Analyst"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Ponytail"
+				"value": "Brown Cornrows"
 			},
 			{
 				"trait_type": "Eyes",
@@ -5924,15 +5924,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Structured Coat"
+				"value": "Vest"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Earpiece"
+				"value": "Glasses"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Gold Necklace"
+				"value": "Bowtie"
 			},
 			{
 				"trait_type": "Special",
@@ -5940,12 +5940,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 29,
+				"value": 62,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 24,
+				"value": 25,
 				"display_type": "number"
 			}
 		],
@@ -5967,7 +5967,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
@@ -5979,39 +5979,39 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Strategist"
+				"value": "Glitch Runner"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "White Twin Braids"
+				"value": "Pink Messy Hair"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Red"
+				"value": "Natural"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Closed Mouth"
+				"value": "Neutral"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Structured Coat"
+				"value": "Utility Jumpsuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Goggles"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Necktie"
+				"value": "Red Bandana Around Neck"
 			},
 			{
 				"trait_type": "Special",
@@ -6019,12 +6019,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 98,
+				"value": 128,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 1,
+				"value": 13,
 				"display_type": "number"
 			}
 		],
@@ -6046,7 +6046,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
@@ -6054,11 +6054,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Elite"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -6066,31 +6066,31 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Net Diver"
+				"value": "Signal Smuggler"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Green Medium Hair"
+				"value": "Grey Short Hair"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Serious"
+				"value": "Neutral"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Bomber Jacket"
+				"value": "Street Hoodie"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Headphones"
+				"value": "Hood Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Metal Collar"
+				"value": "Black Bandana Around Neck"
 			},
 			{
 				"trait_type": "Special",
@@ -6098,12 +6098,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 10,
+				"value": 204,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 38,
+				"value": 2,
 				"display_type": "number"
 			}
 		],
@@ -6129,7 +6129,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
@@ -6137,7 +6137,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Rare"
 			},
 			{
 				"trait_type": "Frame",
@@ -6145,23 +6145,23 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Strategist"
+				"value": "Systems Architect"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Brown Short Hair"
+				"value": "Black Medium Hair"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Purple"
+				"value": "Green"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Frown"
+				"value": "Focused"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Structured Coat"
+				"value": "Turtleneck Blazer"
 			},
 			{
 				"trait_type": "Headwear",
@@ -6169,7 +6169,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Bowtie"
+				"value": "Badge Lanyard"
 			},
 			{
 				"trait_type": "Special",
@@ -6177,12 +6177,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 60,
+				"value": 63,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 12,
+				"value": 25,
 				"display_type": "number"
 			}
 		],
@@ -6220,35 +6220,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Hacker"
+				"value": "Net Diver"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Grey Short Hair"
+				"value": "Black Medium Hair"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "White"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Serious"
+				"value": "Closed Mouth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Leather Jacket"
+				"value": "Vest"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
+				"value": "Headphones"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "One Black Bandana Around Neck"
+				"value": "Badge Lanyard"
 			},
 			{
 				"trait_type": "Special",
@@ -6256,12 +6256,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 85,
+				"value": 177,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 2,
+				"value": 3,
 				"display_type": "number"
 			}
 		],
@@ -6283,11 +6283,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
@@ -6299,35 +6299,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Runner"
+				"value": "Dead Channel Prophet"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Aqua Crew Cut"
+				"value": "Orange Pixie Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Yellow"
+				"value": "Green"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Frown"
+				"value": "Neutral"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Leather Jacket"
+				"value": "White Vest"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Headset"
+				"value": "Mechanical Halo"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Metal Collar"
+				"value": "Gold Choker"
 			},
 			{
 				"trait_type": "Special",
@@ -6335,12 +6335,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 30,
+				"value": 42,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 24,
+				"value": 27,
 				"display_type": "number"
 			}
 		],
@@ -6362,11 +6362,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Synthetic"
+				"value": "Human"
 			},
 			{
 				"trait_type": "Signal",
@@ -6374,7 +6374,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
@@ -6382,15 +6382,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Data Analyst"
+				"value": "Glitch Runner"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Green Asymmetrical Hair"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Aqua"
+				"value": "Heterochromia"
 			},
 			{
 				"trait_type": "Demeanor",
@@ -6398,15 +6398,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Armored Bodysuit"
+				"value": "Sleeveless Shirt"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Goggles"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "None"
+				"value": "Choker"
 			},
 			{
 				"trait_type": "Special",
@@ -6414,12 +6414,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 65,
+				"value": 95,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 4,
+				"value": 15,
 				"display_type": "number"
 			}
 		],
@@ -6445,35 +6445,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Transmission Guard"
+				"value": "Signal Evangelist"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Red Long Hair"
+				"value": "Brown Short Hair"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Glowing"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Frown"
+				"value": "Closed Mouth"
 			},
 			{
 				"trait_type": "Outfit",
@@ -6481,11 +6481,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Hood Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Id Badge"
+				"value": "Silver Necklace"
 			},
 			{
 				"trait_type": "Special",
@@ -6493,12 +6493,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 86,
+				"value": 111,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 2,
+				"value": 14,
 				"display_type": "number"
 			}
 		],
@@ -6516,85 +6516,6 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"name": "Echoes #82",
 		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
 		"image": "82.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "Syre Group"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Cyborg"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Stable"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Uncommon"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Masculine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Strategist"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "White Crew Cut"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Blue"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Calm"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Jacket"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "None"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Pocket Square"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 48,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 14,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "82.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #83",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "83.png",
 		"external_url": "",
 		"attributes": [
 			{
@@ -6619,31 +6540,31 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Riot Enforcer"
+				"value": "Surveillance Marksman"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "White Pompadour"
+				"value": "Blonde Short Hair"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "White"
+				"value": "Orange"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Focused"
+				"value": "Closed Mouth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Tactical Vest"
+				"value": "Long Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Scouter"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Dog Tags"
+				"value": "Shoulder Armor"
 			},
 			{
 				"trait_type": "Special",
@@ -6651,12 +6572,91 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 35,
+				"value": 96,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 16,
+				"value": 15,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "82.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #83",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "83.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Glitch Runner"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Grey Double Bun"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Multicolored"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Clenched Teeth"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Torn Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Goggles"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Ear Piercing"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 205,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 2,
 				"display_type": "number"
 			}
 		],
@@ -6678,7 +6678,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
@@ -6686,7 +6686,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Ghost-Class Anomaly"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
@@ -6698,11 +6698,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Data Analyst"
+				"value": "Wetware Mechanic"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "White Shaved Head"
+				"value": "Black Short Hair"
 			},
 			{
 				"trait_type": "Eyes",
@@ -6710,19 +6710,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Closed Mouth"
+				"value": "Serious"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Formal Suit"
+				"value": "Bodysuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Glasses"
+				"value": "Goggles"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Necktie"
+				"value": "Earpiece"
 			},
 			{
 				"trait_type": "Special",
@@ -6730,12 +6730,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 19,
+				"value": 51,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 28,
+				"value": 26,
 				"display_type": "number"
 			}
 		],
@@ -6765,23 +6765,23 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Corrupted"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Smuggler"
+				"value": "Glitch Runner"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blonde Short Hair"
+				"value": "Black Undercut"
 			},
 			{
 				"trait_type": "Eyes",
@@ -6789,19 +6789,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Grin"
+				"value": "Serious"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Jacket"
+				"value": "Bodysuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
+				"value": "Goggles"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "One Red Bandana Around Neck"
+				"value": "Single Earring"
 			},
 			{
 				"trait_type": "Special",
@@ -6809,12 +6809,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 43,
+				"value": 158,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 15,
+				"value": 4,
 				"display_type": "number"
 			}
 		],
@@ -6836,7 +6836,1587 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
+				"value": "Syre Group"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Ghost-Class Anomaly"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Strategist"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Brown Shaved Head"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Natural"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Serious"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Formal Suit"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Necktie"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 159,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 4,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "86.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #87",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "87.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Siphon"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Signal Runner"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Brown Curly Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Blue"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Confident"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Street Hoodie"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Headset"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Metal Collar"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 112,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 14,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "87.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #88",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "88.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Siphon"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Signal Runner"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "White Medium Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Blue"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Grin"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Leather Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Headset"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Badge Lanyard"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 178,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 3,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "88.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #89",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "89.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Siphon"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Rare"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Signal Runner"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Black Medium Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Yellow"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Serious"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Bomber Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Headset"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Badge Lanyard"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 43,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 27,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "89.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #90",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "90.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Signal-Burned"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Rare"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Signal Smuggler"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Aqua Asymmetrical Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Grey"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Torn Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Hood Up"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Multiple Earrings"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 52,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 26,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "90.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #91",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "91.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Siphon"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Rare"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Net Diver"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Orange Slicked Back Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Clenched Teeth"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Leather Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Headphones"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Badge Lanyard"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 64,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 25,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "91.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #92",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "92.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Tessera Wardens"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Checkpoint Officer"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Black Slicked Back Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Blue"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Calm"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Long Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Hood Up"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Dog Tags"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 113,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 14,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "92.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #93",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "93.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
 				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Elite"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Archive Seer"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "White Undercut"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Yellow"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "White Vest"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Mask"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Diamond Earrings"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 17,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 38,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "93.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #94",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "94.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Tessera Wardens"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Checkpoint Officer"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Red Short Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Red"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Frown"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Body Armor"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Helmet"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 114,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 14,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "94.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #95",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "95.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Tessera Wardens"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Synthetic"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Riot Enforcer"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "None"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "White"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Armored Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Visor"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 97,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 15,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "95.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #96",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "96.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Interface Disciple"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Purple Undercut"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Natural"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "White Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Visor"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Pendant Necklace"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 222,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 1,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "96.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #97",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "97.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Legendary"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Dead Channel Prophet"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Brown Cornrows"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Grey"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Fangs"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "White Vest"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Mechanical Halo"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Diamond Necklace"
+			},
+			{
+				"trait_type": "Special",
+				"value": "Mechanical Wings On Back"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 5,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 50,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "97.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #98",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "98.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Black Clinic Broker"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Blonde Curly Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Natural"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Smirk"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Bodysuit"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Choker"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 98,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 15,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "98.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #99",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "99.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Syre Group"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Security Director"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Grey Pompadour"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Green"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Closed Mouth"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Id Badge"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 147,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 12,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "99.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #100",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "100.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Syre Group"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Data Analyst"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Brown Messy Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Blue"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Closed Mouth"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Turtleneck Blazer"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Glasses"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Stud Earrings"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 223,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 1,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "100.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #101",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "101.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Syre Group"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Systems Architect"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Red Medium Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Grey"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Turtleneck Blazer"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Id Badge"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 129,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 13,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "101.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #102",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "102.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Elite"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Signal Evangelist"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Black Short Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Green"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Serious"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "White Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Hood Up"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Pearl Necklace"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 10,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 40,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "102.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #103",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "103.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Prototype Host"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Aqua Spiked Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Red"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Long Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Gas Mask"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Id Badge"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 82,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 16,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "103.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #104",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "104.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Siphon"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Infiltrator"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Black Short Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Blue"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Bomber Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Mask"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 115,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 14,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "104.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #105",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "105.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Black Clinic Broker"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Grey Short Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Natural"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Sleeveless Shirt"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Mask"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Necklace"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 224,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 1,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "105.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #106",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "106.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
@@ -6856,11 +8436,406 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Transmission Guard"
+				"value": "Data Analyst"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blonde Hime Cut"
+				"value": "Pink Undercut"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Angry"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Vest"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Glasses"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Stud Earrings"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 246,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 0,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "106.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #107",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "107.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Syre Group"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Strategist"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Red Braid"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Green"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Smirk"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Blouse"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Bowtie"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 130,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 13,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "107.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #108",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "108.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Synthetic"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Glitch Runner"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "None"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Purple"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Armored Bodysuit"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Goggles"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 160,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 4,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "108.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #109",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "109.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Signal Evangelist"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Green Asymmetrical Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Natural"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Serious"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "White Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Circlet"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Necklace"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 225,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 1,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "109.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #110",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "110.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Synthetic"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Signal Evangelist"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "None"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Blue"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Armored Bodysuit"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Neck Cable"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 161,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 4,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "110.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #111",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "111.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Siphon"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Synthetic"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Broker"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "None"
 			},
 			{
 				"trait_type": "Eyes",
@@ -6872,7 +8847,1587 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Vest"
+				"value": "Armored Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Hood Up"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Earpiece"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 179,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 3,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "111.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #112",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "112.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Synthetic"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Interface Disciple"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "None"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Blue"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "White Bodysuit"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Mechanical Halo"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 83,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 16,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "112.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #113",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "113.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Tessera Wardens"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Elite"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Precinct Commander"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Blonde Ponytail"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Serious"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Body Armor"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Earpiece"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 18,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 38,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "113.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #114",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "114.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Signal Evangelist"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Brown Long Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "White Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Mask"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Pendant Necklace"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 116,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 14,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "114.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #115",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "115.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Tessera Wardens"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Breach Unit"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Grey Spiked Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Green"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Frown"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Tactical Vest"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Goggles"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Dog Tags"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 226,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 1,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "115.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #116",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "116.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Siphon"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Elite"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Signal Runner"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Grey Short Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Closed Mouth"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Street Hoodie"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Headset"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Metal Collar"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 15,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 39,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "116.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #117",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "117.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Syre Group"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Elite"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Data Analyst"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Grey Crew Cut"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Serious"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Long Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Glasses"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Bowtie"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 28,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 36,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "117.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #118",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "118.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Syre Group"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Strategist"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Blonde Ponytail"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Closed Mouth"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Structured Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Necktie"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 227,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 1,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "118.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #119",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "119.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Tessera Wardens"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Surveillance Marksman"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "White Hime Cut"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Serious"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Body Armor"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Scouter"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Dog Tags"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 228,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 1,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "119.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #120",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "120.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Syre Group"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Synthetic"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Security Director"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "None"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Aqua"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Formal Suit"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 84,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 16,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "120.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #121",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "121.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Signal Evangelist"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Blonde Short Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Heterochromia"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Serious"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "White Bodysuit"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Hood Up"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Pendant Necklace"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 99,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 15,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "121.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #122",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "122.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Elite"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Signal Smuggler"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Black Messy Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Grin"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Long Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Hood Up"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Skull Print Bandana Around Neck"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 19,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 38,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "122.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #123",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "123.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Tessera Wardens"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Breach Unit"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Brown Short Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Angry"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Body Armor"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Helmet"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Dog Tags"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 131,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 13,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "123.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #124",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "124.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Glitch Runner"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Pink Ponytail"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Grin"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Street Hoodie"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Goggles"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Black Bandana Around Neck"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 180,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 3,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "124.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #125",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "125.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Syre Group"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Strategist"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Aqua Short Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Red"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Confident"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Blouse"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Stud Earrings"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 229,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 1,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "125.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #126",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "126.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Tessera Wardens"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Checkpoint Officer"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Brown Short Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Purple"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Body Armor"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Visor"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 100,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 15,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "126.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #127",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "127.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Signal Evangelist"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Pink Messy Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Grey"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "White Bodysuit"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Mask"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Single Earring"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 206,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 2,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "127.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #128",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "128.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Siphon"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Net Diver"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Grey Short Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Red"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Serious"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Vest"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Headphones"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Id Badge"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 207,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 2,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "128.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #129",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "129.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Tessera Wardens"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Riot Enforcer"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Brown Short Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Closed Mouth"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Armored Bodysuit"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Helmet"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Id Badge"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 230,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 1,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "129.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #130",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "130.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Synthetic"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Transmission Guard"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "None"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "White"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "White Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 153,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 5,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "130.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #131",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "131.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Tessera Wardens"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Riot Enforcer"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Green Pixie Cut"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Tactical Vest"
 			},
 			{
 				"trait_type": "Headwear",
@@ -6880,7 +10435,5616 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Accessory",
+				"value": "Dog Tags"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 181,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 3,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "131.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #132",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "132.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Rare"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Signal Evangelist"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Green Bob Cut"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "White"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "White Vest"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Hood Up"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Gold Choker"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 65,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 25,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "132.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #133",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "133.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Siphon"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Net Diver"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Pink Messy Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Glowing"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Grin"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Bomber Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Headphones"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Badge Lanyard"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 182,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 3,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "133.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #134",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "134.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Signal-Burned"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Wetware Mechanic"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Green Half Updo"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Purple"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Frown"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Sleeveless Shirt"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Goggles"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Earpiece"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 85,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 16,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "134.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #135",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "135.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Synthetic"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Archive Seer"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "None"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "White"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "White Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Gold Circlet"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Choker"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 86,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 16,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "135.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #136",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "136.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Tessera Wardens"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Checkpoint Officer"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Blonde Ponytail"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Blue"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Calm"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Long Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Goggles"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Dog Tags"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 208,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 2,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "136.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #137",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "137.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Signal Smuggler"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Aqua Slicked Back Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Yellow"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Serious"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Bodysuit"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Hood Up"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Black Bandana Around Neck"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 231,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 1,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "137.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #138",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "138.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Siphon"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Net Diver"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Red Curly Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Grey"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Angry"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Street Hoodie"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Headphones"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Metal Collar"
+			},
+			{
+				"trait_type": "Special",
+				"value": "Neon Glow"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 132,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 13,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "138.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #139",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "139.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Siphon"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Legendary"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Hacker"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Blue Asymmetrical Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Red"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Smirk"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Vest"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Small Gold Demon Horns"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Gold Choker"
+			},
+			{
+				"trait_type": "Special",
+				"value": "Weapon On Back"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 6,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 49,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "139.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #140",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "140.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Siphon"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Rare"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Infiltrator"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Purple Short Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Grey"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Bomber Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Mask"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 53,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 26,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "140.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #141",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "141.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Synthetic"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Signal Evangelist"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "None"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Blue"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "White Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Pendant Necklace"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 162,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 4,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "141.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #142",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "142.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Wetware Mechanic"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "White Shaved Head"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Blue"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Serious"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Street Hoodie"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Goggles"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Earpiece"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 183,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 3,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "142.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #143",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "143.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Signal Evangelist"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "White Short Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Green"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Grin"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "White Bodysuit"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Silver Necklace"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 117,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 14,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "143.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #144",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "144.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Syre Group"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Synthetic"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Strategist"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "None"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Red"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Turtleneck Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Necktie"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 163,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 4,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "144.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #145",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "145.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Syre Group"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Strategist"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Pink Dreadlocks"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Green"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Slight Frown"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Structured Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Pocket Square"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 133,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 13,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "145.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #146",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "146.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Tessera Wardens"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Rare"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Breach Unit"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Grey Short Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Grey"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Long Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Mask"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Special",
+				"value": "Backpack"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 73,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 24,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "146.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #147",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "147.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Black Clinic Broker"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Blonde Asymmetrical Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Green"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Closed Mouth"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Torn Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Helmet"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Necklace"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 209,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 2,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "147.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #148",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "148.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Syre Group"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Elite"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Executive"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Blue Messy Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Green"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Serious"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Vest"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Pocket Square"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 27,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 37,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "148.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #149",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "149.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Tessera Wardens"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Rare"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Riot Enforcer"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Brown Medium Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Natural"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Closed Mouth"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Body Armor"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Helmet"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Dog Tags"
+			},
+			{
+				"trait_type": "Special",
+				"value": "Backpack"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 54,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 26,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "149.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #150",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "150.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Ghost-Class Anomaly"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Rare"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Signal Evangelist"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Grey Very Short Hair, Buzz Cut"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Grin"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "White Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Helmet"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Gold Choker"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 32,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 29,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "150.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #151",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "151.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Syre Group"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Rare"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Systems Architect"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "White Messy Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Green"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Angry"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Structured Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Earpiece"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 66,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 25,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "151.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #152",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "152.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Prototype Host"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Brown Ponytail"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Closed Mouth"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Torn Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Earpiece"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 232,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 1,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "152.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #153",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "153.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Siphon"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Broker"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Black Short Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Heterochromia"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Closed Mouth"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Bomber Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Headset"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Necklace"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 184,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 3,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "153.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #154",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "154.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Tessera Wardens"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Rare"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Breach Unit"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Purple Undercut"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Blue"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Serious"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Armored Bodysuit"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Helmet"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Dog Tags"
+			},
+			{
+				"trait_type": "Special",
+				"value": "Repair Tape"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 44,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 27,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "154.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #155",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "155.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Tessera Wardens"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Breach Unit"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Blonde Short Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Grey"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Long Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Visor"
+			},
+			{
+				"trait_type": "Accessory",
 				"value": "Id Badge"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 210,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 2,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "155.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #156",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "156.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Synthetic"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Signal-Burned"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Black Clinic Broker"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "None"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "White"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Wired Bodysuit"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 154,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 5,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "156.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #157",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "157.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Black Clinic Broker"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Brown Short Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Grey"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Closed Mouth"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Bodysuit"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Pendant Necklace"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 185,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 3,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "157.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #158",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "158.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Syre Group"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Data Analyst"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Blue Short Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Grin"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Structured Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Glasses"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Stud Earrings"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 211,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 2,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "158.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #159",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "159.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Siphon"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Net Diver"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Grey Crew Cut"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Blue"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Long Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Headphones"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Id Badge"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 134,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 13,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "159.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #160",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "160.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Elite"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Wetware Mechanic"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Black Short Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Smirk"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Torn Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Goggles"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Earpiece"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 20,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 38,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "160.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #161",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "161.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Interface Disciple"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Black Cornrows"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Green"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "White Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Visor"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Pendant Necklace"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 135,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 13,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "161.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #162",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "162.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Tessera Wardens"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Synthetic"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Checkpoint Officer"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "None"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "White"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Armored Vest"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Id Badge"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 164,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 4,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "162.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #163",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "163.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Synthetic"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Elite"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Glitch Runner"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "None"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Purple"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Armored Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Goggles"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Special",
+				"value": "Backpack"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 16,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 39,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "163.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #164",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "164.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Siphon"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Elite"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Infiltrator"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Black Medium Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Vest"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Mask"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 21,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 38,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "164.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #165",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "165.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Siphon"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Broker"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Black Messy Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "White"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Smirk"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Harness Hoodie"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Headset"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Choker"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 136,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 13,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "165.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #166",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "166.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Glitch Runner"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Blonde Messy Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Green"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Grin"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Long Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Goggles"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Hoop Earrings"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 118,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 14,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "166.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #167",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "167.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Tessera Wardens"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Checkpoint Officer"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Blue Short Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Serious"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Armored Bodysuit"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Helmet"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Dog Tags"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 119,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 14,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "167.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #168",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "168.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Rare"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Signal Smuggler"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Blonde Messy Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Torn Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Hood Up"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Choker"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 55,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 26,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "168.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #169",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "169.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Tessera Wardens"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Surveillance Marksman"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Black Short Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Armored Bodysuit"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Scouter"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Id Badge"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 165,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 4,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "169.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #170",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "170.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Tessera Wardens"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Rare"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Surveillance Marksman"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Grey Medium Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Green"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Closed Mouth"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Long Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Scouter"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 74,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 24,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "170.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #171",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "171.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Siphon"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Synthetic"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Rare"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Broker"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "None"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Red"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Armored Vest"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Neck Cable"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 35,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 28,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "171.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #172",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "172.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Tessera Wardens"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Rare"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Riot Enforcer"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Blue Medium Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Grey"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Serious"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Armored Bodysuit"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Badge Lanyard"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 67,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 25,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "172.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #173",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "173.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Synthetic"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Rare"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Prototype Host"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "None"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Red"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Long Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Metal Collar"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 36,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 28,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "173.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #174",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "174.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Elite"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Dead Channel Prophet"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Blonde Braid"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "White Bodysuit"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Mechanical Halo"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Platinum Necklace"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 29,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 36,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "174.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #175",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "175.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Wetware Mechanic"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Pink Short Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Smirk"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Utility Jumpsuit"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Goggles"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Earpiece"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 186,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 3,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "175.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #176",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "176.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Syre Group"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Rare"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Data Analyst"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Red Short Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Grin"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Structured Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Glasses"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Bowtie"
+			},
+			{
+				"trait_type": "Special",
+				"value": "Floating Holographic Screen Near Face"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 56,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 26,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "176.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #177",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "177.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Prototype Host"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "White Messy Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Grey"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Closed Mouth"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Torn Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Badge Lanyard"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 233,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 1,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "177.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #178",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "178.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Tessera Wardens"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Riot Enforcer"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Red Medium Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Green"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Focused"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Long Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Hood Up"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Dog Tags"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 101,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 15,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "178.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #179",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "179.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Tessera Wardens"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Legendary"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Checkpoint Officer"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Brown Side Ponytail"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Aqua"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Frown"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Tactical Vest"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Ornate Shoulder Armor"
+			},
+			{
+				"trait_type": "Special",
+				"value": "Katana On Back"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 3,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 51,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "179.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #180",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "180.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Syre Group"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Strategist"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Black Short Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Blue"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Closed Mouth"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Structured Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Sunglasses"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Bowtie"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 137,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 13,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "180.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #181",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "181.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Rare"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Dead Channel Prophet"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Red Short Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Grey"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Closed Mouth"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "White Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Mechanical Halo"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Gold Choker"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 68,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 25,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "181.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #182",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "182.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Syre Group"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Strategist"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Grey Slicked Back Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Serious"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Turtleneck Blazer"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Stud Earrings"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 234,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 1,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "182.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #183",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "183.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Interface Disciple"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "White Crew Cut"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Green"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Grin"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "White Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Hood Up"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Single Earring"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 247,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 0,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "183.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #184",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "184.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Syre Group"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Legendary"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Systems Architect"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Red Wavy Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Smirk"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Small Gold Demon Horns"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Glowing Metal Collar"
+			},
+			{
+				"trait_type": "Special",
+				"value": "Katana On Back"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 7,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 49,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "184.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #185",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "185.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Transmission Guard"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Brown Dreadlocks"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Blue"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Smirk"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "White Bodysuit"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Id Badge"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 187,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 3,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "185.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #186",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "186.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Transmission Guard"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Blonde Cornrows"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Grey"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Clenched Teeth"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "White Vest"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Hood Up"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 120,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 14,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "186.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #187",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "187.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Synthetic"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Prototype Host"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "None"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Red"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Armored Bodysuit"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Goggles"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Neck Cable"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 78,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 17,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "187.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #188",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "188.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Synthetic"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Interface Disciple"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "None"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Purple"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "White Vest"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Gold Circlet"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Pendant Necklace"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 166,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 4,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "188.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #189",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "189.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Tessera Wardens"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Checkpoint Officer"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "White Wavy Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Blue"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Closed Mouth"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Armored Bodysuit"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Goggles"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Dog Tags"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 248,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 0,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "189.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #190",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "190.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Tessera Wardens"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Elite"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Precinct Commander"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Pink Medium Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Heterochromia"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Frown"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Body Armor"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 30,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 36,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "190.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #191",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "191.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Syre Group"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Elite"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Security Director"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Blue Dreadlocks"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Confident"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Structured Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 22,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 38,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "191.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #192",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "192.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Syre Group"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Strategist"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Red Undercut"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Orange"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Smirk"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Structured Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Glasses"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Stud Earrings"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 235,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 1,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "192.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #193",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "193.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Syre Group"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Security Director"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Blue Medium Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Red"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Serious"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Long Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Plain Baseball Cap"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Id Badge"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 138,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 13,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "193.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #194",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "194.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Elite"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Signal Smuggler"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Black Asymmetrical Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Heterochromia"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Serious"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Torn Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Hood Up"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Skull Print Bandana Around Neck"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 23,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 38,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "194.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #195",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "195.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Signal Evangelist"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "White Short Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Green"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "White Bodysuit"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Mask"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Necklace"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 249,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 0,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "195.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #196",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "196.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Rare"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Black Clinic Broker"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Brown Messy Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Grey"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Torn Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Mask"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Gold Necklace"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 37,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 28,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "196.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #197",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "197.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Syre Group"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Data Analyst"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Blonde Short Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Red"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Serious"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Structured Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Earpiece"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Necktie"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 188,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 3,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "197.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #198",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "198.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Siphon"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Synthetic"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Hacker"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "None"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Red"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Armored Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Hood Up"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 189,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 3,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "198.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #199",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "199.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Tessera Wardens"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Breach Unit"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "White Short Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Green"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Frown"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Dark Uniform"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Earpiece"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Id Badge"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 190,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 3,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "199.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #200",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "200.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Legendary"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Interface Disciple"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Blonde Bob Cut"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Purple"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "White Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Mask"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Ornate Shoulder Mantle"
+			},
+			{
+				"trait_type": "Special",
+				"value": "Katana On Back"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 4,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 51,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "200.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #201",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "201.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Tessera Wardens"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Breach Unit"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Red Bob Cut"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Orange"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Clenched Teeth"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Armored Bodysuit"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Goggles"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Id Badge"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 121,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 14,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "201.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #202",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "202.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Synthetic"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Signal Smuggler"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "None"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Red"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Hood Up"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Choker"
 			},
 			{
 				"trait_type": "Special",
@@ -6893,14 +16057,14 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 2,
+				"value": 16,
 				"display_type": "number"
 			}
 		],
 		"properties": {
 			"files": [
 				{
-					"uri": "86.png",
+					"uri": "202.png",
 					"type": "image/png"
 				}
 			],
@@ -6908,9 +16072,2537 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		}
 	},
 	{
-		"name": "Echoes #87",
+		"name": "Echoes #203",
 		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "87.png",
+		"image": "203.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Syre Group"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Data Analyst"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Blue Short Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Glowing"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Serious"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Long Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Glasses"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Necktie"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 148,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 12,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "203.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #204",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "204.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Synthetic"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Rare"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Signal Smuggler"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "None"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Aqua"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Armored Vest"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Hood Up"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 45,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 27,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "204.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #205",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "205.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Transmission Guard"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Aqua Medium Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "White Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Visor"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 236,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 1,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "205.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #206",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "206.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Tessera Wardens"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Riot Enforcer"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "White Long Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Blue"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Tactical Vest"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Mask"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Dog Tags"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 237,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 1,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "206.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #207",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "207.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Transmission Guard"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Orange Slicked Back Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Closed Mouth"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "White Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Id Badge"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 122,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 14,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "207.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #208",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "208.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Siphon"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Ghost-Class Anomaly"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Signal Runner"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Blonde Short Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Long Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Headset"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Id Badge"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 167,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 4,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "208.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #209",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "209.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Transmission Guard"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "White Braid"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Serious"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "White Vest"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 139,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 13,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "209.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #210",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "210.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Siphon"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Net Diver"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Pink Undercut"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Green"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Confident"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Street Hoodie"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Headphones"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Id Badge"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 102,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 15,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "210.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #211",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "211.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Signal-Burned"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Prototype Host"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Grey Short Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Aqua"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Sleeveless Shirt"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Earpiece"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Id Badge"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 123,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 14,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "211.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #212",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "212.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Tessera Wardens"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Riot Enforcer"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Black Braid"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Yellow"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Long Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Gas Mask"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Dog Tags"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 140,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 13,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "212.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #213",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "213.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Signal-Burned"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Prototype Host"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Purple Asymmetrical Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Green"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Closed Mouth"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Bodysuit"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Goggles"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Id Badge"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 168,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 4,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "213.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #214",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "214.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Syre Group"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Systems Architect"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Purple Short Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Grey"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Serious"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Structured Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Id Badge"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 149,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 12,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "214.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #215",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "215.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Tessera Wardens"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Synthetic"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Breach Unit"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "None"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Aqua"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Armored Vest"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Radio Antenna"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 169,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 4,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "215.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #216",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "216.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Syre Group"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Systems Architect"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Black Braid"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Red"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Clenched Teeth"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Id Badge"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 141,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 13,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "216.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #217",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "217.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Siphon"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Ghost-Class Anomaly"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Hacker"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Brown Short Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Blue"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Calm"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Leather Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Hood Up"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Black Bandana Around Neck"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 155,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 5,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "217.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #218",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "218.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Syre Group"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Security Director"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Blonde Medium Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Green"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Turtleneck Blazer"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 103,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 15,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "218.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #219",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "219.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Syre Group"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Strategist"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Black Very Short Hair, Buzz Cut"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Blue"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Focused"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Vest"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Glasses"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Necktie"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 250,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 0,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "219.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #220",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "220.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Siphon"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Synthetic"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Signal Runner"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "None"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Aqua"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Long Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Headset"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 79,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 17,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "220.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #221",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "221.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Interface Disciple"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Blonde Messy Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Green"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Grin"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "White Bodysuit"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Gold Circlet"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Pendant Necklace"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 191,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 3,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "221.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #222",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "222.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Black Clinic Broker"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Blue Short Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Blue"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Long Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Visor"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Choker"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 104,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 15,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "222.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #223",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "223.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Siphon"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Hacker"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Blonde Asymmetrical Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Green"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Closed Mouth"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Bomber Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Hood Up"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Choker"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 142,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 13,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "223.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #224",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "224.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Syre Group"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Synthetic"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Rare"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Strategist"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "None"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Purple"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Formal Suit"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Gold Necklace"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 46,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 27,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "224.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #225",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "225.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Wetware Mechanic"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Aqua Undercut"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Grey"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Smirk"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Bodysuit"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Goggles"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Metal Collar"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 143,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 13,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "225.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #226",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "226.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Tessera Wardens"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Rare"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Precinct Commander"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Brown Medium Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Blue"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Tactical Vest"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Mask"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 38,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 28,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "226.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #227",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "227.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Siphon"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Net Diver"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Blue Long Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Glowing"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Long Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Headphones"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Id Badge"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 144,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 13,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "227.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #228",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "228.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Syre Group"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Synthetic"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Legendary"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Executive"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "None"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Blue"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Long Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Spiked Metal Headband"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Diamond Necklace"
+			},
+			{
+				"trait_type": "Special",
+				"value": "Weapon On Back"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 2,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 52,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "228.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #229",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "229.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Interface Disciple"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Blonde Dreadlocks"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Natural"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "White Bodysuit"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Mask"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Pendant Necklace"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 88,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 16,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "229.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #230",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "230.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Syre Group"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Data Analyst"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Brown Braid"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Blue"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Frown"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Blouse"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Glasses"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Bowtie"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 145,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 13,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "230.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #231",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "231.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Siphon"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Synthetic"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Hacker"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "None"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "White"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Armored Vest"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Hood Up"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 156,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 5,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "231.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #232",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "232.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Ghost-Class Anomaly"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Legendary"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Black Clinic Broker"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Brown Shaved Head"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Yellow"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Street Hoodie"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Visor"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Ornate Shoulder Mantle"
+			},
+			{
+				"trait_type": "Special",
+				"value": "Mechanical Wings On Back"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 1,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 54,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "232.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #233",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "233.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Rare"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Signal Smuggler"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Brown Short Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Green"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Smirk"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Street Hoodie"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Hood Up"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Camo Bandana Around Neck"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 47,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 27,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "233.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #234",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "234.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Transmission Guard"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Brown Slicked Back Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Blue"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Frown"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "White Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 238,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 1,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "234.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #235",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "235.png",
 		"external_url": "",
 		"attributes": [
 			{
@@ -6939,15 +18631,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Grey Slicked Back Hair"
+				"value": "Black Medium Hair"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Grey"
+				"value": "Yellow"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Closed Mouth"
+				"value": "Neutral"
 			},
 			{
 				"trait_type": "Outfit",
@@ -6967,7 +18659,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 66,
+				"value": 170,
 				"display_type": "number"
 			},
 			{
@@ -6979,7 +18671,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"properties": {
 			"files": [
 				{
-					"uri": "87.png",
+					"uri": "235.png",
 					"type": "image/png"
 				}
 			],
@@ -6987,167 +18679,9 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		}
 	},
 	{
-		"name": "Echoes #88",
+		"name": "Echoes #236",
 		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "88.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "Tessera Wardens"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Synthetic"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Stable"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Rare"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Feminine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Checkpoint Officer"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "None"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Aqua"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Neutral"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Jacket"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "None"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Shoulder Armor"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 21,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 27,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "88.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #89",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "89.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "Tessera Wardens"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Human"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Corrupted"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Uncommon"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Masculine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Riot Enforcer"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "Red Short Hair"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Brown"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Angry"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Body Armor"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "Helmet"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Id Badge"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 55,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 13,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "89.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #90",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "90.png",
+		"image": "236.png",
 		"external_url": "",
 		"attributes": [
 			{
@@ -7156,11 +18690,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Corrupted"
 			},
 			{
 				"trait_type": "Rank",
@@ -7168,7 +18702,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
@@ -7176,11 +18710,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Hair",
-				"value": "White Dreadlocks"
+				"value": "Aqua Messy Hair"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Red"
+				"value": "Natural"
 			},
 			{
 				"trait_type": "Demeanor",
@@ -7188,15 +18722,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Jacket"
+				"value": "White Bodysuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Mechanical Halo"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Single Earring"
+				"value": "Necklace"
 			},
 			{
 				"trait_type": "Special",
@@ -7204,19 +18738,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 88,
+				"value": 192,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 2,
+				"value": 3,
 				"display_type": "number"
 			}
 		],
 		"properties": {
 			"files": [
 				{
-					"uri": "90.png",
+					"uri": "236.png",
 					"type": "image/png"
 				}
 			],
@@ -7224,88 +18758,9 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		}
 	},
 	{
-		"name": "Echoes #91",
+		"name": "Echoes #237",
 		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "91.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "The Unwritten"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Human"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Stable"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Rare"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Feminine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Signal Smuggler"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "Purple Bob Cut"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Brown"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Grin"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Bodysuit"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "Hood Up"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Camo On Bandana One Bandana Around Neck"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 27,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 26,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "91.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #92",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "92.png",
+		"image": "237.png",
 		"external_url": "",
 		"attributes": [
 			{
@@ -7322,7 +18777,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -7330,31 +18785,31 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Surveillance Marksman"
+				"value": "Checkpoint Officer"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "White Crew Cut"
+				"value": "Red Crew Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Blue"
+				"value": "Purple"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Closed Mouth"
+				"value": "Neutral"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Long Coat"
+				"value": "Body Armor"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Scouter"
+				"value": "Mask"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Shoulder Armor"
+				"value": "Dog Tags"
 			},
 			{
 				"trait_type": "Special",
@@ -7362,19 +18817,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 56,
+				"value": 239,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 13,
+				"value": 1,
 				"display_type": "number"
 			}
 		],
 		"properties": {
 			"files": [
 				{
-					"uri": "92.png",
+					"uri": "237.png",
 					"type": "image/png"
 				}
 			],
@@ -7382,9 +18837,88 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		}
 	},
 	{
-		"name": "Echoes #93",
+		"name": "Echoes #238",
 		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "93.png",
+		"image": "238.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Synthetic"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Rare"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Archive Seer"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "None"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "White"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "White Bodysuit"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Gold Circlet"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Gold Choker"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 33,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 29,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "238.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #239",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "239.png",
 		"external_url": "",
 		"attributes": [
 			{
@@ -7401,27 +18935,27 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Rare"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Net Diver"
+				"value": "Infiltrator"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Brown Cornrows"
+				"value": "Blue Messy Hair"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Red"
+				"value": "White"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Closed Mouth"
+				"value": "Neutral"
 			},
 			{
 				"trait_type": "Outfit",
@@ -7429,7 +18963,86 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Headphones"
+				"value": "Mask"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Badge Lanyard"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 48,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 27,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "239.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #240",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "240.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Siphon"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Signal Runner"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Brown Messy Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Red"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Smirk"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Long Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Headset"
 			},
 			{
 				"trait_type": "Accessory",
@@ -7441,19 +19054,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 49,
+				"value": 212,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 14,
+				"value": 2,
 				"display_type": "number"
 			}
 		],
 		"properties": {
 			"files": [
 				{
-					"uri": "93.png",
+					"uri": "240.png",
 					"type": "image/png"
 				}
 			],
@@ -7461,14 +19074,14 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		}
 	},
 	{
-		"name": "Echoes #94",
+		"name": "Echoes #241",
 		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "94.png",
+		"image": "241.png",
 		"external_url": "",
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
@@ -7480,59 +19093,59 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Legendary"
+				"value": "Rare"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Dead Channel Prophet"
+				"value": "Hacker"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "White Short Hair"
+				"value": "Grey Undercut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Blue"
+				"value": "Green"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Focused"
+				"value": "Grin"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Jacket"
+				"value": "Long Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Ornate Golden Crown"
+				"value": "Hood Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Platinum Necklace"
+				"value": "Camo Bandana Around Neck"
 			},
 			{
 				"trait_type": "Special",
-				"value": "Katana On Back"
+				"value": "None"
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 2,
+				"value": 75,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 50,
+				"value": 24,
 				"display_type": "number"
 			}
 		],
 		"properties": {
 			"files": [
 				{
-					"uri": "94.png",
+					"uri": "241.png",
 					"type": "image/png"
 				}
 			],
@@ -7540,9 +19153,167 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		}
 	},
 	{
-		"name": "Echoes #95",
+		"name": "Echoes #242",
 		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "95.png",
+		"image": "242.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Rare"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Dead Channel Prophet"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Blue Very Short Hair, Buzz Cut"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Heterochromia"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Clenched Teeth"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "White Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Mechanical Halo"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Gold Choker"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 57,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 26,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "242.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #243",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "243.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Glitch Runner"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Grey Braid"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Heterochromia"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Serious"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Bodysuit"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Goggles"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Black Bandana Around Neck"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 240,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 1,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "243.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #244",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "244.png",
 		"external_url": "",
 		"attributes": [
 			{
@@ -7559,7 +19330,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Rare"
 			},
 			{
 				"trait_type": "Frame",
@@ -7567,19 +19338,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Security Director"
+				"value": "Strategist"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Messy Hair"
+				"value": "Blonde Curly Hair"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Smirk"
+				"value": "Frown"
 			},
 			{
 				"trait_type": "Outfit",
@@ -7587,11 +19358,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Scouter"
+				"value": "Headset"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Shoulder Armor"
+				"value": "Necktie"
 			},
 			{
 				"trait_type": "Special",
@@ -7599,19 +19370,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 57,
+				"value": 69,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 13,
+				"value": 25,
 				"display_type": "number"
 			}
 		],
 		"properties": {
 			"files": [
 				{
-					"uri": "95.png",
+					"uri": "244.png",
 					"type": "image/png"
 				}
 			],
@@ -7619,97 +19390,18 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		}
 	},
 	{
-		"name": "Echoes #96",
+		"name": "Echoes #245",
 		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "96.png",
+		"image": "245.png",
 		"external_url": "",
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Synthetic"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Stable"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Uncommon"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Masculine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Prototype Host"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "None"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Blue"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Neutral"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Dress Vest"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "Mask"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Earpiece"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 36,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 16,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "96.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #97",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "97.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "The Witnesses"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
@@ -7717,7 +19409,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -7725,23 +19417,23 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Evangelist"
+				"value": "Checkpoint Officer"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Pink Short Hair"
+				"value": "Grey Slicked Back Hair"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Blue"
+				"value": "Green"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Closed Mouth"
+				"value": "Frown"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Vest"
+				"value": "Body Armor"
 			},
 			{
 				"trait_type": "Headwear",
@@ -7749,7 +19441,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Silver Necklace"
+				"value": "Dog Tags"
 			},
 			{
 				"trait_type": "Special",
@@ -7757,19 +19449,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 44,
+				"value": 213,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 15,
+				"value": 2,
 				"display_type": "number"
 			}
 		],
 		"properties": {
 			"files": [
 				{
-					"uri": "97.png",
+					"uri": "245.png",
 					"type": "image/png"
 				}
 			],
@@ -7777,14 +19469,14 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		}
 	},
 	{
-		"name": "Echoes #98",
+		"name": "Echoes #246",
 		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "98.png",
+		"image": "246.png",
 		"external_url": "",
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
@@ -7796,39 +19488,39 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Evangelist"
+				"value": "Surveillance Marksman"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "White Crew Cut"
+				"value": "Grey Hair Over One Eye"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Grey"
+				"value": "Orange"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Angry"
+				"value": "Slight Frown"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Coat"
+				"value": "Dark Uniform"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Scouter"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Multiple Earrings"
+				"value": "Dog Tags"
 			},
 			{
 				"trait_type": "Special",
@@ -7836,19 +19528,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 22,
+				"value": 124,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 27,
+				"value": 14,
 				"display_type": "number"
 			}
 		],
 		"properties": {
 			"files": [
 				{
-					"uri": "98.png",
+					"uri": "246.png",
 					"type": "image/png"
 				}
 			],
@@ -7856,9 +19548,9 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		}
 	},
 	{
-		"name": "Echoes #99",
+		"name": "Echoes #247",
 		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "99.png",
+		"image": "247.png",
 		"external_url": "",
 		"attributes": [
 			{
@@ -7867,7 +19559,86 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Signal Runner"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Pink Medium Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Grey"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Bomber Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Headset"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Metal Collar"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 150,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 12,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "247.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #248",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "248.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Siphon"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
 			},
 			{
 				"trait_type": "Signal",
@@ -7883,19 +19654,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Runner"
+				"value": "Broker"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Purple Short Hair"
+				"value": "Green Undercut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "White"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Serious"
+				"value": "Clenched Teeth"
 			},
 			{
 				"trait_type": "Outfit",
@@ -7903,11 +19674,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Headset"
+				"value": "Goggles"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Id Badge"
+				"value": "Pendant Necklace"
 			},
 			{
 				"trait_type": "Special",
@@ -7915,7 +19686,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 99,
+				"value": 241,
 				"display_type": "number"
 			},
 			{
@@ -7927,7 +19698,86 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"properties": {
 			"files": [
 				{
-					"uri": "99.png",
+					"uri": "248.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #249",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "249.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Rare"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Transmission Guard"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Green Medium Hair"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Glowing"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "White Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Mask"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 58,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 26,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "249.png",
 					"type": "image/png"
 				}
 			],
@@ -7975,11 +19825,11 @@ export const TRAIT_TYPES = [
 
 const IMAGE_BASE = "/echoes-dev"
 
-/** Variant count per echo index (default 2, exceptions listed) */
+/** Variant count per echo index (default 1, exceptions listed) */
 const VARIANT_EXCEPTIONS: Record<number, number> = {}
 
 function getVariantCount(index: number): number {
-	return VARIANT_EXCEPTIONS[index] ?? 2
+	return VARIANT_EXCEPTIONS[index] ?? 1
 }
 
 /**

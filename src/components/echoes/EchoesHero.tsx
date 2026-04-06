@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router"
 import { useCountdown, pad } from "./hooks/useCountdown"
 import { useMintPhase } from "./hooks/useMintPhase"
 import { useEchoesMintInfo } from "./hooks/useEchoesMintInfo"
+import { getNextPhase } from "./hooks/useNextPhase"
 import { getRevealedImagesSeeded } from "@/data/echoes-images"
 import { useScrollReveal } from "./hooks/useScrollReveal"
 import { useCallback, useEffect, useMemo, useState } from "react"
@@ -68,10 +69,9 @@ export function EchoesHero() {
 	const phase = useMintPhase()
 	const queryClient = useQueryClient()
 	const { data: mintInfo } = useEchoesMintInfo()
-	const hasCountdownTarget = !!mintInfo?.windows?.publicStart
-	const countdownTarget = hasCountdownTarget
-		? new Date(mintInfo.windows.publicStart!)
-		: new Date(0)
+	const nextPhase = getNextPhase(mintInfo?.windows)
+	const hasCountdownTarget = !!nextPhase
+	const countdownTarget = nextPhase ? new Date(nextPhase.date) : new Date(0)
 	const onCountdownComplete = useCallback(() => {
 		queryClient.invalidateQueries({ queryKey: ["pfp-mint-status"] })
 	}, [queryClient])
@@ -124,7 +124,7 @@ export function EchoesHero() {
 					<div className="flex flex-col sm:flex-row gap-4 sm:gap-6 sm:items-end" data-reveal-stagger style={{ "--stagger-index": 3 } as React.CSSProperties}>
 						<div className="p-4 md:p-6 min-w-0 sm:min-w-[240px] nx-bg-surface-high border-l-4 border-[var(--nx-primary-container)]">
 							<span className="block font-label text-[10px] tracking-widest mb-2 uppercase nx-text-primary-fixed">
-								{phase === "postmint" ? "ARCHIVE STATUS" : phase === "minting" ? "BREACH WINDOW" : hasCountdownTarget ? "BREACH WINDOW OPENS IN" : "BREACH WINDOW"}
+								{phase === "postmint" ? "ARCHIVE STATUS" : phase === "minting" ? "BREACH WINDOW" : hasCountdownTarget ? `${nextPhase!.label} IN` : "BREACH WINDOW"}
 							</span>
 							<div
 								className="font-headline text-3xl md:text-4xl tracking-tighter"

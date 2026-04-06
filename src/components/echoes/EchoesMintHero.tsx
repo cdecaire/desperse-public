@@ -1,11 +1,13 @@
 import { useCallback, useState } from "react"
 import { useQueryClient } from "@tanstack/react-query"
+import { useConnectWallet } from "@privy-io/react-auth"
 import { Link } from "@tanstack/react-router"
 import { useCountdown, pad } from "./hooks/useCountdown"
 import { useMintPhase } from "./hooks/useMintPhase"
 import { useScrollReveal } from "./hooks/useScrollReveal"
 import { useEchoesMint } from "./hooks/useEchoesMint"
 import { useEchoesMintInfo } from "./hooks/useEchoesMintInfo"
+import { getNextPhase } from "./hooks/useNextPhase"
 import { useUserEchoesMints } from "./hooks/useUserEchoesMints"
 import { EchoesMintSuccess } from "./EchoesMintSuccess"
 import { MintHeroCards } from "./EchoesArchive"
@@ -14,16 +16,18 @@ export function EchoesMintHero() {
 	const phase = useMintPhase()
 	const queryClient = useQueryClient()
 	const { data: mintInfoForCountdown } = useEchoesMintInfo()
-	const hasCountdownTarget = !!mintInfoForCountdown?.windows?.publicStart
-	const countdownTarget = hasCountdownTarget
-		? new Date(mintInfoForCountdown.windows.publicStart!)
-		: new Date(0)
+
+	// Find the nearest future phase start for the countdown
+	const nextPhase = getNextPhase(mintInfoForCountdown?.windows)
+	const hasCountdownTarget = !!nextPhase
+	const countdownTarget = nextPhase ? new Date(nextPhase.date) : new Date(0)
 	const onCountdownComplete = useCallback(() => {
 		queryClient.invalidateQueries({ queryKey: ["pfp-mint-status"] })
 	}, [queryClient])
 	const { days, hours, minutes, seconds } = useCountdown(countdownTarget, onCountdownComplete)
 	const heroRef = useScrollReveal<HTMLElement>({ threshold: 0.1 })
 	const { step, mint, reset, error, walletConnected, nftMintAddress } = useEchoesMint()
+	const { connectWallet } = useConnectWallet()
 	const { data: mintInfo } = useEchoesMintInfo()
 	const { data: userMints } = useUserEchoesMints()
 	const [viewingMint, setViewingMint] = useState<string | null>(null)
@@ -85,7 +89,7 @@ export function EchoesMintHero() {
 						{phase === "premint" && (
 							<>
 								<span className="block font-label text-[10px] tracking-widest mb-2 uppercase nx-text-primary-fixed">
-									{hasCountdownTarget ? "BREACH WINDOW OPENS IN" : "BREACH WINDOW"}
+									{hasCountdownTarget ? `${nextPhase!.label} IN` : "BREACH WINDOW"}
 								</span>
 								<div
 									className="font-headline text-3xl md:text-4xl tracking-tighter"
@@ -135,7 +139,7 @@ export function EchoesMintHero() {
 						<div className="flex flex-col gap-2">
 							<button
 								type="button"
-								onClick={isSoldOut ? undefined : (step === "success" ? reset : mint)}
+								onClick={isSoldOut ? undefined : !walletConnected ? () => connectWallet({ walletChainType: "solana-only" }) : step === "success" ? reset : mint}
 								disabled={isMinting || isSoldOut}
 								className={`font-headline text-base md:text-lg px-8 md:px-10 py-4 md:py-5 min-h-[48px] uppercase ${
 									isSoldOut ? "opacity-50 cursor-not-allowed nx-bg-surface-high nx-text-outline border nx-border-subtle" :

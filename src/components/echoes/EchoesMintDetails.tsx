@@ -1,6 +1,16 @@
 import { useScrollReveal } from "./hooks/useScrollReveal"
 import { useEchoesMintInfo } from "./hooks/useEchoesMintInfo"
 
+function formatWindow(start: string | null, end: string | null): string | undefined {
+	if (!start) return undefined
+	const fmt = (iso: string) => {
+		const d = new Date(iso)
+		return d.toLocaleDateString("en-US", { month: "short", day: "numeric" }) +
+			" " + d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true })
+	}
+	return end ? `${fmt(start)} — ${fmt(end)}` : fmt(start)
+}
+
 export function EchoesMintDetails() {
 	const sectionRef = useScrollReveal<HTMLElement>()
 	const { data: mintInfo } = useEchoesMintInfo()
@@ -15,26 +25,59 @@ export function EchoesMintDetails() {
 	]
 
 	const currentPhase = mintInfo?.phase ?? "closed"
-	const phases = [
-		{
-			phase: "01",
-			title: "ALLOWLIST MINT",
-			status: currentPhase === "whitelist" ? "ACTIVE" : currentPhase === "public" || currentPhase === "closed" ? "COMPLETE" : "PENDING",
-			description: "Priority archive access for verified addresses. Early breach window before public opening.",
-		},
-		{
-			phase: "02",
-			title: "PUBLIC MINT",
-			status: currentPhase === "public" ? "ACTIVE" : currentPhase === "closed" ? "COMPLETE" : "PENDING",
-			description: "Open breach window. All wallets can recover despersed identities from the archive.",
-		},
-		{
-			phase: "03",
-			title: "COLLECTION COMPLETE",
-			status: currentPhase === "closed" && mintInfo?.supply?.remaining === 0 ? "COMPLETE" : "PENDING",
-			description: "Breach window closes. All recovered identities are already resolved — faction, continuity, and signal exposure visible from the moment of mint.",
-		},
-	]
+	const windows = mintInfo?.windows
+
+	// Build phases dynamically — only show phases that have configured start dates
+	const phases: { phase: string; title: string; status: string; description: string; time?: string }[] = []
+	let phaseNum = 1
+
+	if (windows?.ogFreeStart) {
+		const isActive = currentPhase === "og-free"
+		const isPast = ["og-discount", "whitelist", "public", "closed"].includes(currentPhase)
+		phases.push({
+			phase: String(phaseNum++).padStart(2, "0"),
+			title: "OG FREE MINT",
+			status: isActive ? "ACTIVE" : isPast ? "COMPLETE" : "PENDING",
+			description: "Exclusive zero-cost mint for original holders. First access to the archive.",
+			time: formatWindow(windows.ogFreeStart, windows.ogFreeEnd),
+		})
+	}
+	if (windows?.ogDiscountStart) {
+		const isActive = currentPhase === "og-discount"
+		const isPast = ["whitelist", "public", "closed"].includes(currentPhase)
+		phases.push({
+			phase: String(phaseNum++).padStart(2, "0"),
+			title: "OG DISCOUNT MINT",
+			status: isActive ? "ACTIVE" : isPast ? "COMPLETE" : "PENDING",
+			description: "Discounted mint for OG holders. Priority breach window before public opening.",
+			time: formatWindow(windows.ogDiscountStart, windows.ogDiscountEnd),
+		})
+	}
+	if (windows?.wlStart) {
+		const isActive = currentPhase === "whitelist"
+		const isPast = ["public", "closed"].includes(currentPhase)
+		phases.push({
+			phase: String(phaseNum++).padStart(2, "0"),
+			title: "WHITELIST MINT",
+			status: isActive ? "ACTIVE" : isPast ? "COMPLETE" : "PENDING",
+			description: "Priority archive access for whitelisted addresses. Early breach window before public opening.",
+			time: formatWindow(windows.wlStart, windows.wlEnd),
+		})
+	}
+	// Public phase is always shown
+	phases.push({
+		phase: String(phaseNum++).padStart(2, "0"),
+		title: "PUBLIC MINT",
+		status: currentPhase === "public" ? "ACTIVE" : currentPhase === "closed" ? "COMPLETE" : "PENDING",
+		description: "Open breach window. All wallets can recover despersed identities from the archive.",
+		time: windows?.publicStart ? formatWindow(windows.publicStart, null) : undefined,
+	})
+	phases.push({
+		phase: String(phaseNum++).padStart(2, "0"),
+		title: "COLLECTION COMPLETE",
+		status: currentPhase === "closed" && mintInfo?.supply?.remaining === 0 ? "COMPLETE" : "PENDING",
+		description: "Breach window closes. All recovered identities are already resolved — faction, continuity, and signal exposure visible from the moment of mint.",
+	})
 
 	return (
 		<section ref={sectionRef} className="py-16 md:py-24 px-4 md:px-20 nx-bg-surface-high nx-section-divider" aria-label="Mint details">
@@ -85,6 +128,9 @@ export function EchoesMintDetails() {
 								</span>
 							</div>
 							<h3 className="font-headline text-lg uppercase mb-3">{p.title}</h3>
+							{p.time && (
+								<p className="font-label text-[9px] tracking-widest uppercase mb-3 nx-text-primary-fixed">{p.time}</p>
+							)}
 							<p className="font-body text-xs nx-text-on-surface-variant">{p.description}</p>
 						</div>
 					))}

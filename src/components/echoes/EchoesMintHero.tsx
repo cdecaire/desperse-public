@@ -105,12 +105,36 @@ export function EchoesMintHero() {
 						)}
 						{phase === "minting" && (
 							<>
-								<span className="block font-label text-[10px] tracking-widest mb-2 uppercase nx-text-secondary-container">
-									BREACH WINDOW: ACTIVE
+								<span className="block font-label text-[10px] tracking-widest mb-1 uppercase nx-text-secondary-container">
+									{mintInfo?.phase === "og-free" ? "OG FREE MINT" :
+									 mintInfo?.phase === "og-discount" ? "OG DISCOUNT MINT" :
+									 mintInfo?.phase === "whitelist" ? "WHITELIST MINT" :
+									 mintInfo?.phase === "public" ? "PUBLIC MINT" :
+									 "BREACH WINDOW"}: ACTIVE
 								</span>
 								<div className="font-headline text-2xl nx-text-primary-container">
 									{mintInfo?.supply ? `${mintInfo.supply.minted} / ${mintInfo.supply.total}` : "MINTING NOW"}
 								</div>
+								<span className="block font-label text-[9px] tracking-widest mt-2 uppercase nx-text-outline">
+									{mintInfo?.phase === "og-free" || mintInfo?.phase === "og-discount"
+										? "ELIGIBLE: OG HOLDERS"
+										: mintInfo?.phase === "whitelist"
+										? "ELIGIBLE: WHITELISTED WALLETS"
+										: mintInfo?.phase === "public"
+										? "ELIGIBLE: ALL WALLETS"
+										: null}
+								</span>
+								{/* Countdown to next phase */}
+								{hasCountdownTarget && (
+									<div className="mt-3 pt-3 border-t nx-border-subtle">
+										<span className="block font-label text-[9px] tracking-widest mb-1 uppercase nx-text-outline">
+											{nextPhase!.label} IN
+										</span>
+										<div className="font-headline text-lg tracking-tighter nx-text-on-surface-variant" suppressHydrationWarning>
+											{pad(days)}:{pad(hours)}:{pad(minutes)}:{pad(seconds)}
+										</div>
+									</div>
+								)}
 							</>
 						)}
 						{phase === "postmint" && (

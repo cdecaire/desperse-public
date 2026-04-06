@@ -591,9 +591,21 @@ function sortItems(items: EchoMetadata[], sort: SortOption, mintedIndices: Set<n
 			})
 		}
 		case "common-to-rare":
-			return sorted.sort((a, b) => getRarityRank(b) - getRarityRank(a))
+			return sorted.sort((a, b) => {
+				const ra = getRarityRank(a), rb = getRarityRank(b)
+				if (!ra && !rb) return 0
+				if (!ra) return 1  // unranked to end
+				if (!rb) return -1
+				return rb - ra
+			})
 		case "rare-to-common":
-			return sorted.sort((a, b) => getRarityRank(a) - getRarityRank(b))
+			return sorted.sort((a, b) => {
+				const ra = getRarityRank(a), rb = getRarityRank(b)
+				if (!ra && !rb) return 0
+				if (!ra) return 1  // unranked to end
+				if (!rb) return -1
+				return ra - rb
+			})
 		case "id-asc":
 			return sorted.sort((a, b) => getEchoId(a) - getEchoId(b))
 		case "id-desc":

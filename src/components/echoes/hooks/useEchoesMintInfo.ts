@@ -5,6 +5,7 @@
 
 import { useQuery } from "@tanstack/react-query"
 import { usePrivy } from "@privy-io/react-auth"
+import { useActiveWallet } from "@/hooks/useActiveWallet"
 
 export interface PfpMintStatus {
 	phase: "og-free" | "og-discount" | "whitelist" | "public" | "closed"
@@ -23,9 +24,10 @@ export interface PfpMintStatus {
 
 export function useEchoesMintInfo() {
 	const { authenticated, getAccessToken } = usePrivy()
+	const { activeAddress } = useActiveWallet()
 
 	return useQuery({
-		queryKey: ["pfp-mint-status", authenticated],
+		queryKey: ["pfp-mint-status", authenticated, activeAddress],
 		queryFn: async (): Promise<PfpMintStatus | null> => {
 			const headers: HeadersInit = {}
 			if (authenticated) {
@@ -33,7 +35,8 @@ export function useEchoesMintInfo() {
 				if (token) headers.Authorization = `Bearer ${token}`
 			}
 
-			const res = await fetch("/api/v1/pfp/status", { headers })
+			const params = activeAddress ? `?wallet=${activeAddress}` : ""
+			const res = await fetch(`/api/v1/pfp/status${params}`, { headers })
 			if (!res.ok) return null
 
 			const json = await res.json() as { success: boolean; data?: PfpMintStatus }

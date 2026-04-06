@@ -8,6 +8,7 @@
 import {
 	defineEventHandler,
 	getHeader,
+	getQuery,
 	setHeaders,
 	setResponseStatus,
 } from "h3";
@@ -30,10 +31,16 @@ export default defineEventHandler(async (event) => {
 
 	const authResult = token ? await getCurrentUserByToken(token) : { user: null };
 
+	// Allow client to pass the active wallet address (may differ from DB wallet
+	// when user connected an external wallet for Echoes)
+	const query = getQuery(event);
+	const walletParam = typeof query.wallet === "string" ? query.wallet : null;
+	const walletAddress = walletParam || authResult.user?.walletAddress || null;
+
 	try {
 		const status = await getPfpMintStatus(
 			authResult.user?.id ?? null,
-			authResult.user?.walletAddress ?? null,
+			walletAddress,
 		);
 
 		return {

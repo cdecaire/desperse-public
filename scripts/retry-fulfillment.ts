@@ -6,6 +6,8 @@
  *   pnpm tsx scripts/retry-fulfillment.ts --tx <txSignature>
  *   pnpm tsx scripts/retry-fulfillment.ts --status awaiting_fulfillment
  *
+ * Add --yes or -y to skip confirmation prompt.
+ *
  * Examples:
  *   pnpm tsx scripts/retry-fulfillment.ts 0798bdb6-5b67-4246-83c3-17a03316449e
  *   pnpm tsx scripts/retry-fulfillment.ts --tx 41TBGAqSiYPP9hGrkboV...
@@ -13,6 +15,7 @@
  */
 
 import dotenv from 'dotenv'
+import * as readline from 'readline'
 import { fileURLToPath } from 'url'
 import { dirname, resolve } from 'path'
 import { drizzle } from 'drizzle-orm/postgres-js'
@@ -137,6 +140,18 @@ if (args.length === 0) {
 
 console.log('Resolving purchase IDs...')
 
+function confirm(message: string): Promise<boolean> {
+	return new Promise((resolve) => {
+		const rl = readline.createInterface({ input: process.stdin, output: process.stdout })
+		rl.question(`${message} [y/N] `, (answer) => {
+			rl.close()
+			resolve(answer.trim().toLowerCase() === 'y')
+		})
+	})
+}
+
+const skipConfirm = args.includes('--yes') || args.includes('-y')
+
 resolvePurchaseIds(args)
 	.then(async (ids) => {
 		if (ids.length === 0) {
@@ -144,7 +159,19 @@ resolvePurchaseIds(args)
 			process.exit(1)
 		}
 
-		console.log(`\nFound ${ids.length} purchase(s) to retry.\n`)
+		console.log(`\nFound ${ids.length} purchase(s) to retry:\n`)
+		for (const id of ids) {
+			console.log(`  • ${id}`)
+		}
+		console.log()
+
+		if (!skipConfirm) {
+			const ok = await confirm(`Proceed with ${ids.length} mainnet fulfillment(s)?`)
+			if (!ok) {
+				console.log('Aborted.')
+				process.exit(0)
+			}
+		}
 
 		for (const id of ids) {
 			await retryFulfillment(id)

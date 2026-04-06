@@ -20,6 +20,7 @@ export const Route = createFileRoute("/echoes")({
 		links: [
 			{ rel: "stylesheet", href: echoesCss },
 			{ rel: "preload", href: "/fonts/kh-interference/KHInterferenceTRIAL-Regular.woff2", as: "font", type: "font/woff2", crossOrigin: "anonymous" },
+			{ rel: "preload", href: "/fonts/monaspace-krypton/MonaspaceKrypton-Variable.woff2", as: "font", type: "font/woff2", crossOrigin: "anonymous" },
 		],
 	}),
 	component: EchoesLayout,

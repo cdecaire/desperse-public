@@ -8,10 +8,11 @@
  * 4. Update DB minted_metadata_uri
  *
  * Usage:
- *   npx tsx scripts/repair-arweave-post.ts <postId>
+ *   npx tsx scripts/repair-arweave-post.ts <postId> [--force] [--yes]
  */
 
 import dotenv from 'dotenv';
+import * as readline from 'readline';
 import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
 import { drizzle } from 'drizzle-orm/postgres-js';
@@ -34,9 +35,20 @@ function getEnvVar(key: string, defaultValue?: string): string {
 	return value || '';
 }
 
+function confirm(message: string): Promise<boolean> {
+	return new Promise((resolve) => {
+		const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+		rl.question(`${message} [y/N] `, (answer) => {
+			rl.close();
+			resolve(answer.trim().toLowerCase() === 'y');
+		});
+	});
+}
+
+const skipConfirm = process.argv.includes('--yes') || process.argv.includes('-y');
 const postId = process.argv[2];
 if (!postId) {
-	console.error('Usage: npx tsx scripts/repair-arweave-post.ts <postId>');
+	console.error('Usage: npx tsx scripts/repair-arweave-post.ts <postId> [--force] [--yes]');
 	process.exit(1);
 }
 
@@ -78,6 +90,19 @@ async function main() {
 	if (!post.creatorWallet) {
 		console.error('Post has no creator wallet');
 		process.exit(1);
+	}
+
+	if (!skipConfirm) {
+		const ok = await confirm(
+			`\nThis will update on-chain metadata and production DB for post ${postId}.\n` +
+			`Collection: ${post.masterMint || 'none'}, supply: ${post.currentSupply}\n` +
+			`Proceed?`
+		);
+		if (!ok) {
+			console.log('Aborted.');
+			await client.end();
+			process.exit(0);
+		}
 	}
 
 	// Step 2: Upload to Arweave if not already done

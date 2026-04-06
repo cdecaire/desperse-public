@@ -82,10 +82,10 @@ const BOOT_SEQUENCE: BootLine[] = [
 	{ text: ">> MOUNTING SYRE REGISTRY INTERF▌CE", delay: 60, style: "system" },
 	{ text: "   tessera.auth ........... CONNECTED", delay: 100, style: "system" },
 	{ text: "   identi▋y.ledger ........ BYPASSED", delay: 80, style: "warn" },
-	{ text: "   signal.filter .......... DIS▌BLED", delay: 60, style: "error" },
+	{ text: "   signal.filter .......... DIS▌BLED", delay: 60, style: "system" },
 	{ text: "", delay: 300 },
 	// ── Intercepted dead-channel broadcast ──
-	{ text: "╱╱ DEAD-CHANNEL BROADCAST — SIPHON R▒LAY 9", delay: 100, style: "header" },
+	{ text: "// DEAD-CHANNEL BROADCAST — SIPHON R▒LAY 9", delay: 100, style: "header" },
 	{ text: "", delay: 150 },
 	{
 		text: "Syre Group licens▒d reality. Tessera became the op▌rating system.",
@@ -118,6 +118,7 @@ const BOOT_SEQUENCE: BootLine[] = [
 		style: "lore",
 		garbled: true,
 	},
+	{ text: "", delay: 200 },
 	{
 		text: "[CLASSIFIED] ██████ 3E casc▌de event ██████ SYRE AUTH ██████",
 		delay: 120,
@@ -126,11 +127,12 @@ const BOOT_SEQUENCE: BootLine[] = [
 	},
 	{ text: "", delay: 400 },
 	// ── Signal detection ──
-	{ text: ">> ANOMAL▒US SIGNAL ON DEAD CHANNEL", delay: 60, style: "error" },
-	{ text: ">> FREQU▌NCY: DSPRS-3E", delay: 80, style: "error" },
-	{ text: ">> CARRI▌R COUNT: 8,888", delay: 80, style: "signal" },
+	{ text: ">> ANOMAL▒US SIGNAL ON DEAD CHANNEL", delay: 60, style: "system" },
+	{ text: ">> FREQU▌NCY: DSPRS-3E", delay: 80, style: "system" },
+	{ text: ">> CARRI▌R COUNT: 8,888", delay: 80, style: "system" },
 	{ text: "", delay: 300 },
-	{ text: "TRACE DET▒CTED ╱╱ SIGNAL P▌RSISTS", delay: 100, style: "signal" },
+	// ── Trace / awaiting instructions (no gap — TerminalCommandPrompt follows immediately) ──
+	{ text: "TRACE DET▒CTED // SIGNAL P▌RSISTS", delay: 100, style: "signal" },
 ]
 
 // Characters used for garble effect
@@ -225,6 +227,7 @@ function TerminalProgressBar({ progress }: { progress: number }) {
 function TerminalCommandPrompt({ onSubmit }: { onSubmit: () => void }) {
 	const [input, setInput] = useState("")
 	const inputRef = useRef<HTMLInputElement>(null)
+	const promptRef = useRef<HTMLDivElement>(null)
 
 	// Recapture focus when user clicks anywhere on the overlay
 	useEffect(() => {
@@ -233,6 +236,13 @@ function TerminalCommandPrompt({ onSubmit }: { onSubmit: () => void }) {
 		const overlay = document.querySelector(".echoes-boot-overlay")
 		overlay?.addEventListener("click", handleClick)
 		return () => overlay?.removeEventListener("click", handleClick)
+	}, [])
+
+	// Scroll input into view when virtual keyboard opens
+	const handleFocus = useCallback(() => {
+		setTimeout(() => {
+			promptRef.current?.scrollIntoView({ behavior: "smooth", block: "center" })
+		}, 300)
 	}, [])
 
 	const handleKeyDown = useCallback(
@@ -246,7 +256,7 @@ function TerminalCommandPrompt({ onSubmit }: { onSubmit: () => void }) {
 	)
 
 	return (
-		<div className="echoes-boot-enter-prompt">
+		<div ref={promptRef} className="echoes-boot-enter-prompt">
 			<div className="echoes-boot-line echoes-boot-signal">AWAITING INSTRUCTIONS</div>
 			<div className="echoes-boot-cmd-line" onClick={() => inputRef.current?.focus()}>
 				<span className="echoes-boot-cmd-prompt">&gt;</span>
@@ -258,12 +268,20 @@ function TerminalCommandPrompt({ onSubmit }: { onSubmit: () => void }) {
 					value={input}
 					onChange={(e) => setInput(e.target.value)}
 					onKeyDown={handleKeyDown}
+					onFocus={handleFocus}
 					className="echoes-boot-auth-input"
 					aria-label="Terminal command"
 					autoComplete="off"
 					spellCheck={false}
 				/>
 			</div>
+			<button
+				type="button"
+				onClick={onSubmit}
+				className="echoes-boot-bypass"
+			>
+				[ BYPASS TERMINAL ]
+			</button>
 		</div>
 	)
 }
@@ -277,10 +295,18 @@ function TerminalAuthPrompt({
 	const [error, setError] = useState<string | null>(null)
 	const [verifying, setVerifying] = useState(false)
 	const inputRef = useRef<HTMLInputElement>(null)
+	const promptRef = useRef<HTMLDivElement>(null)
 
 	// Auto-focus the hidden input
 	useEffect(() => {
 		inputRef.current?.focus()
+	}, [])
+
+	// Scroll input into view when virtual keyboard opens
+	const handleFocus = useCallback(() => {
+		setTimeout(() => {
+			promptRef.current?.scrollIntoView({ behavior: "smooth", block: "center" })
+		}, 300)
 	}, [])
 
 	const handleSubmit = useCallback(async () => {
@@ -318,7 +344,7 @@ function TerminalAuthPrompt({
 	const maskedDisplay = code.replace(/./g, "•")
 
 	return (
-		<div className="mt-4">
+		<div ref={promptRef} className="mt-4">
 			<div className="echoes-boot-line echoes-boot-system">
 				{">> SYRE REGISTRY ACCE▒S REQUIRES AUTH▌RIZATION"}
 			</div>
@@ -346,6 +372,7 @@ function TerminalAuthPrompt({
 					value={code}
 					onChange={(e) => setCode(e.target.value)}
 					onKeyDown={handleKeyDown}
+					onFocus={handleFocus}
 					disabled={verifying}
 					className="echoes-boot-auth-input"
 					aria-label="Access code"
@@ -632,11 +659,6 @@ export function EchoesBootScreen({
 													: ""
 											}`}
 										>
-											{line.style === "header" && (
-												<span className="echoes-boot-line-accent">
-													{"// "}
-												</span>
-											)}
 											{displayText}
 										</div>,
 									)

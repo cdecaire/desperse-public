@@ -217,6 +217,34 @@ async function main() {
 
 	if (alreadyUploaded > 0) {
 		log(`Resuming upload — ${alreadyUploaded}/${ITEM_COUNT} items already uploaded`)
+		// Validate a sample of cached URIs to detect stale/broken uploads
+		const cachedIndices = uploadedUris.map((u, i) => u != null ? i : -1).filter(i => i >= 0)
+		const sampleSize = Math.min(5, cachedIndices.length)
+		const sampleIndices = cachedIndices.slice(0, sampleSize)
+		let brokenCount = 0
+		for (const idx of sampleIndices) {
+			try {
+				const res = await fetch(uploadedUris[idx]!, { signal: AbortSignal.timeout(10_000) })
+				if (res.ok) {
+					const json = await res.json() as { image?: string; properties?: { files?: { uri?: string }[] } }
+					if (!json.image || !json.properties?.files?.[0]?.uri) {
+						brokenCount++
+						log(`  ⚠ Cached item ${idx} has missing image/file URI — stale upload detected`)
+					}
+				} else {
+					brokenCount++
+				}
+			} catch {
+				brokenCount++
+			}
+		}
+		if (brokenCount > 0) {
+			log(`⚠ ${brokenCount}/${sampleSize} sampled cached uploads are broken — clearing progress and re-uploading all items`)
+			clearProgress()
+			uploadedUris.fill(null)
+		} else {
+			log(`Validated ${sampleSize} cached uploads — all OK`)
+		}
 	}
 
 	for (let i = 0; i < ITEM_COUNT; i++) {

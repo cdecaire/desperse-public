@@ -234,14 +234,16 @@ async function getPhaseFromGuards(
 // Mint Status
 // ---------------------------------------------------------------------------
 
-export async function getPfpMintStatus(userId: string, walletAddress: string): Promise<MintStatusResponse> {
-	// Count user's mints (filtered by network)
-	const [mintCountResult] = await db
-		.select({ count: count() })
-		.from(pfpMints)
-		.where(and(eq(pfpMints.userId, userId), eq(pfpMints.network, ECHOES_NETWORK)))
-
-	const mintCount = mintCountResult?.count || 0
+export async function getPfpMintStatus(userId: string | null, walletAddress: string | null): Promise<MintStatusResponse> {
+	// Count user's mints (filtered by network) — skip if anonymous
+	let mintCount = 0
+	if (userId) {
+		const [mintCountResult] = await db
+			.select({ count: count() })
+			.from(pfpMints)
+			.where(and(eq(pfpMints.userId, userId), eq(pfpMints.network, ECHOES_NETWORK)))
+		mintCount = mintCountResult?.count || 0
+	}
 
 	// Fetch CM state + guard phase from chain
 	let supply = { total: 0, minted: 0, remaining: 0 }
@@ -263,23 +265,25 @@ export async function getPfpMintStatus(userId: string, walletAddress: string): P
 		if (supply.remaining <= 0) {
 			guardPhase = { phase: 'closed', windows: guardPhase.windows, price: null }
 		} else {
-			guardPhase = await getPhaseFromGuards(umi, cm, undefined, walletAddress)
+			guardPhase = await getPhaseFromGuards(umi, cm, undefined, walletAddress ?? undefined)
 		}
 		console.log('[getPfpMintStatus] CM state:', supply, 'phase:', guardPhase.phase)
 	} catch (err) {
 		console.warn('[getPfpMintStatus] Failed to fetch CM state:', err instanceof Error ? err.message : err)
 	}
 
-	// Check eligibility based on phase + allowlist
+	// Check eligibility based on phase + allowlist — anonymous users are never eligible
 	let isEligible = false
-	if (guardPhase.phase === 'og-free' || guardPhase.phase === 'og-discount') {
-		const proof = await getMerkleProofForWallet(walletAddress, 'og')
-		isEligible = proof !== null
-	} else if (guardPhase.phase === 'whitelist') {
-		const proof = await getMerkleProofForWallet(walletAddress, 'wl')
-		isEligible = proof !== null
-	} else if (guardPhase.phase === 'public') {
-		isEligible = true
+	if (walletAddress) {
+		if (guardPhase.phase === 'og-free' || guardPhase.phase === 'og-discount') {
+			const proof = await getMerkleProofForWallet(walletAddress, 'og')
+			isEligible = proof !== null
+		} else if (guardPhase.phase === 'whitelist') {
+			const proof = await getMerkleProofForWallet(walletAddress, 'wl')
+			isEligible = proof !== null
+		} else if (guardPhase.phase === 'public') {
+			isEligible = true
+		}
 	}
 
 	return {

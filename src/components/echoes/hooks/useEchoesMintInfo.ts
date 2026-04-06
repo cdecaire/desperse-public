@@ -25,21 +25,20 @@ export function useEchoesMintInfo() {
 	const { authenticated, getAccessToken } = usePrivy()
 
 	return useQuery({
-		queryKey: ["pfp-mint-status"],
+		queryKey: ["pfp-mint-status", authenticated],
 		queryFn: async (): Promise<PfpMintStatus | null> => {
-			const token = await getAccessToken()
-			if (!token) return null
+			const headers: HeadersInit = {}
+			if (authenticated) {
+				const token = await getAccessToken()
+				if (token) headers.Authorization = `Bearer ${token}`
+			}
 
-			const res = await fetch("/api/v1/pfp/status", {
-				headers: { Authorization: `Bearer ${token}` },
-			})
-
+			const res = await fetch("/api/v1/pfp/status", { headers })
 			if (!res.ok) return null
 
 			const json = await res.json() as { success: boolean; data?: PfpMintStatus }
 			return json.success ? json.data ?? null : null
 		},
-		enabled: authenticated,
 		staleTime: 15_000,
 		refetchInterval: 30_000,
 	})

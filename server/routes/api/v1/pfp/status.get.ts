@@ -28,20 +28,12 @@ export default defineEventHandler(async (event) => {
 		? authHeader.slice(7)
 		: authHeader;
 
-	const authResult = await getCurrentUserByToken(token);
-	if (!authResult.user) {
-		setResponseStatus(event, 401);
-		return {
-			success: false,
-			error: { code: "AUTH_REQUIRED", message: "Authentication required" },
-			requestId,
-		};
-	}
+	const authResult = token ? await getCurrentUserByToken(token) : { user: null };
 
 	try {
 		const status = await getPfpMintStatus(
-			authResult.user.id,
-			authResult.user.walletAddress,
+			authResult.user?.id ?? null,
+			authResult.user?.walletAddress ?? null,
 		);
 
 		return {

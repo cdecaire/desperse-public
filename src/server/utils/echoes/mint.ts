@@ -8,7 +8,7 @@ import { pfpMints } from '@/server/db/schema'
 import { eq, and, gte, count, desc } from 'drizzle-orm'
 import { getEchoesUmi, getCandyMachinePublicKey, getCollectionPublicKey } from '@/server/services/blockchain/echoes/echoesUmiClient'
 import { echoesEnv, getEchoesHeliusRpcUrl } from '@/config/echoes-env'
-import { fetchCandyMachine, fetchCandyGuard, mintV1, route } from '@metaplex-foundation/mpl-core-candy-machine'
+import { fetchCandyMachine, fetchCandyGuard, mintV1, route, safeFetchMintCounterFromSeeds } from '@metaplex-foundation/mpl-core-candy-machine'
 import { generateSigner, transactionBuilder, publicKey as umiPublicKey, some } from '@metaplex-foundation/umi'
 import { setComputeUnitLimit } from '@metaplex-foundation/mpl-toolbox'
 import bs58 from 'bs58'
@@ -125,14 +125,44 @@ function guardDateToIso(guards: any, field: 'startDate' | 'endDate'): string | n
 	return val ? new Date(Number(val) * 1000).toISOString() : null
 }
 
+/** Extract mint limit id and limit from a guard group */
+function extractMintLimit(guards: any): { id: number; limit: number } | null {
+	if (guards?.mintLimit?.__option !== 'Some') return null
+	return { id: guards.mintLimit.value.id, limit: guards.mintLimit.value.limit }
+}
+
+/** Check if a wallet has hit the mint limit for a guard group */
+async function isWalletMintLimitHit(
+	umi: ReturnType<typeof getEchoesUmi>,
+	guards: any,
+	walletAddress: string | null,
+	candyGuard: any,
+	candyMachine: any,
+): Promise<boolean> {
+	if (!walletAddress) return false
+	const mintLimit = extractMintLimit(guards)
+	if (!mintLimit) return false // No mint limit = never hit
+
+	const counter = await safeFetchMintCounterFromSeeds(umi, {
+		id: mintLimit.id,
+		user: umiPublicKey(walletAddress),
+		candyGuard,
+		candyMachine,
+	})
+
+	return counter !== null && counter.count >= mintLimit.limit
+}
+
 /**
  * Derive the mint phase from on-chain Candy Guard configuration.
  * Checks 4 sequential groups: og-free → og-disc → wl → public
+ * When walletAddress is provided, skips phases where the wallet's mint limit is hit.
  */
 async function getPhaseFromGuards(
 	umi: ReturnType<typeof getEchoesUmi>,
 	cm: Awaited<ReturnType<typeof fetchCandyMachine>>,
 	prefetchedGuard?: Awaited<ReturnType<typeof fetchCandyGuard>>,
+	walletAddress?: string | null,
 ): Promise<GuardPhaseResult> {
 	const guard = prefetchedGuard ?? await fetchCandyGuard(umi, cm.mintAuthority)
 	const now = BigInt(Math.floor(Date.now() / 1000))
@@ -169,14 +199,18 @@ async function getPhaseFromGuards(
 
 	// Check groups in sequential order — first active group wins
 	// Skip allowlist-gated phases that have an empty Merkle root (no wallets configured)
+	// Skip phases where the wallet has hit the mint limit
 	if (ogFreeGroup && isGroupActive(ogFreeGroup.guards, now) && hasAllowlistWallets(ogFreeGroup.guards)) {
-		return { phase: 'og-free', windows, price: null } // Free — no price
+		const limitHit = walletAddress ? await isWalletMintLimitHit(umi, ogFreeGroup.guards, walletAddress, guard.publicKey, cm.publicKey) : false
+		if (!limitHit) return { phase: 'og-free', windows, price: null }
 	}
 	if (ogDiscGroup && isGroupActive(ogDiscGroup.guards, now) && hasAllowlistWallets(ogDiscGroup.guards)) {
-		return { phase: 'og-discount', windows, price: extractPrice(ogDiscGroup.guards) }
+		const limitHit = walletAddress ? await isWalletMintLimitHit(umi, ogDiscGroup.guards, walletAddress, guard.publicKey, cm.publicKey) : false
+		if (!limitHit) return { phase: 'og-discount', windows, price: extractPrice(ogDiscGroup.guards) }
 	}
 	if (wlGroup && isGroupActive(wlGroup.guards, now) && hasAllowlistWallets(wlGroup.guards)) {
-		return { phase: 'whitelist', windows, price: extractPrice(wlGroup.guards) }
+		const limitHit = walletAddress ? await isWalletMintLimitHit(umi, wlGroup.guards, walletAddress, guard.publicKey, cm.publicKey) : false
+		if (!limitHit) return { phase: 'whitelist', windows, price: extractPrice(wlGroup.guards) }
 	}
 	if (publicGroup && isGroupActive(publicGroup.guards, now)) {
 		return { phase: 'public', windows, price: extractPrice(publicGroup.guards) }
@@ -229,7 +263,7 @@ export async function getPfpMintStatus(userId: string, walletAddress: string): P
 		if (supply.remaining <= 0) {
 			guardPhase = { phase: 'closed', windows: guardPhase.windows, price: null }
 		} else {
-			guardPhase = await getPhaseFromGuards(umi, cm)
+			guardPhase = await getPhaseFromGuards(umi, cm, undefined, walletAddress)
 		}
 		console.log('[getPfpMintStatus] CM state:', supply, 'phase:', guardPhase.phase)
 	} catch (err) {
@@ -324,7 +358,7 @@ export async function buildPfpMintTransaction(
 	const guard = await fetchCandyGuard(umi, cm.mintAuthority)
 
 	// Derive phase from on-chain guards
-	const guardPhaseResult = await getPhaseFromGuards(umi, cm, guard)
+	const guardPhaseResult = await getPhaseFromGuards(umi, cm, guard, walletAddress)
 	const { phase } = guardPhaseResult
 	if (phase === 'closed') {
 		throw new Error('Minting is currently closed')

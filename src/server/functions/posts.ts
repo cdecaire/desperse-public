@@ -1042,6 +1042,8 @@ export const getFeed = createServerFn({
           ...(postAssetsList.length > 1 ? { assets: postAssetsList } : {}),
           // Add downloadable assets for download menu
           ...(postDownloadablesList.length > 0 ? { downloadableAssets: postDownloadablesList } : {}),
+          // Add MIME type from first media asset (needed for 3D detection when URL extension is ambiguous)
+          ...(postAssetsList.length > 0 ? { mediaMimeType: postAssetsList[0].mimeType } : {}),
           // Include whether current user has collected this post
           isCollected: userCollectedPostIds.has(p.post.id),
           // Set isHidden LAST to ensure it's definitely included

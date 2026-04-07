@@ -9,6 +9,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toastSuccess, toastError, toastInfo } from '@/lib/toast'
 import { MediaUpload, type UploadedMedia } from './MediaUpload'
 import { MultiMediaUpload, type UploadedMediaItem } from './MultiMediaUpload'
+import { NON_PREVIEWABLE_TYPES } from '@/lib/media'
 import { isMultiAssetEnabled, isMultiAssetCollectibleEnabled, isMultiAssetEditionEnabled, isArweaveStorageEnabled } from '@/config/env'
 import { PostTypeSelector, type PostType } from './PostTypeSelector'
 import { useCreatorSettings } from '@/hooks/useCreatorSettings'
@@ -617,7 +618,14 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
     // Set mediaUrl to first asset for backward compatibility
     if (items.length > 0) {
       const firstItem = items[0]
-      setFormState(prev => ({ ...prev, mediaUrl: firstItem.url }))
+      setFormState(prev => {
+        const update: Partial<FormState> = { mediaUrl: firstItem.url }
+        if (NON_PREVIEWABLE_TYPES.includes(firstItem.mediaType as any)) {
+          const coverItem = items.find(i => i.mediaType === 'image' && i.url)
+          update.coverUrl = coverItem?.url || null
+        }
+        return { ...prev, ...update }
+      })
       setUploadedMedia({
         url: firstItem.url,
         mediaType: firstItem.mediaType,
@@ -629,7 +637,7 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
         setUploadedMediaInfo({ mimeType: firstItem.mimeType, fileSize: firstItem.fileSize })
       }
     } else {
-      setFormState(prev => ({ ...prev, mediaUrl: null }))
+      setFormState(prev => ({ ...prev, mediaUrl: null, coverUrl: null }))
       setUploadedMedia(null)
       setUploadedMediaInfo(null)
     }

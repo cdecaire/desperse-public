@@ -940,7 +940,6 @@ export function PostMedia({
           maxCameraOrbit="auto auto 10m"
           exposure={1.2}
           shadowIntensity={0.5}
-          poster={coverUrl || undefined}
           loading={lazy ? 'lazy' : 'eager'}
           interactionPrompt="auto"
           className="w-full h-full"

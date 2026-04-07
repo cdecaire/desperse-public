@@ -18,10 +18,15 @@ import type { MediaType } from '@/lib/media'
 
 export type { MediaType } from '@/lib/media'
 
-// Max assets per post (from plan)
-const MAX_ASSETS = 10
-// Only 1 downloadable file allowed per post
-const MAX_DOWNLOADS = 1
+// Per-type limits (matches Android)
+const MAX_PER_TYPE: Record<MediaType, number> = {
+  image: 10,
+  video: 1,
+  audio: 1,
+  '3d': 1,
+  document: 1,
+}
+const MAX_TOTAL = 14 // theoretical max if all types filled
 
 // Supported file types (images, videos for carousel + documents/audio/3d)
 const SUPPORTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
@@ -560,43 +565,36 @@ export function MultiMediaUpload({
   const handleFilesSelected = useCallback(
     (files: FileList | File[]) => {
       const fileArray = Array.from(files)
-      const remainingSlots = MAX_ASSETS - items.length
-      let filesToAdd = fileArray.slice(0, remainingSlots)
 
-      if (filesToAdd.length < fileArray.length) {
-        console.warn(
-          `Only adding ${filesToAdd.length} of ${fileArray.length} files (max ${MAX_ASSETS} total)`
-        )
+      // Count existing items per type
+      const existingCounts: Record<string, number> = {}
+      for (const item of items) {
+        existingCounts[item.mediaType] = (existingCounts[item.mediaType] || 0) + 1
       }
-
-      if (filesToAdd.length === 0) return
-
-      // Check download limit - only 1 downloadable file allowed
-      const existingDownloads = items.filter(item => DOWNLOAD_TYPES.includes(item.mediaType)).length
-      const newDownloads = filesToAdd.filter(file => {
+      // Filter files by per-type limits and mutual exclusivity
+      const addCounts: Record<string, number> = {}
+      const filesToAdd = fileArray.filter(file => {
         const mediaType = getMediaTypeFromMime(file.type, file.name)
-        return DOWNLOAD_TYPES.includes(mediaType)
+        const limit = MAX_PER_TYPE[mediaType] ?? 1
+        const existing = existingCounts[mediaType] || 0
+        const adding = addCounts[mediaType] || 0
+        if (existing + adding >= limit) return false
+        // Mutual exclusivity rules:
+        // - Video blocks images (and vice versa)
+        // - Audio blocks video, other audio, and 3D
+        // - 3D blocks video, other 3D, and audio
+        // - Images are allowed as covers alongside audio/3D (max 1)
+        const has = (t: string) => (existingCounts[t] || 0) + (addCounts[t] || 0) > 0
+        if (mediaType === 'video' && has('image')) return false
+        if (mediaType === 'image' && has('video')) return false
+        if (mediaType === 'audio' && (has('video') || has('3d'))) return false
+        if (mediaType === '3d' && (has('video') || has('audio'))) return false
+        if (mediaType === 'video' && (has('audio') || has('3d'))) return false
+        // When audio/3D is primary, limit images to 1 (cover)
+        if (mediaType === 'image' && (has('audio') || has('3d')) && existing + adding >= 1) return false
+        addCounts[mediaType] = adding + 1
+        return true
       })
-
-      if (existingDownloads + newDownloads.length > MAX_DOWNLOADS) {
-        // Filter out extra downloads, keep only up to the limit
-        let downloadsToKeep = MAX_DOWNLOADS - existingDownloads
-        filesToAdd = filesToAdd.filter(file => {
-          const mediaType = getMediaTypeFromMime(file.type, file.name)
-          if (DOWNLOAD_TYPES.includes(mediaType)) {
-            if (downloadsToKeep > 0) {
-              downloadsToKeep--
-              return true
-            }
-            return false
-          }
-          return true
-        })
-
-        if (existingDownloads >= MAX_DOWNLOADS) {
-          console.warn('Only 1 downloadable file (PDF, ZIP, audio, 3D) allowed per post')
-        }
-      }
 
       if (filesToAdd.length === 0) return
 
@@ -672,7 +670,7 @@ export function MultiMediaUpload({
     (e: React.DragEvent) => {
       e.preventDefault()
       e.stopPropagation()
-      if (!disabled && items.length < MAX_ASSETS) setIsDragging(true)
+      if (!disabled && items.length < MAX_TOTAL) setIsDragging(true)
     },
     [disabled, items.length]
   )
@@ -694,7 +692,7 @@ export function MultiMediaUpload({
       e.stopPropagation()
       setIsDragging(false)
 
-      if (disabled || items.length >= MAX_ASSETS) return
+      if (disabled || items.length >= MAX_TOTAL) return
 
       const files = e.dataTransfer.files
       if (files.length > 0) {
@@ -773,7 +771,7 @@ export function MultiMediaUpload({
     setDragOverIndex(null)
   }, [])
 
-  const canAddMore = items.length < MAX_ASSETS
+  const canAddMore = items.length < MAX_TOTAL
 
   // Separate previewable (carousel) items from downloadable items
   const previewableItems = items.filter(item => item.mediaType === 'image' || item.mediaType === 'video')
@@ -798,7 +796,7 @@ export function MultiMediaUpload({
           )}
           {items.length > 0 && (
             <span className="text-xs text-muted-foreground">
-              {items.length} of {MAX_ASSETS}
+              {items.length} {items.length === 1 ? 'file' : 'files'}
             </span>
           )}
         </div>

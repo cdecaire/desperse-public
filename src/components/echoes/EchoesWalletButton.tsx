@@ -58,7 +58,7 @@ function useWalletMeta(address: string | undefined) {
 }
 
 export function EchoesWalletButton() {
-	const { user } = usePrivy()
+	const { user, logout } = usePrivy()
 	const { ready } = useWallets()
 	const { connectWallet } = useConnectWallet()
 	const { activeAddress, activePrivyWallet, solanaWalletsReady } = useActiveWallet()
@@ -205,6 +205,7 @@ export function EchoesWalletButton() {
 						address={walletAddress}
 						walletName={walletName}
 						walletIcon={walletIcon}
+						onDisconnect={() => { setPopoverOpen(false); logout() }}
 						/>
 				)}
 			</div>
@@ -232,8 +233,9 @@ const WalletPopover = forwardRef<
 		address: string
 		walletName: string
 		walletIcon: string | null
+		onDisconnect: () => void
 	}
->(function WalletPopover({ address, walletName, walletIcon }, ref) {
+>(function WalletPopover({ address, walletName, walletIcon, onDisconnect }, ref) {
 
 	// Query devnet balance via the echoes RPC proxy
 	const { data, isLoading } = useQuery({
@@ -339,6 +341,13 @@ const WalletPopover = forwardRef<
 					className="flex-1 font-label text-[10px] tracking-widest uppercase py-2 nx-bg-surface-variant nx-text-on-surface hover:opacity-90 transition-opacity rounded-sm"
 				>
 					COPY ADDRESS
+				</button>
+				<button
+					type="button"
+					onClick={onDisconnect}
+					className="flex-1 font-label text-[10px] tracking-widest uppercase py-2 nx-bg-surface-variant text-red-400 hover:bg-red-500/10 transition-colors rounded-sm"
+				>
+					DISCONNECT
 				</button>
 			</div>
 		</div>

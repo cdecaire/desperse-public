@@ -156,6 +156,16 @@ function getMediaTypeFromFile(mimeType: string, fileName: string): MediaType {
 }
 
 /**
+ * Normalize MIME type for files that browsers misreport
+ */
+function normalizeMimeType(mimeType: string, fileName: string): string {
+  if (isGlbByExtension(fileName)) {
+    return fileName.toLowerCase().endsWith('.gltf') ? 'model/gltf+json' : 'model/gltf-binary'
+  }
+  return mimeType
+}
+
+/**
  * Generate a unique pathname for blob storage
  */
 function generateBlobPath(fileName: string): string {
@@ -280,14 +290,15 @@ export function MediaUpload({
 
       setUploadState({ status: 'uploading', progress: 95 })
 
-      // Determine media type
-      const mediaType = getMediaTypeFromFile(file.type, file.name)
+      // Determine media type and normalize MIME type
+      const normalizedMime = normalizeMimeType(file.type, file.name)
+      const mediaType = getMediaTypeFromFile(normalizedMime, file.name)
 
       const media: UploadedMedia = {
         url: blob.url,
         mediaType,
         fileName: file.name,
-        mimeType: file.type,
+        mimeType: normalizedMime,
         fileSize: file.size,
       }
       setUploadedMedia(media)

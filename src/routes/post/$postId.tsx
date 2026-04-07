@@ -520,8 +520,8 @@ function PostDetailPage() {
   const editionSupply = localEditionSupply ?? post.currentSupply ?? 0
   const isCollected = localIsOwned || initialCollected
 
-  const mediaType = detectMediaType(post.mediaUrl)
-  
+  const mediaType = detectMediaType(post.mediaUrl, (post as any).mediaMimeType)
+
   const display = getPostDisplayState(
     {
       id: post.id,

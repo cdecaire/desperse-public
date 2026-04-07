@@ -252,7 +252,7 @@ export function PostCardMenu({
           )}
 
           {/* Download options for separate downloadable assets (multi-asset posts) */}
-          {hasDownloadableAssets && downloadableAssets!.map((asset) => (
+          {hasDownloadableAssets && downloadableAssets!.filter((asset) => !isDownloadable || asset.url !== mediaUrl).map((asset) => (
             <DropdownMenuItem
               key={asset.id}
               onClick={() => handleDownloadAsset(asset)}

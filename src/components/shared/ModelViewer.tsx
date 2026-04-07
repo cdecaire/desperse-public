@@ -1,45 +1,32 @@
 /**
  * ModelViewer Component
  * Wrapper for @google/model-viewer to display GLB/GLTF 3D models
+ *
+ * Proxies the GLB fetch through /api/v1/media/proxy to bypass
+ * Vercel bot-challenge CORS issues on direct blob storage requests.
  */
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
+import { Icon } from '@/components/ui/icon'
 
 interface ModelViewerProps extends React.HTMLAttributes<HTMLElement> {
   src: string
   alt?: string
-  /** Show controls for interaction */
   controls?: boolean
-  /** Auto-rotate the model */
   autoRotate?: boolean
-  /** Camera orbit target */
   cameraOrbit?: string
-  /** Field of view */
   cameraFov?: number
-  /** Minimum camera orbit distance */
   minCameraOrbit?: string
-  /** Maximum camera orbit distance */
   maxCameraOrbit?: string
-  /** Exposure level */
   exposure?: number
-  /** Shadow intensity */
   shadowIntensity?: number
-  /** Environment image for lighting */
   environmentImage?: string
-  /** Poster image to show before model loads */
-  poster?: string
-  /** Loading strategy */
   loading?: 'lazy' | 'eager'
-  /** AR mode */
   ar?: boolean
-  /** AR scale */
   arScale?: string
-  /** AR placement */
   arPlacement?: 'floor' | 'wall'
-  /** Interaction prompt */
   interactionPrompt?: 'auto' | 'when-focused' | 'none'
-  /** Interaction prompt threshold */
   interactionPromptThreshold?: number
 }
 
@@ -52,7 +39,8 @@ declare module 'react' {
       > & {
         src?: string
         alt?: string
-        controls?: boolean
+        // model-viewer treats attribute presence as truthy — pass undefined to omit
+        'camera-controls'?: boolean
         'auto-rotate'?: boolean
         'camera-orbit'?: string
         'camera-fov'?: number
@@ -61,7 +49,6 @@ declare module 'react' {
         exposure?: number
         'shadow-intensity'?: number
         'environment-image'?: string
-        poster?: string
         loading?: 'lazy' | 'eager'
         ar?: boolean
         'ar-scale'?: string
@@ -86,7 +73,6 @@ export function ModelViewer({
   exposure = 1,
   shadowIntensity = 0,
   environmentImage,
-  poster,
   loading = 'lazy',
   ar = false,
   arScale = 'auto',
@@ -95,23 +81,83 @@ export function ModelViewer({
   interactionPromptThreshold = 3000,
   ...props
 }: ModelViewerProps) {
-  const modelViewerRef = useRef<HTMLElement>(null)
+  const [ready, setReady] = useState(false)
+  const [blobSrc, setBlobSrc] = useState<string | null>(null)
+  const [error, setError] = useState(false)
 
   useEffect(() => {
-    // Dynamically import model-viewer to ensure it's loaded
-    import('@google/model-viewer').catch((error) => {
-      console.error('Failed to load model-viewer:', error)
-    })
+    import('@google/model-viewer')
+      .then(() => setReady(true))
+      .catch((err) => {
+        console.error('[ModelViewer] Failed to load @google/model-viewer:', err)
+        setError(true)
+      })
   }, [])
+
+  useEffect(() => {
+    if (!ready || !src) return
+
+    let cancelled = false
+    let objectUrl: string | null = null
+
+    setError(false)
+    setBlobSrc(null)
+
+    const proxyUrl = `/api/v1/media/proxy?url=${encodeURIComponent(src)}`
+    fetch(proxyUrl)
+      .then((res) => {
+        if (!res.ok) throw new Error(`${res.status}`)
+        return res.blob()
+      })
+      .then((blob) => {
+        if (cancelled) return
+        objectUrl = URL.createObjectURL(blob)
+        setBlobSrc(objectUrl)
+      })
+      .catch((err) => {
+        if (cancelled) return
+        console.error('[ModelViewer] Failed to fetch model:', err)
+        setError(true)
+      })
+
+    return () => {
+      cancelled = true
+      if (objectUrl) URL.revokeObjectURL(objectUrl)
+    }
+  }, [ready, src])
+
+  const bgClass = 'bg-zinc-200 dark:bg-zinc-800'
+
+  if (error) {
+    return (
+      <div
+        className={cn(`w-full h-full flex flex-col items-center justify-center ${bgClass} text-muted-foreground`, className)}
+        {...props}
+      >
+        <Icon name="cube" variant="regular" className="text-2xl mb-2" />
+        <span className="text-sm">Failed to load 3D model</span>
+      </div>
+    )
+  }
+
+  if (!ready || !blobSrc) {
+    return (
+      <div
+        className={cn(`w-full h-full flex items-center justify-center ${bgClass}`, className)}
+        {...props}
+      >
+        <div className="w-8 h-8 rounded-full border-2 border-muted-foreground/20 border-t-muted-foreground animate-spin" />
+      </div>
+    )
+  }
 
   return (
     <model-viewer
-      ref={modelViewerRef}
-      src={src}
+      src={blobSrc}
       alt={alt}
-      className={cn('w-full h-full', className)}
-      controls={controls}
-      auto-rotate={autoRotate}
+      className={cn(`w-full h-full block ${bgClass}`, className)}
+      camera-controls={controls || undefined}
+      auto-rotate={autoRotate || undefined}
       camera-orbit={cameraOrbit}
       camera-fov={cameraFov}
       min-camera-orbit={minCameraOrbit}
@@ -119,17 +165,16 @@ export function ModelViewer({
       exposure={exposure}
       shadow-intensity={shadowIntensity}
       environment-image={environmentImage}
-      poster={poster}
       loading={loading}
-      ar={ar}
+      ar={ar || undefined}
       ar-scale={arScale}
       ar-placement={arPlacement}
       interaction-prompt={interactionPrompt}
       interaction-prompt-threshold={interactionPromptThreshold}
       style={{
+        display: 'block',
         width: '100%',
         height: '100%',
-        backgroundColor: 'transparent',
       }}
       {...props}
     />
@@ -137,4 +182,3 @@ export function ModelViewer({
 }
 
 export default ModelViewer
-

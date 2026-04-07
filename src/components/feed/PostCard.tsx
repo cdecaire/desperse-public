@@ -220,7 +220,8 @@ export function PostCard({
   }, [post.currentSupply])
   
   const user = propUser || post.user
-  const mediaType = detectMediaType(post.mediaUrl)
+  const mediaMimeType = (post as any).mediaMimeType || post.downloadableAssets?.[0]?.mimeType
+  const mediaType = detectMediaType(post.mediaUrl, mediaMimeType)
 
   // Media tap/click: single = open post, double = like
   // Video/audio/3D have native controls that need tap events

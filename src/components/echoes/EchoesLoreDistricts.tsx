@@ -57,14 +57,14 @@ export function EchoesLoreDistricts() {
 										<img
 											src={optimizeDistrictImage(district.image, 800)}
 											alt=""
-											className="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:opacity-40 transition-opacity scale-110"
+											className="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:opacity-90 transition-opacity duration-500 scale-110"
 											loading="lazy"
 										/>
 									)}
-									<div className="absolute inset-0 nx-glitch opacity-20 pointer-events-none" />
-									<div className="absolute inset-0 bg-gradient-to-t from-[rgba(var(--nx-surface-rgb),0.95)] via-[rgba(var(--nx-surface-rgb),0.4)] to-transparent" />
+									<div className="absolute inset-0 nx-glitch opacity-20 group-hover:opacity-0 transition-opacity duration-500 pointer-events-none" />
+									<div className="absolute inset-0 bg-gradient-to-t from-[rgba(var(--nx-surface-rgb),0.95)] via-[rgba(var(--nx-surface-rgb),0.4)] to-transparent group-hover:opacity-0 transition-opacity duration-500" />
 
-									<div className="absolute bottom-0 left-0 right-0 p-5 md:p-6">
+									<div className="absolute bottom-0 left-0 right-0 p-5 md:p-6 transition-opacity duration-500 group-hover:opacity-0">
 										<div className="flex items-center justify-between mb-2">
 											<h3 className="font-headline text-xl md:text-2xl uppercase">{district.name}</h3>
 											<span className="font-label text-[9px] tracking-widest uppercase" style={{ color }}>
@@ -76,7 +76,7 @@ export function EchoesLoreDistricts() {
 										</p>
 									</div>
 
-									<div className="absolute top-0 left-0 right-0 h-[2px]" style={{ backgroundColor: color }} />
+									<div className="absolute top-0 left-0 right-0 h-[2px] transition-opacity duration-500 group-hover:opacity-0" style={{ backgroundColor: color }} />
 								</div>
 							</article>
 						)
@@ -89,32 +89,33 @@ export function EchoesLoreDistricts() {
 						const color = getFactionColor(district.controllingFaction)
 
 						return (
-							<article key={district.slug} className="nx-bg-surface-low overflow-hidden group" data-reveal-stagger style={{ "--stagger-index": idx } as React.CSSProperties} aria-label={district.name}>
-								<div className="relative h-36 md:h-44 overflow-hidden">
-									{district.image && (
-										<img
-											src={optimizeDistrictImage(district.image, 640)}
-											alt=""
-											className="absolute inset-0 w-full h-full object-cover opacity-25 group-hover:opacity-35 transition-opacity scale-110"
-											loading="lazy"
-										/>
-									)}
-									<div className="absolute inset-0 bg-gradient-to-t from-[rgba(var(--nx-surface-rgb),0.95)] to-transparent" />
+							<article key={district.slug} className="relative nx-bg-surface-low overflow-hidden group" data-reveal-stagger style={{ "--stagger-index": idx } as React.CSSProperties} aria-label={district.name}>
+								{district.image && (
+									<img
+										src={optimizeDistrictImage(district.image, 640)}
+										alt=""
+										className="absolute inset-0 w-full h-full object-cover opacity-25 group-hover:opacity-90 transition-opacity duration-500 scale-110"
+										loading="lazy"
+									/>
+								)}
+								<div className="absolute inset-0 bg-gradient-to-t from-[rgba(var(--nx-surface-rgb),0.95)] to-transparent group-hover:opacity-0 transition-opacity duration-500" />
+								<div className="absolute top-0 left-0 right-0 h-[2px] transition-opacity duration-500 group-hover:opacity-0" style={{ backgroundColor: color }} />
 
-									<div className="absolute bottom-0 left-0 right-0 p-4">
-										<span className="font-label text-[9px] tracking-widest uppercase block mb-1" style={{ color }}>
-											{district.controllingFaction}
-										</span>
-										<h3 className="font-headline text-base uppercase">{district.name}</h3>
+								<div className="relative">
+									<div className="h-36 md:h-44 flex items-end p-4">
+										<div className="transition-opacity duration-500 group-hover:opacity-0">
+											<span className="font-label text-[9px] tracking-widest uppercase block mb-1" style={{ color }}>
+												{district.controllingFaction}
+											</span>
+											<h3 className="font-headline text-base uppercase">{district.name}</h3>
+										</div>
 									</div>
 
-									<div className="absolute top-0 left-0 right-0 h-[2px]" style={{ backgroundColor: color }} />
-								</div>
-
-								<div className="p-4">
-									<p className="font-body text-xs nx-text-on-surface-variant line-clamp-3">
-										{district.description}
-									</p>
+									<div className="p-4 pt-0 transition-opacity duration-500 group-hover:opacity-0">
+										<p className="font-body text-xs nx-text-on-surface-variant line-clamp-3">
+											{district.description}
+										</p>
+									</div>
 								</div>
 							</article>
 						)
@@ -127,19 +128,19 @@ export function EchoesLoreDistricts() {
 					const images = contestedImages
 
 					return (
-						<RevealRow key={district.slug} className="nx-bg-surface-low overflow-hidden group" reveal="wipe-up">
+						<RevealRow key={district.slug} className="nx-bg-surface-low overflow-hidden group">
 							<div className="relative h-40 md:h-52 overflow-hidden">
 								{/* Multiple overlapping PFPs for "contested" feel */}
 								<div className="absolute inset-0 flex" aria-hidden="true">
 									{images.map((img) => (
 										<div key={img} className="flex-1 relative overflow-hidden">
-											<img src={img} alt="" className="absolute inset-0 w-full h-full object-cover opacity-15 nx-glitch nx-glitch-heavy" loading="lazy" />
+											<img src={img} alt="" className="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:opacity-80 transition-opacity duration-500 nx-glitch nx-glitch-heavy" loading="lazy" />
 										</div>
 									))}
 								</div>
-								<div className="absolute inset-0 bg-gradient-to-t from-[rgba(var(--nx-surface-rgb),0.95)] via-[rgba(var(--nx-surface-rgb),0.5)] to-[rgba(var(--nx-surface-rgb),0.3)]" />
+								<div className="absolute inset-0 bg-gradient-to-t from-[rgba(var(--nx-surface-rgb),0.95)] via-[rgba(var(--nx-surface-rgb),0.5)] to-[rgba(var(--nx-surface-rgb),0.3)] group-hover:opacity-0 transition-opacity duration-500" />
 
-								<div className="absolute bottom-0 left-0 right-0 p-5 md:p-6">
+								<div className="absolute bottom-0 left-0 right-0 p-5 md:p-6 transition-opacity duration-500 group-hover:opacity-0">
 									<div className="flex items-center gap-3 mb-2">
 										<span className="font-label text-[9px] tracking-widest uppercase" style={{ color }}>
 											{district.controllingFaction}
@@ -154,7 +155,7 @@ export function EchoesLoreDistricts() {
 									</p>
 								</div>
 
-								<div className="absolute top-0 left-0 right-0 h-[2px]" style={{ backgroundColor: color }} />
+								<div className="absolute top-0 left-0 right-0 h-[2px] transition-opacity duration-500 group-hover:opacity-0" style={{ backgroundColor: color }} />
 							</div>
 						</RevealRow>
 					)

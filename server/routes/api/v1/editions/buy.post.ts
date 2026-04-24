@@ -20,9 +20,15 @@
  *     "status": "reserved",
  *     "unsignedTxBase64": "...",
  *     "priceDisplay": "0.5 SOL",
- *     "expiresAt": "2026-01-31T12:01:00Z"
+ *     "expiresAt": "2026-01-31T12:01:00Z",
+ *     "blockhash": "<base58 blockhash embedded in unsignedTxBase64>",
+ *     "lastValidBlockHeight": 285123456
  *   }
  * }
+ *
+ * `blockhash` + `lastValidBlockHeight` let mobile clients bound their
+ * resend + confirm loop by the transaction's actual validity window,
+ * instead of approximating with a fresh `getLatestBlockhash` call.
  */
 
 import {
@@ -145,6 +151,8 @@ export default defineEventHandler(async (event) => {
 			unsignedTxBase64: result.transaction,
 			priceDisplay,
 			expiresAt,
+			blockhash: result.blockhash,
+			lastValidBlockHeight: result.lastValidBlockHeight,
 		},
 		requestId,
 	}

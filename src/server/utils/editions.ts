@@ -38,6 +38,12 @@ export interface BuyEditionResult {
 	status?: PurchaseStatus | 'sold_out' | 'insufficient_funds' | 'not_started' | 'ended' | 'arweave_unfunded'
 	purchaseId?: string
 	transaction?: string
+	/** Blockhash embedded in `transaction`. Surfaced so mobile clients can
+	 * bound their resend+confirm loop by the tx's real validity window
+	 * rather than calling `getLatestBlockhash` and approximating. */
+	blockhash?: string
+	/** Absolute block height past which the signed tx can no longer land. */
+	lastValidBlockHeight?: number
 	mintAddress?: string
 	message?: string
 	error?: string
@@ -742,6 +748,8 @@ export async function buyEditionDirect(
 			status: 'reserved',
 			purchaseId,
 			transaction: paymentTxResult.transactionBase64,
+			blockhash: paymentTxResult.blockhash,
+			lastValidBlockHeight: paymentTxResult.lastValidBlockHeight,
 		}
 	} catch (error) {
 		console.error('Error in buyEditionDirect:', error)

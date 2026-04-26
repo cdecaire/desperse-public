@@ -29,15 +29,21 @@ function WalletsPage() {
 
   // Reconcile: sync any Privy-linked wallets missing from the DB.
   // Handles the case where Privy linking succeeded but DB insert failed.
-  const solanaLinkedAccounts = useMemo(() => {
+  // Includes both Solana (signing) and Ethereum (verification-only) wallets — the
+  // server marks them with the correct primary flag based on address format.
+  const linkedWalletAccounts = useMemo(() => {
     if (!user?.linkedAccounts) return []
     return user.linkedAccounts.filter(
-      (a) => a.type === 'wallet' && a.chainType === 'solana' && 'address' in a && a.address,
+      (a) =>
+        a.type === 'wallet' &&
+        (a.chainType === 'solana' || a.chainType === 'ethereum') &&
+        'address' in a &&
+        a.address,
     )
   }, [user?.linkedAccounts])
 
   useEffect(() => {
-    if (hasSynced.current || !isAuthenticated || !isReady || solanaLinkedAccounts.length === 0) return
+    if (hasSynced.current || !isAuthenticated || !isReady || linkedWalletAccounts.length === 0) return
     hasSynced.current = true
 
     const doSync = async () => {
@@ -45,7 +51,7 @@ function WalletsPage() {
         const token = await getAccessToken()
         if (!token) return
 
-        const walletsToSync = solanaLinkedAccounts.map((a) => ({
+        const walletsToSync = linkedWalletAccounts.map((a) => ({
           address: (a as { address: string }).address,
           type: ('walletClientType' in a && a.walletClientType === 'privy' ? 'embedded' : 'external') as 'embedded' | 'external',
           label: ('walletClient' in a && a.walletClient) ? String(a.walletClient) : undefined,
@@ -58,7 +64,7 @@ function WalletsPage() {
       }
     }
     doSync()
-  }, [isAuthenticated, isReady, solanaLinkedAccounts, getAccessToken, refreshWallets])
+  }, [isAuthenticated, isReady, linkedWalletAccounts, getAccessToken, refreshWallets])
 
   const { linkWallet, linkGoogle, linkTwitter } = useLinkAccount({
     onSuccess: async ({ linkedAccount }) => {
@@ -109,6 +115,21 @@ function WalletsPage() {
     [wallets, user?.linkedAccounts, walletAddress],
   )
 
+  // Ethereum wallets are linked for verification/provenance only (e.g. Foundation
+  // preservation). They never sign Desperse transactions and cannot be set as primary.
+  const ethereumWallets = useMemo(() => {
+    if (!user?.linkedAccounts) return []
+    return user.linkedAccounts
+      .filter(
+        (a) => a.type === 'wallet' && a.chainType === 'ethereum' && 'address' in a && a.address,
+      )
+      .map((a) => ({
+        address: (a as { address: string }).address,
+        walletClientType:
+          'walletClientType' in a ? (a.walletClientType as string | undefined) : undefined,
+      }))
+  }, [user?.linkedAccounts])
+
   const linkedSocials =
     user?.linkedAccounts?.filter((account) =>
       ['google_oauth', 'twitter_oauth'].includes(account.type),
@@ -117,10 +138,11 @@ function WalletsPage() {
   const hasGoogle = linkedSocials.some((a) => a.type === 'google_oauth')
   const hasTwitter = linkedSocials.some((a) => a.type === 'twitter_oauth')
 
-  // Count login methods: external wallets (not embedded) + social accounts
-  // Users must keep at least 1 login method
+  // Count login methods: external Solana wallets + Ethereum wallets + social accounts.
+  // Users must keep at least 1 login method (the embedded Solana wallet doesn't count
+  // because it can't be used to sign in on its own).
   const externalWallets = solanaWallets.filter((w) => w.walletClientType !== 'privy')
-  const loginMethodCount = externalWallets.length + linkedSocials.length
+  const loginMethodCount = externalWallets.length + ethereumWallets.length + linkedSocials.length
   const canUnlinkLoginMethod = loginMethodCount > 1
 
   // Check if a Privy wallet is the active one (via DB wallets)
@@ -216,7 +238,7 @@ function WalletsPage() {
     <div className="space-y-6 pt-4">
         <PageHeader
           title="Wallets & Linked"
-          description="Manage your connected wallets and linked social accounts."
+          description="Your Solana wallet signs all Desperse transactions. Ethereum and social accounts can be linked for verification and login."
         />
 
       <div className="space-y-6">
@@ -326,6 +348,64 @@ function WalletsPage() {
             </div>
           )}
         </div>
+
+        {/* Ethereum Wallets Section — verification/provenance only */}
+        {ethereumWallets.length > 0 && (
+          <div className="space-y-3">
+            <div className="space-y-1">
+              <p className="text-lg font-semibold">Ethereum wallets</p>
+              <p className="text-sm text-muted-foreground">
+                Linked for verification only. Desperse signs all transactions on Solana —
+                Ethereum wallets cannot be set as your active wallet.
+              </p>
+            </div>
+            <div className="space-y-3">
+              {ethereumWallets.map((wallet) => {
+                const shortAddress = `${wallet.address.slice(0, 6)}…${wallet.address.slice(-4)}`
+                const walletLabel = wallet.walletClientType
+                  ? wallet.walletClientType.charAt(0).toUpperCase() + wallet.walletClientType.slice(1)
+                  : 'Ethereum wallet'
+                const isUnlinkingThis = unlinking === wallet.address
+                return (
+                  <div
+                    key={wallet.address}
+                    className="flex items-center justify-between gap-3 rounded-xl border border-border/60 bg-card px-4 py-3"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-10 h-10 rounded-full bg-muted grid place-items-center shrink-0">
+                        <Icon name="ethereum" variant="brands" className="text-lg text-muted-foreground" />
+                      </div>
+                      <div className="space-y-0.5 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <p className="font-medium truncate">{walletLabel}</p>
+                          <span className="text-[11px] px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground">
+                            Verification
+                          </span>
+                        </div>
+                        <p className="text-xs text-muted-foreground font-mono">{shortAddress}</p>
+                      </div>
+                    </div>
+                    <Tooltip content={canUnlinkLoginMethod ? 'Unlink wallet' : 'You need at least one login method'}>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        disabled={!canUnlinkLoginMethod || isUnlinkingThis}
+                        onClick={() => handleUnlinkWallet(wallet.address)}
+                        aria-label={`Unlink ${walletLabel}`}
+                      >
+                        {isUnlinkingThis ? (
+                          <Icon name="spinner-third" variant="regular" spin />
+                        ) : (
+                          <Icon name="link-slash" variant="regular" />
+                        )}
+                      </Button>
+                    </Tooltip>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Linked Social Accounts Section */}
         <div className="space-y-3">

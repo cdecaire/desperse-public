@@ -85,6 +85,13 @@ code {
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
+  /* Post-type tones exposed to Tailwind so bg-tone and text-tone utilities work. */
+  --color-tone-standard: var(--tone-standard);
+  --color-tone-collectible: var(--tone-collectible);
+  --color-tone-edition: var(--tone-edition);
+  --color-tone-warning: var(--tone-warning);
+  --color-tone-info: var(--tone-info);
+
   --animate-heart-pop: heart-pop 0.8s ease-out forwards;
 }
 

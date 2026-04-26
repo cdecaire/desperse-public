@@ -17,15 +17,18 @@ interface PrivyProviderProps {
  * Privy authentication provider wrapper
  * Wraps the app with Privy SDK context for auth functionality
  * 
- * Solana-Only Configuration:
- * - Set walletChainType to 'solana-only' for proper Solana wallet handling
- * - Configured Solana connectors for external wallet connections
- * 
+ * Multi-chain Configuration:
+ * - walletChainType: 'ethereum-and-solana' so the Privy modal exposes both chains
+ * - Solana wallets are the spending/signing wallets for the Desperse app
+ * - Ethereum wallets are linked for verification/provenance only (e.g. Foundation
+ *   preservation flow). They are never auto-created and never become the primary
+ *   Desperse wallet — see the address-format guard in setDefaultWalletDirect.
+ *
  * Embedded Wallet Strategy:
  * - Automatically creates Solana embedded wallets for ALL users on login
- * - Includes users who sign up with external wallets (Brave, Phantom, etc.)
- * - This ensures every user has an embedded wallet for NFT minting/collecting
- * - Ethereum wallets are explicitly disabled to match app requirements
+ * - Includes users who sign up with external wallets (Phantom, MetaMask, etc.)
+ * - This ensures every user has an embedded Solana wallet for NFT minting/collecting
+ * - Ethereum embedded wallets are explicitly disabled — we only accept external ETH wallets
  */
 export function PrivyProvider({ children, heliusWsUrl }: PrivyProviderProps) {
   // Buffer polyfill is now loaded synchronously via buffer-polyfill.ts import in __root.tsx
@@ -85,9 +88,20 @@ export function PrivyProvider({ children, heliusWsUrl }: PrivyProviderProps) {
             loginMessage: 'Link a wallet or sign in to recover your Echo.',
           } : {}),
           ...(isPWA ? {} : {
-            walletList: ['detected_solana_wallets', 'phantom', 'solflare', 'backpack', 'okx_wallet'],
+            walletList: [
+              'detected_solana_wallets',
+              'phantom',
+              'solflare',
+              'backpack',
+              'okx_wallet',
+              'detected_ethereum_wallets',
+              'metamask',
+              'rainbow',
+              'wallet_connect',
+              'coinbase_wallet',
+            ],
           }),
-          walletChainType: 'solana-only',
+          walletChainType: 'ethereum-and-solana',
         },
         // Solana RPC configuration for embedded wallet UIs (required for transactions)
         // HTTP RPC goes through our server proxy (keeps Helius API key out of client bundle)

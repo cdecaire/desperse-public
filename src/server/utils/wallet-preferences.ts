@@ -11,6 +11,20 @@ import { authenticateWithToken } from '@/server/auth'
 // Valid connector types
 const VALID_CONNECTORS = ['mwa', 'privy', 'deeplink'] as const
 
+// Solana base58 address: 32-44 chars, no 0x prefix, no I/O/0/l
+const SOLANA_ADDRESS_REGEX = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/
+
+/**
+ * Returns true for valid Solana base58 addresses. Used as a back-stop to
+ * prevent ETH-format (0x...) wallets from becoming the user's primary
+ * Desperse wallet — Desperse signs all on-chain actions on Solana.
+ */
+function isSolanaAddress(address: string): boolean {
+	if (!address || typeof address !== 'string') return false
+	if (address.startsWith('0x')) return false
+	return SOLANA_ADDRESS_REGEX.test(address)
+}
+
 // Types
 export interface UserWallet {
   id: string
@@ -115,6 +129,11 @@ export async function addWalletDirect(
 
     const isFirstWallet = Number(walletCount) === 0
 
+    // ETH wallets are linked for verification only — they must never be primary,
+    // even if they're the first wallet inserted (which can happen if an ETH-first
+    // signup races the Solana embedded wallet sync).
+    const shouldBePrimary = isFirstWallet && isSolanaAddress(address)
+
     // Insert the wallet
     const [inserted] = await db
       .insert(userWallets)
@@ -124,7 +143,7 @@ export async function addWalletDirect(
         type,
         connector: connector || null,
         label: sanitizedLabel || (type === 'embedded' ? 'Desperse Wallet' : 'External Wallet'),
-        isPrimary: isFirstWallet,
+        isPrimary: shouldBePrimary,
       })
       .returning({
         id: userWallets.id,
@@ -261,7 +280,7 @@ export async function setDefaultWalletDirect(
 
     // Verify the wallet belongs to this user
     const [wallet] = await db
-      .select({ id: userWallets.id })
+      .select({ id: userWallets.id, address: userWallets.address })
       .from(userWallets)
       .where(
         and(
@@ -273,6 +292,13 @@ export async function setDefaultWalletDirect(
 
     if (!wallet) {
       return { success: false, error: 'Wallet not found' }
+    }
+
+    if (!isSolanaAddress(wallet.address)) {
+      return {
+        success: false,
+        error: 'Only Solana wallets can be set as primary. Ethereum wallets are linked for verification only.',
+      }
     }
 
     // Unset all primary flags for this user
@@ -412,6 +438,7 @@ export async function ensureWalletExists(
       .where(eq(userWallets.userId, userId))
 
     const isFirstWallet = Number(walletCount) === 0
+    const shouldBePrimary = isFirstWallet && isSolanaAddress(address)
 
     await db
       .insert(userWallets)
@@ -421,7 +448,7 @@ export async function ensureWalletExists(
         type,
         connector: options?.connector || null,
         label: sanitizeLabel(options?.label) || (type === 'embedded' ? 'Desperse Wallet' : 'External Wallet'),
-        isPrimary: isFirstWallet,
+        isPrimary: shouldBePrimary,
       })
       .onConflictDoNothing()
   } catch (error) {

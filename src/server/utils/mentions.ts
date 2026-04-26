@@ -10,7 +10,7 @@ import { db } from '@/server/db'
 import { mentions, users, notifications, comments } from '@/server/db/schema'
 import { eq, and, inArray } from 'drizzle-orm'
 import { parseMentions } from '@/lib/tokenParsing'
-import { sendPushNotification, getActorDisplayName } from '@/server/utils/pushDispatch'
+import { sendPushNotification, getActorDisplayName, truncate } from '@/server/utils/pushDispatch'
 
 // Re-export parseMentions for backward compatibility
 export { parseMentions }
@@ -122,7 +122,7 @@ export async function processMentions(
           await sendPushNotification(mentionedUserId, {
             type: 'mention',
             title: `${actorName} mentioned you`,
-            body: '',
+            body: truncate(text, 140),
             deepLink: referenceType === 'post'
               ? `https://desperse.com/p/${referenceId}`
               : `https://desperse.com`,

@@ -7,7 +7,7 @@ import { db } from '@/server/db'
 import { likes, posts, notifications } from '@/server/db/schema'
 import { eq, and } from 'drizzle-orm'
 import { authenticateWithToken } from '@/server/auth'
-import { sendPushNotification, getActorDisplayName } from './pushDispatch'
+import { sendPushNotification, getActorDisplayName, truncate } from './pushDispatch'
 
 export interface LikeResult {
 	success: boolean
@@ -40,7 +40,7 @@ export async function likePostDirect(
 
 	// Check if post exists and get owner
 	const [post] = await db
-		.select({ id: posts.id, userId: posts.userId })
+		.select({ id: posts.id, userId: posts.userId, mediaUrl: posts.mediaUrl, coverUrl: posts.coverUrl, caption: posts.caption })
 		.from(posts)
 		.where(eq(posts.id, postId))
 		.limit(1)
@@ -113,9 +113,10 @@ export async function likePostDirect(
 			await sendPushNotification(post.userId, {
 				type: 'like',
 				title: `${actorName} liked your post`,
-				body: '',
+				body: post.caption ? truncate(post.caption, 140) : '',
 				deepLink: `https://desperse.com/p/${postId}`,
 				actorId: userId,
+				imageUrl: post.coverUrl ?? post.mediaUrl ?? undefined,
 			})
 		} catch (pushErr) {
 			console.warn('[likes] Push notification error:', pushErr instanceof Error ? pushErr.message : 'Unknown error')

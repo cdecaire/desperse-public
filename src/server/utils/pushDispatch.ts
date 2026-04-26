@@ -92,7 +92,58 @@ interface PushPayload {
   body: string
   deepLink: string
   actorId?: string
+  /// Used as the fallback image when `imageUrl` is omitted. Auto-resolved
+  /// from `actorId` when provided. iOS NSE renders this thumbnail next
+  /// to the notification text.
   actorAvatarUrl?: string
+  /// Preferred image — set this for post-related notifications
+  /// (like/comment/collect/purchase) so the post thumbnail renders
+  /// instead of the actor avatar. Falls through to `actorAvatarUrl`
+  /// when nil.
+  imageUrl?: string
+}
+
+/**
+ * Trim user-provided text to a max length suitable for an APNs alert
+ * body. Hard limit per character (not byte) so multi-byte content
+ * stays under the 4KB payload ceiling. Adds an ellipsis when trimmed.
+ */
+export function truncate(text: string, max: number): string {
+  const trimmed = text.trim()
+  if (trimmed.length <= max) return trimmed
+  return trimmed.slice(0, max - 1).trimEnd() + '…'
+}
+
+/**
+ * Pick the image rendered next to the iOS notification. Post media wins
+ * when present (more useful context for like/comment/collect/purchase);
+ * actor avatar is the fallback for follow/mention/message.
+ *
+ * Routes through the Vercel image proxy so the NSE downloads a small
+ * thumbnail instead of the original media — slow connections still get
+ * the notification thumbnail attached within the NSE's 30s budget.
+ */
+function pickNotificationImageUrl(payload: PushPayload): string | undefined {
+  const raw = payload.imageUrl ?? payload.actorAvatarUrl
+  if (!raw) return undefined
+  return getOptimizedImageUrl(raw, 640)
+}
+
+/**
+ * Build a Vercel image-proxy URL when the source matches the allowed
+ * remote pattern; otherwise pass through untouched. Mirrors the
+ * client-side `imageUrl.ts` helper without importing it (avoids
+ * pulling client lib into server bundle).
+ */
+function getOptimizedImageUrl(url: string, width: number): string {
+  // Already proxied — leave as-is
+  if (url.includes('/_vercel/image?')) return url
+  // Format types the proxy can't handle
+  const lower = url.toLowerCase()
+  if (lower.includes('.gif') || lower.includes('.svg')) return url
+  // Only proxy our blob storage CDN
+  if (!url.includes('.blob.vercel-storage.com')) return url
+  return `https://desperse.com/_vercel/image?url=${encodeURIComponent(url)}&w=${width}&q=75`
 }
 
 /**
@@ -295,15 +346,21 @@ async function sendApnsNotification(
   const env: ApnsEnvironment = environment === 'sandbox' ? 'sandbox' : 'production'
   const host = APNS_HOSTS[env]
 
+  const imageUrl = pickNotificationImageUrl(payload)
+
   const apsBody = {
     aps: {
       alert: { title: payload.title, body: payload.body },
       sound: 'default',
       'thread-id': payload.type,
+      // mutable-content fires the iOS Notification Service Extension,
+      // which downloads + attaches the image. Skip when there's no
+      // image so the system delivers the alert without the round-trip.
+      ...(imageUrl ? { 'mutable-content': 1 } : {}),
     },
     type: payload.type,
     deepLink: payload.deepLink,
-    ...(payload.actorAvatarUrl ? { actorAvatarUrl: payload.actorAvatarUrl } : {}),
+    ...(imageUrl ? { imageUrl } : {}),
   }
 
   const send = async (): Promise<{ status: number; body: string }> => {

@@ -8,7 +8,7 @@ import { comments, posts, users, notifications } from '@/server/db/schema'
 import { eq, desc } from 'drizzle-orm'
 import { authenticateWithToken } from '@/server/auth'
 import { processMentions, deleteMentions } from '@/server/utils/mentions'
-import { sendPushNotification, getActorDisplayName } from './pushDispatch'
+import { sendPushNotification, getActorDisplayName, truncate } from './pushDispatch'
 
 export interface Comment {
 	id: string
@@ -122,7 +122,7 @@ export async function createCommentDirect(
 
 		// Check if post exists and get owner
 		const [post] = await db
-			.select({ id: posts.id, userId: posts.userId })
+			.select({ id: posts.id, userId: posts.userId, mediaUrl: posts.mediaUrl, coverUrl: posts.coverUrl })
 			.from(posts)
 			.where(eq(posts.id, postId))
 			.limit(1)
@@ -186,9 +186,10 @@ export async function createCommentDirect(
 				await sendPushNotification(post.userId, {
 					type: 'comment',
 					title: `${actorName} commented on your post`,
-					body: '',
+					body: truncate(trimmedContent, 140),
 					deepLink: `https://desperse.com/p/${postId}`,
 					actorId: userId,
+					imageUrl: post.coverUrl ?? post.mediaUrl ?? undefined,
 				})
 			} catch (pushErr) {
 				console.warn('[comments] Push notification error:', pushErr instanceof Error ? pushErr.message : 'Unknown error')

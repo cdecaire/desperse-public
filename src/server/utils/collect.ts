@@ -10,7 +10,7 @@ import { env } from '@/config/env'
 import { checkTransactionStatus } from '@/server/services/blockchain/mintCnft'
 import { buildCompressedCollectTransaction } from '@/server/services/blockchain/compressed/mintCollectible'
 import { authenticateWithToken } from '@/server/auth'
-import { sendPushNotification, getActorDisplayName } from './pushDispatch'
+import { sendPushNotification, getActorDisplayName, truncate } from './pushDispatch'
 
 /**
  * Result type for collect operations
@@ -301,7 +301,7 @@ export async function prepareCollectDirect(
 				// Create notification for post owner (non-critical)
 				try {
 					const [postData] = await db
-						.select({ userId: posts.userId })
+						.select({ userId: posts.userId, mediaUrl: posts.mediaUrl, coverUrl: posts.coverUrl, caption: posts.caption })
 						.from(posts)
 						.where(eq(posts.id, existing.postId))
 						.limit(1)
@@ -320,9 +320,10 @@ export async function prepareCollectDirect(
 						await sendPushNotification(postData.userId, {
 							type: 'collect',
 							title: `${actorName} collected your post`,
-							body: '',
+							body: postData.caption ? truncate(postData.caption, 140) : '',
 							deepLink: `https://desperse.com/p/${existing.postId}`,
 							actorId: existing.userId,
+							imageUrl: postData.coverUrl ?? postData.mediaUrl ?? undefined,
 						})
 					}
 				} catch (notifError) {
@@ -583,7 +584,7 @@ export async function checkCollectionStatusDirect(
 				// Create notification for post owner (non-critical)
 				try {
 					const [post] = await db
-						.select({ userId: posts.userId })
+						.select({ userId: posts.userId, mediaUrl: posts.mediaUrl, coverUrl: posts.coverUrl, caption: posts.caption })
 						.from(posts)
 						.where(eq(posts.id, col.postId))
 						.limit(1)

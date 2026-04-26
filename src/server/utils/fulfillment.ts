@@ -15,7 +15,7 @@ import { sql } from 'drizzle-orm'
 import { uploadMetadataJson } from '@/server/storage/blob'
 import { snapshotMintedMetadata } from '@/server/utils/mint-snapshot'
 import type { PurchaseStatus } from './editions'
-import { sendPushNotification, getActorDisplayName } from './pushDispatch'
+import { sendPushNotification, getActorDisplayName, truncate } from './pushDispatch'
 import { generateNftMetadata } from '@/server/utils/nft-metadata'
 
 // Stale fulfillment claim threshold - if a claim is older than this, it can be reclaimed
@@ -497,9 +497,10 @@ export async function fulfillPurchaseDirect(purchaseId: string): Promise<Fulfill
         await sendPushNotification(postData.userId, {
           type: 'purchase',
           title: `${actorName} purchased your edition`,
-          body: '',
+          body: postData.caption ? truncate(postData.caption, 140) : '',
           deepLink: `https://desperse.com/p/${purchaseData.postId}`,
           actorId: purchaseData.userId,
+          imageUrl: postData.coverUrl ?? postData.mediaUrl ?? undefined,
         })
       } catch (pushErr) {
         console.warn('[fulfillment] Push notification error:', pushErr instanceof Error ? pushErr.message : 'Unknown error')

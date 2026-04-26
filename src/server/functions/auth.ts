@@ -179,16 +179,49 @@ export const initAuth = createServerFn({
     // Generate display name from email, name, or linked wallet
     const displayName = name || email?.split('@')[0] || walletLabel.display
 
-    const [newUser] = await db
-      .insert(users)
-      .values({
-        privyId: verifiedPrivyId, // Use verified privyId, not client-provided
-        walletAddress,
-        usernameSlug,
-        displayName,
-        avatarUrl: avatarUrl || null,
-      })
-      .returning()
+    // Race-tolerant insert: Privy can fire initAuth twice in fast succession
+    // (especially on external-wallet flows), so two parallel calls can both
+    // SELECT before either INSERTs. The second call hits a unique-constraint
+    // violation on wallet_address or privy_id. Catch it and re-fetch the
+    // user the first call created.
+    let newUser: typeof users.$inferSelect
+    try {
+      const inserted = await db
+        .insert(users)
+        .values({
+          privyId: verifiedPrivyId,
+          walletAddress,
+          usernameSlug,
+          displayName,
+          avatarUrl: avatarUrl || null,
+        })
+        .returning()
+      newUser = inserted[0]
+    } catch (insertError) {
+      const code = (insertError as { code?: string })?.code
+      const msg = insertError instanceof Error ? insertError.message : ''
+      const isDuplicate = code === '23505' || msg.includes('unique') || msg.includes('duplicate')
+      if (!isDuplicate) throw insertError
+      const [existing] = await db
+        .select()
+        .from(users)
+        .where(eq(users.privyId, verifiedPrivyId))
+        .limit(1)
+      if (!existing) {
+        // Race lost on a different unique key (wallet_address) but privyId
+        // didn't match — fall back to wallet_address lookup.
+        const [byWallet] = await db
+          .select()
+          .from(users)
+          .where(eq(users.walletAddress, walletAddress))
+          .limit(1)
+        if (!byWallet) throw insertError
+        newUser = byWallet
+      } else {
+        newUser = existing
+      }
+      console.log('[initAuth] Recovered from concurrent insert race for', verifiedPrivyId)
+    }
 
     // Create embedded wallet row in userWallets
     try {

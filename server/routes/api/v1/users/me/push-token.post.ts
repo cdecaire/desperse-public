@@ -28,7 +28,10 @@ export default defineEventHandler(async (event) => {
     const result = await registerPushTokenDirect(
       token,
       body.token,
-      body.platform || 'android'
+      body.platform || 'android',
+      // iOS clients pass `environment: 'sandbox' | 'production'` so we can
+      // route APNs dispatch to the matching host. Android leaves it null.
+      typeof body.environment === 'string' ? body.environment : null
     )
 
     if (!result.success) {

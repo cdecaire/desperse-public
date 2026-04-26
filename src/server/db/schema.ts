@@ -375,7 +375,14 @@ export const notifications = pgTable(
   }),
 );
 
-// Push tokens table (for FCM push notifications)
+// Push tokens table — multi-platform: FCM for Android, APNs for iOS.
+//
+// `platform`: 'android' | 'ios'
+// `environment`: 'sandbox' | 'production' for iOS (matches the
+//   `aps-environment` entitlement on the registering build); null for
+//   Android. APNs sandbox + production hosts are distinct and tokens are
+//   not interchangeable across them, so dispatch must route to the right
+//   one — see `pushDispatch.ts`.
 export const pushTokens = pgTable(
   'push_tokens',
   {
@@ -385,6 +392,7 @@ export const pushTokens = pgTable(
       .references(() => users.id, { onDelete: 'cascade' }),
     token: text('token').notNull(),
     platform: text('platform').notNull().default('android'),
+    environment: text('environment'),
     createdAt: timestamp('created_at').notNull().defaultNow(),
     updatedAt: timestamp('updated_at').notNull().defaultNow(),
   },

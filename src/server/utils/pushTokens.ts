@@ -6,7 +6,8 @@ import { eq, and } from 'drizzle-orm'
 export async function registerPushTokenDirect(
   authToken: string,
   pushToken: string,
-  platform: string = 'android'
+  platform: string = 'android',
+  environment: string | null = null
 ) {
   const auth = await authenticateWithToken(authToken)
   if (!auth?.userId) {
@@ -15,8 +16,9 @@ export async function registerPushTokenDirect(
 
   const userId = auth.userId
 
-  // Upsert: if the same FCM token exists (even for a different user), reassign it
-  // This handles device transfers and re-logins
+  // Upsert: if the same token exists (even for a different user), reassign
+  // it. Handles device transfers and re-logins. The same APNs/FCM token
+  // is unique per device-app pair, so it's safe to reassign on conflict.
   const existing = await db
     .select()
     .from(pushTokens)
@@ -26,13 +28,14 @@ export async function registerPushTokenDirect(
   if (existing.length > 0) {
     await db
       .update(pushTokens)
-      .set({ userId, platform, updatedAt: new Date() })
+      .set({ userId, platform, environment, updatedAt: new Date() })
       .where(eq(pushTokens.token, pushToken))
   } else {
     await db.insert(pushTokens).values({
       userId,
       token: pushToken,
       platform,
+      environment,
     })
   }
 
@@ -62,7 +65,11 @@ export async function unregisterPushTokenDirect(
 
 export async function getUserPushTokens(userId: string) {
   return db
-    .select({ token: pushTokens.token, platform: pushTokens.platform })
+    .select({
+      token: pushTokens.token,
+      platform: pushTokens.platform,
+      environment: pushTokens.environment,
+    })
     .from(pushTokens)
     .where(eq(pushTokens.userId, userId))
 }

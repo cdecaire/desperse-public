@@ -8,7 +8,7 @@ import { db } from '@/server/db'
 import { users } from '@/server/db/schema'
 import { eq } from 'drizzle-orm'
 import { z } from 'zod'
-import { generateUniqueSlug } from '@/server/utils/slug-utils'
+import { generateUniqueSlug, isSlugTaken, normalizeSlug } from '@/server/utils/slug-utils'
 import {
   extractAuthorizationFromPayload,
   verifyPrivyToken,
@@ -337,4 +337,38 @@ export const getUserBySlug = createServerFn({
     }
   }
 })
+
+const handleAvailabilitySchema = z.object({
+  handle: z.string().min(1).max(64),
+})
+
+/**
+ * Check whether a username slug is currently available.
+ * Used by the /preservation page (and any future onboarding flows) to show a
+ * live "preview · subject to availability" indicator without reserving the
+ * slug. The actual claim happens during normal signup via initAuth.
+ */
+export const checkHandleAvailability = createServerFn({ method: 'POST' }).handler(
+  async (input: unknown) => {
+    try {
+      const rawData =
+        input && typeof input === 'object' && 'data' in input
+          ? (input as { data: unknown }).data
+          : input
+      const { handle } = handleAvailabilitySchema.parse(rawData)
+      const normalized = normalizeSlug(handle)
+      if (!normalized || normalized === 'user') {
+        return { success: true, normalized, available: false, reason: 'invalid' as const }
+      }
+      const taken = await isSlugTaken(normalized)
+      return { success: true, normalized, available: !taken }
+    } catch (error) {
+      console.error(
+        '[checkHandleAvailability]',
+        error instanceof Error ? error.message : 'Unknown error',
+      )
+      return { success: false, error: 'Failed to check handle' }
+    }
+  },
+)
 

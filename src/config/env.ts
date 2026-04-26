@@ -58,6 +58,12 @@ export const env = {
 
   // Helius (Solana RPC)
   HELIUS_API_KEY: getEnvVar('HELIUS_API_KEY', ''),
+
+  // Alchemy (Ethereum NFT API — server-only, used by /preservation lookup)
+  ALCHEMY_API_KEY: getEnvVar('ALCHEMY_API_KEY', ''),
+
+  // Reservoir (Ethereum NFT marketplace data — Phase B custom-contract attribution)
+  RESERVOIR_API_KEY: getEnvVar('RESERVOIR_API_KEY', ''),
   HELIUS_WEBHOOK_SECRET: getEnvVar('HELIUS_WEBHOOK_SECRET', ''),
   BUBBLEGUM_TREE_ADDRESS: getEnvVar('BUBBLEGUM_TREE_ADDRESS', ''),
   COMPRESSED_MINT_FEE_PAYER_PRIVATE_KEY: getEnvVar('COMPRESSED_MINT_FEE_PAYER_PRIVATE_KEY', ''),

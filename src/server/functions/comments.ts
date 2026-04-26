@@ -11,6 +11,7 @@ import { z } from 'zod'
 import { withAuth } from '@/server/auth'
 import { processMentions, deleteMentions } from '@/server/utils/mentions'
 import { sendPushNotification, getActorDisplayName } from '@/server/utils/pushDispatch'
+import { isNotificationTypeEnabled } from '@/server/utils/notificationPrefs'
 
 // Character limit for comments
 const MAX_COMMENT_LENGTH = 280
@@ -103,9 +104,7 @@ export const createComment = createServerFn({
       .where(eq(comments.id, newComment.id))
       .limit(1)
 
-    // Create notification for post owner (if not commenting on own post)
-    // Wrapped in try-catch: notification is non-critical, shouldn't fail the comment
-    if (post.userId !== userId) {
+    if (post.userId !== userId && await isNotificationTypeEnabled(post.userId, 'comment')) {
       try {
         await db.insert(notifications).values({
           userId: post.userId,
@@ -118,7 +117,6 @@ export const createComment = createServerFn({
         console.warn('[createComment] Failed to create notification:', notifError instanceof Error ? notifError.message : 'Unknown error')
       }
 
-      // Dispatch push notification (awaited for serverless compatibility)
       try {
         const actorName = await getActorDisplayName(userId)
         await sendPushNotification(post.userId, {
@@ -126,7 +124,7 @@ export const createComment = createServerFn({
           title: `${actorName} commented on your post`,
           body: '',
           deepLink: `https://desperse.com/p/${postId}`,
-        })
+        }, { prefChecked: true })
       } catch (pushErr) {
         console.warn('[createComment] Push notification error:', pushErr instanceof Error ? pushErr.message : 'Unknown error')
       }

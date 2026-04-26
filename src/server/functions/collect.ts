@@ -7,6 +7,7 @@ import { createServerFn } from '@tanstack/react-start';
 import { getRequest } from '@tanstack/react-start/server';
 import { db } from '@/server/db';
 import { collections, posts, users, notifications } from '@/server/db/schema';
+import { isNotificationTypeEnabled } from '@/server/utils/notificationPrefs';
 import { eq, and, count, gte } from 'drizzle-orm';
 import { z } from 'zod';
 import { env } from '@/config/env';
@@ -342,7 +343,8 @@ export const prepareCollect = createServerFn({
               .where(eq(posts.id, existing.postId))
               .limit(1);
 
-            if (post && post.userId !== existing.userId) {
+            if (post && post.userId !== existing.userId &&
+                await isNotificationTypeEnabled(post.userId, 'collect')) {
               await db.insert(notifications).values({
                 userId: post.userId,
                 actorId: existing.userId,
@@ -785,7 +787,8 @@ export const checkCollectionStatus = createServerFn({
             .where(eq(posts.id, col.postId))
             .limit(1);
 
-          if (post && post.userId !== col.userId) {
+          if (post && post.userId !== col.userId &&
+              await isNotificationTypeEnabled(post.userId, 'collect')) {
             await db.insert(notifications).values({
               userId: post.userId,
               actorId: col.userId,

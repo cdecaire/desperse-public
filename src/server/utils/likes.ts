@@ -8,6 +8,7 @@ import { likes, posts, notifications } from '@/server/db/schema'
 import { eq, and } from 'drizzle-orm'
 import { authenticateWithToken } from '@/server/auth'
 import { sendPushNotification, getActorDisplayName, truncate } from './pushDispatch'
+import { isNotificationTypeEnabled } from './notificationPrefs'
 
 export interface LikeResult {
 	success: boolean
@@ -88,9 +89,12 @@ export async function likePostDirect(
 		throw insertError
 	}
 
-	// Create notification for post owner (if not liking own post)
-	// Wrapped in try-catch: notification is non-critical, shouldn't fail the like
-	if (post.userId !== userId) {
+	// Create notification for post owner (if not liking own post AND
+	// the recipient hasn't disabled this type in their preferences).
+	// The pref check gates BOTH the in-app row and the push dispatch
+	// so the iOS Settings → Notifications toggle disables likes
+	// everywhere — Notifications screen, bell badge, and push.
+	if (post.userId !== userId && await isNotificationTypeEnabled(post.userId, 'like')) {
 		try {
 			await db.insert(notifications).values({
 				userId: post.userId,
@@ -100,7 +104,6 @@ export async function likePostDirect(
 				referenceId: postId,
 			})
 		} catch (notifError) {
-			// Log but don't fail the like operation
 			console.warn(
 				'[likePostDirect] Failed to create notification:',
 				notifError instanceof Error ? notifError.message : 'Unknown error'
@@ -117,7 +120,7 @@ export async function likePostDirect(
 				deepLink: `https://desperse.com/p/${postId}`,
 				actorId: userId,
 				imageUrl: post.coverUrl ?? post.mediaUrl ?? undefined,
-			})
+			}, { prefChecked: true })
 		} catch (pushErr) {
 			console.warn('[likes] Push notification error:', pushErr instanceof Error ? pushErr.message : 'Unknown error')
 		}

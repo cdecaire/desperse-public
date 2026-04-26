@@ -10,6 +10,7 @@ import { eq, and, count, desc, lt, inArray } from 'drizzle-orm'
 import { z } from 'zod'
 import { withAuth } from '@/server/auth'
 import { sendPushNotification, getActorDisplayName } from '@/server/utils/pushDispatch'
+import { isNotificationTypeEnabled } from '@/server/utils/notificationPrefs'
 
 // Schema for like/unlike (no userId - derived from auth)
 const likeSchema = z.object({
@@ -103,9 +104,9 @@ export const likePost = createServerFn({
       throw insertError
     }
 
-    // Create notification for post owner (if not liking own post)
-    // Wrapped in try-catch: notification is non-critical, shouldn't fail the like
-    if (post.userId !== userId) {
+    // Gate both in-app + push on the recipient's per-type pref. Mirrors
+    // the REST utility path in `utils/likes.ts`.
+    if (post.userId !== userId && await isNotificationTypeEnabled(post.userId, 'like')) {
       try {
         await db.insert(notifications).values({
           userId: post.userId,
@@ -115,11 +116,9 @@ export const likePost = createServerFn({
           referenceId: postId,
         })
       } catch (notifError) {
-        // Log but don't fail the like operation
         console.warn('[likePost] Failed to create notification:', notifError instanceof Error ? notifError.message : 'Unknown error')
       }
 
-      // Dispatch push notification (awaited for serverless compatibility)
       try {
         const actorName = await getActorDisplayName(userId)
         await sendPushNotification(post.userId, {
@@ -127,7 +126,7 @@ export const likePost = createServerFn({
           title: `${actorName} liked your post`,
           body: '',
           deepLink: `https://desperse.com/p/${postId}`,
-        })
+        }, { prefChecked: true })
       } catch (pushErr) {
         console.warn('[likePost] Push notification error:', pushErr instanceof Error ? pushErr.message : 'Unknown error')
       }

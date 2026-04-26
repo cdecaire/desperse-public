@@ -8,6 +8,7 @@ import { follows, users, notifications, collections, purchases, posts, likes, co
 import { eq, and, desc, inArray, lt } from 'drizzle-orm'
 import { authenticateWithToken } from '@/server/auth'
 import { sendPushNotification, getActorDisplayName } from './pushDispatch'
+import { isNotificationTypeEnabled } from './notificationPrefs'
 
 export interface FollowResult {
 	success: boolean
@@ -101,29 +102,30 @@ export async function followUserDirect(
 			throw insertError
 		}
 
-		// Create notification for the followed user (non-critical)
-		try {
-			await db.insert(notifications).values({
-				userId: followingId,
-				actorId: userId,
-				type: 'follow',
-			})
-		} catch (notifError) {
-			console.warn('[followUserDirect] Failed to create notification:', notifError instanceof Error ? notifError.message : 'Unknown error')
-		}
+		// In-app + push are both gated by the recipient's per-type pref.
+		if (await isNotificationTypeEnabled(followingId, 'follow')) {
+			try {
+				await db.insert(notifications).values({
+					userId: followingId,
+					actorId: userId,
+					type: 'follow',
+				})
+			} catch (notifError) {
+				console.warn('[followUserDirect] Failed to create notification:', notifError instanceof Error ? notifError.message : 'Unknown error')
+			}
 
-		// Dispatch push notification (awaited for serverless compatibility)
-		try {
-			const actorName = await getActorDisplayName(userId)
-			await sendPushNotification(followingId, {
-				type: 'follow',
-				title: `${actorName} started following you`,
-				body: '',
-				deepLink: `https://desperse.com`,
-				actorId: userId,
-			})
-		} catch (pushErr) {
-			console.warn('[follows] Push notification error:', pushErr instanceof Error ? pushErr.message : 'Unknown error')
+			try {
+				const actorName = await getActorDisplayName(userId)
+				await sendPushNotification(followingId, {
+					type: 'follow',
+					title: `${actorName} started following you`,
+					body: '',
+					deepLink: `https://desperse.com`,
+					actorId: userId,
+				}, { prefChecked: true })
+			} catch (pushErr) {
+				console.warn('[follows] Push notification error:', pushErr instanceof Error ? pushErr.message : 'Unknown error')
+			}
 		}
 
 		return {

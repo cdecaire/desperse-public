@@ -16,6 +16,7 @@ import { uploadMetadataJson } from '@/server/storage/blob'
 import { snapshotMintedMetadata } from '@/server/utils/mint-snapshot'
 import type { PurchaseStatus } from './editions'
 import { sendPushNotification, getActorDisplayName, truncate } from './pushDispatch'
+import { isNotificationTypeEnabled } from './notificationPrefs'
 import { generateNftMetadata } from '@/server/utils/nft-metadata'
 
 // Stale fulfillment claim threshold - if a claim is older than this, it can be reclaimed
@@ -477,8 +478,9 @@ export async function fulfillPurchaseDirect(purchaseId: string): Promise<Fulfill
       console.warn('[fulfillPurchaseDirect] Failed to snapshot metadata:', snapshotError instanceof Error ? snapshotError.message : 'Unknown error')
     }
 
-    // Create notification for post owner (if buyer is not the owner) (non-critical)
-    if (postData.userId !== purchaseData.userId) {
+    // In-app + push are both gated by the recipient's per-type pref.
+    if (postData.userId !== purchaseData.userId &&
+        await isNotificationTypeEnabled(postData.userId, 'purchase')) {
       try {
         await db.insert(notifications).values({
           userId: postData.userId,
@@ -501,7 +503,7 @@ export async function fulfillPurchaseDirect(purchaseId: string): Promise<Fulfill
           deepLink: `https://desperse.com/p/${purchaseData.postId}`,
           actorId: purchaseData.userId,
           imageUrl: postData.coverUrl ?? postData.mediaUrl ?? undefined,
-        })
+        }, { prefChecked: true })
       } catch (pushErr) {
         console.warn('[fulfillment] Push notification error:', pushErr instanceof Error ? pushErr.message : 'Unknown error')
       }

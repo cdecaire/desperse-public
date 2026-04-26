@@ -11,6 +11,7 @@ import { mentions, users, notifications, comments } from '@/server/db/schema'
 import { eq, and, inArray } from 'drizzle-orm'
 import { parseMentions } from '@/lib/tokenParsing'
 import { sendPushNotification, getActorDisplayName, truncate } from '@/server/utils/pushDispatch'
+import { getEnabledRecipients } from '@/server/utils/notificationPrefs'
 
 // Re-export parseMentions for backward compatibility
 export { parseMentions }
@@ -100,25 +101,30 @@ export async function processMentions(
         }))
       )
 
-      // Create notifications only for newly added mentions (non-critical)
+      // Single batched SELECT for all toAdd recipients — gates BOTH the
+      // in-app notification row and the push.
+      const enabled = await getEnabledRecipients(toAdd, 'mention')
+      const enabledRecipients = toAdd.filter(id => enabled.has(id))
+
       try {
-        await db.insert(notifications).values(
-          toAdd.map(mentionedUserId => ({
-            userId: mentionedUserId,
-            actorId: mentionerUserId,
-            type: 'mention' as const,
-            referenceType,
-            referenceId,
-          }))
-        )
+        if (enabledRecipients.length > 0) {
+          await db.insert(notifications).values(
+            enabledRecipients.map(mentionedUserId => ({
+              userId: mentionedUserId,
+              actorId: mentionerUserId,
+              type: 'mention' as const,
+              referenceType,
+              referenceId,
+            }))
+          )
+        }
       } catch (notifError) {
         console.warn('[processMentions] Failed to create mention notifications:', notifError instanceof Error ? notifError.message : 'Unknown error')
       }
 
-      // Dispatch push notifications for mentions (awaited for serverless compatibility)
       try {
         const actorName = await getActorDisplayName(mentionerUserId)
-        for (const mentionedUserId of toAdd) {
+        for (const mentionedUserId of enabledRecipients) {
           await sendPushNotification(mentionedUserId, {
             type: 'mention',
             title: `${actorName} mentioned you`,
@@ -127,7 +133,7 @@ export async function processMentions(
               ? `https://desperse.com/p/${referenceId}`
               : `https://desperse.com`,
             actorId: mentionerUserId,
-          })
+          }, { prefChecked: true })
         }
       } catch (pushErr) {
         console.warn('[mentions] Push notification error:', pushErr instanceof Error ? pushErr.message : 'Unknown error')
@@ -148,34 +154,37 @@ export async function processMentions(
       }))
     )
 
-    // Create notifications for all mentions (non-critical)
+    const enabled = await getEnabledRecipients(validMentions.map(u => u.id), 'mention')
+    const enabledMentions = validMentions.filter(u => enabled.has(u.id))
+
     try {
-      await db.insert(notifications).values(
-        validMentions.map(user => ({
-          userId: user.id,
-          actorId: mentionerUserId,
-          type: 'mention' as const,
-          referenceType,
-          referenceId,
-        }))
-      )
+      if (enabledMentions.length > 0) {
+        await db.insert(notifications).values(
+          enabledMentions.map(user => ({
+            userId: user.id,
+            actorId: mentionerUserId,
+            type: 'mention' as const,
+            referenceType,
+            referenceId,
+          }))
+        )
+      }
     } catch (notifError) {
       console.warn('[processMentions] Failed to create mention notifications:', notifError instanceof Error ? notifError.message : 'Unknown error')
     }
 
-    // Dispatch push notifications for mentions (awaited for serverless compatibility)
     try {
       const actorName = await getActorDisplayName(mentionerUserId)
-      for (const user of validMentions) {
+      for (const user of enabledMentions) {
         await sendPushNotification(user.id, {
           type: 'mention',
           title: `${actorName} mentioned you`,
-          body: '',
+          body: truncate(text, 140),
           deepLink: referenceType === 'post'
             ? `https://desperse.com/p/${referenceId}`
             : `https://desperse.com`,
           actorId: mentionerUserId,
-        })
+        }, { prefChecked: true })
       }
     } catch (pushErr) {
       console.warn('[mentions] Push notification error:', pushErr instanceof Error ? pushErr.message : 'Unknown error')

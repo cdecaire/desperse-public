@@ -2,6 +2,7 @@ import { db } from '@/server/db'
 import { users } from '@/server/db/schema'
 import { getUserPushTokens, deleteStaleToken } from './pushTokens'
 import { getApnsJwt, clearApnsJwtCache } from './apns-jwt'
+import { isNotificationTypeEnabled } from './notificationPrefs'
 import { eq } from 'drizzle-orm'
 import crypto from 'crypto'
 import http2 from 'http2'
@@ -86,21 +87,29 @@ function getProjectId(): string {
   return JSON.parse(serviceAccountJson).project_id
 }
 
+import type { NotificationType } from './notificationPrefs'
+
 interface PushPayload {
-  type: string
+  type: NotificationType
   title: string
   body: string
   deepLink: string
   actorId?: string
-  /// Used as the fallback image when `imageUrl` is omitted. Auto-resolved
-  /// from `actorId` when provided. iOS NSE renders this thumbnail next
-  /// to the notification text.
+  /// Auto-resolved from `actorId` when provided. iOS NSE renders this
+  /// thumbnail next to the notification text. Used as the fallback when
+  /// `imageUrl` is omitted.
   actorAvatarUrl?: string
-  /// Preferred image — set this for post-related notifications
-  /// (like/comment/collect/purchase) so the post thumbnail renders
-  /// instead of the actor avatar. Falls through to `actorAvatarUrl`
-  /// when nil.
+  /// Preferred image — set for post-related notifications so the post
+  /// thumbnail renders instead of the actor avatar.
   imageUrl?: string
+}
+
+interface PushOptions {
+  /// Caller has already gated this delivery on
+  /// `isNotificationTypeEnabled` (e.g. immediately before
+  /// `notifications.insert`). Skips the redundant SELECT inside
+  /// `sendPushNotification` — halves DB round-trips per notification.
+  prefChecked?: boolean
 }
 
 /**
@@ -146,46 +155,9 @@ function getOptimizedImageUrl(url: string, width: number): string {
   return `https://desperse.com/_vercel/image?url=${encodeURIComponent(url)}&w=${width}&q=75`
 }
 
-/**
- * Check if user has this notification type enabled in their preferences.
- * Default is true (enabled) if not explicitly set.
- */
-async function isNotificationTypeEnabled(
-  userId: string,
-  type: string
-): Promise<boolean> {
-  const [user] = await db
-    .select({ preferences: users.preferences })
-    .from(users)
-    .where(eq(users.id, userId))
-    .limit(1)
-
-  if (!user?.preferences) return true
-
-  const prefs = user.preferences as any
-  const notifPrefs = prefs?.notifications
-  if (!notifPrefs) return true
-
-  // Moderation notifications are always delivered (not user-configurable)
-  if (type === 'content_hidden' || type === 'content_deleted') return true
-
-  // Map push type to preference key
-  const prefKeyMap: Record<string, string> = {
-    like: 'likes',
-    comment: 'comments',
-    follow: 'follows',
-    collect: 'collects',
-    purchase: 'purchases',
-    mention: 'mentions',
-    message: 'messages',
-  }
-
-  const prefKey = prefKeyMap[type]
-  if (!prefKey) return true
-
-  // If explicitly set to false, disabled. Otherwise enabled.
-  return notifPrefs[prefKey] !== false
-}
+// `isNotificationTypeEnabled` lives in `notificationPrefs.ts` so the
+// in-app notification insert and the push dispatch share one source of
+// truth. Both surfaces respect the same per-type toggles.
 
 /**
  * Send a push notification to a user's registered devices.
@@ -193,14 +165,19 @@ async function isNotificationTypeEnabled(
  */
 export async function sendPushNotification(
   recipientUserId: string,
-  payload: PushPayload
+  payload: PushPayload,
+  options: PushOptions = {}
 ) {
-  // Check if user wants this type of notification
-  const enabled = await isNotificationTypeEnabled(
-    recipientUserId,
-    payload.type
-  )
-  if (!enabled) return
+  // Skip the prefs check when the caller already gated immediately
+  // before `notifications.insert`. Halves DB round-trips per
+  // notification creation.
+  if (!options.prefChecked) {
+    const enabled = await isNotificationTypeEnabled(
+      recipientUserId,
+      payload.type
+    )
+    if (!enabled) return
+  }
 
   // Get user's registered push tokens
   const tokens = await getUserPushTokens(recipientUserId)

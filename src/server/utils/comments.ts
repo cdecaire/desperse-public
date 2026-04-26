@@ -9,6 +9,7 @@ import { eq, desc } from 'drizzle-orm'
 import { authenticateWithToken } from '@/server/auth'
 import { processMentions, deleteMentions } from '@/server/utils/mentions'
 import { sendPushNotification, getActorDisplayName, truncate } from './pushDispatch'
+import { isNotificationTypeEnabled } from './notificationPrefs'
 
 export interface Comment {
 	id: string
@@ -165,9 +166,8 @@ export async function createCommentDirect(
 			.where(eq(comments.id, newComment.id))
 			.limit(1)
 
-		// Create notification for post owner (if not commenting on own post)
-		// Non-critical - shouldn't fail the comment
-		if (post.userId !== userId) {
+		// In-app + push are both gated by the recipient's per-type pref.
+		if (post.userId !== userId && await isNotificationTypeEnabled(post.userId, 'comment')) {
 			try {
 				await db.insert(notifications).values({
 					userId: post.userId,
@@ -190,7 +190,7 @@ export async function createCommentDirect(
 					deepLink: `https://desperse.com/p/${postId}`,
 					actorId: userId,
 					imageUrl: post.coverUrl ?? post.mediaUrl ?? undefined,
-				})
+				}, { prefChecked: true })
 			} catch (pushErr) {
 				console.warn('[comments] Push notification error:', pushErr instanceof Error ? pushErr.message : 'Unknown error')
 			}

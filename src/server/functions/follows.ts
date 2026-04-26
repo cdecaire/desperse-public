@@ -10,6 +10,7 @@ import { eq, and, count, inArray } from 'drizzle-orm'
 import { z } from 'zod'
 import { withAuth } from '@/server/auth'
 import { sendPushNotification, getActorDisplayName } from '@/server/utils/pushDispatch'
+import { isNotificationTypeEnabled } from '@/server/utils/notificationPrefs'
 
 // Schema for follow/unfollow (no followerId - derived from auth)
 const followSchema = z.object({
@@ -105,28 +106,28 @@ export const followUser = createServerFn({
       throw insertError
     }
 
-    // Create notification for the followed user (non-critical)
-    try {
-      await db.insert(notifications).values({
-        userId: followingId,
-        actorId: followerId,
-        type: 'follow',
-      })
-    } catch (notifError) {
-      console.warn('[followUser] Failed to create notification:', notifError instanceof Error ? notifError.message : 'Unknown error')
-    }
+    if (await isNotificationTypeEnabled(followingId, 'follow')) {
+      try {
+        await db.insert(notifications).values({
+          userId: followingId,
+          actorId: followerId,
+          type: 'follow',
+        })
+      } catch (notifError) {
+        console.warn('[followUser] Failed to create notification:', notifError instanceof Error ? notifError.message : 'Unknown error')
+      }
 
-    // Dispatch push notification (awaited for serverless compatibility)
-    try {
-      const actorName = await getActorDisplayName(followerId)
-      await sendPushNotification(followingId, {
-        type: 'follow',
-        title: `${actorName} started following you`,
-        body: '',
-        deepLink: `https://desperse.com`,
-      })
-    } catch (pushErr) {
-      console.warn('[followUser] Push notification error:', pushErr instanceof Error ? pushErr.message : 'Unknown error')
+      try {
+        const actorName = await getActorDisplayName(followerId)
+        await sendPushNotification(followingId, {
+          type: 'follow',
+          title: `${actorName} started following you`,
+          body: '',
+          deepLink: `https://desperse.com`,
+        }, { prefChecked: true })
+      } catch (pushErr) {
+        console.warn('[followUser] Push notification error:', pushErr instanceof Error ? pushErr.message : 'Unknown error')
+      }
     }
 
     return {

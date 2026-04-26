@@ -11,6 +11,7 @@ import { checkTransactionStatus } from '@/server/services/blockchain/mintCnft'
 import { buildCompressedCollectTransaction } from '@/server/services/blockchain/compressed/mintCollectible'
 import { authenticateWithToken } from '@/server/auth'
 import { sendPushNotification, getActorDisplayName, truncate } from './pushDispatch'
+import { isNotificationTypeEnabled } from './notificationPrefs'
 
 /**
  * Result type for collect operations
@@ -324,7 +325,7 @@ export async function prepareCollectDirect(
 							deepLink: `https://desperse.com/p/${existing.postId}`,
 							actorId: existing.userId,
 							imageUrl: postData.coverUrl ?? postData.mediaUrl ?? undefined,
-						})
+						}, { prefChecked: true })
 					}
 				} catch (notifError) {
 					console.warn(
@@ -589,7 +590,8 @@ export async function checkCollectionStatusDirect(
 						.where(eq(posts.id, col.postId))
 						.limit(1)
 
-					if (post && post.userId !== col.userId) {
+					if (post && post.userId !== col.userId &&
+					    await isNotificationTypeEnabled(post.userId, 'collect')) {
 						await db.insert(notifications).values({
 							userId: post.userId,
 							actorId: col.userId,
@@ -606,7 +608,7 @@ export async function checkCollectionStatusDirect(
 							body: '',
 							deepLink: `https://desperse.com/p/${col.postId}`,
 							actorId: col.userId,
-						})
+						}, { prefChecked: true })
 					}
 				} catch (notifError) {
 					console.warn(

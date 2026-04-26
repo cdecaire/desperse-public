@@ -171,26 +171,37 @@ export async function sendPushNotification(
     }
   }
 
-  // Lazily acquire FCM access token only if we actually have any Android
-  // tokens — pure iOS deployments shouldn't fail when the FCM env vars
-  // aren't configured.
+  // Lazily acquire FCM access token only if we have Android tokens —
+  // pure iOS deployments shouldn't fail when FCM env vars aren't set.
   const hasAndroid = tokens.some(t => t.platform === 'android')
   const fcmAccessToken = hasAndroid ? await getAccessToken() : null
   const fcmProjectId = hasAndroid ? getProjectId() : null
 
-  for (const t of tokens) {
-    try {
-      if (t.platform === 'ios') {
-        await sendApnsNotification(t.token, t.environment, payload)
-      } else {
-        await sendFcmNotification(t.token, fcmAccessToken!, fcmProjectId!, payload)
+  // Pool APNs HTTP/2 sessions per host for this dispatch — Apple
+  // explicitly supports request multiplexing on a single connection,
+  // so a user with N iOS devices on the same env hits one TCP/TLS/H2
+  // handshake instead of N. Sessions are closed after fanout.
+  const apnsSessions = new Map<string, http2.ClientHttp2Session>()
+
+  await Promise.allSettled(
+    tokens.map(async t => {
+      try {
+        if (t.platform === 'ios') {
+          await sendApnsNotification(t.token, t.environment, payload, apnsSessions)
+        } else {
+          await sendFcmNotification(t.token, fcmAccessToken!, fcmProjectId!, payload)
+        }
+      } catch (error: any) {
+        console.warn(
+          `[push] Failed to send to token ${t.token.slice(0, 10)}...:`,
+          error?.message || error
+        )
       }
-    } catch (error: any) {
-      console.warn(
-        `[push] Failed to send to token ${t.token.slice(0, 10)}...:`,
-        error?.message || error
-      )
-    }
+    })
+  )
+
+  for (const session of apnsSessions.values()) {
+    session.close()
   }
 }
 
@@ -251,25 +262,27 @@ async function sendFcmNotification(
   }
 }
 
+type ApnsEnvironment = 'sandbox' | 'production'
+
+const APNS_HOSTS: Record<ApnsEnvironment, string> = {
+  sandbox: 'api.sandbox.push.apple.com',
+  production: 'api.push.apple.com',
+}
+
 /**
- * Send a push to a single APNs (iOS) device token via HTTP/2.
+ * Send a push to a single APNs (iOS) device token via HTTP/2. Sessions
+ * are pooled per host across the dispatch loop so users with multiple
+ * iOS devices share one TCP/TLS/H2 handshake.
  *
- * Apple requires HTTP/2 + ES256 JWT auth (token-based). We mint the JWT
- * once per ~50min in `apns-jwt.ts`. The session is opened per-call here;
- * callers issuing many pushes back-to-back could amortize this with a
- * pool, but iOS push volume per-user is low so a fresh session per send
- * is fine and avoids long-lived connection management.
- *
- * Routing: sandbox-issued tokens (debug builds) hit
- * `api.sandbox.push.apple.com`; production tokens hit
- * `api.push.apple.com`. Tokens are not cross-compatible — sending to the
- * wrong host returns `BadDeviceToken`, which we treat as stale and
- * delete so the next session re-registers.
+ * Stale tokens (410, BadDeviceToken, Unregistered, DeviceTokenNotForTopic)
+ * are pruned. ExpiredProviderToken / InvalidProviderToken bust the JWT
+ * cache and retry once.
  */
 async function sendApnsNotification(
   token: string,
   environment: string | null,
-  payload: PushPayload
+  payload: PushPayload,
+  sessionPool: Map<string, http2.ClientHttp2Session>
 ) {
   const bundleId = process.env.APNS_BUNDLE_ID
   if (!bundleId) {
@@ -277,30 +290,14 @@ async function sendApnsNotification(
     return
   }
 
-  let jwt: string
-  try {
-    jwt = getApnsJwt()
-  } catch (error: any) {
-    console.warn('[push] APNs JWT mint failed, skipping iOS dispatch:', error?.message || error)
-    return
-  }
+  // Default to production when null — historical Android rows have null
+  // environment, but at this point we know platform=ios.
+  const env: ApnsEnvironment = environment === 'sandbox' ? 'sandbox' : 'production'
+  const host = APNS_HOSTS[env]
 
-  // Default to production when the column is null — historical Android
-  // rows have null environment, but at this point we know platform=ios.
-  const host = environment === 'sandbox'
-    ? 'api.sandbox.push.apple.com'
-    : 'api.push.apple.com'
-
-  // APNs alert payload. Mirrors the FCM data shape with an `aps` block
-  // so iOS surfaces the system banner without requiring a Notification
-  // Service Extension. Custom keys (type/deepLink/actorAvatarUrl) sit
-  // alongside `aps` and are read by the iOS client on tap.
   const apsBody = {
     aps: {
-      alert: {
-        title: payload.title,
-        body: payload.body,
-      },
+      alert: { title: payload.title, body: payload.body },
       sound: 'default',
       'thread-id': payload.type,
     },
@@ -309,49 +306,61 @@ async function sendApnsNotification(
     ...(payload.actorAvatarUrl ? { actorAvatarUrl: payload.actorAvatarUrl } : {}),
   }
 
-  const { status, body } = await new Promise<{ status: number; body: string }>((resolve, reject) => {
-    const client = http2.connect(`https://${host}`)
-    client.on('error', reject)
+  const send = async (): Promise<{ status: number; body: string }> => {
+    const session = getApnsSession(sessionPool, host)
+    const jwt = getApnsJwt()
 
-    const req = client.request({
-      ':method': 'POST',
-      ':path': `/3/device/${token}`,
-      'authorization': `bearer ${jwt}`,
-      'apns-topic': bundleId,
-      'apns-push-type': 'alert',
-      'apns-priority': '10',
-      'content-type': 'application/json',
+    return new Promise((resolve, reject) => {
+      const req = session.request({
+        ':method': 'POST',
+        ':path': `/3/device/${token}`,
+        'authorization': `bearer ${jwt}`,
+        'apns-topic': bundleId,
+        'apns-push-type': 'alert',
+        'apns-priority': '10',
+        'content-type': 'application/json',
+      })
+      let responseStatus = 0
+      let responseBody = ''
+      req.on('response', headers => { responseStatus = Number(headers[':status']) || 0 })
+      req.on('data', chunk => { responseBody += chunk })
+      req.on('end', () => resolve({ status: responseStatus, body: responseBody }))
+      req.on('error', reject)
+      req.end(JSON.stringify(apsBody))
     })
+  }
 
-    let responseStatus = 0
-    let responseBody = ''
+  let result: { status: number; body: string }
+  try {
+    result = await send()
+  } catch (error: any) {
+    console.warn('[push] APNs JWT mint or session error:', error?.message || error)
+    return
+  }
 
-    req.on('response', (headers) => {
-      responseStatus = Number(headers[':status']) || 0
-    })
-    req.on('data', (chunk) => { responseBody += chunk })
-    req.on('end', () => {
-      client.close()
-      resolve({ status: responseStatus, body: responseBody })
-    })
-    req.on('error', (err) => {
-      client.close()
-      reject(err)
-    })
+  if (result.status === 200) return
 
-    req.end(JSON.stringify(apsBody))
-  })
+  let reason: string
+  try { reason = JSON.parse(result.body).reason } catch { reason = result.body }
 
-  if (status === 200) return
+  // ExpiredProviderToken is benign — Apple recommends minting a fresh
+  // JWT and retrying. Bound to one retry so a persistent auth issue
+  // doesn't spin.
+  if (result.status === 403 &&
+      (reason === 'ExpiredProviderToken' || reason === 'InvalidProviderToken')) {
+    clearApnsJwtCache()
+    try {
+      result = await send()
+      if (result.status === 200) return
+      try { reason = JSON.parse(result.body).reason } catch { reason = result.body }
+    } catch (error: any) {
+      console.warn('[push] APNs retry failed:', error?.message || error)
+      return
+    }
+  }
 
-  const reason = (() => {
-    try { return JSON.parse(body).reason } catch { return body }
-  })()
-
-  // Stale / unregistered token codes per Apple's APNs reference.
-  // Drop these from the DB so we don't keep banging on dead routes.
   if (
-    status === 410 || // Unregistered
+    result.status === 410 ||
     reason === 'BadDeviceToken' ||
     reason === 'Unregistered' ||
     reason === 'DeviceTokenNotForTopic'
@@ -361,15 +370,26 @@ async function sendApnsNotification(
     return
   }
 
-  // Auth-related failures usually mean a stale JWT — invalidate the
-  // cache so the next dispatch mints a fresh one.
-  if (status === 403 && (reason === 'ExpiredProviderToken' || reason === 'InvalidProviderToken')) {
-    clearApnsJwtCache()
-  }
-
   console.warn(
-    `[push] APNs send failed for ${token.slice(0, 10)}...: ${status} ${reason || ''}`
+    `[push] APNs send failed for ${token.slice(0, 10)}...: ${result.status} ${reason || ''}`
   )
+}
+
+/// Get-or-open an HTTP/2 session for the given host. Sessions are
+/// closed by the dispatch loop once all sends finish.
+function getApnsSession(
+  pool: Map<string, http2.ClientHttp2Session>,
+  host: string
+): http2.ClientHttp2Session {
+  const existing = pool.get(host)
+  if (existing && !existing.closed && !existing.destroyed) return existing
+
+  const session = http2.connect(`https://${host}`)
+  // Connection-level errors close the session — without this, a failed
+  // handshake leaks the session until GC.
+  session.on('error', () => session.close())
+  pool.set(host, session)
+  return session
 }
 
 /**

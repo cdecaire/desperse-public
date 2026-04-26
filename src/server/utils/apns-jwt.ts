@@ -1,21 +1,9 @@
 /**
- * APNs token-based authentication.
+ * APNs token-based auth — ES256 JWT signed with the team's .p8 key,
+ * cached for 50min (Apple bans both fresh-mint-per-push and >1h reuse).
  *
- * Apple's HTTP/2 push API authenticates each request with an ES256 JWT
- * signed by the team's APNs Auth Key (.p8). Tokens are valid for up to
- * 60 minutes — Apple bans servers that mint a new JWT on every push and
- * also bans servers that reuse the same JWT for >1h, so we cache and
- * refresh on a ~50min cadence.
- *
- * Required env vars:
- *   APNS_KEY_ID      — 10-char Key ID from developer.apple.com
- *   APNS_TEAM_ID     — 10-char Team ID
- *   APNS_PRIVATE_KEY — contents of the .p8 file (PEM, including the
- *                      BEGIN/END PRIVATE KEY lines). In Vercel env vars,
- *                      newlines should be encoded as literal `\n` and
- *                      we expand them on read.
- *
- * Uses Node.js native crypto — no `jsonwebtoken` dependency.
+ * Env: APNS_KEY_ID, APNS_TEAM_ID, APNS_PRIVATE_KEY (literal `\n` in
+ * Vercel — expanded on read).
  */
 
 import crypto from 'crypto'

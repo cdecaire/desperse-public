@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
+import { Link } from '@tanstack/react-router'
 import { usePrivy } from '@privy-io/react-auth'
 import { useAuth } from '@/hooks/useAuth'
-import { PublicHeader } from '@/components/layout/PublicHeader'
-import { Footer } from '@/components/landing/LandingPage'
+import { useTheme } from '@/components/providers/ThemeProvider'
+import { Logo } from '@/components/shared/Logo'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icon'
 import { toastError, toastSuccess } from '@/lib/toast'
@@ -18,11 +19,19 @@ type CatalogSuccess = Extract<
 	{ pieces: unknown }
 >
 
-const DEMO_CHIPS = [
-	{ label: 'jerryz.eth', value: 'jerryz.eth' },
-	{ label: 'pplpleasr.eth', value: 'pplpleasr.eth' },
-	{ label: 'xcopy.eth', value: 'xcopy.eth' },
-]
+// Foundation shut down 2026-04-15. Pinata has stated a ~12-month grace
+// window before pins begin lapsing — we count down to 2027-04-15.
+const FOUNDATION_SHUTDOWN_ISO = '2026-04-15T00:00:00Z'
+const PIN_EXPIRY_ISO = '2027-04-15T00:00:00Z'
+
+// First-paint showcase. Loaded automatically on page mount so visitors
+// see a populated catalog before they type anything.
+const SHOWCASE_INPUT = 'sexafterflowers.eth'
+
+// Cap the initially-rendered catalog. Foundation creators with deep catalogs
+// (xcopy has 100+, sexafterflowers has 96) shouldn't blow out the page on
+// first render. The "View all" expander surfaces the full set on demand.
+const CATALOG_CAP = 24
 
 function formatBytes(bytes: number): string {
 	if (bytes < 1024) return `${bytes} B`
@@ -44,6 +53,49 @@ function formatDate(iso: string | null): string {
 	return d.toLocaleDateString(undefined, { month: 'short', year: 'numeric' })
 }
 
+function daysUntil(iso: string): number {
+	const target = new Date(iso).getTime()
+	const now = Date.now()
+	return Math.max(0, Math.ceil((target - now) / (1000 * 60 * 60 * 24)))
+}
+
+function daysSince(iso: string): number {
+	const start = new Date(iso).getTime()
+	const now = Date.now()
+	return Math.max(0, Math.floor((now - start) / (1000 * 60 * 60 * 24)))
+}
+
+function formatLongDate(d: Date): string {
+	return d.toLocaleDateString('en-US', {
+		month: 'short',
+		day: 'numeric',
+		year: 'numeric',
+	})
+}
+
+/**
+ * Returns a short, intentionally imprecise duration label. The pin-expiry
+ * date is a 12-month estimate, not a published cutoff — showing "354 days
+ * left" pretends we know the actual timeline. Coarser units convey the
+ * shape of the urgency without false precision. Switches granularity
+ * based on magnitude: days when close, weeks under two months, months
+ * under two years, years beyond.
+ */
+function relaxedDuration(days: number): string {
+	if (days <= 0) return 'now'
+	if (days < 14) return `${days} ${days === 1 ? 'day' : 'days'}`
+	if (days < 60) {
+		const weeks = Math.round(days / 7)
+		return `~${weeks} weeks`
+	}
+	if (days < 730) {
+		const months = Math.round(days / 30.4)
+		return `~${months} months`
+	}
+	const years = Math.round(days / 365)
+	return `~${years} ${years === 1 ? 'year' : 'years'}`
+}
+
 export function PreservationPage() {
 	const { login, authenticated } = usePrivy()
 	const { getAccessToken } = useAuth()
@@ -52,6 +104,22 @@ export function PreservationPage() {
 	const [hasJoined, setHasJoined] = useState(false)
 	const [emailExpanded, setEmailExpanded] = useState(false)
 	const pendingPostSignupRef = useRef(false)
+	const showcaseLoadedRef = useRef(false)
+
+	// Live time-sensitive values. Initialized to null so SSR doesn't bake in
+	// a server-side "now" that mismatches the client; populated on mount and
+	// refreshed once per minute. Numbers/dates render once mounted.
+	const [now, setNow] = useState<Date | null>(null)
+	const [showAllPieces, setShowAllPieces] = useState(false)
+	useEffect(() => {
+		setNow(new Date())
+		const t = setInterval(() => setNow(new Date()), 60_000)
+		return () => clearInterval(t)
+	}, [])
+
+	const pinDaysLeft = now ? daysUntil(PIN_EXPIRY_ISO) : null
+	const daysSinceShutdown = now ? daysSince(FOUNDATION_SHUTDOWN_ISO) : null
+	const todayLong = now ? formatLongDate(now) : null
 
 	const lookup = useMutation({
 		mutationFn: async (addressOrEns: string) => {
@@ -75,7 +143,7 @@ export function PreservationPage() {
 		onSuccess: (res) => {
 			if (res.success) {
 				setHasJoined(true)
-				toastSuccess(res.alreadyJoined ? 'Already on the list — we’ll be in touch.' : 'You’re on the list.')
+				toastSuccess(res.alreadyJoined ? 'Already counted. Thanks!' : 'Vote counted. Thanks!')
 			} else {
 				toastError(res.error || 'Could not save your signup.')
 			}
@@ -83,21 +151,35 @@ export function PreservationPage() {
 		onError: () => toastError('Could not save your signup.'),
 	})
 
+	// Auto-load a showcase catalog on first paint so the page reads as a
+	// living archive rather than a blank form. Only fires once.
+	useEffect(() => {
+		if (showcaseLoadedRef.current) return
+		showcaseLoadedRef.current = true
+		lookup.mutate(SHOWCASE_INPUT)
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
+
+	// Reset the expand-all flag whenever a new lookup runs, so each catalog
+	// starts in its capped state regardless of how the previous one was viewed.
+	useEffect(() => {
+		setShowAllPieces(false)
+	}, [lookup.variables])
+
 	const result = lookup.data
 	const catalog: CatalogSuccess | null =
 		result && 'pieces' in result ? (result as CatalogSuccess) : null
 	const lookupError = result && 'error' in result ? (result as { error: string }).error : null
 	const hasResult = lookup.isSuccess && (catalog !== null || lookupError !== null)
 	const showWaitlist = hasResult && !hasJoined
+	const isShowcase =
+		lookup.isSuccess && lookup.variables === SHOWCASE_INPUT && input.trim() === ''
 
 	const ethAddressFromInput = useMemo(() => {
 		const cleaned = input.trim()
 		return /^0x[a-fA-F0-9]{40}$/.test(cleaned) ? cleaned : null
 	}, [input])
 
-	// If the lookup was an ENS name (e.g. xcopy.eth), suggest the prefix as a
-	// possible Desperse handle and check availability live. Display only — the
-	// real handle is chosen during normal signup; nothing is reserved here.
 	const ensHandleSeed = useMemo(() => {
 		if (!lookup.isSuccess) return null
 		const cleaned = input.trim().toLowerCase()
@@ -129,11 +211,6 @@ export function PreservationPage() {
 		lookup.mutate(cleaned)
 	}
 
-	const handleChip = (value: string) => {
-		setInput(value)
-		lookup.mutate(value)
-	}
-
 	const catalogSnapshot = catalog
 		? {
 				pieceCount: catalog.stats.pieceCount,
@@ -161,14 +238,10 @@ export function PreservationPage() {
 	}
 
 	const handleSignup = () => {
-		// Set a flag so we auto-tag preservation interest as soon as the Privy
-		// modal closes with a successful login. Avoids a second click.
 		pendingPostSignupRef.current = true
 		login()
 	}
 
-	// After Privy login succeeds, write the preservation row tagged with the
-	// new userId so this signup is linked to their Desperse account from day one.
 	useEffect(() => {
 		if (!authenticated || !pendingPostSignupRef.current) return
 		pendingPostSignupRef.current = false
@@ -186,33 +259,105 @@ export function PreservationPage() {
 
 	return (
 		<div className="min-h-screen bg-background text-foreground">
-			<PublicHeader />
+			<main className="pb-20">
+				{/* Standalone masthead — replaces the global Desperse chrome on this
+				    page. Brand mark, volume/issue, live countdown, theme toggle, exit
+				    affordance. The page is its own self-contained marketing surface. */}
+				<header className="border-b border-border/60 sticky top-0 z-30 bg-background/85 backdrop-blur-md">
+					<div className="mx-auto max-w-6xl px-6 md:px-10 lg:px-12 py-3 flex items-center justify-between gap-4 text-[11px] uppercase tracking-[0.08em] font-semibold">
+						<div className="flex items-center gap-3 min-w-0">
+							<Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity shrink-0" aria-label="Desperse home">
+								<Logo size={14} className="text-foreground" ariaHidden />
+								<span className="text-foreground font-semibold">
+									Desperse{' '}
+									<span className="text-muted-foreground/60 mx-0.5">/</span> Preservation
+								</span>
+							</Link>
+							<span className="hidden md:inline text-muted-foreground/60">·</span>
+							<span className="hidden md:inline text-muted-foreground truncate">
+								{todayLong ?? 'Vol. 01 · Foundation Archive'}
+							</span>
+						</div>
 
-			<main className="pt-24 pb-20 px-6">
-				<div className="mx-auto max-w-3xl space-y-12">
-					{/* Hero */}
-					<section className="space-y-6">
-						<p className="text-[11px] font-mono uppercase tracking-[0.12em] text-muted-foreground">
-							Foundation preservation · prototype
+						<div className="flex items-center gap-3 shrink-0">
+							<div
+								className="hidden sm:flex items-center gap-2 text-muted-foreground"
+								suppressHydrationWarning
+							>
+								<span
+									className="size-1.5 rounded-full bg-foreground motion-safe:animate-pulse"
+									aria-hidden
+								/>
+								<span className="text-foreground">
+									{pinDaysLeft != null ? relaxedDuration(pinDaysLeft) : '—'}
+								</span>{' '}
+								until pins lapse
+							</div>
+							<MastheadThemeToggle />
+							<MastheadAuthAction />
+						</div>
+					</div>
+					{/* Mobile-only countdown row — the masthead is too tight for it on
+					    small viewports, so it gets its own line. */}
+					<div
+						className="sm:hidden border-t border-border/60 px-6 py-2 flex items-center justify-between gap-3 text-[11px] uppercase tracking-[0.08em] font-semibold text-muted-foreground"
+						suppressHydrationWarning
+					>
+						<div className="flex items-center gap-2">
+							<span
+								className="size-1.5 rounded-full bg-foreground motion-safe:animate-pulse"
+								aria-hidden
+							/>
+							<span className="text-foreground">
+								{pinDaysLeft != null ? relaxedDuration(pinDaysLeft) : '—'} left
+							</span>
+						</div>
+						{todayLong && <span className="truncate">{todayLong}</span>}
+					</div>
+				</header>
+
+				<div className="mx-auto max-w-6xl px-6 md:px-10 lg:px-12">
+
+					{/* Hero — bigger, editorial weight. Italic-style emphasis via muted
+					    foreground on the second line. */}
+					<section className="pt-16 md:pt-24 lg:pt-28 pb-12 md:pb-16 max-w-3xl">
+						<p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground mb-6 flex items-center gap-3">
+							<span className="block w-8 h-px bg-muted-foreground" aria-hidden />
+							A preservation project · For Foundation creators
 						</p>
-						<h1 className="text-3xl md:text-4xl font-semibold tracking-tight leading-[1.1]">
-							Foundation went quiet. Your work doesn’t have to.
+						<h1 className="font-semibold tracking-[-0.035em] leading-[0.95] text-[clamp(2.75rem,8vw,6rem)] mb-8">
+							Your work shouldn’t{' '}
+							<span className="text-muted-foreground italic">vanish</span>
+							<br />
+							with the frontend.
 						</h1>
-						<p className="text-base text-muted-foreground leading-relaxed max-w-[60ch]">
-							Foundation’s marketplace shut down on April 15. There’s a roughly 12-month
-							window before pinned IPFS metadata starts to lapse. Look up a wallet to see
-							what’s at risk — and bring your catalog to a Solana-native home built for creators.
+						<p
+							className="text-lg text-muted-foreground leading-[1.5] max-w-[60ch] mb-4"
+							suppressHydrationWarning
+						>
+							Foundation shut down on April 15, 2026
+							{daysSinceShutdown != null && daysSinceShutdown > 0 ? (
+								<>
+									{' '}— <span className="text-foreground">{relaxedDuration(daysSinceShutdown)} ago</span>
+								</>
+							) : null}
+							. The IPFS pins keeping your art online are guaranteed for roughly twelve
+							months. <span className="text-foreground">This page is a prototype</span>{' '}
+							— see what’s at risk for any wallet, and tell us if you’d want a
+							Solana-native home for it on Desperse.
 						</p>
 					</section>
+				</div>
 
-					{/* Lookup */}
-					<section className="space-y-3">
+				{/* Lookup — sunken band so it reads as the input zone */}
+				<div className="bg-card/40 border-y border-border/60 py-12 md:py-16">
+					<div className="mx-auto max-w-3xl px-6 md:px-10 lg:px-12 space-y-4">
 						<form onSubmit={handleSubmit} className="space-y-3">
 							<label
 								htmlFor="lookup"
-								className="text-[10px] uppercase tracking-[0.12em] font-mono text-muted-foreground block"
+								className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground block"
 							>
-								Look up a catalog
+								Enter the Ethereum address that minted your work
 							</label>
 							<div className="flex gap-2">
 								<input
@@ -220,267 +365,680 @@ export function PreservationPage() {
 									type="text"
 									value={input}
 									onChange={(e) => setInput(e.target.value)}
-									placeholder="0x… or alice.eth"
-									className="flex-1 bg-card border border-border/60 rounded-sm px-4 h-10 text-sm focus:outline-none focus:ring-2 focus:ring-ring/30 focus:border-border font-mono"
+									placeholder="0x… or yourname.eth"
+									className="flex-1 bg-background border border-border/60 rounded-sm px-4 h-12 text-base font-mono focus:outline-none focus:ring-2 focus:ring-ring/30 focus:border-border"
 									autoComplete="off"
 									spellCheck={false}
 								/>
-								<Button type="submit" disabled={!input.trim() || lookup.isPending}>
+								<Button type="submit" size="cta" disabled={!input.trim() || lookup.isPending}>
 									{lookup.isPending ? (
 										<Icon name="spinner-third" variant="regular" spin />
 									) : (
-										'Look up'
+										'Preview catalog →'
 									)}
 								</Button>
 							</div>
-							<div className="flex flex-wrap gap-2 items-center pt-1">
-								<span className="text-xs text-muted-foreground mr-1">Try:</span>
-								{DEMO_CHIPS.map((chip) => (
-									<button
-										key={chip.value}
-										type="button"
-										onClick={() => handleChip(chip.value)}
-										className="text-sm px-3 py-2 rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors font-mono min-h-10"
-									>
-										{chip.label}
-									</button>
-								))}
-							</div>
 						</form>
-					</section>
+					</div>
+				</div>
 
-					{/* Result region — aria-live so SR users hear lookup outcomes.
-					    Branches below are mutually exclusive so wrapping doesn't cause spacing issues. */}
-					<div role="status" aria-live="polite" aria-atomic="false">
-					{/* Loading skeleton — shown during the (sometimes multi-second) Alchemy
-					    cascade. Lookup fans out across mint events + contract metadata + batch
-					    NFT metadata, so we surface a skeleton rather than a blank page. */}
-					{lookup.isPending && (
-						<div className="space-y-6">
-							<div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-								{Array.from({ length: 4 }).map((_, i) => (
-									<div
-										key={i}
-										className="rounded-lg bg-card border border-border/60 p-4 h-[88px] animate-pulse"
-									/>
-								))}
+				<div className="mx-auto max-w-6xl px-6 md:px-10 lg:px-12 pt-12 space-y-12">
+					{/* Result region — aria-live so SR users hear lookup outcomes */}
+					<div role="status" aria-live="polite" aria-atomic="false" aria-busy={lookup.isPending}>
+						{lookup.isPending && !catalog && (
+							<div className="space-y-6">
+								<div className="grid grid-cols-2 md:grid-cols-4 border border-border/60">
+									{Array.from({ length: 4 }).map((_, i) => (
+										<div
+											key={i}
+											className={`p-6 h-[120px] motion-safe:animate-pulse bg-card ${
+												i < 3 ? 'border-r border-border/60' : ''
+											} ${i < 2 ? 'border-b border-border/60 md:border-b-0' : ''}`}
+										/>
+									))}
+								</div>
+								<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-px bg-border/60 border border-border/60">
+									{Array.from({ length: 10 }).map((_, i) => (
+										<div key={i} className="aspect-square bg-card motion-safe:animate-pulse" />
+									))}
+								</div>
+								<p className="text-xs text-muted-foreground text-center font-semibold uppercase tracking-[0.08em]">
+									Querying Ethereum · scanning mint events…
+								</p>
 							</div>
-							<div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-								{Array.from({ length: 6 }).map((_, i) => (
-									<div
-										key={i}
-										className="aspect-square rounded-lg bg-card border border-border/60 animate-pulse"
-									/>
-								))}
+						)}
+
+						{lookupError && (
+							<div className="rounded-lg border border-destructive/40 bg-destructive/5 p-4 text-sm">
+								{lookupError}
 							</div>
-							<p className="text-xs text-muted-foreground text-center">
-								Resolving wallet, scanning mint events, fetching catalog metadata…
-							</p>
-						</div>
-					)}
+						)}
 
-					{/* Error */}
-					{lookupError && (
-						<div className="rounded-lg border border-destructive/40 bg-destructive/5 p-4 text-sm">
-							{lookupError}
-						</div>
-					)}
-
-					{/* Empty result — still encourage signup */}
-					{catalog && catalog.pieces.length === 0 && !lookupError && (
-						<div className="rounded-lg border border-border/60 bg-card p-6 space-y-3">
-							<div className="flex items-start gap-3">
-								<div className="size-9 rounded-full bg-muted grid place-items-center shrink-0">
+						{catalog && catalog.pieces.length === 0 && !lookupError && (
+							<div className="rounded-lg border border-border/60 bg-card p-8 space-y-3 text-center">
+								<div className="size-12 rounded-full bg-muted grid place-items-center mx-auto">
 									<Icon name="magnifying-glass" variant="regular" className="text-muted-foreground" />
 								</div>
+								<p className="font-semibold text-lg">No pieces detected — yet.</p>
+								<p className="text-sm text-muted-foreground max-w-md mx-auto">
+									Coverage spans Foundation’s shared marketplace and self-deployed
+									collection contracts, including pieces minted then sold. Some custom
+									contracts may still be unrecognized — sign up below and we’ll alert
+									you when your full catalog is detected.
+								</p>
+							</div>
+						)}
+
+						{catalog && catalog.pieces.length > 0 && (
+							<div className="space-y-12">
+								{isShowcase && (
+									<p className="text-xs text-muted-foreground flex items-center gap-2">
+										<span
+											className="size-1.5 rounded-full bg-tone-standard motion-safe:animate-pulse shrink-0"
+											aria-hidden
+										/>
+										<span>
+											Showcase catalog —{' '}
+											<span className="text-foreground font-mono">{SHOWCASE_INPUT}</span>
+											. Look up your own wallet above to see what’s at risk.
+										</span>
+									</p>
+								)}
+
+								{/* Stats — restored newspaper-grid feel with thin borders + larger numerals */}
+								<div className="grid grid-cols-2 md:grid-cols-4 border border-border/60">
+									<StatCell
+										label="Pieces"
+										value={catalog.stats.pieceCount.toLocaleString()}
+										borderRight
+										borderBottom
+									/>
+									<StatCell
+										label="Total size"
+										value={formatBytes(catalog.stats.totalSizeBytes)}
+										borderRight={false}
+										borderRightMd
+										borderBottom
+									/>
+									<StatCell
+										label="Arweave cost"
+										value={formatUsd(catalog.stats.estimatedArweaveCostUsd)}
+										hint="approximate"
+										borderRight
+									/>
+									<StatCell
+										label="First mint"
+										value={formatDate(catalog.stats.firstMintAt)}
+									/>
+								</div>
+
+								{/* Catalog grid */}
+								<div className="space-y-4">
+									<div className="flex items-baseline justify-between pb-3 border-b border-border/60">
+										<h2 className="text-2xl md:text-3xl font-semibold tracking-tight">
+											The catalog
+										</h2>
+										<span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+											{catalog.pieces.length > CATALOG_CAP && !showAllPieces
+												? `Showing ${CATALOG_CAP} of ${catalog.pieces.length}`
+												: 'Hover for details'}
+										</span>
+									</div>
+									<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-px bg-border/60 border border-border/60">
+										{(showAllPieces ? catalog.pieces : catalog.pieces.slice(0, CATALOG_CAP)).map((p) => (
+											<a
+												key={`${p.contract}-${p.tokenId}`}
+												href={p.foundationUrl ?? '#'}
+												target="_blank"
+												rel="noreferrer noopener"
+												aria-label={`${p.name ?? `Token ${p.tokenId}`} — open on Foundation`}
+												className="group relative aspect-square bg-card overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+											>
+												<PieceImage urls={p.imageUrls} alt={p.name ?? `Token ${p.tokenId}`} />
+												<div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-zinc-950/85 to-transparent text-zinc-50 font-semibold text-[10px] uppercase tracking-wider flex justify-between items-end opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
+													<span className="truncate max-w-[60%]">
+														{p.name ?? `Token ${p.tokenId}`}
+													</span>
+													<span>{formatBytes(p.estimatedSizeBytes)}</span>
+												</div>
+											</a>
+										))}
+									</div>
+									{catalog.pieces.length > CATALOG_CAP && (
+										<div className="flex justify-center pt-2">
+											<button
+												type="button"
+												onClick={() => setShowAllPieces((v) => !v)}
+												className="text-sm px-4 min-h-10 inline-flex items-center gap-1.5 rounded-full border border-border/60 hover:border-border hover:bg-secondary/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
+											>
+												{showAllPieces ? (
+													<>
+														Show fewer
+														<Icon name="chevron-up" variant="regular" className="text-xs" />
+													</>
+												) : (
+													<>
+														View all {catalog.pieces.length} pieces
+														<Icon name="chevron-down" variant="regular" className="text-xs" />
+													</>
+												)}
+											</button>
+										</div>
+									)}
+									<p className="text-xs text-muted-foreground leading-relaxed pt-2">
+										{catalog.limits.message}
+									</p>
+								</div>
+
+								{/* ENS handle preview */}
+								{ensHandleSeed && (
+									<HandlePreview
+										seed={ensHandleSeed}
+										data={handlePreview.data ?? null}
+										isLoading={handlePreview.isFetching}
+									/>
+								)}
+							</div>
+						)}
+					</div>
+				</div>
+
+				{/* Trust section — comes BEFORE pricing because creators leaving a
+				    platform that just shut down need to feel safe before they care
+				    about cost. "Yours, not ours." answers their fear; pricing answers
+				    their question. */}
+				{hasResult && catalog && catalog.pieces.length > 0 && (
+					<div className="bg-card/40 border-y border-border/60 mt-16 py-16">
+						<div className="mx-auto max-w-6xl px-6 md:px-10 lg:px-12 space-y-12">
+							<div className="space-y-3 max-w-2xl">
+								<p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+									Why this is different
+								</p>
+								<h2 className="font-semibold tracking-[-0.025em] leading-[1.05] text-[clamp(2rem,5vw,3.5rem)]">
+									Yours, not ours.
+								</h2>
+								<p className="text-base text-muted-foreground leading-relaxed">
+									Foundation took the website with it. The art didn’t disappear, but
+									the IPFS pins started a 12-month clock toward expiration. Here’s
+									how this is designed so the same thing can’t happen if Desperse
+									ever goes away.
+								</p>
+							</div>
+
+							<div className="grid md:grid-cols-3 gap-px bg-border/60 border border-border/60">
+								<Pillar
+									number="01"
+									title="You mint, you own"
+									body="Each piece mints straight into your Solana wallet, signed by you. If Desperse disappears, your NFTs are still on-chain — viewable in any Solana wallet app, verifiable by anyone. We never hold your work, and there’s no kill switch we control."
+								/>
+								<Pillar
+									number="02"
+									title="Pay once, stored ~200 years"
+									body="Arweave isn’t a subscription. About $5 per GB, paid once. The network bakes a 200-year storage budget into every upload, so files persist whether or not anyone keeps paying. Foundation’s pins were a Pinata subscription that had to be renewed — that’s why they have a 12-month expiration. Arweave doesn’t have that risk."
+								/>
+								<Pillar
+									number="03"
+									title="Claims go wallet-to-wallet"
+									body="When your past collectors claim their preservation copy, the new NFT lands directly in their Solana wallet — they sign with their own wallet to receive it. We just run the matching; we never hold anything. They own theirs the same way you own yours."
+								/>
+							</div>
+
+							{/* Storage comparison */}
+							<div className="space-y-5 pt-4">
+								<div className="space-y-2 max-w-2xl">
+									<p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+										Storage compared
+									</p>
+									<h3 className="text-xl md:text-2xl font-semibold tracking-tight">
+										Different cost models, different reliability stories.
+									</h3>
+								</div>
+								<div className="grid md:grid-cols-2 gap-px bg-border/60 border border-border/60">
+									<StorageCard
+										label="What Foundation used"
+										title="IPFS pinning"
+										subtitle="Pinata, Web3.Storage, etc."
+										points={[
+											{ k: 'Pricing', v: 'Subscription · ~$20/mo per 100GB' },
+											{ k: 'Persistence', v: 'Lasts as long as someone keeps paying' },
+											{ k: 'If the platform leaves', v: 'Files start expiring' },
+											{ k: 'Foundation’s outcome', v: '~12 months before files lapse' },
+										]}
+									/>
+									<StorageCard
+										label="What we’d use"
+										title="Arweave"
+										subtitle="Permanent · pay once"
+										points={[
+											{ k: 'Pricing', v: '~$5 per GB · paid once' },
+											{ k: 'Persistence', v: '~200 years — paid for upfront by the upload' },
+											{ k: 'If the platform leaves', v: 'No effect — files don’t depend on us' },
+											{ k: 'Best for', v: 'Anything you want to outlive a frontend' },
+										]}
+									/>
+								</div>
+								<p className="text-xs text-muted-foreground max-w-3xl pt-1">
+									Arweave isn’t free — cost scales with file size, and 200 years is a
+									protocol projection, not a legal guarantee. But it’s one-time, not
+									recurring, and your files don’t depend on any single company.
+								</p>
+							</div>
+						</div>
+					</div>
+				)}
+
+				{/* Pricing — what we'd build, with two tier shapes + a worked example
+				    tied to the user's actual catalog. Sits between trust (which de-risks)
+				    and "what happens next" (which sets expectations). */}
+				{hasResult && catalog && catalog.pieces.length > 0 && (
+					<div className="bg-background py-16">
+						<div className="mx-auto max-w-6xl px-6 md:px-10 lg:px-12 space-y-10">
+							<div className="space-y-3 max-w-2xl">
+								<p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+									If we build it
+								</p>
+								<h2 className="font-semibold tracking-[-0.025em] leading-[1.05] text-[clamp(2rem,5vw,3.5rem)]">
+									Two shapes we’re considering.
+								</h2>
+								<p className="text-base text-muted-foreground leading-relaxed">
+									Nothing here is built yet. These are the two directions we’d explore
+									if enough creators sign up below.
+								</p>
+							</div>
+
+							<div className="grid md:grid-cols-2 gap-px bg-border/60 border border-border/60">
+								<TierCard
+									label="Idea · free for migrators"
+									title="Preservation edition"
+									desc="A lightweight Solana mint with your media on permanent Arweave storage, verifiably linked to your original Foundation mint. Past collectors could claim a free copy with a wallet signature."
+									points={[
+										'Permanent Arweave storage',
+										'Verifiable link back to your original mint',
+										'Past collectors could claim with a wallet signature',
+										'~$0.50 per piece — possibly subsidized for early migrators',
+									]}
+									highlight={false}
+								/>
+								<TierCard
+									label="Idea · for royalty-earning catalogs"
+									title="Premium edition"
+									desc="A first-class Solana NFT with on-chain royalties. Would be listable on secondary marketplaces, with royalties enforced at the protocol level."
+									points={[
+										'Permanent Arweave storage',
+										'On-chain royalties — you set the rate',
+										'Listable on Magic Eden, Tensor, etc.',
+										'~$5–$15 per piece — would be paid by you',
+									]}
+									highlight
+								/>
+							</div>
+
+							{/* Worked example using the user's actual catalog */}
+							<div className="rounded-lg border border-border/60 bg-card p-6 space-y-3">
+								<p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+									Hypothetical · your catalog above
+								</p>
+								<div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+									<MiniStat
+										label="Pieces"
+										value={catalog.stats.pieceCount.toLocaleString()}
+									/>
+									<MiniStat
+										label="Preservation"
+										value={formatUsd(catalog.stats.estimatedArweaveCostUsd)}
+										hint="Storage only"
+									/>
+									<MiniStat
+										label="Premium"
+										value={formatUsd(
+											catalog.stats.estimatedArweaveCostUsd + catalog.stats.pieceCount * 9,
+										)}
+										hint="Storage + mint"
+									/>
+									<MiniStat
+										label="If subsidized"
+										value="$0"
+										hint="Possible · TBD"
+									/>
+								</div>
+								<p className="text-xs text-muted-foreground pt-1">
+									Illustrative numbers — we haven’t built this. Real costs would
+									depend on file sizes, SOL price, Arweave storage rates, and which
+									shape we land on (if any).
+								</p>
+							</div>
+						</div>
+					</div>
+				)}
+
+				{/* Signup / waitlist */}
+				<div className="bg-background pt-20 pb-12">
+					<div className="mx-auto max-w-3xl px-6 md:px-10 lg:px-12 text-center space-y-6">
+						<p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+							Show interest
+						</p>
+						<h2 className="font-semibold tracking-[-0.025em] leading-[1.05] text-[clamp(2rem,5vw,3.5rem)]">
+							Tell us you’d{' '}
+							<span className="text-muted-foreground italic">use this</span>.
+						</h2>
+						<p className="text-base text-muted-foreground leading-relaxed max-w-xl mx-auto">
+							Your signup is a vote. If enough Foundation creators sign up, we’ll
+							build the migration tool. If not, we won’t — and we won’t spam you
+							either way. No promises on timeline, scope, pricing, or whether this
+							happens at all.
+						</p>
+
+						{showWaitlist && authenticated && (
+							<div className="pt-4">
+								<Button onClick={handleSignedInJoin} disabled={join.isPending} size="cta">
+									{join.isPending ? (
+										<Icon name="spinner-third" variant="regular" spin />
+									) : (
+										'I’d use this — count me in'
+									)}
+								</Button>
+								<p className="text-xs text-muted-foreground mt-3">
+									Signed in to Desperse — we’ll only contact you if this turns into something real.
+								</p>
+							</div>
+						)}
+
+						{showWaitlist && !authenticated && (
+							<div className="pt-4 space-y-4">
+								<Button onClick={handleSignup} size="cta">
+									Sign up to vote yes
+								</Button>
+								{ensHandleSeed && (
+									<p className="text-xs text-muted-foreground">
+										You’ll set up{' '}
+										<span className="font-mono text-foreground">@{ensHandleSeed}</span>{' '}
+										during signup, subject to availability.
+									</p>
+								)}
+								<div className="pt-2">
+									{!emailExpanded ? (
+										<button
+											type="button"
+											onClick={() => setEmailExpanded(true)}
+											className="text-sm px-4 min-h-10 inline-flex items-center gap-1.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-secondary/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
+										>
+											Just want updates? Email-only signup
+											<Icon name="arrow-right" variant="regular" className="text-xs" />
+										</button>
+									) : (
+										<form onSubmit={handleEmailJoin} className="space-y-2 max-w-md mx-auto pt-2 border-t border-border/60">
+											<label
+												htmlFor="waitlist-email"
+												className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground block pt-3"
+											>
+												Email-only — no account
+											</label>
+											<div className="flex flex-col sm:flex-row gap-2">
+												<input
+													id="waitlist-email"
+													type="email"
+													value={email}
+													onChange={(e) => setEmail(e.target.value)}
+													placeholder="you@example.com"
+													className="flex-1 bg-card border border-border/60 rounded-sm px-4 h-10 text-sm focus:outline-none focus:ring-2 focus:ring-ring/30 focus:border-border"
+													autoComplete="email"
+													required
+												/>
+												<Button type="submit" variant="outline" disabled={join.isPending}>
+													{join.isPending ? (
+														<Icon name="spinner-third" variant="regular" spin />
+													) : (
+														'Join the list'
+													)}
+												</Button>
+											</div>
+										</form>
+									)}
+								</div>
+							</div>
+						)}
+
+						{hasJoined && (
+							<div className="pt-4 max-w-md mx-auto rounded-lg border border-border/60 bg-card p-6 flex items-start gap-3 text-left">
+								<div className="size-9 rounded-full bg-tone-standard/15 grid place-items-center shrink-0">
+									<Icon name="check" variant="regular" className="text-tone-standard" />
+								</div>
 								<div className="space-y-1">
-									<p className="font-semibold">No pieces detected — yet.</p>
+									<p className="font-semibold">Vote counted.</p>
 									<p className="text-sm text-muted-foreground">
-										Coverage now spans Foundation’s shared marketplace and self-deployed
-										collection contracts, including pieces minted then sold. Some custom
-										contracts may still be unrecognized — sign up below and we’ll alert
-										you when your full catalog is detected.
+										We’ll only follow up if this becomes a real product. Thanks
+										for helping us figure out whether to build it.
 									</p>
 								</div>
 							</div>
-						</div>
-					)}
-
-					{/* Result with pieces */}
-					{catalog && catalog.pieces.length > 0 && (
-						<div className="space-y-8">
-							{/* Stats */}
-							<div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-								<StatCell label="Pieces" value={catalog.stats.pieceCount.toString()} />
-								<StatCell
-									label="Total size"
-									value={formatBytes(catalog.stats.totalSizeBytes)}
-								/>
-								<StatCell
-									label="Arweave cost"
-									value={formatUsd(catalog.stats.estimatedArweaveCostUsd)}
-									hint="approx."
-								/>
-								<StatCell
-									label="First mint"
-									value={formatDate(catalog.stats.firstMintAt)}
-								/>
-							</div>
-
-							{/* Handle preview — shown only when the input was an ENS name */}
-							{ensHandleSeed && (
-								<HandlePreview
-									seed={ensHandleSeed}
-									data={handlePreview.data ?? null}
-									isLoading={handlePreview.isFetching}
-								/>
-							)}
-
-							<p className="text-xs text-muted-foreground leading-relaxed">
-								{catalog.limits.message}
-							</p>
-
-							{/* Catalog grid */}
-							<div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-								{catalog.pieces.map((p) => (
-									<a
-										key={`${p.contract}-${p.tokenId}`}
-										href={p.foundationUrl ?? '#'}
-										target="_blank"
-										rel="noreferrer noopener"
-										className="group block aspect-square rounded-lg overflow-hidden bg-card border border-border/60 hover:border-border transition-colors"
-									>
-										<PieceImage urls={p.imageUrls} alt={p.name ?? `Token ${p.tokenId}`} />
-									</a>
-								))}
-							</div>
-						</div>
-					)}
+						)}
 					</div>
-
-					{/* Signup / waitlist — always shown after a lookup. Three states:
-					    1. Already authenticated → 1-click "flag interest" button
-					    2. Not authenticated → primary "Sign up" CTA via Privy + collapsible email-only fallback
-					    3. Already joined → handled by hasJoined branch below */}
-					{showWaitlist && authenticated && (
-						<section className="rounded-lg border border-border/60 bg-card p-6 space-y-4">
-							<div className="space-y-1.5">
-								<h2 className="text-xl font-semibold tracking-tight">
-									Flag your preservation interest.
-								</h2>
-								<p className="text-sm text-muted-foreground">
-									You’re signed in to Desperse. We’ll email you when migration tools open
-									and you can claim preservation editions.
-								</p>
-							</div>
-							<Button onClick={handleSignedInJoin} disabled={join.isPending}>
-								{join.isPending ? (
-									<Icon name="spinner-third" variant="regular" spin />
-								) : (
-									'Add me to the preservation list'
-								)}
-							</Button>
-						</section>
-					)}
-
-					{showWaitlist && !authenticated && (
-						<section className="rounded-lg border border-border/60 bg-card p-6 space-y-5">
-							<div className="space-y-1.5">
-								<h2 className="text-xl font-semibold tracking-tight">
-									Lock in your spot.
-								</h2>
-								<p className="text-sm text-muted-foreground">
-									Sign up to claim
-									{ensHandleSeed ? (
-										<>
-											{' '}
-											<span className="font-mono">@{ensHandleSeed}</span>
-										</>
-									) : (
-										' your handle'
-									)}
-									, link this wallet for verification, and get notified when migration tools
-									open. We don’t bridge or wrap your ETH NFTs — Desperse signs all
-									transactions on Solana.
-								</p>
-							</div>
-							<Button onClick={handleSignup} className="w-full sm:w-auto">
-								Sign up with wallet or email
-							</Button>
-
-							{!emailExpanded ? (
-								<button
-									type="button"
-									onClick={() => setEmailExpanded(true)}
-									className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
-								>
-									Just want updates? Email-only signup
-									<Icon name="arrow-right" variant="regular" className="text-[10px]" />
-								</button>
-							) : (
-								<form onSubmit={handleEmailJoin} className="space-y-2 pt-2 border-t border-border/60">
-									<label
-										htmlFor="waitlist-email"
-										className="text-[10px] uppercase tracking-[0.12em] font-mono text-muted-foreground block"
-									>
-										Email-only — no account
-									</label>
-									<div className="flex flex-col sm:flex-row gap-2">
-										<input
-											id="waitlist-email"
-											type="email"
-											value={email}
-											onChange={(e) => setEmail(e.target.value)}
-											placeholder="you@example.com"
-											className="flex-1 bg-background border border-border/60 rounded-sm px-4 h-10 text-sm focus:outline-none focus:ring-2 focus:ring-ring/30 focus:border-border"
-											autoComplete="email"
-											required
-										/>
-										<Button type="submit" variant="outline" disabled={join.isPending}>
-											{join.isPending ? (
-												<Icon name="spinner-third" variant="regular" spin />
-											) : (
-												'Join the list'
-											)}
-										</Button>
-									</div>
-									{ethAddressFromInput && (
-										<p className="text-xs text-muted-foreground font-mono">
-											Linked to {ethAddressFromInput.slice(0, 6)}…{ethAddressFromInput.slice(-4)}
-										</p>
-									)}
-								</form>
-							)}
-						</section>
-					)}
-
-					{hasJoined && (
-						<div className="rounded-lg border border-border/60 bg-card p-6 flex items-start gap-3">
-							<div className="size-9 rounded-full bg-tone-standard/20 grid place-items-center shrink-0">
-								<Icon name="check" variant="regular" className="text-tone-standard" />
-							</div>
-							<div className="space-y-1">
-								<p className="font-semibold">You’re on the list.</p>
-								<p className="text-sm text-muted-foreground">
-									We’ll reach out when migration tools go live.
-								</p>
-							</div>
-						</div>
-					)}
-
-					{/* Footnote */}
-					<section className="space-y-2 pt-8 border-t border-border/60">
-						<p className="text-xs text-muted-foreground leading-relaxed max-w-[65ch]">
-							Desperse does not host, wrap, mirror, or bridge your Ethereum NFTs. Your
-							originals stay yours to keep, sell, or burn. Preservation editions are new
-							Solana mints with Arweave-permanent media, cryptographically tied to your
-							original work.
-						</p>
-					</section>
 				</div>
-			</main>
 
-			<Footer showCta={false} />
+				{/* Footnote — single line. Trust section already covers custody. */}
+				<div className="mx-auto max-w-3xl px-6 md:px-10 lg:px-12 pt-12 pb-16 text-center">
+					<p className="text-xs text-muted-foreground leading-relaxed max-w-[65ch] mx-auto">
+						An interest check, not a product. If we build the migration tool, your
+						Ethereum originals stay on Ethereum and Desperse never holds them.
+					</p>
+				</div>
+
+				{/* Colophon — standalone footer for this page. Editorial signoff
+				    + minimal nav back to the rest of Desperse. */}
+				<footer className="border-t border-border/60 mt-8">
+					<div className="mx-auto max-w-6xl px-6 md:px-10 lg:px-12 py-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+						<div className="flex items-center gap-2">
+							<Logo size={11} className="text-muted-foreground" ariaHidden />
+							<span>Desperse · Creator-first preservation · Prototype</span>
+						</div>
+						<nav className="flex items-center gap-5" aria-label="Footer">
+							<Link to="/" className="hover:text-foreground transition-colors">
+								Home
+							</Link>
+							<Link to="/about" className="hover:text-foreground transition-colors">
+								About
+							</Link>
+							<Link to="/privacy" className="hover:text-foreground transition-colors">
+								Privacy
+							</Link>
+							<Link to="/terms" className="hover:text-foreground transition-colors">
+								Terms
+							</Link>
+						</nav>
+					</div>
+				</footer>
+			</main>
+		</div>
+	)
+}
+
+/**
+ * Theme toggle baked into the standalone masthead — replaces the chunky
+ * Switch from the global PublicHeader with a single icon button so it sits
+ * cleanly alongside the brand mark.
+ */
+function MastheadThemeToggle() {
+	const { theme, setTheme, resolvedTheme } = useTheme()
+	const isDark = (theme === 'system' ? resolvedTheme : theme) === 'dark'
+	return (
+		<button
+			type="button"
+			onClick={() => setTheme(isDark ? 'light' : 'dark')}
+			aria-label={`Switch to ${isDark ? 'light' : 'dark'} theme`}
+			className="size-10 grid place-items-center rounded-full text-muted-foreground hover:text-foreground hover:bg-secondary/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
+		>
+			<Icon name={isDark ? 'moon' : 'sun-bright'} variant="regular" className="text-sm" />
+		</button>
+	)
+}
+
+/**
+ * Authenticated-only exit affordance: "Feed →" link back to the rest of
+ * Desperse. Anonymous users have no masthead button — signup happens via
+ * the in-page primary CTA, which avoids a competing "Log in" button that
+ * could siphon clicks away from the vote.
+ */
+function MastheadAuthAction() {
+	const { authenticated } = usePrivy()
+	if (!authenticated) return null
+	return (
+		<Link
+			to="/"
+			className="text-sm normal-case tracking-normal font-medium px-4 min-h-10 inline-flex items-center gap-1.5 rounded-full hover:bg-secondary/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
+		>
+			Feed
+			<Icon name="arrow-right" variant="regular" className="text-xs" />
+		</Link>
+	)
+}
+
+function StatCell({
+	label,
+	value,
+	hint,
+	borderRight,
+	borderRightMd,
+	borderBottom,
+}: {
+	label: string
+	value: string
+	hint?: string
+	borderRight?: boolean
+	borderRightMd?: boolean
+	borderBottom?: boolean
+}) {
+	return (
+		<div
+			className={`bg-card p-6 md:p-8 space-y-3 ${
+				borderRight ? 'border-r border-border/60' : ''
+			} ${borderRightMd ? 'md:border-r border-border/60' : ''} ${
+				borderBottom ? 'border-b md:border-b-0 border-border/60' : ''
+			}`}
+		>
+			<div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+				{label}
+			</div>
+			<div className="text-3xl md:text-4xl font-semibold tabular-nums tracking-[-0.02em]">
+				{value}
+			</div>
+			{hint && <div className="text-[10px] font-semibold text-muted-foreground">{hint}</div>}
+		</div>
+	)
+}
+
+function TierCard({
+	label,
+	title,
+	subtitle,
+	desc,
+	points,
+	highlight,
+}: {
+	label: string
+	title: string
+	subtitle?: string
+	desc: string
+	points: string[]
+	highlight: boolean
+}) {
+	return (
+		<div className="bg-card p-6 md:p-8 space-y-4">
+			<div className="flex items-center gap-2 flex-wrap">
+				<div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+					{label}
+				</div>
+				{highlight && (
+					<span className="text-[10px] font-semibold uppercase tracking-[0.08em] px-2 py-0.5 rounded-full bg-tone-edition/15 text-tone-edition">
+						Royalties
+					</span>
+				)}
+			</div>
+			<div className="space-y-1">
+				<h3 className="text-xl font-semibold tracking-tight">{title}</h3>
+				{subtitle && (
+					<p className="text-xs text-muted-foreground">
+						{subtitle}
+					</p>
+				)}
+			</div>
+			<p className="text-sm text-muted-foreground leading-relaxed">{desc}</p>
+			<ul className="space-y-2 pt-2">
+				{points.map((p) => (
+					<li key={p} className="text-sm flex items-start gap-2">
+						<span className="text-muted-foreground mt-1.5 size-1 rounded-full bg-muted-foreground shrink-0" />
+						<span>{p}</span>
+					</li>
+				))}
+			</ul>
+		</div>
+	)
+}
+
+function Pillar({
+	number,
+	title,
+	body,
+}: {
+	number: string
+	title: string
+	body: string
+}) {
+	return (
+		<div className="bg-card p-6 md:p-8 space-y-4">
+			<div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground tabular-nums">
+				{number}
+			</div>
+			<h3 className="text-xl font-semibold tracking-tight">{title}</h3>
+			<p className="text-sm text-muted-foreground leading-relaxed">{body}</p>
+		</div>
+	)
+}
+
+function StorageCard({
+	label,
+	title,
+	subtitle,
+	points,
+}: {
+	label: string
+	title: string
+	subtitle?: string
+	points: Array<{ k: string; v: string }>
+}) {
+	return (
+		<div className="bg-card p-6 md:p-8 space-y-4">
+			<div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+				{label}
+			</div>
+			<div className="space-y-1">
+				<h4 className="text-xl font-semibold tracking-tight">{title}</h4>
+				{subtitle && <p className="text-xs text-muted-foreground">{subtitle}</p>}
+			</div>
+			<dl className="space-y-2 pt-2 border-t border-border/60">
+				{points.map((p) => (
+					<div
+						key={p.k}
+						className="flex flex-col sm:flex-row sm:items-baseline sm:gap-4 pt-2 text-sm"
+					>
+						<dt className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground sm:w-32 shrink-0">
+							{p.k}
+						</dt>
+						<dd className="text-foreground">{p.v}</dd>
+					</div>
+				))}
+			</dl>
+		</div>
+	)
+}
+
+function MiniStat({ label, value, hint }: { label: string; value: string; hint?: string }) {
+	return (
+		<div className="space-y-1">
+			<div className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+				{label}
+			</div>
+			<div className="text-xl md:text-2xl font-semibold tabular-nums">{value}</div>
+			{hint && <div className="text-[10px] font-semibold text-muted-foreground">{hint}</div>}
 		</div>
 	)
 }
@@ -541,12 +1099,12 @@ function HandlePreview({
 	return (
 		<div className="rounded-lg border border-border/60 bg-card p-4 flex flex-wrap items-center gap-x-4 gap-y-2">
 			<div className="flex items-center gap-2 min-w-0">
-				<span className="text-[10px] uppercase tracking-[0.12em] font-mono text-muted-foreground">
+				<span className="text-[10px] uppercase tracking-[0.08em] font-semibold text-muted-foreground">
 					Suggested handle
 				</span>
 				<span className="font-mono text-sm truncate">@{normalized}</span>
 			</div>
-			<div className="ml-auto flex items-center gap-2 text-xs">
+			<div className="ml-auto flex items-center gap-2 text-xs" role="status" aria-live="polite">
 				{status === 'loading' && (
 					<span className="text-muted-foreground flex items-center gap-1.5">
 						<Icon name="spinner-third" variant="regular" spin />
@@ -566,18 +1124,6 @@ function HandlePreview({
 					<span className="text-muted-foreground">Pick a new one at signup</span>
 				)}
 			</div>
-		</div>
-	)
-}
-
-function StatCell({ label, value, hint }: { label: string; value: string; hint?: string }) {
-	return (
-		<div className="rounded-lg bg-card border border-border/60 p-4 space-y-1">
-			<div className="text-[10px] uppercase tracking-[0.12em] font-mono text-muted-foreground">
-				{label}
-			</div>
-			<div className="text-xl md:text-2xl font-semibold tabular-nums">{value}</div>
-			{hint && <div className="text-[10px] font-mono text-muted-foreground">{hint}</div>}
 		</div>
 	)
 }

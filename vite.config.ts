@@ -112,6 +112,7 @@ const config = defineConfig({
   server: {
     host: true, // Expose on all network interfaces (0.0.0.0)
     port: 3000,
+    allowedHosts: true, // Accept any host (dev: needed for ngrok tunnels during iOS device testing)
     hmr: {
       overlay: false, // Disable error overlay (workaround for nitro dev body stream bug)
     },

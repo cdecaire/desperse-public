@@ -599,7 +599,7 @@ export function PreservationPage() {
 										title="IPFS pinning"
 										subtitle="Pinata, Web3.Storage, etc."
 										points={[
-											{ k: 'Pricing', v: 'Subscription · ~$20/mo per 100GB' },
+											{ k: 'Pricing', v: 'Subscription · ~$20/mo per 50GB' },
 											{ k: 'Persistence', v: 'Lasts as long as someone keeps paying' },
 											{ k: 'If the platform leaves', v: 'Files start expiring' },
 											{ k: 'Foundation’s outcome', v: '~12 months before files lapse' },
@@ -610,7 +610,7 @@ export function PreservationPage() {
 										title="Arweave"
 										subtitle="Permanent · pay once"
 										points={[
-											{ k: 'Pricing', v: '~$5 per GB · paid once' },
+											{ k: 'Pricing', v: '$5–10 per GB · paid once' },
 											{ k: 'Persistence', v: '~200 years — paid for upfront by the upload' },
 											{ k: 'If the platform leaves', v: 'No effect — files don’t depend on us' },
 											{ k: 'Best for', v: 'Anything you want to outlive a frontend' },
@@ -655,7 +655,7 @@ export function PreservationPage() {
 										'Permanent Arweave storage',
 										'Verifiable link back to your original mint',
 										'Past collectors could claim with a wallet signature',
-										'~$0.50 per piece — possibly subsidized for early migrators',
+										'Pennies per piece (mostly Arweave) — possibly subsidized for early migrators',
 									]}
 									highlight={false}
 								/>
@@ -667,7 +667,7 @@ export function PreservationPage() {
 										'Permanent Arweave storage',
 										'On-chain royalties — you set the rate',
 										'Listable on Magic Eden, Tensor, etc.',
-										'~$5–$15 per piece — would be paid by you',
+										'~$1–2 per piece (Solana mint + storage) — would be paid by you',
 									]}
 									highlight
 								/>
@@ -691,9 +691,9 @@ export function PreservationPage() {
 									<MiniStat
 										label="Premium"
 										value={formatUsd(
-											catalog.stats.estimatedArweaveCostUsd + catalog.stats.pieceCount * 9,
+											catalog.stats.estimatedArweaveCostUsd + catalog.stats.pieceCount * 0.6,
 										)}
-										hint="Storage + mint"
+										hint="Storage + Solana mint"
 									/>
 									<MiniStat
 										label="If subsidized"

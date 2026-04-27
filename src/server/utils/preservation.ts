@@ -26,8 +26,11 @@ const FOUNDATION_DEPLOYERS = new Set<string>([
 // Common Foundation collection symbols. Used as a soft signal when deployer match fails.
 const FOUNDATION_SYMBOL_HINTS = ['FND', 'FNDR', 'FOUND']
 
-// Approximate Arweave permanent-storage cost in USD per GB (Turbo / Irys, Apr 2026).
-const ARWEAVE_USD_PER_GB = 7.35
+// Approximate Arweave permanent-storage cost in USD per GB. Turbo public
+// pricing has been in the $5–10/GB range; we use the middle to set
+// expectations honestly without underselling. Real price varies daily
+// with AR token price, network demand, and the path used.
+const ARWEAVE_USD_PER_GB = 8
 
 // MIME size heuristics (bytes) used when Alchemy doesn't return image.size.
 const SIZE_HEURISTIC_BYTES = {

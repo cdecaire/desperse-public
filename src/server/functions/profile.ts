@@ -20,7 +20,7 @@ import { z } from 'zod'
 import { env } from '@/config/env'
 import { uploadToBlob, SUPPORTED_IMAGE_TYPES } from '@/server/storage/blob'
 import { withAuth, withOptionalAuth } from '@/server/auth'
-import { excludeDevPosts } from '@/server/utils/dev-posts'
+import { excludeDevPostsForUser } from '@/server/utils/dev-posts'
 import { getPostCollectorsListDirect } from '@/server/utils/follows'
 
 // Shared schemas
@@ -407,11 +407,9 @@ export const getUserBySlug = createServerFn({
   method: 'GET',
 }).handler(async (input: unknown) => {
   try {
-    const rawData = input && typeof input === 'object' && 'data' in input
-      ? (input as { data: unknown }).data
-      : input
-
-    const { slug } = profileSlugSchema.parse(rawData)
+    const authResult = await withOptionalAuth(profileSlugSchema, input)
+    const { slug } = authResult.input
+    const viewerUserId = authResult.auth?.userId
 
     const [user] = await db
       .select({
@@ -446,7 +444,7 @@ export const getUserBySlug = createServerFn({
       .from(posts)
       .where(
         and(
-          excludeDevPosts(),
+          await excludeDevPostsForUser(viewerUserId),
           eq(posts.userId, user.id),
           eq(posts.isDeleted, false),
           eq(posts.isHidden, false),
@@ -486,7 +484,7 @@ export const getUserBySlug = createServerFn({
         .from(posts)
         .where(
           and(
-            excludeDevPosts(),
+            await excludeDevPostsForUser(viewerUserId),
             inArray(posts.id, Array.from(collectedIds)),
             eq(posts.isDeleted, false),
             eq(posts.isHidden, false),
@@ -501,7 +499,7 @@ export const getUserBySlug = createServerFn({
       .from(posts)
       .where(
         and(
-          excludeDevPosts(),
+          await excludeDevPostsForUser(viewerUserId),
           eq(posts.userId, user.id),
           eq(posts.type, 'edition'),
           eq(posts.isDeleted, false),
@@ -538,7 +536,7 @@ export const getUserBySlug = createServerFn({
         .from(posts)
         .where(
           and(
-            excludeDevPosts(),
+            await excludeDevPostsForUser(viewerUserId),
             eq(posts.userId, user.id),
             eq(posts.isDeleted, false),
             eq(posts.isHidden, false),
@@ -636,7 +634,7 @@ export const getUserPosts = createServerFn({
     const { userId, cursor, limit } = authResult.input
 
     const conditions = [
-      excludeDevPosts(),
+      await excludeDevPostsForUser(authResult.auth?.userId),
       eq(posts.userId, userId),
       eq(posts.isDeleted, false),
       eq(posts.isHidden, false),
@@ -717,11 +715,8 @@ export const getUserCollections = createServerFn({
 // @ts-expect-error -- TanStack Start dual-context type inference
 }).handler(async (input: unknown) => {
   try {
-    const rawData = input && typeof input === 'object' && 'data' in input
-      ? (input as { data: unknown }).data
-      : input
-
-    const { userId, cursor, limit } = cursorSchema.parse(rawData)
+    const authResult = await withOptionalAuth(cursorSchema, input)
+    const { userId, cursor, limit } = authResult.input
 
     const collectedIds = new Set<string>()
 
@@ -757,7 +752,7 @@ export const getUserCollections = createServerFn({
     }
 
     const conditions = [
-      excludeDevPosts(),
+      await excludeDevPostsForUser(authResult.auth?.userId),
       inArray(posts.id, Array.from(collectedIds)),
       // Filter out deleted and hidden posts
       eq(posts.isDeleted, false),
@@ -844,14 +839,11 @@ export const getUserForSale = createServerFn({
 // @ts-expect-error -- TanStack Start dual-context type inference
 }).handler(async (input: unknown) => {
   try {
-    const rawData = input && typeof input === 'object' && 'data' in input
-      ? (input as { data: unknown }).data
-      : input
-
-    const { userId, cursor, limit } = cursorSchema.parse(rawData)
+    const authResult = await withOptionalAuth(cursorSchema, input)
+    const { userId, cursor, limit } = authResult.input
 
     const conditions = [
-      excludeDevPosts(),
+      await excludeDevPostsForUser(authResult.auth?.userId),
       eq(posts.userId, userId),
       eq(posts.type, 'edition'),
       eq(posts.isDeleted, false),
@@ -929,7 +921,7 @@ export const getCollectorsList = createServerFn({
       .from(posts)
       .where(
         and(
-          excludeDevPosts(),
+          await excludeDevPostsForUser(currentUserId),
           eq(posts.userId, userId),
           eq(posts.isDeleted, false),
           eq(posts.isHidden, false),

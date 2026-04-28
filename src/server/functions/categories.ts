@@ -12,7 +12,7 @@ import { posts, users } from '@/server/db/schema'
 import { eq, and, sql, lt, desc } from 'drizzle-orm'
 import { z } from 'zod'
 import { withOptionalAuth } from '@/server/auth'
-import { excludeDevPosts } from '@/server/utils/dev-posts'
+import { excludeDevPostsForUser } from '@/server/utils/dev-posts'
 import { PRESET_CATEGORIES, normalizeCategoryKey, categoryToSlug } from '@/constants/categories'
 
 // =============================================================================
@@ -81,7 +81,7 @@ export const getPostsByCategory = createServerFn({
       .innerJoin(users, eq(posts.userId, users.id))
       .where(
         and(
-          excludeDevPosts(),
+          await excludeDevPostsForUser(result.auth?.userId),
           // Check if category is in the array (case-insensitive)
           sql`${posts.categories} @> ARRAY[${categoryToMatch}]::text[]`,
           eq(posts.isDeleted, false),

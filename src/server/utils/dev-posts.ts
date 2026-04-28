@@ -8,6 +8,7 @@
 import { eq } from 'drizzle-orm'
 import { posts } from '@/server/db/schema'
 import { env } from '@/config/env'
+import { isAdmin } from '@/server/utils/auth-helpers'
 
 /**
  * Returns a Drizzle condition that excludes dev posts.
@@ -18,5 +19,16 @@ import { env } from '@/config/env'
  */
 export function excludeDevPosts() {
 	if (env.DEV_POSTS) return undefined
+	return eq(posts.isDev, false)
+}
+
+/**
+ * Like excludeDevPosts(), but admins (role='admin') see dev posts.
+ * Pass null/undefined userId for unauthenticated requests — same
+ * behavior as excludeDevPosts().
+ */
+export async function excludeDevPostsForUser(userId: string | null | undefined) {
+	if (env.DEV_POSTS) return undefined
+	if (userId && (await isAdmin(userId))) return undefined
 	return eq(posts.isDev, false)
 }

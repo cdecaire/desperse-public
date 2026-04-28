@@ -8,7 +8,7 @@ import { users, posts, collections, purchases, follows, likes, postAssets, comme
 import { and, asc, count, desc, eq, inArray, isNull, lt, ne, or } from 'drizzle-orm'
 import { authenticateWithToken } from '@/server/auth'
 import { uploadToBlob, SUPPORTED_IMAGE_TYPES } from '@/server/storage/blob'
-import { excludeDevPosts } from '@/server/utils/dev-posts'
+import { excludeDevPostsForUser } from '@/server/utils/dev-posts'
 
 const AVATAR_MAX_BYTES = 2 * 1024 * 1024 // 2MB limit for avatars
 const HEADER_MAX_BYTES = 5 * 1024 * 1024 // 5MB limit for header backgrounds
@@ -120,7 +120,7 @@ export async function getUserBySlugDirect(
 			.from(posts)
 			.where(
 				and(
-					excludeDevPosts(),
+					await excludeDevPostsForUser(currentUserId),
 					eq(posts.userId, user.id),
 					eq(posts.isDeleted, false),
 					eq(posts.isHidden, false)
@@ -160,7 +160,7 @@ export async function getUserBySlugDirect(
 				.from(posts)
 				.where(
 					and(
-						excludeDevPosts(),
+						await excludeDevPostsForUser(currentUserId),
 						inArray(posts.id, Array.from(collectedIds)),
 						eq(posts.isDeleted, false),
 						eq(posts.isHidden, false)
@@ -175,7 +175,7 @@ export async function getUserBySlugDirect(
 			.from(posts)
 			.where(
 				and(
-					excludeDevPosts(),
+					await excludeDevPostsForUser(currentUserId),
 					eq(posts.userId, user.id),
 					eq(posts.type, 'edition'),
 					eq(posts.isDeleted, false),
@@ -208,7 +208,7 @@ export async function getUserBySlugDirect(
 			.from(posts)
 			.where(
 				and(
-					excludeDevPosts(),
+					await excludeDevPostsForUser(currentUserId),
 					eq(posts.userId, user.id),
 					eq(posts.isDeleted, false),
 					eq(posts.isHidden, false)
@@ -306,7 +306,7 @@ export async function getUserPostsDirect(
 ): Promise<UserPostsResult> {
 	try {
 		const conditions = [
-			excludeDevPosts(),
+			await excludeDevPostsForUser(currentUserId),
 			eq(posts.userId, userId),
 			eq(posts.isDeleted, false),
 			eq(posts.isHidden, false),
@@ -589,7 +589,8 @@ export async function getUserPostsDirect(
 export async function getUserCollectedDirect(
 	userId: string,
 	cursor?: string,
-	limit: number = 20
+	limit: number = 20,
+	viewerUserId?: string | null
 ): Promise<UserPostsResult> {
 	try {
 		// Get all collected post IDs (from both collections and purchases)
@@ -627,7 +628,7 @@ export async function getUserCollectedDirect(
 		}
 
 		const conditions = [
-			excludeDevPosts(),
+			await excludeDevPostsForUser(viewerUserId),
 			inArray(posts.id, Array.from(collectedIds)),
 			eq(posts.isDeleted, false),
 			eq(posts.isHidden, false),
@@ -769,11 +770,12 @@ export async function getUserCollectedDirect(
 export async function getUserForSaleDirect(
 	userId: string,
 	cursor?: string,
-	limit: number = 20
+	limit: number = 20,
+	viewerUserId?: string | null
 ): Promise<UserPostsResult> {
 	try {
 		const conditions = [
-			excludeDevPosts(),
+			await excludeDevPostsForUser(viewerUserId),
 			eq(posts.userId, userId),
 			eq(posts.type, 'edition'),
 			eq(posts.isDeleted, false),

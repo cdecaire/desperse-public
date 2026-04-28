@@ -9,7 +9,7 @@ import { posts, users, follows, collections, purchases, likes, comments, postAss
 import { eq, and, desc, sql, count, gte, notInArray, isNotNull, or, ilike, inArray } from 'drizzle-orm'
 import { z } from 'zod'
 import { withOptionalAuth } from '@/server/auth'
-import { excludeDevPosts } from '@/server/utils/dev-posts'
+import { excludeDevPostsForUser } from '@/server/utils/dev-posts'
 
 // Schema for suggested creators query
 const suggestedCreatorsSchema = z.object({
@@ -90,7 +90,7 @@ export const getSuggestedCreators = createServerFn({
       .from(posts)
       .where(
         and(
-          excludeDevPosts(),
+          await excludeDevPostsForUser(currentUserId),
           gte(posts.createdAt, thirtyDaysAgo),
           eq(posts.isDeleted, false),
           eq(posts.isHidden, false)
@@ -220,7 +220,7 @@ export const getTrendingPosts = createServerFn({
 
     // Build base conditions
     const baseConditions = [
-      excludeDevPosts(),
+      await excludeDevPostsForUser(authResult.auth?.userId),
       eq(posts.isDeleted, false),
       eq(posts.isHidden, false),
       gte(posts.createdAt, sevenDaysAgo),
@@ -292,7 +292,7 @@ export const getTrendingPosts = createServerFn({
         .leftJoin(purchaseCounts, eq(posts.id, purchaseCounts.postId))
         .where(
           and(
-            excludeDevPosts(),
+            await excludeDevPostsForUser(authResult.auth?.userId),
             eq(posts.isDeleted, false),
             eq(posts.isHidden, false)
           )
@@ -514,7 +514,7 @@ export const getFeaturedCreators = createServerFn({
       .from(posts)
       .where(
         and(
-          excludeDevPosts(),
+          await excludeDevPostsForUser(undefined),
           eq(posts.isDeleted, false),
           eq(posts.isHidden, false)
         )
@@ -615,7 +615,7 @@ export const getLandingProfilePreview = createServerFn({
       .from(posts)
       .where(
         and(
-          excludeDevPosts(),
+          await excludeDevPostsForUser(undefined),
           eq(posts.isDeleted, false),
           eq(posts.isHidden, false)
         )
@@ -700,7 +700,7 @@ export const getLandingProfilePreview = createServerFn({
           eq(posts.isDeleted, false),
           eq(posts.isHidden, false),
           isNotNull(posts.mediaUrl),
-          excludeDevPosts()
+          await excludeDevPostsForUser(undefined)
         )
       )
       .orderBy(desc(posts.createdAt))
@@ -802,7 +802,7 @@ export const search = createServerFn({
     // Search posts
     if (type === 'all' || type === 'posts') {
       const postConditions = [
-        excludeDevPosts(),
+        await excludeDevPostsForUser(authResult.auth?.userId),
         eq(posts.isDeleted, false),
         eq(posts.isHidden, false),
         or(

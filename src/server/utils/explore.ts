@@ -7,7 +7,7 @@ import { db } from '@/server/db'
 import { posts, users, follows, collections, purchases, likes, comments, postAssets } from '@/server/db/schema'
 import { eq, and, desc, sql, count, gte, notInArray, isNotNull, or, ilike, inArray } from 'drizzle-orm'
 import { authenticateWithToken } from '@/server/auth'
-import { excludeDevPosts } from '@/server/utils/dev-posts'
+import { excludeDevPostsForUser } from '@/server/utils/dev-posts'
 
 // Types
 export interface SuggestedCreator {
@@ -141,7 +141,7 @@ export async function getSuggestedCreatorsDirect(
       .from(posts)
       .where(
         and(
-          excludeDevPosts(),
+          await excludeDevPostsForUser(currentUserId),
           gte(posts.createdAt, thirtyDaysAgo),
           eq(posts.isDeleted, false),
           eq(posts.isHidden, false)
@@ -270,7 +270,7 @@ export async function getTrendingPostsDirect(
 
     // Build base conditions — hidden posts are always excluded from explore feeds
     const baseConditions = [
-      excludeDevPosts(),
+      await excludeDevPostsForUser(currentUserId),
       eq(posts.isDeleted, false),
       eq(posts.isHidden, false),
       gte(posts.createdAt, sevenDaysAgo),
@@ -341,7 +341,7 @@ export async function getTrendingPostsDirect(
         .leftJoin(purchaseCounts, eq(posts.id, purchaseCounts.postId))
         .where(
           and(
-            excludeDevPosts(),
+            await excludeDevPostsForUser(currentUserId),
             eq(posts.isDeleted, false),
             eq(posts.isHidden, false)
           )
@@ -646,7 +646,7 @@ export async function searchDirect(
         .as('collect_counts')
 
       const postConditions = [
-        excludeDevPosts(),
+        await excludeDevPostsForUser(currentUserId),
         eq(posts.isDeleted, false),
         eq(posts.isHidden, false),
         or(

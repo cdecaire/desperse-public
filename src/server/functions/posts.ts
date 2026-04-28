@@ -17,7 +17,7 @@ import { processHashtags } from '@/server/utils/hashtags'
 import { generateNftMetadata } from '@/server/utils/nft-metadata'
 import { validateMintWindow } from '@/server/utils/mintWindowStatus'
 import { env } from '@/config/env'
-import { excludeDevPosts } from '@/server/utils/dev-posts'
+import { excludeDevPostsForUser } from '@/server/utils/dev-posts'
 
 // Post type enum
 const postTypeSchema = z.enum(['post', 'collectible', 'edition'])
@@ -720,7 +720,7 @@ export const getFeed = createServerFn({
 
     // Build base query conditions
     const baseConditions = [
-      excludeDevPosts(),
+      await excludeDevPostsForUser(authResult.auth?.userId),
       eq(posts.isDeleted, false),
       ...(canSeeHidden ? [] : [eq(posts.isHidden, false)]),
     ]
@@ -1079,7 +1079,7 @@ export const getUserPosts = createServerFn({
 
     // Build conditions
     const conditions = [
-      excludeDevPosts(),
+      await excludeDevPostsForUser(authResult.auth?.userId),
       eq(posts.userId, userId),
       eq(posts.isDeleted, false),
       ...(canSeeHidden ? [] : [eq(posts.isHidden, false)]),

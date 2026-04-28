@@ -12,7 +12,7 @@ import { tags, postTags, posts, users } from '@/server/db/schema'
 import { eq, and, desc, sql, lt } from 'drizzle-orm'
 import { z } from 'zod'
 import { withAuth, withOptionalAuth } from '@/server/auth'
-import { excludeDevPosts } from '@/server/utils/dev-posts'
+import { excludeDevPostsForUser } from '@/server/utils/dev-posts'
 
 // =============================================================================
 // SEARCH (for autocomplete)
@@ -219,7 +219,7 @@ export const getPostsByTag = createServerFn({
       .innerJoin(users, eq(posts.userId, users.id))
       .where(
         and(
-          excludeDevPosts(),
+          await excludeDevPostsForUser(result.auth?.userId),
           eq(postTags.tagId, tag.id),
           eq(posts.isDeleted, false),
           eq(posts.isHidden, false),

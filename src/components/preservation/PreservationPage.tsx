@@ -342,7 +342,7 @@ export function PreservationPage() {
 								</>
 							) : null}
 							. The IPFS pins keeping your art online are guaranteed for roughly twelve
-							months. <span className="text-foreground">This page is a prototype</span>{' '}
+							months. <span className="text-foreground">We haven’t built migration tools yet</span>{' '}
 							— see what’s at risk for any wallet, and tell us if you’d want a
 							Solana-native home for it on Desperse.
 						</p>
@@ -829,7 +829,7 @@ export function PreservationPage() {
 					<div className="mx-auto max-w-6xl px-6 md:px-10 lg:px-12 py-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
 						<div className="flex items-center gap-2">
 							<Logo size={11} className="text-muted-foreground" ariaHidden />
-							<span>Desperse · Creator-first preservation · Prototype</span>
+							<span>Desperse · Creator-first preservation · Interest check</span>
 						</div>
 						<nav className="flex items-center gap-5" aria-label="Footer">
 							<Link to="/" className="hover:text-foreground transition-colors">

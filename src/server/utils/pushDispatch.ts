@@ -3,6 +3,7 @@ import { users } from '@/server/db/schema'
 import { getUserPushTokens, deleteStaleToken } from './pushTokens'
 import { getApnsJwt, clearApnsJwtCache } from './apns-jwt'
 import { isNotificationTypeEnabled } from './notificationPrefs'
+import { getUnreadNotificationCountDirect } from './notifications'
 import { eq } from 'drizzle-orm'
 import crypto from 'crypto'
 import http2 from 'http2'
@@ -205,6 +206,14 @@ export async function sendPushNotification(
   const fcmAccessToken = hasAndroid ? await getAccessToken() : null
   const fcmProjectId = hasAndroid ? getProjectId() : null
 
+  // Resolve unread count once for the APNs `badge` field. iOS silently
+  // drops badge updates without it, so the home-screen icon never moves
+  // off zero. Fetched only when at least one iOS token is present.
+  const hasIos = tokens.some(t => t.platform === 'ios')
+  const badgeCount = hasIos
+    ? (await getUnreadNotificationCountDirect(recipientUserId).catch(() => ({ count: 0 }))).count
+    : 0
+
   // Pool APNs HTTP/2 sessions per host for this dispatch — Apple
   // explicitly supports request multiplexing on a single connection,
   // so a user with N iOS devices on the same env hits one TCP/TLS/H2
@@ -215,7 +224,7 @@ export async function sendPushNotification(
     tokens.map(async t => {
       try {
         if (t.platform === 'ios') {
-          await sendApnsNotification(t.token, t.environment, payload, apnsSessions)
+          await sendApnsNotification(t.token, t.environment, payload, apnsSessions, badgeCount)
         } else {
           await sendFcmNotification(t.token, fcmAccessToken!, fcmProjectId!, payload)
         }
@@ -310,7 +319,8 @@ async function sendApnsNotification(
   token: string,
   environment: string | null,
   payload: PushPayload,
-  sessionPool: Map<string, http2.ClientHttp2Session>
+  sessionPool: Map<string, http2.ClientHttp2Session>,
+  badge: number
 ) {
   const bundleId = process.env.APNS_BUNDLE_ID
   if (!bundleId) {
@@ -329,6 +339,7 @@ async function sendApnsNotification(
     aps: {
       alert: { title: payload.title, body: payload.body },
       sound: 'default',
+      badge,
       'thread-id': payload.type,
       // mutable-content fires the iOS Notification Service Extension,
       // which downloads + attaches the image. Skip when there's no

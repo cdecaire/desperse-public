@@ -212,6 +212,7 @@ export async function getPostDirect(
 				mimeType: postAssets.mimeType,
 				fileSize: postAssets.fileSize,
 				sortOrder: postAssets.sortOrder,
+				isGated: postAssets.isGated,
 			})
 			.from(postAssets)
 			.where(

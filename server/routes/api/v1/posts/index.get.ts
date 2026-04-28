@@ -199,6 +199,7 @@ export default defineEventHandler(async (event) => {
 						mimeType: postAssets.mimeType,
 						fileSize: postAssets.fileSize,
 						sortOrder: postAssets.sortOrder,
+						isGated: postAssets.isGated,
 					})
 					.from(postAssets)
 					.where(

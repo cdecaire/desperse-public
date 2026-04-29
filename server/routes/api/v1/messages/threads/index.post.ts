@@ -19,6 +19,8 @@ import {
 	setResponseStatus,
 } from 'h3'
 import { getOrCreateThreadDirect } from '@/server/utils/messaging-direct'
+import { authenticateWithToken } from '@/server/auth'
+import { isPairwiseBlocked } from '@/server/utils/blocks'
 
 const uuidRegex =
 	/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
@@ -70,6 +72,30 @@ export default defineEventHandler(async (event) => {
 			},
 			requestId,
 		}
+	}
+
+	// Block gate: prevent thread creation if either party blocks the
+	// other. 403 with a generic message — don't leak which side has
+	// the block.
+	try {
+		const auth = await authenticateWithToken(token)
+		if (auth?.userId) {
+			const blocked = await isPairwiseBlocked(auth.userId, otherUserId)
+			if (blocked) {
+				setResponseStatus(event, 403)
+				return {
+					success: false,
+					error: {
+						code: 'BLOCKED',
+						message: "You can't message this user.",
+					},
+					requestId,
+				}
+			}
+		}
+	} catch {
+		// Auth failure falls through to getOrCreateThreadDirect below,
+		// which surfaces a 401.
 	}
 
 	try {

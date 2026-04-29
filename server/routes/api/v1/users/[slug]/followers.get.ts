@@ -21,6 +21,7 @@ import {
 } from 'h3'
 import { getFollowersListDirect } from '@/server/utils/follows'
 import { authenticateWithToken } from '@/server/auth'
+import { getBlockedUserIdSet } from '@/server/utils/blocks'
 import { db } from '@/server/db'
 import { users } from '@/server/db/schema'
 import { eq } from 'drizzle-orm'
@@ -102,6 +103,20 @@ export default defineEventHandler(async (event) => {
 		}
 	}
 
+	// Block filter: if the slug user is in the viewer's blocked set
+	// (either direction), the profile root already 404s; serve a
+	// consistent empty list here as defense-in-depth. Also filter
+	// individual list items whose users are blocked.
+	const blockedSet = await getBlockedUserIdSet(currentUserId)
+	if (blockedSet.has(user.id)) {
+		return {
+			success: true,
+			data: { users: [] },
+			meta: { hasMore: false, nextCursor: null },
+			requestId,
+		}
+	}
+
 	// Call the direct utility function
 	const result = await getFollowersListDirect(user.id, currentUserId, cursor, limit)
 
@@ -117,10 +132,14 @@ export default defineEventHandler(async (event) => {
 		}
 	}
 
+	const filteredUsers = blockedSet.size > 0
+		? (result.users ?? []).filter((u) => !blockedSet.has(u.id))
+		: result.users ?? []
+
 	return {
 		success: true,
 		data: {
-			users: result.users,
+			users: filteredUsers,
 		},
 		meta: {
 			hasMore: result.hasMore,

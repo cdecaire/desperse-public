@@ -21,6 +21,7 @@ import {
 } from 'h3'
 import { getFollowingListDirect } from '@/server/utils/follows'
 import { authenticateWithToken } from '@/server/auth'
+import { getBlockedUserIdSet } from '@/server/utils/blocks'
 import { db } from '@/server/db'
 import { users } from '@/server/db/schema'
 import { eq } from 'drizzle-orm'
@@ -102,6 +103,16 @@ export default defineEventHandler(async (event) => {
 		}
 	}
 
+	const blockedSet = await getBlockedUserIdSet(currentUserId)
+	if (blockedSet.has(user.id)) {
+		return {
+			success: true,
+			data: { users: [] },
+			meta: { hasMore: false, nextCursor: null },
+			requestId,
+		}
+	}
+
 	// Call the direct utility function
 	const result = await getFollowingListDirect(user.id, currentUserId, cursor, limit)
 
@@ -117,10 +128,14 @@ export default defineEventHandler(async (event) => {
 		}
 	}
 
+	const filteredUsers = blockedSet.size > 0
+		? (result.users ?? []).filter((u) => !blockedSet.has(u.id))
+		: result.users ?? []
+
 	return {
 		success: true,
 		data: {
-			users: result.users,
+			users: filteredUsers,
 		},
 		meta: {
 			hasMore: result.hasMore,

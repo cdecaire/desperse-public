@@ -19,6 +19,8 @@ import {
 	setResponseStatus,
 } from 'h3'
 import { getThreadsDirect } from '@/server/utils/messaging-direct'
+import { authenticateWithToken } from '@/server/auth'
+import { getBlockedUserIdSet } from '@/server/utils/blocks'
 
 export default defineEventHandler(async (event) => {
 	const requestId = `req_${crypto.randomUUID().slice(0, 12)}`
@@ -65,10 +67,28 @@ export default defineEventHandler(async (event) => {
 			}
 		}
 
+		// Block filter: drop threads where the other party is blocked in
+		// either direction. Pre-existing thread-level block remains a
+		// separate finer-grained tool but user-level block is stricter.
+		let viewerId: string | null = null
+		try {
+			const auth = await authenticateWithToken(token)
+			if (auth?.userId) viewerId = auth.userId
+		} catch {
+			// keep empty set
+		}
+		const blockedSet = await getBlockedUserIdSet(viewerId)
+		const filteredThreads = blockedSet.size > 0
+			? (result.threads ?? []).filter((t: { otherUser?: { id?: string } } & Record<string, unknown>) => {
+				const otherId = t.otherUser?.id
+				return !(otherId && blockedSet.has(otherId))
+			})
+			: result.threads ?? []
+
 		return {
 			success: true,
 			data: {
-				threads: result.threads,
+				threads: filteredThreads,
 				nextCursor: result.nextCursor ?? null,
 			},
 			requestId,

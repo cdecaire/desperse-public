@@ -15,10 +15,13 @@ import {
 	defineEventHandler,
 	getRouterParam,
 	getQuery,
+	getHeader,
 	setHeaders,
 	setResponseStatus,
 } from 'h3'
 import { getUserCollectedDirect } from '@/server/utils/profile'
+import { authenticateWithToken } from '@/server/auth'
+import { getBlockedUserIdSet } from '@/server/utils/blocks'
 import { db } from '@/server/db'
 import { users } from '@/server/db/schema'
 import { eq } from 'drizzle-orm'
@@ -88,6 +91,28 @@ export default defineEventHandler(async (event) => {
 		}
 	}
 
+	// Optional auth for the block filter.
+	let currentUserId: string | null = null
+	const authHeader = getHeader(event, 'authorization')
+	if (authHeader) {
+		try {
+			const auth = await authenticateWithToken(authHeader)
+			if (auth?.userId) currentUserId = auth.userId
+		} catch {
+			// continue unauthenticated
+		}
+	}
+
+	const blockedSet = await getBlockedUserIdSet(currentUserId)
+	if (blockedSet.has(user.id)) {
+		return {
+			success: true,
+			data: { posts: [] },
+			meta: { hasMore: false, nextCursor: null },
+			requestId,
+		}
+	}
+
 	// Call the direct utility function
 	const result = await getUserCollectedDirect(user.id, cursor, limit)
 
@@ -103,10 +128,19 @@ export default defineEventHandler(async (event) => {
 		}
 	}
 
+	// Drop posts whose author is blocked — collected items can be by
+	// any author, not just the slug user.
+	const filteredPosts = blockedSet.size > 0
+		? (result.posts ?? []).filter((p: { user?: { id?: string } } & Record<string, unknown>) => {
+			const authorId = (p.user?.id as string | undefined) ?? (p as { userId?: string }).userId
+			return !(authorId && blockedSet.has(authorId))
+		})
+		: result.posts ?? []
+
 	return {
 		success: true,
 		data: {
-			posts: result.posts,
+			posts: filteredPosts,
 		},
 		meta: {
 			hasMore: result.hasMore,

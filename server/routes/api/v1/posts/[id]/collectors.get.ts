@@ -21,6 +21,7 @@ import {
 } from 'h3'
 import { getPostCollectorsListDirect } from '@/server/utils/follows'
 import { authenticateWithToken } from '@/server/auth'
+import { getBlockedUserIdSet } from '@/server/utils/blocks'
 
 export default defineEventHandler(async (event) => {
 	const requestId = `req_${crypto.randomUUID().slice(0, 12)}`
@@ -79,10 +80,15 @@ export default defineEventHandler(async (event) => {
 		}
 	}
 
+	const blockedSet = await getBlockedUserIdSet(currentUserId)
+	const filteredUsers = blockedSet.size > 0
+		? (result.users ?? []).filter((u: { id: string }) => !blockedSet.has(u.id))
+		: result.users ?? []
+
 	return {
 		success: true,
 		data: {
-			users: result.users,
+			users: filteredUsers,
 		},
 		meta: {
 			hasMore: result.hasMore,

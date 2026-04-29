@@ -106,7 +106,20 @@ Anonymous viewers (`viewerId == null`) get an empty Set — no-op.
 |---|---|---|
 | Feed (For You + Following) | `server/routes/api/v1/posts/index.get.ts` | `notInArray(posts.userId, blocked)` (symmetric) |
 | Post detail | `server/routes/api/v1/posts/[id].get.ts` | 404 if author in `blocked` (symmetric) |
-| Comments | `server/routes/api/v1/posts/[id]/comments/index.get.ts` | drop comments by `blocked` authors (symmetric, optional auth) |
+| Comments | `server/routes/api/v1/posts/[id]/comments/index.get.ts` | drop comments by `blocked` authors |
+| Followers | `server/routes/api/v1/users/[slug]/followers.get.ts` | empty list if slug user blocked, drop blocked individuals |
+| Following | `server/routes/api/v1/users/[slug]/following.get.ts` | empty list if slug user blocked, drop blocked individuals |
+| User collectors | `server/routes/api/v1/users/[slug]/collectors.get.ts` | empty list if slug user blocked, drop blocked individuals |
+| User posts | `server/routes/api/v1/users/[slug]/posts.get.ts` | empty list if slug user blocked |
+| User collected | `server/routes/api/v1/users/[slug]/collected.get.ts` | empty list if slug user blocked, drop posts by blocked authors |
+| User for-sale | `server/routes/api/v1/users/[slug]/for-sale.get.ts` | empty list if slug user blocked |
+| Post collectors | `server/routes/api/v1/posts/[id]/collectors.get.ts` | drop blocked individuals |
+| Mention search | `server/routes/api/v1/users/mention-search.get.ts` | drop blocked users from autocomplete |
+| Search (users + posts) | `server/routes/api/v1/search.get.ts` | drop blocked users + posts by blocked authors |
+| Notifications | `server/routes/api/v1/notifications/index.get.ts` | drop notifications where actor is blocked |
+| DM thread list | `server/routes/api/v1/messages/threads/index.get.ts` | drop threads where other party is blocked |
+| DM thread create | `server/routes/api/v1/messages/threads/index.post.ts` | 403 if either party blocks the other |
+| DM message send | `server/routes/api/v1/messages/threads/[threadId]/messages.post.ts` | 403 if either party blocks the other |
 | User profile | `server/routes/api/v1/users/[slug]/index.get.ts` | **directional** — see below |
 
 ### Profile endpoint — directional semantics
@@ -135,22 +148,12 @@ Clients should:
 3. Skip the post grid / tabs / follow button while `isBlocked` is true.
 4. After unblocking, refresh the profile so real stats / bio populate.
 
-### Not yet filtered (follow-up work, in priority order)
+### Not yet filtered
 
-| Surface | Files (if known) | Why it matters |
-|---|---|---|
-| User's own posts list | `server/routes/api/v1/users/[slug]/posts.get.ts` | Same as profile — should 404 the parent before reaching this |
-| Followers / Following lists | `server/routes/api/v1/users/[slug]/followers.get.ts`, `following.get.ts` | Blocked user shouldn't appear in these lists |
-| Mention search | `server/routes/api/v1/users/mention-search.get.ts` | Blocked user shouldn't be `@`-mentionable |
-| Notifications | `server/routes/api/v1/notifications/index.get.ts` | Activity from blocked users (likes, follows) shouldn't notify |
-| DM thread creation | DM thread creation route | Should reject if blocked-pair |
-| Existing DM threads | `server/routes/api/v1/messages/...` | Distinct from existing per-thread block; user-level block should also hide threads |
-| Search / Explore | (varies) | Blocked users shouldn't surface in discovery |
-
-For each, the pattern is: fetch `getBlockedUserIdSet(viewerId)` once at
+All major surfaces filtered. Future expansion of UGC endpoints should
+follow the same pattern: fetch `getBlockedUserIdSet(viewerId)` once at
 the top of the handler, then either filter the WHERE clause (list
-endpoints) or 404 the response (detail endpoints). Cache the Set in
-`event.context` if a single request hits multiple of these paths.
+endpoints) or 404 the response (detail endpoints).
 
 ## Client API contracts
 

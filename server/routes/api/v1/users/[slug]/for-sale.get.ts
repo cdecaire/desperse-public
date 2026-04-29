@@ -15,10 +15,13 @@ import {
 	defineEventHandler,
 	getRouterParam,
 	getQuery,
+	getHeader,
 	setHeaders,
 	setResponseStatus,
 } from 'h3'
 import { getUserForSaleDirect } from '@/server/utils/profile'
+import { authenticateWithToken } from '@/server/auth'
+import { getBlockedUserIdSet } from '@/server/utils/blocks'
 import { db } from '@/server/db'
 import { users } from '@/server/db/schema'
 import { eq } from 'drizzle-orm'
@@ -84,6 +87,28 @@ export default defineEventHandler(async (event) => {
 				code: 'NOT_FOUND',
 				message: 'User not found',
 			},
+			requestId,
+		}
+	}
+
+	// Optional auth for the block filter.
+	let currentUserId: string | null = null
+	const authHeader = getHeader(event, 'authorization')
+	if (authHeader) {
+		try {
+			const auth = await authenticateWithToken(authHeader)
+			if (auth?.userId) currentUserId = auth.userId
+		} catch {
+			// continue unauthenticated
+		}
+	}
+
+	const blockedSet = await getBlockedUserIdSet(currentUserId)
+	if (blockedSet.has(user.id)) {
+		return {
+			success: true,
+			data: { posts: [] },
+			meta: { hasMore: false, nextCursor: null },
 			requestId,
 		}
 	}

@@ -9,6 +9,8 @@
 
 import { defineEventHandler, getHeader, getQuery, setResponseStatus, setResponseHeader } from 'h3'
 import { searchDirect } from '@/server/utils/explore'
+import { authenticateWithToken } from '@/server/auth'
+import { getBlockedUserIdSet } from '@/server/utils/blocks'
 
 export default defineEventHandler(async (event) => {
   const requestId = `req_${crypto.randomUUID().slice(0, 12)}`
@@ -59,11 +61,34 @@ export default defineEventHandler(async (event) => {
       }
     }
 
+    // Block filter: drop users + posts authored by blocked users in
+    // either direction so blocked users can't be discovered through
+    // search.
+    let viewerId: string | null = null
+    if (token) {
+      try {
+        const auth = await authenticateWithToken(token)
+        if (auth?.userId) viewerId = auth.userId
+      } catch {
+        // continue with empty block set
+      }
+    }
+    const blockedSet = await getBlockedUserIdSet(viewerId)
+    const filteredUsers = blockedSet.size > 0
+      ? (result.users ?? []).filter((u: { id: string }) => !blockedSet.has(u.id))
+      : result.users ?? []
+    const filteredPosts = blockedSet.size > 0
+      ? (result.posts ?? []).filter((p: { user?: { id?: string } } & Record<string, unknown>) => {
+          const authorId = (p.user?.id as string | undefined) ?? (p as { userId?: string }).userId
+          return !(authorId && blockedSet.has(authorId))
+        })
+      : result.posts ?? []
+
     return {
       success: true,
       data: {
-        users: result.users,
-        posts: result.posts,
+        users: filteredUsers,
+        posts: filteredPosts,
         query: result.query,
       },
       requestId,

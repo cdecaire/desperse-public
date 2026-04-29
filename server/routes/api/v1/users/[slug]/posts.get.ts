@@ -21,6 +21,7 @@ import {
 } from 'h3'
 import { getUserPostsDirect } from '@/server/utils/profile'
 import { authenticateWithToken } from '@/server/auth'
+import { getBlockedUserIdSet } from '@/server/utils/blocks'
 import { db } from '@/server/db'
 import { users } from '@/server/db/schema'
 import { eq } from 'drizzle-orm'
@@ -100,6 +101,16 @@ export default defineEventHandler(async (event) => {
 				code: 'NOT_FOUND',
 				message: 'User not found',
 			},
+			requestId,
+		}
+	}
+
+	const blockedSet = await getBlockedUserIdSet(currentUserId)
+	if (blockedSet.has(user.id)) {
+		return {
+			success: true,
+			data: { posts: [] },
+			meta: { hasMore: false, nextCursor: null },
 			requestId,
 		}
 	}

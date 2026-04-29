@@ -12,6 +12,8 @@
 
 import { defineEventHandler, getHeader, getQuery } from 'h3'
 import { searchMentionUsersDirect } from '@/server/utils/mention-search'
+import { authenticateWithToken } from '@/server/auth'
+import { getBlockedUserIdSet } from '@/server/utils/blocks'
 
 export default defineEventHandler(async (event) => {
 	const requestId = `req_${crypto.randomUUID().slice(0, 12)}`
@@ -56,10 +58,24 @@ export default defineEventHandler(async (event) => {
 			}
 		}
 
+		// Block filter: drop users blocked in either direction so the
+		// blocker can't @-mention a blocked user (and vice versa).
+		let viewerId: string | null = null
+		try {
+			const auth = await authenticateWithToken(token)
+			if (auth?.userId) viewerId = auth.userId
+		} catch {
+			// continue with empty block set
+		}
+		const blockedSet = await getBlockedUserIdSet(viewerId)
+		const filteredUsers = blockedSet.size > 0
+			? (result.users ?? []).filter((u: { id: string }) => !blockedSet.has(u.id))
+			: result.users ?? []
+
 		return {
 			success: true,
 			data: {
-				users: result.users,
+				users: filteredUsers,
 			},
 			requestId,
 		}

@@ -19,6 +19,11 @@ import {
 	setResponseStatus,
 } from 'h3'
 import { sendMessageDirect } from '@/server/utils/messaging-direct'
+import { authenticateWithToken } from '@/server/auth'
+import { isPairwiseBlocked } from '@/server/utils/blocks'
+import { db } from '@/server/db'
+import { dmThreads } from '@/server/db/schema'
+import { eq } from 'drizzle-orm'
 
 const uuidRegex =
 	/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
@@ -83,6 +88,38 @@ export default defineEventHandler(async (event) => {
 			},
 			requestId,
 		}
+	}
+
+	// Block gate: prevent sending if either party blocks the other in
+	// this thread. Look up the thread participants directly so we can
+	// check before sendMessageDirect does any work.
+	try {
+		const auth = await authenticateWithToken(token)
+		if (auth?.userId) {
+			const [thread] = await db
+				.select({ userAId: dmThreads.userAId, userBId: dmThreads.userBId })
+				.from(dmThreads)
+				.where(eq(dmThreads.id, threadId))
+				.limit(1)
+			if (thread) {
+				const otherId =
+					thread.userAId === auth.userId ? thread.userBId : thread.userAId
+				const blocked = await isPairwiseBlocked(auth.userId, otherId)
+				if (blocked) {
+					setResponseStatus(event, 403)
+					return {
+						success: false,
+						error: {
+							code: 'BLOCKED',
+							message: "You can't message this user.",
+						},
+						requestId,
+					}
+				}
+			}
+		}
+	} catch {
+		// Auth failure falls through to sendMessageDirect below.
 	}
 
 	try {

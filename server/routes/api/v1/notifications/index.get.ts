@@ -21,6 +21,7 @@ import {
 } from 'h3'
 import { getUserNotificationsDirect } from '@/server/utils/notifications'
 import { authenticateWithToken } from '@/server/auth'
+import { getBlockedUserIdSet } from '@/server/utils/blocks'
 
 export default defineEventHandler(async (event) => {
 	const requestId = `req_${crypto.randomUUID().slice(0, 12)}`
@@ -95,10 +96,20 @@ export default defineEventHandler(async (event) => {
 		}
 	}
 
+	// Block filter: drop notifications whose actor is blocked in either
+	// direction so blocked users can't generate notifications you see.
+	const blockedSet = await getBlockedUserIdSet(userId)
+	const filteredNotifications = blockedSet.size > 0
+		? (result.notifications ?? []).filter((n: { actor?: { id?: string } } & Record<string, unknown>) => {
+			const actorId = (n.actor?.id as string | undefined) ?? (n as { actorId?: string }).actorId
+			return !(actorId && blockedSet.has(actorId))
+		})
+		: result.notifications ?? []
+
 	return {
 		success: true,
 		data: {
-			notifications: result.notifications,
+			notifications: filteredNotifications,
 		},
 		meta: {
 			hasMore: result.hasMore,

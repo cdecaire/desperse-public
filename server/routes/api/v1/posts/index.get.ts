@@ -433,6 +433,7 @@ export default defineEventHandler(async (event) => {
 							mimeType: a.mimeType,
 							fileSize: a.fileSize,
 							sortOrder: a.sortOrder,
+							isGated: a.isGated,
 						})) }
 					: {}),
 				user: {

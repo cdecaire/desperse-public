@@ -16,7 +16,7 @@ import {
 } from 'h3'
 import { getUserBySlugDirect } from '@/server/utils/profile'
 import { authenticateWithToken } from '@/server/auth'
-import { getBlockedUserIdSet } from '@/server/utils/blocks'
+import { getDirectedBlockState } from '@/server/utils/blocks'
 
 export default defineEventHandler(async (event) => {
 	const requestId = `req_${crypto.randomUUID().slice(0, 12)}`
@@ -85,11 +85,17 @@ export default defineEventHandler(async (event) => {
 		}
 	}
 
-	// Block check: present 404 to either side of a block relationship.
-	// 404 (not 403) keeps existence ambiguous so blockers can't be probed.
+	// Directional block check:
+	//  - If the target has blocked the viewer → 404 (privacy guarantee;
+	//    blocked users can't probe blockers).
+	//  - If the viewer has blocked the target → return the profile shell
+	//    with `isBlocked: true` so the client can render an unblock UI.
+	//    Strip bio / link / social fields and zero out counts so the
+	//    blocked relationship doesn't leak engagement data.
+	let isBlockedByViewer = false
 	if (currentUserId && result.user.id !== currentUserId) {
-		const blockedSet = await getBlockedUserIdSet(currentUserId)
-		if (blockedSet.has(result.user.id)) {
+		const { iBlocked, blockedMe } = await getDirectedBlockState(currentUserId)
+		if (blockedMe.has(result.user.id)) {
 			setResponseStatus(event, 404)
 			return {
 				success: false,
@@ -97,6 +103,7 @@ export default defineEventHandler(async (event) => {
 				requestId,
 			}
 		}
+		isBlockedByViewer = iBlocked.has(result.user.id)
 	}
 
 	return {
@@ -106,19 +113,22 @@ export default defineEventHandler(async (event) => {
 				id: result.user.id,
 				slug: result.user.slug,
 				displayName: result.user.displayName,
-				bio: result.user.bio,
+				bio: isBlockedByViewer ? null : result.user.bio,
 				avatarUrl: result.user.avatarUrl,
-				headerBgUrl: result.user.headerBgUrl,
-				link: result.user.link,
-				twitterUsername: result.user.twitterUsername,
-				instagramUsername: result.user.instagramUsername,
+				headerBgUrl: isBlockedByViewer ? null : result.user.headerBgUrl,
+				link: isBlockedByViewer ? null : result.user.link,
+				twitterUsername: isBlockedByViewer ? null : result.user.twitterUsername,
+				instagramUsername: isBlockedByViewer ? null : result.user.instagramUsername,
 				createdAt: result.user.createdAt,
 			},
-			stats: result.stats,
-			followersCount: result.followersCount,
-			followingCount: result.followingCount,
-			collectorsCount: result.collectorsCount,
-			isFollowing: result.isFollowing,
+			stats: isBlockedByViewer
+				? { posts: 0, collected: 0, forSale: 0 }
+				: result.stats,
+			followersCount: isBlockedByViewer ? 0 : result.followersCount,
+			followingCount: isBlockedByViewer ? 0 : result.followingCount,
+			collectorsCount: isBlockedByViewer ? 0 : result.collectorsCount,
+			isFollowing: isBlockedByViewer ? false : result.isFollowing,
+			isBlocked: isBlockedByViewer,
 		},
 		requestId,
 	}

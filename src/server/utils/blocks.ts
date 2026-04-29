@@ -42,9 +42,8 @@ export async function getBlockedUserIdSet(viewerId: string | null | undefined): 
 
 /**
  * Returns true if either user has blocked the other. Convenience over
- * `getBlockedUserIdSet` for pairwise checks (e.g., loading another user's
- * profile, opening a DM). For batch filtering, use `getBlockedUserIdSet`
- * directly.
+ * `getBlockedUserIdSet` for pairwise checks where direction doesn't
+ * matter (e.g., feed filters).
  */
 export async function isPairwiseBlocked(
   viewerId: string,
@@ -53,4 +52,43 @@ export async function isPairwiseBlocked(
   if (viewerId === otherUserId) return false
   const blocked = await getBlockedUserIdSet(viewerId)
   return blocked.has(otherUserId)
+}
+
+/**
+ * Directional block state. Use when the response should differ based on
+ * who blocked whom — typically:
+ *   - `iBlocked.has(target)`  → show the profile/post with an `isBlocked`
+ *                                flag so the viewer can unblock from the UI.
+ *   - `blockedMe.has(target)` → 404 the response so the blocked viewer
+ *                                can't probe / see content.
+ *
+ * For symmetric content filters (feed, search results), prefer
+ * `getBlockedUserIdSet` — it's the union of both sets.
+ */
+export interface DirectedBlockState {
+  iBlocked: Set<string>
+  blockedMe: Set<string>
+}
+
+export async function getDirectedBlockState(
+  viewerId: string | null | undefined,
+): Promise<DirectedBlockState> {
+  const empty: DirectedBlockState = { iBlocked: new Set(), blockedMe: new Set() }
+  if (!viewerId) return empty
+
+  const rows = await db
+    .select({
+      blockerId: userBlocks.blockerId,
+      blockedId: userBlocks.blockedId,
+    })
+    .from(userBlocks)
+    .where(or(eq(userBlocks.blockerId, viewerId), eq(userBlocks.blockedId, viewerId)))
+
+  const iBlocked = new Set<string>()
+  const blockedMe = new Set<string>()
+  for (const row of rows) {
+    if (row.blockerId === viewerId) iBlocked.add(row.blockedId)
+    else blockedMe.add(row.blockerId)
+  }
+  return { iBlocked, blockedMe }
 }

@@ -104,9 +104,35 @@ Anonymous viewers (`viewerId == null`) get an empty Set — no-op.
 
 | Endpoint | File | Filter |
 |---|---|---|
-| Feed (For You + Following) | `server/routes/api/v1/posts/index.get.ts` | `notInArray(posts.userId, blocked)` |
-| Post detail | `server/routes/api/v1/posts/[id].get.ts` | 404 if author in `blocked` |
-| User profile | `server/routes/api/v1/users/[slug]/index.get.ts` | 404 if target in `blocked` |
+| Feed (For You + Following) | `server/routes/api/v1/posts/index.get.ts` | `notInArray(posts.userId, blocked)` (symmetric) |
+| Post detail | `server/routes/api/v1/posts/[id].get.ts` | 404 if author in `blocked` (symmetric) |
+| User profile | `server/routes/api/v1/users/[slug]/index.get.ts` | **directional** — see below |
+
+### Profile endpoint — directional semantics
+
+Profile views are the only place where direction matters today. The
+endpoint uses `getDirectedBlockState(viewerId)` instead of the symmetric
+union helper:
+
+- **Target blocked viewer** (`blockedMe.has(target)`) → 404. Privacy
+  guarantee: a blocked user can't probe / see the blocker's profile.
+- **Viewer blocked target** (`iBlocked.has(target)`) → 200 with
+  `isBlocked: true` on the response, plus stats zeroed out and bio /
+  link / social fields nulled. Lets the client render an
+  unblock affordance without leaking engagement data.
+
+Why this matters: if a blocked user appears in the blocker's collectors
+list / search / mention list, tapping their name should land on a
+profile where the blocker can see who they are and tap Unblock — NOT a
+404 dead-end.
+
+Clients should:
+1. Add `isBlocked: bool` to their profile response model.
+2. When `isBlocked === true`, render a minimal banner ("You blocked
+   @username") with an Unblock button calling `DELETE
+   /api/v1/users/:id/block`.
+3. Skip the post grid / tabs / follow button while `isBlocked` is true.
+4. After unblocking, refresh the profile so real stats / bio populate.
 
 ### Not yet filtered (follow-up work, in priority order)
 
@@ -128,14 +154,18 @@ endpoints) or 404 the response (detail endpoints). Cache the Set in
 
 ## Client API contracts
 
-### iOS (shipped — `desperse-ios` commit `ad68225`)
+### iOS (shipped — `desperse-ios`)
 
 - `UserRepository.blockUser(_:)` → `POST /api/v1/users/{id}/block`
 - `UserRepository.unblockUser(_:)` → `DELETE /api/v1/users/{id}/block`
 - `UserRepository.blockedUsers()` → `GET /api/v1/users/me/blocked`
+- `ProfileData.isBlocked: Bool` decoded from the profile response
 - UI:
   - `PostMoreMenu` "Block @username" (destructive, with confirm alert)
   - `ProfileView` toolbar Menu (Block + Report) when viewing other users
+  - `ProfileView` blocked-state banner — shown when `profile.isBlocked`,
+    with an inline Unblock button. Skips the standard header / tab bar
+    so the user only sees the unblock affordance.
   - `BlockedUsersView` settings screen pushed from "Blocked accounts"
 
 ### Android (TODO)

@@ -106,6 +106,7 @@ Anonymous viewers (`viewerId == null`) get an empty Set — no-op.
 |---|---|---|
 | Feed (For You + Following) | `server/routes/api/v1/posts/index.get.ts` | `notInArray(posts.userId, blocked)` (symmetric) |
 | Post detail | `server/routes/api/v1/posts/[id].get.ts` | 404 if author in `blocked` (symmetric) |
+| Comments | `server/routes/api/v1/posts/[id]/comments/index.get.ts` | drop comments by `blocked` authors (symmetric, optional auth) |
 | User profile | `server/routes/api/v1/users/[slug]/index.get.ts` | **directional** — see below |
 
 ### Profile endpoint — directional semantics
@@ -138,7 +139,6 @@ Clients should:
 
 | Surface | Files (if known) | Why it matters |
 |---|---|---|
-| Comments on a post | `server/routes/api/v1/posts/[id]/comments/index.get.ts` | Blocked user's comments still visible on shared posts |
 | User's own posts list | `server/routes/api/v1/users/[slug]/posts.get.ts` | Same as profile — should 404 the parent before reaching this |
 | Followers / Following lists | `server/routes/api/v1/users/[slug]/followers.get.ts`, `following.get.ts` | Blocked user shouldn't appear in these lists |
 | Mention search | `server/routes/api/v1/users/mention-search.get.ts` | Blocked user shouldn't be `@`-mentionable |

@@ -257,6 +257,31 @@ export const follows = pgTable(
   }),
 );
 
+// User blocks. Both directions matter for content filtering — if either party
+// blocks the other, content is hidden in both directions. Symmetric in effect
+// but stored as a single directed row (the blocker).
+export const userBlocks = pgTable(
+  'user_blocks',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    blockerId: uuid('blocker_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    blockedId: uuid('blocked_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  },
+  (table) => ({
+    blockerBlockedUniqueIdx: uniqueIndex('user_blocks_blocker_blocked_unique_idx').on(
+      table.blockerId,
+      table.blockedId,
+    ),
+    blockerIdIdx: index('user_blocks_blocker_id_idx').on(table.blockerId),
+    blockedIdIdx: index('user_blocks_blocked_id_idx').on(table.blockedId),
+  }),
+);
+
 // Likes table (for post likes)
 export const likes = pgTable(
   'likes',

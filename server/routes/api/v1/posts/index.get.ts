@@ -21,9 +21,10 @@ import {
 } from 'h3'
 import { db } from '@/server/db'
 import { posts, users, postAssets, likes, collections, comments, purchases, follows } from '@/server/db/schema'
-import { eq, and, desc, lt, inArray, asc, count, ne } from 'drizzle-orm'
+import { eq, and, desc, lt, inArray, notInArray, asc, count, ne } from 'drizzle-orm'
 import { authenticateWithToken } from '@/server/auth'
 import { excludeDevPostsForUser } from '@/server/utils/dev-posts'
+import { getBlockedUserIdSet } from '@/server/utils/blocks'
 
 export default defineEventHandler(async (event) => {
 	const requestId = `req_${crypto.randomUUID().slice(0, 12)}`
@@ -77,6 +78,14 @@ export default defineEventHandler(async (event) => {
 			eq(posts.isDeleted, false),
 			eq(posts.isHidden, false),
 		]
+
+		// Hide posts authored by users the viewer has blocked OR who have
+		// blocked the viewer. Anonymous viewers get an empty set so this
+		// is a no-op for them.
+		const blockedSet = await getBlockedUserIdSet(currentUserId)
+		if (blockedSet.size > 0) {
+			conditions.push(notInArray(posts.userId, Array.from(blockedSet)))
+		}
 
 		// Add cursor condition if provided
 		if (cursor) {

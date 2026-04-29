@@ -16,6 +16,7 @@ import {
 } from 'h3'
 import { getUserBySlugDirect } from '@/server/utils/profile'
 import { authenticateWithToken } from '@/server/auth'
+import { getBlockedUserIdSet } from '@/server/utils/blocks'
 
 export default defineEventHandler(async (event) => {
 	const requestId = `req_${crypto.randomUUID().slice(0, 12)}`
@@ -81,6 +82,20 @@ export default defineEventHandler(async (event) => {
 				message: result.error || 'User not found',
 			},
 			requestId,
+		}
+	}
+
+	// Block check: present 404 to either side of a block relationship.
+	// 404 (not 403) keeps existence ambiguous so blockers can't be probed.
+	if (currentUserId && result.user.id !== currentUserId) {
+		const blockedSet = await getBlockedUserIdSet(currentUserId)
+		if (blockedSet.has(result.user.id)) {
+			setResponseStatus(event, 404)
+			return {
+				success: false,
+				error: { code: 'NOT_FOUND', message: 'User not found' },
+				requestId,
+			}
 		}
 	}
 

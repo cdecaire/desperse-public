@@ -15,6 +15,8 @@ import {
 	createError,
 } from 'h3'
 import { getPostDirect } from '@/server/utils/posts'
+import { authenticateWithToken } from '@/server/auth'
+import { getBlockedUserIdSet } from '@/server/utils/blocks'
 
 export default defineEventHandler(async (event) => {
 	const requestId = `req_${crypto.randomUUID().slice(0, 12)}`
@@ -96,6 +98,32 @@ export default defineEventHandler(async (event) => {
 				requestId,
 			},
 		})
+	}
+
+	// Block check: return 404 (not 403) if the post author is blocked by /
+	// has blocked the viewer. 404 keeps the existence ambiguous so blockers
+	// can't probe blocked status by ID.
+	if (token) {
+		try {
+			const auth = await authenticateWithToken(token)
+			if (auth?.userId && result.user?.id) {
+				const blockedSet = await getBlockedUserIdSet(auth.userId)
+				if (blockedSet.has(result.user.id)) {
+					throw createError({
+						statusCode: 404,
+						data: {
+							success: false,
+							error: { code: 'NOT_FOUND', message: 'Post not found' },
+							requestId,
+						},
+					})
+				}
+			}
+		} catch (err) {
+			// Re-throw the 404 we just constructed; ignore any auth lookup
+			// failures so anonymous-token edge cases don't 500.
+			if (err && (err as { statusCode?: number }).statusCode === 404) throw err
+		}
 	}
 
 	const post = result.post as Record<string, unknown>

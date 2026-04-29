@@ -11,6 +11,7 @@ export default defineEventHandler((event) => {
         {
           appIDs: ['DZJ6269EWL.app.desperse.ios'],
           components: [
+            { '/': '/p/*' },
             { '/': '/post/*' },
             { '/': '/u/*' },
             { '/': '/edition/*' },

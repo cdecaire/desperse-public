@@ -35,6 +35,8 @@ import { usePostLikes } from '@/hooks/useLikes'
 import { useCommentCount } from '@/hooks/useComments'
 import { Icon } from '@/components/ui/icon'
 import { getResponsiveImageProps } from '@/lib/imageUrl'
+import { useBlockUser, useUnblockUser } from '@/hooks/useBlocks'
+import { BlockConfirmDialog } from '@/components/forms/BlockConfirmDialog'
 
 type ProfileTab = 'posts' | 'collected' | 'for-sale'
 
@@ -280,6 +282,11 @@ function ProfilePage() {
   )
   const isOwnProfile = currentUser?.usernameSlug === slug
   const isFollowing = followStats?.isFollowing || false
+  const isBlocked = !!profileData?.isBlocked
+
+  const [showBlockDialog, setShowBlockDialog] = useState(false)
+  const blockMutation = useBlockUser()
+  const unblockMutation = useUnblockUser()
 
   // Handle follow/unfollow
   const handleFollowToggle = async () => {
@@ -312,6 +319,49 @@ function ProfilePage() {
         description="This user doesn't exist."
         action={{ label: 'Go to feed', to: '/' }}
       />
+    )
+  }
+
+  // Blocked state — viewer has blocked this profile. Render a minimal
+  // banner with an Unblock affordance instead of the full grid. Mirrors
+  // the iOS ProfileView blocked-state banner.
+  if (isBlocked && profileUser) {
+    return (
+      <div className="pb-24 md:pb-8">
+        <div className="px-4 pt-12 max-w-md mx-auto flex flex-col items-center text-center gap-4">
+          <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center overflow-hidden">
+            {profileUser.avatarUrl ? (
+              <img
+                src={profileUser.avatarUrl}
+                alt={profileUser.displayName || profileUser.slug}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <Icon name="user" variant="regular" className="text-2xl text-muted-foreground" />
+            )}
+          </div>
+          <div className="space-y-1">
+            <h1 className="text-xl font-bold">{profileUser.displayName || profileUser.slug}</h1>
+            <p className="text-sm text-muted-foreground">@{profileUser.slug}</p>
+          </div>
+          <div className="rounded-lg border border-border bg-card px-4 py-3 text-sm text-muted-foreground">
+            You blocked @{profileUser.slug}. They can't see your profile or
+            posts, and you can't see theirs.
+          </div>
+          <Button
+            variant="outline"
+            disabled={unblockMutation.isPending}
+            onClick={() =>
+              unblockMutation.mutate({
+                targetUserId: profileUser.id,
+                displayLabel: `@${profileUser.slug}`,
+              })
+            }
+          >
+            {unblockMutation.isPending ? 'Unblocking…' : `Unblock @${profileUser.slug}`}
+          </Button>
+        </div>
+      </div>
     )
   }
 
@@ -441,6 +491,14 @@ function ProfilePage() {
                       className="text-base"
                     />
                   )}
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowBlockDialog(true)}
+                  aria-label={`Block @${profileUser.slug}`}
+                >
+                  <Icon name="ban" variant="regular" className="text-base" />
                 </Button>
               </div>
             )}
@@ -684,6 +742,22 @@ function ProfilePage() {
         <ExternalLinkWarning
           url={externalLinkUrl}
           onClose={() => setExternalLinkUrl(null)}
+        />
+
+        <BlockConfirmDialog
+          open={showBlockDialog}
+          onOpenChange={setShowBlockDialog}
+          username={profileUser.slug}
+          isPending={blockMutation.isPending}
+          onConfirm={() => {
+            blockMutation.mutate(
+              { targetUserId: profileUser.id, displayLabel: `@${profileUser.slug}` },
+              {
+                onSuccess: () => setShowBlockDialog(false),
+                onError: () => setShowBlockDialog(false),
+              },
+            )
+          }}
         />
       </div>
     </PullToRefresh>

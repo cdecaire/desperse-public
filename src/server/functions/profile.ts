@@ -14,6 +14,7 @@ import {
   inArray,
   isNull,
   lt,
+  notInArray,
   or,
 } from 'drizzle-orm'
 import { z } from 'zod'
@@ -22,6 +23,7 @@ import { uploadToBlob, SUPPORTED_IMAGE_TYPES } from '@/server/storage/blob'
 import { withAuth, withOptionalAuth } from '@/server/auth'
 import { excludeDevPostsForUser } from '@/server/utils/dev-posts'
 import { getPostCollectorsListDirect } from '@/server/utils/follows'
+import { getBlockedUserIdSet, getDirectedBlockState } from '@/server/utils/blocks'
 
 // Shared schemas
 const cursorSchema = z.object({
@@ -438,6 +440,41 @@ export const getUserBySlug = createServerFn({
       }
     }
 
+    // Directional block check. Two cases:
+    //  - target has blocked viewer  → 404 (privacy guarantee, can't probe)
+    //  - viewer has blocked target  → 200 with isBlocked:true, stats zeroed
+    //                                  and bio/links nulled. Lets the
+    //                                  blocker render an Unblock affordance
+    //                                  without leaking engagement data.
+    const { iBlocked, blockedMe } = await getDirectedBlockState(viewerUserId)
+    if (blockedMe.has(user.id)) {
+      return { success: false, status: 404, error: 'User not found.' }
+    }
+    const isBlocked = iBlocked.has(user.id)
+    if (isBlocked) {
+      return {
+        success: true,
+        user: {
+          id: user.id,
+          slug: user.usernameSlug,
+          displayName: user.displayName,
+          bio: null,
+          avatarUrl: user.avatarUrl,
+          headerBgUrl: null,
+          link: null,
+          twitterUsername: null,
+          instagramUsername: null,
+          createdAt: user.createdAt,
+        },
+        stats: { posts: 0, collected: 0, forSale: 0 },
+        followersCount: 0,
+        followingCount: 0,
+        collectorsCount: 0,
+        nextUsernameChangeAt: null,
+        isBlocked: true,
+      }
+    }
+
     // Posts count (public, not deleted/hidden)
     const postsResult = await db
       .select({ count: count() })
@@ -611,6 +648,7 @@ export const getUserBySlug = createServerFn({
       followingCount,
       collectorsCount,
       nextUsernameChangeAt,
+      isBlocked: false,
     }
   } catch (error) {
     console.error('Error in getUserBySlug:', error)
@@ -632,6 +670,13 @@ export const getUserPosts = createServerFn({
   try {
     const authResult = await withOptionalAuth(cursorSchema, input)
     const { userId, cursor, limit } = authResult.input
+
+    if (authResult.auth?.userId) {
+      const blocked = await getBlockedUserIdSet(authResult.auth.userId)
+      if (blocked.has(userId)) {
+        return { success: true, posts: [], hasMore: false, nextCursor: null }
+      }
+    }
 
     const conditions = [
       await excludeDevPostsForUser(authResult.auth?.userId),
@@ -718,6 +763,13 @@ export const getUserCollections = createServerFn({
     const authResult = await withOptionalAuth(cursorSchema, input)
     const { userId, cursor, limit } = authResult.input
 
+    const blocked = authResult.auth?.userId
+      ? await getBlockedUserIdSet(authResult.auth.userId)
+      : new Set<string>()
+    if (blocked.has(userId)) {
+      return { success: true, posts: [], hasMore: false, nextCursor: null }
+    }
+
     const collectedIds = new Set<string>()
 
     const collectionRows = await db
@@ -757,6 +809,10 @@ export const getUserCollections = createServerFn({
       // Filter out deleted and hidden posts
       eq(posts.isDeleted, false),
       eq(posts.isHidden, false),
+      // Cross-author drop: collections may include posts by users the viewer
+      // pairwise-blocked. Skip those even though the slug user themselves
+      // isn't blocked.
+      ...(blocked.size > 0 ? [notInArray(posts.userId, Array.from(blocked))] : []),
     ]
 
     if (cursor) {
@@ -842,6 +898,13 @@ export const getUserForSale = createServerFn({
     const authResult = await withOptionalAuth(cursorSchema, input)
     const { userId, cursor, limit } = authResult.input
 
+    if (authResult.auth?.userId) {
+      const blocked = await getBlockedUserIdSet(authResult.auth.userId)
+      if (blocked.has(userId)) {
+        return { success: true, posts: [], hasMore: false, nextCursor: null }
+      }
+    }
+
     const conditions = [
       await excludeDevPostsForUser(authResult.auth?.userId),
       eq(posts.userId, userId),
@@ -915,6 +978,15 @@ export const getCollectorsList = createServerFn({
 
     const { userId, currentUserId } = collectorsListSchema.parse(rawData)
 
+    // If the viewer pairwise-blocks the slug user, return an empty list.
+    // Filter individual blocked collectors below as well.
+    const blocked = currentUserId
+      ? await getBlockedUserIdSet(currentUserId)
+      : new Set<string>()
+    if (blocked.has(userId)) {
+      return { success: true, collectors: [] }
+    }
+
     // Get all post IDs created by this user
     const userPostIds = await db
       .select({ id: posts.id })
@@ -964,6 +1036,9 @@ export const getCollectorsList = createServerFn({
 
     // Exclude the creator themselves from the collectors list
     collectorIds.delete(userId)
+
+    // Drop pairwise-blocked individuals from the collectors list
+    for (const id of blocked) collectorIds.delete(id)
 
     if (collectorIds.size === 0) {
       return {
@@ -1043,9 +1118,13 @@ export const getPostCollectorsList = createServerFn({
 			return { success: false, status: 500, error: result.error }
 		}
 
+		const blocked = currentUserId
+			? await getBlockedUserIdSet(currentUserId)
+			: new Set<string>()
+
 		return {
 			success: true,
-			collectors: (result.users || []).map((u: any) => ({
+			collectors: (result.users || []).filter((u: any) => !blocked.has(u.id)).map((u: any) => ({
 				id: u.id,
 				usernameSlug: u.slug,
 				displayName: u.displayName,

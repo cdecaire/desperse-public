@@ -11,6 +11,7 @@ import { z } from 'zod'
 import { withAuth } from '@/server/auth'
 import { sendPushNotification, getActorDisplayName } from '@/server/utils/pushDispatch'
 import { isNotificationTypeEnabled } from '@/server/utils/notificationPrefs'
+import { assertNotPairwiseBlocked, PairwiseBlockError } from '@/server/utils/blocks'
 
 // Schema for like/unlike (no userId - derived from auth)
 const likeSchema = z.object({
@@ -61,6 +62,16 @@ export const likePost = createServerFn({
         success: false,
         error: 'Post not found.',
       }
+    }
+
+    // Block guard — can't like a blocked author's post.
+    try {
+      await assertNotPairwiseBlocked(userId, post.userId)
+    } catch (err) {
+      if (err instanceof PairwiseBlockError) {
+        return { success: false, error: err.message }
+      }
+      throw err
     }
 
     // Check if already liked

@@ -9,6 +9,8 @@ import { toast } from '@/hooks/use-toast'
 import { cn } from '@/lib/utils'
 import { Icon } from '@/components/ui/icon'
 import { ReportModal } from '@/components/forms/ReportModal'
+import { BlockConfirmDialog } from '@/components/forms/BlockConfirmDialog'
+import { useBlockUser } from '@/hooks/useBlocks'
 import { getExplorerUrl } from '@/server/functions/preferences'
 import { usePreferences } from '@/hooks/usePreferences'
 import { PostCardUser } from './PostCard'
@@ -97,6 +99,8 @@ export function PostCardMenu({
   downloadableAssets,
 }: PostCardMenuProps) {
   const [showReportModal, setShowReportModal] = useState(false)
+  const [showBlockDialog, setShowBlockDialog] = useState(false)
+  const blockMutation = useBlockUser()
   const { downloadProtectedAsset, isAuthenticating } = useGatedDownload()
   const { preferences } = usePreferences()
 
@@ -299,6 +303,17 @@ export function PostCardMenu({
             </>
           )}
 
+          {/* Block user — destructive, hidden on own posts. Mirrors iOS PostMoreMenu. */}
+          {postUser && !isOwner && (
+            <DropdownMenuItem
+              onClick={() => setShowBlockDialog(true)}
+              className={cn(itemClassName, "text-destructive hover:bg-destructive/10")}
+            >
+              <Icon name="ban" variant="regular" className="w-5 text-center" />
+              <span>Block @{postUser.usernameSlug}</span>
+            </DropdownMenuItem>
+          )}
+
           {isOwner && (
             <>
               <DropdownMenuSeparator />
@@ -328,6 +343,24 @@ export function PostCardMenu({
           postCaption={postCaption}
           postMediaUrl={postMediaUrl}
           onSubmit={handleReportSubmit}
+        />
+      )}
+
+      {postUser && (
+        <BlockConfirmDialog
+          open={showBlockDialog}
+          onOpenChange={setShowBlockDialog}
+          username={postUser.usernameSlug}
+          isPending={blockMutation.isPending}
+          onConfirm={() => {
+            blockMutation.mutate(
+              { targetUserId: postUser.id, displayLabel: `@${postUser.usernameSlug}` },
+              {
+                onSuccess: () => setShowBlockDialog(false),
+                onError: () => setShowBlockDialog(false),
+              },
+            )
+          }}
         />
       )}
     </>

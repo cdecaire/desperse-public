@@ -16,6 +16,7 @@ import { buildCompressedCollectTransaction } from '@/server/services/blockchain/
 import { getHeliusRpcUrl } from '@/config/env';
 import { snapshotMintedMetadata } from '@/server/utils/mint-snapshot';
 import { withAuth } from '@/server/auth';
+import { assertNotPairwiseBlocked, PairwiseBlockError } from '@/server/utils/blocks';
 
 /**
  * Extract client IP address from request headers
@@ -284,6 +285,20 @@ export const prepareCollect = createServerFn({
         error: 'Not a collectible',
         message: 'This post is not a collectible.',
       };
+    }
+
+    // Block guard — can't collect from / for a pairwise-blocked creator.
+    try {
+      await assertNotPairwiseBlocked(userId, postResult[0].creator.id);
+    } catch (err) {
+      if (err instanceof PairwiseBlockError) {
+        return {
+          success: false,
+          error: 'blocked',
+          message: err.message,
+        };
+      }
+      throw err;
     }
 
     // Existing collection?

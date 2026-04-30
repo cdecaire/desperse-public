@@ -9,6 +9,7 @@ import { users, follows } from '@/server/db/schema'
 import { eq, desc, sql } from 'drizzle-orm'
 import { z } from 'zod'
 import { withAuth } from '@/server/auth'
+import { getBlockedUserIdSet } from '@/server/utils/blocks'
 
 // Schema for mention search
 const searchMentionUsersSchema = z.object({
@@ -36,6 +37,11 @@ export const searchMentionUsers = createServerFn({
     const { query, limit } = data
     const userId = auth.userId
 
+    // Drop pairwise-blocked users from autocomplete entirely.
+    const blocked = await getBlockedUserIdSet(userId)
+    const filterBlocked = <T extends { id: string }>(rows: T[]) =>
+      blocked.size > 0 ? rows.filter((r) => !blocked.has(r.id)) : rows
+
     // If no query, return suggested users (followed users first)
     if (!query || query.trim() === '') {
       // Get followed users first
@@ -52,17 +58,19 @@ export const searchMentionUsers = createServerFn({
         .orderBy(desc(follows.createdAt))
         .limit(limit)
 
+      const followedFiltered = filterBlocked(followedUsers)
+
       // If we have enough followed users, return them
-      if (followedUsers.length >= limit) {
+      if (followedFiltered.length >= limit) {
         return {
           success: true,
-          users: followedUsers,
+          users: followedFiltered,
         }
       }
 
       // Fill remaining slots with recently active users
-      const followedIds = followedUsers.map(u => u.id)
-      const remainingLimit = limit - followedUsers.length
+      const followedIds = followedFiltered.map(u => u.id)
+      const remainingLimit = limit - followedFiltered.length
 
       const recentUsers = await db
         .select({
@@ -84,7 +92,7 @@ export const searchMentionUsers = createServerFn({
 
       return {
         success: true,
-        users: [...followedUsers, ...recentUsers],
+        users: [...followedFiltered, ...filterBlocked(recentUsers)],
       }
     }
 
@@ -120,7 +128,7 @@ export const searchMentionUsers = createServerFn({
 
     return {
       success: true,
-      users: searchResults,
+      users: filterBlocked(searchResults),
     }
   } catch (error) {
     console.error('Error in searchMentionUsers:', error)

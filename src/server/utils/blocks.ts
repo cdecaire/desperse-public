@@ -10,8 +10,8 @@
  */
 
 import { db } from '@/server/db'
-import { userBlocks } from '@/server/db/schema'
-import { eq, or } from 'drizzle-orm'
+import { userBlocks, users } from '@/server/db/schema'
+import { and, desc, eq, or } from 'drizzle-orm'
 
 /**
  * Returns the set of user IDs the viewer should NOT see content from —
@@ -91,4 +91,92 @@ export async function getDirectedBlockState(
     else blockedMe.add(row.blockerId)
   }
   return { iBlocked, blockedMe }
+}
+
+/**
+ * Idempotent insert. Returns true if a new row was created, false if the pair
+ * was already blocked. Throws on self-block or missing target.
+ */
+export async function createBlock(blockerId: string, blockedId: string): Promise<boolean> {
+  if (blockerId === blockedId) {
+    throw new Error('Cannot block yourself')
+  }
+  const [target] = await db.select({ id: users.id }).from(users).where(eq(users.id, blockedId)).limit(1)
+  if (!target) {
+    throw new Error('User not found')
+  }
+  try {
+    await db.insert(userBlocks).values({ blockerId, blockedId })
+    return true
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : ''
+    if (msg.includes('unique') || msg.includes('duplicate')) {
+      return false
+    }
+    throw err
+  }
+}
+
+/**
+ * Idempotent delete. Returns true if a row was removed, false if there was
+ * nothing to remove.
+ */
+export async function deleteBlock(blockerId: string, blockedId: string): Promise<boolean> {
+  const result = await db
+    .delete(userBlocks)
+    .where(and(eq(userBlocks.blockerId, blockerId), eq(userBlocks.blockedId, blockedId)))
+    .returning({ id: userBlocks.id })
+  return result.length > 0
+}
+
+export interface BlockedUserSummary {
+  id: string
+  slug: string
+  displayName: string | null
+  avatarUrl: string | null
+}
+
+/**
+ * List the users this blocker has blocked, newest first. Joins onto `users`
+ * for the lightweight summary the settings UI needs.
+ */
+export async function listBlockedUsers(blockerId: string): Promise<BlockedUserSummary[]> {
+  const rows = await db
+    .select({
+      id: users.id,
+      slug: users.usernameSlug,
+      displayName: users.displayName,
+      avatarUrl: users.avatarUrl,
+      createdAt: userBlocks.createdAt,
+    })
+    .from(userBlocks)
+    .innerJoin(users, eq(userBlocks.blockedId, users.id))
+    .where(eq(userBlocks.blockerId, blockerId))
+    .orderBy(desc(userBlocks.createdAt))
+  return rows.map((r) => ({
+    id: r.id,
+    slug: r.slug,
+    displayName: r.displayName,
+    avatarUrl: r.avatarUrl,
+  }))
+}
+
+/**
+ * Throws a labeled error if either party has blocked the other. Use as a
+ * write-side guard for follow / like / collect / comment / tip / DM endpoints
+ * to short-circuit before producing a state that conflicts with the block.
+ */
+export class PairwiseBlockError extends Error {
+  constructor(message = 'This action is not available between these users.') {
+    super(message)
+    this.name = 'PairwiseBlockError'
+  }
+}
+
+export async function assertNotPairwiseBlocked(viewerId: string, otherUserId: string): Promise<void> {
+  if (viewerId === otherUserId) return
+  const blocked = await isPairwiseBlocked(viewerId, otherUserId)
+  if (blocked) {
+    throw new PairwiseBlockError()
+  }
 }

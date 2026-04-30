@@ -7,13 +7,14 @@ import { createServerFn } from '@tanstack/react-start'
 import { db } from '@/server/db'
 import { dmThreads, dmMessages, users } from '@/server/db/schema'
 import type { DmThread } from '@/server/db/schema'
-import { eq, and, or, desc, lt, count, sql, gt } from 'drizzle-orm'
+import { eq, and, or, desc, lt, count, sql, gt, notInArray } from 'drizzle-orm'
 import { z } from 'zod'
 import { withAuth } from '@/server/auth'
 import { checkDmEligibility } from '@/server/utils/dm-eligibility-internal'
 import { isModeratorOrAdmin } from '@/server/utils/auth-helpers'
 import { publishNewMessage, publishReadReceipt } from '@/server/utils/ably-publish'
 import { sendPushNotification, getActorDisplayName } from '@/server/utils/pushDispatch'
+import { getBlockedUserIdSet, isPairwiseBlocked } from '@/server/utils/blocks'
 
 // Constants
 const MAX_THREADS_PER_DAY = 5
@@ -63,6 +64,12 @@ export const getThreads = createServerFn({
     const limit = data.limit ?? 20
     const cursor = data.cursor ? new Date(data.cursor) : null
 
+    // User-level block filter — drop threads with anyone the viewer
+    // pairwise-blocks. This sits on top of the existing per-thread block
+    // (which remains as a finer-grained tool).
+    const blocked = await getBlockedUserIdSet(userId)
+    const blockedArray = Array.from(blocked)
+
     // Build query conditions
     const userCondition = or(
       eq(dmThreads.userAId, userId),
@@ -96,6 +103,10 @@ export const getThreads = createServerFn({
             WHEN ${dmThreads.userAId} = ${userId} THEN ${dmThreads.userAArchived} = false
             ELSE ${dmThreads.userBArchived} = false
           END`,
+          // Drop threads where the other party is pairwise-blocked
+          ...(blockedArray.length > 0
+            ? [notInArray(dmThreads.userAId, blockedArray), notInArray(dmThreads.userBId, blockedArray)]
+            : []),
           // Cursor pagination
           cursor ? lt(dmThreads.lastMessageAt, cursor) : undefined
         )
@@ -167,6 +178,11 @@ export const getOrCreateThread = createServerFn({
     // Cannot message yourself
     if (userId === otherUserId) {
       return { success: false, error: 'Cannot message yourself' }
+    }
+
+    // 403 if either party has blocked the other (matches iOS REST behavior)
+    if (await isPairwiseBlocked(userId, otherUserId)) {
+      return { success: false, error: 'This action is not available between these users.' }
     }
 
     // Sort user IDs for unified model
@@ -429,6 +445,12 @@ export const sendMessage = createServerFn({
 
     if (isBlockedByOther) {
       return { success: false, error: 'You have been blocked by this user' }
+    }
+
+    // User-level block: 403 if either party has blocked the other.
+    const otherUserId = position === 'A' ? thread.userBId : thread.userAId
+    if (await isPairwiseBlocked(userId, otherUserId)) {
+      return { success: false, error: 'This action is not available between these users.' }
     }
 
     // Create message

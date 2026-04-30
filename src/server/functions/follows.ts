@@ -11,6 +11,7 @@ import { z } from 'zod'
 import { withAuth } from '@/server/auth'
 import { sendPushNotification, getActorDisplayName } from '@/server/utils/pushDispatch'
 import { isNotificationTypeEnabled } from '@/server/utils/notificationPrefs'
+import { getBlockedUserIdSet, assertNotPairwiseBlocked, PairwiseBlockError } from '@/server/utils/blocks'
 
 // Schema for follow/unfollow (no followerId - derived from auth)
 const followSchema = z.object({
@@ -63,6 +64,17 @@ export const followUser = createServerFn({
         success: false,
         error: 'User not found.',
       }
+    }
+
+    // Pairwise block guard — refuse to create a follow that the read-side
+    // filter would only hide anyway. Mirrors the iOS server behavior.
+    try {
+      await assertNotPairwiseBlocked(followerId, followingId)
+    } catch (err) {
+      if (err instanceof PairwiseBlockError) {
+        return { success: false, error: err.message }
+      }
+      throw err
     }
 
     // Check if already following
@@ -371,8 +383,13 @@ export const getFollowersList = createServerFn({
       currentUserId: z.string().uuid().optional(),
     }).parse(rawData)
 
+    const blocked = currentUserId ? await getBlockedUserIdSet(currentUserId) : new Set<string>()
+    if (blocked.has(userId)) {
+      return { success: true, followers: [] }
+    }
+
     // Get all users who follow the profile user
-    const followers = await db
+    const allFollowers = await db
       .select({
         id: users.id,
         usernameSlug: users.usernameSlug,
@@ -384,6 +401,11 @@ export const getFollowersList = createServerFn({
       .innerJoin(users, eq(follows.followerId, users.id))
       .where(eq(follows.followingId, userId))
       .orderBy(follows.createdAt)
+
+    // Drop pairwise-blocked individuals from the list
+    const followers = blocked.size > 0
+      ? allFollowers.filter((f) => !blocked.has(f.id))
+      : allFollowers
 
     // If current user is provided, check which followers they follow back
     let followersWithFollowStatus
@@ -450,8 +472,13 @@ export const getFollowingList = createServerFn({
       currentUserId: z.string().uuid().optional(),
     }).parse(rawData)
 
+    const blocked = currentUserId ? await getBlockedUserIdSet(currentUserId) : new Set<string>()
+    if (blocked.has(userId)) {
+      return { success: true, following: [] }
+    }
+
     // Get all users that the profile user follows
-    const following = await db
+    const allFollowing = await db
       .select({
         id: users.id,
         usernameSlug: users.usernameSlug,
@@ -463,6 +490,11 @@ export const getFollowingList = createServerFn({
       .innerJoin(users, eq(follows.followingId, users.id))
       .where(eq(follows.followerId, userId))
       .orderBy(follows.createdAt)
+
+    // Drop pairwise-blocked individuals from the list
+    const following = blocked.size > 0
+      ? allFollowing.filter((f) => !blocked.has(f.id))
+      : allFollowing
 
     // If current user is provided, check which following users follow back
     let followingWithFollowStatus

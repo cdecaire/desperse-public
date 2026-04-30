@@ -11,7 +11,7 @@ function ChangelogPage() {
     <StaticPageLayout>
       <article className="prose prose-zinc dark:prose-invert prose-p:my-4 max-w-none">
         <h1 className="text-2xl md:text-3xl font-bold mb-2">Changelog</h1>
-        <p className="text-muted-foreground text-sm mb-8">Last updated: March 13, 2026</p>
+        <p className="text-muted-foreground text-sm mb-8">Last updated: April 30, 2026</p>
 
         <p>
           This page highlights recent updates and improvements to Desperse. We're constantly working
@@ -20,7 +20,29 @@ function ChangelogPage() {
 
         <h2 className="text-xl font-semibold mt-8 mb-4 flex items-center gap-2">
           <Icon name="sparkles" className="text-muted-foreground" />
-          Latest Updates (March 2026)
+          Latest Updates (April 2026)
+        </h2>
+
+        <h3 className="text-lg font-semibold mt-6 mb-3">Account Blocking</h3>
+        <ul className="list-disc pl-6 space-y-1 my-4">
+          <li>
+            <strong>Block Anyone</strong>: Block accounts directly from a post's overflow menu or from
+            their profile. Blocks are mutual — once you block someone, neither of you sees the other's
+            posts, profile, comments, mentions, or messages
+          </li>
+          <li>
+            <strong>Blocked Accounts Settings</strong>: A new <em>Settings → Blocked Accounts</em>{' '}
+            page lists everyone you've blocked, with one-tap unblock
+          </li>
+          <li>
+            <strong>Quiet by Design</strong>: Blocks are never disclosed to the other person, and no
+            notifications are sent in either direction
+          </li>
+        </ul>
+
+        <h2 className="text-xl font-semibold mt-8 mb-4 flex items-center gap-2">
+          <Icon name="sparkles" className="text-muted-foreground" />
+          March 2026
         </h2>
 
         <h3 className="text-lg font-semibold mt-6 mb-3">Creator Rights & Provenance</h3>

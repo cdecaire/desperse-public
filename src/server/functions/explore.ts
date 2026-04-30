@@ -10,6 +10,7 @@ import { eq, and, desc, sql, count, gte, notInArray, isNotNull, or, ilike, inArr
 import { z } from 'zod'
 import { withOptionalAuth } from '@/server/auth'
 import { excludeDevPostsForUser } from '@/server/utils/dev-posts'
+import { getBlockedUserIdSet } from '@/server/utils/blocks'
 
 // Schema for suggested creators query
 const suggestedCreatorsSchema = z.object({
@@ -66,9 +67,10 @@ export const getSuggestedCreators = createServerFn({
       followedUserIds = followedUsers.map(f => f.followingId)
     }
 
-    // Build exclusion list (followed users + self)
+    // Build exclusion list (followed users + self + pairwise-blocked)
+    const blocked = currentUserId ? await getBlockedUserIdSet(currentUserId) : new Set<string>()
     const excludeUserIds = currentUserId
-      ? [...followedUserIds, currentUserId]
+      ? Array.from(new Set([...followedUserIds, currentUserId, ...blocked]))
       : []
 
     // Get follower counts per user (subquery)
@@ -218,12 +220,16 @@ export const getTrendingPosts = createServerFn({
       .groupBy(purchases.postId)
       .as('purchase_counts')
 
+    // Drop posts by pairwise-blocked authors before scoring.
+    const blocked = await getBlockedUserIdSet(authResult.auth?.userId)
+
     // Build base conditions
     const baseConditions = [
       await excludeDevPostsForUser(authResult.auth?.userId),
       eq(posts.isDeleted, false),
       eq(posts.isHidden, false),
       gte(posts.createdAt, sevenDaysAgo),
+      ...(blocked.size > 0 ? [notInArray(posts.userId, Array.from(blocked))] : []),
     ]
 
     // Query trending posts with scoring
@@ -294,7 +300,8 @@ export const getTrendingPosts = createServerFn({
           and(
             await excludeDevPostsForUser(authResult.auth?.userId),
             eq(posts.isDeleted, false),
-            eq(posts.isHidden, false)
+            eq(posts.isHidden, false),
+            ...(blocked.size > 0 ? [notInArray(posts.userId, Array.from(blocked))] : []),
           )
         )
         .orderBy(desc(posts.createdAt))
@@ -745,6 +752,7 @@ export const search = createServerFn({
     const { query, type, limit } = authResult.input
 
     const searchTerm = `%${query}%`
+    const blocked = await getBlockedUserIdSet(authResult.auth?.userId)
 
     let userResults: Array<{
       id: string
@@ -785,9 +793,12 @@ export const search = createServerFn({
         })
         .from(users)
         .where(
-          or(
-            ilike(users.usernameSlug, searchTerm),
-            ilike(users.displayName, searchTerm)
+          and(
+            or(
+              ilike(users.usernameSlug, searchTerm),
+              ilike(users.displayName, searchTerm)
+            ),
+            ...(blocked.size > 0 ? [notInArray(users.id, Array.from(blocked))] : []),
           )
         )
         .orderBy(
@@ -805,6 +816,7 @@ export const search = createServerFn({
         await excludeDevPostsForUser(authResult.auth?.userId),
         eq(posts.isDeleted, false),
         eq(posts.isHidden, false),
+        ...(blocked.size > 0 ? [notInArray(posts.userId, Array.from(blocked))] : []),
         or(
           ilike(posts.caption, searchTerm),
           ilike(users.displayName, searchTerm),

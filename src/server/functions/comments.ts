@@ -6,12 +6,13 @@
 import { createServerFn } from '@tanstack/react-start'
 import { db } from '@/server/db'
 import { comments, posts, users, collections, notifications } from '@/server/db/schema'
-import { eq, desc, count, and, lt, inArray } from 'drizzle-orm'
+import { eq, desc, count, and, lt, inArray, notInArray } from 'drizzle-orm'
 import { z } from 'zod'
-import { withAuth } from '@/server/auth'
+import { withAuth, withOptionalAuth } from '@/server/auth'
 import { processMentions, deleteMentions } from '@/server/utils/mentions'
 import { sendPushNotification, getActorDisplayName } from '@/server/utils/pushDispatch'
 import { isNotificationTypeEnabled } from '@/server/utils/notificationPrefs'
+import { getBlockedUserIdSet, assertNotPairwiseBlocked, PairwiseBlockError } from '@/server/utils/blocks'
 
 // Character limit for comments
 const MAX_COMMENT_LENGTH = 280
@@ -71,6 +72,16 @@ export const createComment = createServerFn({
         success: false,
         error: 'Post not found.',
       }
+    }
+
+    // Block guard — can't comment on a blocked author's post.
+    try {
+      await assertNotPairwiseBlocked(userId, post.userId)
+    } catch (err) {
+      if (err instanceof PairwiseBlockError) {
+        return { success: false, error: err.message }
+      }
+      throw err
     }
 
     // Create comment using verified userId
@@ -231,17 +242,16 @@ export const getPostComments = createServerFn({
   method: 'GET',
 }).handler(async (input: unknown) => {
   try {
-    const rawData = input && typeof input === 'object' && 'data' in input
-      ? (input as { data: unknown }).data
-      : input
-    
-    const { postId, cursor, limit = 50 } = z.object({
+    const authResult = await withOptionalAuth(z.object({
       postId: z.string().uuid(),
       cursor: z.string().datetime().optional(),
       limit: z.number().int().positive().max(100).optional(),
-    }).parse(rawData)
+    }), input)
+    const { postId, cursor, limit = 50 } = authResult.input
 
-    // Get comments with user data
+    // Symmetric block filter — drop comments by users either party blocked.
+    const blocked = await getBlockedUserIdSet(authResult.auth?.userId)
+
     let query = db
       .select({
         id: comments.id,
@@ -264,6 +274,7 @@ export const getPostComments = createServerFn({
           eq(comments.postId, postId),
           eq(comments.isDeleted, false),
           eq(comments.isHidden, false),
+          ...(blocked.size > 0 ? [notInArray(comments.userId, Array.from(blocked))] : []),
           ...(cursor ? [lt(comments.createdAt, new Date(cursor))] : []),
         )
       )
@@ -298,25 +309,18 @@ export const getCommentCount = createServerFn({
   method: 'GET',
 }).handler(async (input: unknown) => {
   try {
-    const rawData = input && typeof input === 'object' && 'data' in input
-      ? (input as { data: unknown }).data
-      : input
-    
-    const parseResult = z.object({
+    const authResult = await withOptionalAuth(z.object({
       postId: z.string().uuid(),
-    }).safeParse(rawData)
+    }), input).catch(() => null)
 
-    // If validation fails, return 0 count (invalid postId means no comments)
-    if (!parseResult.success) {
-      return {
-        success: true,
-        count: 0,
-      }
+    if (!authResult) {
+      return { success: true, count: 0 }
     }
 
-    const { postId } = parseResult.data
+    const { postId } = authResult.input
+    const blocked = await getBlockedUserIdSet(authResult.auth?.userId)
 
-    // Count comments for this post (exclude moderated)
+    // Count comments for this post (exclude moderated and blocked authors)
     const result = await db
       .select({ count: count() })
       .from(comments)
@@ -325,6 +329,7 @@ export const getCommentCount = createServerFn({
           eq(comments.postId, postId),
           eq(comments.isDeleted, false),
           eq(comments.isHidden, false),
+          ...(blocked.size > 0 ? [notInArray(comments.userId, Array.from(blocked))] : []),
         )
       )
 
@@ -382,19 +387,24 @@ export const getUserComments = createServerFn({
   method: 'GET',
 }).handler(async (input: unknown) => {
   try {
-    const rawData = input && typeof input === 'object' && 'data' in input
-      ? (input as { data: unknown }).data
-      : input
-    
-    const { userId, cursor, limit = 50 } = z.object({
+    const authResult = await withOptionalAuth(z.object({
       userId: z.string().uuid(),
       cursor: z.string().datetime().optional(),
       limit: z.number().int().min(1).max(50).default(50),
-    }).parse(rawData)
+    }), input)
+    const { userId, cursor, limit } = authResult.input
+
+    const blocked = await getBlockedUserIdSet(authResult.auth?.userId)
+    if (blocked.has(userId)) {
+      return { success: true, posts: [], hasMore: false, nextCursor: null }
+    }
 
     // Build conditions for commented posts
     const conditions = [
       eq(comments.userId, userId),
+      // Drop posts whose authors the viewer pairwise-blocks (the user we're
+      // looking at may have commented on a blocked author's post).
+      ...(blocked.size > 0 ? [notInArray(posts.userId, Array.from(blocked))] : []),
     ]
 
     // Cursor pagination: filter by commentedAt (when the comment was created)

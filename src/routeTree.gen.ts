@@ -59,6 +59,7 @@ import { Route as SettingsAccountProfileInfoRouteImport } from './routes/setting
 import { Route as SettingsAccountNotificationsRouteImport } from './routes/settings/account/notifications'
 import { Route as SettingsAccountMessagingRouteImport } from './routes/settings/account/messaging'
 import { Route as SettingsAccountCopyrightRouteImport } from './routes/settings/account/copyright'
+import { Route as SettingsAccountBlockedUsersRouteImport } from './routes/settings/account/blocked-users'
 import { Route as SettingsAccountAppRouteImport } from './routes/settings/account/app'
 import { Route as PostPostIdEditRouteImport } from './routes/post/$postId/edit'
 import { Route as AdminModerationReportIdRouteImport } from './routes/admin/moderation/$reportId'
@@ -319,6 +320,12 @@ const SettingsAccountCopyrightRoute =
     path: '/copyright',
     getParentRoute: () => SettingsAccountRoute,
   } as any)
+const SettingsAccountBlockedUsersRoute =
+  SettingsAccountBlockedUsersRouteImport.update({
+    id: '/blocked-users',
+    path: '/blocked-users',
+    getParentRoute: () => SettingsAccountRoute,
+  } as any)
 const SettingsAccountAppRoute = SettingsAccountAppRouteImport.update({
   id: '/app',
   path: '/app',
@@ -387,6 +394,7 @@ export interface FileRoutesByFullPath {
   '/admin/moderation/$reportId': typeof AdminModerationReportIdRoute
   '/post/$postId/edit': typeof PostPostIdEditRoute
   '/settings/account/app': typeof SettingsAccountAppRoute
+  '/settings/account/blocked-users': typeof SettingsAccountBlockedUsersRoute
   '/settings/account/copyright': typeof SettingsAccountCopyrightRoute
   '/settings/account/messaging': typeof SettingsAccountMessagingRoute
   '/settings/account/notifications': typeof SettingsAccountNotificationsRoute
@@ -440,6 +448,7 @@ export interface FileRoutesByTo {
   '/admin/moderation/$reportId': typeof AdminModerationReportIdRoute
   '/post/$postId/edit': typeof PostPostIdEditRoute
   '/settings/account/app': typeof SettingsAccountAppRoute
+  '/settings/account/blocked-users': typeof SettingsAccountBlockedUsersRoute
   '/settings/account/copyright': typeof SettingsAccountCopyrightRoute
   '/settings/account/messaging': typeof SettingsAccountMessagingRoute
   '/settings/account/notifications': typeof SettingsAccountNotificationsRoute
@@ -497,6 +506,7 @@ export interface FileRoutesById {
   '/admin/moderation/$reportId': typeof AdminModerationReportIdRoute
   '/post/$postId/edit': typeof PostPostIdEditRoute
   '/settings/account/app': typeof SettingsAccountAppRoute
+  '/settings/account/blocked-users': typeof SettingsAccountBlockedUsersRoute
   '/settings/account/copyright': typeof SettingsAccountCopyrightRoute
   '/settings/account/messaging': typeof SettingsAccountMessagingRoute
   '/settings/account/notifications': typeof SettingsAccountNotificationsRoute
@@ -555,6 +565,7 @@ export interface FileRouteTypes {
     | '/admin/moderation/$reportId'
     | '/post/$postId/edit'
     | '/settings/account/app'
+    | '/settings/account/blocked-users'
     | '/settings/account/copyright'
     | '/settings/account/messaging'
     | '/settings/account/notifications'
@@ -608,6 +619,7 @@ export interface FileRouteTypes {
     | '/admin/moderation/$reportId'
     | '/post/$postId/edit'
     | '/settings/account/app'
+    | '/settings/account/blocked-users'
     | '/settings/account/copyright'
     | '/settings/account/messaging'
     | '/settings/account/notifications'
@@ -664,6 +676,7 @@ export interface FileRouteTypes {
     | '/admin/moderation/$reportId'
     | '/post/$postId/edit'
     | '/settings/account/app'
+    | '/settings/account/blocked-users'
     | '/settings/account/copyright'
     | '/settings/account/messaging'
     | '/settings/account/notifications'
@@ -1062,6 +1075,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsAccountCopyrightRouteImport
       parentRoute: typeof SettingsAccountRoute
     }
+    '/settings/account/blocked-users': {
+      id: '/settings/account/blocked-users'
+      path: '/blocked-users'
+      fullPath: '/settings/account/blocked-users'
+      preLoaderRoute: typeof SettingsAccountBlockedUsersRouteImport
+      parentRoute: typeof SettingsAccountRoute
+    }
     '/settings/account/app': {
       id: '/settings/account/app'
       path: '/app'
@@ -1166,6 +1186,7 @@ const PostPostIdRouteWithChildren = PostPostIdRoute._addFileChildren(
 
 interface SettingsAccountRouteChildren {
   SettingsAccountAppRoute: typeof SettingsAccountAppRoute
+  SettingsAccountBlockedUsersRoute: typeof SettingsAccountBlockedUsersRoute
   SettingsAccountCopyrightRoute: typeof SettingsAccountCopyrightRoute
   SettingsAccountMessagingRoute: typeof SettingsAccountMessagingRoute
   SettingsAccountNotificationsRoute: typeof SettingsAccountNotificationsRoute
@@ -1178,6 +1199,7 @@ interface SettingsAccountRouteChildren {
 
 const SettingsAccountRouteChildren: SettingsAccountRouteChildren = {
   SettingsAccountAppRoute: SettingsAccountAppRoute,
+  SettingsAccountBlockedUsersRoute: SettingsAccountBlockedUsersRoute,
   SettingsAccountCopyrightRoute: SettingsAccountCopyrightRoute,
   SettingsAccountMessagingRoute: SettingsAccountMessagingRoute,
   SettingsAccountNotificationsRoute: SettingsAccountNotificationsRoute,

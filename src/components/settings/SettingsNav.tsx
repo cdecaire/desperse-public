@@ -76,6 +76,12 @@ export const settingsCategories: SettingsNavCategory[] = [
         icon: 'fa-gear',
         description: 'Preferences and app configuration',
       },
+      {
+        path: '/settings/account/blocked-users',
+        label: 'Blocked Accounts',
+        icon: 'fa-ban',
+        description: 'See and unblock people you have blocked',
+      },
     ],
   },
   {

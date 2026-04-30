@@ -17,6 +17,7 @@ const USDC_MINT_ADDRESS = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
 
 import { checkTransactionStatus } from '@/server/services/blockchain/mintCnft';
 import { withAuth } from '@/server/auth';
+import { assertNotPairwiseBlocked, PairwiseBlockError } from '@/server/utils/blocks';
 import { getMintWindowStatus } from '@/server/utils/mintWindowStatus';
 import { uploadMetadataJson } from '@/server/storage/blob';
 import { generateNftMetadata } from '@/server/utils/nft-metadata';
@@ -186,6 +187,16 @@ export const buyEdition = createServerFn({
 
     if (post.type !== 'edition' || !post.price || !post.currency) {
       return { success: false, error: 'Not an edition', message: 'This post is not purchasable as an edition.' };
+    }
+
+    // Block guard — refuse to mint into / from a pairwise-blocked relationship.
+    try {
+      await assertNotPairwiseBlocked(userId, creatorFromDb.id);
+    } catch (err) {
+      if (err instanceof PairwiseBlockError) {
+        return { success: false, error: 'blocked', message: err.message };
+      }
+      throw err;
     }
 
     // Time window check (pre-flight — authoritative check uses DB time in the atomic transaction)

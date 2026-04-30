@@ -25,10 +25,20 @@ import { useAuth } from './useAuth'
  * Fetch profile user by slug
  */
 export function useProfileUser(slug: string | undefined) {
+  const { getAuthHeaders, isAuthenticated } = useAuth()
+  const { user: currentUser } = useCurrentUser()
+  // Include the viewer in the cache key so that block state is computed for
+  // the right person — same slug looks different to different viewers.
   return useQuery({
-    queryKey: ['profile', slug],
+    queryKey: ['profile', slug, currentUser?.id],
     queryFn: async () => {
-      const result = await getUserBySlug({ data: { slug: slug! } } as never)
+      const authHeaders = isAuthenticated ? await getAuthHeaders().catch(() => null) : null
+      const result = await getUserBySlug({
+        data: {
+          slug: slug!,
+          ...(authHeaders ? { _authorization: authHeaders.Authorization } : {}),
+        },
+      } as never)
       if (!result.success) {
         throw new Error(result.error || 'User not found')
       }

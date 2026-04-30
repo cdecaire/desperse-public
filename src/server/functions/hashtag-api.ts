@@ -9,10 +9,11 @@
 import { createServerFn } from '@tanstack/react-start'
 import { db } from '@/server/db'
 import { tags, postTags, posts, users } from '@/server/db/schema'
-import { eq, and, desc, sql, lt } from 'drizzle-orm'
+import { eq, and, desc, sql, lt, notInArray } from 'drizzle-orm'
 import { z } from 'zod'
 import { withAuth, withOptionalAuth } from '@/server/auth'
 import { excludeDevPostsForUser } from '@/server/utils/dev-posts'
+import { getBlockedUserIdSet } from '@/server/utils/blocks'
 
 // =============================================================================
 // SEARCH (for autocomplete)
@@ -174,6 +175,7 @@ export const getPostsByTag = createServerFn({
 
     const { input: data } = result
     const { tagSlug, cursor, limit } = data
+    const blocked = await getBlockedUserIdSet(result.auth?.userId)
 
     // First, find the tag
     const [tag] = await db
@@ -223,6 +225,7 @@ export const getPostsByTag = createServerFn({
           eq(postTags.tagId, tag.id),
           eq(posts.isDeleted, false),
           eq(posts.isHidden, false),
+          ...(blocked.size > 0 ? [notInArray(posts.userId, Array.from(blocked))] : []),
           cursor ? lt(posts.createdAt, new Date(cursor)) : undefined
         )
       )

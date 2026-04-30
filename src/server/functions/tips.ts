@@ -7,6 +7,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { withAuth, withOptionalAuth } from "@/server/auth";
+import { isPairwiseBlocked } from "@/server/utils/blocks";
 
 const prepareTipSchema = z.object({
 	toUserId: z.string().uuid(),
@@ -28,6 +29,10 @@ export const prepareTip = createServerFn({
 	}
 
 	const { auth, input: data } = result;
+
+	if (await isPairwiseBlocked(auth.userId, data.toUserId)) {
+		return { success: false, error: "This action is not available between these users." };
+	}
 
 	const { prepareTipInternal } = await import(
 		"@/server/utils/tips-internal"

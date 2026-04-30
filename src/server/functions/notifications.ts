@@ -7,11 +7,12 @@
 import { createServerFn } from '@tanstack/react-start'
 import { db } from '@/server/db'
 import { posts, users, follows, contentReports, comments, notifications, betaFeedback, dmThreads } from '@/server/db/schema'
-import { eq, and, gt, lt, desc, sql, count, inArray, or, isNull } from 'drizzle-orm'
+import { eq, and, gt, lt, desc, sql, count, inArray, notInArray, or, isNull } from 'drizzle-orm'
 import { z } from 'zod'
 import { withAuth } from '@/server/auth'
 import { isModeratorOrAdmin } from '@/server/utils/auth-helpers'
 import { excludeDevPosts } from '@/server/utils/dev-posts'
+import { getBlockedUserIdSet } from '@/server/utils/blocks'
 
 const getNotificationCountersSchema = z.object({
   lastSeenForYouAt: z.string().datetime().optional().nullable(),
@@ -65,6 +66,9 @@ export const getNotificationCounters = createServerFn({
     const authResult = await withAuth(z.object({}), input, { optional: true })
     const currentUserId = authResult?.auth.userId
 
+    // Symmetric block filter applied to every count below.
+    const blocked = await getBlockedUserIdSet(currentUserId)
+
     // Initialize counts and creators
     let forYouNewPostsCount = 0
     let followingNewPostsCount = 0
@@ -99,6 +103,7 @@ export const getNotificationCounters = createServerFn({
           eq(posts.isDeleted, false),
           gt(posts.createdAt, lastSeenDateWithBuffer),
           ...(canSeeHidden ? [] : [eq(posts.isHidden, false)]),
+          ...(blocked.size > 0 ? [notInArray(posts.userId, Array.from(blocked))] : []),
         ]
 
         const forYouResult = await db
@@ -188,6 +193,7 @@ export const getNotificationCounters = createServerFn({
             gt(posts.createdAt, lastSeenDateWithBuffer),
             inArray(posts.userId, followingIds),
             ...(canSeeHidden ? [] : [eq(posts.isHidden, false)]),
+            ...(blocked.size > 0 ? [notInArray(posts.userId, Array.from(blocked))] : []),
           ]
 
           const followingResult = await db
@@ -302,6 +308,10 @@ export const getNotificationCounters = createServerFn({
     if (currentUserId) {
       const devFilter = excludeDevPosts()
 
+      const blockedActorFilter = blocked.size > 0
+        ? [notInArray(notifications.actorId, Array.from(blocked))]
+        : []
+
       if (devFilter) {
         // Production: exclude notifications referencing dev posts
         const unreadResult = await db
@@ -314,7 +324,8 @@ export const getNotificationCounters = createServerFn({
           .where(and(
             eq(notifications.userId, currentUserId),
             eq(notifications.isRead, false),
-            or(isNull(posts.isDev), eq(posts.isDev, false))
+            or(isNull(posts.isDev), eq(posts.isDev, false)),
+            ...blockedActorFilter,
           ))
         unreadNotificationsCount = Math.min(Number(unreadResult[0]?.count || 0), 100)
       } else {
@@ -323,7 +334,8 @@ export const getNotificationCounters = createServerFn({
           .from(notifications)
           .where(and(
             eq(notifications.userId, currentUserId),
-            eq(notifications.isRead, false)
+            eq(notifications.isRead, false),
+            ...blockedActorFilter,
           ))
         unreadNotificationsCount = Math.min(Number(unreadResult[0]?.count || 0), 100)
       }
@@ -394,6 +406,10 @@ export const getUnreadNotificationCount = createServerFn({
     }
     const { auth } = result
     const devFilter = excludeDevPosts()
+    const blocked = await getBlockedUserIdSet(auth.userId)
+    const blockedFilter = blocked.size > 0
+      ? [notInArray(notifications.actorId, Array.from(blocked))]
+      : []
 
     if (devFilter) {
       const [countResult] = await db
@@ -406,7 +422,8 @@ export const getUnreadNotificationCount = createServerFn({
         .where(and(
           eq(notifications.userId, auth.userId),
           eq(notifications.isRead, false),
-          or(isNull(posts.isDev), eq(posts.isDev, false))
+          or(isNull(posts.isDev), eq(posts.isDev, false)),
+          ...blockedFilter,
         ))
       return { count: Math.min(countResult?.count ?? 0, 100) }
     }
@@ -416,7 +433,8 @@ export const getUnreadNotificationCount = createServerFn({
       .from(notifications)
       .where(and(
         eq(notifications.userId, auth.userId),
-        eq(notifications.isRead, false)
+        eq(notifications.isRead, false),
+        ...blockedFilter,
       ))
     return { count: countResult?.count ?? 0 }
   } catch (error) {
@@ -537,9 +555,13 @@ export const getUserNotifications = createServerFn({
         lt(notifications.createdAt, retentionCutoff)
       ))
 
+    // Drop notifications whose actor is pairwise-blocked.
+    const blocked = await getBlockedUserIdSet(userId)
+
     const conditions = [
       eq(notifications.userId, userId),
       gt(notifications.createdAt, retentionCutoff),
+      ...(blocked.size > 0 ? [notInArray(notifications.actorId, Array.from(blocked))] : []),
     ]
     if (cursor) {
       conditions.push(lt(notifications.createdAt, new Date(cursor)))

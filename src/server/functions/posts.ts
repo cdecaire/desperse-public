@@ -6,7 +6,7 @@
 import { createServerFn } from '@tanstack/react-start'
 import { db } from '@/server/db'
 import { posts, users, follows, collections, purchases, postAssets } from '@/server/db/schema'
-import { eq, and, desc, lt, inArray, sql, count, isNotNull } from 'drizzle-orm'
+import { eq, and, desc, lt, inArray, notInArray, sql, count, isNotNull } from 'drizzle-orm'
 import { z } from 'zod'
 import { uploadMetadataJson } from '@/server/storage/blob'
 import { validateCategories, stringsToCategories, categoriesToStrings, type Category } from '@/constants/categories'
@@ -18,6 +18,7 @@ import { generateNftMetadata } from '@/server/utils/nft-metadata'
 import { validateMintWindow } from '@/server/utils/mintWindowStatus'
 import { env } from '@/config/env'
 import { excludeDevPostsForUser } from '@/server/utils/dev-posts'
+import { getBlockedUserIdSet, getDirectedBlockState } from '@/server/utils/blocks'
 
 // Post type enum
 const postTypeSchema = z.enum(['post', 'collectible', 'edition'])
@@ -478,6 +479,18 @@ export const getPost = createServerFn({
       }
     }
 
+    // Directional block filter: if the post author has blocked the viewer,
+    // 404 the post (privacy guarantee). The reverse direction (viewer has
+    // blocked author) does NOT 404 — we still let the blocker open posts they
+    // bookmarked / linked to before blocking, so they can navigate to the
+    // profile and unblock.
+    if (authResult.auth?.userId) {
+      const { blockedMe } = await getDirectedBlockState(authResult.auth.userId)
+      if (blockedMe.has(result[0].user.id)) {
+        return { success: false, error: 'Post not found.' }
+      }
+    }
+
     // If post is hidden and user is not moderator/admin, return error
     if (result[0].post.isHidden && !canSeeHidden) {
       return {
@@ -718,11 +731,16 @@ export const getFeed = createServerFn({
     // Uses verified userId from token instead of client-provided value
     const canSeeHidden = authResult.auth ? await isModeratorOrAdmin(authResult.auth.userId) : false
 
+    // Symmetric block filter — drop posts authored by anyone in the
+    // pairwise-blocked set (either direction).
+    const blocked = await getBlockedUserIdSet(authResult.auth?.userId)
+
     // Build base query conditions
     const baseConditions = [
       await excludeDevPostsForUser(authResult.auth?.userId),
       eq(posts.isDeleted, false),
       ...(canSeeHidden ? [] : [eq(posts.isHidden, false)]),
+      ...(blocked.size > 0 ? [notInArray(posts.userId, Array.from(blocked))] : []),
     ]
 
     // Add cursor condition if provided
@@ -1073,6 +1091,15 @@ export const getUserPosts = createServerFn({
     const authResult = await withOptionalAuth(userPostsQuerySchema, input)
     const { userId, cursor, limit } = authResult.input
 
+    // If either party has blocked the other, return an empty list (matches
+    // the "empty if slug user blocked" pattern from docs/user-blocking.md).
+    if (authResult.auth?.userId) {
+      const blocked = await getBlockedUserIdSet(authResult.auth.userId)
+      if (blocked.has(userId)) {
+        return { success: true, posts: [], hasMore: false, nextCursor: null }
+      }
+    }
+
     // Check if current user is moderator/admin (can see hidden posts)
     // Uses verified userId from token instead of client-provided value
     const canSeeHidden = authResult.auth ? await isModeratorOrAdmin(authResult.auth.userId) : false
@@ -1156,11 +1183,15 @@ export const getUserPostCount = createServerFn({
   method: 'GET',
 }).handler(async (input: unknown) => {
   try {
-    const rawData = input && typeof input === 'object' && 'data' in input
-      ? (input as { data: unknown }).data
-      : input
-    
-    const { userId } = z.object({ userId: z.string().uuid() }).parse(rawData)
+    const authResult = await withOptionalAuth(z.object({ userId: z.string().uuid() }), input)
+    const { userId } = authResult.input
+
+    if (authResult.auth?.userId) {
+      const blocked = await getBlockedUserIdSet(authResult.auth.userId)
+      if (blocked.has(userId)) {
+        return { success: true, count: 0 }
+      }
+    }
 
     const result = await db
       .select({ count: count() })

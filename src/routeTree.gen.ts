@@ -18,6 +18,7 @@ import { Route as FeesRouteImport } from './routes/fees'
 import { Route as ExportWalletRouteImport } from './routes/export-wallet'
 import { Route as ExploreRouteImport } from './routes/explore'
 import { Route as EchoesRouteImport } from './routes/echoes'
+import { Route as DownloadRouteImport } from './routes/download'
 import { Route as ChangelogRouteImport } from './routes/changelog'
 import { Route as BrowseRouteImport } from './routes/browse'
 import { Route as AdminRouteImport } from './routes/admin'
@@ -108,6 +109,11 @@ const ExploreRoute = ExploreRouteImport.update({
 const EchoesRoute = EchoesRouteImport.update({
   id: '/echoes',
   path: '/echoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DownloadRoute = DownloadRouteImport.update({
+  id: '/download',
+  path: '/download',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ChangelogRoute = ChangelogRouteImport.update({
@@ -354,6 +360,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/browse': typeof BrowseRoute
   '/changelog': typeof ChangelogRoute
+  '/download': typeof DownloadRoute
   '/echoes': typeof EchoesRouteWithChildren
   '/explore': typeof ExploreRoute
   '/export-wallet': typeof ExportWalletRoute
@@ -410,6 +417,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/browse': typeof BrowseRoute
   '/changelog': typeof ChangelogRoute
+  '/download': typeof DownloadRoute
   '/explore': typeof ExploreRoute
   '/export-wallet': typeof ExportWalletRoute
   '/fees': typeof FeesRoute
@@ -466,6 +474,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/browse': typeof BrowseRoute
   '/changelog': typeof ChangelogRoute
+  '/download': typeof DownloadRoute
   '/echoes': typeof EchoesRouteWithChildren
   '/explore': typeof ExploreRoute
   '/export-wallet': typeof ExportWalletRoute
@@ -525,6 +534,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/browse'
     | '/changelog'
+    | '/download'
     | '/echoes'
     | '/explore'
     | '/export-wallet'
@@ -581,6 +591,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/browse'
     | '/changelog'
+    | '/download'
     | '/explore'
     | '/export-wallet'
     | '/fees'
@@ -636,6 +647,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/browse'
     | '/changelog'
+    | '/download'
     | '/echoes'
     | '/explore'
     | '/export-wallet'
@@ -694,6 +706,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRouteWithChildren
   BrowseRoute: typeof BrowseRoute
   ChangelogRoute: typeof ChangelogRoute
+  DownloadRoute: typeof DownloadRoute
   EchoesRoute: typeof EchoesRouteWithChildren
   ExploreRoute: typeof ExploreRoute
   ExportWalletRoute: typeof ExportWalletRoute
@@ -786,6 +799,13 @@ declare module '@tanstack/react-router' {
       path: '/echoes'
       fullPath: '/echoes'
       preLoaderRoute: typeof EchoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/download': {
+      id: '/download'
+      path: '/download'
+      fullPath: '/download'
+      preLoaderRoute: typeof DownloadRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/changelog': {
@@ -1221,6 +1241,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRouteWithChildren,
   BrowseRoute: BrowseRoute,
   ChangelogRoute: ChangelogRoute,
+  DownloadRoute: DownloadRoute,
   EchoesRoute: EchoesRouteWithChildren,
   ExploreRoute: ExploreRoute,
   ExportWalletRoute: ExportWalletRoute,

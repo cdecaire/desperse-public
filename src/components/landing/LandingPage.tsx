@@ -15,6 +15,7 @@ import { OptimizedImage } from '@/components/shared/OptimizedImage'
 import { getOptimizedImageUrl } from '@/lib/imageUrl'
 import { getTrendingPosts, getFeaturedCreators, getLandingProfilePreview } from '@/server/functions/explore'
 import { detectMediaType } from '@/lib/media'
+import { DownloadBadges, DownloadBadge } from '@/components/shared/DownloadBadges'
 import Lenis from 'lenis'
 
 // Type for featured creator from API
@@ -280,6 +281,13 @@ function Hero() {
               <span className="group-hover:translate-x-1 transition-transform">&darr;</span>
             </a>
           </div>
+        </div>
+
+        <div className="mt-12 flex flex-col gap-4 reveal-text" style={{ transitionDelay: '0.5s' }}>
+          <p className="text-xs font-mono tracking-widest text-zinc-500 dark:text-zinc-500">
+            ALSO AVAILABLE ON
+          </p>
+          <DownloadBadges size="sm" />
         </div>
       </div>
 
@@ -1068,6 +1076,108 @@ function PrivyLogo({ className, style }: { className?: string; style?: React.CSS
 }
 
 // Tech Specs Section
+function GetTheApp() {
+  return (
+    <section id="download" className="py-32 px-6 bg-background border-t border-border">
+      <div className="max-w-7xl mx-auto">
+        <div className="max-w-2xl mb-16 scroll-reveal">
+          <span className="text-sm font-mono text-zinc-600 dark:text-zinc-400 mb-4 block">GET THE APP</span>
+          <h2 className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight">
+            Made for <br />
+            <span className="text-zinc-600 dark:text-zinc-400">mobile creators.</span>
+          </h2>
+          <p className="text-xl text-zinc-600 dark:text-zinc-400 leading-relaxed">
+            Native iOS, a Solana dApp Store build for Saga and Seeker, and a direct
+            Android download. Same wallet, same posts, same collection.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 scroll-reveal-stagger">
+          <PlatformDownloadCard
+            platform="ios"
+            title="iOS"
+            status="Public Beta"
+            description="Join the public TestFlight to get the latest build."
+          />
+          <PlatformDownloadCard
+            platform="solanaDappStore"
+            title="Solana Mobile"
+            status="Saga & Seeker"
+            description="Live on the Solana dApp Store, optimized for Seed Vault signing."
+          />
+          <PlatformDownloadCard
+            platform="androidApk"
+            title="Android"
+            status="Direct download"
+            description="Sideload the APK. Google Play release after public beta."
+          />
+        </div>
+
+        <div className="mt-12 text-center scroll-reveal">
+          <Link
+            to="/download"
+            className="inline-flex items-center gap-2 text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition-colors"
+          >
+            Install instructions and details
+            <span aria-hidden="true">&rarr;</span>
+          </Link>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function PlatformDownloadCard({
+  platform,
+  title,
+  status,
+  description,
+}: {
+  platform: 'ios' | 'solanaDappStore' | 'androidApk'
+  title: string
+  status: string
+  description: string
+}) {
+  const Mark = platform === 'ios' ? PlatformAppleMark : platform === 'androidApk' ? PlatformAndroidMark : PlatformSolanaMark
+  return (
+    <div className="border border-border rounded-xl p-6 bg-card/50 stagger-item flex flex-col">
+      <div className="w-12 h-12 rounded-full flex items-center justify-center mb-6 bg-zinc-100 dark:bg-zinc-900">
+        <Mark className="w-5 h-5 text-zinc-950 dark:text-white" />
+      </div>
+      <p className="text-zinc-500 dark:text-zinc-500 text-xs font-mono mb-2">{status.toUpperCase()}</p>
+      <p className="text-2xl font-extrabold mb-2">{title}</p>
+      <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-6">{description}</p>
+      <div className="mt-auto">
+        <DownloadBadge platform={platform} size="md" />
+      </div>
+    </div>
+  )
+}
+
+function PlatformAppleMark({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
+    </svg>
+  )
+}
+
+function PlatformSolanaMark({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <path d="M4.4 16.6c.15-.15.36-.24.58-.24h17.4c.36 0 .54.44.29.69l-3.07 3.07a.83.83 0 0 1-.58.24H1.62c-.36 0-.54-.44-.29-.69l3.07-3.07zM4.4 4.7c.15-.15.36-.24.58-.24h17.4c.36 0 .54.44.29.69l-3.07 3.07a.83.83 0 0 1-.58.24H1.62c-.36 0-.54-.44-.29-.69L4.4 4.7zm14.91 5.91a.83.83 0 0 0-.58-.24H1.33c-.36 0-.54.44-.29.69l3.07 3.07c.15.15.36.24.58.24h17.4c.36 0 .54-.44.29-.69l-3.07-3.07z" />
+    </svg>
+  )
+}
+
+function PlatformAndroidMark({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <path d="M17.6 9.48l1.84-3.18a.4.4 0 0 0-.69-.4l-1.86 3.23A11.4 11.4 0 0 0 12 8a11.4 11.4 0 0 0-4.89 1.13L5.25 5.9a.4.4 0 0 0-.69.4L6.4 9.48A10.81 10.81 0 0 0 1 18h22a10.81 10.81 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 1.25-1.25A1.25 1.25 0 0 1 7 15.25zm10 0a1.25 1.25 0 1 1 1.25-1.25 1.25 1.25 0 0 1-1.25 1.25z" />
+    </svg>
+  )
+}
+
 function TechSpecs() {
   return (
     <section id="tech" className="py-24 border-y border-border bg-background">
@@ -1141,18 +1251,36 @@ export function Footer({ showCta = true }: { showCta?: boolean }) {
           </>
         )}
 
-        <div className={`flex flex-col md:flex-row justify-between items-start md:items-end ${showCta ? 'mt-12 pt-12 border-t border-border' : ''}`}>
-          <nav aria-label="Footer" className="space-y-4">
-            <Link to="/privacy" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors">
-              Privacy Policy
-            </Link>
-            <Link to="/terms" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors">
-              Terms of Service
-            </Link>
-            <Link to="/fees" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors">
-              Fees
-            </Link>
-          </nav>
+        <div className={`flex flex-col md:flex-row justify-between items-start gap-12 md:items-end ${showCta ? 'mt-12 pt-12 border-t border-border' : ''}`}>
+          <div className="flex flex-col sm:flex-row gap-12">
+            <nav aria-label="Footer" className="space-y-4">
+              <p className="text-xs font-mono uppercase tracking-widest text-zinc-500 dark:text-zinc-500">Legal</p>
+              <Link to="/privacy" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors">
+                Privacy Policy
+              </Link>
+              <Link to="/terms" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors">
+                Terms of Service
+              </Link>
+              <Link to="/fees" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors">
+                Fees
+              </Link>
+            </nav>
+            <nav aria-label="Download" className="space-y-4">
+              <p className="text-xs font-mono uppercase tracking-widest text-zinc-500 dark:text-zinc-500">Download</p>
+              <Link to="/download" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors">
+                All platforms
+              </Link>
+              <a href="https://testflight.apple.com/join/27uRZQ45" target="_blank" rel="noopener noreferrer" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors">
+                iOS · TestFlight
+              </a>
+              <Link to="/download" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors">
+                Solana dApp Store
+              </Link>
+              <Link to="/download" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors">
+                Android APK
+              </Link>
+            </nav>
+          </div>
 
           <div className="mt-8 md:mt-0 text-right">
             <div className="flex gap-6 mb-4 md:justify-end">
@@ -1243,6 +1371,7 @@ export function LandingPage() {
         <Marquee />
         <StickyCards />
         <Gallery />
+        <GetTheApp />
         <TechSpecs />
       </main>
       <Footer />

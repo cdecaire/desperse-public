@@ -146,6 +146,19 @@ export default function MoreMenu({ variant = 'sidebar' }: MoreMenuProps) {
         </button>
       )}
 
+      <Link
+        to="/download"
+        onClick={() => setIsOpen(false)}
+        className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-accent dark:hover:bg-zinc-800 rounded-md hover-fade"
+        role="menuitem"
+      >
+        <Icon name="mobile" variant="regular" className="w-5 text-center" />
+        <div className="flex flex-col">
+          <span className="text-sm font-medium leading-none">Get the app</span>
+          <span className="text-xs text-muted-foreground leading-none">iOS, Android, Solana Mobile</span>
+        </div>
+      </Link>
+
       {isAuthenticated ? (
         <>
           <Link

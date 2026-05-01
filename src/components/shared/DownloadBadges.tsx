@@ -10,7 +10,7 @@ const SOLANA_DAPP_STORE_PACKAGE = 'app.desperse.android'
 export const DOWNLOAD_LINKS = {
 	ios: 'https://testflight.apple.com/join/27uRZQ45',
 	solanaDappStore: `solanadappstore://details?id=${SOLANA_DAPP_STORE_PACKAGE}`,
-	androidApk: '#', // TODO: replace with hosted APK URL
+	androidApk: 'https://4swlq9hweqtpslft.public.blob.vercel-storage.com/app-release.apk',
 } as const
 
 export const APP_VERSION = {

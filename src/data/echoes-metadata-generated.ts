@@ -42,11 +42,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Human"
 			},
 			{
 				"trait_type": "Signal",
@@ -54,39 +54,43 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Transmission Guard"
+				"value": "Signal Runner"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Grey Short Hair"
+				"value": "Auburn Wild Spiked"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Heterochromia"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Serious"
+				"value": "Grin"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Jacket"
+				"value": "Biker Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
+				"value": "Headset"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Id Badge"
+				"value": "Clearance Insignia"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -94,12 +98,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 171,
+				"value": 98,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 3,
+				"value": 14,
 				"display_type": "number"
 			}
 		],
@@ -125,7 +129,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Synthetic"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
@@ -133,7 +137,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Elite"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -145,19 +149,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Red Pompadour"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Purple"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Slight Frown"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Long Coat"
+				"value": "Wool Coat"
 			},
 			{
 				"trait_type": "Headwear",
@@ -165,6 +169,10 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Accessory",
+				"value": "Silk Necktie"
+			},
+			{
+				"trait_type": "Weapon",
 				"value": "None"
 			},
 			{
@@ -173,12 +181,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 11,
+				"value": 204,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 39,
+				"value": 2,
 				"display_type": "number"
 			}
 		],
@@ -200,11 +208,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Synthetic"
 			},
 			{
 				"trait_type": "Signal",
@@ -212,7 +220,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
@@ -220,31 +228,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Broker"
+				"value": "Systems Architect"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Red Hime Cut"
+				"value": "Red Half Updo"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Blue"
+				"value": "Grey"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Serious"
+				"value": "Determined"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Bomber Jacket"
+				"value": "Wool Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Headphones"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Gold Necklace"
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -252,12 +264,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 70,
+				"value": 68,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 24,
+				"value": 16,
 				"display_type": "number"
 			}
 		],
@@ -279,15 +291,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
@@ -295,35 +307,39 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Strategist"
+				"value": "Signal Evangelist"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Purple Braid"
+				"value": "Black Tousled Bedhead"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Blue"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Confident"
+				"value": "Clenched Teeth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Turtleneck Blazer"
+				"value": "Bodysuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Circlet"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Necktie"
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -331,12 +347,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 193,
+				"value": 170,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 2,
+				"value": 3,
 				"display_type": "number"
 			}
 		],
@@ -358,7 +374,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
@@ -366,43 +382,47 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Corrupted"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Rare"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Infiltrator"
+				"value": "Data Analyst"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "White Hime Cut"
+				"value": "Pink Sharply Slicked Back"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Glowing"
+				"value": "Sparkling"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Angry"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Vest"
+				"value": "Wool Blazer"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Mask"
+				"value": "Mouth Mask"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Dog Tags"
+				"value": "Id Lanyard"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -410,12 +430,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 125,
+				"value": 46,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 13,
+				"value": 26,
 				"display_type": "number"
 			}
 		],
@@ -437,11 +457,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
@@ -449,7 +469,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
@@ -457,31 +477,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Data Analyst"
+				"value": "Wetware Mechanic"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Red Short Hair"
+				"value": "Grey Asymmetrical Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Dark Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Grin"
+				"value": "Clenched Teeth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Vest"
+				"value": "Industrial Jumpsuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Glasses"
+				"value": "Scuffed Work Goggles Pushed Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Necktie"
+				"value": "Collar Ring"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Firearm"
 			},
 			{
 				"trait_type": "Special",
@@ -489,12 +513,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 242,
+				"value": 99,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 0,
+				"value": 14,
 				"display_type": "number"
 			}
 		],
@@ -516,51 +540,55 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Executive"
+				"value": "Hacker"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Bob Cut"
+				"value": "Red Buzz Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Blue"
+				"value": "Dark Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Frown"
+				"value": "Stoic"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Structured Coat"
+				"value": "Biker Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Drawstring Hood"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Gold Necklace"
+				"value": "Bandana"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -568,12 +596,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 71,
+				"value": 82,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 24,
+				"value": 15,
 				"display_type": "number"
 			}
 		],
@@ -595,51 +623,55 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Synthetic"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Prototype Host"
+				"value": "Strategist"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Black Tight Cornrows"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Hazel"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Confident"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Sleeveless Bodysuit"
+				"value": "Wool Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Goggles"
+				"value": "Glasses"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Metal Collar"
+				"value": "Crisp Folded Silk Pocket Square Peaking From The Breast Pocket"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -647,12 +679,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 151,
+				"value": 69,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 5,
+				"value": 16,
 				"display_type": "number"
 			}
 		],
@@ -674,7 +706,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
@@ -686,7 +718,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Elite"
 			},
 			{
 				"trait_type": "Frame",
@@ -694,31 +726,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Breach Unit"
+				"value": "Archive Seer"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Short Hair"
+				"value": "Brown Sweeping"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Heterochromia"
+				"value": "Multicolored"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Smirk"
+				"value": "Grin"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Armored Bodysuit"
+				"value": "Tactical Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Helmet"
+				"value": "Thin Tech Headband"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Dog Tags"
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -726,12 +762,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 194,
+				"value": 15,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 2,
+				"value": 38,
 				"display_type": "number"
 			}
 		],
@@ -753,7 +789,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
@@ -761,11 +797,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Corrupted"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
@@ -773,7 +809,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Archive Seer"
+				"value": "Broker"
 			},
 			{
 				"trait_type": "Hair",
@@ -781,7 +817,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Aqua"
+				"value": "Violet LED Eyes"
 			},
 			{
 				"trait_type": "Demeanor",
@@ -789,15 +825,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Vest"
+				"value": "Tactical Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
+				"value": "Mechanical Halo"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Gold Choker"
+				"value": "Choker"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -805,12 +845,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 31,
+				"value": 70,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 29,
+				"value": 16,
 				"display_type": "number"
 			}
 		],
@@ -832,11 +872,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
@@ -844,7 +884,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Rare"
 			},
 			{
 				"trait_type": "Frame",
@@ -852,31 +892,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Broker"
+				"value": "Transmission Guard"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Red Medium Hair"
+				"value": "Red Wild Voluminous"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Yellow"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Grin"
+				"value": "Slight Frown"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Long Coat"
+				"value": "Ceremonial Vest"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Tech Headband"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Pendant Necklace"
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -884,12 +928,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 243,
+				"value": 47,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 0,
+				"value": 26,
 				"display_type": "number"
 			}
 		],
@@ -911,19 +955,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Synthetic"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Elite"
+				"value": "Rare"
 			},
 			{
 				"trait_type": "Frame",
@@ -931,31 +975,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Archive Seer"
+				"value": "Broker"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Purple Half Updo"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Aqua"
+				"value": "Orange"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Clenched Teeth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Vest"
+				"value": "Bomber Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
+				"value": "Headphones"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Pearl Necklace"
+				"value": "Ear Implant"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -963,12 +1011,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 8,
+				"value": 48,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 41,
+				"value": 26,
 				"display_type": "number"
 			}
 		],
@@ -994,7 +1042,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Synthetic"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
@@ -1002,7 +1050,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -1010,30 +1058,34 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Breach Unit"
+				"value": "Riot Enforcer"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Red Tousled Medium Length"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Purple"
+				"value": "Hazel"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Determined"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Armored Bodysuit"
+				"value": "Vest"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Glowing Forehead Sensor"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Weapon",
 				"value": "None"
 			},
 			{
@@ -1042,12 +1094,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 34,
+				"value": 171,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 28,
+				"value": 3,
 				"display_type": "number"
 			}
 		],
@@ -1073,19 +1125,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Synthetic"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Ghost-Class Anomaly"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Elite"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
@@ -1093,7 +1145,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Grey Sharp Undercut"
 			},
 			{
 				"trait_type": "Eyes",
@@ -1101,19 +1153,23 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Calm"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Blazer"
+				"value": "Wool Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Gas Mask"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Necktie"
+				"value": "Black Silk Satin Bowtie Hand Tied"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Firearm"
 			},
 			{
 				"trait_type": "Special",
@@ -1121,12 +1177,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 172,
+				"value": 8,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 3,
+				"value": 42,
 				"display_type": "number"
 			}
 		],
@@ -1172,27 +1228,31 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Hair",
-				"value": "White Shaved Head"
+				"value": "Brown Tousled Medium Length"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Red"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Frown"
+				"value": "Grin"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Coat"
+				"value": "Bodysuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Half Mask"
 			},
 			{
 				"trait_type": "Accessory",
 				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -1200,12 +1260,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 214,
+				"value": 248,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 1,
+				"value": 0,
 				"display_type": "number"
 			}
 		],
@@ -1227,64 +1287,68 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Signal-Burned"
+				"value": "Corrupted"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Smuggler"
+				"value": "Data Analyst"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Grey Asymmetrical Hair"
+				"value": "Grey Sharply Slicked Back"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Grey"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Grin"
+				"value": "Serious"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Utility Jumpsuit"
+				"value": "Wool Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
+				"value": "Mouth Mask"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Black Bandana Around Neck"
-			},
-			{
-				"trait_type": "Special",
 				"value": "None"
 			},
 			{
+				"trait_type": "Weapon",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "Adjusting Glasses"
+			},
+			{
 				"trait_type": "Rarity Rank",
-				"value": 195,
+				"value": 100,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 2,
+				"value": 14,
 				"display_type": "number"
 			}
 		],
@@ -1306,7 +1370,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
@@ -1314,56 +1378,60 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Rare"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Infiltrator"
+				"value": "Archive Seer"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Aqua Medium Hair"
+				"value": "Brown Tousled Messy"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Blue"
+				"value": "Red"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Angry"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Street Hoodie"
+				"value": "Synthetic Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Mask"
+				"value": "Thin Tech Headband"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Dog Tags"
-			},
-			{
-				"trait_type": "Special",
 				"value": "None"
 			},
 			{
+				"trait_type": "Weapon",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "Circuit Burn Marks Around Eyes From Signal Communion"
+			},
+			{
 				"trait_type": "Rarity Rank",
-				"value": 215,
+				"value": 49,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 1,
+				"value": 26,
 				"display_type": "number"
 			}
 		],
@@ -1385,19 +1453,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Synthetic"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Elite"
 			},
 			{
 				"trait_type": "Frame",
@@ -1405,31 +1473,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Archive Seer"
+				"value": "Infiltrator"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Grey Half Updo"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Sparkling"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Closed Mouth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Vest"
+				"value": "Hoodie"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Circlet"
+				"value": "Hood Pulled Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Pendant Necklace"
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -1437,12 +1509,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 76,
+				"value": 9,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 17,
+				"value": 40,
 				"display_type": "number"
 			}
 		],
@@ -1464,11 +1536,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
@@ -1484,31 +1556,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Hacker"
+				"value": "Data Analyst"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blonde Shaved Head"
+				"value": "Grey Mohawk"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Red"
+				"value": "Hazel"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Closed Mouth"
+				"value": "Clenched Teeth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Leather Jacket"
+				"value": "Wool Waistcoat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Black Bandana Around Neck"
+				"value": "Silk Necktie"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -1516,12 +1592,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 196,
+				"value": 172,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 2,
+				"value": 3,
 				"display_type": "number"
 			}
 		],
@@ -1543,51 +1619,55 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Elite"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Data Analyst"
+				"value": "Signal Evangelist"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "White Shaved Head"
+				"value": "Brown Half Updo"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Blue"
+				"value": "Hazel"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Closed Mouth"
+				"value": "Grin"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Structured Coat"
+				"value": "Ceremonial Vest"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Glasses"
+				"value": "Circlet"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Pocket Square"
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -1595,12 +1675,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 24,
+				"value": 156,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 37,
+				"value": 4,
 				"display_type": "number"
 			}
 		],
@@ -1622,11 +1702,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
@@ -1634,39 +1714,43 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Rare"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Hacker"
+				"value": "Dead Channel Prophet"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Grey Short Hair"
+				"value": "Pink Tight Cornrows"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Grey"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Smirk"
+				"value": "Neutral"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Vest"
+				"value": "Ceremonial Vest"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
+				"value": "Weathered Mechanical Halo Of Ring Segments Hovering Just Behind The Head"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Ear Piercing"
+				"value": "Tech Collar"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -1674,12 +1758,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 244,
+				"value": 59,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 0,
+				"value": 25,
 				"display_type": "number"
 			}
 		],
@@ -1701,51 +1785,55 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Breach Unit"
+				"value": "Strategist"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "White Medium Hair"
+				"value": "Blonde Tousled Medium Length"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Hazel"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Calm"
+				"value": "Slight Frown"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Dark Uniform"
+				"value": "Wool Waistcoat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Helmet"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Shoulder Armor"
+				"value": "Silk Necktie"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -1753,12 +1841,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 59,
+				"value": 173,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 25,
+				"value": 3,
 				"display_type": "number"
 			}
 		],
@@ -1780,11 +1868,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Human"
 			},
 			{
 				"trait_type": "Signal",
@@ -1792,19 +1880,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Surveillance Marksman"
+				"value": "Infiltrator"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Messy Hair"
+				"value": "Auburn Sweeping"
 			},
 			{
 				"trait_type": "Eyes",
@@ -1812,19 +1900,23 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Closed Mouth"
+				"value": "Slight Frown"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Body Armor"
+				"value": "Bomber Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Scouter"
+				"value": "Hood Pulled Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Id Badge"
+				"value": "Arm Patch"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -1832,12 +1924,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 197,
+				"value": 123,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 2,
+				"value": 13,
 				"display_type": "number"
 			}
 		],
@@ -1859,7 +1951,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
@@ -1871,39 +1963,43 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Elite"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Runner"
+				"value": "Prototype Host"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Undercut"
+				"value": "Brown Sharply Slicked Back"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Heterochromia"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Closed Mouth"
+				"value": "Neutral"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Street Hoodie"
+				"value": "Hoodie"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Headset"
+				"value": "Hood Pulled Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Metal Collar"
+				"value": "Small Enamel Lapel Pin"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -1911,12 +2007,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 25,
+				"value": 234,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 37,
+				"value": 1,
 				"display_type": "number"
 			}
 		],
@@ -1938,50 +2034,54 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Synthetic"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Hacker"
+				"value": "Breach Unit"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Brown Tousled Medium Length"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Aqua"
+				"value": "Green"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Smirk"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Wired Bodysuit"
+				"value": "Tactical Vest"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
+				"value": "Tactical Helmet"
 			},
 			{
 				"trait_type": "Accessory",
+				"value": "Shoulder Patch"
+			},
+			{
+				"trait_type": "Weapon",
 				"value": "None"
 			},
 			{
@@ -1990,12 +2090,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 77,
+				"value": 205,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 17,
+				"value": 2,
 				"display_type": "number"
 			}
 		],
@@ -2017,64 +2117,68 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Runner"
+				"value": "Strategist"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Red Undercut"
+				"value": "Auburn Neat Ponytail"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Red"
+				"value": "Grey"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Clenched Teeth"
+				"value": "Confident"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Leather Jacket"
+				"value": "Long Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Headset"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Metal Collar"
-			},
-			{
-				"trait_type": "Special",
 				"value": "None"
 			},
 			{
+				"trait_type": "Accessory",
+				"value": "Black Silk Bowtie"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "Adjusting Glasses"
+			},
+			{
 				"trait_type": "Rarity Rank",
-				"value": 72,
+				"value": 101,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 24,
+				"value": 14,
 				"display_type": "number"
 			}
 		],
@@ -2096,11 +2200,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Synthetic"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
@@ -2116,31 +2220,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Wetware Mechanic"
+				"value": "Surveillance Marksman"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Grey Crew Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Grey"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Frown"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Armored Bodysuit"
+				"value": "Military Uniform"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Goggles"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Shoulder Armor"
+				"value": "One Paired Set Of"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -2148,12 +2256,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 157,
+				"value": 206,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 4,
+				"value": 2,
 				"display_type": "number"
 			}
 		],
@@ -2175,51 +2283,55 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Synthetic"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Elite"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Interface Disciple"
+				"value": "Checkpoint Officer"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Brown Slicked Back Hair"
+				"value": "Brown Twin Braids"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Grey"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Calm"
+				"value": "Focused"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Coat"
+				"value": "Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Mechanical Halo"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Diamond Earrings"
+				"value": "Shoulder Patch"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -2227,12 +2339,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 12,
+				"value": 157,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 39,
+				"value": 4,
 				"display_type": "number"
 			}
 		],
@@ -2258,47 +2370,51 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Human"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Corrupted"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Breach Unit"
+				"value": "Surveillance Marksman"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blonde Medium Hair"
+				"value": "Brown Tousled Bedhead"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Blue"
+				"value": "Green"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Serious"
+				"value": "Angry"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Armored Bodysuit"
+				"value": "Segmented Armor"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Helmet"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Dog Tags"
+				"value": "One Paired Set Of"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -2306,12 +2422,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 89,
+				"value": 235,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 15,
+				"value": 1,
 				"display_type": "number"
 			}
 		],
@@ -2333,7 +2449,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
@@ -2345,39 +2461,43 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Interface Disciple"
+				"value": "Data Analyst"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Aqua Bob Cut"
+				"value": "Brown Shaved Head"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Glowing"
+				"value": "Dark Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Smirk"
+				"value": "Confident"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Bodysuit"
+				"value": "Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Plain Baseball Cap"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Hoop Earrings"
+				"value": "Silk Necktie"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -2385,12 +2505,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 105,
+				"value": 236,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 14,
+				"value": 1,
 				"display_type": "number"
 			}
 		],
@@ -2412,7 +2532,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
@@ -2420,43 +2540,47 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Elite"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Hacker"
+				"value": "Data Analyst"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Red Sharp Undercut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "White"
+				"value": "Dark Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Closed Mouth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Jacket"
+				"value": "Vest"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Skull Print Bandana Around Neck"
+				"value": "Crisp Folded Silk Pocket Square Peaking From The Breast Pocket"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -2464,12 +2588,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 13,
+				"value": 71,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 39,
+				"value": 16,
 				"display_type": "number"
 			}
 		],
@@ -2491,11 +2615,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
@@ -2503,39 +2627,43 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Checkpoint Officer"
+				"value": "Strategist"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Brown Shaved Head"
+				"value": "Black Tight Cornrows"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Aqua"
+				"value": "Dark Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Frown"
+				"value": "Slight Frown"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Long Coat"
+				"value": "Wool Blazer"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Helmet"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Dog Tags"
+				"value": "Silk Necktie"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -2543,12 +2671,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 216,
+				"value": 72,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 1,
+				"value": 16,
 				"display_type": "number"
 			}
 		],
@@ -2570,19 +2698,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
@@ -2590,31 +2718,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Interface Disciple"
+				"value": "Riot Enforcer"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blonde Ponytail"
+				"value": "Blonde Sharp Undercut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Glowing"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Slight Frown"
+				"value": "Angry"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Jacket"
+				"value": "Segmented Armor"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Mechanical Halo"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Single Earring"
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -2622,12 +2754,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 198,
+				"value": 102,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 2,
+				"value": 14,
 				"display_type": "number"
 			}
 		],
@@ -2649,7 +2781,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
@@ -2657,23 +2789,23 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Corrupted"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Rare"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Data Analyst"
+				"value": "Archive Seer"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Orange Sharply Spiked"
 			},
 			{
 				"trait_type": "Eyes",
@@ -2681,19 +2813,23 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Slight Frown"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Long Coat"
+				"value": "Wool Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Thin Tech Headband"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Pocket Square"
+				"value": "Tech Collar"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -2701,12 +2837,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 90,
+				"value": 26,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 15,
+				"value": 29,
 				"display_type": "number"
 			}
 		],
@@ -2728,51 +2864,55 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Ghost-Class Anomaly"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Strategist"
+				"value": "Wetware Mechanic"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Shaved Head"
+				"value": "Blonde Neat Ponytail"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Blue"
+				"value": "Grey"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Confident"
+				"value": "Smirk"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Structured Coat"
+				"value": "Hoodie"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Scuffed Work Goggles Pushed Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Bowtie"
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -2780,12 +2920,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 39,
+				"value": 207,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 27,
+				"value": 2,
 				"display_type": "number"
 			}
 		],
@@ -2807,15 +2947,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Corrupted"
 			},
 			{
 				"trait_type": "Rank",
@@ -2823,35 +2963,39 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Evangelist"
+				"value": "Hacker"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "White Bob Cut"
+				"value": "Auburn Mohawk"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Red"
+				"value": "Grey"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Grin"
+				"value": "Focused"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Bodysuit"
+				"value": "Biker Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Helmet"
+				"value": "Drawstring Hood"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Necklace"
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -2859,12 +3003,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 217,
+				"value": 174,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 1,
+				"value": 3,
 				"display_type": "number"
 			}
 		],
@@ -2886,7 +3030,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
@@ -2894,11 +3038,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -2906,7 +3050,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Black Clinic Broker"
+				"value": "Net Diver"
 			},
 			{
 				"trait_type": "Hair",
@@ -2914,7 +3058,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Hollow Eyes"
 			},
 			{
 				"trait_type": "Demeanor",
@@ -2922,15 +3066,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Armored Jacket"
+				"value": "Tactical Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Visor"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Earpiece"
+				"value": "Small Enamel Lapel Pin"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -2938,12 +3086,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 80,
+				"value": 143,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 16,
+				"value": 5,
 				"display_type": "number"
 			}
 		],
@@ -2965,11 +3113,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Synthetic"
 			},
 			{
 				"trait_type": "Signal",
@@ -2977,7 +3125,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Elite"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
@@ -2985,31 +3133,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Wetware Mechanic"
+				"value": "Interface Disciple"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Purple Short Hair"
+				"value": "Grey Asymmetrical Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Natural"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Determined"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Utility Jumpsuit"
+				"value": "Bodysuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Goggles"
+				"value": "Mechanical Halo Of Metal Ring Segments Hovering Just Behind The Head"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Metal Collar"
+				"value": "Devotional Collar"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -3017,12 +3169,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 26,
+				"value": 73,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 37,
+				"value": 16,
 				"display_type": "number"
 			}
 		],
@@ -3048,11 +3200,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
@@ -3060,35 +3212,39 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Precinct Commander"
+				"value": "Checkpoint Officer"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Aqua Short Hair"
+				"value": "Auburn Flattop"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "White"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Focused"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Long Coat"
+				"value": "Body Armor"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Visor"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Dog Tags"
+				"value": "Earpiece"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -3096,12 +3252,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 14,
+				"value": 16,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 39,
+				"value": 38,
 				"display_type": "number"
 			}
 		],
@@ -3131,7 +3287,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
@@ -3139,35 +3295,39 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Glitch Runner"
+				"value": "Wetware Mechanic"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Curly Hair"
+				"value": "White Tousled Bedhead"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Red"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Grin"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Torn Jacket"
+				"value": "Black Sleeveless"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Goggles"
+				"value": "Scuffed Work Goggles Pushed Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Camo Bandana Around Neck"
+				"value": "Insignia"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -3175,7 +3335,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 40,
+				"value": 33,
 				"display_type": "number"
 			},
 			{
@@ -3202,19 +3362,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Synthetic"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -3222,31 +3382,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Black Clinic Broker"
+				"value": "Signal Runner"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blonde Medium Hair"
+				"value": "Brown Sharp Chin Length Bob"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Grey"
+				"value": "Hazel"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Slight Frown"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Sleeveless Shirt"
+				"value": "Utility Vest"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Mask"
+				"value": "Head Mounted Display"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Gold Necklace"
+				"value": "Clearance Insignia"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Baseball Bat"
 			},
 			{
 				"trait_type": "Special",
@@ -3254,12 +3418,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 60,
+				"value": 158,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 25,
+				"value": 4,
 				"display_type": "number"
 			}
 		],
@@ -3281,7 +3445,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
@@ -3289,11 +3453,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Corrupted"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Elite"
 			},
 			{
 				"trait_type": "Frame",
@@ -3301,11 +3465,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Runner"
+				"value": "Archive Seer"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "White Messy Hair"
+				"value": "White Asymmetrical Cut"
 			},
 			{
 				"trait_type": "Eyes",
@@ -3313,19 +3477,23 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Frown"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Leather Jacket"
+				"value": "Ceremonial Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Headset"
+				"value": "Hood Pulled Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Badge Lanyard"
+				"value": "Collar Ring"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -3333,12 +3501,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 199,
+				"value": 10,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 2,
+				"value": 39,
 				"display_type": "number"
 			}
 		],
@@ -3360,11 +3528,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Synthetic"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
@@ -3372,7 +3540,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -3380,31 +3548,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Riot Enforcer"
+				"value": "Prototype Host"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Red Thick Dreadlocks"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Aqua"
+				"value": "Grey"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Clenched Teeth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Jacket"
+				"value": "Long Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Sunglasses"
+				"value": "Half Mask"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Id Badge"
+				"value": "Exposed Shoulder Port"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Pipe Wrench"
 			},
 			{
 				"trait_type": "Special",
@@ -3412,12 +3584,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 81,
+				"value": 175,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 16,
+				"value": 3,
 				"display_type": "number"
 			}
 		],
@@ -3439,19 +3611,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -3459,30 +3631,34 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Interface Disciple"
+				"value": "Riot Enforcer"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Grey Shaved Head"
+				"value": "Red Flattop"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Hazel"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Grin"
+				"value": "Neutral"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Jacket"
+				"value": "Military Uniform"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Circlet"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Weapon",
 				"value": "None"
 			},
 			{
@@ -3491,12 +3667,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 61,
+				"value": 176,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 25,
+				"value": 3,
 				"display_type": "number"
 			}
 		],
@@ -3530,11 +3706,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Rare"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
@@ -3542,27 +3718,31 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Aqua Messy Hair"
+				"value": "Purple Flattop"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Glowing"
+				"value": "Grey"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Frown"
+				"value": "Stoic"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Bomber Jacket"
+				"value": "Utility Vest"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Headset"
+				"value": "Mouth Mask"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Pendant Necklace"
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Baseball Bat"
 			},
 			{
 				"trait_type": "Special",
@@ -3570,12 +3750,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 200,
+				"value": 34,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 2,
+				"value": 27,
 				"display_type": "number"
 			}
 		],
@@ -3597,11 +3777,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Synthetic"
+				"value": "Human"
 			},
 			{
 				"trait_type": "Signal",
@@ -3609,7 +3789,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Elite"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
@@ -3617,44 +3797,48 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Breach Unit"
+				"value": "Interface Disciple"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Blonde Hime Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Red"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Clenched Teeth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Armored Bodysuit"
+				"value": "Ceremonial Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Dual Radio Antenna"
+				"value": "Mechanical Halo Of Metal Ring Segments Hovering Just Behind The Head"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Neck Cable"
-			},
-			{
-				"trait_type": "Special",
 				"value": "None"
 			},
 			{
+				"trait_type": "Weapon",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "Translucent Mouth Mask With Sheer Fabric Over Nose And Mouth"
+			},
+			{
 				"trait_type": "Rarity Rank",
-				"value": 9,
+				"value": 124,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 40,
+				"value": 13,
 				"display_type": "number"
 			}
 		],
@@ -3676,50 +3860,54 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Synthetic"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Rare"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Data Analyst"
+				"value": "Broker"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Blonde Sharp Pixie Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Red"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Confident"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "High Collar Bodysuit"
+				"value": "Hoodie"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Dual Radio Antenna"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
+				"value": "Ear Implant"
+			},
+			{
+				"trait_type": "Weapon",
 				"value": "None"
 			},
 			{
@@ -3728,12 +3916,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 173,
+				"value": 50,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 3,
+				"value": 26,
 				"display_type": "number"
 			}
 		],
@@ -3759,7 +3947,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
@@ -3775,31 +3963,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Checkpoint Officer"
+				"value": "Breach Unit"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Brown Crew Cut"
+				"value": "Grey Shaved Head"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Amber"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Calm"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Long Coat"
+				"value": "Body Armor"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Visor"
+				"value": "Kevlar Helmet"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Dog Tags"
+				"value": "One Paired Set Of"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Firearm"
 			},
 			{
 				"trait_type": "Special",
@@ -3807,12 +3999,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 201,
+				"value": 177,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 2,
+				"value": 3,
 				"display_type": "number"
 			}
 		],
@@ -3834,64 +4026,68 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Synthetic"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Checkpoint Officer"
+				"value": "Prototype Host"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Brown Sharp Undercut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Aqua"
+				"value": "Hazel"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Determined"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Armored Bodysuit"
+				"value": "Black Sleeveless"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Visor"
+				"value": "Glowing Led Headband"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Id Badge"
+				"value": "Clearance Insignia"
 			},
 			{
-				"trait_type": "Special",
+				"trait_type": "Weapon",
 				"value": "None"
 			},
 			{
+				"trait_type": "Special",
+				"value": "Cigarette"
+			},
+			{
 				"trait_type": "Rarity Rank",
-				"value": 152,
+				"value": 103,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 5,
+				"value": 14,
 				"display_type": "number"
 			}
 		],
@@ -3913,7 +4109,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
@@ -3921,7 +4117,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
@@ -3933,31 +4129,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Archive Seer"
+				"value": "Security Director"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Orange Bob Cut"
+				"value": "Blonde Wild Voluminous"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Red"
+				"value": "Grey"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Frown"
+				"value": "Neutral"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Jacket"
+				"value": "Wool Blazer"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Pendant Necklace"
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -3965,12 +4165,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 126,
+				"value": 104,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 13,
+				"value": 14,
 				"display_type": "number"
 			}
 		],
@@ -3996,7 +4196,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
@@ -4012,19 +4212,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Infiltrator"
+				"value": "Signal Runner"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Red Messy Hair"
+				"value": "Grey Sharply Slicked Back"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Dark Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Serious"
 			},
 			{
 				"trait_type": "Outfit",
@@ -4032,11 +4232,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Mask"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Dog Tags"
+				"value": "Small Enamel Lapel Pin"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -4044,12 +4248,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 218,
+				"value": 178,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 1,
+				"value": 3,
 				"display_type": "number"
 			}
 		],
@@ -4075,7 +4279,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
@@ -4087,35 +4291,39 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Strategist"
+				"value": "Data Analyst"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Brown Medium Hair"
+				"value": "Brown Mohawk"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Hazel"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Serious"
+				"value": "Closed Mouth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Structured Coat"
+				"value": "Wool Waistcoat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Glasses"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Necktie"
+				"value": "Matched Pair Of Small Polished Steel Stud Earrings In The Lobes Catching Cool Rim Light"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -4123,12 +4331,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 245,
+				"value": 237,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 0,
+				"value": 1,
 				"display_type": "number"
 			}
 		],
@@ -4150,11 +4358,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Synthetic"
 			},
 			{
 				"trait_type": "Signal",
@@ -4162,7 +4370,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
@@ -4170,31 +4378,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Surveillance Marksman"
+				"value": "Archive Seer"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Green Ponytail"
+				"value": "Black Sharp Pixie Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Clenched Teeth"
+				"value": "Angry"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Long Coat"
+				"value": "Wool Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Scouter"
+				"value": "Thin Tech Headband"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Dog Tags"
+				"value": "Devotional Collar"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -4202,12 +4414,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 49,
+				"value": 83,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 26,
+				"value": 15,
 				"display_type": "number"
 			}
 		],
@@ -4229,19 +4441,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Synthetic"
+				"value": "Human"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Corrupted"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
@@ -4249,23 +4461,23 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Strategist"
+				"value": "Graft Surgeon"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Auburn Pompadour"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Blue"
+				"value": "Grey"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Grin"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Turtleneck Jacket"
+				"value": "Black Sleeveless"
 			},
 			{
 				"trait_type": "Headwear",
@@ -4273,20 +4485,24 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Necktie"
+				"value": "Ear Implant"
 			},
 			{
-				"trait_type": "Special",
+				"trait_type": "Weapon",
 				"value": "None"
 			},
 			{
+				"trait_type": "Special",
+				"value": "Bandaid On Face"
+			},
+			{
 				"trait_type": "Rarity Rank",
-				"value": 174,
+				"value": 105,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 3,
+				"value": 14,
 				"display_type": "number"
 			}
 		],
@@ -4304,1902 +4520,6 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"name": "Echoes #54",
 		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
 		"image": "54.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "The Unwritten"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Cyborg"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Stable"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Uncommon"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Masculine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Black Clinic Broker"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "Grey Undercut"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Brown"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Serious"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Bodysuit"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "Earpiece"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Pendant Necklace"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 91,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 15,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "54.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #55",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "55.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "The Siphon"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Cyborg"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Stable"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Uncommon"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Masculine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Hacker"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "Brown Messy Hair"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Blue"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Smirk"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Bomber Jacket"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "Hood Up"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Choker"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 106,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 14,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "55.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #56",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "56.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "Tessera Wardens"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Human"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Corrupted"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Uncommon"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Masculine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Checkpoint Officer"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "Brown Crew Cut"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Brown"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Smirk"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Body Armor"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "Plain Baseball Cap"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Dog Tags"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 107,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 14,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "56.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #57",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "57.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "The Siphon"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Augmented"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Stable"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Common"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Feminine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Signal Runner"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "Blue Asymmetrical Hair"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Grey"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Neutral"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Bomber Jacket"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "Headset"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Badge Lanyard"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 219,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 1,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "57.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #58",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "58.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "Syre Group"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Synthetic"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Stable"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Rare"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Feminine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Systems Architect"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "None"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Red"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Neutral"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Blazer"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "None"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Metal Collar"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 41,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 27,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "58.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #59",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "59.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "The Siphon"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Human"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Stable"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Uncommon"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Masculine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Hacker"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "Grey Short Hair"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Purple"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Closed Mouth"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Bomber Jacket"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "Hood Up"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Choker"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 146,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 12,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "59.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #60",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "60.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "The Siphon"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Augmented"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Stable"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Rare"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Feminine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Signal Runner"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "Grey Short Hair"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Purple"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Angry"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Bomber Jacket"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "Headset"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Metal Collar"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 50,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 26,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "60.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #61",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "61.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "Syre Group"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Augmented"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Stable"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Common"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Masculine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Data Analyst"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "Brown Medium Hair"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Yellow"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Smirk"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Jacket"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "Glasses"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Necktie"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 220,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 1,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "61.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #62",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "62.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "The Unwritten"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Augmented"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Corrupted"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Uncommon"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Masculine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Signal Smuggler"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "Aqua Crew Cut"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Brown"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Neutral"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Torn Jacket"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "Hood Up"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Red Bandana Around Neck"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 108,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 14,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "62.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #63",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "63.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "The Unwritten"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Augmented"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Stable"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Uncommon"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Masculine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Wetware Mechanic"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "Grey Mohawk"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Natural"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Neutral"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Torn Jacket"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "Goggles"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Earpiece"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 109,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 14,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "63.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #64",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "64.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "Syre Group"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Synthetic"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Stable"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Uncommon"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Feminine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Systems Architect"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "None"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Green"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Neutral"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Blazer"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "Plain Baseball Cap"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Metal Collar"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 92,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 15,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "64.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #65",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "65.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "The Siphon"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Human"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Stable"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Uncommon"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Feminine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Infiltrator"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "Brown Medium Hair"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Brown"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Neutral"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Bomber Jacket"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "Mask"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Shoulder Armor"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 127,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 13,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "65.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #66",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "66.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "Tessera Wardens"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Augmented"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Corrupted"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Common"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Feminine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Breach Unit"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "Blonde Braid"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Brown"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Neutral"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Long Coat"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "Helmet"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Dog Tags"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 202,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 2,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "66.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #67",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "67.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "The Witnesses"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Augmented"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Stable"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Common"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Feminine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Transmission Guard"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "Blonde Medium Hair"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Yellow"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Calm"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "White Jacket"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "None"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Shoulder Armor"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 203,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 2,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "67.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #68",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "68.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "Syre Group"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Synthetic"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Stable"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Common"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Feminine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Strategist"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "None"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Blue"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Neutral"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Jacket"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "None"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "None"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 175,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 3,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "68.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #69",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "69.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "Syre Group"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Synthetic"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Stable"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Uncommon"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Masculine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Data Analyst"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "None"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Red"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Neutral"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Long Coat"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "Sunglasses"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Bowtie"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 93,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 15,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "69.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #70",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "70.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "The Witnesses"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Cyborg"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Corrupted"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Common"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Masculine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Signal Evangelist"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "Blonde Mohawk"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Blue"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Neutral"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "White Bodysuit"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "Mask"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Single Earring"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 176,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 3,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "70.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #71",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "71.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "Syre Group"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Augmented"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Stable"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Common"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Feminine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Data Analyst"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "Brown Hair Over One Eye"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Brown"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Focused"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Turtleneck Blazer"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "Glasses"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Necktie"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 221,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 1,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "71.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #72",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "72.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "The Witnesses"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Cyborg"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Stable"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Uncommon"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Feminine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Signal Evangelist"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "Blue Hime Cut"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Blue"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Closed Mouth"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "White Vest"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "Glowing Led Headband"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Hoop Earrings"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 94,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 15,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "72.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #73",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "73.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "Tessera Wardens"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Cyborg"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Stable"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Uncommon"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Feminine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Riot Enforcer"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "Black Short Hair"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Brown"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Smirk"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Armored Bodysuit"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "Helmet"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Id Badge"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 110,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 14,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "73.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #74",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "74.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "Syre Group"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Augmented"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Stable"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Rare"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Masculine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Data Analyst"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "Brown Cornrows"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Blue"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Smirk"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Vest"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "Glasses"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Bowtie"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 62,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 25,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "74.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #75",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "75.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "The Unwritten"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Augmented"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Stable"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Uncommon"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Masculine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Glitch Runner"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "Pink Messy Hair"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Natural"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Neutral"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Utility Jumpsuit"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "Goggles"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Red Bandana Around Neck"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 128,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 13,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "75.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #76",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "76.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "The Unwritten"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Augmented"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Stable"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Common"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Feminine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Signal Smuggler"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "Grey Short Hair"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Brown"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Neutral"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Street Hoodie"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "Hood Up"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Black Bandana Around Neck"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 204,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 2,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "76.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #77",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "77.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "Syre Group"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Augmented"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Stable"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Rare"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Masculine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Systems Architect"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "Black Medium Hair"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Green"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Focused"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Turtleneck Blazer"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "Earpiece"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Badge Lanyard"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 63,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 25,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "77.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #78",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "78.png",
 		"external_url": "",
 		"attributes": [
 			{
@@ -6228,27 +4548,31 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Medium Hair"
+				"value": "Grey Buzz Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "White"
+				"value": "Grey"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Closed Mouth"
+				"value": "Grin"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Vest"
+				"value": "Bomber Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Headphones"
+				"value": "Visor"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Badge Lanyard"
+				"value": "Clearance Insignia"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -6256,12 +4580,2004 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 177,
+				"value": 208,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 2,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "54.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #55",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "55.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Signal Smuggler"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Grey Crew Cut"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Dark Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Hoodie"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Weathered Hood"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Stud Earring"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Knife"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 179,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
 				"value": 3,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "55.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #56",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "56.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Tessera Wardens"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Signal-Burned"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Surveillance Marksman"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Auburn Sharp Chin Length Bob"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Green"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Smirk"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Long Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Goggles On Head"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Rifle"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Rifle"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 84,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 15,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "56.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #57",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "57.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Syre Group"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Strategist"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Black Tousled Medium Length"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Serious"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Wool Blazer"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Silk Necktie"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 180,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 3,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "57.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #58",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "58.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Black Clinic Broker"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Black Single Long Braid"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Amber"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Stoic"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Industrial Jumpsuit"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Firearm"
+			},
+			{
+				"trait_type": "Special",
+				"value": "Cigarette"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 85,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 15,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "58.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #59",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "59.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Tessera Wardens"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Riot Enforcer"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Brown Wild Voluminous"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Green"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Confident"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Body Armor"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Tech Headband"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 106,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 14,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "59.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #60",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "60.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Syre Group"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Signal-Burned"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Strategist"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Grey Natural Curly"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Hazel"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Serious"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Long Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Half Mask"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Firearm"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 209,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 2,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "60.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #61",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "61.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Interface Disciple"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Red Sharp Pixie Cut"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Bodysuit"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Mechanical Halo Of Metal Ring Segments Hovering Just Behind The Head"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Devotional Collar"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Rifle"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 134,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 12,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "61.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #62",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "62.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Tessera Wardens"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Synthetic"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Rare"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Riot Enforcer"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "None"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "LED Eyes"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Segmented Armor"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 29,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 28,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "62.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #63",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "63.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Siphon"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Signal Runner"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Red Wild Spiked"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Amber"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Frown"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Utility Vest"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Headset"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Small Enamel Lapel Pin"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Knife"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 181,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 3,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "63.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #64",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "64.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Siphon"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Elite"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Signal Runner"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Orange Half Updo"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Determined"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Utility Vest"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Courier Visor"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Ear Implant"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Knife"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 22,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 37,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "64.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #65",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "65.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Glitch Runner"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Brown Tight Cornrows"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Dark Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Confident"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Neoprene Bodysuit"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Wide Lens Goggles Pushed Up"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Choker"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 125,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 13,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "65.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #66",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "66.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Ghost-Class Anomaly"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Glitch Runner"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Blonde Sharply Spiked"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Green"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Slight Frown"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Long Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Wide Lens Goggles Pushed Up"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 139,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 7,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "66.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #67",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "67.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Siphon"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Rare"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Infiltrator"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Auburn Wild Voluminous"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Sparkling"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Confident"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Utility Vest"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Mouth Mask"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Dog Tags"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Firearm"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 51,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 26,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "67.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #68",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "68.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Syre Group"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Data Analyst"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Red Wild Voluminous"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Amber"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Stoic"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Wool Blazer"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Id Lanyard"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "Cigar"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 182,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 3,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "68.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #69",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "69.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Tessera Wardens"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Synthetic"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Surveillance Marksman"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "None"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Violet LED Eyes"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Dog Tags"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 86,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 15,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "69.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #70",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "70.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Syre Group"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Strategist"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Brown Shaved Head"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Amber"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Closed Mouth"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Long Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 210,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 2,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "70.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #71",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "71.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Siphon"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Infiltrator"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Red Sharply Spiked"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Dark Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Stoic"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Biker Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Motorcycle Helmet"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "One Paired Set Of"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "Blowing Bubble Gum"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 238,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 1,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "71.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #72",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "72.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Human"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Black Clinic Broker"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Grey Half Updo"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Amber"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Clenched Teeth"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Utility Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Ear Implant"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 211,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 2,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "72.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #73",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "73.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Ghost-Class Anomaly"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Rare"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Transmission Guard"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Red Sleek High Ponytail"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Dark Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Frown"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Tactical Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Low Profile Matte White Hardshell Headband"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Unit Insignia"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "Data Port Collar Ring With Pulsing Glyph Display"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 25,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 31,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "73.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #74",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "74.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Signal-Burned"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Rare"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Interface Disciple"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Red Natural Curly"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Multicolored"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Stoic"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Synthetic Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Mechanical Halo Of Metal Ring Segments Hovering Just Behind The Head"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Tech Collar"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 35,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 27,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "74.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #75",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "75.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Siphon"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Corrupted"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Hacker"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Auburn Tight Cornrows"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Dark Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Hoodie"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Hood Pulled Up"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "Bandaid On Face"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 159,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 4,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "75.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #76",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "76.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Transmission Guard"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Auburn Tight Cornrows"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Green"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Determined"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Tactical Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Hood Pulled Up"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 87,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 15,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "76.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #77",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "77.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Synthetic"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Signal Smuggler"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "None"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Cyan LED Eyes"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Weathered Hood"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Bandana"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 183,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 3,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "77.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #78",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "78.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Tessera Wardens"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Signal-Burned"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Rare"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Checkpoint Officer"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Red Sweeping"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Yellow"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Closed Mouth"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Long Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Shoulder Mic"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 36,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 27,
 				"display_type": "number"
 			}
 		],
@@ -6283,19 +6599,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Synthetic"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Corrupted"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -6303,15 +6619,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Dead Channel Prophet"
+				"value": "Net Diver"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Orange Pixie Cut"
+				"value": "None"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Violet LED Eyes"
 			},
 			{
 				"trait_type": "Demeanor",
@@ -6319,15 +6635,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Vest"
+				"value": "Tactical Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Mechanical Halo"
+				"value": "Visor"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Gold Choker"
+				"value": "Ear Implant"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -6335,12 +6655,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 42,
+				"value": 144,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 27,
+				"value": 5,
 				"display_type": "number"
 			}
 		],
@@ -6362,15 +6682,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
@@ -6382,31 +6702,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Glitch Runner"
+				"value": "Signal Evangelist"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Green Asymmetrical Hair"
+				"value": "Auburn Sharp Undercut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Heterochromia"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Grin"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Sleeveless Shirt"
+				"value": "Ceremonial Vest"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Goggles"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Choker"
+				"value": "Collar"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Firearm"
 			},
 			{
 				"trait_type": "Special",
@@ -6414,7 +6738,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 95,
+				"value": 88,
 				"display_type": "number"
 			},
 			{
@@ -6441,11 +6765,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
@@ -6461,44 +6785,48 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Evangelist"
+				"value": "Hacker"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Brown Short Hair"
+				"value": "Grey Side Shaved Undercut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Glowing"
+				"value": "Dark Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Closed Mouth"
+				"value": "Focused"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Jacket"
+				"value": "Hoodie"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
+				"value": "Drawstring Hood"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Silver Necklace"
-			},
-			{
-				"trait_type": "Special",
 				"value": "None"
 			},
 			{
+				"trait_type": "Weapon",
+				"value": "Baseball Bat"
+			},
+			{
+				"trait_type": "Special",
+				"value": "Backpack"
+			},
+			{
 				"trait_type": "Rarity Rank",
-				"value": 111,
+				"value": 126,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 14,
+				"value": 13,
 				"display_type": "number"
 			}
 		],
@@ -6520,7 +6848,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
@@ -6532,39 +6860,43 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Rare"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Surveillance Marksman"
+				"value": "Signal Smuggler"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blonde Short Hair"
+				"value": "White Twin Braids"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Orange"
+				"value": "White"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Closed Mouth"
+				"value": "Focused"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Long Coat"
+				"value": "Utility Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Scouter"
+				"value": "Weathered Hood"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Shoulder Armor"
+				"value": "Bandana"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -6572,12 +6904,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 96,
+				"value": 37,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 15,
+				"value": 27,
 				"display_type": "number"
 			}
 		],
@@ -6599,51 +6931,55 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Rare"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Glitch Runner"
+				"value": "Surveillance Marksman"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Grey Double Bun"
+				"value": "Auburn Natural Curly"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Multicolored"
+				"value": "Hazel"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Clenched Teeth"
+				"value": "Calm"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Torn Jacket"
+				"value": "Tactical Vest"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Goggles"
+				"value": "Black Balaclava"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Ear Piercing"
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -6651,12 +6987,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 205,
+				"value": 52,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 2,
+				"value": 26,
 				"display_type": "number"
 			}
 		],
@@ -6678,7 +7014,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
@@ -6686,11 +7022,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
@@ -6698,31 +7034,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Wetware Mechanic"
+				"value": "Broker"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Short Hair"
+				"value": "Red Thick Dreadlocks"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Grey"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Serious"
+				"value": "Slight Frown"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Bodysuit"
+				"value": "Hoodie"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Goggles"
+				"value": "Hood Pulled Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Earpiece"
+				"value": "Ear Implant"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Crowbar"
 			},
 			{
 				"trait_type": "Special",
@@ -6730,12 +7070,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 51,
+				"value": 89,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 26,
+				"value": 15,
 				"display_type": "number"
 			}
 		],
@@ -6773,35 +7113,39 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Glitch Runner"
+				"value": "Prototype Host"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Undercut"
+				"value": "Auburn Sharp Pixie Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Grey"
+				"value": "Dark Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Serious"
+				"value": "Calm"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Bodysuit"
+				"value": "Utility Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Goggles"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Single Earring"
+				"value": "Clearance Insignia"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -6809,7 +7153,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 158,
+				"value": 160,
 				"display_type": "number"
 			},
 			{
@@ -6840,15 +7184,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Human"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Ghost-Class Anomaly"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Elite"
 			},
 			{
 				"trait_type": "Frame",
@@ -6856,23 +7200,23 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Strategist"
+				"value": "Systems Architect"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Brown Shaved Head"
+				"value": "Green Pompadour"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Natural"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Serious"
+				"value": "Smirk"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Formal Suit"
+				"value": "Wool Blazer"
 			},
 			{
 				"trait_type": "Headwear",
@@ -6880,7 +7224,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Necktie"
+				"value": "Collar Ring"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -6888,12 +7236,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 159,
+				"value": 17,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 4,
+				"value": 38,
 				"display_type": "number"
 			}
 		],
@@ -6915,11 +7263,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
@@ -6935,31 +7283,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Runner"
+				"value": "Signal Smuggler"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Brown Curly Hair"
+				"value": "Black Side Swept Ponytail"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Blue"
+				"value": "Dark Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Confident"
+				"value": "Slight Frown"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Street Hoodie"
+				"value": "Utility Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Headset"
+				"value": "Weathered Hood"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Metal Collar"
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -6967,12 +7319,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 112,
+				"value": 90,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 14,
+				"value": 15,
 				"display_type": "number"
 			}
 		],
@@ -6994,7 +7346,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
@@ -7006,7 +7358,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Rare"
 			},
 			{
 				"trait_type": "Frame",
@@ -7014,31 +7366,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Runner"
+				"value": "Dead Channel Prophet"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "White Medium Hair"
+				"value": "Aqua Hime Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Blue"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Grin"
+				"value": "Calm"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Leather Jacket"
+				"value": "Tactical Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Headset"
+				"value": "Weathered Mechanical Halo Of Ring Segments Hovering Just Behind The Head"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Badge Lanyard"
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -7046,12 +7402,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 178,
+				"value": 38,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 3,
+				"value": 27,
 				"display_type": "number"
 			}
 		],
@@ -7073,51 +7429,55 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Ghost-Class Anomaly"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Runner"
+				"value": "Archive Seer"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Medium Hair"
+				"value": "Brown Sharp Pixie Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Yellow"
+				"value": "Green"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Serious"
+				"value": "Closed Mouth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Bomber Jacket"
+				"value": "Bodysuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Headset"
+				"value": "Thin Tech Headband"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Badge Lanyard"
+				"value": "Devotional Collar"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Firearm"
 			},
 			{
 				"trait_type": "Special",
@@ -7125,12 +7485,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 43,
+				"value": 74,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 27,
+				"value": 16,
 				"display_type": "number"
 			}
 		],
@@ -7156,15 +7516,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Signal-Burned"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
@@ -7172,31 +7532,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Smuggler"
+				"value": "Graft Surgeon"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Aqua Asymmetrical Hair"
+				"value": "Grey Natural Curly"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Grey"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Clenched Teeth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Torn Jacket"
+				"value": "Neoprene Bodysuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
+				"value": "Hood Pulled Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Multiple Earrings"
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Scalpel"
 			},
 			{
 				"trait_type": "Special",
@@ -7204,12 +7568,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 52,
+				"value": 107,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 26,
+				"value": 14,
 				"display_type": "number"
 			}
 		],
@@ -7231,19 +7595,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Synthetic"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Corrupted"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
@@ -7251,11 +7615,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Net Diver"
+				"value": "Data Analyst"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Orange Slicked Back Hair"
+				"value": "Brown Tight Cornrows"
 			},
 			{
 				"trait_type": "Eyes",
@@ -7263,19 +7627,23 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Clenched Teeth"
+				"value": "Focused"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Leather Jacket"
+				"value": "Wool Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Headphones"
+				"value": "Glasses"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Badge Lanyard"
+				"value": "Crisp Folded Silk Pocket Square Peaking From The Breast Pocket"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -7283,12 +7651,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 64,
+				"value": 65,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 25,
+				"value": 17,
 				"display_type": "number"
 			}
 		],
@@ -7314,7 +7682,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
@@ -7330,15 +7698,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Checkpoint Officer"
+				"value": "Breach Unit"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Slicked Back Hair"
+				"value": "Auburn Sharply Slicked Back"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Blue"
+				"value": "Dark Brown"
 			},
 			{
 				"trait_type": "Demeanor",
@@ -7346,15 +7714,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Long Coat"
+				"value": "Body Armor"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
+				"value": "Kevlar Helmet"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Dog Tags"
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -7362,12 +7734,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 113,
+				"value": 127,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 14,
+				"value": 13,
 				"display_type": "number"
 			}
 		],
@@ -7389,19 +7761,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Ghost-Class Anomaly"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Elite"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -7409,44 +7781,48 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Archive Seer"
+				"value": "Glitch Runner"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "White Undercut"
+				"value": "Auburn Sharply Slicked Back"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Yellow"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Smirk"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Vest"
+				"value": "Utility Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Mask"
+				"value": "Wide Lens Goggles Pushed Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Diamond Earrings"
-			},
-			{
-				"trait_type": "Special",
 				"value": "None"
 			},
 			{
+				"trait_type": "Weapon",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "Bandaid On Face"
+			},
+			{
 				"trait_type": "Rarity Rank",
-				"value": 17,
+				"value": 140,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 38,
+				"value": 7,
 				"display_type": "number"
 			}
 		],
@@ -7468,51 +7844,55 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Human"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Checkpoint Officer"
+				"value": "Prototype Host"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Red Short Hair"
+				"value": "Grey Short Textured Crop"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Red"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Frown"
+				"value": "Calm"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Body Armor"
+				"value": "Hoodie"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Helmet"
+				"value": "Hood Pulled Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Shoulder Armor"
+				"value": "Clearance Insignia"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Knife"
 			},
 			{
 				"trait_type": "Special",
@@ -7520,12 +7900,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 114,
+				"value": 239,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 14,
+				"value": 1,
 				"display_type": "number"
 			}
 		],
@@ -7547,7 +7927,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
@@ -7559,7 +7939,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Legendary"
 			},
 			{
 				"trait_type": "Frame",
@@ -7567,7 +7947,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Riot Enforcer"
+				"value": "Glitch Runner"
 			},
 			{
 				"trait_type": "Hair",
@@ -7575,7 +7955,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "White"
+				"value": "Hollow Eyes"
 			},
 			{
 				"trait_type": "Demeanor",
@@ -7583,15 +7963,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Armored Jacket"
+				"value": "Tactical Bodysuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Visor"
+				"value": "Wide Lens Goggles Pushed Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Shoulder Armor"
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -7599,12 +7983,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 97,
+				"value": 1,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 15,
+				"value": 52,
 				"display_type": "number"
 			}
 		],
@@ -7622,638 +8006,6 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"name": "Echoes #96",
 		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
 		"image": "96.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "The Witnesses"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Augmented"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Stable"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Common"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Masculine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Interface Disciple"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "Purple Undercut"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Natural"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Neutral"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "White Coat"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "Visor"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Pendant Necklace"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 222,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 1,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "96.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #97",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "97.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "The Witnesses"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Human"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Stable"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Legendary"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Masculine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Dead Channel Prophet"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "Brown Cornrows"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Grey"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Fangs"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "White Vest"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "Mechanical Halo"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Diamond Necklace"
-			},
-			{
-				"trait_type": "Special",
-				"value": "Mechanical Wings On Back"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 5,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 50,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "97.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #98",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "98.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "The Unwritten"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Augmented"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Corrupted"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Uncommon"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Feminine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Black Clinic Broker"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "Blonde Curly Hair"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Natural"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Smirk"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Bodysuit"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "None"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Choker"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 98,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 15,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "98.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #99",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "99.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "Syre Group"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Human"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Stable"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Uncommon"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Masculine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Security Director"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "Grey Pompadour"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Green"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Closed Mouth"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Jacket"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "None"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Id Badge"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 147,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 12,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "99.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #100",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "100.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "Syre Group"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Augmented"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Stable"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Common"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Masculine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Data Analyst"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "Brown Messy Hair"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Blue"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Closed Mouth"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Turtleneck Blazer"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "Glasses"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Stud Earrings"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 223,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 1,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "100.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #101",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "101.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "Syre Group"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Augmented"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Stable"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Uncommon"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Masculine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Systems Architect"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "Red Medium Hair"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Grey"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Neutral"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Turtleneck Blazer"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "None"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Id Badge"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 129,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 13,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "101.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #102",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "102.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "The Witnesses"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Augmented"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Corrupted"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Elite"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Feminine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Signal Evangelist"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "Black Short Hair"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Green"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Serious"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "White Coat"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "Hood Up"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Pearl Necklace"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 10,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 40,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "102.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #103",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "103.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "The Unwritten"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Cyborg"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Corrupted"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Uncommon"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Masculine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Prototype Host"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "Aqua Spiked Hair"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Red"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Neutral"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Long Coat"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "Gas Mask"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Id Badge"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 82,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 16,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "103.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #104",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "104.png",
 		"external_url": "",
 		"attributes": [
 			{
@@ -8278,11 +8030,94 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Infiltrator"
+				"value": "Broker"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Short Hair"
+				"value": "Auburn Sharply Spiked"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Grey"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Closed Mouth"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Hoodie"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Pendant"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "Blowing Bubble Gum"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 75,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 16,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "96.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #97",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "97.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Elite"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Glitch Runner"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Brown Sleek High Ponytail"
 			},
 			{
 				"trait_type": "Eyes",
@@ -8294,15 +8129,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Bomber Jacket"
+				"value": "Black Sleeveless"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Mask"
+				"value": "Wide Lens Goggles Pushed Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Shoulder Armor"
+				"value": "Bandana"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -8310,12 +8149,593 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 115,
+				"value": 23,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 14,
+				"value": 37,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "97.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #98",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "98.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Siphon"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Broker"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Black Buzz Cut"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Amber"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Serious"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Long Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Rifle"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 212,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 2,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "98.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #99",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "99.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Tessera Wardens"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Legendary"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Breach Unit"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Red Pompadour"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Blue"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Clenched Teeth"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Tactical Vest"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "Bandaid On Face"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 4,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 51,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "99.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #100",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "100.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Unwritten"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Graft Surgeon"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Red Sleek High Ponytail"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Hazel"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Black Sleeveless"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Clearance Insignia"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 91,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 15,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "100.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #101",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "101.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Siphon"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Legendary"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Signal Runner"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Brown Flattop"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Amber"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Frown"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Bomber Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Circuit Headpiece"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 5,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 51,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "101.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #102",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "102.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Syre Group"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Ghost-Class Anomaly"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Data Analyst"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Brown Sharp Pixie Cut"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Grey"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Angry"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Wool Waistcoat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Id Lanyard"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 161,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 4,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "102.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #103",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "103.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Rare"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Dead Channel Prophet"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Green Tight Cornrows"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Blue"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Determined"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Tactical Coat"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Weathered Mechanical Halo Of Ring Segments Hovering Just Behind The Head"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Tech Collar"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 53,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 26,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "103.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #104",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "104.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Tessera Wardens"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Synthetic"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Masculine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Riot Enforcer"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "None"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Hollow Eyes"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Mechanical Halo"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 145,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 5,
 				"display_type": "number"
 			}
 		],
@@ -8337,11 +8757,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
@@ -8357,31 +8777,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Black Clinic Broker"
+				"value": "Signal Evangelist"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Grey Short Hair"
+				"value": "Blonde Buzz Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Natural"
+				"value": "Dark Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Calm"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Sleeveless Shirt"
+				"value": "Synthetic Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Mask"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Necklace"
+				"value": "Ritual Pendant"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -8389,12 +8813,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 224,
+				"value": 184,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 1,
+				"value": 3,
 				"display_type": "number"
 			}
 		],
@@ -8416,11 +8840,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Synthetic"
 			},
 			{
 				"trait_type": "Signal",
@@ -8436,19 +8860,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Data Analyst"
+				"value": "Interface Disciple"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Pink Undercut"
+				"value": "Grey Sharp Pixie Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Dark Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Angry"
+				"value": "Stoic"
 			},
 			{
 				"trait_type": "Outfit",
@@ -8456,11 +8880,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Glasses"
+				"value": "Mechanical Halo Of Metal Ring Segments Hovering Just Behind The Head"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Stud Earrings"
+				"value": "Devotional Collar"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -8468,12 +8896,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 246,
+				"value": 185,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 0,
+				"value": 3,
 				"display_type": "number"
 			}
 		],
@@ -8495,7 +8923,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
@@ -8503,43 +8931,47 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Corrupted"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Elite"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Strategist"
+				"value": "Archive Seer"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Red Braid"
+				"value": "Pink Side Shaved Undercut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Hazel"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Smirk"
+				"value": "Confident"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Blouse"
+				"value": "Tactical Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Thin Tech Headband"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Bowtie"
+				"value": "Collar Ring"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -8547,12 +8979,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 130,
+				"value": 18,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 13,
+				"value": 38,
 				"display_type": "number"
 			}
 		],
@@ -8574,7 +9006,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
@@ -8594,30 +9026,34 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Glitch Runner"
+				"value": "Data Analyst"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Brown Crew Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Purple"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Smirk"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Armored Bodysuit"
+				"value": "Wool Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Goggles"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
+				"value": "Silk Necktie"
+			},
+			{
+				"trait_type": "Weapon",
 				"value": "None"
 			},
 			{
@@ -8626,7 +9062,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 160,
+				"value": 162,
 				"display_type": "number"
 			},
 			{
@@ -8657,7 +9093,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
@@ -8665,7 +9101,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
@@ -8673,31 +9109,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Evangelist"
+				"value": "Transmission Guard"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Green Asymmetrical Hair"
+				"value": "Auburn Twin Braids"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Natural"
+				"value": "Dark Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Serious"
+				"value": "Stoic"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Coat"
+				"value": "Ceremonial Vest"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Circlet"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Necklace"
+				"value": "Ceremonial Pauldron Etched"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -8705,12 +9145,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 225,
+				"value": 92,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 1,
+				"value": 15,
 				"display_type": "number"
 			}
 		],
@@ -8732,11 +9172,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Synthetic"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
@@ -8748,15 +9188,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Evangelist"
+				"value": "Wetware Mechanic"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Auburn Sleek High Ponytail"
 			},
 			{
 				"trait_type": "Eyes",
@@ -8764,19 +9204,23 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Clenched Teeth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Armored Bodysuit"
+				"value": "Industrial Jumpsuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Scuffed Work Goggles Pushed Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Neck Cable"
+				"value": "Clearance Insignia"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -8784,12 +9228,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 161,
+				"value": 240,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 4,
+				"value": 1,
 				"display_type": "number"
 			}
 		],
@@ -8811,11 +9255,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Synthetic"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
@@ -8827,35 +9271,39 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Broker"
+				"value": "Strategist"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Brown Short Textured Crop"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Grey"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Serious"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Armored Jacket"
+				"value": "Long Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Earpiece"
+				"value": "Discreet Earpiece"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -8863,12 +9311,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 179,
+				"value": 213,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 3,
+				"value": 2,
 				"display_type": "number"
 			}
 		],
@@ -8890,15 +9338,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Synthetic"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
@@ -8910,31 +9358,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Interface Disciple"
+				"value": "Net Diver"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Brown Twin Braids"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Blue"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Closed Mouth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Bodysuit"
+				"value": "Biker Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Mechanical Halo"
+				"value": "Diving Rig Headset"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "None"
+				"value": "Collar Ring"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Machete"
 			},
 			{
 				"trait_type": "Special",
@@ -8942,12 +9394,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 83,
+				"value": 108,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 16,
+				"value": 14,
 				"display_type": "number"
 			}
 		],
@@ -8969,64 +9421,68 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Elite"
+				"value": "Rare"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Precinct Commander"
+				"value": "Graft Surgeon"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blonde Ponytail"
+				"value": "Green Flattop"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Red"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Serious"
+				"value": "Confident"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Body Armor"
+				"value": "Black Sleeveless"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Earpiece"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Shoulder Armor"
-			},
-			{
-				"trait_type": "Special",
 				"value": "None"
 			},
 			{
+				"trait_type": "Accessory",
+				"value": "Compact Black Medical Tool Harness"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Pipe Wrench"
+			},
+			{
+				"trait_type": "Special",
+				"value": "Bandaid On Face"
+			},
+			{
 				"trait_type": "Rarity Rank",
-				"value": 18,
+				"value": 54,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 38,
+				"value": 26,
 				"display_type": "number"
 			}
 		],
@@ -9052,15 +9508,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Synthetic"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -9072,40 +9528,44 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Brown Long Hair"
+				"value": "Brown Loose Wavy"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Green"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Closed Mouth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Coat"
+				"value": "Wool Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Mask"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Pendant Necklace"
-			},
-			{
-				"trait_type": "Special",
 				"value": "None"
 			},
 			{
+				"trait_type": "Accessory",
+				"value": "Ceremonial Sash"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "Single Tear"
+			},
+			{
 				"trait_type": "Rarity Rank",
-				"value": 116,
+				"value": 163,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 14,
+				"value": 4,
 				"display_type": "number"
 			}
 		],
@@ -9127,11 +9587,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Human"
 			},
 			{
 				"trait_type": "Signal",
@@ -9147,44 +9607,48 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Breach Unit"
+				"value": "Signal Smuggler"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Grey Spiked Hair"
+				"value": "Brown Crew Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Hazel"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Frown"
+				"value": "Focused"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Tactical Vest"
+				"value": "Hoodie"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Goggles"
+				"value": "Weathered Hood"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Dog Tags"
+				"value": "Stud Earring"
 			},
 			{
-				"trait_type": "Special",
+				"trait_type": "Weapon",
 				"value": "None"
 			},
 			{
+				"trait_type": "Special",
+				"value": "Injection Site"
+			},
+			{
 				"trait_type": "Rarity Rank",
-				"value": 226,
+				"value": 214,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 1,
+				"value": 2,
 				"display_type": "number"
 			}
 		],
@@ -9206,19 +9670,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Ghost-Class Anomaly"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Elite"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -9226,31 +9690,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Runner"
+				"value": "Interface Disciple"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Grey Short Hair"
+				"value": "Black Flattop"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Hazel"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Closed Mouth"
+				"value": "Smirk"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Street Hoodie"
+				"value": "Ceremonial Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Headset"
+				"value": "Mechanical Halo Of Metal Ring Segments Hovering Just Behind The Head"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Metal Collar"
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Firearm"
 			},
 			{
 				"trait_type": "Special",
@@ -9258,12 +9726,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 15,
+				"value": 146,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 39,
+				"value": 5,
 				"display_type": "number"
 			}
 		],
@@ -9285,51 +9753,55 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Synthetic"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Corrupted"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Elite"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Data Analyst"
+				"value": "Net Diver"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Grey Crew Cut"
+				"value": "None"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Cyan LED Eyes"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Serious"
+				"value": "Neutral"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Long Coat"
+				"value": "Tactical Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Glasses"
+				"value": "Visor"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Bowtie"
+				"value": "Ear Implant"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -9337,12 +9809,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 28,
+				"value": 147,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 36,
+				"value": 5,
 				"display_type": "number"
 			}
 		],
@@ -9364,7 +9836,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
@@ -9372,43 +9844,47 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Corrupted"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Strategist"
+				"value": "Wetware Mechanic"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blonde Ponytail"
+				"value": "Brown Wild Spiked"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Hazel"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Closed Mouth"
+				"value": "Stoic"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Structured Coat"
+				"value": "Hoodie"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Scuffed Work Goggles Pushed Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Necktie"
+				"value": "Collar Ring"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -9416,12 +9892,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 227,
+				"value": 93,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 1,
+				"value": 15,
 				"display_type": "number"
 			}
 		],
@@ -9443,7 +9919,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
@@ -9451,11 +9927,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
@@ -9463,31 +9939,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Surveillance Marksman"
+				"value": "Transmission Guard"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "White Hime Cut"
+				"value": "Black Thick Dreadlocks"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Grey"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Serious"
+				"value": "Smirk"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Body Armor"
+				"value": "Ceremonial Vest"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Scouter"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Dog Tags"
+				"value": "Guardian Chest Plate"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -9495,12 +9975,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 228,
+				"value": 109,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 1,
+				"value": 14,
 				"display_type": "number"
 			}
 		],
@@ -9522,7 +10002,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
@@ -9530,43 +10010,47 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Elite"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Security Director"
+				"value": "Transmission Guard"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Brown Hime Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Aqua"
+				"value": "Glowing"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Focused"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Formal Suit"
+				"value": "Wool Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Low Profile Matte White Hardshell Headband"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Shoulder Armor"
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -9574,12 +10058,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 84,
+				"value": 11,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 16,
+				"value": 39,
 				"display_type": "number"
 			}
 		],
@@ -9601,15 +10085,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
@@ -9621,31 +10105,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Evangelist"
+				"value": "Signal Runner"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blonde Short Hair"
+				"value": "Blonde Thick Dreadlocks"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Heterochromia"
+				"value": "Green"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Serious"
+				"value": "Calm"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Bodysuit"
+				"value": "Biker Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Pendant Necklace"
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -9653,12 +10141,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 99,
+				"value": 110,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 15,
+				"value": 14,
 				"display_type": "number"
 			}
 		],
@@ -9680,11 +10168,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
@@ -9692,39 +10180,43 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Elite"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Smuggler"
+				"value": "Systems Architect"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Messy Hair"
+				"value": "Black Half Updo"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Dark Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Grin"
+				"value": "Serious"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Long Coat"
+				"value": "Wool Blazer"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Skull Print Bandana Around Neck"
+				"value": "Clearance Insignia"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -9732,12 +10224,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 19,
+				"value": 111,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 38,
+				"value": 14,
 				"display_type": "number"
 			}
 		],
@@ -9763,15 +10255,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Synthetic"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -9783,27 +10275,31 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Brown Short Hair"
+				"value": "None"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Blue LED Eyes"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Angry"
+				"value": "Neutral"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Body Armor"
+				"value": "Tactical Bodysuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Helmet"
+				"value": "Tactical Helmet"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Dog Tags"
+				"value": "Shoulder Patch"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -9811,12 +10307,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 131,
+				"value": 148,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 13,
+				"value": 5,
 				"display_type": "number"
 			}
 		],
@@ -9838,7 +10334,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
@@ -9858,31 +10354,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Glitch Runner"
+				"value": "Infiltrator"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Pink Ponytail"
+				"value": "Brown Natural Curly"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Grin"
+				"value": "Stoic"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Street Hoodie"
+				"value": "Utility Vest"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Goggles"
+				"value": "Mouth Mask"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Black Bandana Around Neck"
+				"value": "One Paired Set Of"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -9890,7 +10390,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 180,
+				"value": 186,
 				"display_type": "number"
 			},
 			{
@@ -9917,19 +10417,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Legendary"
 			},
 			{
 				"trait_type": "Frame",
@@ -9937,44 +10437,48 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Strategist"
+				"value": "Net Diver"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Aqua Short Hair"
+				"value": "Purple Sharply Slicked Back"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Red"
+				"value": "Hazel"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Confident"
+				"value": "Clenched Teeth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Blouse"
+				"value": "Bomber Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Circuit Headpiece"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Stud Earrings"
-			},
-			{
-				"trait_type": "Special",
 				"value": "None"
 			},
 			{
+				"trait_type": "Weapon",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "Cigarette"
+			},
+			{
 				"trait_type": "Rarity Rank",
-				"value": 229,
+				"value": 2,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 1,
+				"value": 52,
 				"display_type": "number"
 			}
 		],
@@ -9996,7 +10500,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
@@ -10004,43 +10508,47 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Ghost-Class Anomaly"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Checkpoint Officer"
+				"value": "Hacker"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Brown Short Hair"
+				"value": "Brown Tight Cornrows"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Purple"
+				"value": "Grey"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Determined"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Body Armor"
+				"value": "Hoodie"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Visor"
+				"value": "Drawstring Hood"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Shoulder Armor"
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -10048,12 +10556,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 100,
+				"value": 141,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 15,
+				"value": 6,
 				"display_type": "number"
 			}
 		],
@@ -10075,19 +10583,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Synthetic"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
@@ -10095,15 +10603,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Evangelist"
+				"value": "Wetware Mechanic"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Pink Messy Hair"
+				"value": "None"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Grey"
+				"value": "Red LED Eyes"
 			},
 			{
 				"trait_type": "Demeanor",
@@ -10111,15 +10619,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Bodysuit"
+				"value": "Tactical Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Mask"
+				"value": "Scuffed Work Goggles Pushed Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Single Earring"
+				"value": "Clearance Insignia"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -10127,12 +10639,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 206,
+				"value": 66,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 2,
+				"value": 17,
 				"display_type": "number"
 			}
 		],
@@ -10154,11 +10666,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
@@ -10170,35 +10682,39 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Net Diver"
+				"value": "Signal Evangelist"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Grey Short Hair"
+				"value": "Black Half Updo"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Red"
+				"value": "Grey"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Serious"
+				"value": "Determined"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Vest"
+				"value": "Ceremonial Vest"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Headphones"
+				"value": "Mechanical Halo"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Id Badge"
+				"value": "Collar"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -10206,12 +10722,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 207,
+				"value": 187,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 2,
+				"value": 3,
 				"display_type": "number"
 			}
 		],
@@ -10233,7 +10749,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
@@ -10245,7 +10761,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
@@ -10253,31 +10769,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Riot Enforcer"
+				"value": "Signal Smuggler"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Brown Short Hair"
+				"value": "Black Asymmetrical Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Grey"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Closed Mouth"
+				"value": "Neutral"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Armored Bodysuit"
+				"value": "Industrial Jumpsuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Helmet"
+				"value": "Weathered Hood"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Id Badge"
+				"value": "Bandana"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Firearm"
 			},
 			{
 				"trait_type": "Special",
@@ -10285,12 +10805,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 230,
+				"value": 112,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 1,
+				"value": 14,
 				"display_type": "number"
 			}
 		],
@@ -10312,51 +10832,55 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Synthetic"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Corrupted"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Rare"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Transmission Guard"
+				"value": "Data Analyst"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Pink Sleek High Ponytail"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "White"
+				"value": "Red"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Calm"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Coat"
+				"value": "Wool Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Mouth Mask"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Shoulder Armor"
+				"value": "Discreet Earpiece"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -10364,12 +10888,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 153,
+				"value": 55,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 5,
+				"value": 26,
 				"display_type": "number"
 			}
 		],
@@ -10391,11 +10915,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Human"
 			},
 			{
 				"trait_type": "Signal",
@@ -10411,44 +10935,48 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Riot Enforcer"
+				"value": "Net Diver"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Green Pixie Cut"
+				"value": "Grey Natural Curly"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Dark Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Focused"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Tactical Vest"
+				"value": "Hoodie"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Gas Mask"
+				"value": "Hood Pulled Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Dog Tags"
+				"value": "Small Enamel Lapel Pin"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Machete"
 			},
 			{
 				"trait_type": "Special",
-				"value": "None"
+				"value": "Rain Soaked Hair With Wet Face"
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 181,
+				"value": 249,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 3,
+				"value": 0,
 				"display_type": "number"
 			}
 		],
@@ -10470,11 +10998,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
@@ -10482,52 +11010,56 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Evangelist"
+				"value": "Black Clinic Broker"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Green Bob Cut"
+				"value": "Brown Natural Curly"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "White"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Frown"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Vest"
+				"value": "Hoodie"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
+				"value": "Hood Pulled Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Gold Choker"
-			},
-			{
-				"trait_type": "Special",
 				"value": "None"
 			},
 			{
+				"trait_type": "Weapon",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "Blowing Bubble Gum"
+			},
+			{
 				"trait_type": "Rarity Rank",
-				"value": 65,
+				"value": 164,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 25,
+				"value": 4,
 				"display_type": "number"
 			}
 		],
@@ -10549,11 +11081,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
@@ -10561,39 +11093,43 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Elite"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Net Diver"
+				"value": "Surveillance Marksman"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Pink Messy Hair"
+				"value": "Purple Crew Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Glowing"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Grin"
+				"value": "Determined"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Bomber Jacket"
+				"value": "Long Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Headphones"
+				"value": "Tech Headband"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Badge Lanyard"
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -10601,12 +11137,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 182,
+				"value": 12,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 3,
+				"value": 39,
 				"display_type": "number"
 			}
 		],
@@ -10628,51 +11164,55 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Signal-Burned"
+				"value": "Ghost-Class Anomaly"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Wetware Mechanic"
+				"value": "Transmission Guard"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Green Half Updo"
+				"value": "Red Shaved Head"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Purple"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Frown"
+				"value": "Calm"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Sleeveless Shirt"
+				"value": "Synthetic Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Goggles"
+				"value": "Hood Pulled Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Earpiece"
+				"value": "Ceremonial Pauldron Etched"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -10680,12 +11220,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 85,
+				"value": 149,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 16,
+				"value": 5,
 				"display_type": "number"
 			}
 		],
@@ -10711,7 +11251,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Synthetic"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
@@ -10723,35 +11263,39 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Archive Seer"
+				"value": "Signal Evangelist"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Auburn Thick Dreadlocks"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "White"
+				"value": "Hazel"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Clenched Teeth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Jacket"
+				"value": "Synthetic Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Gold Circlet"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Choker"
+				"value": "Ritual Pendant"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -10759,12 +11303,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 86,
+				"value": 113,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 16,
+				"value": 14,
 				"display_type": "number"
 			}
 		],
@@ -10786,11 +11330,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Synthetic"
 			},
 			{
 				"trait_type": "Signal",
@@ -10798,7 +11342,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Legendary"
 			},
 			{
 				"trait_type": "Frame",
@@ -10806,44 +11350,48 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Checkpoint Officer"
+				"value": "Black Clinic Broker"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blonde Ponytail"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Blue"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Calm"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Long Coat"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "Goggles"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Dog Tags"
-			},
-			{
-				"trait_type": "Special",
 				"value": "None"
 			},
 			{
+				"trait_type": "Eyes",
+				"value": "LED Eyes"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Tactical Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Necklace"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "Cigarette"
+			},
+			{
 				"trait_type": "Rarity Rank",
-				"value": 208,
+				"value": 3,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 2,
+				"value": 52,
 				"display_type": "number"
 			}
 		],
@@ -10865,7 +11413,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
@@ -10873,7 +11421,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Corrupted"
 			},
 			{
 				"trait_type": "Rank",
@@ -10881,35 +11429,39 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Smuggler"
+				"value": "Signal Runner"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Aqua Slicked Back Hair"
+				"value": "Black Sleek High Ponytail"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Yellow"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Serious"
+				"value": "Smirk"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Bodysuit"
+				"value": "Bomber Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Black Bandana Around Neck"
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -10917,12 +11469,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 231,
+				"value": 215,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 1,
+				"value": 2,
 				"display_type": "number"
 			}
 		],
@@ -10952,15 +11504,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Corrupted"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
@@ -10968,7 +11520,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Red Curly Hair"
+				"value": "Auburn Tight Cornrows"
 			},
 			{
 				"trait_type": "Eyes",
@@ -10976,32 +11528,36 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Angry"
+				"value": "Confident"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Street Hoodie"
+				"value": "Hoodie"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Headphones"
+				"value": "Hood Pulled Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Metal Collar"
+				"value": "Neural Jack At The Temple"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
-				"value": "Neon Glow"
+				"value": "None"
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 132,
+				"value": 216,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 13,
+				"value": 2,
 				"display_type": "number"
 			}
 		],
@@ -11023,11 +11579,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Human"
 			},
 			{
 				"trait_type": "Signal",
@@ -11035,52 +11591,56 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Legendary"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Hacker"
+				"value": "Breach Unit"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blue Asymmetrical Hair"
+				"value": "Black Short Textured Crop"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Red"
+				"value": "Hazel"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Smirk"
+				"value": "Calm"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Vest"
+				"value": "Long Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Small Gold Demon Horns"
+				"value": "Kevlar Helmet"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Gold Choker"
+				"value": "Dog Tags"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
-				"value": "Weapon On Back"
+				"value": "None"
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 6,
+				"value": 128,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 49,
+				"value": 13,
 				"display_type": "number"
 			}
 		],
@@ -11102,11 +11662,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
@@ -11118,35 +11678,39 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Infiltrator"
+				"value": "Executive"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Purple Short Hair"
+				"value": "Auburn Tight Cornrows"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Grey"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Smirk"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Bomber Jacket"
+				"value": "Wool Blazer"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Mask"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Shoulder Armor"
+				"value": "Silk Necktie"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Firearm"
 			},
 			{
 				"trait_type": "Special",
@@ -11154,12 +11718,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 53,
+				"value": 39,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 26,
+				"value": 27,
 				"display_type": "number"
 			}
 		],
@@ -11181,43 +11745,43 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Synthetic"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Legendary"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Evangelist"
+				"value": "Precinct Commander"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Auburn Sleek High Ponytail"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Blue"
+				"value": "Amber"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Frown"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Coat"
+				"value": "Segmented Armor"
 			},
 			{
 				"trait_type": "Headwear",
@@ -11225,20 +11789,24 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Pendant Necklace"
-			},
-			{
-				"trait_type": "Special",
 				"value": "None"
 			},
 			{
+				"trait_type": "Weapon",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "Cigarette"
+			},
+			{
 				"trait_type": "Rarity Rank",
-				"value": 162,
+				"value": 6,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 4,
+				"value": 51,
 				"display_type": "number"
 			}
 		],
@@ -11260,7 +11828,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
@@ -11280,31 +11848,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Wetware Mechanic"
+				"value": "Data Analyst"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "White Shaved Head"
+				"value": "Black Buzz Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Blue"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Serious"
+				"value": "Closed Mouth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Street Hoodie"
+				"value": "Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Goggles"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Earpiece"
+				"value": "Id Lanyard"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -11312,7 +11884,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 183,
+				"value": 188,
 				"display_type": "number"
 			},
 			{
@@ -11339,11 +11911,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
@@ -11355,15 +11927,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Evangelist"
+				"value": "Riot Enforcer"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "White Short Hair"
+				"value": "Red Tousled Medium Length"
 			},
 			{
 				"trait_type": "Eyes",
@@ -11371,19 +11943,23 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Grin"
+				"value": "Angry"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Bodysuit"
+				"value": "Vest"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Goggles On Head"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Silver Necklace"
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -11391,7 +11967,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 117,
+				"value": 114,
 				"display_type": "number"
 			},
 			{
@@ -11422,11 +11998,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Synthetic"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
@@ -11442,11 +12018,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Grey Tousled Messy"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Red"
+				"value": "Hazel"
 			},
 			{
 				"trait_type": "Demeanor",
@@ -11454,7 +12030,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Turtleneck Jacket"
+				"value": "Wool Blazer"
 			},
 			{
 				"trait_type": "Headwear",
@@ -11462,7 +12038,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Necktie"
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -11470,12 +12050,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 163,
+				"value": 189,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 4,
+				"value": 3,
 				"display_type": "number"
 			}
 		],
@@ -11497,15 +12077,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Human"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Corrupted"
 			},
 			{
 				"trait_type": "Rank",
@@ -11517,44 +12097,48 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Strategist"
+				"value": "Infiltrator"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Pink Dreadlocks"
+				"value": "Red Loose Wavy"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Amber"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Slight Frown"
+				"value": "Closed Mouth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Structured Coat"
+				"value": "Hoodie"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Mouth Mask"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Pocket Square"
+				"value": "Arm Patch"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Crowbar"
 			},
 			{
 				"trait_type": "Special",
-				"value": "None"
+				"value": "Bandaid On Face"
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 133,
+				"value": 115,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 13,
+				"value": 14,
 				"display_type": "number"
 			}
 		],
@@ -11576,11 +12160,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
@@ -11588,52 +12172,56 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Breach Unit"
+				"value": "Wetware Mechanic"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Grey Short Hair"
+				"value": "Red Single Long Braid"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Grey"
+				"value": "Dark Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Focused"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Long Coat"
+				"value": "Industrial Jumpsuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Mask"
+				"value": "Scuffed Work Goggles Pushed Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Shoulder Armor"
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
-				"value": "Backpack"
+				"value": "None"
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 73,
+				"value": 241,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 24,
+				"value": 1,
 				"display_type": "number"
 			}
 		],
@@ -11659,7 +12247,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Synthetic"
 			},
 			{
 				"trait_type": "Signal",
@@ -11667,7 +12255,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Rare"
 			},
 			{
 				"trait_type": "Frame",
@@ -11675,31 +12263,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Black Clinic Broker"
+				"value": "Wetware Mechanic"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blonde Asymmetrical Hair"
+				"value": "None"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "LED Eyes"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Closed Mouth"
+				"value": "Neutral"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Torn Jacket"
+				"value": "Tactical Bodysuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Helmet"
+				"value": "Scuffed Work Goggles Pushed Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Necklace"
+				"value": "Insignia"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -11707,12 +12299,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 209,
+				"value": 40,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 2,
+				"value": 27,
 				"display_type": "number"
 			}
 		],
@@ -11734,64 +12326,68 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Elite"
+				"value": "Rare"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Executive"
+				"value": "Dead Channel Prophet"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blue Messy Hair"
+				"value": "White Mohawk"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Hazel"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Serious"
+				"value": "Grin"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Vest"
+				"value": "Bodysuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Weathered Mechanical Halo Of Ring Segments Hovering Just Behind The Head"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Pocket Square"
+				"value": "Tech Collar"
 			},
 			{
-				"trait_type": "Special",
+				"trait_type": "Weapon",
 				"value": "None"
 			},
 			{
+				"trait_type": "Special",
+				"value": "Circuit Burn Marks Around Eyes From Signal Communion"
+			},
+			{
 				"trait_type": "Rarity Rank",
-				"value": 27,
+				"value": 30,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 37,
+				"value": 28,
 				"display_type": "number"
 			}
 		],
@@ -11813,64 +12409,68 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Riot Enforcer"
+				"value": "Broker"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Brown Medium Hair"
+				"value": "Red Tight Cornrows"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Natural"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Closed Mouth"
+				"value": "Clenched Teeth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Body Armor"
+				"value": "Bomber Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Helmet"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Dog Tags"
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Shotgun"
 			},
 			{
 				"trait_type": "Special",
-				"value": "Backpack"
+				"value": "None"
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 54,
+				"value": 165,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 26,
+				"value": 4,
 				"display_type": "number"
 			}
 		],
@@ -11892,51 +12492,55 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Ghost-Class Anomaly"
+				"value": "Corrupted"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Evangelist"
+				"value": "Wetware Mechanic"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Grey Very Short Hair, Buzz Cut"
+				"value": "Black Thick Dreadlocks"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Grin"
+				"value": "Clenched Teeth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Coat"
+				"value": "Utility Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Helmet"
+				"value": "Scuffed Work Goggles Pushed Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Gold Choker"
+				"value": "Small Enamel Lapel Pin"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -11944,12 +12548,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 32,
+				"value": 190,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 29,
+				"value": 3,
 				"display_type": "number"
 			}
 		],
@@ -11971,11 +12575,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Human"
 			},
 			{
 				"trait_type": "Signal",
@@ -11983,39 +12587,43 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Systems Architect"
+				"value": "Transmission Guard"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "White Messy Hair"
+				"value": "Red Flattop"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Angry"
+				"value": "Confident"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Structured Coat"
+				"value": "Ceremonial Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Hood Pulled Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Earpiece"
+				"value": "Guardian Chest Plate"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -12023,12 +12631,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 66,
+				"value": 129,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 25,
+				"value": 13,
 				"display_type": "number"
 			}
 		],
@@ -12054,11 +12662,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
@@ -12066,35 +12674,39 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Prototype Host"
+				"value": "Signal Smuggler"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Brown Ponytail"
+				"value": "Brown Wild Spiked"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Closed Mouth"
+				"value": "Confident"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Torn Jacket"
+				"value": "Industrial Jumpsuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Weathered Hood"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Earpiece"
+				"value": "Small Healed Ear Piercing In The Lobe"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Firearm"
 			},
 			{
 				"trait_type": "Special",
@@ -12102,12 +12714,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 232,
+				"value": 191,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 1,
+				"value": 3,
 				"display_type": "number"
 			}
 		],
@@ -12129,7 +12741,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
@@ -12145,35 +12757,39 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Broker"
+				"value": "Breach Unit"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Short Hair"
+				"value": "Auburn Thick Dreadlocks"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Heterochromia"
+				"value": "Green"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Closed Mouth"
+				"value": "Frown"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Bomber Jacket"
+				"value": "Military Uniform"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Headset"
+				"value": "Tactical Helmet"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Necklace"
+				"value": "Shoulder Patch"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -12181,12 +12797,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 184,
+				"value": 217,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 3,
+				"value": 2,
 				"display_type": "number"
 			}
 		],
@@ -12208,11 +12824,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
@@ -12220,7 +12836,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -12228,11 +12844,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Breach Unit"
+				"value": "Transmission Guard"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Purple Undercut"
+				"value": "Blonde Sharp Undercut"
 			},
 			{
 				"trait_type": "Eyes",
@@ -12240,32 +12856,36 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Serious"
+				"value": "Slight Frown"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Armored Bodysuit"
+				"value": "Ceremonial Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Helmet"
+				"value": "Low Profile Matte White Hardshell Headband"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Dog Tags"
+				"value": "One Paired Set Of"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
-				"value": "Repair Tape"
+				"value": "None"
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 44,
+				"value": 192,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 27,
+				"value": 3,
 				"display_type": "number"
 			}
 		],
@@ -12287,7 +12907,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
@@ -12307,31 +12927,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Breach Unit"
+				"value": "Interface Disciple"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blonde Short Hair"
+				"value": "Auburn Natural Curly"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Grey"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Angry"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Long Coat"
+				"value": "Ceremonial Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Visor"
+				"value": "Mechanical Halo Of Metal Ring Segments Hovering Just Behind The Head"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Id Badge"
+				"value": "Devotional Collar"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -12339,7 +12963,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 210,
+				"value": 218,
 				"display_type": "number"
 			},
 			{
@@ -12366,43 +12990,43 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Synthetic"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Signal-Burned"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Elite"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Black Clinic Broker"
+				"value": "Precinct Commander"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Pink Flowing Windswept"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "White"
+				"value": "Sparkling"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Smirk"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Wired Bodysuit"
+				"value": "Segmented Armor"
 			},
 			{
 				"trait_type": "Headwear",
@@ -12410,7 +13034,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Shoulder Armor"
+				"value": "Ear Implant"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -12418,12 +13046,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 154,
+				"value": 19,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 5,
+				"value": 38,
 				"display_type": "number"
 			}
 		],
@@ -12445,19 +13073,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Human"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
@@ -12465,15 +13093,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Black Clinic Broker"
+				"value": "Security Director"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Brown Short Hair"
+				"value": "Black Sharp Undercut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Grey"
+				"value": "Hazel"
 			},
 			{
 				"trait_type": "Demeanor",
@@ -12481,7 +13109,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Bodysuit"
+				"value": "Jacket"
 			},
 			{
 				"trait_type": "Headwear",
@@ -12489,7 +13117,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Pendant Necklace"
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -12497,12 +13129,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 185,
+				"value": 130,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 3,
+				"value": 13,
 				"display_type": "number"
 			}
 		],
@@ -12524,11 +13156,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
@@ -12540,15 +13172,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Data Analyst"
+				"value": "Breach Unit"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blue Short Hair"
+				"value": "Grey Mohawk"
 			},
 			{
 				"trait_type": "Eyes",
@@ -12556,19 +13188,23 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Grin"
+				"value": "Closed Mouth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Structured Coat"
+				"value": "Military Uniform"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Glasses"
+				"value": "Tactical Helmet"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Stud Earrings"
+				"value": "Shoulder Patch"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -12576,12 +13212,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 211,
+				"value": 193,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 2,
+				"value": 3,
 				"display_type": "number"
 			}
 		],
@@ -12603,11 +13239,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Synthetic"
 			},
 			{
 				"trait_type": "Signal",
@@ -12619,19 +13255,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Net Diver"
+				"value": "Glitch Runner"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Grey Crew Cut"
+				"value": "None"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Blue"
+				"value": "LED Eyes"
 			},
 			{
 				"trait_type": "Demeanor",
@@ -12639,15 +13275,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Long Coat"
+				"value": "Tactical Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Headphones"
+				"value": "Wide Lens Goggles Pushed Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Id Badge"
+				"value": "Choker"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Pipe Wrench"
 			},
 			{
 				"trait_type": "Special",
@@ -12655,12 +13295,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 134,
+				"value": 76,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 13,
+				"value": 16,
 				"display_type": "number"
 			}
 		],
@@ -12682,11 +13322,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
@@ -12694,19 +13334,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Elite"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Wetware Mechanic"
+				"value": "Strategist"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Short Hair"
+				"value": "Grey Neat Ponytail"
 			},
 			{
 				"trait_type": "Eyes",
@@ -12714,19 +13354,23 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Smirk"
+				"value": "Determined"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Torn Jacket"
+				"value": "Wool Waistcoat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Goggles"
+				"value": "Mouth Mask"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Earpiece"
+				"value": "Silk Necktie"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -12734,12 +13378,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 20,
+				"value": 194,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 38,
+				"value": 3,
 				"display_type": "number"
 			}
 		],
@@ -12761,11 +13405,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
@@ -12773,39 +13417,43 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Elite"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Interface Disciple"
+				"value": "Infiltrator"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Cornrows"
+				"value": "Blonde Sharply Slicked Back"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Multicolored"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Frown"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Coat"
+				"value": "Hoodie"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Visor"
+				"value": "Mouth Mask"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Pendant Necklace"
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -12813,12 +13461,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 135,
+				"value": 24,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 13,
+				"value": 37,
 				"display_type": "number"
 			}
 		],
@@ -12840,51 +13488,55 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Synthetic"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Ghost-Class Anomaly"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Checkpoint Officer"
+				"value": "Graft Surgeon"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Brown Wild Spiked"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "White"
+				"value": "Dark Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Determined"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Armored Vest"
+				"value": "Black Sleeveless"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Hood Pulled Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Id Badge"
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Firearm"
 			},
 			{
 				"trait_type": "Special",
@@ -12892,12 +13544,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 164,
+				"value": 63,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 4,
+				"value": 18,
 				"display_type": "number"
 			}
 		],
@@ -12919,19 +13571,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Synthetic"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Elite"
+				"value": "Rare"
 			},
 			{
 				"trait_type": "Frame",
@@ -12939,44 +13591,48 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Glitch Runner"
+				"value": "Security Director"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Blue Asymmetrical Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Purple"
+				"value": "Green"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Angry"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Armored Jacket"
+				"value": "Wool Blazer"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Goggles"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Shoulder Armor"
+				"value": "Ear Implant"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Firearm"
 			},
 			{
 				"trait_type": "Special",
-				"value": "Backpack"
+				"value": "None"
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 16,
+				"value": 56,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 39,
+				"value": 26,
 				"display_type": "number"
 			}
 		],
@@ -12998,51 +13654,55 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Human"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Corrupted"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Elite"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Infiltrator"
+				"value": "Checkpoint Officer"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Medium Hair"
+				"value": "Blonde Sweeping"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Grey"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Frown"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Vest"
+				"value": "Segmented Armor"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Mask"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Shoulder Armor"
+				"value": "Shoulder Patch"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -13050,12 +13710,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 21,
+				"value": 242,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 38,
+				"value": 1,
 				"display_type": "number"
 			}
 		],
@@ -13077,51 +13737,55 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Synthetic"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Ghost-Class Anomaly"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Broker"
+				"value": "Checkpoint Officer"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Messy Hair"
+				"value": "None"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "White"
+				"value": "X-Pattern LED Eyes"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Smirk"
+				"value": "Neutral"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Harness Hoodie"
+				"value": "Tactical Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Headset"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Choker"
+				"value": "Shoulder Patch"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -13129,12 +13793,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 136,
+				"value": 138,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 13,
+				"value": 8,
 				"display_type": "number"
 			}
 		],
@@ -13156,7 +13820,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
@@ -13164,11 +13828,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -13176,31 +13840,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Glitch Runner"
+				"value": "Data Analyst"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blonde Messy Hair"
+				"value": "Grey Thick Dreadlocks"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Dark Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Grin"
+				"value": "Stoic"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Long Coat"
+				"value": "Wool Blazer"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Goggles"
+				"value": "Glasses"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Hoop Earrings"
+				"value": "Matched Pair Of Small Polished Steel Stud Earrings In The Lobes Catching Cool Rim Light"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -13208,12 +13876,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 118,
+				"value": 219,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 14,
+				"value": 2,
 				"display_type": "number"
 			}
 		],
@@ -13239,7 +13907,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
@@ -13247,7 +13915,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -13255,31 +13923,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Checkpoint Officer"
+				"value": "Surveillance Marksman"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blue Short Hair"
+				"value": "Auburn Thick Dreadlocks"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Grey"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Serious"
+				"value": "Grin"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Armored Bodysuit"
+				"value": "Long Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Helmet"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Dog Tags"
+				"value": "One Paired Set Of"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Rifle"
 			},
 			{
 				"trait_type": "Special",
@@ -13287,12 +13959,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 119,
+				"value": 220,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 14,
+				"value": 2,
 				"display_type": "number"
 			}
 		],
@@ -13314,11 +13986,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Synthetic"
 			},
 			{
 				"trait_type": "Signal",
@@ -13326,23 +13998,23 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Smuggler"
+				"value": "Infiltrator"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blonde Messy Hair"
+				"value": "None"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Hollow Eyes"
 			},
 			{
 				"trait_type": "Demeanor",
@@ -13350,15 +14022,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Torn Jacket"
+				"value": "Tactical Bodysuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
+				"value": "Plain Beanie"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Choker"
+				"value": "Shoulder Patch"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -13366,12 +14042,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 55,
+				"value": 166,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 26,
+				"value": 4,
 				"display_type": "number"
 			}
 		],
@@ -13393,7 +14069,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
@@ -13405,7 +14081,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Rare"
 			},
 			{
 				"trait_type": "Frame",
@@ -13413,44 +14089,48 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Surveillance Marksman"
+				"value": "Strategist"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Short Hair"
+				"value": "Pink Tousled Medium Length"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Purple"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Stoic"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Armored Bodysuit"
+				"value": "Wool Blazer"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Scouter"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Id Badge"
-			},
-			{
-				"trait_type": "Special",
 				"value": "None"
 			},
 			{
+				"trait_type": "Accessory",
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "Adjusting Glasses"
+			},
+			{
 				"trait_type": "Rarity Rank",
-				"value": 165,
+				"value": 41,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 4,
+				"value": 27,
 				"display_type": "number"
 			}
 		],
@@ -13472,19 +14152,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -13492,31 +14172,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Surveillance Marksman"
+				"value": "Wetware Mechanic"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Grey Medium Hair"
+				"value": "Blonde Sharp Pixie Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Closed Mouth"
+				"value": "Stoic"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Long Coat"
+				"value": "Hoodie"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Scouter"
+				"value": "Scuffed Work Goggles Pushed Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Shoulder Armor"
+				"value": "Clearance Insignia"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -13524,12 +14208,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 74,
+				"value": 167,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 24,
+				"value": 4,
 				"display_type": "number"
 			}
 		],
@@ -13555,7 +14239,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Synthetic"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
@@ -13563,7 +14247,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -13571,31 +14255,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Broker"
+				"value": "Hacker"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Brown Tousled Medium Length"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Red"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Stoic"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Armored Vest"
+				"value": "Hoodie"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Hood Pulled Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Neck Cable"
+				"value": "Stud Earring"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Baseball Bat"
 			},
 			{
 				"trait_type": "Special",
@@ -13603,12 +14291,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 35,
+				"value": 195,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 28,
+				"value": 3,
 				"display_type": "number"
 			}
 		],
@@ -13630,7 +14318,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
@@ -13638,11 +14326,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -13650,31 +14338,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Riot Enforcer"
+				"value": "Signal Smuggler"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blue Medium Hair"
+				"value": "Auburn Tousled Bedhead"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Grey"
+				"value": "Amber"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Serious"
+				"value": "Slight Frown"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Armored Bodysuit"
+				"value": "Utility Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Weathered Hood"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Badge Lanyard"
+				"value": "Bandana"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -13682,12 +14374,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 67,
+				"value": 221,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 25,
+				"value": 2,
 				"display_type": "number"
 			}
 		],
@@ -13713,7 +14405,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Synthetic"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
@@ -13729,23 +14421,23 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Prototype Host"
+				"value": "Graft Surgeon"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Red Tousled Medium Length"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Red"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Calm"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Long Coat"
+				"value": "Utility Jacket"
 			},
 			{
 				"trait_type": "Headwear",
@@ -13753,7 +14445,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Metal Collar"
+				"value": "Insignia"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -13761,12 +14457,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 36,
+				"value": 60,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 28,
+				"value": 25,
 				"display_type": "number"
 			}
 		],
@@ -13788,31 +14484,31 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Elite"
+				"value": "Rare"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Dead Channel Prophet"
+				"value": "Prototype Host"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blonde Braid"
+				"value": "Orange Tight Cornrows"
 			},
 			{
 				"trait_type": "Eyes",
@@ -13820,19 +14516,23 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Serious"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Bodysuit"
+				"value": "Utility Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Mechanical Halo"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Platinum Necklace"
+				"value": "Collar Ring"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Knife"
 			},
 			{
 				"trait_type": "Special",
@@ -13840,12 +14540,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 29,
+				"value": 42,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 36,
+				"value": 27,
 				"display_type": "number"
 			}
 		],
@@ -13867,15 +14567,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Synthetic"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
@@ -13887,31 +14587,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Wetware Mechanic"
+				"value": "Data Analyst"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Pink Short Hair"
+				"value": "Grey Sharp Chin Length Bob"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Smirk"
+				"value": "Neutral"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Utility Jumpsuit"
+				"value": "Wool Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Goggles"
+				"value": "Mouth Mask"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Earpiece"
+				"value": "Id Lanyard"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -13919,12 +14623,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 186,
+				"value": 150,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 3,
+				"value": 5,
 				"display_type": "number"
 			}
 		],
@@ -13946,31 +14650,31 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Corrupted"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Data Analyst"
+				"value": "Surveillance Marksman"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Red Short Hair"
+				"value": "Grey Tight Cornrows"
 			},
 			{
 				"trait_type": "Eyes",
@@ -13978,32 +14682,36 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Grin"
+				"value": "Angry"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Structured Coat"
+				"value": "Tactical Vest"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Glasses"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Bowtie"
+				"value": "Rifle"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Rifle"
 			},
 			{
 				"trait_type": "Special",
-				"value": "Floating Holographic Screen Near Face"
+				"value": "None"
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 56,
+				"value": 116,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 26,
+				"value": 14,
 				"display_type": "number"
 			}
 		],
@@ -14025,11 +14733,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
@@ -14041,35 +14749,39 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Prototype Host"
+				"value": "Breach Unit"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "White Messy Hair"
+				"value": "Red Sharp Pixie Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Grey"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Closed Mouth"
+				"value": "Clenched Teeth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Torn Jacket"
+				"value": "Long Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Tactical Helmet"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Badge Lanyard"
+				"value": "One Paired Set Of"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -14077,12 +14789,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 233,
+				"value": 168,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 1,
+				"value": 4,
 				"display_type": "number"
 			}
 		],
@@ -14104,19 +14816,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Human"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -14124,19 +14836,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Riot Enforcer"
+				"value": "Hacker"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Red Medium Hair"
+				"value": "Black Crew Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Dark Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Focused"
+				"value": "Calm"
 			},
 			{
 				"trait_type": "Outfit",
@@ -14144,24 +14856,28 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
+				"value": "Drawstring Hood"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Dog Tags"
+				"value": "Stud Earring"
 			},
 			{
-				"trait_type": "Special",
+				"trait_type": "Weapon",
 				"value": "None"
 			},
 			{
+				"trait_type": "Special",
+				"value": "Antenna Rig On Shoulder"
+			},
+			{
 				"trait_type": "Rarity Rank",
-				"value": 101,
+				"value": 243,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 15,
+				"value": 1,
 				"display_type": "number"
 			}
 		],
@@ -14195,7 +14911,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Legendary"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
@@ -14203,15 +14919,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Checkpoint Officer"
+				"value": "Surveillance Marksman"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Brown Side Ponytail"
+				"value": "Grey Wild Voluminous"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Aqua"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
@@ -14219,7 +14935,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Tactical Vest"
+				"value": "Body Armor"
 			},
 			{
 				"trait_type": "Headwear",
@@ -14227,20 +14943,24 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Ornate Shoulder Armor"
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
-				"value": "Katana On Back"
+				"value": "None"
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 3,
+				"value": 94,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 51,
+				"value": 15,
 				"display_type": "number"
 			}
 		],
@@ -14262,11 +14982,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
@@ -14274,39 +14994,43 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Strategist"
+				"value": "Surveillance Marksman"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Short Hair"
+				"value": "Auburn Long Flowing"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Blue"
+				"value": "Dark Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Closed Mouth"
+				"value": "Neutral"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Structured Coat"
+				"value": "Segmented Armor"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Sunglasses"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Bowtie"
+				"value": "Shoulder Patch"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -14314,12 +15038,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 137,
+				"value": 222,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 13,
+				"value": 2,
 				"display_type": "number"
 			}
 		],
@@ -14341,11 +15065,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
@@ -14353,39 +15077,43 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Dead Channel Prophet"
+				"value": "Net Diver"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Red Short Hair"
+				"value": "Red Asymmetrical Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Grey"
+				"value": "Dark Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Closed Mouth"
+				"value": "Stoic"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Jacket"
+				"value": "Hoodie"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Mechanical Halo"
+				"value": "Visor"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Gold Choker"
+				"value": "Collar Ring"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Baseball Bat"
 			},
 			{
 				"trait_type": "Special",
@@ -14393,12 +15121,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 68,
+				"value": 117,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 25,
+				"value": 14,
 				"display_type": "number"
 			}
 		],
@@ -14420,11 +15148,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
@@ -14432,7 +15160,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
@@ -14440,15 +15168,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Strategist"
+				"value": "Signal Evangelist"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Grey Slicked Back Hair"
+				"value": "Black Tight Cornrows"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Grey"
 			},
 			{
 				"trait_type": "Demeanor",
@@ -14456,7 +15184,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Turtleneck Blazer"
+				"value": "Synthetic Coat"
 			},
 			{
 				"trait_type": "Headwear",
@@ -14464,7 +15192,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Stud Earrings"
+				"value": "Collar"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -14472,12 +15204,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 234,
+				"value": 118,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 1,
+				"value": 14,
 				"display_type": "number"
 			}
 		],
@@ -14499,11 +15231,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
@@ -14511,39 +15243,43 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Interface Disciple"
+				"value": "Surveillance Marksman"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "White Crew Cut"
+				"value": "Brown Half Updo"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Dark Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Grin"
+				"value": "Slight Frown"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Coat"
+				"value": "Military Uniform"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
+				"value": "Tech Headband"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Single Earring"
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -14551,12 +15287,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 247,
+				"value": 119,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 0,
+				"value": 14,
 				"display_type": "number"
 			}
 		],
@@ -14582,7 +15318,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Human"
 			},
 			{
 				"trait_type": "Signal",
@@ -14590,7 +15326,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Legendary"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
@@ -14602,40 +15338,44 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Red Wavy Hair"
+				"value": "Grey Sharply Slicked Back"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Grey"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Smirk"
+				"value": "Serious"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Jacket"
+				"value": "Wool Blazer"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Small Gold Demon Horns"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Glowing Metal Collar"
+				"value": "Collar Ring"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
-				"value": "Katana On Back"
+				"value": "None"
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 7,
+				"value": 131,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 49,
+				"value": 13,
 				"display_type": "number"
 			}
 		],
@@ -14657,11 +15397,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Synthetic"
 			},
 			{
 				"trait_type": "Signal",
@@ -14677,31 +15417,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Transmission Guard"
+				"value": "Hacker"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Brown Dreadlocks"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Blue"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Smirk"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "White Bodysuit"
-			},
-			{
-				"trait_type": "Headwear",
 				"value": "None"
 			},
 			{
+				"trait_type": "Eyes",
+				"value": "Red LED Eyes"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Jacket"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Drawstring Hood"
+			},
+			{
 				"trait_type": "Accessory",
-				"value": "Id Badge"
+				"value": "Stud Earring"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -14709,7 +15453,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 187,
+				"value": 196,
 				"display_type": "number"
 			},
 			{
@@ -14740,7 +15484,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Synthetic"
 			},
 			{
 				"trait_type": "Signal",
@@ -14748,39 +15492,43 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Rare"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Transmission Guard"
+				"value": "Interface Disciple"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blonde Cornrows"
+				"value": "None"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Grey"
+				"value": "Red LED Eyes"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Clenched Teeth"
+				"value": "Neutral"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Vest"
+				"value": "Bodysuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
+				"value": "Mechanical Halo Of Metal Ring Segments Hovering Just Behind The Head"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Shoulder Armor"
+				"value": "Tech Collar"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -14788,12 +15536,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 120,
+				"value": 27,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 14,
+				"value": 29,
 				"display_type": "number"
 			}
 		],
@@ -14815,19 +15563,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Synthetic"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -14835,31 +15583,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Prototype Host"
+				"value": "Riot Enforcer"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Grey Sharply Slicked Back"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Red"
+				"value": "Dark Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Clenched Teeth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Armored Bodysuit"
+				"value": "Segmented Armor"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Goggles"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Neck Cable"
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -14867,12 +15619,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 78,
+				"value": 169,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 17,
+				"value": 4,
 				"display_type": "number"
 			}
 		],
@@ -14894,7 +15646,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
@@ -14906,7 +15658,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
@@ -14914,7 +15666,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Interface Disciple"
+				"value": "Breach Unit"
 			},
 			{
 				"trait_type": "Hair",
@@ -14922,7 +15674,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Purple"
+				"value": "Green LED Eyes"
 			},
 			{
 				"trait_type": "Demeanor",
@@ -14930,15 +15682,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Vest"
+				"value": "Tactical Bodysuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Gold Circlet"
+				"value": "Kevlar Helmet"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Pendant Necklace"
+				"value": "Arm Patch"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -14946,12 +15702,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 166,
+				"value": 77,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 4,
+				"value": 16,
 				"display_type": "number"
 			}
 		],
@@ -14973,15 +15729,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Corrupted"
 			},
 			{
 				"trait_type": "Rank",
@@ -14989,35 +15745,39 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Checkpoint Officer"
+				"value": "Data Analyst"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "White Wavy Hair"
+				"value": "Blonde Mohawk"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Blue"
+				"value": "Dark Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Closed Mouth"
+				"value": "Neutral"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Armored Bodysuit"
+				"value": "Wool Blazer"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Goggles"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Dog Tags"
+				"value": "Matched Pair Of Small Polished Steel Stud Earrings In The Lobes Catching Cool Rim Light"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -15025,12 +15785,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 248,
+				"value": 223,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 0,
+				"value": 2,
 				"display_type": "number"
 			}
 		],
@@ -15056,15 +15816,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Elite"
+				"value": "Rare"
 			},
 			{
 				"trait_type": "Frame",
@@ -15072,23 +15832,23 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Precinct Commander"
+				"value": "Checkpoint Officer"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Pink Medium Hair"
+				"value": "Grey Long Flowing"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Heterochromia"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Frown"
+				"value": "Clenched Teeth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Body Armor"
+				"value": "Tactical Vest"
 			},
 			{
 				"trait_type": "Headwear",
@@ -15096,20 +15856,24 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Shoulder Armor"
+				"value": "Scuffed Matte Charcoal Tactical Pauldron"
 			},
 			{
-				"trait_type": "Special",
+				"trait_type": "Weapon",
 				"value": "None"
 			},
 			{
+				"trait_type": "Special",
+				"value": "Cigarette"
+			},
+			{
 				"trait_type": "Rarity Rank",
-				"value": 30,
+				"value": 31,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 36,
+				"value": 28,
 				"display_type": "number"
 			}
 		],
@@ -15135,7 +15899,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Synthetic"
 			},
 			{
 				"trait_type": "Signal",
@@ -15143,7 +15907,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Elite"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
@@ -15155,19 +15919,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blue Dreadlocks"
+				"value": "None"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Violet LED Eyes"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Confident"
+				"value": "Neutral"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Structured Coat"
+				"value": "Coat"
 			},
 			{
 				"trait_type": "Headwear",
@@ -15178,17 +15942,21 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 				"value": "Shoulder Armor"
 			},
 			{
+				"trait_type": "Weapon",
+				"value": "None"
+			},
+			{
 				"trait_type": "Special",
 				"value": "None"
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 22,
+				"value": 78,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 38,
+				"value": 16,
 				"display_type": "number"
 			}
 		],
@@ -15210,11 +15978,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Human"
 			},
 			{
 				"trait_type": "Signal",
@@ -15222,39 +15990,43 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Strategist"
+				"value": "Surveillance Marksman"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Red Undercut"
+				"value": "Auburn Half Updo"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Orange"
+				"value": "Grey"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Smirk"
+				"value": "Neutral"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Structured Coat"
+				"value": "Long Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Glasses"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Stud Earrings"
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -15262,12 +16034,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 235,
+				"value": 135,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 1,
+				"value": 12,
 				"display_type": "number"
 			}
 		],
@@ -15289,7 +16061,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
@@ -15301,7 +16073,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -15309,19 +16081,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Security Director"
+				"value": "Hacker"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blue Medium Hair"
+				"value": "Brown Short Textured Crop"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Red"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Serious"
+				"value": "Smirk"
 			},
 			{
 				"trait_type": "Outfit",
@@ -15329,11 +16101,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Plain Baseball Cap"
+				"value": "Drawstring Hood"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Id Badge"
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -15341,12 +16117,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 138,
+				"value": 224,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 13,
+				"value": 2,
 				"display_type": "number"
 			}
 		],
@@ -15368,7 +16144,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
@@ -15380,52 +16156,56 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Elite"
+				"value": "Legendary"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Smuggler"
+				"value": "Dead Channel Prophet"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Asymmetrical Hair"
+				"value": "Aqua Sharp Chin Length Bob"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Heterochromia"
+				"value": "Hazel"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Serious"
+				"value": "Stoic"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Torn Jacket"
+				"value": "Tactical Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
+				"value": "Weathered Mechanical Halo Of Ring Segments Hovering Just Behind The Head"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Skull Print Bandana Around Neck"
-			},
-			{
-				"trait_type": "Special",
 				"value": "None"
 			},
 			{
+				"trait_type": "Weapon",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "Data Port Collar Ring With Pulsing Glyph Display"
+			},
+			{
 				"trait_type": "Rarity Rank",
-				"value": 23,
+				"value": 7,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 38,
+				"value": 50,
 				"display_type": "number"
 			}
 		],
@@ -15447,11 +16227,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Synthetic"
 			},
 			{
 				"trait_type": "Signal",
@@ -15463,19 +16243,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Evangelist"
+				"value": "Infiltrator"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "White Short Hair"
+				"value": "None"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Violet LED Eyes"
 			},
 			{
 				"trait_type": "Demeanor",
@@ -15483,15 +16263,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Bodysuit"
+				"value": "Segmented Armor"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Mask"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Necklace"
+				"value": "Shoulder Patch"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -15499,12 +16283,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 249,
+				"value": 151,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 0,
+				"value": 5,
 				"display_type": "number"
 			}
 		],
@@ -15526,15 +16310,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Human"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
@@ -15546,31 +16330,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Black Clinic Broker"
+				"value": "Strategist"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Brown Messy Hair"
+				"value": "Black Buzz Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Grey"
+				"value": "Yellow"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Clenched Teeth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Torn Jacket"
+				"value": "Wool Blazer"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Mask"
+				"value": "Headphones"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Gold Necklace"
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -15578,12 +16366,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 37,
+				"value": 62,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 28,
+				"value": 24,
 				"display_type": "number"
 			}
 		],
@@ -15605,15 +16393,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
@@ -15625,44 +16413,48 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Data Analyst"
+				"value": "Signal Evangelist"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blonde Short Hair"
+				"value": "Brown Buzz Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Red"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Serious"
+				"value": "Closed Mouth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Structured Coat"
+				"value": "Bodysuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Earpiece"
+				"value": "Mouth Mask"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Necktie"
+				"value": "Ceremonial Sash"
 			},
 			{
-				"trait_type": "Special",
+				"trait_type": "Weapon",
 				"value": "None"
 			},
 			{
+				"trait_type": "Special",
+				"value": "Single Tear"
+			},
+			{
 				"trait_type": "Rarity Rank",
-				"value": 188,
+				"value": 244,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 3,
+				"value": 1,
 				"display_type": "number"
 			}
 		],
@@ -15684,11 +16476,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Synthetic"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
@@ -15696,39 +16488,43 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Rare"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Hacker"
+				"value": "Systems Architect"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Aqua Tousled Medium Length"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Red"
+				"value": "Heterochromia"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Confident"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Armored Jacket"
+				"value": "Wool Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Shoulder Armor"
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -15736,12 +16532,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 189,
+				"value": 57,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 3,
+				"value": 26,
 				"display_type": "number"
 			}
 		],
@@ -15763,7 +16559,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
@@ -15775,7 +16571,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Elite"
 			},
 			{
 				"trait_type": "Frame",
@@ -15783,31 +16579,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Breach Unit"
+				"value": "Hacker"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "White Short Hair"
+				"value": "Blue Short Textured Crop"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Frown"
+				"value": "Serious"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Dark Uniform"
+				"value": "Utility Vest"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Earpiece"
+				"value": "Drawstring Hood"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Id Badge"
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -15815,12 +16615,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 190,
+				"value": 20,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 3,
+				"value": 38,
 				"display_type": "number"
 			}
 		],
@@ -15850,56 +16650,60 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Legendary"
+				"value": "Rare"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Interface Disciple"
+				"value": "Dead Channel Prophet"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blonde Bob Cut"
+				"value": "Brown Shaved Head"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Purple"
+				"value": "Aqua"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Slight Frown"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Jacket"
+				"value": "Bodysuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Mask"
+				"value": "Weathered Mechanical Halo Of Ring Segments Hovering Just Behind The Head"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Ornate Shoulder Mantle"
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
-				"value": "Katana On Back"
+				"value": "None"
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 4,
+				"value": 43,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 51,
+				"value": 27,
 				"display_type": "number"
 			}
 		],
@@ -15921,19 +16725,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Ghost-Class Anomaly"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -15941,31 +16745,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Breach Unit"
+				"value": "Interface Disciple"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Red Bob Cut"
+				"value": "Red Thick Dreadlocks"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Orange"
+				"value": "Hazel"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Clenched Teeth"
+				"value": "Serious"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Armored Bodysuit"
+				"value": "Bodysuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Goggles"
+				"value": "Mechanical Halo Of Metal Ring Segments Hovering Just Behind The Head"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Id Badge"
+				"value": "Devotional Collar"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -15973,12 +16781,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 121,
+				"value": 142,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 14,
+				"value": 6,
 				"display_type": "number"
 			}
 		],
@@ -16000,51 +16808,55 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Synthetic"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Smuggler"
+				"value": "Transmission Guard"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Auburn Tousled Messy"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Red"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Clenched Teeth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Jacket"
+				"value": "Ceremonial Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
+				"value": "Hood Pulled Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Choker"
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -16052,12 +16864,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 87,
+				"value": 225,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 16,
+				"value": 2,
 				"display_type": "number"
 			}
 		],
@@ -16079,15 +16891,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Ghost-Class Anomaly"
 			},
 			{
 				"trait_type": "Rank",
@@ -16099,19 +16911,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Data Analyst"
+				"value": "Prototype Host"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blue Short Hair"
+				"value": "Grey Flowing Windswept"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Glowing"
+				"value": "Hazel"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Serious"
+				"value": "Confident"
 			},
 			{
 				"trait_type": "Outfit",
@@ -16119,24 +16931,28 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Glasses"
+				"value": "Plain Beanie"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Necktie"
+				"value": "Metal Collar"
 			},
 			{
-				"trait_type": "Special",
+				"trait_type": "Weapon",
 				"value": "None"
 			},
 			{
+				"trait_type": "Special",
+				"value": "Vape Cloud"
+			},
+			{
 				"trait_type": "Rarity Rank",
-				"value": 148,
+				"value": 64,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 12,
+				"value": 18,
 				"display_type": "number"
 			}
 		],
@@ -16158,51 +16974,55 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Synthetic"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Corrupted"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Smuggler"
+				"value": "Surveillance Marksman"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Grey Natural Curly"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Aqua"
+				"value": "Grey"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Grin"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Armored Vest"
+				"value": "Tactical Vest"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
 				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Firearm"
 			},
 			{
 				"trait_type": "Special",
@@ -16210,12 +17030,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 45,
+				"value": 226,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 27,
+				"value": 2,
 				"display_type": "number"
 			}
 		],
@@ -16237,11 +17057,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Synthetic"
 			},
 			{
 				"trait_type": "Signal",
@@ -16253,35 +17073,39 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Transmission Guard"
+				"value": "Infiltrator"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Aqua Medium Hair"
+				"value": "Red Tousled Bedhead"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Grey"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Focused"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Jacket"
+				"value": "Wool Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Visor"
+				"value": "Mouth Mask"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Shoulder Armor"
+				"value": "One Paired Set Of"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -16289,12 +17113,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 236,
+				"value": 152,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 1,
+				"value": 5,
 				"display_type": "number"
 			}
 		],
@@ -16324,7 +17148,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Corrupted"
 			},
 			{
 				"trait_type": "Rank",
@@ -16332,35 +17156,39 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Riot Enforcer"
+				"value": "Checkpoint Officer"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "White Long Hair"
+				"value": "Red Shaved Head"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Blue"
+				"value": "Hazel"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Determined"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Tactical Vest"
+				"value": "Long Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Mask"
+				"value": "Visor Helmet"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Dog Tags"
+				"value": "Shoulder Patch"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -16368,12 +17196,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 237,
+				"value": 197,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 1,
+				"value": 3,
 				"display_type": "number"
 			}
 		],
@@ -16395,31 +17223,31 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Transmission Guard"
+				"value": "Riot Enforcer"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Orange Slicked Back Hair"
+				"value": "Grey Tousled Messy"
 			},
 			{
 				"trait_type": "Eyes",
@@ -16427,19 +17255,23 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Closed Mouth"
+				"value": "Calm"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Coat"
+				"value": "Military Uniform"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Tactical Helmet"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Id Badge"
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -16447,12 +17279,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 122,
+				"value": 227,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 14,
+				"value": 2,
 				"display_type": "number"
 			}
 		],
@@ -16474,15 +17306,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Ghost-Class Anomaly"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
@@ -16490,48 +17322,52 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Runner"
+				"value": "Signal Evangelist"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blonde Short Hair"
+				"value": "Brown Long Flowing"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Brown"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Focused"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Long Coat"
+				"value": "Synthetic Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Headset"
+				"value": "Mouth Mask"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Id Badge"
+				"value": "Ceremonial Sash"
 			},
 			{
-				"trait_type": "Special",
+				"trait_type": "Weapon",
 				"value": "None"
 			},
 			{
+				"trait_type": "Special",
+				"value": "Translucent Mouth Mask With Sheer Fabric Over Nose And Mouth"
+			},
+			{
 				"trait_type": "Rarity Rank",
-				"value": 167,
+				"value": 198,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 4,
+				"value": 3,
 				"display_type": "number"
 			}
 		],
@@ -16553,7 +17389,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
@@ -16573,11 +17409,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Transmission Guard"
+				"value": "Data Analyst"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "White Braid"
+				"value": "Grey Twin Braids"
 			},
 			{
 				"trait_type": "Eyes",
@@ -16585,11 +17421,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Serious"
+				"value": "Clenched Teeth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Vest"
+				"value": "Wool Blazer"
 			},
 			{
 				"trait_type": "Headwear",
@@ -16597,20 +17433,24 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Shoulder Armor"
+				"value": "Crisp Folded Silk Pocket Square Peaking From The Breast Pocket"
 			},
 			{
-				"trait_type": "Special",
+				"trait_type": "Weapon",
 				"value": "None"
 			},
 			{
+				"trait_type": "Special",
+				"value": "Biometric Overlay On Cheek"
+			},
+			{
 				"trait_type": "Rarity Rank",
-				"value": 139,
+				"value": 136,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 13,
+				"value": 12,
 				"display_type": "number"
 			}
 		],
@@ -16632,19 +17472,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -16652,31 +17492,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Net Diver"
+				"value": "Prototype Host"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Pink Undercut"
+				"value": "Blonde Double Buns Pinned High"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Grey"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Confident"
+				"value": "Smirk"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Street Hoodie"
+				"value": "Neoprene Bodysuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Headphones"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Id Badge"
+				"value": "Clearance Insignia"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -16684,12 +17528,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 102,
+				"value": 245,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 15,
+				"value": 1,
 				"display_type": "number"
 			}
 		],
@@ -16711,51 +17555,55 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Signal-Burned"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Prototype Host"
+				"value": "Transmission Guard"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Grey Short Hair"
+				"value": "Brown Hime Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Aqua"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Clenched Teeth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Sleeveless Shirt"
+				"value": "Ceremonial Vest"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Earpiece"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Id Badge"
+				"value": "Guardian Chest Plate"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -16763,12 +17611,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 123,
+				"value": 199,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 14,
+				"value": 3,
 				"display_type": "number"
 			}
 		],
@@ -16790,19 +17638,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -16810,19 +17658,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Riot Enforcer"
+				"value": "Data Analyst"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Braid"
+				"value": "Grey Tousled Messy"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Yellow"
+				"value": "Dark Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Smirk"
 			},
 			{
 				"trait_type": "Outfit",
@@ -16830,11 +17678,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Gas Mask"
+				"value": "Glasses"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Dog Tags"
+				"value": "Matched Pair Of Small Polished Steel Stud Earrings In The Lobes Catching Cool Rim Light"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -16842,12 +17694,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 140,
+				"value": 228,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 13,
+				"value": 2,
 				"display_type": "number"
 			}
 		],
@@ -16869,7 +17721,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
@@ -16881,52 +17733,56 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Rare"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Prototype Host"
+				"value": "Infiltrator"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Purple Asymmetrical Hair"
+				"value": "Brown Pompadour"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Heterochromia"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Closed Mouth"
+				"value": "Angry"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Bodysuit"
+				"value": "Utility Vest"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Goggles"
+				"value": "Plain Beanie"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Id Badge"
-			},
-			{
-				"trait_type": "Special",
 				"value": "None"
 			},
 			{
+				"trait_type": "Weapon",
+				"value": "Machete"
+			},
+			{
+				"trait_type": "Special",
+				"value": "Bandaid On Face"
+			},
+			{
 				"trait_type": "Rarity Rank",
-				"value": 168,
+				"value": 32,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 4,
+				"value": 28,
 				"display_type": "number"
 			}
 		],
@@ -16948,11 +17804,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
@@ -16960,7 +17816,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -16968,31 +17824,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Systems Architect"
+				"value": "Glitch Runner"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Purple Short Hair"
+				"value": "Blonde Sleek High Ponytail"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Grey"
+				"value": "Hazel"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Serious"
+				"value": "Confident"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Structured Coat"
+				"value": "Neoprene Bodysuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Wide Lens Goggles Pushed Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Id Badge"
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -17000,12 +17860,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 149,
+				"value": 229,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 12,
+				"value": 2,
 				"display_type": "number"
 			}
 		],
@@ -17027,7 +17887,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
@@ -17035,7 +17895,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Corrupted"
 			},
 			{
 				"trait_type": "Rank",
@@ -17047,7 +17907,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Breach Unit"
+				"value": "Prototype Host"
 			},
 			{
 				"trait_type": "Hair",
@@ -17055,7 +17915,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Aqua"
+				"value": "Green LED Eyes"
 			},
 			{
 				"trait_type": "Demeanor",
@@ -17063,14 +17923,18 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Armored Vest"
+				"value": "Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Radio Antenna"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
+				"value": "Collar"
+			},
+			{
+				"trait_type": "Weapon",
 				"value": "None"
 			},
 			{
@@ -17079,12 +17943,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 169,
+				"value": 153,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 4,
+				"value": 5,
 				"display_type": "number"
 			}
 		],
@@ -17106,7 +17970,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
@@ -17114,43 +17978,47 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Systems Architect"
+				"value": "Broker"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Braid"
+				"value": "Grey Pompadour"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Red"
+				"value": "Green"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Clenched Teeth"
+				"value": "Focused"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Jacket"
+				"value": "Biker Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Courier Visor"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Id Badge"
+				"value": "Chain Necklace"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -17158,12 +18026,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 141,
+				"value": 230,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 13,
+				"value": 2,
 				"display_type": "number"
 			}
 		],
@@ -17185,7 +18053,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
@@ -17193,56 +18061,60 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Ghost-Class Anomaly"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Elite"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Hacker"
+				"value": "Strategist"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Brown Short Hair"
+				"value": "Blue Sharply Slicked Back"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Blue"
+				"value": "Yellow"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Calm"
+				"value": "Frown"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Leather Jacket"
+				"value": "Wool Blazer"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Black Bandana Around Neck"
-			},
-			{
-				"trait_type": "Special",
 				"value": "None"
 			},
 			{
+				"trait_type": "Accessory",
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "Cigar"
+			},
+			{
 				"trait_type": "Rarity Rank",
-				"value": 155,
+				"value": 21,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 5,
+				"value": 38,
 				"display_type": "number"
 			}
 		],
@@ -17264,7 +18136,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
@@ -17272,43 +18144,47 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Ghost-Class Anomaly"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Security Director"
+				"value": "Prototype Host"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blonde Medium Hair"
+				"value": "Grey Tousled Messy"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Dark Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Frown"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Turtleneck Blazer"
+				"value": "Black Sleeveless"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Hood Pulled Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Shoulder Armor"
+				"value": "Clearance Insignia"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Knife"
 			},
 			{
 				"trait_type": "Special",
@@ -17316,12 +18192,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 103,
+				"value": 154,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 15,
+				"value": 5,
 				"display_type": "number"
 			}
 		],
@@ -17339,6 +18215,172 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"name": "Echoes #219",
 		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
 		"image": "219.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "The Witnesses"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Augmented"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Signal-Burned"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Common"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Interface Disciple"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Auburn Sharply Slicked Back"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Hazel"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Angry"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Bodysuit"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "Mechanical Halo Of Metal Ring Segments Hovering Just Behind The Head"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Devotional Collar"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Firearm"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 231,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 2,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "219.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #220",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "220.png",
+		"external_url": "",
+		"attributes": [
+			{
+				"trait_type": "Faction",
+				"value": "Tessera Wardens"
+			},
+			{
+				"trait_type": "Substrate",
+				"value": "Cyborg"
+			},
+			{
+				"trait_type": "Signal",
+				"value": "Stable"
+			},
+			{
+				"trait_type": "Rank",
+				"value": "Uncommon"
+			},
+			{
+				"trait_type": "Frame",
+				"value": "Feminine"
+			},
+			{
+				"trait_type": "Role",
+				"value": "Surveillance Marksman"
+			},
+			{
+				"trait_type": "Hair",
+				"value": "Red Neat Ponytail"
+			},
+			{
+				"trait_type": "Eyes",
+				"value": "Dark Brown"
+			},
+			{
+				"trait_type": "Demeanor",
+				"value": "Neutral"
+			},
+			{
+				"trait_type": "Outfit",
+				"value": "Military Uniform"
+			},
+			{
+				"trait_type": "Headwear",
+				"value": "None"
+			},
+			{
+				"trait_type": "Accessory",
+				"value": "Rifle"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Rifle"
+			},
+			{
+				"trait_type": "Special",
+				"value": "None"
+			},
+			{
+				"trait_type": "Rarity Rank",
+				"value": 95,
+				"display_type": "number"
+			},
+			{
+				"trait_type": "Rarity Score",
+				"value": 15,
+				"display_type": "number"
+			}
+		],
+		"properties": {
+			"files": [
+				{
+					"uri": "220.png",
+					"type": "image/png"
+				}
+			],
+			"category": "image"
+		}
+	},
+	{
+		"name": "Echoes #221",
+		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
+		"image": "221.png",
 		"external_url": "",
 		"attributes": [
 			{
@@ -17367,27 +18409,31 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Very Short Hair, Buzz Cut"
+				"value": "Auburn Mohawk"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Blue"
+				"value": "Green"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Focused"
+				"value": "Smirk"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Vest"
+				"value": "Long Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Glasses"
+				"value": "Head Mounted Display"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Necktie"
+				"value": "Silk Necktie"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -17401,164 +18447,6 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			{
 				"trait_type": "Rarity Score",
 				"value": 0,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "219.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #220",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "220.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "The Siphon"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Synthetic"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Stable"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Uncommon"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Feminine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Signal Runner"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "None"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Aqua"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Neutral"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "Long Coat"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "Headset"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "None"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 79,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 17,
-				"display_type": "number"
-			}
-		],
-		"properties": {
-			"files": [
-				{
-					"uri": "220.png",
-					"type": "image/png"
-				}
-			],
-			"category": "image"
-		}
-	},
-	{
-		"name": "Echoes #221",
-		"description": "Recovered from the DSPRS event, Echoes are dispersed identities shaped by control, mutation, belief, and survival in the fractured megacity of Tessera.",
-		"image": "221.png",
-		"external_url": "",
-		"attributes": [
-			{
-				"trait_type": "Faction",
-				"value": "The Witnesses"
-			},
-			{
-				"trait_type": "Substrate",
-				"value": "Augmented"
-			},
-			{
-				"trait_type": "Signal",
-				"value": "Corrupted"
-			},
-			{
-				"trait_type": "Rank",
-				"value": "Common"
-			},
-			{
-				"trait_type": "Frame",
-				"value": "Feminine"
-			},
-			{
-				"trait_type": "Role",
-				"value": "Interface Disciple"
-			},
-			{
-				"trait_type": "Hair",
-				"value": "Blonde Messy Hair"
-			},
-			{
-				"trait_type": "Eyes",
-				"value": "Green"
-			},
-			{
-				"trait_type": "Demeanor",
-				"value": "Grin"
-			},
-			{
-				"trait_type": "Outfit",
-				"value": "White Bodysuit"
-			},
-			{
-				"trait_type": "Headwear",
-				"value": "Gold Circlet"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Pendant Necklace"
-			},
-			{
-				"trait_type": "Special",
-				"value": "None"
-			},
-			{
-				"trait_type": "Rarity Rank",
-				"value": 191,
-				"display_type": "number"
-			},
-			{
-				"trait_type": "Rarity Score",
-				"value": 3,
 				"display_type": "number"
 			}
 		],
@@ -17580,11 +18468,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
@@ -17592,52 +18480,56 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Rare"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Black Clinic Broker"
+				"value": "Data Analyst"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blue Short Hair"
+				"value": "White Natural Curly"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Blue"
+				"value": "Amber"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Grin"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Long Coat"
+				"value": "Wool Waistcoat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Visor"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Choker"
-			},
-			{
-				"trait_type": "Special",
 				"value": "None"
 			},
 			{
+				"trait_type": "Accessory",
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
+			},
+			{
+				"trait_type": "Special",
+				"value": "Narrow Human Scale Black Glass Optic Lenses Seated Inside Metal Orbital Frames With Thin Cyan Calibration Rings And Tiny Iris Apertures, Sized To Normal Adult Eye Proportions"
+			},
+			{
 				"trait_type": "Rarity Rank",
-				"value": 104,
+				"value": 61,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 15,
+				"value": 25,
 				"display_type": "number"
 			}
 		],
@@ -17659,7 +18551,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
@@ -17675,35 +18567,39 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Hacker"
+				"value": "Riot Enforcer"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blonde Asymmetrical Hair"
+				"value": "Auburn Twin Braids"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Closed Mouth"
+				"value": "Neutral"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Bomber Jacket"
+				"value": "Segmented Armor"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Choker"
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -17711,12 +18607,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 142,
+				"value": 120,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 13,
+				"value": 14,
 				"display_type": "number"
 			}
 		],
@@ -17742,7 +18638,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Synthetic"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
@@ -17750,31 +18646,31 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Strategist"
+				"value": "Security Director"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Black Single Long Braid"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Purple"
+				"value": "Dark Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Determined"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Formal Suit"
+				"value": "Wool Coat"
 			},
 			{
 				"trait_type": "Headwear",
@@ -17782,7 +18678,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Gold Necklace"
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -17790,12 +18690,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 46,
+				"value": 79,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 27,
+				"value": 16,
 				"display_type": "number"
 			}
 		],
@@ -17817,15 +18717,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Human"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
@@ -17837,31 +18737,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Wetware Mechanic"
+				"value": "Riot Enforcer"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Aqua Undercut"
+				"value": "Black Side Swept Ponytail"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Grey"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Smirk"
+				"value": "Angry"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Bodysuit"
+				"value": "Vest"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Goggles"
+				"value": "Tech Headband"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Metal Collar"
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -17869,7 +18773,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 143,
+				"value": 132,
 				"display_type": "number"
 			},
 			{
@@ -17896,19 +18800,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Human"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
@@ -17916,44 +18820,48 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Precinct Commander"
+				"value": "Interface Disciple"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Brown Medium Hair"
+				"value": "Red Shaved Head"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Blue"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Frown"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Tactical Vest"
+				"value": "Ceremonial Vest"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Mask"
+				"value": "Mechanical Halo Of Metal Ring Segments Hovering Just Behind The Head"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Shoulder Armor"
+				"value": "Devotional Collar"
 			},
 			{
-				"trait_type": "Special",
+				"trait_type": "Weapon",
 				"value": "None"
 			},
 			{
+				"trait_type": "Special",
+				"value": "Single Tear"
+			},
+			{
 				"trait_type": "Rarity Rank",
-				"value": 38,
+				"value": 137,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 28,
+				"value": 12,
 				"display_type": "number"
 			}
 		],
@@ -17975,11 +18883,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
@@ -17987,39 +18895,43 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Rare"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Net Diver"
+				"value": "Dead Channel Prophet"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blue Long Hair"
+				"value": "Pink Asymmetrical Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Glowing"
+				"value": "Green"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Smirk"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Long Coat"
+				"value": "Tactical Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Headphones"
+				"value": "Weathered Mechanical Halo Of Ring Segments Hovering Just Behind The Head"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Id Badge"
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Rifle"
 			},
 			{
 				"trait_type": "Special",
@@ -18027,12 +18939,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 144,
+				"value": 44,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 13,
+				"value": 27,
 				"display_type": "number"
 			}
 		],
@@ -18054,11 +18966,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Synthetic"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
@@ -18066,7 +18978,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Legendary"
+				"value": "Elite"
 			},
 			{
 				"trait_type": "Frame",
@@ -18074,19 +18986,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Executive"
+				"value": "Checkpoint Officer"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "None"
+				"value": "Aqua Mohawk"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Blue"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Clenched Teeth"
 			},
 			{
 				"trait_type": "Outfit",
@@ -18094,24 +19006,28 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Spiked Metal Headband"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Diamond Necklace"
+				"value": "Chest Rank Insignia"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
-				"value": "Weapon On Back"
+				"value": "None"
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 2,
+				"value": 13,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 52,
+				"value": 39,
 				"display_type": "number"
 			}
 		],
@@ -18133,7 +19049,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
@@ -18153,31 +19069,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Interface Disciple"
+				"value": "Signal Smuggler"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blonde Dreadlocks"
+				"value": "Black Tousled Messy"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Natural"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Confident"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Bodysuit"
+				"value": "Black Sleeveless"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Mask"
+				"value": "Weathered Hood"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Pendant Necklace"
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Firearm"
 			},
 			{
 				"trait_type": "Special",
@@ -18185,12 +19105,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 88,
+				"value": 121,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 16,
+				"value": 14,
 				"display_type": "number"
 			}
 		],
@@ -18212,11 +19132,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Syre Group"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
@@ -18224,7 +19144,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -18232,31 +19152,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Data Analyst"
+				"value": "Interface Disciple"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Brown Braid"
+				"value": "Grey Natural Curly"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Blue"
+				"value": "Dark Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Frown"
+				"value": "Grin"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Blouse"
+				"value": "Ceremonial Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Glasses"
+				"value": "Hood Pulled Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Bowtie"
+				"value": "Devotional Collar"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -18264,12 +19188,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 145,
+				"value": 232,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 13,
+				"value": 2,
 				"display_type": "number"
 			}
 		],
@@ -18291,7 +19215,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
@@ -18303,7 +19227,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Rare"
 			},
 			{
 				"trait_type": "Frame",
@@ -18311,7 +19235,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Hacker"
+				"value": "Black Clinic Broker"
 			},
 			{
 				"trait_type": "Hair",
@@ -18319,7 +19243,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "White"
+				"value": "X-Pattern LED Eyes"
 			},
 			{
 				"trait_type": "Demeanor",
@@ -18327,28 +19251,32 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Armored Vest"
+				"value": "Tactical Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
 				"value": "None"
 			},
 			{
-				"trait_type": "Special",
+				"trait_type": "Weapon",
 				"value": "None"
 			},
 			{
+				"trait_type": "Special",
+				"value": "Cigarette"
+			},
+			{
 				"trait_type": "Rarity Rank",
-				"value": 156,
+				"value": 45,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 5,
+				"value": 27,
 				"display_type": "number"
 			}
 		],
@@ -18370,7 +19298,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
@@ -18378,11 +19306,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Ghost-Class Anomaly"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Legendary"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -18390,44 +19318,48 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Black Clinic Broker"
+				"value": "Surveillance Marksman"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Brown Shaved Head"
+				"value": "Black Tight Cornrows"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Yellow"
+				"value": "Dark Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Serious"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Street Hoodie"
+				"value": "Military Uniform"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Visor"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Ornate Shoulder Mantle"
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Firearm"
 			},
 			{
 				"trait_type": "Special",
-				"value": "Mechanical Wings On Back"
+				"value": "None"
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 1,
+				"value": 246,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 54,
+				"value": 1,
 				"display_type": "number"
 			}
 		],
@@ -18449,19 +19381,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
@@ -18469,31 +19401,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Smuggler"
+				"value": "Infiltrator"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Brown Short Hair"
+				"value": "Auburn Sharp Pixie Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Dark Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Smirk"
+				"value": "Neutral"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Street Hoodie"
+				"value": "Utility Vest"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
+				"value": "Mouth Mask"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Camo Bandana Around Neck"
+				"value": "Dog Tags"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -18501,12 +19437,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 47,
+				"value": 122,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 27,
+				"value": 14,
 				"display_type": "number"
 			}
 		],
@@ -18528,7 +19464,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
@@ -18540,7 +19476,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
@@ -18548,11 +19484,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Transmission Guard"
+				"value": "Breach Unit"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Brown Slicked Back Hair"
+				"value": "Grey Side Shaved Undercut"
 			},
 			{
 				"trait_type": "Eyes",
@@ -18560,32 +19496,36 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Frown"
+				"value": "Determined"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Jacket"
+				"value": "Body Armor"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Tactical Ballistic Helmet"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Shoulder Armor"
+				"value": "Arm Patch"
 			},
 			{
-				"trait_type": "Special",
+				"trait_type": "Weapon",
 				"value": "None"
 			},
 			{
+				"trait_type": "Special",
+				"value": "Checkpoint Scanner In Hand"
+			},
+			{
 				"trait_type": "Rarity Rank",
-				"value": 238,
+				"value": 133,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 1,
+				"value": 13,
 				"display_type": "number"
 			}
 		],
@@ -18607,19 +19547,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
@@ -18627,31 +19567,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Wetware Mechanic"
+				"value": "Archive Seer"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Black Medium Hair"
+				"value": "Red Natural Curly"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Yellow"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Stoic"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Sleeveless Shirt"
+				"value": "Synthetic Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Goggles"
+				"value": "Thin Tech Headband"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Id Badge"
+				"value": "Devotional Collar"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -18659,12 +19603,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 170,
+				"value": 80,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 4,
+				"value": 16,
 				"display_type": "number"
 			}
 		],
@@ -18686,11 +19630,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
@@ -18702,35 +19646,39 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Evangelist"
+				"value": "Strategist"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Aqua Messy Hair"
+				"value": "Black Hime Cut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Natural"
+				"value": "Hazel"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Confident"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Bodysuit"
+				"value": "Wool Blazer"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Glasses"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Necklace"
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -18738,7 +19686,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 192,
+				"value": 200,
 				"display_type": "number"
 			},
 			{
@@ -18765,15 +19713,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Human"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Corrupted"
 			},
 			{
 				"trait_type": "Rank",
@@ -18785,31 +19733,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Checkpoint Officer"
+				"value": "Strategist"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Red Crew Cut"
+				"value": "Auburn Flattop"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Purple"
+				"value": "Amber"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Stoic"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Body Armor"
+				"value": "Wool Blazer"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Mask"
+				"value": "Mouth Mask"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Dog Tags"
+				"value": "Matched Pair Of Small Polished Steel Stud Earrings In The Lobes Catching Cool Rim Light"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -18817,7 +19769,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 239,
+				"value": 247,
 				"display_type": "number"
 			},
 			{
@@ -18844,7 +19796,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
@@ -18852,7 +19804,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
@@ -18864,7 +19816,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Archive Seer"
+				"value": "Riot Enforcer"
 			},
 			{
 				"trait_type": "Hair",
@@ -18872,7 +19824,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "White"
+				"value": "Hollow Eyes"
 			},
 			{
 				"trait_type": "Demeanor",
@@ -18880,15 +19832,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Bodysuit"
+				"value": "Tactical Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Gold Circlet"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Gold Choker"
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -18896,7 +19852,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 33,
+				"value": 28,
 				"display_type": "number"
 			},
 			{
@@ -18923,11 +19879,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Cyborg"
+				"value": "Synthetic"
 			},
 			{
 				"trait_type": "Signal",
@@ -18935,7 +19891,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -18943,15 +19899,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Infiltrator"
+				"value": "Wetware Mechanic"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blue Messy Hair"
+				"value": "None"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "White"
+				"value": "LED Eyes"
 			},
 			{
 				"trait_type": "Demeanor",
@@ -18959,15 +19915,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Bomber Jacket"
+				"value": "Tactical Bodysuit"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Mask"
+				"value": "Scuffed Work Goggles Pushed Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Badge Lanyard"
+				"value": "Clearance Insignia"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Baseball Bat"
 			},
 			{
 				"trait_type": "Special",
@@ -18975,12 +19935,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 48,
+				"value": 155,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 27,
+				"value": 5,
 				"display_type": "number"
 			}
 		],
@@ -19002,19 +19962,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "Tessera Wardens"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Stable"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
@@ -19022,19 +19982,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Runner"
+				"value": "Checkpoint Officer"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Brown Messy Hair"
+				"value": "Auburn Sharply Spiked"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Red"
+				"value": "Blue"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Smirk"
+				"value": "Angry"
 			},
 			{
 				"trait_type": "Outfit",
@@ -19042,11 +20002,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Headset"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Id Badge"
+				"value": "Dog Tags"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Firearm"
 			},
 			{
 				"trait_type": "Special",
@@ -19054,12 +20018,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 212,
+				"value": 96,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 2,
+				"value": 15,
 				"display_type": "number"
 			}
 		],
@@ -19085,7 +20049,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
@@ -19093,7 +20057,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
@@ -19101,31 +20065,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Hacker"
+				"value": "Broker"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Grey Undercut"
+				"value": "Black Tousled Bedhead"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Dark Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Grin"
+				"value": "Closed Mouth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Long Coat"
+				"value": "Bomber Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Hood Up"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Camo Bandana Around Neck"
+				"value": "Pendant"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Baseball Bat"
 			},
 			{
 				"trait_type": "Special",
@@ -19133,12 +20101,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 75,
+				"value": 97,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 24,
+				"value": 15,
 				"display_type": "number"
 			}
 		],
@@ -19160,19 +20128,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Synthetic"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Uncommon"
 			},
 			{
 				"trait_type": "Frame",
@@ -19180,31 +20148,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Dead Channel Prophet"
+				"value": "Data Analyst"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blue Very Short Hair, Buzz Cut"
+				"value": "Auburn Tight Cornrows"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Heterochromia"
+				"value": "Amber"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Clenched Teeth"
+				"value": "Determined"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Coat"
+				"value": "Wool Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Mechanical Halo"
+				"value": "Glasses"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Gold Choker"
+				"value": "Crisp Folded Silk Pocket Square Peaking From The Breast Pocket"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -19212,12 +20184,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 57,
+				"value": 81,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 26,
+				"value": 16,
 				"display_type": "number"
 			}
 		],
@@ -19239,7 +20211,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Unwritten"
+				"value": "The Witnesses"
 			},
 			{
 				"trait_type": "Substrate",
@@ -19251,7 +20223,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Common"
+				"value": "Elite"
 			},
 			{
 				"trait_type": "Frame",
@@ -19259,44 +20231,48 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Glitch Runner"
+				"value": "Dead Channel Prophet"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Grey Braid"
+				"value": "Green Tousled Medium Length"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Heterochromia"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Serious"
+				"value": "Confident"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Bodysuit"
+				"value": "Tactical Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Goggles"
+				"value": "Weathered Mechanical Halo Of Ring Segments Hovering Just Behind The Head"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Black Bandana Around Neck"
+				"value": "Collar Ring"
 			},
 			{
-				"trait_type": "Special",
+				"trait_type": "Weapon",
 				"value": "None"
 			},
 			{
+				"trait_type": "Special",
+				"value": "Circuit Burn Marks Around Eyes From Signal Communion"
+			},
+			{
 				"trait_type": "Rarity Rank",
-				"value": 240,
+				"value": 14,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 1,
+				"value": 39,
 				"display_type": "number"
 			}
 		],
@@ -19322,7 +20298,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
@@ -19330,7 +20306,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Rare"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
@@ -19342,7 +20318,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Blonde Curly Hair"
+				"value": "Grey Short Textured Crop"
 			},
 			{
 				"trait_type": "Eyes",
@@ -19350,32 +20326,36 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Frown"
+				"value": "Calm"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Structured Coat"
+				"value": "Jacket"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Headset"
-			},
-			{
-				"trait_type": "Accessory",
-				"value": "Necktie"
-			},
-			{
-				"trait_type": "Special",
 				"value": "None"
 			},
 			{
+				"trait_type": "Accessory",
+				"value": "Silk Necktie"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Firearm"
+			},
+			{
+				"trait_type": "Special",
+				"value": "Cigar"
+			},
+			{
 				"trait_type": "Rarity Rank",
-				"value": 69,
+				"value": 201,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 25,
+				"value": 3,
 				"display_type": "number"
 			}
 		],
@@ -19405,7 +20385,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Corrupted"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
@@ -19413,35 +20393,39 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Checkpoint Officer"
+				"value": "Riot Enforcer"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Grey Slicked Back Hair"
+				"value": "Red Side Shaved Undercut"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Green"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Frown"
+				"value": "Stoic"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Body Armor"
+				"value": "Segmented Armor"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "None"
+				"value": "Helmet"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Dog Tags"
+				"value": "Shoulder Armor"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -19449,12 +20433,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 213,
+				"value": 202,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 2,
+				"value": 3,
 				"display_type": "number"
 			}
 		],
@@ -19476,15 +20460,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "Tessera Wardens"
+				"value": "Syre Group"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Augmented"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Ghost-Class Anomaly"
 			},
 			{
 				"trait_type": "Rank",
@@ -19492,35 +20476,39 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Feminine"
+				"value": "Masculine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Surveillance Marksman"
+				"value": "Data Analyst"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Grey Hair Over One Eye"
+				"value": "Black Thick Dreadlocks"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Orange"
+				"value": "Amber"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Slight Frown"
+				"value": "Closed Mouth"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Dark Uniform"
+				"value": "Wool Blazer"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Scouter"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Dog Tags"
+				"value": "None"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -19528,12 +20516,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 124,
+				"value": 67,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 14,
+				"value": 17,
 				"display_type": "number"
 			}
 		],
@@ -19555,11 +20543,11 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Cyborg"
 			},
 			{
 				"trait_type": "Signal",
@@ -19567,19 +20555,19 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rank",
-				"value": "Uncommon"
+				"value": "Common"
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Signal Runner"
+				"value": "Wetware Mechanic"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Pink Medium Hair"
+				"value": "Auburn Wild Voluminous"
 			},
 			{
 				"trait_type": "Eyes",
@@ -19587,19 +20575,23 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Smirk"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Bomber Jacket"
+				"value": "Long Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Headset"
+				"value": "Scuffed Work Goggles Pushed Up"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Metal Collar"
+				"value": "Clearance Insignia"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -19607,12 +20599,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 150,
+				"value": 203,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 12,
+				"value": 3,
 				"display_type": "number"
 			}
 		],
@@ -19634,7 +20626,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Siphon"
+				"value": "The Unwritten"
 			},
 			{
 				"trait_type": "Substrate",
@@ -19642,7 +20634,7 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Corrupted"
 			},
 			{
 				"trait_type": "Rank",
@@ -19650,35 +20642,39 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Frame",
-				"value": "Masculine"
+				"value": "Feminine"
 			},
 			{
 				"trait_type": "Role",
-				"value": "Broker"
+				"value": "Black Clinic Broker"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Green Undercut"
+				"value": "Brown Double Buns Pinned High"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "White"
+				"value": "Dark Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Clenched Teeth"
+				"value": "Grin"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "Bomber Jacket"
+				"value": "Long Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Goggles"
+				"value": "None"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Pendant Necklace"
+				"value": "Chain Necklace"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "None"
 			},
 			{
 				"trait_type": "Special",
@@ -19686,12 +20682,12 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Rarity Rank",
-				"value": 241,
+				"value": 233,
 				"display_type": "number"
 			},
 			{
 				"trait_type": "Rarity Score",
-				"value": 1,
+				"value": 2,
 				"display_type": "number"
 			}
 		],
@@ -19713,15 +20709,15 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 		"attributes": [
 			{
 				"trait_type": "Faction",
-				"value": "The Witnesses"
+				"value": "The Siphon"
 			},
 			{
 				"trait_type": "Substrate",
-				"value": "Human"
+				"value": "Augmented"
 			},
 			{
 				"trait_type": "Signal",
-				"value": "Stable"
+				"value": "Signal-Burned"
 			},
 			{
 				"trait_type": "Rank",
@@ -19733,31 +20729,35 @@ export const ECHOES_METADATA: EchoMetadata[] = [
 			},
 			{
 				"trait_type": "Role",
-				"value": "Transmission Guard"
+				"value": "Infiltrator"
 			},
 			{
 				"trait_type": "Hair",
-				"value": "Green Medium Hair"
+				"value": "Orange Sweeping"
 			},
 			{
 				"trait_type": "Eyes",
-				"value": "Glowing"
+				"value": "Brown"
 			},
 			{
 				"trait_type": "Demeanor",
-				"value": "Neutral"
+				"value": "Calm"
 			},
 			{
 				"trait_type": "Outfit",
-				"value": "White Coat"
+				"value": "Long Coat"
 			},
 			{
 				"trait_type": "Headwear",
-				"value": "Mask"
+				"value": "Mouth Mask"
 			},
 			{
 				"trait_type": "Accessory",
-				"value": "Shoulder Armor"
+				"value": "Unit Insignia"
+			},
+			{
+				"trait_type": "Weapon",
+				"value": "Machete"
 			},
 			{
 				"trait_type": "Special",
@@ -19818,6 +20818,7 @@ export const TRAIT_TYPES = [
 	"Outfit",
 	"Headwear",
 	"Accessory",
+	"Weapon",
 	"Special",
 	"Rarity Rank",
 	"Rarity Score"

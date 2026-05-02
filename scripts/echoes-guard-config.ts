@@ -50,11 +50,11 @@ export const WL_ALLOWLIST_FILE: string | null = 'scripts/allowlists/wl-wallets.j
 // Mint limits — max mints per wallet per tier
 // ---------------------------------------------------------------------------
 
-/** OG Free: 1 free mint per OG wallet */
-export const OG_FREE_MINT_LIMIT = 1
+/** OG Free: 5 free mints per OG wallet */
+export const OG_FREE_MINT_LIMIT = 5
 
-/** OG Discount: unlimited mints per OG wallet */
-export const OG_DISCOUNT_MINT_LIMIT: number | null = null
+/** OG Discount: 5 mints per OG wallet */
+export const OG_DISCOUNT_MINT_LIMIT: number | null = 5
 
 /** Whitelist: 2 mints per WL wallet */
 export const WL_MINT_LIMIT = 2
@@ -70,13 +70,13 @@ export const PUBLIC_MINT_LIMIT: number | null = null
 // No price config needed — og-free group has no solPayment guard
 
 /** OG Discount tier price in SOL */
-export const OG_DISCOUNT_PRICE_SOL = 0.05
+export const OG_DISCOUNT_PRICE_SOL = 0.5
 
 /** Whitelist tier price in SOL */
 export const WL_PRICE_SOL = 0.01
 
 /** Public tier price in SOL */
-export const PUBLIC_PRICE_SOL = 0.1
+export const PUBLIC_PRICE_SOL = 1.0
 
 // ---------------------------------------------------------------------------
 // Phase dates — start/end times for sequential tiers
@@ -84,20 +84,20 @@ export const PUBLIC_PRICE_SOL = 0.1
 
 /**
  * Set to an ISO date string to schedule a phase start, or null for "starts now".
- * Tiers are sequential — each tier's end should align with the next tier's start.
- * Examples: '2026-05-01T18:00:00Z', null
+ * All tiers start immediately and run until sold out — no end dates.
+ * OGs exhaust free mints first, then discount, then can mint at public price.
  */
 
-export const OG_FREE_START_DATE: string | null = '2026-04-05T23:30:00Z' // April 5 5:30 PM MDT
+export const OG_FREE_START_DATE: string | null = null
 export const OG_FREE_END_DATE: string | null = null
 
-export const OG_DISCOUNT_START_DATE: string | null = '2026-04-05T23:30:00Z' // April 5 5:30 PM MDT
+export const OG_DISCOUNT_START_DATE: string | null = null
 export const OG_DISCOUNT_END_DATE: string | null = null
 
 export const WL_START_DATE: string | null = null
 export const WL_END_DATE: string | null = null
 
-export const PUBLIC_START_DATE: string | null = '2026-04-08T18:00:00Z' // April 8 12:00 PM MDT
+export const PUBLIC_START_DATE: string | null = null
 // Public has no end date — runs until sold out
 
 // ---------------------------------------------------------------------------

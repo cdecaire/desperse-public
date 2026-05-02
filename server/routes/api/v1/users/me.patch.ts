@@ -3,7 +3,7 @@
  * Update current user's profile
  */
 
-import { defineEventHandler, getHeader, readBody } from 'h3'
+import { defineEventHandler, getHeader, readBody, setResponseStatus } from 'h3'
 import { updateProfileDirect, type UpdateProfileInput } from '@/server/utils/profile'
 
 export default defineEventHandler(async (event) => {
@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
 		const token = authHeader?.replace('Bearer ', '')
 
 		if (!token) {
-			event.node!.res!.statusCode = 401
+			setResponseStatus(event, 401)
 			return {
 				success: false,
 				error: { code: 'unauthorized', message: 'Authentication required' },
@@ -32,7 +32,7 @@ export default defineEventHandler(async (event) => {
 		// displayName - optional, can be null to clear
 		if ('displayName' in body) {
 			if (body.displayName !== null && typeof body.displayName !== 'string') {
-				event.node!.res!.statusCode = 400
+				setResponseStatus(event, 400)
 				return {
 					success: false,
 					error: { code: 'invalid_display_name', message: 'Display name must be a string or null' },
@@ -45,7 +45,7 @@ export default defineEventHandler(async (event) => {
 		// bio - optional, can be null to clear
 		if ('bio' in body) {
 			if (body.bio !== null && typeof body.bio !== 'string') {
-				event.node!.res!.statusCode = 400
+				setResponseStatus(event, 400)
 				return {
 					success: false,
 					error: { code: 'invalid_bio', message: 'Bio must be a string or null' },
@@ -58,7 +58,7 @@ export default defineEventHandler(async (event) => {
 		// usernameSlug - optional
 		if ('usernameSlug' in body) {
 			if (typeof body.usernameSlug !== 'string') {
-				event.node!.res!.statusCode = 400
+				setResponseStatus(event, 400)
 				return {
 					success: false,
 					error: { code: 'invalid_username', message: 'Username must be a string' },
@@ -71,7 +71,7 @@ export default defineEventHandler(async (event) => {
 		// website - optional, can be null to clear
 		if ('website' in body) {
 			if (body.website !== null && typeof body.website !== 'string') {
-				event.node!.res!.statusCode = 400
+				setResponseStatus(event, 400)
 				return {
 					success: false,
 					error: { code: 'invalid_website', message: 'Website must be a string or null' },
@@ -84,7 +84,7 @@ export default defineEventHandler(async (event) => {
 		// twitterUsername - optional, can be empty string to clear
 		if ('twitterUsername' in body) {
 			if (body.twitterUsername !== null && typeof body.twitterUsername !== 'string') {
-				event.node!.res!.statusCode = 400
+				setResponseStatus(event, 400)
 				return {
 					success: false,
 					error: { code: 'invalid_twitter', message: 'Twitter username must be a string or null' },
@@ -97,7 +97,7 @@ export default defineEventHandler(async (event) => {
 		// instagramUsername - optional, can be empty string to clear
 		if ('instagramUsername' in body) {
 			if (body.instagramUsername !== null && typeof body.instagramUsername !== 'string') {
-				event.node!.res!.statusCode = 400
+				setResponseStatus(event, 400)
 				return {
 					success: false,
 					error: { code: 'invalid_instagram', message: 'Instagram username must be a string or null' },
@@ -110,7 +110,7 @@ export default defineEventHandler(async (event) => {
 		// avatarUrl - optional, can be null to clear
 		if ('avatarUrl' in body) {
 			if (body.avatarUrl !== null && typeof body.avatarUrl !== 'string') {
-				event.node!.res!.statusCode = 400
+				setResponseStatus(event, 400)
 				return {
 					success: false,
 					error: { code: 'invalid_avatar', message: 'Avatar URL must be a string or null' },
@@ -123,7 +123,7 @@ export default defineEventHandler(async (event) => {
 		// headerUrl - optional, can be null to clear
 		if ('headerUrl' in body) {
 			if (body.headerUrl !== null && typeof body.headerUrl !== 'string') {
-				event.node!.res!.statusCode = 400
+				setResponseStatus(event, 400)
 				return {
 					success: false,
 					error: { code: 'invalid_header', message: 'Header URL must be a string or null' },
@@ -135,7 +135,7 @@ export default defineEventHandler(async (event) => {
 
 		// Check if there are any updates
 		if (Object.keys(updates).length === 0) {
-			event.node!.res!.statusCode = 400
+			setResponseStatus(event, 400)
 			return {
 				success: false,
 				error: { code: 'no_updates', message: 'No valid updates provided' },
@@ -152,7 +152,7 @@ export default defineEventHandler(async (event) => {
 			else if (result.error === 'User not found') statusCode = 404
 			else if (result.error === 'Username is already taken') statusCode = 409
 
-			event.node!.res!.statusCode = statusCode
+			setResponseStatus(event, statusCode)
 			return {
 				success: false,
 				error: { code: 'error', message: result.error },
@@ -169,7 +169,7 @@ export default defineEventHandler(async (event) => {
 		}
 	} catch (error) {
 		console.error('[PATCH /users/me] Error:', error)
-		event.node!.res!.statusCode = 500
+		setResponseStatus(event, 500)
 		return {
 			success: false,
 			error: { code: 'internal_error', message: 'Failed to update profile' },

@@ -6,7 +6,7 @@
  * { fileData: string, fileName: string, mimeType: string, fileSize: number }
  */
 
-import { defineEventHandler, getHeader, readBody } from 'h3'
+import { defineEventHandler, getHeader, readBody, setResponseStatus } from 'h3'
 import { uploadMediaDirect } from '@/server/utils/media'
 
 export default defineEventHandler(async (event) => {
@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
 		const token = authHeader?.replace('Bearer ', '')
 
 		if (!token) {
-			event.node!.res!.statusCode = 401
+			setResponseStatus(event, 401)
 			return {
 				success: false,
 				error: { code: 'unauthorized', message: 'Authentication required' },
@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
 		const body = await readBody(event) as Record<string, any>
 
 		if (!body.fileData || !body.fileName || !body.mimeType || typeof body.fileSize !== 'number') {
-			event.node!.res!.statusCode = 400
+			setResponseStatus(event, 400)
 			return {
 				success: false,
 				error: { code: 'invalid_request', message: 'Missing required fields: fileData, fileName, mimeType, fileSize' },
@@ -47,7 +47,7 @@ export default defineEventHandler(async (event) => {
 
 		if (!result.success) {
 			const statusCode = result.status || 400
-			event.node!.res!.statusCode = statusCode
+			setResponseStatus(event, statusCode)
 			return {
 				success: false,
 				error: { code: 'upload_failed', message: result.error },
@@ -66,7 +66,7 @@ export default defineEventHandler(async (event) => {
 		}
 	} catch (error) {
 		console.error('[POST /media/upload] Error:', error)
-		event.node!.res!.statusCode = 500
+		setResponseStatus(event, 500)
 		return {
 			success: false,
 			error: { code: 'internal_error', message: 'Failed to upload media' },

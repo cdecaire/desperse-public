@@ -19,6 +19,7 @@ export interface ProfileUser {
 	displayName: string | null
 	bio: string | null
 	avatarUrl: string | null
+	role: 'user' | 'moderator' | 'admin'
 	headerBgUrl: string | null
 	link: string | null
 	twitterUsername: string | null
@@ -102,6 +103,7 @@ export async function getUserBySlugDirect(
 				twitterUsername: users.twitterUsername,
 				instagramUsername: users.instagramUsername,
 				createdAt: users.createdAt,
+				role: users.role,
 			})
 			.from(users)
 			.where(eq(users.usernameSlug, slug))
@@ -270,6 +272,7 @@ export async function getUserBySlugDirect(
 				displayName: user.displayName,
 				bio: user.bio,
 				avatarUrl: user.avatarUrl,
+				role: user.role,
 				headerBgUrl: user.headerBgUrl,
 				link: user.link,
 				twitterUsername: user.twitterUsername,

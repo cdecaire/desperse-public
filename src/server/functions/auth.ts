@@ -8,7 +8,7 @@ import { db } from '@/server/db'
 import { users } from '@/server/db/schema'
 import { eq } from 'drizzle-orm'
 import { z } from 'zod'
-import { generateUniqueSlug, isSlugTaken, normalizeSlug } from '@/server/utils/slug-utils'
+import { generateUniqueSlug, isReservedHandle, isSlugTaken, normalizeSlug } from '@/server/utils/slug-utils'
 import {
   extractAuthorizationFromPayload,
   verifyPrivyToken,
@@ -392,6 +392,9 @@ export const checkHandleAvailability = createServerFn({ method: 'POST' }).handle
       const normalized = normalizeSlug(handle)
       if (!normalized || normalized === 'user') {
         return { success: true, normalized, available: false, reason: 'invalid' as const }
+      }
+      if (isReservedHandle(normalized)) {
+        return { success: true, normalized, available: false, reason: 'reserved' as const }
       }
       const taken = await isSlugTaken(normalized)
       return { success: true, normalized, available: !taken }

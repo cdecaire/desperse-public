@@ -9,6 +9,8 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { toast } from '@/hooks/use-toast'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { EmptyState } from '@/components/shared/EmptyState'
+import { RoleBadge } from '@/components/shared/RoleBadge'
+import { Tooltip } from '@/components/ui/tooltip'
 import { PullToRefresh } from '@/components/shared/PullToRefresh'
 import { type PostCardData } from '@/components/feed/PostCard'
 import { PostMedia } from '@/components/feed/PostMedia'
@@ -403,30 +405,56 @@ function ProfilePage() {
         <div className="flex flex-col gap-4">
           {/* Avatar and Profile Controls */}
           <div className="shrink-0 relative pt-2">
-            <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-background border-4 border-background flex items-center justify-center overflow-hidden shadow-sm">
-              {profileUser.avatarUrl ? (
-                (() => {
-                  const avatarProps = getResponsiveImageProps(profileUser.avatarUrl, {
-                    sizes: '96px', // max size at md breakpoint
-                    quality: 75,
-                    includeRetina: true,
-                  })
-                  return (
+            <div className="relative w-20 h-20 md:w-24 md:h-24">
+              <div className="w-full h-full rounded-full bg-background border-4 border-background flex items-center justify-center overflow-hidden shadow-sm">
+                {profileUser.avatarUrl ? (
+                  (() => {
+                    const avatarProps = getResponsiveImageProps(profileUser.avatarUrl, {
+                      sizes: '96px', // max size at md breakpoint
+                      quality: 75,
+                      includeRetina: true,
+                    })
+                    return (
+                      <img
+                        src={avatarProps.src}
+                        srcSet={avatarProps.srcSet || undefined}
+                        sizes={avatarProps.sizes || undefined}
+                        alt={profileUser.displayName || profileUser.slug}
+                        className="w-full h-full object-cover"
+                        decoding="async"
+                      />
+                    )
+                  })()
+                ) : (
+                  <Icon name="user" variant="regular" className="text-2xl md:text-3xl text-muted-foreground" />
+                )}
+              </div>
+              {profileUser.role === 'admin' && (
+                <span className="absolute bottom-1 -right-1 md:-right-2">
+                  <Tooltip content="Official Desperse account">
                     <img
-                      src={avatarProps.src}
-                      srcSet={avatarProps.srcSet || undefined}
-                      sizes={avatarProps.sizes || undefined}
-                      alt={profileUser.displayName || profileUser.slug}
-                      className="w-full h-full object-cover"
-                      decoding="async"
+                      src="/verified.svg"
+                      alt=""
+                      aria-label="Official Desperse account"
+                      className="w-7 h-7 md:w-8 md:h-8 drop-shadow dark:invert"
                     />
-                  )
-                })()
-              ) : (
-                <Icon name="user" variant="regular" className="text-2xl md:text-3xl text-muted-foreground" />
+                  </Tooltip>
+                </span>
+              )}
+              {profileUser.role === 'moderator' && (
+                <span className="absolute bottom-1 -right-1 md:-right-2">
+                  <Tooltip content="Desperse moderator">
+                    <span
+                      aria-label="Desperse moderator"
+                      className="text-2xl md:text-3xl leading-none drop-shadow text-foreground"
+                    >
+                      <Icon name="shield-halved" variant="solid" />
+                    </span>
+                  </Tooltip>
+                </span>
               )}
             </div>
-            
+
             {/* Profile Controls - Own profile */}
             {isOwnProfile && (
               <div className="absolute bottom-0 right-0 flex items-center gap-1">
@@ -508,8 +536,9 @@ function ProfilePage() {
           <div className="space-y-1.5">
             {/* Display Name + Stats on same line */}
             <div className="flex items-baseline gap-5 flex-wrap">
-              <h1 className="text-xl md:text-2xl font-bold truncate">
-                {profileUser.displayName || profileUser.slug}
+              <h1 className="text-xl md:text-2xl font-bold truncate flex items-center gap-2">
+                <span className="truncate">{profileUser.displayName || profileUser.slug}</span>
+                <RoleBadge role={profileUser.role ?? null} />
               </h1>
               <div className="flex gap-4 shrink-0">
                 <button

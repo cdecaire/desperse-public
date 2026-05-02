@@ -24,6 +24,7 @@ import { withAuth, withOptionalAuth } from '@/server/auth'
 import { excludeDevPostsForUser } from '@/server/utils/dev-posts'
 import { getPostCollectorsListDirect } from '@/server/utils/follows'
 import { getBlockedUserIdSet, getDirectedBlockState } from '@/server/utils/blocks'
+import { isReservedHandle } from '@/server/utils/slug-utils'
 
 // Shared schemas
 const cursorSchema = z.object({
@@ -386,6 +387,7 @@ function mapPostToCard(post: typeof posts.$inferSelect, user: {
   displayName: string | null
   usernameSlug: string
   avatarUrl: string | null
+  role: 'user' | 'moderator' | 'admin'
 }, flags?: Partial<{ isCollected: boolean; isEdition: boolean; remainingSupply: number | null }>) {
   const isEdition = post.type === 'edition'
   const remainingSupply =
@@ -427,6 +429,7 @@ export const getUserBySlug = createServerFn({
         createdAt: users.createdAt,
         updatedAt: users.updatedAt,
         usernameLastChangedAt: users.usernameLastChangedAt,
+        role: users.role,
       })
       .from(users)
       .where(eq(users.usernameSlug, slug))
@@ -460,6 +463,7 @@ export const getUserBySlug = createServerFn({
           displayName: user.displayName,
           bio: null,
           avatarUrl: user.avatarUrl,
+          role: user.role,
           headerBgUrl: null,
           link: null,
           twitterUsername: null,
@@ -633,6 +637,7 @@ export const getUserBySlug = createServerFn({
         displayName: user.displayName,
         bio: user.bio,
         avatarUrl: user.avatarUrl,
+        role: user.role,
         headerBgUrl: user.headerBgUrl,
         link: user.link,
         twitterUsername: user.twitterUsername,
@@ -697,6 +702,7 @@ export const getUserPosts = createServerFn({
           displayName: users.displayName,
           usernameSlug: users.usernameSlug,
           avatarUrl: users.avatarUrl,
+          role: users.role,
         },
       })
       .from(posts)
@@ -827,6 +833,7 @@ export const getUserCollections = createServerFn({
           displayName: users.displayName,
           usernameSlug: users.usernameSlug,
           avatarUrl: users.avatarUrl,
+          role: users.role,
         },
       })
       .from(posts)
@@ -926,6 +933,7 @@ export const getUserForSale = createServerFn({
           displayName: users.displayName,
           usernameSlug: users.usernameSlug,
           avatarUrl: users.avatarUrl,
+          role: users.role,
         },
       })
       .from(posts)
@@ -1219,6 +1227,16 @@ export const updateProfile = createServerFn({
           success: false,
           status: 400,
           error: 'Invalid username format.',
+        }
+      }
+
+      // Block reserved handles unless the user is an admin (admins can claim
+      // brand-protected names like "desperse" for the official account).
+      if (isReservedHandle(normalized) && user.role !== 'admin') {
+        return {
+          success: false,
+          status: 409,
+          error: 'This username is reserved.',
         }
       }
 

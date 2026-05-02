@@ -135,6 +135,7 @@ export default defineEventHandler(async (event) => {
 				slug: result.user.usernameSlug,
 				displayName: result.user.displayName,
 				avatarUrl: result.user.avatarUrl,
+				role: result.user.role,
 			}
 		: null
 

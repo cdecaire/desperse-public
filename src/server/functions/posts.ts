@@ -459,6 +459,7 @@ export const getPost = createServerFn({
           displayName: users.displayName,
           usernameSlug: users.usernameSlug,
           avatarUrl: users.avatarUrl,
+          role: users.role,
         },
       })
       .from(posts)
@@ -801,6 +802,7 @@ export const getFeed = createServerFn({
           displayName: users.displayName,
           usernameSlug: users.usernameSlug,
           avatarUrl: users.avatarUrl,
+          role: users.role,
         },
       })
       .from(posts)

@@ -21,6 +21,7 @@ import { toast } from '@/hooks/use-toast'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { CommentMenu } from '@/components/feed/CommentMenu'
 import { UserAvatar } from '@/components/shared/UserAvatar'
+import { VerifiedBadge } from '@/components/shared/VerifiedBadge'
 import { useCreateReport } from '@/hooks/useReports'
 import { MentionAutocomplete } from '@/components/shared/MentionAutocomplete'
 import { TokenText } from '@/components/shared/TokenText'
@@ -64,6 +65,7 @@ interface CommentItemProps {
       usernameSlug: string
       displayName: string | null
       avatarUrl: string | null
+      role?: 'user' | 'moderator' | 'admin' | null
     }
   }
   currentUserId?: string | null
@@ -84,7 +86,7 @@ function CommentItem({ comment, currentUserId, onDelete, isDeleting, onReportSub
       onMouseLeave={() => setIsHovered(false)}
     >
       <Link to="/profile/$slug" params={{ slug: comment.user.usernameSlug }}>
-        <UserAvatar src={comment.user.avatarUrl} alt={displayName} size="sm" />
+        <UserAvatar src={comment.user.avatarUrl} alt={displayName} size="sm" role={comment.user.role ?? null} />
       </Link>
 
       <div className="flex-1 min-w-0">
@@ -93,9 +95,10 @@ function CommentItem({ comment, currentUserId, onDelete, isDeleting, onReportSub
             <Link
               to="/profile/$slug"
               params={{ slug: comment.user.usernameSlug }}
-              className="font-semibold text-sm hover:underline truncate"
+              className="font-semibold text-sm hover:underline truncate flex items-center gap-1"
             >
-              {displayName}
+              <span className="truncate">{displayName}</span>
+              <VerifiedBadge role={comment.user.role ?? null} size="xs" />
             </Link>
             <span className="text-xs text-muted-foreground shrink-0">
               · {formatRelativeTime(comment.createdAt)}

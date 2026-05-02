@@ -28,6 +28,8 @@ import { POST_TYPE_META } from '@/constants/postTypes'
 import { type Category, isPresetCategory, categoryToSlug } from '@/constants/categories'
 import { CategoryPill } from '@/components/ui/category-pill'
 import { MediaPill } from '@/components/ui/media-pill'
+import { UserAvatar } from '@/components/shared/UserAvatar'
+import { RoleBadge } from '@/components/shared/RoleBadge'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { TokenText } from '@/components/shared/TokenText'
 import { Icon } from '@/components/ui/icon'
@@ -90,6 +92,7 @@ export interface PostCardUser {
   displayName: string | null
   usernameSlug: string
   avatarUrl: string | null
+  role?: 'user' | 'moderator' | 'admin' | null
 }
 
 export interface PostCardData {
@@ -382,49 +385,37 @@ export function PostCard({
       {showHeader && user && (
         <div className="flex items-center gap-3 px-4 py-2 md:px-2 md:py-3">
           {isPreview ? (
-            <div className="w-10 h-10 rounded-full overflow-hidden bg-muted shrink-0">
-              {user.avatarUrl ? (
-                <img
-                  src={user.avatarUrl}
-                  alt={user.displayName || user.usernameSlug}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center bg-muted">
-                  <Icon name="user" variant="regular" className="text-muted-foreground" />
-                </div>
-              )}
-            </div>
+            <UserAvatar
+              src={user.avatarUrl}
+              alt={user.displayName || user.usernameSlug}
+              size="md"
+              role={user.role ?? null}
+            />
           ) : (
             <Link to="/profile/$slug" params={{ slug: user.usernameSlug }}>
-              <div className="w-10 h-10 rounded-full overflow-hidden bg-muted shrink-0">
-                {user.avatarUrl ? (
-                  <img
-                    src={user.avatarUrl}
-                    alt={user.displayName || user.usernameSlug}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-muted">
-                    <Icon name="user" variant="regular" className="text-muted-foreground" />
-                  </div>
-                )}
-              </div>
+              <UserAvatar
+                src={user.avatarUrl}
+                alt={user.displayName || user.usernameSlug}
+                size="md"
+                role={user.role ?? null}
+              />
             </Link>
           )}
           
           <div className="flex-1 min-w-0">
             {isPreview ? (
-              <span className="font-semibold text-sm truncate block">
-                {user.displayName || `@${user.usernameSlug}`}
+              <span className="font-semibold text-sm truncate flex items-center gap-1.5">
+                <span className="truncate">{user.displayName || `@${user.usernameSlug}`}</span>
+                <RoleBadge role={user.role ?? null} />
               </span>
             ) : (
-              <Link 
-                to="/profile/$slug" 
+              <Link
+                to="/profile/$slug"
                 params={{ slug: user.usernameSlug }}
-                className="font-semibold text-sm hover:underline truncate block"
+                className="font-semibold text-sm hover:underline truncate flex items-center gap-1.5"
               >
-                {user.displayName || `@${user.usernameSlug}`}
+                <span className="truncate">{user.displayName || `@${user.usernameSlug}`}</span>
+                <RoleBadge role={user.role ?? null} />
               </Link>
             )}
             <div className="flex items-center gap-1 text-xs text-muted-foreground">

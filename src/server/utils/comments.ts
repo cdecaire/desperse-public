@@ -23,6 +23,7 @@ export interface Comment {
 		usernameSlug: string
 		displayName: string | null
 		avatarUrl: string | null
+		role: 'user' | 'moderator' | 'admin'
 	}
 }
 
@@ -58,6 +59,7 @@ export async function getPostCommentsDirect(
 					usernameSlug: users.usernameSlug,
 					displayName: users.displayName,
 					avatarUrl: users.avatarUrl,
+					role: users.role,
 				},
 			})
 			.from(comments)
@@ -159,6 +161,7 @@ export async function createCommentDirect(
 					usernameSlug: users.usernameSlug,
 					displayName: users.displayName,
 					avatarUrl: users.avatarUrl,
+					role: users.role,
 				},
 			})
 			.from(comments)

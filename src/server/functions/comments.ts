@@ -108,6 +108,7 @@ export const createComment = createServerFn({
           usernameSlug: users.usernameSlug,
           displayName: users.displayName,
           avatarUrl: users.avatarUrl,
+          role: users.role,
         },
       })
       .from(comments)
@@ -265,6 +266,7 @@ export const getPostComments = createServerFn({
           usernameSlug: users.usernameSlug,
           displayName: users.displayName,
           avatarUrl: users.avatarUrl,
+          role: users.role,
         },
       })
       .from(comments)

@@ -8,6 +8,39 @@ import { users } from '@/server/db/schema'
 import { eq, like } from 'drizzle-orm'
 
 /**
+ * Handles reserved for the platform, system routes, or commonly impersonated brands.
+ * Admins can bypass this list (see isReservedHandle's allowAdmin check at call site).
+ */
+export const RESERVED_HANDLES: ReadonlySet<string> = new Set([
+  // Platform / brand
+  'desperse', 'desperseofficial', 'desperse_team', 'desperseapp', 'desperse-team',
+  'team', 'support', 'admin', 'admins', 'mod', 'mods', 'moderator', 'moderators',
+  'staff', 'official', 'help', 'helpdesk', 'contact', 'security', 'abuse', 'legal',
+  'press', 'jobs', 'careers', 'feedback', 'billing', 'sales', 'partnerships',
+  // System / route names
+  'api', 'app', 'www', 'root', 'null', 'undefined', 'me', 'home', 'explore',
+  'messages', 'message', 'settings', 'profile', 'profiles', 'login', 'logout',
+  'signup', 'register', 'auth', 'oauth', 'download', 'downloads', 'about',
+  'terms', 'privacy', 'tos', 'cookies', 'docs', 'blog', 'news', 'feed',
+  'notifications', 'search', 'discover', 'trending', 'editions', 'collect',
+  'wallet', 'pfp', 'echoes', 'preservation', 'invite', 'referral', 'beta',
+  'alpha', 'public', 'private', 'static', 'assets', 'cdn', 'health', 'status',
+  // Common impersonation targets
+  'solana', 'phantom', 'metamask', 'privy', 'vercel', 'helius', 'metaplex',
+  'anthropic', 'claude', 'openai', 'twitter', 'x', 'instagram', 'tiktok',
+  'youtube', 'github', 'discord', 'telegram',
+  // Generic
+  'user', 'users', 'anonymous', 'guest', 'system', 'bot', 'test', 'demo',
+])
+
+/**
+ * Returns true if the handle is reserved (case-insensitive, normalized).
+ */
+export function isReservedHandle(slug: string): boolean {
+  return RESERVED_HANDLES.has(slug.toLowerCase())
+}
+
+/**
  * Normalize a string to a valid username slug
  * - Lowercase
  * - Strip emojis and non URL-safe characters
@@ -64,8 +97,8 @@ export async function isSlugTaken(slug: string): Promise<boolean> {
 export async function generateUniqueSlug(baseName: string): Promise<string> {
   const normalizedBase = normalizeSlug(baseName)
 
-  // Check if base slug is available
-  if (!(await isSlugTaken(normalizedBase))) {
+  // Check if base slug is available and not reserved
+  if (!isReservedHandle(normalizedBase) && !(await isSlugTaken(normalizedBase))) {
     return normalizedBase
   }
 

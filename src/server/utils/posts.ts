@@ -17,6 +17,7 @@ export interface GetPostResult {
 		displayName: string | null
 		usernameSlug: string
 		avatarUrl: string | null
+		role: 'user' | 'moderator' | 'admin'
 	}
 	error?: string
 }
@@ -53,6 +54,7 @@ export async function getPostDirect(
 					displayName: users.displayName,
 					usernameSlug: users.usernameSlug,
 					avatarUrl: users.avatarUrl,
+					role: users.role,
 				},
 			})
 			.from(posts)

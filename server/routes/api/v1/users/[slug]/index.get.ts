@@ -115,6 +115,7 @@ export default defineEventHandler(async (event) => {
 				displayName: result.user.displayName,
 				bio: isBlockedByViewer ? null : result.user.bio,
 				avatarUrl: result.user.avatarUrl,
+				role: result.user.role,
 				headerBgUrl: isBlockedByViewer ? null : result.user.headerBgUrl,
 				link: isBlockedByViewer ? null : result.user.link,
 				twitterUsername: isBlockedByViewer ? null : result.user.twitterUsername,

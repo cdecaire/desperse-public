@@ -60,7 +60,7 @@ async function getTurboSolanaDepositAddress(): Promise<string> {
 	const { retryWithBackoff } = await import('@/lib/retryUtils')
 	const info = await retryWithBackoff(
 		async () => {
-			const res = await fetch(`${uploadUrl}/v1/info`, {
+			const res = await fetch(`${uploadUrl}/info`, {
 				headers: { Accept: 'application/json' },
 			})
 			if (!res.ok) {

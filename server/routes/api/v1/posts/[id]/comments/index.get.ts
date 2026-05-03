@@ -125,6 +125,7 @@ export default defineEventHandler(async (event) => {
 			slug: comment.user.usernameSlug,
 			displayName: comment.user.displayName,
 			avatarUrl: comment.user.avatarUrl,
+			role: comment.user.role,
 		},
 	}))
 

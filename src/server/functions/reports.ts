@@ -9,6 +9,7 @@ import { contentReports, posts, comments, dmThreads } from '@/server/db/schema'
 import { eq, and, sql } from 'drizzle-orm'
 import { z } from 'zod'
 import { withAuth } from '@/server/auth'
+import { isUniqueViolation } from '@/server/utils/db-errors'
 
 // Schema for creating a report (no userId - derived from auth)
 const createReportSchema = z.object({
@@ -176,8 +177,7 @@ export const createReport = createServerFn({
   } catch (error) {
     console.error('Error in createReport:', error)
     
-    // Handle unique constraint violation (user already reported)
-    if (error instanceof Error && error.message.includes('unique')) {
+    if (isUniqueViolation(error)) {
       return {
         success: false,
         error: 'You have already reported this content.',

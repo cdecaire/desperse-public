@@ -7,6 +7,7 @@ import { db } from '@/server/db'
 import { contentReports, posts, comments, dmThreads } from '@/server/db/schema'
 import { eq, and, sql } from 'drizzle-orm'
 import { authenticateWithToken } from '@/server/auth'
+import { isUniqueViolation } from './db-errors'
 
 export interface CreateReportInput {
 	contentType: 'post' | 'comment' | 'dm_thread'
@@ -166,8 +167,7 @@ export async function createReportDirect(
 	} catch (error) {
 		console.error('[createReportDirect] Error:', error)
 
-		// Handle unique constraint violation
-		if (error instanceof Error && error.message.includes('unique')) {
+		if (isUniqueViolation(error)) {
 			return { success: false, error: 'You have already reported this content.' }
 		}
 

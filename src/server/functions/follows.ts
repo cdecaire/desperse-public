@@ -12,6 +12,7 @@ import { withAuth } from '@/server/auth'
 import { sendPushNotification, getActorDisplayName } from '@/server/utils/pushDispatch'
 import { isNotificationTypeEnabled } from '@/server/utils/notificationPrefs'
 import { getBlockedUserIdSet, assertNotPairwiseBlocked, PairwiseBlockError } from '@/server/utils/blocks'
+import { isUniqueViolation } from '@/server/utils/db-errors'
 
 // Schema for follow/unfollow (no followerId - derived from auth)
 const followSchema = z.object({
@@ -105,16 +106,13 @@ export const followUser = createServerFn({
         followingId,
       })
     } catch (insertError) {
-      // If duplicate key error, the follow already exists - return success
-      const errorMsg = insertError instanceof Error ? insertError.message : ''
-      if (errorMsg.includes('unique') || errorMsg.includes('duplicate')) {
+      if (isUniqueViolation(insertError)) {
         return {
           success: true,
           message: 'Already following this user.',
           isFollowing: true,
         }
       }
-      // Re-throw other errors
       throw insertError
     }
 

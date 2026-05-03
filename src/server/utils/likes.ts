@@ -8,6 +8,7 @@ import { likes, posts, notifications } from '@/server/db/schema'
 import { eq, and } from 'drizzle-orm'
 import { authenticateWithToken } from '@/server/auth'
 import { sendPushNotification, getActorDisplayName, truncate } from './pushDispatch'
+import { isUniqueViolation } from './db-errors'
 import { isNotificationTypeEnabled } from './notificationPrefs'
 
 export interface LikeResult {
@@ -76,16 +77,13 @@ export async function likePostDirect(
 			postId,
 		})
 	} catch (insertError) {
-		// If duplicate key error, the like already exists - return success
-		const errorMsg = insertError instanceof Error ? insertError.message : ''
-		if (errorMsg.includes('unique') || errorMsg.includes('duplicate')) {
+		if (isUniqueViolation(insertError)) {
 			return {
 				success: true,
 				message: 'Already liked this post.',
 				isLiked: true,
 			}
 		}
-		// Re-throw other errors
 		throw insertError
 	}
 

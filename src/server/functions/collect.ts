@@ -17,6 +17,7 @@ import { getHeliusRpcUrl } from '@/config/env';
 import { snapshotMintedMetadata } from '@/server/utils/mint-snapshot';
 import { withAuth } from '@/server/auth';
 import { assertNotPairwiseBlocked, PairwiseBlockError } from '@/server/utils/blocks';
+import { isUniqueViolation } from '@/server/utils/db-errors';
 
 /**
  * Extract client IP address from request headers
@@ -593,7 +594,7 @@ export const prepareCollect = createServerFn({
   } catch (error) {
     console.error('Error in prepareCollect:', error);
 
-    if (error instanceof Error && (error.message.includes('unique') || error.message.includes('duplicate'))) {
+    if (isUniqueViolation(error)) {
       // Race condition — another request already created the collection record.
       // The user's intent (collecting) was achieved, so return success.
       return {

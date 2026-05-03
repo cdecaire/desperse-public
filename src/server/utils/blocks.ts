@@ -12,6 +12,7 @@
 import { db } from '@/server/db'
 import { userBlocks, users } from '@/server/db/schema'
 import { and, desc, eq, or } from 'drizzle-orm'
+import { isUniqueViolation } from './db-errors'
 
 /**
  * Returns the set of user IDs the viewer should NOT see content from —
@@ -109,8 +110,7 @@ export async function createBlock(blockerId: string, blockedId: string): Promise
     await db.insert(userBlocks).values({ blockerId, blockedId })
     return true
   } catch (err) {
-    const msg = err instanceof Error ? err.message : ''
-    if (msg.includes('unique') || msg.includes('duplicate')) {
+    if (isUniqueViolation(err)) {
       return false
     }
     throw err

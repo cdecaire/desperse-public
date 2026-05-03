@@ -13,6 +13,7 @@ import { z } from 'zod'
 import { generateUniqueSlug } from '@/server/utils/slug-utils'
 import { verifyPrivyToken } from '@/server/auth'
 import { validateSessionToken } from './siws'
+import { isUniqueViolation } from './db-errors'
 
 // Schema for Privy user data passed from client
 const privyUserSchema = z.object({
@@ -292,10 +293,7 @@ export async function initAuthWithToken(
       console.log('[initAuthWithToken] Created new user:', newUser.id, newUser.usernameSlug)
       return { success: true, user: transformUserForApi(newUser), isNewUser: true }
     } catch (insertError) {
-      // Race condition: another parallel request already created this user.
-      // Fall back to fetching the existing user.
-      const errMsg = insertError instanceof Error ? insertError.message : ''
-      if (errMsg.includes('unique') || errMsg.includes('duplicate') || errMsg.includes('violates')) {
+      if (isUniqueViolation(insertError)) {
         console.log('[initAuthWithToken] Duplicate insert detected, fetching existing user')
         const [raceUser] = await db
           .select()

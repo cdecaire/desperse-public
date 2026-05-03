@@ -9,6 +9,7 @@ import { users } from '@/server/db/schema'
 import { eq } from 'drizzle-orm'
 import { z } from 'zod'
 import { generateUniqueSlug, isReservedHandle, isSlugTaken, normalizeSlug } from '@/server/utils/slug-utils'
+import { isUniqueViolation } from '@/server/utils/db-errors'
 import {
   extractAuthorizationFromPayload,
   verifyPrivyToken,
@@ -198,10 +199,7 @@ export const initAuth = createServerFn({
         .returning()
       newUser = inserted[0]
     } catch (insertError) {
-      const code = (insertError as { code?: string })?.code
-      const msg = insertError instanceof Error ? insertError.message : ''
-      const isDuplicate = code === '23505' || msg.includes('unique') || msg.includes('duplicate')
-      if (!isDuplicate) throw insertError
+      if (!isUniqueViolation(insertError)) throw insertError
       const [existing] = await db
         .select()
         .from(users)

@@ -9,6 +9,7 @@ import { eq, and, desc, inArray, lt } from 'drizzle-orm'
 import { authenticateWithToken } from '@/server/auth'
 import { sendPushNotification, getActorDisplayName } from './pushDispatch'
 import { isNotificationTypeEnabled } from './notificationPrefs'
+import { isUniqueViolation } from './db-errors'
 
 export interface FollowResult {
 	success: boolean
@@ -89,16 +90,13 @@ export async function followUserDirect(
 				followingId,
 			})
 		} catch (insertError) {
-			// If duplicate key error, the follow already exists - return success
-			const errorMsg = insertError instanceof Error ? insertError.message : ''
-			if (errorMsg.includes('unique') || errorMsg.includes('duplicate')) {
+			if (isUniqueViolation(insertError)) {
 				return {
 					success: true,
 					message: 'Already following this user.',
 					isFollowing: true,
 				}
 			}
-			// Re-throw other errors
 			throw insertError
 		}
 

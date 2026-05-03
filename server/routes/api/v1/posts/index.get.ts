@@ -151,6 +151,7 @@ export default defineEventHandler(async (event) => {
 				userDisplayName: users.displayName,
 				userAvatarUrl: users.avatarUrl,
 				userBio: users.bio,
+				userRole: users.role,
 			})
 			.from(posts)
 			.innerJoin(users, eq(posts.userId, users.id))
@@ -451,6 +452,7 @@ export default defineEventHandler(async (event) => {
 					displayName: post.userDisplayName,
 					avatarUrl: post.userAvatarUrl,
 					bio: post.userBio,
+					role: post.userRole,
 					isVerified: false, // Not stored in DB currently
 				},
 			}

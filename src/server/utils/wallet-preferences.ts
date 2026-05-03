@@ -7,6 +7,7 @@ import { db } from '@/server/db'
 import { userWallets } from '@/server/db/schema'
 import { eq, and, count } from 'drizzle-orm'
 import { authenticateWithToken } from '@/server/auth'
+import { isUniqueViolation } from './db-errors'
 
 // Valid connector types
 const VALID_CONNECTORS = ['mwa', 'privy', 'deeplink'] as const
@@ -157,13 +158,10 @@ export async function addWalletDirect(
 
     return { success: true, wallet: inserted }
   } catch (error) {
-    const errorMsg = error instanceof Error ? error.message : String(error)
-    const errorCode = (error as any)?.code
-    // Handle duplicate key error (Postgres code 23505 = unique_violation)
-    if (errorCode === '23505' || errorMsg.includes('unique') || errorMsg.includes('duplicate')) {
+    if (isUniqueViolation(error)) {
       return { success: false, error: 'This wallet address is already added' }
     }
-    console.error('[addWalletDirect] Error:', errorMsg)
+    console.error('[addWalletDirect] Error:', error instanceof Error ? error.message : String(error))
     return { success: false, error: 'Failed to add wallet' }
   }
 }

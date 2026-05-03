@@ -12,6 +12,7 @@ import { withAuth } from '@/server/auth'
 import { sendPushNotification, getActorDisplayName } from '@/server/utils/pushDispatch'
 import { isNotificationTypeEnabled } from '@/server/utils/notificationPrefs'
 import { assertNotPairwiseBlocked, PairwiseBlockError } from '@/server/utils/blocks'
+import { isUniqueViolation } from '@/server/utils/db-errors'
 
 // Schema for like/unlike (no userId - derived from auth)
 const likeSchema = z.object({
@@ -102,16 +103,13 @@ export const likePost = createServerFn({
         postId,
       })
     } catch (insertError) {
-      // If duplicate key error, the like already exists - return success
-      const errorMsg = insertError instanceof Error ? insertError.message : ''
-      if (errorMsg.includes('unique') || errorMsg.includes('duplicate')) {
+      if (isUniqueViolation(insertError)) {
         return {
           success: true,
           message: 'Already liked this post.',
           isLiked: true,
         }
       }
-      // Re-throw other errors
       throw insertError
     }
 

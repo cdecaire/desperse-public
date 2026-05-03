@@ -126,29 +126,24 @@ export async function verifyPrivyToken(accessToken: string): Promise<any> {
  * Get authenticated user from database using verified Privy ID
  */
 export async function getAuthenticatedUser(privyId: string): Promise<AuthenticatedUser | null> {
-  try {
-    const [user] = await db
-      .select({
-        id: users.id,
-        privyId: users.privyId,
-        walletAddress: users.walletAddress,
-      })
-      .from(users)
-      .where(eq(users.privyId, privyId))
-      .limit(1)
+  const [user] = await db
+    .select({
+      id: users.id,
+      privyId: users.privyId,
+      walletAddress: users.walletAddress,
+    })
+    .from(users)
+    .where(eq(users.privyId, privyId))
+    .limit(1)
 
-    if (!user) {
-      return null
-    }
-
-    return {
-      privyId: user.privyId,
-      userId: user.id,
-      walletAddress: user.walletAddress || undefined,
-    }
-  } catch (error) {
-    console.error('Error fetching authenticated user:', error)
+  if (!user) {
     return null
+  }
+
+  return {
+    privyId: user.privyId,
+    userId: user.id,
+    walletAddress: user.walletAddress || undefined,
   }
 }
 
@@ -180,24 +175,26 @@ export async function authenticateWithToken(authorizationOrToken: string | null 
   }
 
   // Primary path: Privy token verification
+  let verifiedClaims: any
   try {
-    const verifiedClaims = await verifyPrivyToken(accessToken)
-    const user = await getAuthenticatedUser(verifiedClaims.userId)
-
-    if (!user) {
-      console.warn(`[AUTH] User ${verifiedClaims.userId} not found in database`)
-      return null
-    }
-
-    return user
+    verifiedClaims = await verifyPrivyToken(accessToken)
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Token verification failed'
-    // "Invalid or expired authentication token" is already handled in verifyPrivyToken — skip double-logging
     if (!message.includes('expired')) {
       console.warn(`[AUTH] Privy verification failed: ${message}`)
     }
     return null
   }
+
+  // DB lookup — let infra errors propagate so callers return 5xx instead of misleading 401
+  const user = await getAuthenticatedUser(verifiedClaims.userId)
+
+  if (!user) {
+    console.warn(`[AUTH] User ${verifiedClaims.userId} not found in database`)
+    return null
+  }
+
+  return user
 }
 
 // ============================================================================
@@ -269,17 +266,11 @@ export async function withAuth<TSchema extends ZodSchema>(
   // Step 2: Extract _authorization (never log this!)
   const authorization = extractAuthorizationFromPayload(dataObj)
 
-  // Step 3: Authenticate
-  let auth: AuthenticatedUser | null = null
-  
-  try {
-    if (authorization) {
-      auth = await authenticateWithToken(authorization)
-    }
-  } catch (error) {
-    // Log error without sensitive data
-    console.error('[withAuth] Authentication error:', error instanceof Error ? error.message : 'Unknown error')
-  }
+  // Step 3: Authenticate — let infra errors (e.g. DB CONNECT_TIMEOUT) propagate as 5xx
+  // so the client retries instead of treating a transient outage as an auth failure.
+  const auth: AuthenticatedUser | null = authorization
+    ? await authenticateWithToken(authorization)
+    : null
 
   if (!auth) {
     if (options?.optional) {
@@ -295,8 +286,7 @@ export async function withAuth<TSchema extends ZodSchema>(
   const parseResult = schema.safeParse(cleanedData)
   
   if (!parseResult.success) {
-    // Log validation error without sensitive fields
-    console.error('[withAuth] Validation error:', parseResult.error.issues)
+    console.warn('[withAuth] Validation error:', parseResult.error.issues)
     throw new Error(`Invalid input: ${parseResult.error.issues.map((e) => e.message).join(', ')}`)
   }
 
@@ -348,7 +338,7 @@ export async function withOptionalAuth<TSchema extends ZodSchema>(
   const parseResult = schema.safeParse(cleanedData)
   
   if (!parseResult.success) {
-    console.error('[withOptionalAuth] Validation error:', parseResult.error.issues)
+    console.warn('[withOptionalAuth] Validation error:', parseResult.error.issues)
     throw new Error(`Invalid input: ${parseResult.error.issues.map((e) => e.message).join(', ')}`)
   }
 

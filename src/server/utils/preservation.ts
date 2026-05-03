@@ -11,6 +11,7 @@
 import { db } from '@/server/db'
 import { preservationSignups } from '@/server/db/schema'
 import { env } from '@/config/env'
+import { isUniqueViolation } from './db-errors'
 
 // Foundation shared marketplace contract — covers single-edition mints.
 const FOUNDATION_SHARED_CONTRACT = '0x3B3ee1931Dc30C1957379FAc9aba94D1C48a5405'
@@ -458,11 +459,10 @@ export async function joinPreservationWaitlist(
 
 		return { success: true }
 	} catch (err) {
-		const msg = err instanceof Error ? err.message : 'Unknown error'
-		if (msg.includes('unique') || msg.includes('duplicate')) {
+		if (isUniqueViolation(err)) {
 			return { success: true, alreadyJoined: true }
 		}
-		console.error('[joinPreservationWaitlist] Insert failed:', msg)
+		console.error('[joinPreservationWaitlist] Insert failed:', err instanceof Error ? err.message : 'Unknown error')
 		return { success: false, error: 'Could not save your signup. Try again in a moment.' }
 	}
 }

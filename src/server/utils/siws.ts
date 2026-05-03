@@ -16,6 +16,7 @@ import * as ed25519 from '@noble/ed25519'
 import { addressToBytes, validateAddress } from '@/server/services/blockchain/addressUtils'
 import { generateUniqueSlug } from '@/server/utils/slug-utils'
 import { getPrivyClient, type AuthenticatedUser } from '@/server/auth'
+import { isUniqueViolation } from './db-errors'
 
 // ============================================================================
 // Constants
@@ -409,10 +410,8 @@ export async function findOrCreateWalletUser(walletAddress: string, walletName?:
           isPrimary: false,
         })
       } catch (insertError) {
-        // Ignore duplicate key errors - wallet may already be in userWallets
-        const errMsg = insertError instanceof Error ? insertError.message : ''
-        if (!errMsg.includes('unique') && !errMsg.includes('duplicate')) {
-          console.warn('[findOrCreateWalletUser] Failed to add legacy wallet to userWallets:', errMsg)
+        if (!isUniqueViolation(insertError)) {
+          console.warn('[findOrCreateWalletUser] Failed to add legacy wallet to userWallets:', insertError instanceof Error ? insertError.message : insertError)
         }
       }
 
@@ -476,9 +475,8 @@ export async function findOrCreateWalletUser(walletAddress: string, walletName?:
         isPrimary: true,
       })
     } catch (walletInsertError) {
-      const errMsg = walletInsertError instanceof Error ? walletInsertError.message : ''
-      if (!errMsg.includes('unique') && !errMsg.includes('duplicate')) {
-        console.warn('[findOrCreateWalletUser] Failed to create userWallet entry:', errMsg)
+      if (!isUniqueViolation(walletInsertError)) {
+        console.warn('[findOrCreateWalletUser] Failed to create userWallet entry:', walletInsertError instanceof Error ? walletInsertError.message : walletInsertError)
       }
     }
 
@@ -555,9 +553,8 @@ async function insertEmbeddedWallet(userId: string, embeddedAddress: string): Pr
     })
     console.log(`[insertEmbeddedWallet] Registered embedded wallet ${embeddedAddress.slice(0, 8)}... for user ${userId}`)
   } catch (err) {
-    const errMsg = err instanceof Error ? err.message : ''
-    if (!errMsg.includes('unique') && !errMsg.includes('duplicate')) {
-      console.warn('[insertEmbeddedWallet] Failed:', errMsg)
+    if (!isUniqueViolation(err)) {
+      console.warn('[insertEmbeddedWallet] Failed:', err instanceof Error ? err.message : err)
     }
   }
 }

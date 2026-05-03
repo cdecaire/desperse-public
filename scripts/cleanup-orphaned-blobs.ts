@@ -1,22 +1,38 @@
 /**
- * Cleanup Orphaned Vercel Blob Files
+ * Quarantine Orphaned Vercel Blob Files
  *
- * Finds and deletes Vercel Blob files that are not referenced by any database record.
+ * Finds Vercel Blob files that are not referenced by any database record and
+ * MOVES them under the `_quarantine/` prefix instead of deleting them outright.
  * This catches:
  *   - Images uploaded in the post form but never published
  *   - Old profile pictures/headers replaced by new ones
  *   - Feedback screenshots from deleted feedback
  *   - Media from posts that were hard-deleted (if any)
  *
- * IMPORTANT: Vercel Blob deletion is PERMANENT. There is no undo, recycle bin,
- * or versioning. This script runs in DRY-RUN mode by default.
+ * SAFETY MODEL:
+ *   1. Run this script with --execute → orphans are copied to `_quarantine/<original-pathname>`
+ *      and then the originals are deleted. Original URLs stop working.
+ *   2. Wait some days. If users report missing images, restore from quarantine
+ *      (the original pathname is preserved, so restoration is straightforward).
+ *   3. When confident nothing is missing, delete the entire `_quarantine/` folder
+ *      (e.g. via the Vercel dashboard, or a small one-shot script).
+ *
+ * Each run also writes a manifest at `_quarantine/_manifest-<timestamp>.json`
+ * listing every (originalPathname, quarantinePathname) pair. Use this to map
+ * a missing original URL back to its quarantined copy.
+ *
+ * Protected paths (NEVER quarantined, even when scanning all prefixes):
+ *   echoes/*       — PFP collection images, metadata, allowlists (separate project area)
+ *   app-release*   — Android APK distribution (referenced from client code, not DB)
+ *   _quarantine/  — already-quarantined blobs (don't re-process)
+ * See PROTECTED_PREFIXES below to add more.
  *
  * Usage:
  *   pnpm tsx scripts/cleanup-orphaned-blobs.ts                     # Dry run (list only)
- *   pnpm tsx scripts/cleanup-orphaned-blobs.ts --execute            # Actually delete
- *   pnpm tsx scripts/cleanup-orphaned-blobs.ts --min-age-days 30    # Only blobs older than 30 days (default: 7)
- *   pnpm tsx scripts/cleanup-orphaned-blobs.ts --prefix media       # Only scan media/ prefix (default: all)
- *   pnpm tsx scripts/cleanup-orphaned-blobs.ts --limit 100          # Limit deletions per run
+ *   pnpm tsx scripts/cleanup-orphaned-blobs.ts --execute           # Actually quarantine
+ *   pnpm tsx scripts/cleanup-orphaned-blobs.ts --min-age-days 30   # Only blobs older than 30 days (default: 7)
+ *   pnpm tsx scripts/cleanup-orphaned-blobs.ts --prefix media      # Only scan media/ prefix (default: all)
+ *   pnpm tsx scripts/cleanup-orphaned-blobs.ts --limit 100         # Limit moves per run
  */
 
 import dotenv from "dotenv";
@@ -24,7 +40,7 @@ import { fileURLToPath } from "url";
 import { dirname, resolve } from "path";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import { list, del } from "@vercel/blob";
+import { list, del, copy, put } from "@vercel/blob";
 import {
 	posts,
 	postAssets,
@@ -39,6 +55,27 @@ const projectRoot = resolve(__dirname, "..");
 
 dotenv.config({ path: resolve(projectRoot, ".env.local") });
 dotenv.config({ path: resolve(projectRoot, ".env") });
+
+// ---------------------------------------------------------------------------
+// Protected paths — NEVER deleted, even if not referenced in the database.
+//
+// These blobs belong to other project areas (Echoes PFP collection, Android
+// APK distribution) and are referenced by candy-machine config, server env
+// vars, or hardcoded client constants — not by any DB column.
+//
+// A blob is protected if its `pathname` starts with any prefix in this list.
+// ---------------------------------------------------------------------------
+const QUARANTINE_PREFIX = "_quarantine/";
+
+const PROTECTED_PREFIXES = [
+	"echoes/",          // Echoes PFP collection images, metadata, collection cover, OG/WL allowlists
+	"app-release",      // Android APK (app-release.apk) — referenced from DownloadBadges.tsx
+	QUARANTINE_PREFIX,  // Already-quarantined blobs — never re-process
+] as const;
+
+function isProtectedPath(pathname: string): boolean {
+	return PROTECTED_PREFIXES.some((p) => pathname.startsWith(p));
+}
 
 // ---------------------------------------------------------------------------
 // Config
@@ -271,12 +308,17 @@ async function main() {
 	// Step 2: List all blobs in Vercel Blob storage
 	const allBlobs = await listAllBlobs(config.prefix);
 
-	// Step 3: Find orphans (not referenced + older than cutoff)
+	// Step 3: Find orphans (not referenced + not protected + older than cutoff)
 	const orphans: BlobEntry[] = [];
 	let skippedTooNew = 0;
 	let skippedReferenced = 0;
+	let skippedProtected = 0;
 
 	for (const blob of allBlobs) {
+		if (isProtectedPath(blob.pathname)) {
+			skippedProtected++;
+			continue;
+		}
 		if (referencedUrls.has(blob.url)) {
 			skippedReferenced++;
 			continue;
@@ -290,6 +332,7 @@ async function main() {
 
 	console.log("\n=== Results ===");
 	console.log(`  Total blobs:          ${allBlobs.length}`);
+	console.log(`  Protected prefix:     ${skippedProtected}  (${PROTECTED_PREFIXES.join(", ")})`);
 	console.log(`  Referenced (safe):    ${skippedReferenced}`);
 	console.log(`  Too new (< ${config.minAgeDays} days): ${skippedTooNew}`);
 	console.log(`  Orphaned:             ${orphans.length}`);
@@ -304,19 +347,19 @@ async function main() {
 	const totalMB = (totalBytes / 1024 / 1024).toFixed(2);
 	console.log(`  Orphaned size:        ${totalMB} MB`);
 
-	// Limit deletions if configured
-	const toDelete = orphans.slice(0, config.limit);
-	if (toDelete.length < orphans.length) {
+	// Limit moves if configured
+	const toQuarantine = orphans.slice(0, config.limit);
+	if (toQuarantine.length < orphans.length) {
 		console.log(
-			`\n  (Limiting to ${config.limit} deletions out of ${orphans.length} orphans)`,
+			`\n  (Limiting to ${config.limit} moves out of ${orphans.length} orphans)`,
 		);
 	}
 
 	// Print orphan details (first 50)
-	const previewCount = Math.min(toDelete.length, 50);
-	console.log(`\n--- Orphaned blobs (showing ${previewCount} of ${toDelete.length}) ---`);
+	const previewCount = Math.min(toQuarantine.length, 50);
+	console.log(`\n--- Orphaned blobs (showing ${previewCount} of ${toQuarantine.length}) ---`);
 	for (let i = 0; i < previewCount; i++) {
-		const b = toDelete[i];
+		const b = toQuarantine[i];
 		const ageDays = Math.floor(
 			(Date.now() - b.uploadedAt.getTime()) / (1000 * 60 * 60 * 24),
 		);
@@ -325,68 +368,127 @@ async function main() {
 			`  ${b.pathname} (${sizeMB} MB, ${ageDays} days old)`,
 		);
 	}
-	if (toDelete.length > previewCount) {
-		console.log(`  ... and ${toDelete.length - previewCount} more`);
+	if (toQuarantine.length > previewCount) {
+		console.log(`  ... and ${toQuarantine.length - previewCount} more`);
 	}
 
-	// Step 4: Delete orphans (or just report in dry-run mode)
+	// Step 4: Quarantine orphans (or just report in dry-run mode)
 	if (!config.execute) {
 		console.log(
-			`\n🟢 DRY RUN complete. To delete these ${toDelete.length} blobs, re-run with --execute`,
+			`\n🟢 DRY RUN complete. To quarantine these ${toQuarantine.length} blobs, re-run with --execute`,
+		);
+		console.log(
+			`   They will be moved to "${QUARANTINE_PREFIX}<original-pathname>" and the originals deleted.`,
 		);
 		return;
 	}
 
-	console.log(`\n🔴 DELETING ${toDelete.length} orphaned blobs...`);
+	console.log(`\n🟡 QUARANTINING ${toQuarantine.length} orphaned blobs → ${QUARANTINE_PREFIX}...`);
 
-	let deleted = 0;
+	interface ManifestEntry {
+		originalPathname: string;
+		originalUrl: string;
+		quarantinePathname: string;
+		quarantineUrl: string;
+		size: number;
+		uploadedAt: string;
+	}
+
+	const manifest: ManifestEntry[] = [];
+	let moved = 0;
 	let failed = 0;
-	const batchSize = 100;
+	const failures: { pathname: string; error: string }[] = [];
 
-	for (let i = 0; i < toDelete.length; i += batchSize) {
-		const batch = toDelete.slice(i, i + batchSize);
-		const urls = batch.map((b) => b.url);
+	for (let i = 0; i < toQuarantine.length; i++) {
+		const b = toQuarantine[i];
+		const quarantinePathname = `${QUARANTINE_PREFIX}${b.pathname}`;
 
 		try {
-			await del(urls);
-			deleted += batch.length;
-		} catch (error) {
-			// Fall back to individual deletes on batch failure
-			console.warn(
-				`  Batch delete failed, falling back to individual deletes:`,
-				error instanceof Error ? error.message : error,
-			);
-			for (const url of urls) {
-				try {
-					await del(url);
-					deleted++;
-				} catch (delError) {
-					failed++;
-					console.error(
-						`  Failed to delete ${url}:`,
-						delError instanceof Error ? delError.message : delError,
-					);
-				}
-			}
+			// 1. Copy original → quarantine path (preserve pathname, no random suffix)
+			const copied = await copy(b.url, quarantinePathname, {
+				access: "public",
+				addRandomSuffix: false,
+				allowOverwrite: true,
+			});
+
+			// 2. Delete original only after copy succeeded
+			await del(b.url);
+
+			manifest.push({
+				originalPathname: b.pathname,
+				originalUrl: b.url,
+				quarantinePathname: copied.pathname,
+				quarantineUrl: copied.url,
+				size: b.size,
+				uploadedAt: b.uploadedAt.toISOString(),
+			});
+			moved++;
+		} catch (err) {
+			failed++;
+			const msg = err instanceof Error ? err.message : String(err);
+			failures.push({ pathname: b.pathname, error: msg });
+			console.error(`  Failed to quarantine ${b.pathname}: ${msg}`);
 		}
 
-		if ((i + batchSize) % 500 === 0 || i + batchSize >= toDelete.length) {
+		if ((i + 1) % 50 === 0 || i + 1 === toQuarantine.length) {
 			console.log(
-				`  Progress: ${deleted} deleted, ${failed} failed (${Math.min(i + batchSize, toDelete.length)}/${toDelete.length})`,
+				`  Progress: ${moved} moved, ${failed} failed (${i + 1}/${toQuarantine.length})`,
 			);
 		}
 	}
 
-	console.log(`\n=== Cleanup Complete ===`);
-	console.log(`  Deleted: ${deleted}`);
-	console.log(`  Failed:  ${failed}`);
+	// Write manifest to quarantine folder so we can map original → quarantined later
+	if (manifest.length > 0) {
+		const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+		const manifestPathname = `${QUARANTINE_PREFIX}_manifest-${timestamp}.json`;
+		try {
+			const manifestBlob = await put(
+				manifestPathname,
+				JSON.stringify(
+					{
+						runAt: new Date().toISOString(),
+						totalMoved: moved,
+						totalFailed: failed,
+						minAgeDays: config.minAgeDays,
+						prefix: config.prefix ?? null,
+						entries: manifest,
+						failures,
+					},
+					null,
+					2,
+				),
+				{
+					access: "public",
+					contentType: "application/json",
+					addRandomSuffix: false,
+					allowOverwrite: false,
+				},
+			);
+			console.log(`\n  Manifest written: ${manifestBlob.url}`);
+		} catch (err) {
+			console.error(
+				`\n  ⚠️  FAILED to write manifest:`,
+				err instanceof Error ? err.message : err,
+			);
+			console.error(`     Dumping manifest to stdout instead:`);
+			console.error(JSON.stringify(manifest, null, 2));
+		}
+	}
 
-	const deletedMB = (
-		toDelete
-			.slice(0, deleted)
-			.reduce((sum, b) => sum + b.size, 0) / 1024 / 1024
+	console.log(`\n=== Quarantine Complete ===`);
+	console.log(`  Moved:  ${moved}`);
+	console.log(`  Failed: ${failed}`);
+
+	const movedMB = (
+		manifest.reduce((sum, e) => sum + e.size, 0) / 1024 / 1024
 	).toFixed(2);
-	console.log(`  Freed:   ~${deletedMB} MB`);
+	console.log(`  Size:   ~${movedMB} MB now under ${QUARANTINE_PREFIX}`);
+	console.log(
+		`\n  When you're confident nothing is missing, delete the entire ${QUARANTINE_PREFIX} folder`,
+	);
+	console.log(
+		`  (via the Vercel dashboard, or list+del all blobs with that prefix).`,
+	);
 }
 
 main().catch((err) => {

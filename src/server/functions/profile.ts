@@ -22,6 +22,7 @@ import { env } from '@/config/env'
 import { uploadToBlob, SUPPORTED_IMAGE_TYPES } from '@/server/storage/blob'
 import { withAuth, withOptionalAuth } from '@/server/auth'
 import { excludeDevPostsForUser } from '@/server/utils/dev-posts'
+import { deleteReplacedBlob } from '@/server/utils/profile'
 import { getPostCollectorsListDirect } from '@/server/utils/follows'
 import { getBlockedUserIdSet, getDirectedBlockState } from '@/server/utils/blocks'
 import { isReservedHandle } from '@/server/utils/slug-utils'
@@ -270,6 +271,13 @@ export const uploadHeaderBg = createServerFn({
       fileName = data.fileName
     }
 
+    // Read previous header URL so we can clean up the orphaned blob after replacement
+    const [previous] = await db
+      .select({ headerBgUrl: users.headerBgUrl })
+      .from(users)
+      .where(eq(users.id, data.userId))
+      .limit(1)
+
     // Convert Buffer to Uint8Array for Blob construction to satisfy TS
     const blob = new Blob([new Uint8Array(fileBuffer)], { type: mimeType })
     const uploadResult = await uploadToBlob(blob, fileName, mimeType, 'headers')
@@ -286,6 +294,9 @@ export const uploadHeaderBg = createServerFn({
         updatedAt: new Date(),
       })
       .where(eq(users.id, data.userId))
+
+    // Best-effort cleanup of the previous header blob (non-blocking on failure)
+    await deleteReplacedBlob(previous?.headerBgUrl, uploadResult.url, 'uploadHeaderBg')
 
     return {
       success: true,
@@ -352,6 +363,13 @@ export const uploadAvatar = createServerFn({
       fileName = data.fileName
     }
 
+    // Read previous avatar URL so we can clean up the orphaned blob after replacement
+    const [previous] = await db
+      .select({ avatarUrl: users.avatarUrl })
+      .from(users)
+      .where(eq(users.id, data.userId))
+      .limit(1)
+
     // Convert Buffer to Uint8Array for Blob construction to satisfy TS
     const blob = new Blob([new Uint8Array(fileBuffer)], { type: mimeType })
     const uploadResult = await uploadToBlob(blob, fileName, mimeType, 'avatars')
@@ -368,6 +386,9 @@ export const uploadAvatar = createServerFn({
         updatedAt: new Date(),
       })
       .where(eq(users.id, data.userId))
+
+    // Best-effort cleanup of the previous avatar blob (non-blocking on failure)
+    await deleteReplacedBlob(previous?.avatarUrl, uploadResult.url, 'uploadAvatar')
 
     return {
       success: true,

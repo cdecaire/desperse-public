@@ -7,11 +7,34 @@ import { db } from '@/server/db'
 import { users, posts, collections, purchases, follows, likes, postAssets, comments } from '@/server/db/schema'
 import { and, asc, count, desc, eq, inArray, isNull, lt, ne, or } from 'drizzle-orm'
 import { authenticateWithToken } from '@/server/auth'
-import { uploadToBlob, SUPPORTED_IMAGE_TYPES } from '@/server/storage/blob'
+import { uploadToBlob, deleteFromBlob, SUPPORTED_IMAGE_TYPES } from '@/server/storage/blob'
 import { excludeDevPostsForUser } from '@/server/utils/dev-posts'
 
 const AVATAR_MAX_BYTES = 2 * 1024 * 1024 // 2MB limit for avatars
 const HEADER_MAX_BYTES = 5 * 1024 * 1024 // 5MB limit for header backgrounds
+
+/**
+ * Best-effort delete of a previous avatar/header blob after it's been replaced.
+ * Skips no-ops (null, unchanged) and never touches non-Vercel-Blob URLs (e.g.,
+ * external avatars an admin/migration might have set). Failures are logged but
+ * never thrown — the cleanup script remains the backstop.
+ */
+export async function deleteReplacedBlob(
+	oldUrl: string | null | undefined,
+	newUrl: string | null | undefined,
+	context: string,
+): Promise<void> {
+	if (!oldUrl || oldUrl === newUrl) return
+	if (!oldUrl.includes('.blob.vercel-storage.com')) return
+	try {
+		await deleteFromBlob(oldUrl)
+	} catch (err) {
+		console.warn(
+			`[${context}] Failed to delete replaced blob ${oldUrl.slice(0, 80)}...:`,
+			err instanceof Error ? err.message : err,
+		)
+	}
+}
 
 export interface ProfileUser {
 	id: string
@@ -942,12 +965,15 @@ export async function updateProfileDirect(
 	}
 
 	try {
-		// Get current user
+		// Get current user (avatarUrl/headerBgUrl included so we can clean up
+		// orphaned blobs when the user replaces or clears them via this update)
 		const [currentUser] = await db
 			.select({
 				id: users.id,
 				usernameSlug: users.usernameSlug,
 				usernameLastChangedAt: users.usernameLastChangedAt,
+				avatarUrl: users.avatarUrl,
+				headerBgUrl: users.headerBgUrl,
 			})
 			.from(users)
 			.where(eq(users.id, userId))
@@ -1090,6 +1116,15 @@ export async function updateProfileDirect(
 				walletAddress: users.walletAddress,
 			})
 
+		// Best-effort cleanup of replaced or cleared avatar/header blobs.
+		// Only fires when the field was explicitly included in the update payload.
+		if (updates.avatarUrl !== undefined) {
+			await deleteReplacedBlob(currentUser.avatarUrl, updated.avatarUrl, 'updateProfileDirect:avatar')
+		}
+		if (updates.headerUrl !== undefined) {
+			await deleteReplacedBlob(currentUser.headerBgUrl, updated.headerBgUrl, 'updateProfileDirect:header')
+		}
+
 		return {
 			success: true,
 			user: {
@@ -1182,6 +1217,13 @@ export async function uploadAvatarDirect(
 			}
 		}
 
+		// Read previous avatar URL so we can delete the orphaned blob after replacement
+		const [previous] = await db
+			.select({ avatarUrl: users.avatarUrl })
+			.from(users)
+			.where(eq(users.id, auth.userId))
+			.limit(1)
+
 		// Upload to blob storage
 		const blob = new Blob([new Uint8Array(fileBuffer)], { type: mimeType })
 		const uploadResult = await uploadToBlob(blob, fileName, mimeType, 'avatars')
@@ -1198,6 +1240,9 @@ export async function uploadAvatarDirect(
 				updatedAt: new Date(),
 			})
 			.where(eq(users.id, auth.userId))
+
+		// Best-effort cleanup of the previous avatar blob (non-blocking on failure)
+		await deleteReplacedBlob(previous?.avatarUrl, uploadResult.url, 'uploadAvatarDirect')
 
 		return {
 			success: true,
@@ -1259,6 +1304,13 @@ export async function uploadHeaderDirect(
 			}
 		}
 
+		// Read previous header URL so we can delete the orphaned blob after replacement
+		const [previous] = await db
+			.select({ headerBgUrl: users.headerBgUrl })
+			.from(users)
+			.where(eq(users.id, auth.userId))
+			.limit(1)
+
 		// Upload to blob storage
 		const blob = new Blob([new Uint8Array(fileBuffer)], { type: mimeType })
 		const uploadResult = await uploadToBlob(blob, fileName, mimeType, 'headers')
@@ -1275,6 +1327,9 @@ export async function uploadHeaderDirect(
 				updatedAt: new Date(),
 			})
 			.where(eq(users.id, auth.userId))
+
+		// Best-effort cleanup of the previous header blob (non-blocking on failure)
+		await deleteReplacedBlob(previous?.headerBgUrl, uploadResult.url, 'uploadHeaderDirect')
 
 		return {
 			success: true,

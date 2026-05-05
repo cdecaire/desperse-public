@@ -96,7 +96,7 @@ export function FollowersModal({
           <button
             type="button"
             onClick={() => handleTabChange('followers')}
-            className={`flex-1 px-4 py-3 text-sm font-medium transition-colors relative ${
+            className={`flex-1 px-4 py-3 text-label-lg transition-colors relative ${
               activeTab === 'followers'
                 ? 'text-foreground'
                 : 'text-muted-foreground hover:text-foreground/80'
@@ -110,7 +110,7 @@ export function FollowersModal({
           <button
             type="button"
             onClick={() => handleTabChange('following')}
-            className={`flex-1 px-4 py-3 text-sm font-medium transition-colors relative ${
+            className={`flex-1 px-4 py-3 text-label-lg transition-colors relative ${
               activeTab === 'following'
                 ? 'text-foreground'
                 : 'text-muted-foreground hover:text-foreground/80'
@@ -124,7 +124,7 @@ export function FollowersModal({
           <button
             type="button"
             onClick={() => handleTabChange('collectors')}
-            className={`flex-1 px-4 py-3 text-sm font-medium transition-colors relative ${
+            className={`flex-1 px-4 py-3 text-label-lg transition-colors relative ${
               activeTab === 'collectors'
                 ? 'text-foreground'
                 : 'text-muted-foreground hover:text-foreground/80'
@@ -261,7 +261,7 @@ function FollowerItem({
           <p className="font-semibold truncate">
             {follower.displayName || follower.usernameSlug}
           </p>
-          <p className="text-sm text-muted-foreground truncate">
+          <p className="text-body-sm text-muted-foreground truncate">
             @{follower.usernameSlug}
           </p>
         </div>

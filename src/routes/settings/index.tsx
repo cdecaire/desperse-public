@@ -35,7 +35,7 @@ function SettingsIndexPage() {
             <div className="divide-y divide-border/80">
             {settingsCategories.map((category) => (
               <div key={category.title} className="py-4">
-                <h2 className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+                <h2 className="px-4 text-label-xs text-muted-foreground mb-3">
                   {category.title}
                 </h2>
                 <nav className="space-y-1">
@@ -62,10 +62,10 @@ function SettingsIndexPage() {
                           />
                         </span>
                         <div className="flex-1 min-w-0">
-                          <div className="text-sm font-medium leading-none">
+                          <div className="text-title-sm leading-none">
                             {item.label}
                           </div>
-                          <div className="text-xs text-muted-foreground mt-1 leading-tight">
+                          <div className="text-caption text-muted-foreground mt-1">
                             {item.description}
                           </div>
                         </div>
@@ -84,8 +84,8 @@ function SettingsIndexPage() {
         <div className="hidden md:block">
           <div className="py-8 space-y-6 px-4 md:px-6 lg:px-8">
             <div className="space-y-2">
-              <h1 className="text-2xl font-bold">Settings</h1>
-              <p className="text-sm text-muted-foreground">
+              <h1 className="text-heading-2">Settings</h1>
+              <p className="text-body-sm text-muted-foreground">
                 Select a category from the sidebar to get started.
               </p>
             </div>

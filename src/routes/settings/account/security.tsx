@@ -14,7 +14,7 @@ function SecurityPage() {
       />
 
       <div className="rounded-2xl border border-border/70 bg-card p-4 md:p-6">
-        <p className="text-sm text-muted-foreground">Security settings coming soon.</p>
+        <p className="text-body-sm text-muted-foreground">Security settings coming soon.</p>
       </div>
     </div>
   )

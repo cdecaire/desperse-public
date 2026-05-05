@@ -120,7 +120,7 @@ export function SettingsNav({ variant = 'desktop' }: SettingsNavProps) {
           <span className="w-6 h-6 grid place-items-center">
             <Icon name={item.icon} variant="regular" className="text-xl" />
           </span>
-          <span className="text-sm font-medium leading-none">{item.label}</span>
+          <span className="text-title-sm leading-none">{item.label}</span>
         </button>
       )
     }
@@ -138,7 +138,7 @@ export function SettingsNav({ variant = 'desktop' }: SettingsNavProps) {
         <span className="w-6 h-6 grid place-items-center">
           <Icon name={item.icon} variant={isActive ? "solid" : "regular"} className="text-xl" />
         </span>
-        <span className="text-sm font-medium leading-none">{item.label}</span>
+        <span className="text-title-sm leading-none">{item.label}</span>
       </Link>
     )
   }
@@ -150,11 +150,11 @@ export function SettingsNav({ variant = 'desktop' }: SettingsNavProps) {
     <div className="flex flex-col">
       {variant === 'desktop' ? (
         <div className="flex items-center h-16 px-6">
-          <span className="text-xl font-bold">Account</span>
+          <span className="text-heading-3">Account</span>
         </div>
       ) : (
         <div className="px-1 pb-2">
-          <div className="text-sm font-semibold text-foreground">Account</div>
+          <div className="text-title-sm text-foreground">Account</div>
         </div>
       )}
       <nav className={`flex flex-col ${navPadding}`}>
@@ -164,7 +164,7 @@ export function SettingsNav({ variant = 'desktop' }: SettingsNavProps) {
 
         {variant === 'desktop' && (
           <div className="px-3 py-2">
-            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            <span className="text-label-xs text-muted-foreground">
               General
             </span>
           </div>

@@ -95,7 +95,7 @@ function NotificationsContent() {
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4 px-4">
-        <p className="text-destructive">Failed to load notifications</p>
+        <p className="text-body-md text-destructive">Failed to load notifications</p>
         <Button
           variant="outline"
           onClick={() => window.location.reload()}
@@ -144,7 +144,7 @@ function NotificationsContent() {
                 {isFetchingNextPage ? (
                   <LoadingSpinner size="sm" />
                 ) : (
-                  <span className="text-sm text-muted-foreground">Scroll for more...</span>
+                  <span className="text-body-sm text-muted-foreground">Scroll for more...</span>
                 )}
               </div>
             )}

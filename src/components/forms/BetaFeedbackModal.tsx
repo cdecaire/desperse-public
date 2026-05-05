@@ -95,7 +95,7 @@ function StarRating({
         <button
           type="button"
           disabled={disabled}
-          className="ml-2 text-xs text-muted-foreground hover:text-foreground"
+          className="ml-2 text-caption text-muted-foreground hover:text-foreground"
           onClick={() => onChange(null)}
         >
           Clear
@@ -254,7 +254,7 @@ export function BetaFeedbackModal({ open, onOpenChange }: BetaFeedbackModalProps
         <div className="space-y-6">
           {/* Star Rating */}
           <div className="space-y-2">
-            <label className="text-sm font-medium">How's it going?</label>
+            <label className="text-label-lg">How's it going?</label>
             <StarRating
               value={rating}
               onChange={setRating}
@@ -264,7 +264,7 @@ export function BetaFeedbackModal({ open, onOpenChange }: BetaFeedbackModalProps
 
           {/* Message */}
           <div className="space-y-2">
-            <label htmlFor="feedback-message" className="text-sm font-medium">
+            <label htmlFor="feedback-message" className="text-label-lg">
               Message
             </label>
             <div className="relative">
@@ -278,7 +278,7 @@ export function BetaFeedbackModal({ open, onOpenChange }: BetaFeedbackModalProps
                 className="resize-none pb-7"
                 disabled={createFeedback.isPending}
               />
-              <div className="absolute bottom-2 right-3 text-xs text-muted-foreground pointer-events-none">
+              <div className="absolute bottom-2 right-3 text-caption text-muted-foreground pointer-events-none">
                 {message.length} / {MAX_MESSAGE_LENGTH}
               </div>
             </div>
@@ -286,7 +286,7 @@ export function BetaFeedbackModal({ open, onOpenChange }: BetaFeedbackModalProps
 
           {/* Screenshot Upload */}
           <div className="space-y-2">
-            <label className="text-sm font-medium">Screenshot</label>
+            <label className="text-label-lg">Screenshot</label>
 
             {!imagePreview && !imageUrl ? (
               <div
@@ -323,12 +323,12 @@ export function BetaFeedbackModal({ open, onOpenChange }: BetaFeedbackModalProps
                 {isUploading ? (
                   <div className="flex flex-col items-center gap-2">
                     <LoadingSpinner size="md" />
-                    <p className="text-xs text-muted-foreground">Uploading...</p>
+                    <p className="text-caption text-muted-foreground">Uploading...</p>
                   </div>
                 ) : (
                   <>
                     <Icon name="camera" variant="regular" className="text-xl text-muted-foreground mb-2" />
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-caption text-muted-foreground">
                       Add a screenshot (optional)
                     </p>
                   </>

@@ -52,7 +52,7 @@ function ProfileRedirect() {
         <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
           <Icon name="wallet" variant="regular" className="text-2xl text-muted-foreground" />
         </div>
-        <h2 className="text-xl font-semibold mb-2">Wallet Required</h2>
+        <h2 className="text-heading-3 mb-2">Wallet Required</h2>
         <p className="text-muted-foreground mb-6 max-w-md">
           Please connect a Solana wallet to complete your profile setup.
         </p>
@@ -70,7 +70,7 @@ function ProfileRedirect() {
         <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center mb-4">
           <Icon name="triangle-exclamation" variant="regular" className="text-2xl text-destructive" />
         </div>
-        <h2 className="text-xl font-semibold mb-2">Something went wrong</h2>
+        <h2 className="text-heading-3 mb-2">Something went wrong</h2>
         <p className="text-muted-foreground mb-6 max-w-md">
           We couldn't load your profile. Please try again.
         </p>

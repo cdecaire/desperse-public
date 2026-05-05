@@ -12,11 +12,11 @@ interface PageHeaderProps {
 export function PageHeader({ title, description, showOnMobile = false }: PageHeaderProps) {
 	return (
 		<div className="space-y-2 mb-6">
-			<h1 className={`text-xl font-bold ${showOnMobile ? '' : 'hidden md:block'}`}>
+			<h1 className={`text-heading-3 ${showOnMobile ? '' : 'hidden md:block'}`}>
 				{title}
 			</h1>
 			{description && (
-				<p className="text-sm text-muted-foreground">{description}</p>
+				<p className="text-body-sm text-muted-foreground">{description}</p>
 			)}
 		</div>
 	)

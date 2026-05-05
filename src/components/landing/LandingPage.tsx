@@ -191,9 +191,9 @@ function Header() {
     <header className="fixed top-0 left-0 right-0 z-50 px-6 py-4 flex items-center bg-background/80 backdrop-blur-md border-b border-border/50" style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 1rem)' }}>
       <Link to="/" className="flex-1 flex items-center space-x-2 hover:opacity-80 transition-opacity">
         <Logo size={15} className="text-foreground" />
-        <span className="text-xl font-extrabold">Desperse</span>
+        <span className="text-heading-3">Desperse</span>
       </Link>
-      <nav className="hidden md:flex gap-8 text-sm font-medium">
+      <nav className="hidden md:flex gap-8 text-label-lg">
         <Link to="/browse" className="hover:text-zinc-500 dark:hover:text-zinc-400 transition-colors">
           Browse
         </Link>
@@ -220,7 +220,7 @@ function Header() {
         {authenticated ? (
           <Link
             to="/"
-            className="border border-zinc-300 dark:border-zinc-700 px-5 py-2 rounded-full text-sm font-medium hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 transition-colors duration-200"
+            className="border border-zinc-300 dark:border-zinc-700 px-5 py-2 rounded-full text-label-lg hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 transition-colors duration-200"
           >
             Go to Feed
           </Link>
@@ -228,7 +228,7 @@ function Header() {
           <button
             onClick={() => login()}
             disabled={!ready}
-            className="border border-zinc-300 dark:border-zinc-700 px-5 py-2 rounded-full text-sm font-medium hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 transition-colors duration-200 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-950 dark:focus-visible:ring-white"
+            className="border border-zinc-300 dark:border-zinc-700 px-5 py-2 rounded-full text-label-lg hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 transition-colors duration-200 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-950 dark:focus-visible:ring-white"
           >
             Log in
           </button>
@@ -254,14 +254,14 @@ function Hero() {
       />
 
       <div ref={revealRef} className="z-10 max-w-7xl mx-auto w-full">
-        <h1 className="text-[12vw] leading-[0.9] font-extrabold tracking-tighter overflow-hidden">
+        <h1 className="text-display-4xl overflow-hidden">
           <span className="block reveal-text">CREATE.</span>
           <span className="block reveal-text" style={{ transitionDelay: '0.1s' }}>COLLECT.</span>
           <span className="block reveal-text text-zinc-500 dark:text-zinc-400" style={{ transitionDelay: '0.2s' }}>OWN.</span>
         </h1>
 
         <div className="mt-12 flex flex-col md:flex-row md:items-end justify-between gap-8">
-          <p className="text-xl md:text-2xl max-w-xl text-zinc-600 dark:text-zinc-400 font-light reveal-text" style={{ transitionDelay: '0.3s' }}>
+          <p className="text-body-lg max-w-xl text-zinc-600 dark:text-zinc-400 font-light reveal-text" style={{ transitionDelay: '0.3s' }}>
             The platform where creative work becomes collectible.{' '}
             <span className="text-zinc-950 dark:text-white">Publish photos, videos, and art — own them onchain.</span>
           </p>
@@ -269,13 +269,13 @@ function Hero() {
             <button
               onClick={() => login()}
               disabled={!ready}
-              className="px-8 py-4 bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-bold rounded-full hover:scale-105 active:scale-[0.98] transition-all duration-200 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-950 dark:focus-visible:ring-white"
+              className="px-8 py-4 bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 text-label-lg rounded-full hover:scale-105 active:scale-[0.98] transition-all duration-200 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-950 dark:focus-visible:ring-white"
             >
               Get Started
             </button>
             <a
               href="#features"
-              className="group flex items-center gap-2 text-sm font-medium text-zinc-500 hover:text-zinc-950 dark:hover:text-white transition-colors"
+              className="group flex items-center gap-2 text-label-lg text-zinc-500 hover:text-zinc-950 dark:hover:text-white transition-colors"
             >
               See how it works
               <span className="group-hover:translate-x-1 transition-transform">&darr;</span>
@@ -284,7 +284,7 @@ function Hero() {
         </div>
 
         <div className="mt-12 flex flex-col gap-4 reveal-text" style={{ transitionDelay: '0.5s' }}>
-          <p className="text-xs font-mono tracking-widest text-zinc-500 dark:text-zinc-500">
+          <p className="text-mono-sm text-zinc-500 dark:text-zinc-500">
             ALSO AVAILABLE ON
           </p>
           <DownloadBadges size="sm" />
@@ -308,7 +308,8 @@ function Marquee() {
           <div key={gi} className="flex shrink-0">
             {group.map((item, i) => (
               <span key={i} className="flex items-center">
-                <span className="text-sm md:text-base font-mono tracking-widest px-8 text-muted-foreground/60">
+                {/* Editorial marquee — mono with wide tracking for decorative effect */}
+                <span className="text-mono-md tracking-widest px-8 text-muted-foreground/60">
                   {item}
                 </span>
                 <span className="text-muted-foreground/30 text-xs">◆</span>
@@ -456,15 +457,15 @@ function ForCollectorsCard() {
     <div className="md:sticky md:top-16 min-h-[80vh] md:min-h-screen md:h-screen flex items-center justify-center overflow-hidden border-t border-border bg-background z-30 transition-all duration-500 ease-out">
       <div className="max-w-7xl w-full mx-auto px-6 grid md:grid-cols-2 gap-12 items-center h-full py-20">
         <div className="order-2 md:order-1 scroll-reveal">
-          <span className="text-sm font-mono text-zinc-600 dark:text-zinc-400 mb-4 block">03 / FOR COLLECTORS</span>
-          <h2 className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight">
+          <span className="text-mono-md text-zinc-600 dark:text-zinc-400 mb-4 block">03 / FOR COLLECTORS</span>
+          <h2 className="text-display-3xl mb-6">
             Collect what <br />
             <span className="text-zinc-600 dark:text-zinc-400">you care about.</span>
           </h2>
-          <p className="text-xl text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-md">
+          <p className="text-body-lg text-zinc-600 dark:text-zinc-400 max-w-md">
             Discover work from creators you love, collect pieces that resonate, and own them onchain.
           </p>
-          <p className="mt-4 text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-md">
+          <p className="mt-4 text-body-md text-zinc-600 dark:text-zinc-400 max-w-md">
             Every collectible is tied directly to the creator and lives in your wallet.
           </p>
         </div>
@@ -518,15 +519,15 @@ function StickyCards() {
       <div className="md:sticky md:top-16 min-h-[80vh] md:min-h-screen md:h-screen flex items-center justify-center overflow-hidden border-t border-border bg-background z-10 transition-all duration-500 ease-out">
         <div className="max-w-7xl w-full mx-auto px-6 grid md:grid-cols-2 gap-12 items-center h-full py-20">
           <div className="order-2 md:order-1 scroll-reveal">
-            <span className="text-sm font-mono text-zinc-600 dark:text-zinc-400 mb-4 block">01 / WHAT DESPERSE IS</span>
-            <h2 className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight">
+            <span className="text-mono-md text-zinc-600 dark:text-zinc-400 mb-4 block">01 / WHAT DESPERSE IS</span>
+            <h2 className="text-display-3xl mb-6">
               Built for creators, <br />
               <span className="text-zinc-600 dark:text-zinc-400">not algorithms.</span>
             </h2>
-            <p className="text-xl text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-md">
+            <p className="text-body-lg text-zinc-600 dark:text-zinc-400 max-w-md">
               Desperse is a platform where creative work becomes collectible. Creators publish work directly, and collectors can mint and own it onchain.
             </p>
-            <p className="mt-4 text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-md">
+            <p className="mt-4 text-body-md text-zinc-600 dark:text-zinc-400 max-w-md">
               No algorithms deciding who sees your work. Just creative output and direct collector support.
             </p>
           </div>
@@ -591,15 +592,15 @@ function StickyCards() {
       <div className="md:sticky md:top-16 min-h-[80vh] md:min-h-screen md:h-screen flex items-center justify-center overflow-hidden border-t border-border bg-card z-20 transition-all duration-500 ease-out">
         <div className="max-w-7xl w-full mx-auto px-6 grid md:grid-cols-2 gap-12 items-center h-full py-20">
           <div className="order-2 md:order-1 scroll-reveal">
-            <span className="text-sm font-mono text-zinc-600 dark:text-zinc-400 mb-4 block">02 / FOR CREATORS</span>
-            <h2 className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight">
+            <span className="text-mono-md text-zinc-600 dark:text-zinc-400 mb-4 block">02 / FOR CREATORS</span>
+            <h2 className="text-display-3xl mb-6">
               Your work. <br />
               <span className="text-zinc-600 dark:text-zinc-400">Your ownership.</span>
             </h2>
-            <p className="text-xl text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-md">
+            <p className="text-body-lg text-zinc-600 dark:text-zinc-400 max-w-md">
               Share your work, release free or limited editions, and earn directly from collectors who choose to support you.
             </p>
-            <p className="mt-4 text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-md">
+            <p className="mt-4 text-body-md text-zinc-600 dark:text-zinc-400 max-w-md">
               No ads. No intermediaries. Just publishing, minting, and building a collector base around your work.
             </p>
             <div className="mt-8 flex items-baseline gap-6">
@@ -756,15 +757,15 @@ function StickyCards() {
       <div className="md:sticky md:top-16 min-h-[80vh] md:min-h-screen md:h-screen flex items-center justify-center overflow-hidden border-t border-border bg-card z-40 transition-all duration-500 ease-out">
         <div className="max-w-7xl w-full mx-auto px-6 grid md:grid-cols-2 gap-12 items-center h-full py-20">
           <div className="order-2 md:order-1 scroll-reveal">
-            <span className="text-sm font-mono text-zinc-600 dark:text-zinc-400 mb-4 block">04 / HOW MINTING WORKS</span>
-            <h2 className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight">
+            <span className="text-mono-md text-zinc-600 dark:text-zinc-400 mb-4 block">04 / HOW MINTING WORKS</span>
+            <h2 className="text-display-3xl mb-6">
               Fast, affordable, <br />
               <span className="text-zinc-600 dark:text-zinc-400">and onchain.</span>
             </h2>
-            <p className="text-xl text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-md">
+            <p className="text-body-lg text-zinc-600 dark:text-zinc-400 max-w-md">
               Desperse is built on Solana, making minting quick and low-cost. Creators can offer free mints or priced editions in SOL or USDC, with optional supply limits.
             </p>
-            <p className="mt-4 text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-md">
+            <p className="mt-4 text-body-md text-zinc-600 dark:text-zinc-400 max-w-md">
               The focus stays on the work, not the transaction overhead.
             </p>
           </div>
@@ -817,21 +818,21 @@ function StickyCards() {
       <div className="md:sticky md:top-16 min-h-[80vh] md:min-h-screen md:h-screen flex items-center justify-center overflow-hidden border-t border-border bg-background z-50 transition-all duration-500 ease-out">
         <div className="max-w-7xl w-full mx-auto px-6 grid md:grid-cols-2 gap-12 items-center h-full py-20">
           <div className="order-2 md:order-1 scroll-reveal">
-            <span className="text-sm font-mono text-zinc-600 dark:text-zinc-400 mb-4 block">05 / GET STARTED IN SECONDS</span>
-            <h2 className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight">
+            <span className="text-mono-md text-zinc-600 dark:text-zinc-400 mb-4 block">05 / GET STARTED IN SECONDS</span>
+            <h2 className="text-display-3xl mb-6">
               No friction <br />
               <span className="text-zinc-600 dark:text-zinc-400">to try it.</span>
             </h2>
-            <p className="text-xl text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-md">
+            <p className="text-body-lg text-zinc-600 dark:text-zinc-400 max-w-md">
               Sign up and start collecting immediately — Desperse creates a wallet for you. Connect your own wallet anytime you're ready.
             </p>
-            <p className="mt-4 text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-md">
+            <p className="mt-4 text-body-md text-zinc-600 dark:text-zinc-400 max-w-md">
               Lower friction for newcomers. Full ownership when you want it.
             </p>
             <button
               onClick={() => login()}
               disabled={!ready}
-              className="mt-8 px-6 py-3 border-2 border-zinc-950 dark:border-white rounded-full text-sm font-bold hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 transition-all duration-200 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-950 dark:focus-visible:ring-white"
+              className="mt-8 px-6 py-3 border-2 border-zinc-950 dark:border-white rounded-full text-label-lg hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 transition-all duration-200 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-950 dark:focus-visible:ring-white"
             >
               Try it now — it's free
             </button>
@@ -906,18 +907,18 @@ function StickyCards() {
       <div id="why" className="md:sticky md:top-16 min-h-[80vh] md:min-h-screen md:h-screen flex items-center justify-center overflow-hidden border-t border-border bg-card z-60 transition-all duration-500 ease-out">
         <div className="max-w-7xl w-full mx-auto px-6 grid md:grid-cols-2 gap-12 items-center h-full py-20">
           <div className="order-2 md:order-1 scroll-reveal">
-            <span className="text-sm font-mono text-zinc-600 dark:text-zinc-400 mb-4 block">06 / WHY DESPERSE</span>
-            <h2 className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight">
+            <span className="text-mono-md text-zinc-600 dark:text-zinc-400 mb-4 block">06 / WHY DESPERSE</span>
+            <h2 className="text-display-3xl mb-6">
               Creators deserve <br />
               <span className="text-zinc-600 dark:text-zinc-400">more than likes.</span>
             </h2>
-            <p className="text-xl text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-md">
+            <p className="text-body-lg text-zinc-600 dark:text-zinc-400 max-w-md">
               Traditional platforms optimize for engagement. Desperse is built around ownership, value, and direct relationships between creators and collectors.
             </p>
             <button
               onClick={() => login()}
               disabled={!ready}
-              className="mt-8 px-8 py-4 bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-bold rounded-full hover:scale-105 active:scale-[0.98] transition-all duration-200 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-950 dark:focus-visible:ring-white"
+              className="mt-8 px-8 py-4 bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 text-label-lg rounded-full hover:scale-105 active:scale-[0.98] transition-all duration-200 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-950 dark:focus-visible:ring-white"
             >
               Join the Beta
             </button>
@@ -976,10 +977,10 @@ function Gallery() {
     <section id="creators" className="py-32 px-6 bg-card/30">
       <div className="max-w-7xl mx-auto scroll-reveal-stagger">
         <div className="flex flex-col md:flex-row justify-between items-end mb-16">
-          <h3 className="text-4xl font-extrabold tracking-tight stagger-item">Discover <br />Creators</h3>
+          <h3 className="text-display-lg stagger-item">Discover <br />Creators</h3>
           <Link
             to="/browse"
-            className="text-sm border-b border-zinc-950 dark:border-zinc-50 pb-1 hover:text-zinc-600 dark:hover:text-zinc-400 hover:border-zinc-600 dark:hover:border-zinc-400 transition-all mt-4 md:mt-0 stagger-item"
+            className="text-body-sm border-b border-zinc-950 dark:border-zinc-50 pb-1 hover:text-zinc-600 dark:hover:text-zinc-400 hover:border-zinc-600 dark:hover:border-zinc-400 transition-all mt-4 md:mt-0 stagger-item"
           >
             Browse Posts →
           </Link>
@@ -1081,12 +1082,12 @@ function GetTheApp() {
     <section id="download" className="py-32 px-6 bg-background border-t border-border">
       <div className="max-w-7xl mx-auto">
         <div className="max-w-2xl mb-16 scroll-reveal">
-          <span className="text-sm font-mono text-zinc-600 dark:text-zinc-400 mb-4 block">GET THE APP</span>
-          <h2 className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight">
+          <span className="text-mono-md text-zinc-600 dark:text-zinc-400 mb-4 block">GET THE APP</span>
+          <h2 className="text-display-3xl mb-6">
             Made for <br />
             <span className="text-zinc-600 dark:text-zinc-400">mobile creators.</span>
           </h2>
-          <p className="text-xl text-zinc-600 dark:text-zinc-400 leading-relaxed">
+          <p className="text-body-lg text-zinc-600 dark:text-zinc-400">
             Native iOS, a Solana dApp Store build for Saga and Seeker, and a direct
             Android download. Same wallet, same posts, same collection.
           </p>
@@ -1116,7 +1117,7 @@ function GetTheApp() {
         <div className="mt-12 text-center scroll-reveal">
           <Link
             to="/download"
-            className="inline-flex items-center gap-2 text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition-colors"
+            className="inline-flex items-center gap-2 text-label-lg text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition-colors"
           >
             Install instructions and details
             <span aria-hidden="true">&rarr;</span>
@@ -1144,9 +1145,9 @@ function PlatformDownloadCard({
       <div className="w-12 h-12 rounded-full flex items-center justify-center mb-6 bg-zinc-100 dark:bg-zinc-900">
         <Mark className="w-5 h-5 text-zinc-950 dark:text-white" />
       </div>
-      <p className="text-zinc-500 dark:text-zinc-500 text-xs font-mono mb-2">{status.toUpperCase()}</p>
-      <p className="text-2xl font-extrabold mb-2">{title}</p>
-      <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-6">{description}</p>
+      <p className="text-mono-sm text-zinc-500 dark:text-zinc-500 mb-2">{status.toUpperCase()}</p>
+      <p className="text-heading-2 mb-2">{title}</p>
+      <p className="text-body-sm text-zinc-600 dark:text-zinc-400 mb-6">{description}</p>
       <div className="mt-auto">
         <DownloadBadge platform={platform} size="md" />
       </div>
@@ -1190,9 +1191,9 @@ function TechSpecs() {
             >
               <SolanaLogo className="w-6 h-6" style={{ color: 'var(--purple-heart-500)' }} />
             </div>
-            <p className="text-zinc-500 dark:text-zinc-500 text-xs font-mono mb-2">NETWORK</p>
-            <p className="text-2xl font-extrabold mb-2">Solana</p>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">Built on the fastest chain for fast, low-cost transactions.</p>
+            <p className="text-mono-sm text-zinc-500 dark:text-zinc-500 mb-2">NETWORK</p>
+            <p className="text-heading-2 mb-2">Solana</p>
+            <p className="text-body-sm text-zinc-600 dark:text-zinc-400">Built on the fastest chain for fast, low-cost transactions.</p>
           </div>
 
           <div className="border border-border rounded-xl p-6 bg-card/50 stagger-item">
@@ -1202,9 +1203,9 @@ function TechSpecs() {
             >
               <MetaplexLogo className="w-6 h-6" style={{ color: 'var(--caribbean-green-500)' }} />
             </div>
-            <p className="text-zinc-500 dark:text-zinc-500 text-xs font-mono mb-2">STANDARD</p>
-            <p className="text-2xl font-extrabold mb-2">Metaplex</p>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">The NFT standard. Interoperable across the Solana ecosystem.</p>
+            <p className="text-mono-sm text-zinc-500 dark:text-zinc-500 mb-2">STANDARD</p>
+            <p className="text-heading-2 mb-2">Metaplex</p>
+            <p className="text-body-sm text-zinc-600 dark:text-zinc-400">The NFT standard. Interoperable across the Solana ecosystem.</p>
           </div>
 
           <div className="border border-border rounded-xl p-6 bg-card/50 stagger-item">
@@ -1214,9 +1215,9 @@ function TechSpecs() {
             >
               <PrivyLogo className="w-6 h-6" style={{ color: 'var(--blue-gem-500)' }} />
             </div>
-            <p className="text-zinc-500 dark:text-zinc-500 text-xs font-mono mb-2">SECURITY</p>
-            <p className="text-2xl font-extrabold mb-2">Non-Custodial</p>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">You own your keys. Embedded wallets powered by Privy.</p>
+            <p className="text-mono-sm text-zinc-500 dark:text-zinc-500 mb-2">SECURITY</p>
+            <p className="text-heading-2 mb-2">Non-Custodial</p>
+            <p className="text-body-sm text-zinc-600 dark:text-zinc-400">You own your keys. Embedded wallets powered by Privy.</p>
           </div>
         </div>
       </div>
@@ -1233,19 +1234,20 @@ export function Footer({ showCta = true }: { showCta?: boolean }) {
         {showCta && (
           <>
             <div className="text-center mb-16">
-              <p className="text-2xl md:text-3xl font-light text-zinc-600 dark:text-zinc-400 mb-8">
+              {/* Editorial lead — uses heading-2 size with light weight override */}
+              <p className="text-heading-2 font-light text-zinc-600 dark:text-zinc-400 mb-8">
                 Start creating and collecting today.
               </p>
               <button
                 onClick={() => login()}
                 disabled={!ready}
-                className="px-10 py-4 bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-bold rounded-full text-lg hover:scale-105 active:scale-[0.98] transition-all duration-200 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-950 dark:focus-visible:ring-white"
+                className="px-10 py-4 bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 text-label-lg rounded-full hover:scale-105 active:scale-[0.98] transition-all duration-200 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-950 dark:focus-visible:ring-white"
               >
                 Get Started — It's Free
               </button>
             </div>
 
-            <p aria-hidden="true" className="text-[15vw] xl:text-[12rem] 2xl:text-[14rem] leading-none font-extrabold tracking-tighter text-center whitespace-nowrap opacity-10 cursor-default select-none mt-8">
+            <p aria-hidden="true" className="text-display-4xl text-center whitespace-nowrap opacity-10 cursor-default select-none mt-8">
               DESPERSE
             </p>
           </>
@@ -1254,7 +1256,7 @@ export function Footer({ showCta = true }: { showCta?: boolean }) {
         <div className={`flex flex-col md:flex-row justify-between items-start gap-12 md:items-end ${showCta ? 'mt-12 pt-12 border-t border-border' : ''}`}>
           <div className="flex flex-col sm:flex-row gap-12">
             <nav aria-label="Footer" className="space-y-4">
-              <p className="text-xs font-mono uppercase tracking-widest text-zinc-500 dark:text-zinc-500">Legal</p>
+              <p className="text-label-xs text-zinc-500 dark:text-zinc-500">Legal</p>
               <Link to="/privacy" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors">
                 Privacy Policy
               </Link>
@@ -1266,7 +1268,7 @@ export function Footer({ showCta = true }: { showCta?: boolean }) {
               </Link>
             </nav>
             <nav aria-label="Download" className="space-y-4">
-              <p className="text-xs font-mono uppercase tracking-widest text-zinc-500 dark:text-zinc-500">Download</p>
+              <p className="text-label-xs text-zinc-500 dark:text-zinc-500">Download</p>
               <Link to="/download" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors">
                 All platforms
               </Link>
@@ -1286,7 +1288,7 @@ export function Footer({ showCta = true }: { showCta?: boolean }) {
             <div className="flex gap-6 mb-4 md:justify-end">
               <a href="https://x.com/DesperseApp" target="_blank" rel="noopener noreferrer" className="text-zinc-950 dark:text-zinc-50 hover:opacity-70">Twitter/X</a>
             </div>
-            <p className="text-zinc-500 dark:text-zinc-500 text-sm">© {new Date().getFullYear()} Desperse. All rights reserved.</p>
+            <p className="text-body-sm text-zinc-500 dark:text-zinc-500">© {new Date().getFullYear()} Desperse. All rights reserved.</p>
           </div>
         </div>
       </div>
@@ -1328,7 +1330,7 @@ function FloatingCta({ lenisRef }: { lenisRef: React.RefObject<Lenis | null> }) 
       <button
         onClick={() => login()}
         disabled={!ready}
-        className="px-6 py-3 bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 font-bold rounded-full shadow-2xl hover:scale-105 active:scale-[0.98] transition-all duration-200 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-950 dark:focus-visible:ring-white"
+        className="px-6 py-3 bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 text-label-lg rounded-full shadow-2xl hover:scale-105 active:scale-[0.98] transition-all duration-200 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-950 dark:focus-visible:ring-white"
       >
         Get Started
       </button>

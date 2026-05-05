@@ -25,14 +25,14 @@ function BlockedUsersPage() {
           <LoadingSpinner />
         </div>
       ) : error ? (
-        <p className="text-sm text-muted-foreground py-4">
+        <p className="text-body-sm text-muted-foreground py-4">
           Couldn't load your blocked accounts. Try again in a moment.
         </p>
       ) : !data || data.length === 0 ? (
         <div className="rounded-[var(--radius-lg)] bg-white dark:bg-input/30 border border-input px-5 md:px-6 lg:px-8 py-10 text-center">
           <Icon name="ban" variant="regular" className="text-3xl text-muted-foreground" />
-          <p className="mt-3 text-sm font-medium">No blocked accounts</p>
-          <p className="mt-1 text-xs text-muted-foreground">
+          <p className="mt-3 text-label-lg">No blocked accounts</p>
+          <p className="mt-1 text-caption text-muted-foreground">
             Anyone you block from a post or profile will appear here.
           </p>
         </div>
@@ -60,10 +60,10 @@ function BlockedUsersPage() {
                   )}
                 </div>
                 <div className="flex flex-col min-w-0">
-                  <span className="text-sm font-medium truncate">
+                  <span className="text-label-lg truncate">
                     {blocked.displayName || blocked.slug}
                   </span>
-                  <span className="text-xs text-muted-foreground truncate">
+                  <span className="text-caption text-muted-foreground truncate">
                     @{blocked.slug}
                   </span>
                 </div>

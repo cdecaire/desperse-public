@@ -167,7 +167,7 @@ function TagPage() {
 
             {/* End of feed */}
             {!hasNextPage && posts.length > 0 && (
-              <div className="text-center text-muted-foreground text-sm py-4">
+              <div className="text-center text-muted-foreground text-body-sm py-4">
                 You've reached the end
               </div>
             )}
@@ -213,8 +213,8 @@ function TagPageHeader({
           <Icon name="hashtag" className="text-xl text-muted-foreground" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold">#{displayName}</h1>
-          <p className="text-sm text-muted-foreground">
+          <h1 className="text-heading-2">#{displayName}</h1>
+          <p className="text-body-sm text-muted-foreground">
             {postCount === 1 ? '1 post' : `${postCount.toLocaleString()} posts`}
           </p>
         </div>

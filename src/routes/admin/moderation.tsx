@@ -152,8 +152,8 @@ function ModerationListPage() {
     <div className="pt-4">
       <div>
         <div className="space-y-2 mb-6">
-          <h1 className="hidden md:block text-xl font-bold">Content Moderation</h1>
-          <p className="text-sm text-muted-foreground">
+          <h1 className="hidden md:block text-heading-3">Content Moderation</h1>
+          <p className="text-body-sm text-muted-foreground">
             Review and moderate reported posts.
           </p>
         </div>
@@ -161,7 +161,7 @@ function ModerationListPage() {
         {/* Filters */}
         <div className="flex flex-wrap gap-3 mb-4">
           <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Status:</span>
+            <span className="text-body-sm text-muted-foreground">Status:</span>
             <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value as StatusFilter)}>
               <SelectTrigger className="w-[120px] h-9">
                 <SelectValue />
@@ -174,7 +174,7 @@ function ModerationListPage() {
             </Select>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Type:</span>
+            <span className="text-body-sm text-muted-foreground">Type:</span>
             <Select value={typeFilter} onValueChange={(value) => setTypeFilter(value as TypeFilter)}>
               <SelectTrigger className="w-[140px] h-9">
                 <SelectValue />
@@ -192,7 +192,7 @@ function ModerationListPage() {
         {isLoadingUser && (
           <div className="flex items-center justify-center py-12">
             <LoadingSpinner size="lg" />
-            <div className="ml-4 text-sm text-muted-foreground">
+            <div className="ml-4 text-body-sm text-muted-foreground">
               Loading user...
             </div>
           </div>
@@ -201,7 +201,7 @@ function ModerationListPage() {
         {!isLoadingUser && (isLoading || isPending) && (
           <div className="flex items-center justify-center py-12">
             <LoadingSpinner size="lg" />
-            <div className="ml-4 text-sm text-muted-foreground">
+            <div className="ml-4 text-body-sm text-muted-foreground">
               Loading reports...
             </div>
           </div>
@@ -285,11 +285,11 @@ function ModerationListPage() {
                       <TableCell>
                         {isDmThread ? (
                           <div className="w-10 h-10 rounded bg-muted shrink-0 flex items-center justify-center">
-                            <Icon name="envelope" variant="regular" className="text-sm text-muted-foreground" />
+                            <Icon name="envelope" variant="regular" className="text-body-sm text-muted-foreground" />
                           </div>
                         ) : isComment ? (
                           <div className="w-10 h-10 rounded bg-muted shrink-0 flex items-center justify-center">
-                            <Icon name="comment" variant="regular" className="text-sm text-muted-foreground" />
+                            <Icon name="comment" variant="regular" className="text-body-sm text-muted-foreground" />
                           </div>
                         ) : (() => {
                           const mediaType = detectMediaType(report.mediaUrl || '')
@@ -319,7 +319,7 @@ function ModerationListPage() {
 
                           return (
                             <div className="w-10 h-10 rounded bg-muted shrink-0 flex items-center justify-center">
-                              <Icon name={icon} variant="regular" className="text-sm text-muted-foreground" />
+                              <Icon name={icon} variant="regular" className="text-body-sm text-muted-foreground" />
                             </div>
                           )
                         })()}
@@ -342,10 +342,10 @@ function ModerationListPage() {
                             )}
                           </div>
                           <div>
-                            <div className="text-sm font-medium">
+                            <div className="text-label-lg">
                               {report.creator.displayName || `@${report.creator.usernameSlug}`}
                             </div>
-                            <div className="text-xs text-muted-foreground">
+                            <div className="text-caption text-muted-foreground">
                               @{report.creator.usernameSlug}
                             </div>
                           </div>
@@ -360,7 +360,7 @@ function ModerationListPage() {
                       </TableCell>
 
                       {/* Type */}
-                      <TableCell className="whitespace-nowrap text-sm text-muted-foreground">
+                      <TableCell className="whitespace-nowrap text-body-sm text-muted-foreground">
                         {isDmThread ? 'DM' : isComment ? 'Comment' : 'Post'}
                       </TableCell>
 
@@ -377,10 +377,10 @@ function ModerationListPage() {
                               {report.topReasons[0]}
                             </Badge>
                           ) : (
-                            <span className="text-xs text-muted-foreground">-</span>
+                            <span className="text-caption text-muted-foreground">-</span>
                           )}
                           {(report as any).reportDetails?.length > 0 && (
-                            <p className="text-xs text-muted-foreground line-clamp-2" title={(report as any).reportDetails[0]}>
+                            <p className="text-caption text-muted-foreground line-clamp-2" title={(report as any).reportDetails[0]}>
                               {(report as any).reportDetails[0]}
                             </p>
                           )}
@@ -420,7 +420,7 @@ function ModerationListPage() {
 
                       {/* Last report date */}
                       <TableCell className="whitespace-nowrap">
-                        <span className="text-sm text-muted-foreground">
+                        <span className="text-body-sm text-muted-foreground">
                           {formatRelativeTime(report.latestReportDate)}
                         </span>
                       </TableCell>
@@ -437,7 +437,7 @@ function ModerationListPage() {
                               className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-accent"
                               title="View post"
                             >
-                              <Icon name="arrow-up-right-from-square" variant="regular" className="text-xs text-muted-foreground" />
+                              <Icon name="arrow-up-right-from-square" variant="regular" className="text-caption text-muted-foreground" />
                             </a>
                           )}
                           {report.creator?.usernameSlug && (
@@ -448,7 +448,7 @@ function ModerationListPage() {
                               className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-accent"
                               title="View profile"
                             >
-                              <Icon name="user" variant="regular" className="text-xs text-muted-foreground" />
+                              <Icon name="user" variant="regular" className="text-caption text-muted-foreground" />
                             </a>
                           )}
                           <ModerationRowMenu

@@ -65,8 +65,8 @@ function AppSettingsPage() {
               className="w-5 text-center text-muted-foreground"
             />
             <div className="flex flex-col">
-              <span className="text-sm font-medium">Theme</span>
-              <span className="text-xs text-muted-foreground">
+              <span className="text-label-lg">Theme</span>
+              <span className="text-caption text-muted-foreground">
                 {isSystemTheme
                   ? `System (${activeTheme === 'light' ? 'Light' : 'Dark'})`
                   : activeTheme === 'light'
@@ -79,7 +79,7 @@ function AppSettingsPage() {
             <div className="flex items-center gap-3">
               <Label
                 htmlFor="system-theme"
-                className="text-sm font-medium cursor-pointer leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                className="text-label-lg cursor-pointer leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
                 Use system theme
               </Label>
@@ -109,8 +109,8 @@ function AppSettingsPage() {
         <div className="flex items-center gap-3 mb-4">
           <Icon name="arrow-up-right-from-square" variant="regular" className="w-5 text-center text-muted-foreground" />
           <div className="flex flex-col">
-            <span className="text-sm font-medium">Blockchain Explorer</span>
-            <span className="text-xs text-muted-foreground">
+            <span className="text-label-lg">Blockchain Explorer</span>
+            <span className="text-caption text-muted-foreground">
               Choose which explorer to use for transaction links
             </span>
           </div>
@@ -121,7 +121,7 @@ function AppSettingsPage() {
             <LoadingSpinner />
           </div>
         ) : !user ? (
-          <p className="text-sm text-muted-foreground py-2">
+          <p className="text-body-sm text-muted-foreground py-2">
             Sign in to set explorer preference
           </p>
         ) : (
@@ -136,8 +136,8 @@ function AppSettingsPage() {
                     : 'border-input hover:border-primary/50'
                 }`}
               >
-                <span className="text-sm font-medium">{explorerLabels[key].name}</span>
-                <span className="text-xs text-muted-foreground">{explorerLabels[key].description}</span>
+                <span className="text-label-lg">{explorerLabels[key].name}</span>
+                <span className="text-caption text-muted-foreground">{explorerLabels[key].description}</span>
               </button>
             ))}
           </div>

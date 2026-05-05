@@ -42,8 +42,8 @@ function MessagingSettingsPage() {
           <div className="flex items-center gap-3">
             <Icon name="message" variant="regular" className="w-5 text-center text-muted-foreground" />
             <div className="flex flex-col">
-              <span className="text-sm font-semibold">Direct Messages</span>
-              <span className="text-xs text-muted-foreground">
+              <span className="text-label-lg">Direct Messages</span>
+              <span className="text-caption text-muted-foreground">
                 Allow eligible users to start new chats
               </span>
             </div>
@@ -51,7 +51,7 @@ function MessagingSettingsPage() {
           {isLoading ? (
             <LoadingSpinner className="w-5 h-5" />
           ) : !user ? (
-            <span className="text-xs text-muted-foreground">Sign in required</span>
+            <span className="text-caption text-muted-foreground">Sign in required</span>
           ) : (
             <Switch
               checked={preferences.dmEnabled}
@@ -64,7 +64,7 @@ function MessagingSettingsPage() {
         {/* Eligibility Requirements - visible only when DMs are enabled */}
         {preferences.dmEnabled && user && !isLoading && (
           <div className="mt-5">
-            <p className="text-xs font-medium tracking-wide text-muted-foreground mb-4">
+            <p className="text-label-xs text-muted-foreground mb-4">
               Eligibility Requirements
             </p>
 
@@ -76,7 +76,7 @@ function MessagingSettingsPage() {
                 checked={preferences.allowBuyers}
                 onCheckedChange={setAllowBuyers}
               >
-                <span className="text-xs text-muted-foreground">
+                <span className="text-caption text-muted-foreground">
                   Own any of your editions
                 </span>
               </MessagingToggle>
@@ -88,7 +88,7 @@ function MessagingSettingsPage() {
                 checked={preferences.allowCollectors}
                 onCheckedChange={setAllowCollectors}
               >
-                <span className="text-xs text-muted-foreground flex items-center gap-1.5 flex-wrap">
+                <span className="text-caption text-muted-foreground flex items-center gap-1.5 flex-wrap">
                   At least
                   <DebouncedNumberInput
                     value={preferences.collectorMinCount}
@@ -109,7 +109,7 @@ function MessagingSettingsPage() {
                 checked={preferences.allowTippers}
                 onCheckedChange={setAllowTippers}
               >
-                <span className="text-xs text-muted-foreground flex items-center gap-1.5 flex-wrap">
+                <span className="text-caption text-muted-foreground flex items-center gap-1.5 flex-wrap">
                   At least
                   <DebouncedNumberInput
                     value={preferences.tipMinAmount}
@@ -129,7 +129,7 @@ function MessagingSettingsPage() {
       <div className="rounded-lg bg-muted/50 border border-input px-5 md:px-6 lg:px-8 py-4">
         <div className="flex gap-3">
           <Icon name="circle-info" variant="regular" className="w-5 text-center text-muted-foreground mt-0.5 shrink-0" />
-          <span className="text-xs text-muted-foreground">
+          <span className="text-caption text-muted-foreground">
             To prevent spam, only your supporters can message you. Once someone starts a conversation,
             they can continue messaging even if they no longer meet the criteria.
           </span>
@@ -161,7 +161,7 @@ function MessagingToggle({
       <div className="flex items-center gap-3">
         <Icon name={icon} variant="regular" className="w-5 text-center text-muted-foreground/70" />
         <div className="flex flex-col gap-0.5">
-          <Label htmlFor={id} className="text-sm font-semibold cursor-pointer">
+          <Label htmlFor={id} className="text-label-lg cursor-pointer">
             {label}
           </Label>
           {children}

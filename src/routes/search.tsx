@@ -224,7 +224,7 @@ function SearchPage() {
                 {/* People section */}
                 {searchResults.users.length > 0 && (
                   <div className="border-b border-border/50">
-                    <h3 className="text-sm font-semibold text-muted-foreground px-4 md:px-2 py-3">
+                    <h3 className="text-label-lg text-muted-foreground px-4 md:px-2 py-3">
                       People
                     </h3>
                     <div className="pb-2">
@@ -234,7 +234,7 @@ function SearchPage() {
                       {searchResults.users.length > 3 && (
                         <button
                           onClick={() => handleTabChange('people')}
-                          className="w-full px-4 py-3 text-sm text-primary hover:bg-accent transition-colors text-left"
+                          className="w-full px-4 py-3 text-body-sm text-primary hover:bg-accent transition-colors text-left"
                         >
                           View all people
                         </button>
@@ -246,7 +246,7 @@ function SearchPage() {
                 {/* Posts section */}
                 {searchResults.posts.length > 0 && (
                   <div>
-                    <h3 className="text-sm font-semibold text-muted-foreground px-4 md:px-2 py-3">
+                    <h3 className="text-label-lg text-muted-foreground px-4 md:px-2 py-3">
                       Posts
                     </h3>
                     <div className="space-y-6 -mx-4 md:mx-0">
@@ -280,7 +280,7 @@ function SearchPage() {
                     {searchResults.posts.length > 5 && (
                       <button
                         onClick={() => handleTabChange('posts')}
-                        className="w-full px-4 py-3 text-sm text-primary hover:bg-accent transition-colors text-left border-t border-border/50 mt-4"
+                        className="w-full px-4 py-3 text-body-sm text-primary hover:bg-accent transition-colors text-left border-t border-border/50 mt-4"
                       >
                         View all posts
                       </button>
@@ -445,10 +445,10 @@ function UserResultCard({ user, currentUserId }: UserResultCardProps) {
 
       {/* Info */}
       <div className="flex-1 min-w-0">
-        <div className="font-semibold text-foreground truncate">
+        <div className="text-label-lg text-foreground truncate">
           {user.displayName || user.usernameSlug}
         </div>
-        <div className="text-sm text-muted-foreground truncate">
+        <div className="text-body-sm text-muted-foreground truncate">
           @{user.usernameSlug}
         </div>
       </div>

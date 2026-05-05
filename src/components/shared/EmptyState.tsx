@@ -39,11 +39,11 @@ export function EmptyState({
       {icon && <div className="mb-3 text-muted-foreground">{icon}</div>}
 
       {/* Title - 8px gap to description */}
-      <h3 className="text-lg font-semibold mb-2">{title}</h3>
+      <h3 className="text-title-lg mb-2">{title}</h3>
 
       {/* Description - 16px gap to actions */}
       {description && (
-        <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+        <p className="text-body-sm text-muted-foreground mb-4">
           {description}
         </p>
       )}
@@ -70,7 +70,7 @@ export function EmptyState({
 
       {/* Support text */}
       {supportText && (
-        <p className="text-xs text-muted-foreground mt-6">
+        <p className="text-caption text-muted-foreground mt-6">
           {supportText}
         </p>
       )}

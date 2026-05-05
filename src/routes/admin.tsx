@@ -73,7 +73,7 @@ function AdminLayout() {
                     </Link>
                   </div>
                   <div className="flex justify-center min-w-0 flex-1">
-                    <h1 className="text-base font-semibold whitespace-nowrap truncate">{pageTitle}</h1>
+                    <h1 className="text-title-lg whitespace-nowrap truncate">{pageTitle}</h1>
                   </div>
                   <div aria-hidden="true" />
                 </div>
@@ -92,7 +92,7 @@ function AdminLayout() {
                       </Link>
                     </div>
                     <div className="flex justify-center min-w-0 flex-1">
-                      <h1 className="text-base font-semibold whitespace-nowrap truncate">Admin</h1>
+                      <h1 className="text-title-lg whitespace-nowrap truncate">Admin</h1>
                     </div>
                     <div aria-hidden="true" />
                   </div>
@@ -114,7 +114,7 @@ function AdminLayout() {
                     </Link>
                   </div>
                   <div className="flex justify-center min-w-0 flex-1">
-                    <h1 className="text-base font-semibold whitespace-nowrap truncate">{pageTitle}</h1>
+                    <h1 className="text-title-lg whitespace-nowrap truncate">{pageTitle}</h1>
                   </div>
                   <div aria-hidden="true" />
                 </div>

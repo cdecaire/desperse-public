@@ -327,7 +327,7 @@ function ProfileInfoPage() {
       <div className="py-10">
         <div className="max-w-5xl mx-auto px-4">
           <div className="text-center space-y-3">
-            <p className="text-lg font-semibold">Unable to load profile</p>
+            <p className="text-title-lg">Unable to load profile</p>
             <p className="text-muted-foreground">Please try again later.</p>
             <Link to="/">
               <Button variant="outline">Go to feed</Button>
@@ -420,7 +420,7 @@ function ProfileInfoPage() {
                 onChange={(e) => handleHeaderBgFileSelect(e.target.files?.[0])}
               />
             </div>
-            <p className="text-xs text-muted-foreground">Recommended: 1200x400px. Max 5MB.</p>
+            <p className="text-caption text-muted-foreground">Recommended: 1200x400px. Max 5MB.</p>
           </div>
         </div>
 
@@ -436,10 +436,10 @@ function ProfileInfoPage() {
                 )}
               </div>
               <div className="space-y-0.5 min-w-0">
-                <p className="text-lg font-bold leading-tight truncate">
+                <p className="text-title-lg leading-tight truncate">
                   {profileData.user.displayName || profileData.user.slug}
                 </p>
-                <p className="text-sm text-muted-foreground leading-tight truncate">@{profileData.user.slug}</p>
+                <p className="text-body-sm text-muted-foreground leading-tight truncate">@{profileData.user.slug}</p>
               </div>
             </div>
             <div className="flex items-center gap-2 shrink-0">
@@ -484,7 +484,7 @@ function ProfileInfoPage() {
                 placeholder="Display name"
                 className="pr-14"
               />
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 text-caption text-muted-foreground pointer-events-none">
                 {displayName.length} / 50
               </div>
             </div>
@@ -501,7 +501,7 @@ function ProfileInfoPage() {
                 rows={6}
                 className="min-h-[140px] pb-7"
               />
-              <div className="absolute bottom-2 right-3 text-xs text-muted-foreground pointer-events-none">
+              <div className="absolute bottom-2 right-3 text-caption text-muted-foreground pointer-events-none">
                 {bio.length} / 280
               </div>
             </div>
@@ -516,7 +516,7 @@ function ProfileInfoPage() {
               placeholder="https://example.com"
               maxLength={2048}
             />
-            <p className="text-xs text-muted-foreground">
+            <p className="text-caption text-muted-foreground">
               Your portfolio or personal website
             </p>
           </div>
@@ -533,7 +533,7 @@ function ProfileInfoPage() {
                 className="pl-7"
               />
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-caption text-muted-foreground">
               Your X username (without the @)
             </p>
           </div>
@@ -550,7 +550,7 @@ function ProfileInfoPage() {
                 className="pl-7"
               />
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-caption text-muted-foreground">
               Your Instagram username (without the @)
             </p>
           </div>
@@ -576,11 +576,11 @@ function ProfileInfoPage() {
                 disabled={profileUpdate.isPending || isUsernameLocked}
                 className="pr-14"
               />
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 text-caption text-muted-foreground pointer-events-none">
                 {username.length} / 24
               </div>
             </div>
-            <p className="text-xs text-muted-foreground">Lowercase a-z, 0-9, _ and . only</p>
+            <p className="text-caption text-muted-foreground">Lowercase a-z, 0-9, _ and . only</p>
             {statusMessage ? (
               <p className="text-xs text-[var(--tone-warning)]">{statusMessage}</p>
             ) : null}

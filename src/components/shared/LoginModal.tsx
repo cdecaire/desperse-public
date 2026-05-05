@@ -79,7 +79,7 @@ export function LoginModal({ open, onOpenChange, message }: LoginModalProps) {
             Just browsing
           </Button>
 
-          <p className="text-center text-xs text-muted-foreground">
+          <p className="text-center text-caption text-muted-foreground">
             By signing in, you agree to our{' '}
             <Link to="/terms" onClick={() => onOpenChange(false)} className="text-foreground hover:underline">
               Terms of Service

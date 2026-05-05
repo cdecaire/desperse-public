@@ -259,10 +259,10 @@ function BrowsePage() {
 			<main className="flex-1 pt-24 pb-10">
 				{/* Title section */}
 				<div className="max-w-7xl mx-auto px-6 mb-10 browse-reveal">
-					<h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">
+					<h1 className="text-heading-1">
 						Browse
 					</h1>
-					<p className="text-muted-foreground mt-2">
+					<p className="text-body-md text-muted-foreground mt-2">
 						Recent work from creators on Desperse
 					</p>
 				</div>
@@ -301,7 +301,7 @@ function BrowsePage() {
 
 									{/* Bottom info — always visible on mobile, hover on desktop */}
 									<div className="absolute bottom-0 left-0 w-full p-5 bg-gradient-to-t from-black/80 via-black/40 to-transparent max-sm:opacity-100 sm:translate-y-2 sm:opacity-0 sm:group-hover:translate-y-0 sm:group-hover:opacity-100 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]">
-										<p className="font-bold text-white truncate mb-1.5">
+										<p className="text-title-sm text-white truncate mb-1.5">
 											{post.caption || 'Untitled'}
 										</p>
 										<div className="flex items-center justify-between">
@@ -326,7 +326,7 @@ function BrowsePage() {
 														</span>
 													</div>
 												)}
-												<p className="text-sm text-zinc-300 truncate">
+												<p className="text-body-sm text-zinc-300 truncate">
 													@{post.user?.usernameSlug}
 												</p>
 											</div>
@@ -358,7 +358,7 @@ function BrowsePage() {
 									className="text-4xl text-muted-foreground"
 								/>
 							</div>
-							<p className="text-muted-foreground">No posts yet</p>
+							<p className="text-body-md text-muted-foreground">No posts yet</p>
 						</div>
 					)}
 				</div>
@@ -368,10 +368,10 @@ function BrowsePage() {
 			{!authenticated && posts.length > 0 && (
 				<section className="border-t border-border/50 bg-card/30 browse-reveal">
 					<div className="max-w-2xl mx-auto px-6 py-20 text-center">
-						<h2 className="text-2xl md:text-3xl font-extrabold tracking-tight mb-3">
+						<h2 className="text-heading-2 mb-3">
 							See more on Desperse
 						</h2>
-						<p className="text-muted-foreground mb-8 max-w-md mx-auto">
+						<p className="text-body-md text-muted-foreground mb-8 max-w-md mx-auto">
 							Sign up to explore the full feed, collect digital art, and
 							support your favorite creators.
 						</p>

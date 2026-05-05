@@ -357,7 +357,7 @@ function ReportDetailPage() {
       {isLoadingUser && (
         <div className="flex items-center justify-center py-12">
           <LoadingSpinner size="lg" />
-          <div className="ml-4 text-sm text-muted-foreground">
+          <div className="ml-4 text-body-sm text-muted-foreground">
             Loading user...
           </div>
         </div>
@@ -366,7 +366,7 @@ function ReportDetailPage() {
       {!isLoadingUser && isLoading && (
         <div className="flex items-center justify-center py-12">
           <LoadingSpinner size="lg" />
-          <div className="ml-4 text-sm text-muted-foreground">
+          <div className="ml-4 text-body-sm text-muted-foreground">
             Loading report details...
           </div>
         </div>
@@ -394,7 +394,7 @@ function ReportDetailPage() {
           {isCommentReport && commentDataResult && (
             <div className="bg-card border-2 border-destructive/20 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-3">
-                <span className="text-xs font-semibold text-destructive uppercase tracking-wide">Reported Comment</span>
+                <span className="text-label-md text-destructive uppercase tracking-wide">Reported Comment</span>
               </div>
               <div className="flex items-start gap-3">
                 {/* Commenter avatar */}
@@ -418,16 +418,16 @@ function ReportDetailPage() {
                     <span className="font-semibold text-sm">
                       {commentDataResult.commenter.displayName || `@${commentDataResult.commenter.usernameSlug}`}
                     </span>
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-caption text-muted-foreground">
                       @{commentDataResult.commenter.usernameSlug}
                     </span>
-                    <span className="text-xs text-muted-foreground">·</span>
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-caption text-muted-foreground">·</span>
+                    <span className="text-caption text-muted-foreground">
                       {formatRelativeTime(commentDataResult.comment.createdAt)}
                     </span>
                     {commentDataResult.comment.isHidden && (
                       <>
-                        <span className="text-xs text-muted-foreground">·</span>
+                        <span className="text-caption text-muted-foreground">·</span>
                         <span className="flex items-center gap-1 text-xs text-destructive">
                           <Icon name="eye-slash" variant="regular" />
                           <span>Hidden</span>
@@ -436,7 +436,7 @@ function ReportDetailPage() {
                     )}
                     {commentDataResult.comment.isDeleted && (
                       <>
-                        <span className="text-xs text-muted-foreground">·</span>
+                        <span className="text-caption text-muted-foreground">·</span>
                         <span className="flex items-center gap-1 text-xs text-destructive">
                           <Icon name="trash-xmark" variant="regular" />
                           <span>Deleted</span>
@@ -455,7 +455,7 @@ function ReportDetailPage() {
           {/* Parent Post Preview (context for comment reports) */}
           <div className="bg-card border rounded-lg p-3">
             <div className="flex items-center gap-2 mb-3">
-              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+              <span className="text-label-md text-muted-foreground uppercase tracking-wide">
                 {isCommentReport ? 'Parent Post' : 'Reported Post'}
               </span>
             </div>
@@ -492,7 +492,7 @@ function ReportDetailPage() {
                     <span className="font-semibold text-sm truncate block">
                       {postDataResult.user.displayName || `@${postDataResult.user.usernameSlug}`}
                     </span>
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-1 text-caption text-muted-foreground">
                       <span>@{postDataResult.user.usernameSlug}</span>
                       <span>·</span>
                       <span>{formatRelativeTime(postDataResult.post.createdAt)}</span>
@@ -535,7 +535,7 @@ function ReportDetailPage() {
 
           {/* Actions and Notes */}
           <div className="bg-card border rounded-lg p-4">
-            <h2 className="text-base font-semibold mb-3">Moderation Actions</h2>
+            <h2 className="text-title-lg mb-3">Moderation Actions</h2>
             <div className="flex flex-wrap gap-2">
               {isModerator && (
                 <>
@@ -584,7 +584,7 @@ function ReportDetailPage() {
             {((isCommentReport && commentDataResult && (commentDataResult.comment.hiddenReason || commentDataResult.comment.deleteReason)) || (!isCommentReport && (postDataResult.post.hiddenReason || postDataResult.post.deleteReason))) && (
               <>
                 <div className="mt-4 pt-4 border-t">
-                  <h3 className="text-sm font-semibold mb-3">Moderator notes</h3>
+                  <h3 className="text-label-lg mb-3">Moderator notes</h3>
                   <div className="space-y-2">
                     {isCommentReport && commentDataResult?.comment.hiddenReason && (
                       <p className="text-sm text-foreground">
@@ -626,7 +626,7 @@ function ReportDetailPage() {
 
           {/* All Reports */}
           <div className="bg-card border rounded-lg p-4">
-            <h2 className="text-base font-semibold mb-3">
+            <h2 className="text-title-lg mb-3">
               All Reports ({reportsData.allReports?.length || 0})
             </h2>
             <div className="space-y-3 max-h-96 overflow-y-auto">
@@ -646,14 +646,14 @@ function ReportDetailPage() {
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center bg-muted">
-                            <Icon name="user" variant="regular" className="text-xs text-muted-foreground" />
+                            <Icon name="user" variant="regular" className="text-caption text-muted-foreground" />
                           </div>
                         )}
                       </div>
                       <span className="font-medium text-sm">
                         {report.reporter.displayName || `@${report.reporter.usernameSlug}`}
                       </span>
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-caption text-muted-foreground">
                         {new Date(report.createdAt).toLocaleDateString()}
                       </span>
                     </div>
@@ -691,7 +691,7 @@ function ReportDetailPage() {
           {/* Reported Conversation */}
           <div className="bg-card border-2 border-destructive/20 rounded-lg p-4">
             <div className="flex items-center gap-2 mb-3">
-              <span className="text-xs font-semibold text-destructive uppercase tracking-wide">Reported Conversation</span>
+              <span className="text-label-md text-destructive uppercase tracking-wide">Reported Conversation</span>
             </div>
 
             <div className="space-y-4">
@@ -714,7 +714,7 @@ function ReportDetailPage() {
                   <span className="font-semibold text-sm">
                     {dmThreadDataResult.userA?.displayName || `@${dmThreadDataResult.userA?.usernameSlug}`}
                   </span>
-                  <span className="text-xs text-muted-foreground ml-2">
+                  <span className="text-caption text-muted-foreground ml-2">
                     @{dmThreadDataResult.userA?.usernameSlug}
                   </span>
                 </div>
@@ -745,14 +745,14 @@ function ReportDetailPage() {
                   <span className="font-semibold text-sm">
                     {dmThreadDataResult.userB?.displayName || `@${dmThreadDataResult.userB?.usernameSlug}`}
                   </span>
-                  <span className="text-xs text-muted-foreground ml-2">
+                  <span className="text-caption text-muted-foreground ml-2">
                     @{dmThreadDataResult.userB?.usernameSlug}
                   </span>
                 </div>
               </div>
 
               {/* Thread metadata */}
-              <div className="text-xs text-muted-foreground pt-2 border-t">
+              <div className="text-caption text-muted-foreground pt-2 border-t">
                 <span>Thread created: {formatRelativeTime(dmThreadDataResult.thread.createdAt)}</span>
                 {dmThreadDataResult.thread.lastMessageAt && (
                   <span> · Last message: {formatRelativeTime(dmThreadDataResult.thread.lastMessageAt)}</span>
@@ -763,7 +763,7 @@ function ReportDetailPage() {
 
           {/* Actions */}
           <div className="bg-card border rounded-lg p-4">
-            <h2 className="text-base font-semibold mb-3">Moderation Actions</h2>
+            <h2 className="text-title-lg mb-3">Moderation Actions</h2>
             <div className="flex flex-wrap gap-2">
               {isModerator && (
                 <Button
@@ -776,14 +776,14 @@ function ReportDetailPage() {
                 </Button>
               )}
             </div>
-            <p className="text-xs text-muted-foreground mt-3">
+            <p className="text-caption text-muted-foreground mt-3">
               Note: DM threads cannot be hidden or deleted. Users can block each other within the conversation.
             </p>
           </div>
 
           {/* All Reports */}
           <div className="bg-card border rounded-lg p-4">
-            <h2 className="text-base font-semibold mb-3">
+            <h2 className="text-title-lg mb-3">
               All Reports ({reportsData.allReports?.length || 0})
             </h2>
             <div className="space-y-3 max-h-96 overflow-y-auto">
@@ -803,14 +803,14 @@ function ReportDetailPage() {
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center bg-muted">
-                            <Icon name="user" variant="regular" className="text-xs text-muted-foreground" />
+                            <Icon name="user" variant="regular" className="text-caption text-muted-foreground" />
                           </div>
                         )}
                       </div>
                       <span className="font-medium text-sm">
                         {report.reporter.displayName || `@${report.reporter.usernameSlug}`}
                       </span>
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-caption text-muted-foreground">
                         {new Date(report.createdAt).toLocaleDateString()}
                       </span>
                     </div>

@@ -136,7 +136,7 @@ export function ActivityModal({
       <DialogContent className="max-w-md max-h-[80vh] flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Activity</h2>
+          <h2 className="text-title-lg">Activity</h2>
         </div>
 
         {/* Search */}
@@ -253,18 +253,18 @@ function ActivityItem({
               ) : (
                 <Icon name="user" variant="regular" className="text-[8px] text-muted-foreground" />
               )}
-              <p className="text-sm font-semibold truncate">
+              <p className="text-label-lg truncate">
                 {user.displayName || user.usernameSlug}
               </p>
-              <span className="text-xs text-muted-foreground">•</span>
+              <span className="text-caption text-muted-foreground">•</span>
             </>
           )}
-          <span className="text-xs font-medium text-muted-foreground">
+          <span className="text-label-md text-muted-foreground">
             {getActivityLabel(activity.type)}
           </span>
         </div>
         {activity.post.caption && (
-          <p className="text-sm text-muted-foreground line-clamp-2">
+          <p className="text-body-sm text-muted-foreground line-clamp-2">
             {activity.post.caption}
           </p>
         )}

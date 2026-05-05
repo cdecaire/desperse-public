@@ -123,7 +123,7 @@ export function ReportModal({
           <DialogTitle>Report content</DialogTitle>
           <DialogDescription>
             {(isComment || isDmThread) && (
-              <span className="block mb-1 text-xs text-muted-foreground">
+              <span className="block mb-1 text-caption text-muted-foreground">
                 Reporting: {isComment ? 'Comment' : 'Conversation'}
               </span>
             )}
@@ -151,7 +151,7 @@ export function ReportModal({
               <p className="font-semibold text-sm truncate">
                 {user.displayName || `@${user.usernameSlug}`}
               </p>
-              <p className="text-xs text-muted-foreground truncate">@{user.usernameSlug}</p>
+              <p className="text-caption text-muted-foreground truncate">@{user.usernameSlug}</p>
             </div>
           </div>
 
@@ -161,7 +161,7 @@ export function ReportModal({
               <p className="line-clamp-4">{contentText}</p>
             </div>
           ) : isDmThread ? (
-            <div className="text-sm text-muted-foreground">
+            <div className="text-body-sm text-muted-foreground">
               <p>Report this conversation with {user?.displayName || `@${user?.usernameSlug}`}</p>
             </div>
           ) : (
@@ -185,8 +185,8 @@ export function ReportModal({
 
         {/* Report Reasons */}
         <div className="space-y-2">
-          <label className="text-sm font-medium">Why are you reporting this?</label>
-          <p className="text-xs text-muted-foreground mb-3">Select all that apply</p>
+          <label className="text-label-lg">Why are you reporting this?</label>
+          <p className="text-caption text-muted-foreground mb-3">Select all that apply</p>
           <div className="space-y-2">
             {REPORT_REASONS.map((reason) => {
               const isChecked = selectedReasons.includes(reason)
@@ -214,7 +214,7 @@ export function ReportModal({
         {/* Details Input (always shown when reasons selected, required if "Other") */}
         {showDetails && (
           <div>
-            <label htmlFor="report-details" className="text-sm font-medium mb-2 block">
+            <label htmlFor="report-details" className="text-label-lg mb-2 block">
               Additional details {hasOther && <span className="text-destructive">*</span>}
               {!hasOther && <span className="text-muted-foreground font-normal"> (optional)</span>}
             </label>
@@ -228,7 +228,7 @@ export function ReportModal({
                 rows={3}
                 className="resize-none pb-7"
               />
-              <div className="absolute bottom-2 right-3 text-xs text-muted-foreground pointer-events-none">
+              <div className="absolute bottom-2 right-3 text-caption text-muted-foreground pointer-events-none">
                 {details.length} / 500
               </div>
             </div>

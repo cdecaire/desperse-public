@@ -228,7 +228,7 @@ function StorageCreditsPage() {
 									}`}
 								/>
 							</div>
-							<h2 className="text-lg font-semibold">
+							<h2 className="text-title-lg">
 								{isAuthorized ? "Service is Authorized" : "Service Not Authorized"}
 							</h2>
 							<p className="text-sm text-muted-foreground mt-1 max-w-sm">
@@ -283,18 +283,18 @@ function StorageCreditsPage() {
 						{/* Side-by-side balances */}
 						<div className="grid grid-cols-2 divide-x divide-border rounded-lg border border-border overflow-hidden">
 							<div className="px-4 py-3 text-center">
-								<span className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1">
+								<span className="text-label-xs text-muted-foreground block mb-1">
 									Service Allowance
 								</span>
-								<span className="text-lg font-bold">
+								<span className="text-title-lg">
 									{formatCredits(sharedCredits?.sharedWinc ?? "0")}
 								</span>
 							</div>
 							<div className="px-4 py-3 text-center">
-								<span className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1">
+								<span className="text-label-xs text-muted-foreground block mb-1">
 									Wallet Balance
 								</span>
-								<span className="text-lg font-bold">
+								<span className="text-title-lg">
 									{formatCredits(balance?.winc ?? "0")}
 								</span>
 							</div>
@@ -313,7 +313,7 @@ function StorageCreditsPage() {
 			<div className="rounded-[var(--radius-lg)] bg-white dark:bg-input/30 border border-input px-5 md:px-6 lg:px-8 py-5 md:py-6">
 				<div className="flex items-center gap-3 mb-4">
 					<Icon name="circle-plus" variant="regular" className="w-5 text-center text-muted-foreground" />
-					<span className="text-sm font-medium">Add More Credits</span>
+					<span className="text-label-lg">Add More Credits</span>
 				</div>
 
 				<div className="space-y-4">
@@ -325,7 +325,7 @@ function StorageCreditsPage() {
 								type="button"
 								onClick={() => setTopUpAmount(String(amount))}
 								disabled={isAnyPending}
-								className={`py-2 px-3 rounded-lg border text-sm font-medium transition-colors ${
+								className={`py-2 px-3 rounded-lg border text-label-lg transition-colors ${
 									topUpAmount === String(amount)
 										? "border-primary bg-primary text-primary-foreground"
 										: "border-input hover:border-primary/50 text-foreground"
@@ -346,7 +346,7 @@ function StorageCreditsPage() {
 							value={topUpAmount}
 							onChange={(e) => setTopUpAmount(e.target.value)}
 							disabled={isAnyPending}
-							className="text-center text-lg font-semibold pr-12"
+							className="text-center text-title-lg pr-12"
 							placeholder="0.05"
 						/>
 						<span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground font-medium">
@@ -400,7 +400,7 @@ function StorageCreditsPage() {
 				<div className="rounded-[var(--radius-lg)] bg-white dark:bg-input/30 border border-input px-5 md:px-6 lg:px-8 py-5 md:py-6">
 					<div className="flex items-center gap-3 mb-3">
 						<Icon name="clock-rotate-left" variant="regular" className="w-5 text-center text-muted-foreground" />
-						<span className="text-sm font-medium">Activity</span>
+						<span className="text-label-lg">Activity</span>
 					</div>
 
 					<div>
@@ -424,7 +424,7 @@ function ApprovalRow({ approval }: { approval: CreditApproval }) {
 	return (
 		<div className="py-3 border-b border-border/50 last:border-b-0 space-y-2">
 			<div className="flex items-center justify-between">
-				<span className="text-xs font-medium">
+				<span className="text-label-md">
 					{isDesperse ? "Desperse" : truncateAddress(approval.approvedAddress)}
 				</span>
 				{approval.expirationDate && (

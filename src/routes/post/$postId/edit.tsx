@@ -105,7 +105,7 @@ function EditPostPage() {
     <AuthGuard>
       <div className="pb-20 md:pb-10 pt-4 md:pt-6">
         <div className="max-w-2xl mx-auto px-4">
-          <h1 className="text-2xl font-semibold mb-6">Edit Post</h1>
+          <h1 className="text-heading-2 mb-6">Edit Post</h1>
           <CreatePostForm
             mode="edit"
             initialPost={{

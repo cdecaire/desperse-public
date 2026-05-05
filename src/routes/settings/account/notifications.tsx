@@ -130,10 +130,10 @@ function NotificationToggle({
       <div className="flex items-center gap-3">
         <Icon name={icon} variant="regular" className="w-4 text-center text-muted-foreground/70" />
         <div className="flex flex-col">
-          <Label htmlFor={id} className="text-sm font-medium cursor-pointer">
+          <Label htmlFor={id} className="text-label-lg cursor-pointer">
             {label}
           </Label>
-          <span className="text-xs text-muted-foreground">{description}</span>
+          <span className="text-caption text-muted-foreground">{description}</span>
         </div>
       </div>
       <Switch

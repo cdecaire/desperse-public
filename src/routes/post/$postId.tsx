@@ -215,7 +215,7 @@ function PostDetails({ post, editionSupply, collectCount, showHeading = true, ge
     <div>
       {showHeading && (
         <div className="py-3 border-b border-border mb-1">
-          <span className="text-sm font-medium text-foreground">Details</span>
+          <span className="text-label-lg text-foreground">Details</span>
         </div>
       )}
       <div>
@@ -227,8 +227,8 @@ function PostDetails({ post, editionSupply, collectCount, showHeading = true, ge
               i < rows.length - 1 && 'border-b border-border',
             )}
           >
-            <span className="text-sm text-muted-foreground">{row.label}</span>
-            <span className="text-sm text-foreground font-medium">{row.value}</span>
+            <span className="text-body-sm text-muted-foreground">{row.label}</span>
+            <span className="text-label-lg text-foreground">{row.value}</span>
           </div>
         ))}
       </div>
@@ -240,7 +240,7 @@ function CaptionBlock({ caption, className, muted = false, maxHeight = 'max-h-48
   return (
     <p
       className={cn(
-        'text-sm whitespace-pre-wrap wrap-break-word overflow-y-auto scrollbar-hide',
+        'text-body-sm whitespace-pre-wrap wrap-break-word overflow-y-auto scrollbar-hide',
         muted ? 'text-muted-foreground' : 'text-foreground',
         maxHeight,
         className,
@@ -335,7 +335,7 @@ function CollectorItem({
           <Link
             to="/profile/$slug"
             params={{ slug: collector.usernameSlug }}
-            className="text-sm font-medium truncate block hover:underline"
+            className="text-label-lg truncate block hover:underline"
           >
             {collector.displayName || collector.usernameSlug}
           </Link>
@@ -411,7 +411,7 @@ function CollectorsList({
 
   if (!collectors || collectors.length === 0) {
     return (
-      <div className="text-center py-8 text-muted-foreground text-sm">
+      <div className="text-center py-8 text-muted-foreground text-body-sm">
         No collectors yet
       </div>
     )
@@ -625,7 +625,7 @@ function PostDetailPage() {
           {post.type === 'collectible' && (
             <div className="flex items-center gap-1.5 px-2 py-1.5 text-muted-foreground">
               {collectCount > 0 && (
-                <span className="text-sm font-medium">{collectCount}</span>
+                <span className="text-label-lg">{collectCount}</span>
               )}
               <span style={isCollected && postTypeColor ? { color: postTypeColor } : undefined}>
                 <Icon name="gem" variant={isCollected ? "solid" : "regular"} className="text-base" />
@@ -667,7 +667,7 @@ function PostDetailPage() {
           {/* Static supply count when BuyButton is rendered elsewhere */}
           {post.type === 'edition' && skipBuy && (
             <div className="flex items-center gap-1 px-2">
-              <span className="text-sm font-medium">
+              <span className="text-label-lg">
                 {post.maxSupply ? `${editionSupply}/${post.maxSupply}` : `${editionSupply}`}
               </span>
               <span style={isCollected ? { color: postTypeColor } : undefined}>
@@ -711,7 +711,7 @@ function PostDetailPage() {
               <Link
                 to="/profile/$slug"
                 params={{ slug: user.usernameSlug }}
-                className="font-semibold text-sm hover:underline"
+                className="text-label-lg hover:underline"
               >
                 {user.displayName || user.usernameSlug}
               </Link>
@@ -740,7 +740,7 @@ function PostDetailPage() {
           aria-selected={activeTab === tab}
           onClick={() => onTabChange(tab)}
           className={cn(
-            'flex-1 py-3 text-sm font-medium transition-colors relative',
+            'flex-1 py-3 text-label-lg transition-colors relative',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset',
             activeTab === tab
               ? 'text-foreground'
@@ -772,7 +772,7 @@ function PostDetailPage() {
               variant="inline"
             />
           ) : (
-            <div className="px-4 py-8 text-center text-muted-foreground text-sm">
+            <div className="px-4 py-8 text-center text-muted-foreground text-body-sm">
               Sign in to view and add comments
             </div>
           )}
@@ -844,7 +844,7 @@ function PostDetailPage() {
         <Link
           to="/profile/$slug"
           params={{ slug: user.usernameSlug }}
-          className="font-semibold text-sm hover:underline truncate block"
+          className="text-label-lg hover:underline truncate block"
         >
           {user.displayName || `@${user.usernameSlug}`}
         </Link>
@@ -1022,7 +1022,7 @@ function PostDetailPage() {
 
                 {/* Post info: title, description, action buttons */}
                 <div className="px-4 py-3 border-b border-border min-h-0">
-                  <span className="font-semibold text-base min-w-0 truncate block">
+                  <span className="text-title-lg min-w-0 truncate block">
                     {(post as any).nftName || post.caption?.split('\n')[0] || 'Untitled'}
                   </span>
                   {post.caption && <CaptionBlock caption={post.caption} className="mt-2" muted />}
@@ -1163,7 +1163,7 @@ function PostDetailPage() {
 
                 {/* Title + description */}
                 <div className="py-4 border-b border-border space-y-2">
-                  <span className="font-semibold text-base min-w-0 truncate block">
+                  <span className="text-title-lg min-w-0 truncate block">
                     {(post as any).nftName || post.caption?.split('\n')[0] || 'Untitled'}
                   </span>
                   {post.caption && <CaptionBlock caption={post.caption} muted maxHeight="max-h-[60vh]" />}
@@ -1202,7 +1202,7 @@ function PostDetailPage() {
               </div>
               <div className="flex-1 space-y-1">
                 <h3 className="font-semibold">Join Desperse</h3>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-body-sm text-muted-foreground">
                   Sign in to collect this piece and support the creator.
                 </p>
               </div>

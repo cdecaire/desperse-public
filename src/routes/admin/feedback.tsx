@@ -59,8 +59,8 @@ function FeedbackListPage() {
     <div className="pt-4">
       <div className="max-w-4xl">
         <div className="space-y-2 mb-6">
-          <h1 className="hidden md:block text-xl font-bold">Beta Feedback</h1>
-          <p className="text-sm text-muted-foreground">
+          <h1 className="hidden md:block text-heading-3">Beta Feedback</h1>
+          <p className="text-body-sm text-muted-foreground">
             Review user feedback, bugs, and ideas.
           </p>
         </div>
@@ -70,7 +70,7 @@ function FeedbackListPage() {
           <button
             onClick={() => setActiveTab('new')}
             className={cn(
-              'py-3 text-sm font-medium transition-colors relative',
+              'py-3 text-label-lg transition-colors relative',
               activeTab === 'new'
                 ? 'text-foreground'
                 : 'text-muted-foreground hover:text-foreground/80'
@@ -84,7 +84,7 @@ function FeedbackListPage() {
           <button
             onClick={() => setActiveTab('reviewed')}
             className={cn(
-              'py-3 text-sm font-medium transition-colors relative',
+              'py-3 text-label-lg transition-colors relative',
               activeTab === 'reviewed'
                 ? 'text-foreground'
                 : 'text-muted-foreground hover:text-foreground/80'
@@ -100,7 +100,7 @@ function FeedbackListPage() {
         {(isLoading || isPending) && (
           <div className="flex items-center justify-center py-12">
             <LoadingSpinner size="lg" />
-            <div className="ml-4 text-sm text-muted-foreground">
+            <div className="ml-4 text-body-sm text-muted-foreground">
               Loading feedback...
             </div>
           </div>
@@ -157,7 +157,7 @@ function FeedbackListPage() {
                           <span className="font-semibold text-sm truncate">
                             {feedback.displayName || feedback.user?.displayName || `@${feedback.user?.usernameSlug}` || 'Unknown'}
                           </span>
-                          <span className="text-xs text-muted-foreground">
+                          <span className="text-caption text-muted-foreground">
                             {formatRelativeTime(feedback.createdAt)}
                           </span>
                         </div>
@@ -180,11 +180,11 @@ function FeedbackListPage() {
                           {feedback.message}
                         </p>
                       ) : feedback.imageUrl ? (
-                        <p className="text-sm text-muted-foreground italic">
+                        <p className="text-body-sm text-muted-foreground italic">
                           Screenshot attached
                         </p>
                       ) : feedback.rating ? (
-                        <p className="text-sm text-muted-foreground italic">
+                        <p className="text-body-sm text-muted-foreground italic">
                           Rating only
                         </p>
                       ) : null}

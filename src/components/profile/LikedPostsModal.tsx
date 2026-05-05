@@ -51,7 +51,7 @@ export function LikedPostsModal({
       <DialogContent className="max-w-md max-h-[80vh] flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Liked Posts</h2>
+          <h2 className="text-title-lg">Liked Posts</h2>
         </div>
 
         {/* Search */}
@@ -175,14 +175,14 @@ function LikedPostItem({
               ) : (
                 <Icon name="user" variant="regular" className="text-[10px] text-muted-foreground" />
               )}
-              <p className="text-sm font-semibold truncate">
+              <p className="text-label-lg truncate">
                 {user.displayName || user.usernameSlug}
               </p>
             </>
           )}
         </div>
         {post.caption && (
-          <p className="text-sm text-muted-foreground line-clamp-2">
+          <p className="text-body-sm text-muted-foreground line-clamp-2">
             {post.caption}
           </p>
         )}

@@ -174,7 +174,7 @@ function ProfileGridItem({
       {showHoverStats && (
         <div className="absolute inset-0 bg-black/65 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
           {hasAnyStats && (
-            <div className="flex items-center gap-4 text-white text-sm font-semibold">
+            <div className="flex items-center gap-4 text-white text-label-lg">
               {likeCount > 0 && (
                 <span className="flex items-center gap-1.5">
                   <Icon name="heart" />
@@ -343,10 +343,10 @@ function ProfilePage() {
             )}
           </div>
           <div className="space-y-1">
-            <h1 className="text-xl font-bold">{profileUser.displayName || profileUser.slug}</h1>
-            <p className="text-sm text-muted-foreground">@{profileUser.slug}</p>
+            <h1 className="text-heading-3">{profileUser.displayName || profileUser.slug}</h1>
+            <p className="text-body-sm text-muted-foreground">@{profileUser.slug}</p>
           </div>
-          <div className="rounded-lg border border-border bg-card px-4 py-3 text-sm text-muted-foreground">
+          <div className="rounded-lg border border-border bg-card px-4 py-3 text-body-sm text-muted-foreground">
             You blocked @{profileUser.slug}. They can't see your profile or
             posts, and you can't see theirs.
           </div>
@@ -536,7 +536,7 @@ function ProfilePage() {
           <div className="space-y-1.5">
             {/* Display Name + Stats on same line */}
             <div className="flex items-baseline gap-5 flex-wrap">
-              <h1 className="text-xl md:text-2xl font-bold truncate flex items-center gap-2">
+              <h1 className="text-heading-2 truncate flex items-center gap-2">
                 <span className="truncate">{profileUser.displayName || profileUser.slug}</span>
                 <RoleBadge role={profileUser.role ?? null} />
               </h1>
@@ -549,10 +549,10 @@ function ProfilePage() {
                   }}
                   className="cursor-pointer hover:opacity-80 transition-opacity"
                 >
-                  <span className="text-sm font-bold">
+                  <span className="text-label-lg">
                     {followStats?.followerCount ?? profileData?.followersCount ?? 0}
                   </span>{' '}
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-body-sm text-muted-foreground">
                     {(followStats?.followerCount ?? profileData?.followersCount ?? 0) === 1 ? 'follower' : 'followers'}
                   </span>
                 </button>
@@ -564,10 +564,10 @@ function ProfilePage() {
                   }}
                   className="cursor-pointer hover:opacity-80 transition-opacity"
                 >
-                  <span className="text-sm font-bold">
+                  <span className="text-label-lg">
                     {followStats?.followingCount ?? profileData?.followingCount ?? 0}
                   </span>{' '}
-                  <span className="text-sm text-muted-foreground">following</span>
+                  <span className="text-body-sm text-muted-foreground">following</span>
                 </button>
                 <button
                   type="button"
@@ -577,10 +577,10 @@ function ProfilePage() {
                   }}
                   className="cursor-pointer hover:opacity-80 transition-opacity"
                 >
-                  <span className="text-sm font-bold">
+                  <span className="text-label-lg">
                     {profileData?.collectorsCount ?? 0}
                   </span>{' '}
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-body-sm text-muted-foreground">
                     {profileData?.collectorsCount === 1 ? 'collector' : 'collectors'}
                   </span>
                 </button>
@@ -593,7 +593,7 @@ function ProfilePage() {
               {profileUser.createdAt && (
                 <>
                   {' • '}
-                  <span className="text-sm">
+                  <span className="text-body-sm">
                     Joined {new Date(profileUser.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                   </span>
                 </>
@@ -668,7 +668,7 @@ function ProfilePage() {
                 key={tab}
                 type="button"
                 onClick={() => setActiveTab(tab)}
-                className={`flex-1 px-4 py-3 text-sm font-medium transition-colors relative flex items-center justify-center gap-2 ${
+                className={`flex-1 px-4 py-3 text-label-lg transition-colors relative flex items-center justify-center gap-2 ${
                   activeTab === tab
                     ? 'text-foreground'
                     : 'text-muted-foreground hover:text-foreground/80'
@@ -737,7 +737,7 @@ function ProfilePage() {
             </div>
             <div className="flex-1 space-y-1">
               <h3 className="font-semibold">Join Desperse</h3>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-body-sm text-muted-foreground">
                 Sign in to collect from @{profileUser.slug} and support their work.
               </p>
             </div>

@@ -38,7 +38,7 @@ function CopyrightSettingsPage() {
 					<LoadingSpinner />
 				</div>
 			) : !user ? (
-				<p className="text-sm text-muted-foreground py-2">
+				<p className="text-body-sm text-muted-foreground py-2">
 					Sign in to manage copyright settings
 				</p>
 			) : (

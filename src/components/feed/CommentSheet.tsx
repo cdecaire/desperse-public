@@ -166,7 +166,7 @@ export function CommentSheet({
 			>
 				{/* Header */}
 				<div className="px-4 py-3 shrink-0 flex items-center justify-between border-b border-border">
-					<span className="text-sm font-semibold text-foreground">Comments</span>
+					<span className="text-title-lg text-foreground">Comments</span>
 					<button
 						onClick={handleClose}
 						className="rounded-full p-1.5 hover:bg-muted active:bg-muted transition-colors -mr-1"

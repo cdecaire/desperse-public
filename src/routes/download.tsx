@@ -12,13 +12,13 @@ function DownloadPage() {
 		<StaticPageLayout>
 			<div className="space-y-12">
 				<header className="space-y-4">
-					<p className="text-xs font-mono uppercase tracking-widest text-muted-foreground">
+					<p className="text-label-xs text-muted-foreground">
 						Get the app
 					</p>
-					<h1 className="text-4xl md:text-5xl font-extrabold tracking-tight">
+					<h1 className="text-display-lg">
 						Desperse, everywhere you create.
 					</h1>
-					<p className="text-lg text-muted-foreground max-w-xl">
+					<p className="text-body-lg text-muted-foreground max-w-xl">
 						Native mobile apps for iOS and Android, plus a Solana dApp Store
 						build for Saga and Seeker. Same wallet, same posts, same collection.
 					</p>
@@ -50,21 +50,19 @@ function DownloadPage() {
 								<Icon name="globe" variant="regular" className="text-base" />
 							</div>
 							<div>
-								<p className="font-semibold">Web</p>
-								<p className="text-xs text-muted-foreground">desperse.com</p>
+								<p className="text-title-lg">Web</p>
+								<p className="text-caption text-muted-foreground">desperse.com</p>
 							</div>
 						</div>
-						<p className="text-sm text-muted-foreground">
+						<p className="text-body-sm text-muted-foreground">
 							No install required. Works in any modern browser, on any device.
 						</p>
 					</div>
 				</section>
 
 				<section className="border-t border-border pt-8 space-y-3">
-					<h2 className="text-sm font-mono uppercase tracking-widest text-muted-foreground">
-						Help
-					</h2>
-					<p className="text-sm text-muted-foreground">
+					<h2 className="text-label-xs text-muted-foreground">Help</h2>
+					<p className="text-body-sm text-muted-foreground">
 						Trouble installing? Email{' '}
 						<a
 							href="mailto:support@desperse.com"
@@ -93,11 +91,11 @@ function PlatformCard({ platform, title, status, description, footnote }: Platfo
 		<div className="border border-border rounded-xl p-6 bg-card/30 flex flex-col gap-5">
 			<div className="flex items-start justify-between gap-4">
 				<div>
-					<p className="font-semibold text-lg">{title}</p>
-					<p className="text-xs text-muted-foreground mt-1">{status}</p>
+					<p className="text-title-lg">{title}</p>
+					<p className="text-caption text-muted-foreground mt-1">{status}</p>
 				</div>
 			</div>
-			<p className="text-sm text-muted-foreground">{description}</p>
+			<p className="text-body-sm text-muted-foreground">{description}</p>
 			<div>
 				<DownloadBadge platform={platform} size="md" />
 			</div>
@@ -108,11 +106,11 @@ function PlatformCard({ platform, title, status, description, footnote }: Platfo
 
 function AndroidInstallNotes() {
 	return (
-		<details className="text-xs text-muted-foreground border-t border-border/60 pt-4">
-			<summary className="cursor-pointer font-medium hover:text-foreground transition-colors">
+		<details className="text-caption text-muted-foreground border-t border-border/60 pt-4">
+			<summary className="cursor-pointer text-label-md hover:text-foreground transition-colors">
 				How to install the APK
 			</summary>
-			<ol className="list-decimal pl-5 space-y-1.5 mt-3 leading-relaxed">
+			<ol className="list-decimal pl-5 space-y-1.5 mt-3">
 				<li>Tap the download button above to save the APK file.</li>
 				<li>
 					Open the file from your downloads. Android will prompt you to allow

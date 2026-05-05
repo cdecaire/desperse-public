@@ -8,23 +8,23 @@ export const Route = createFileRoute('/terms')({
 function TermsPage() {
   return (
     <StaticPageLayout>
-      <article className="prose prose-zinc dark:prose-invert prose-p:my-4 max-w-none">
-        <h1 className="text-2xl md:text-3xl font-bold mb-2">Terms of Service</h1>
-        <p className="text-muted-foreground text-sm mb-8">Last updated: March 16, 2026</p>
+      <article className="max-w-none [&>p]:text-body-lg [&>p]:mb-4 [&>ul]:mb-4 [&>ul]:pl-6 [&>ul]:list-disc [&>ul]:space-y-1 [&_li]:text-body-lg">
+        <h1 className="text-heading-1 mb-2">Terms of Service</h1>
+        <p className="text-body-sm! text-muted-foreground mb-8">Last updated: March 16, 2026</p>
 
         <p>
           By accessing or using Desperse ("Desperse," the "App," "we," "us," or "our"), you agree to
           these Terms of Service.
         </p>
 
-        <h2 className="text-xl font-semibold mt-8 mb-4">Use of the App</h2>
+        <h2 className="text-heading-2 mt-12 mb-3">Use of the App</h2>
         <p>
           You may use the App only in compliance with these Terms and all applicable laws, rules, and
           regulations. You may not use the App if your use would violate any law, infringe the rights
           of any person or entity, or expose Desperse to legal or regulatory risk.
         </p>
 
-        <h2 className="text-xl font-semibold mt-8 mb-4">Accounts</h2>
+        <h2 className="text-heading-2 mt-12 mb-3">Accounts</h2>
         <p>
           When you sign in with X, Google, or another social or authentication provider, you authorize
           the App to access certain basic account information as permitted by that provider.
@@ -35,7 +35,7 @@ function TermsPage() {
           under your account.
         </p>
 
-        <h2 className="text-xl font-semibold mt-8 mb-4">User Content, Uploads, Minted Assets, Downloads, and Messages</h2>
+        <h2 className="text-heading-2 mt-12 mb-3">User Content, Uploads, Minted Assets, Downloads, and Messages</h2>
         <p>
           The App allows users to upload, publish, mint, collect, sell, purchase, download, exchange,
           display, transmit, and otherwise make available digital content, including without limitation
@@ -65,12 +65,12 @@ function TermsPage() {
           reputational, or policy reasons.
         </p>
 
-        <h2 className="text-xl font-semibold mt-8 mb-4">User Representations and Warranties</h2>
+        <h2 className="text-heading-2 mt-12 mb-3">User Representations and Warranties</h2>
         <p>
           By uploading, posting, minting, messaging, transmitting, or otherwise making User Content
           available through the App, you represent, warrant, and agree that:
         </p>
-        <ul className="list-disc pl-6 space-y-1 my-4">
+        <ul className="list-disc pl-6 space-y-1 mb-4">
           <li>
             you own the User Content or have all rights, licenses, permissions, and authority necessary
             to use it and authorize its use on or through the App
@@ -96,12 +96,12 @@ function TermsPage() {
           </li>
         </ul>
 
-        <h2 className="text-xl font-semibold mt-8 mb-4">Prohibited Content and Conduct</h2>
+        <h2 className="text-heading-2 mt-12 mb-3">Prohibited Content and Conduct</h2>
         <p>
           You may not use the App to upload, publish, mint, transmit, message, distribute, sell, or
           otherwise make available any content or engage in any conduct that:
         </p>
-        <ul className="list-disc pl-6 space-y-1 my-4">
+        <ul className="list-disc pl-6 space-y-1 mb-4">
           <li>
             infringes or violates the intellectual property, privacy, publicity, contractual, or other
             rights of any person or entity
@@ -144,7 +144,7 @@ function TermsPage() {
           unsafe, or otherwise inappropriate for the App.
         </p>
 
-        <h2 className="text-xl font-semibold mt-8 mb-4">Messaging and User Communications</h2>
+        <h2 className="text-heading-2 mt-12 mb-3">Messaging and User Communications</h2>
         <p>
           The App may allow users to communicate directly through in-app messaging and other
           communication features.
@@ -162,7 +162,7 @@ function TermsPage() {
           users.
         </p>
 
-        <h2 className="text-xl font-semibold mt-8 mb-4">Reporting, Review, and Moderation</h2>
+        <h2 className="text-heading-2 mt-12 mb-3">Reporting, Review, and Moderation</h2>
         <p>
           Users may report content, accounts, messages, or other activity through available in-app
           tools.
@@ -172,7 +172,7 @@ function TermsPage() {
           Desperse may take any action it deems appropriate in its sole discretion, including without
           limitation:
         </p>
-        <ul className="list-disc pl-6 space-y-1 my-4">
+        <ul className="list-disc pl-6 space-y-1 mb-4">
           <li>
             reviewing reported content, account activity, messages, metadata, previews, thumbnails,
             profile images, cover images, and other surfaced content
@@ -201,11 +201,11 @@ function TermsPage() {
         <p>
           Desperse has no obligation to restore any content or account after moderation action.
         </p>
-        <p className="text-sm text-muted-foreground italic">
+        <p className="text-caption! text-muted-foreground italic mb-4">
           Submitting a false or misleading report may result in account action.
         </p>
 
-        <h2 className="text-xl font-semibold mt-8 mb-4">Copyright Policy and Takedown Procedure</h2>
+        <h2 className="text-heading-2 mt-12 mb-3">Copyright Policy and Takedown Procedure</h2>
         <p>
           Desperse respects intellectual property rights and responds to notices of alleged copyright
           infringement.
@@ -220,7 +220,7 @@ function TermsPage() {
           </a>
           {" "}that includes enough information for us to evaluate the claim, such as:
         </p>
-        <ul className="list-disc pl-6 space-y-1 my-4">
+        <ul className="list-disc pl-6 space-y-1 mb-4">
           <li>identification of the copyrighted work claimed to have been infringed</li>
           <li>
             identification of the allegedly infringing content and information reasonably sufficient to
@@ -254,7 +254,7 @@ function TermsPage() {
           infringement, ownership, validity of a claim, or endorsement by Desperse.
         </p>
 
-        <h2 className="text-xl font-semibold mt-8 mb-4">Repeat Infringer Policy</h2>
+        <h2 className="text-heading-2 mt-12 mb-3">Repeat Infringer Policy</h2>
         <p>
           Desperse reserves the right to suspend, restrict, or terminate accounts of users who are the
           subject of repeated infringement complaints, repeated valid takedown notices, repeated
@@ -266,7 +266,7 @@ function TermsPage() {
           offender.
         </p>
 
-        <h2 className="text-xl font-semibold mt-8 mb-4">Rights Metadata, Provenance, and Platform Tools</h2>
+        <h2 className="text-heading-2 mt-12 mb-3">Rights Metadata, Provenance, and Platform Tools</h2>
         <p>
           The App may allow users to attach or display metadata, creator declarations, attribution
           details, licensing selections, provenance information, ownership history, transfer history,
@@ -283,7 +283,7 @@ function TermsPage() {
           constitute legal verification or a warranty by Desperse.
         </p>
 
-        <h2 className="text-xl font-semibold mt-8 mb-4">Downloads, Minting, Transactions, and External Risk</h2>
+        <h2 className="text-heading-2 mt-12 mb-3">Downloads, Minting, Transactions, and External Risk</h2>
         <p>
           Any decision to view, download, mint, collect, purchase, sell, message, interact with, or rely
           on User Content is at your own risk.
@@ -299,7 +299,7 @@ function TermsPage() {
           before interacting with users, wallets, files, links, or digital assets.
         </p>
 
-        <h2 className="text-xl font-semibold mt-8 mb-4">Blockchain and Decentralized Storage</h2>
+        <h2 className="text-heading-2 mt-12 mb-3">Blockchain and Decentralized Storage</h2>
         <p>
           Certain content, token metadata, transaction records, or related materials may be stored on
           public blockchains, decentralized storage networks, or third-party systems outside our
@@ -315,7 +315,7 @@ function TermsPage() {
           recovering, or undoing blockchain-based actions.
         </p>
 
-        <h2 className="text-xl font-semibold mt-8 mb-4">Availability and Service Changes</h2>
+        <h2 className="text-heading-2 mt-12 mb-3">Availability and Service Changes</h2>
         <p>
           The App is provided on an "as is" and "as available" basis. Desperse may modify, suspend,
           disable, remove, or discontinue the App or any feature, workflow, marketplace function,
@@ -323,14 +323,14 @@ function TermsPage() {
           without notice.
         </p>
 
-        <h2 className="text-xl font-semibold mt-8 mb-4">Indemnification</h2>
+        <h2 className="text-heading-2 mt-12 mb-3">Indemnification</h2>
         <p>
           You agree to defend, indemnify, and hold harmless Desperse and its owner, operators,
           affiliates, service providers, contractors, successors, and assigns from and against any
           claims, demands, actions, proceedings, damages, judgments, liabilities, losses, costs, and
           expenses, including reasonable attorneys' fees, arising out of or related to:
         </p>
-        <ul className="list-disc pl-6 space-y-1 my-4">
+        <ul className="list-disc pl-6 space-y-1 mb-4">
           <li>your User Content</li>
           <li>your use of the App</li>
           <li>your violation of these Terms</li>
@@ -343,7 +343,7 @@ function TermsPage() {
           </li>
         </ul>
 
-        <h2 className="text-xl font-semibold mt-8 mb-4">Limitation of Liability</h2>
+        <h2 className="text-heading-2 mt-12 mb-3">Limitation of Liability</h2>
         <p>
           To the fullest extent permitted by law, Desperse is not liable for any indirect, incidental,
           special, consequential, exemplary, punitive, or other damages, or for any loss of profits,
@@ -358,20 +358,20 @@ function TermsPage() {
           service interruptions, or third-party systems.
         </p>
 
-        <h2 className="text-xl font-semibold mt-8 mb-4">Termination</h2>
+        <h2 className="text-heading-2 mt-12 mb-3">Termination</h2>
         <p>
           Desperse may suspend, restrict, or terminate your access to the App at any time, with or
           without notice, for any reason or no reason, including suspected infringement, repeated
           reports, legal risk, abuse, fraud, or violation of these Terms.
         </p>
 
-        <h2 className="text-xl font-semibold mt-8 mb-4">Changes to These Terms</h2>
+        <h2 className="text-heading-2 mt-12 mb-3">Changes to These Terms</h2>
         <p>
           We may update these Terms from time to time. Continued use of the App after updated Terms are
           posted constitutes acceptance of those updated Terms.
         </p>
 
-        <h2 className="text-xl font-semibold mt-8 mb-4">Contact</h2>
+        <h2 className="text-heading-2 mt-12 mb-3">Contact</h2>
         <p>For questions, notices, or copyright claims, contact:</p>
         <p>
           <a

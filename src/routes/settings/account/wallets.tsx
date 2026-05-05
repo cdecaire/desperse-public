@@ -245,14 +245,14 @@ function WalletsPage() {
         {/* Wallets Section */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <p className="text-lg font-semibold">Wallets</p>
+            <p className="text-title-lg">Wallets</p>
             <Button variant="default" onClick={() => linkWallet()}>
               <Icon name="plus" variant="regular" className="mr-2" />
               Link Wallet
             </Button>
           </div>
           {solanaWallets.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No Solana wallets connected yet.</p>
+            <p className="text-body-sm text-muted-foreground">No Solana wallets connected yet.</p>
           ) : (
             <div className="space-y-3">
               {solanaWallets.map((wallet) => {
@@ -305,7 +305,7 @@ function WalletsPage() {
                             {typeTag}
                           </span>
                         </div>
-                        <p className="text-xs text-muted-foreground break-all">{wallet.address}</p>
+                        <p className="text-caption text-muted-foreground break-all">{wallet.address}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
@@ -353,8 +353,8 @@ function WalletsPage() {
         {ethereumWallets.length > 0 && (
           <div className="space-y-3">
             <div className="space-y-1">
-              <p className="text-lg font-semibold">Ethereum wallets</p>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-title-lg">Ethereum wallets</p>
+              <p className="text-body-sm text-muted-foreground">
                 Linked for verification only. Desperse signs all transactions on Solana —
                 Ethereum wallets cannot be set as your active wallet.
               </p>
@@ -382,7 +382,7 @@ function WalletsPage() {
                             Verification
                           </span>
                         </div>
-                        <p className="text-xs text-muted-foreground font-mono">{shortAddress}</p>
+                        <p className="text-caption text-muted-foreground font-mono">{shortAddress}</p>
                       </div>
                     </div>
                     <Tooltip content={canUnlinkLoginMethod ? 'Unlink wallet' : 'You need at least one login method'}>
@@ -409,7 +409,7 @@ function WalletsPage() {
 
         {/* Linked Social Accounts Section */}
         <div className="space-y-3">
-          <p className="text-lg font-semibold">Linked social accounts</p>
+          <p className="text-title-lg">Linked social accounts</p>
 
           {/* Link buttons for unlinked socials */}
           <div className="flex flex-wrap gap-2">
@@ -428,7 +428,7 @@ function WalletsPage() {
           </div>
 
           {linkedSocials.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No linked social accounts yet.</p>
+            <p className="text-body-sm text-muted-foreground">No linked social accounts yet.</p>
           ) : (
             <div className="space-y-2">
               {linkedSocials.map((account) => (
@@ -447,9 +447,9 @@ function WalletsPage() {
                     <div className="space-y-0.5">
                       <p className="font-medium capitalize">{account.type.replace('_oauth', '')}</p>
                       {'email' in account && account.email ? (
-                        <p className="text-xs text-muted-foreground break-all">{account.email}</p>
+                        <p className="text-caption text-muted-foreground break-all">{account.email}</p>
                       ) : 'username' in account && account.username ? (
-                        <p className="text-xs text-muted-foreground break-all">@{account.username}</p>
+                        <p className="text-caption text-muted-foreground break-all">@{account.username}</p>
                       ) : null}
                     </div>
                   </div>

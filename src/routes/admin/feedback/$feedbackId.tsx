@@ -35,7 +35,7 @@ function StarDisplay({ rating, size = 'md' }: { rating: number | null; size?: 's
           )}
         />
       ))}
-      <span className="ml-2 text-sm text-muted-foreground">({rating}/5)</span>
+      <span className="ml-2 text-body-sm text-muted-foreground">({rating}/5)</span>
     </div>
   )
 }
@@ -71,7 +71,7 @@ function FeedbackDetailPage() {
       {(isLoading || isPending) && (
         <div className="flex items-center justify-center py-12">
           <LoadingSpinner size="lg" />
-          <div className="ml-4 text-sm text-muted-foreground">
+          <div className="ml-4 text-body-sm text-muted-foreground">
             Loading feedback...
           </div>
         </div>
@@ -117,7 +117,7 @@ function FeedbackDetailPage() {
                     {feedback.displayName || feedback.user?.displayName || `@${feedback.user?.usernameSlug}` || 'Unknown'}
                   </p>
                   {feedback.user?.usernameSlug && (
-                    <p className="text-sm text-muted-foreground">@{feedback.user.usernameSlug}</p>
+                    <p className="text-body-sm text-muted-foreground">@{feedback.user.usernameSlug}</p>
                   )}
                 </div>
               </div>
@@ -125,7 +125,7 @@ function FeedbackDetailPage() {
               <div className="flex items-center gap-2">
                 <span
                   className={cn(
-                    'inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium',
+                    'inline-flex items-center gap-1 px-2 py-1 rounded text-label-md',
                     feedback.status === 'new'
                       ? 'bg-(--tone-warning)/10 text-(--tone-warning) border border-(--tone-warning)/20'
                       : 'bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20'
@@ -136,7 +136,7 @@ function FeedbackDetailPage() {
               </div>
             </div>
 
-            <div className="mt-3 text-sm text-muted-foreground">
+            <div className="mt-3 text-body-sm text-muted-foreground">
               Submitted {formatRelativeTime(feedback.createdAt)}
               {feedback.reviewedAt && (
                 <span> · Reviewed {formatRelativeTime(feedback.reviewedAt)}</span>
@@ -146,7 +146,7 @@ function FeedbackDetailPage() {
 
           {/* Rating */}
           <div className="bg-card border rounded-lg p-4">
-            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">
+            <h2 className="text-label-lg text-muted-foreground uppercase tracking-wide mb-3">
               Rating
             </h2>
             <StarDisplay rating={feedback.rating} />
@@ -155,7 +155,7 @@ function FeedbackDetailPage() {
           {/* Message */}
           {feedback.message && (
             <div className="bg-card border rounded-lg p-4">
-              <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">
+              <h2 className="text-label-lg text-muted-foreground uppercase tracking-wide mb-3">
                 Message
               </h2>
               <p className="text-foreground whitespace-pre-wrap break-words">
@@ -167,7 +167,7 @@ function FeedbackDetailPage() {
           {/* Screenshot */}
           {feedback.imageUrl && (
             <div className="bg-card border rounded-lg p-4">
-              <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">
+              <h2 className="text-label-lg text-muted-foreground uppercase tracking-wide mb-3">
                 Screenshot
               </h2>
               <a
@@ -187,7 +187,7 @@ function FeedbackDetailPage() {
 
           {/* Context */}
           <div className="bg-card border rounded-lg p-4">
-            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">
+            <h2 className="text-label-lg text-muted-foreground uppercase tracking-wide mb-3">
               Context
             </h2>
             <div className="space-y-2 text-sm">
@@ -215,7 +215,7 @@ function FeedbackDetailPage() {
               {feedback.userAgent && (
                 <div className="flex items-start gap-2">
                   <span className="text-muted-foreground shrink-0 w-20">Browser:</span>
-                  <span className="text-xs text-muted-foreground break-all">
+                  <span className="text-caption text-muted-foreground break-all">
                     {feedback.userAgent}
                   </span>
                 </div>
@@ -228,7 +228,7 @@ function FeedbackDetailPage() {
 
           {/* Actions */}
           <div className="bg-card border rounded-lg p-4">
-            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">
+            <h2 className="text-label-lg text-muted-foreground uppercase tracking-wide mb-3">
               Actions
             </h2>
             <div className="flex flex-wrap gap-2">
@@ -241,7 +241,7 @@ function FeedbackDetailPage() {
                   {markReviewed.isPending ? 'Marking...' : 'Mark as Reviewed'}
                 </Button>
               ) : (
-                <span className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+                <span className="inline-flex items-center gap-2 text-body-sm text-muted-foreground">
                   <Icon name="check-circle" variant="regular" className="text-green-500" />
                   Already reviewed
                 </span>

@@ -74,7 +74,7 @@ function ExportWalletPage() {
           <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-6">
             <Icon name="check" variant="regular" className="text-2xl text-muted-foreground" />
           </div>
-          <h1 className="text-2xl md:text-3xl font-bold mb-3">Key exported</h1>
+          <h1 className="text-heading-1 mb-3">Key exported</h1>
           <p className="text-muted-foreground">
             You can close this window now.
           </p>
@@ -100,7 +100,7 @@ function ExportWalletPage() {
               <Icon name="key" variant="regular" className="text-2xl text-muted-foreground" />
             </div>
 
-            <h1 className="text-2xl md:text-3xl font-bold mb-3">Export Private Key</h1>
+            <h1 className="text-heading-1 mb-3">Export Private Key</h1>
 
             <p className="text-muted-foreground mb-8">
               This will reveal your embedded wallet's private key. Keep it safe and never share it with anyone.
@@ -108,7 +108,7 @@ function ExportWalletPage() {
 
             <button
               onClick={handleExport}
-              className="bg-foreground text-background px-8 py-3 rounded-full text-sm font-semibold hover:opacity-90 transition-opacity"
+              className="bg-foreground text-background px-8 py-3 rounded-full text-label-lg hover:opacity-90 transition-opacity"
             >
               Export private key
             </button>
@@ -119,7 +119,7 @@ function ExportWalletPage() {
               <Icon name="key" variant="regular" className="text-2xl text-muted-foreground" />
             </div>
 
-            <h1 className="text-2xl md:text-3xl font-bold mb-3">Export Private Key</h1>
+            <h1 className="text-heading-1 mb-3">Export Private Key</h1>
 
             <p className="text-muted-foreground mb-8">
               For security, private key export is only available via the web. Sign in to continue.
@@ -127,7 +127,7 @@ function ExportWalletPage() {
 
             <button
               onClick={() => login()}
-              className="bg-foreground text-background px-8 py-3 rounded-full text-sm font-semibold hover:opacity-90 transition-opacity"
+              className="bg-foreground text-background px-8 py-3 rounded-full text-label-lg hover:opacity-90 transition-opacity"
             >
               Sign in to continue
             </button>

@@ -1306,6 +1306,476 @@ function PatternsSection() {
 }
 
 // ---------------------------------------------------------------------------
+// 12. Mobile (iOS + Android)
+// ---------------------------------------------------------------------------
+
+function PlatformBadge({ platform }: { platform: 'iOS' | 'Android' | 'Web' }) {
+	const palette =
+		platform === 'iOS'
+			? 'bg-(--azure-radiance-100) text-(--azure-radiance-700) dark:bg-(--azure-radiance-900) dark:text-(--azure-radiance-200)'
+			: platform === 'Android'
+				? 'bg-(--caribbean-green-100) text-(--caribbean-green-700) dark:bg-(--caribbean-green-900) dark:text-(--caribbean-green-200)'
+				: 'bg-muted text-muted-foreground'
+	return (
+		<span
+			className={`inline-flex items-center px-2 py-0.5 rounded-full text-mono-sm normal-case ${palette}`}
+		>
+			{platform}
+		</span>
+	)
+}
+
+const platforms = [
+	{
+		name: 'iOS',
+		minor: 'Apple Human Interface Guidelines',
+		points: [
+			'44pt minimum touch target on any tappable element',
+			'Respect Dynamic Type — root scales with user accessibility settings',
+			'Use UIBlurEffect sparingly; prefer solid Desperse surfaces',
+			'Edge-swipe back gesture, sheet-style modals, action sheets for destructive choices',
+			'Bundle Figtree as .ttf via UIAppFonts; San Francisco fallback only on bundle failure',
+		],
+	},
+	{
+		name: 'Android',
+		minor: 'Material Design (overridden where it conflicts with brand)',
+		points: [
+			'48dp minimum touch target (slightly larger than iOS)',
+			'Honor Configuration.fontScale for accessibility text sizing',
+			'Disable Material 3 tonal elevation overlays — we use the tonal ladder instead',
+			'Replace Material ripple with the same zinc-800 hover the web uses',
+			'Predictive back (Android 13+), bottom sheets standard + modal, edge-to-edge with WindowInsets',
+		],
+	},
+] as const
+
+const touchTargets = [
+	{ platform: 'iOS', size: 44, unit: 'pt', use: 'HIG floor for any tappable affordance' },
+	{ platform: 'Android', size: 48, unit: 'dp', use: 'Material accessibility minimum' },
+	{ platform: 'Web', size: 40, unit: 'px', use: 'Acceptable for secondary actions; primary hits 48px' },
+] as const
+
+const navPatterns = [
+	{
+		surface: 'Bottom tab bar',
+		ios: 'UITabBar style. 56pt height + safe-area inset bottom. SF Symbols or custom outline/filled icons. Up to 5 tabs.',
+		android: 'BottomNavigationView. 56dp + WindowInsets.navigationBars. Outline → filled on active. Up to 5 destinations.',
+	},
+	{
+		surface: 'Top bar',
+		ios: 'UINavigationBar with large title on root, inline title on push. Back button uses chevron-left + previous title.',
+		android: 'Material TopAppBar (small variant). 56dp + WindowInsets.statusBars. Up arrow for back, hamburger only when no parent.',
+	},
+	{
+		surface: 'Modals',
+		ios: 'pageSheet by default (90% height, drag handle). formSheet for compact forms. fullScreenCover for immersive flows.',
+		android: 'ModalBottomSheet for actions; Dialog for confirmations; full-screen Activity for immersive flows.',
+	},
+	{
+		surface: 'Action sheets',
+		ios: 'UIAlertController .actionSheet. Cancel separated. Destructive in tone-warning role at the top.',
+		android: 'ModalBottomSheet with list rows. No Cancel — tap-outside or back gesture dismisses.',
+	},
+]
+
+const platformTypography = [
+	{ token: 'display-2xl', ios: 'largeTitle 700', android: 'displayLarge' },
+	{ token: 'heading-1', ios: 'title1 600', android: 'headlineLarge' },
+	{ token: 'heading-2', ios: 'title2 600', android: 'headlineMedium' },
+	{ token: 'title-lg', ios: 'title3 600', android: 'titleLarge' },
+	{ token: 'body-lg', ios: 'body 400', android: 'bodyLarge' },
+	{ token: 'body-md', ios: 'body 400', android: 'bodyMedium' },
+	{ token: 'body-sm', ios: 'subheadline 400', android: 'bodySmall' },
+	{ token: 'label-lg', ios: 'footnote 600', android: 'labelLarge' },
+	{ token: 'label-md', ios: 'caption1 600', android: 'labelMedium' },
+	{ token: 'label-xs', ios: 'caption2 600', android: 'labelSmall' },
+]
+
+const haptics = [
+	{ event: 'Collect / Buy success', ios: 'notificationOccurred(.success)', android: 'CONFIRM (R+30)' },
+	{ event: 'Like toggle', ios: 'impactOccurred(.light)', android: 'GESTURE_END / VIRTUAL_KEY' },
+	{ event: 'Destructive confirm', ios: 'notificationOccurred(.warning)', android: 'REJECT (R+30) / LONG_PRESS' },
+	{ event: 'Pull to refresh trigger', ios: 'impactOccurred(.medium)', android: 'GESTURE_END' },
+	{ event: 'Error / failed action', ios: 'notificationOccurred(.error)', android: 'REJECT' },
+]
+
+const gestures = [
+	{
+		name: 'Edge-swipe back',
+		platform: 'iOS',
+		rule: 'Always available on push navigation. Disabling it (interactivePopGestureRecognizer.isEnabled = false) is the most-noticed broken-feel signal on iOS.',
+	},
+	{
+		name: 'Predictive back',
+		platform: 'Android',
+		rule: 'Opt in via android:enableOnBackInvokedCallback="true" (Android 13+). Required for the modern look-and-feel; without it the OS-level back animation looks legacy.',
+	},
+	{
+		name: 'Pull to refresh',
+		platform: 'Both',
+		rule: 'Standard primitive on feed and notification surfaces. Trigger refetch + medium haptic. Don\'t reinvent the spinner.',
+	},
+	{
+		name: 'Long-press',
+		platform: 'Both',
+		rule: 'Reserved for tooltip-equivalent on touch (~500ms) and contextual actions (post card → share/copy/report sheet). Never the only path to a destructive action.',
+	},
+]
+
+function MobileSection() {
+	return (
+		<Section
+			id="mobile"
+			eyebrow="12"
+			title="Mobile"
+			subtitle="Native shells (iOS + Android) and the responsive web all share the same token set. Follow each platform's HIG for primitives — navigation, gestures, system controls — and apply Desperse tokens for color, typography, shape, and motion. The design adapts; the brand doesn't bend."
+		>
+			<Subsection
+				title="Platforms at a glance"
+				subtitle="Two foundations, one design language. iOS leans on HIG for system primitives; Android adopts Material structure but overrides Material 3 chrome to match the Desperse tonal system."
+			>
+				<div className="grid md:grid-cols-2 gap-4 md:gap-6">
+					{platforms.map((p) => (
+						<Card key={p.name} className="p-5 md:p-6">
+							<div className="flex items-baseline gap-3 mb-2">
+								<p className="text-heading-3">{p.name}</p>
+								<PlatformBadge platform={p.name as 'iOS' | 'Android'} />
+							</div>
+							<p className="text-body-sm text-muted-foreground mb-4">{p.minor}</p>
+							<ul className="space-y-2.5">
+								{p.points.map((pt) => (
+									<li key={pt} className="flex gap-2.5 text-body-md">
+										<Icon
+											name="circle"
+											variant="solid"
+											className="text-(--zinc-400) text-[6px] mt-2 shrink-0"
+										/>
+										<span>{pt}</span>
+									</li>
+								))}
+							</ul>
+						</Card>
+					))}
+				</div>
+			</Subsection>
+
+			<Subsection
+				title="Touch targets"
+				subtitle="Three minimums. Apply the platform's value, not the lowest common denominator. Desktop density (32px icon buttons) is reserved for power-user surfaces — never feeds, never primary actions."
+			>
+				<Card className="p-6">
+					<div className="flex flex-wrap items-end gap-8 mb-6">
+						{touchTargets.map((t) => (
+							<div key={t.platform} className="flex flex-col items-center gap-3">
+								<div
+									className="bg-foreground/10 border border-border rounded-md flex items-center justify-center"
+									style={{ width: `${t.size}px`, height: `${t.size}px` }}
+								>
+									<span className="text-mono-sm text-muted-foreground">
+										{t.size}
+										{t.unit}
+									</span>
+								</div>
+								<PlatformBadge platform={t.platform as 'iOS' | 'Android' | 'Web'} />
+							</div>
+						))}
+					</div>
+					<ul className="space-y-2 pt-4 border-t border-border">
+						{touchTargets.map((t) => (
+							<li key={t.platform} className="flex items-baseline gap-3 text-body-sm">
+								<span className="text-mono-sm text-muted-foreground w-16 shrink-0">
+									{t.size}
+									{t.unit}
+								</span>
+								<span>{t.use}</span>
+							</li>
+						))}
+					</ul>
+				</Card>
+			</Subsection>
+
+			<Subsection
+				title="Safe areas"
+				subtitle="Every fixed-position element respects env(safe-area-inset-*). Notch, Dynamic Island, status bar, and home indicator are baked into the layout — not edge cases."
+			>
+				<div className="grid md:grid-cols-[auto_1fr] gap-6 items-start">
+					{/* Simulated device frame */}
+					<div className="mx-auto md:mx-0 w-[220px] aspect-[9/19] rounded-[36px] bg-(--zinc-950) border-4 border-(--zinc-800) p-2 shadow-xl shrink-0">
+						<div className="relative w-full h-full rounded-[28px] bg-card overflow-hidden">
+							{/* Notch / Dynamic Island */}
+							<div className="absolute top-2 left-1/2 -translate-x-1/2 w-20 h-5 bg-(--zinc-950) rounded-full" />
+							{/* Top inset zone (status bar) */}
+							<div
+								className="absolute top-0 left-0 right-0 border-b border-dashed border-(--azure-radiance-500)/40 pointer-events-none"
+								style={{ height: '14%' }}
+							/>
+							{/* Top app bar */}
+							<div
+								className="absolute left-0 right-0 px-3 flex items-center"
+								style={{ top: '14%', height: '8%' }}
+							>
+								<span className="text-label-md text-foreground">Feed</span>
+							</div>
+							{/* Content */}
+							<div
+								className="absolute left-0 right-0 px-3 space-y-2"
+								style={{ top: '24%', bottom: '20%' }}
+							>
+								<div className="h-3 bg-muted rounded" />
+								<div className="h-3 bg-muted rounded w-4/5" />
+								<div className="h-12 bg-muted rounded mt-3" />
+								<div className="h-3 bg-muted rounded w-3/5 mt-3" />
+							</div>
+							{/* Bottom tab bar */}
+							<div
+								className="absolute left-0 right-0 bottom-0 border-t border-border bg-card flex items-center justify-around"
+								style={{ height: '14%' }}
+							>
+								<Icon name="house" variant="solid" className="text-foreground text-base" />
+								<Icon
+									name="magnifying-glass"
+									variant="regular"
+									className="text-muted-foreground text-base"
+								/>
+								<Icon name="bell" variant="regular" className="text-muted-foreground text-base" />
+								<Icon name="user" variant="regular" className="text-muted-foreground text-base" />
+							</div>
+							{/* Bottom inset zone (home indicator) */}
+							<div
+								className="absolute bottom-0 left-0 right-0 border-t border-dashed border-(--azure-radiance-500)/40 pointer-events-none"
+								style={{ height: '6%' }}
+							/>
+							<div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-12 h-1 bg-foreground/40 rounded-full" />
+						</div>
+					</div>
+
+					<Card className="p-5 md:p-6">
+						<ul className="space-y-3">
+							<Rule>
+								Top bars add <Code>env(safe-area-inset-top)</Code> to padding-top. Notch and
+								Dynamic Island fall inside the inset, never under the bar.
+							</Rule>
+							<Rule>
+								Bottom tab bars add <Code>env(safe-area-inset-bottom)</Code> to
+								padding-bottom. Home indicator gets ~6% of the screen below the tabs.
+							</Rule>
+							<Rule>
+								Full-screen modals apply both insets. Landscape orientation honors{' '}
+								<Code>safe-area-inset-left/right</Code> on iPhone landscape.
+							</Rule>
+							<Rule>
+								Sticky CTAs over media respect inset-bottom + 12px breathing room above
+								the home indicator.
+							</Rule>
+							<Anti>
+								Never anchor anything tappable inside the inset zone. The OS reserves
+								those areas for its own gestures.
+							</Anti>
+						</ul>
+					</Card>
+				</div>
+			</Subsection>
+
+			<Subsection
+				title="Navigation patterns"
+				subtitle="Same primitives, platform-appropriate execution. Bottom tabs are the spine on both. Top bar, modals, and action sheets follow each OS's conventions so the UI feels native."
+			>
+				<Card className="p-0 overflow-hidden">
+					<div className="hidden md:grid grid-cols-12 border-b border-border bg-muted/40 px-5 py-3">
+						<div className="col-span-3 text-label-md text-muted-foreground">Surface</div>
+						<div className="col-span-4 text-label-md text-muted-foreground">iOS</div>
+						<div className="col-span-5 text-label-md text-muted-foreground">Android</div>
+					</div>
+					{navPatterns.map((p, i) => (
+						<div
+							key={p.surface}
+							className={`grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-0 px-4 py-4 md:px-5 ${
+								i < navPatterns.length - 1 ? 'border-b border-border' : ''
+							}`}
+						>
+							<div className="md:col-span-3 text-title-sm">{p.surface}</div>
+							<div className="md:col-span-4 text-body-sm text-muted-foreground">
+								<span className="md:hidden mr-2">
+									<PlatformBadge platform="iOS" />
+								</span>
+								{p.ios}
+							</div>
+							<div className="md:col-span-5 text-body-sm text-muted-foreground">
+								<span className="md:hidden mr-2">
+									<PlatformBadge platform="Android" />
+								</span>
+								{p.android}
+							</div>
+						</div>
+					))}
+				</Card>
+			</Subsection>
+
+			<Subsection
+				title="Typography on mobile"
+				subtitle="The 16px mobile root accommodates iOS Dynamic Type and Android fontScale up to 'Accessibility Large' without layout break. Bundle Figtree on both shells; never rely on the system font for brand surfaces."
+			>
+				<Card className="p-0 overflow-hidden">
+					<div className="hidden md:grid grid-cols-12 border-b border-border bg-muted/40 px-5 py-3">
+						<div className="col-span-4 text-label-md text-muted-foreground">Token</div>
+						<div className="col-span-4 text-label-md text-muted-foreground">iOS UIFont</div>
+						<div className="col-span-4 text-label-md text-muted-foreground">
+							Android TextAppearance
+						</div>
+					</div>
+					{platformTypography.map((row, i) => (
+						<div
+							key={row.token}
+							className={`grid grid-cols-1 md:grid-cols-12 gap-1.5 md:gap-0 px-4 py-3 md:px-5 ${
+								i < platformTypography.length - 1 ? 'border-b border-border' : ''
+							}`}
+						>
+							<div className="md:col-span-4">
+								<Code>{row.token}</Code>
+							</div>
+							<div className="md:col-span-4 text-body-sm">
+								<span className="md:hidden mr-2">
+									<PlatformBadge platform="iOS" />
+								</span>
+								{row.ios}
+							</div>
+							<div className="md:col-span-4 text-body-sm">
+								<span className="md:hidden mr-2">
+									<PlatformBadge platform="Android" />
+								</span>
+								{row.android}
+							</div>
+						</div>
+					))}
+				</Card>
+			</Subsection>
+
+			<Subsection
+				title="Haptics"
+				subtitle="Haptic feedback is part of the brand on mobile. Used sparingly to confirm — never to entertain. Match the system's vocabulary so the app feels native rather than custom."
+			>
+				<Card className="p-0 overflow-hidden">
+					<div className="hidden md:grid grid-cols-12 border-b border-border bg-muted/40 px-5 py-3">
+						<div className="col-span-4 text-label-md text-muted-foreground">Event</div>
+						<div className="col-span-4 text-label-md text-muted-foreground">iOS</div>
+						<div className="col-span-4 text-label-md text-muted-foreground">Android</div>
+					</div>
+					{haptics.map((row, i) => (
+						<div
+							key={row.event}
+							className={`grid grid-cols-1 md:grid-cols-12 gap-1.5 md:gap-0 px-4 py-3 md:px-5 ${
+								i < haptics.length - 1 ? 'border-b border-border' : ''
+							}`}
+						>
+							<div className="md:col-span-4 text-title-sm">{row.event}</div>
+							<div className="md:col-span-4 text-body-sm font-mono">
+								<span className="md:hidden mr-2 not-italic">
+									<PlatformBadge platform="iOS" />
+								</span>
+								{row.ios}
+							</div>
+							<div className="md:col-span-4 text-body-sm font-mono">
+								<span className="md:hidden mr-2 not-italic">
+									<PlatformBadge platform="Android" />
+								</span>
+								{row.android}
+							</div>
+						</div>
+					))}
+				</Card>
+			</Subsection>
+
+			<Subsection
+				title="Gestures"
+				subtitle="Honor the OS's gesture language. Disabling system gestures is the fastest way to make a native shell feel like a wrapped webview."
+			>
+				<div className="grid sm:grid-cols-2 gap-4">
+					{gestures.map((g) => (
+						<Card key={g.name} className="p-5">
+							<div className="flex items-baseline gap-3 mb-2">
+								<p className="text-title-lg">{g.name}</p>
+								<PlatformBadge platform={g.platform === 'Both' ? 'Web' : g.platform as 'iOS' | 'Android'} />
+								{g.platform === 'Both' && <span className="text-mono-sm text-muted-foreground">+ iOS / Android</span>}
+							</div>
+							<p className="text-body-sm text-muted-foreground">{g.rule}</p>
+						</Card>
+					))}
+				</div>
+			</Subsection>
+
+			<Subsection
+				title="Platform overrides"
+				subtitle="A small set of deliberate deviations from each platform's defaults that keep Desperse looking like itself across iOS, Android, and web."
+			>
+				<Card className="p-6">
+					<ul className="space-y-3">
+						<Rule>
+							<PlatformBadge platform="Android" /> Disable Material 3 tonal elevation
+							overlays. Use{' '}
+							<Code>Surface(tonalElevation = 0.dp)</Code> and rely on the zinc tonal
+							ladder. Material's automatic surface lightening collides with our flat
+							layered system.
+						</Rule>
+						<Rule>
+							<PlatformBadge platform="Android" /> Replace the Material ripple with the
+							same <Code>zinc-800</Code> hover/press fill the web uses. Cross-platform
+							consistency wins over the Material wave animation.
+						</Rule>
+						<Rule>
+							<PlatformBadge platform="iOS" /> Use <Code>UIBlurEffect</Code> only on
+							sticky bars when scrim is required for legibility over media. Materials
+							are not a brand element; solid <Code>background</Code> beats a blur.
+						</Rule>
+						<Rule>
+							<PlatformBadge platform="iOS" /> Native system controls
+							(<Code>UISwitch</Code>, <Code>UISegmentedControl</Code>) follow Apple's
+							default radii. Custom controls match the Desperse ladder. Don't rebuild
+							the system control if the default works.
+						</Rule>
+						<Rule>
+							Status bar content matches the active theme. Dark mode → light status bar
+							content; light mode → dark. Never fix it to one and let it look wrong.
+						</Rule>
+						<Rule>
+							Bundle Figtree as a font asset on both shells. Roboto / San Francisco
+							fallbacks only on bundle failure — never as the primary.
+						</Rule>
+					</ul>
+				</Card>
+			</Subsection>
+
+			<Subsection title="Rules">
+				<div className="grid md:grid-cols-2 gap-4 md:gap-6">
+					<Card className="p-6">
+						<p className="text-label-xs text-muted-foreground mb-4">Do</p>
+						<ul className="space-y-3">
+							<Rule>Match the platform's touch-target minimum (44pt iOS / 48dp Android).</Rule>
+							<Rule>Respect <Code>env(safe-area-inset-*)</Code> on every fixed surface.</Rule>
+							<Rule>Honor Dynamic Type and Configuration.fontScale.</Rule>
+							<Rule>Fire haptics on success, error, and destructive confirms — never on hover or scroll.</Rule>
+							<Rule>Use the platform's modal language (sheets, bottom sheets, action sheets).</Rule>
+							<Rule>Test landscape on iPhone — left/right insets matter on iPhone-X-and-after.</Rule>
+						</ul>
+					</Card>
+					<Card className="p-6">
+						<p className="text-label-xs text-muted-foreground mb-4">Don't</p>
+						<ul className="space-y-3">
+							<Anti>Disable edge-swipe back on iOS. Most-noticed broken-feel signal.</Anti>
+							<Anti>Skip predictive back on Android 13+. Modern UX expectation.</Anti>
+							<Anti>Use Material ripple. Replace with zinc-800 fill for cross-platform consistency.</Anti>
+							<Anti>Block tap-targets behind the home indicator or notch.</Anti>
+							<Anti>Lock orientation to portrait without a content reason. Tablets and landscape phones exist.</Anti>
+							<Anti>Implement features that only work on desktop. Every capability needs a mobile path.</Anti>
+						</ul>
+					</Card>
+				</div>
+			</Subsection>
+		</Section>
+	)
+}
+
+// ---------------------------------------------------------------------------
 // Theme switcher
 // ---------------------------------------------------------------------------
 
@@ -1365,6 +1835,7 @@ const toc = [
 	{ id: 'iconography', n: '09', label: 'Iconography' },
 	{ id: 'writing', n: '10', label: 'Writing' },
 	{ id: 'patterns', n: '11', label: 'Patterns' },
+	{ id: 'mobile', n: '12', label: 'Mobile' },
 ]
 
 function DesignSystemPage() {
@@ -1436,6 +1907,7 @@ function DesignSystemPage() {
 					<IconographySection />
 					<WritingSection />
 					<PatternsSection />
+					<MobileSection />
 				</main>
 			</div>
 		</div>

@@ -1130,6 +1130,161 @@ checkboxes, toggles, and category pills retain rings as the accessibility
 floor. Any new interactive element that isn't a `<button>`/`<a>` must opt
 into a ring.
 
+## Mobile
+
+Native shells (iOS, Android) and the responsive web all share the same
+token set. Follow each platform's HIG for primitives — navigation,
+gestures, system controls — and apply Desperse tokens for color,
+typography, shape, and motion. **The design adapts; the brand doesn't
+bend.**
+
+### Platforms at a glance
+
+**iOS — Apple Human Interface Guidelines**
+
+- 44pt minimum touch target on any tappable element.
+- Respect Dynamic Type — root scales with user accessibility settings.
+- Use `UIBlurEffect` sparingly; prefer solid Desperse surfaces.
+- Edge-swipe back gesture, sheet-style modals, action sheets for
+  destructive choices.
+- Bundle Figtree as `.ttf` via `UIAppFonts`; San Francisco fallback only
+  on bundle failure.
+
+**Android — Material Design (overridden where it conflicts with brand)**
+
+- 48dp minimum touch target (slightly larger than iOS).
+- Honor `Configuration.fontScale` for accessibility text sizing.
+- Disable Material 3 tonal elevation overlays — we use the tonal ladder
+  instead.
+- Replace Material ripple with the same `zinc-800` hover the web uses.
+- Predictive back (Android 13+), bottom sheets standard + modal,
+  edge-to-edge with `WindowInsets`.
+
+### Touch targets
+
+| Platform | Minimum | Use |
+|---|---|---|
+| iOS | 44 × 44pt | HIG floor for any tappable affordance. |
+| Android | 48 × 48dp | Material accessibility minimum. |
+| Web (mobile) | 40 × 40px | Acceptable for secondary actions; primary actions and the bottom tab bar hit 48px. |
+| Web (desktop) | 32 × 32px | Reserved for power-user surfaces (settings, admin) — never feeds, never primary actions. |
+
+### Safe areas
+
+Every fixed-position element respects `env(safe-area-inset-*)`. Notch,
+Dynamic Island, status bar, and home indicator are baked into the layout
+— not edge cases.
+
+- Top bars add `env(safe-area-inset-top)` to `padding-top`. Notch and
+  Dynamic Island fall inside the inset, never under the bar.
+- Bottom tab bars add `env(safe-area-inset-bottom)` to `padding-bottom`.
+  Home indicator gets ~6% of the screen below the tabs.
+- Full-screen modals apply both insets. Landscape orientation honors
+  `safe-area-inset-left`/`right` on iPhone-X-and-after.
+- Sticky CTAs over media respect inset-bottom + 12px breathing room above
+  the home indicator.
+- **Never anchor anything tappable inside the inset zone.** The OS
+  reserves those areas for its own gestures.
+
+### Navigation patterns
+
+| Surface | iOS | Android |
+|---|---|---|
+| Bottom tab bar | `UITabBar`, 56pt + safe-area inset bottom. SF Symbols or custom outline/filled icons. Up to 5 tabs. | `BottomNavigationView`, 56dp + `WindowInsets.navigationBars`. Outline → filled on active. Up to 5 destinations. |
+| Top bar | `UINavigationBar`, large title on root, inline title on push. Back button uses chevron-left + previous title. | Material `TopAppBar` (small variant), 56dp + `WindowInsets.statusBars`. Up arrow for back; hamburger only when no parent. |
+| Modals | `pageSheet` by default (90% height, drag handle). `formSheet` for compact forms. `fullScreenCover` for immersive flows. | `ModalBottomSheet` for actions; `Dialog` for confirmations; full-screen `Activity` for immersive flows. |
+| Action sheets | `UIAlertController` `.actionSheet`. Cancel separated. Destructive in tone-warning role at the top. | `ModalBottomSheet` with list rows. No Cancel — tap-outside or back gesture dismisses. |
+
+### Typography on mobile
+
+The 16px mobile root accommodates iOS Dynamic Type and Android
+`fontScale` up to "Accessibility Large" without layout break. Bundle
+Figtree on both shells; never rely on the system font for brand
+surfaces. The full token-to-platform mapping table lives in the
+**Typography** section above.
+
+### Haptics
+
+Haptic feedback is part of the brand on mobile. Used **sparingly to
+confirm** — never to entertain. Match the system's vocabulary so the app
+feels native rather than custom.
+
+| Event | iOS | Android |
+|---|---|---|
+| Collect / Buy success | `notificationOccurred(.success)` | `HapticFeedbackConstants.CONFIRM` (R+30) |
+| Like toggle | `impactOccurred(.light)` | `GESTURE_END` / `VIRTUAL_KEY` |
+| Destructive confirm | `notificationOccurred(.warning)` | `REJECT` (R+30) / `LONG_PRESS` |
+| Pull to refresh trigger | `impactOccurred(.medium)` | `GESTURE_END` |
+| Error / failed action | `notificationOccurred(.error)` | `REJECT` |
+
+### Gestures
+
+Honor the OS's gesture language. Disabling system gestures is the
+fastest way to make a native shell feel like a wrapped webview.
+
+- **Edge-swipe back (iOS).** Always available on push navigation.
+  Disabling `interactivePopGestureRecognizer.isEnabled` is the
+  most-noticed broken-feel signal on iOS.
+- **Predictive back (Android).** Opt in via
+  `android:enableOnBackInvokedCallback="true"` on Android 13+. Required
+  for the modern look-and-feel; without it the OS-level back animation
+  looks legacy.
+- **Pull to refresh (both).** Standard primitive on feed and notification
+  surfaces. Trigger refetch + medium haptic. Don't reinvent the spinner.
+- **Long-press (both).** Reserved for tooltip-equivalent on touch
+  (~500ms) and contextual actions (post card → share/copy/report sheet).
+  Never the only path to a destructive action.
+
+### Platform overrides
+
+A small set of deliberate deviations from each platform's defaults that
+keep Desperse looking like itself across iOS, Android, and web.
+
+- **Android.** Disable Material 3 tonal elevation overlays. Use
+  `Surface(tonalElevation = 0.dp)` and rely on the zinc tonal ladder.
+  Material's automatic surface lightening collides with our flat layered
+  system.
+- **Android.** Replace the Material ripple with the same `zinc-800`
+  hover/press fill the web uses. Cross-platform consistency wins over
+  the Material wave animation.
+- **iOS.** Use `UIBlurEffect` only on sticky bars when scrim is required
+  for legibility over media. Materials are not a brand element; solid
+  `background` beats a blur.
+- **iOS.** Native system controls (`UISwitch`, `UISegmentedControl`)
+  follow Apple's default radii. Custom controls match the Desperse
+  ladder. Don't rebuild the system control if the default works.
+- **Both.** Status bar content matches the active theme. Dark mode →
+  light status bar content; light mode → dark. Never fix it to one and
+  let it look wrong in the other.
+- **Both.** Bundle Figtree as a font asset. Roboto / San Francisco
+  fallbacks only on bundle failure — never as the primary.
+
+### Mobile do's and don'ts
+
+**Do**
+
+- Match the platform's touch-target minimum (44pt iOS / 48dp Android).
+- Respect `env(safe-area-inset-*)` on every fixed surface.
+- Honor Dynamic Type and `Configuration.fontScale`.
+- Fire haptics on success, error, and destructive confirms — never on
+  hover or scroll.
+- Use the platform's modal language (sheets, bottom sheets, action
+  sheets).
+- Test landscape on iPhone — left/right insets matter on
+  iPhone-X-and-after.
+
+**Don't**
+
+- Disable edge-swipe back on iOS. Most-noticed broken-feel signal.
+- Skip predictive back on Android 13+. Modern UX expectation.
+- Use Material ripple. Replace with `zinc-800` fill for cross-platform
+  consistency.
+- Block tap-targets behind the home indicator or notch.
+- Lock orientation to portrait without a content reason. Tablets and
+  landscape phones exist.
+- Implement features that only work on desktop. Every capability needs
+  a mobile path.
+
 ## Do's and Don'ts
 
 ### Do

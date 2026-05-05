@@ -3,233 +3,330 @@ version: alpha
 name: Desperse
 description: >-
   Content-first design system for a Web3 social platform on Solana.
-  Minimal. Focused. Sharp. Dark by default, with three post-type tones
-  (Standard, Collectible, Edition) that encode value and rarity at a glance.
-  Tokens are authored once and applied across web, responsive web, iOS
-  (PWA + native shell), and Android.
+  Minimal. Focused. Sharp. Dark by default. Authored in OKLCH for
+  perceptually-uniform ramps, locked-hue palettes, and dark-mode vibrancy.
+  Three post-type tones (Standard, Collectible, Edition) encode value
+  and rarity at a glance. Tokens are authored once and applied across
+  web, responsive web, iOS, and Android.
+
 colors:
-  # --- Neutrals (zinc) -------------------------------------------------------
-  zinc-50: "#fafafa"
-  zinc-100: "#f4f4f5"
-  zinc-200: "#e4e4e7"
-  zinc-300: "#d4d4d8"
-  zinc-400: "#a1a1aa"
-  zinc-500: "#71717a"
-  zinc-600: "#52525b"
-  zinc-700: "#3f3f46"
-  zinc-800: "#27272a"
-  zinc-900: "#18181b"
-  zinc-950: "#09090b"
+  # ═══════════════════════════════════════════════════════════════════════
+  # Base palettes — OKLCH ramps, locked hue per palette, perceptually-even
+  # lightness, sRGB-capped chroma. Each 600 step clears WCAG AA (4.5:1) on
+  # white except flush-orange-600 (AA-Large only — use 700 for body text).
+  # ═══════════════════════════════════════════════════════════════════════
 
-  # --- Purple Heart (Edition / brand accent) ---------------------------------
-  purple-heart-50: "#fbf3ff"
-  purple-heart-100: "#f4e4ff"
-  purple-heart-200: "#ecceff"
-  purple-heart-300: "#dda7ff"
-  purple-heart-400: "#c86fff"
-  purple-heart-500: "#b439ff"
-  purple-heart-600: "#a213ff"
-  purple-heart-700: "#8d04ec"
-  purple-heart-800: "#7209b7"
-  purple-heart-900: "#62099a"
-  purple-heart-950: "#430074"
+  # Zinc — Hue 264°, near-zero chroma (cool neutral)
+  zinc-50:  "oklch(97.2% 0.002 264)"
+  zinc-100: "oklch(94.0% 0.003 264)"
+  zinc-200: "oklch(88.0% 0.004 264)"
+  zinc-300: "oklch(79.0% 0.004 264)"
+  zinc-400: "oklch(68.0% 0.004 264)"
+  zinc-500: "oklch(58.0% 0.005 264)"
+  zinc-600: "oklch(48.0% 0.005 264)"
+  zinc-700: "oklch(39.0% 0.004 264)"
+  zinc-800: "oklch(30.0% 0.004 264)"
+  zinc-900: "oklch(23.0% 0.003 264)"
+  zinc-950: "oklch(15.0% 0.003 264)"
 
-  # --- Blue Gem (Collectible) ------------------------------------------------
-  blue-gem-50: "#f3f1ff"
-  blue-gem-100: "#e9e6ff"
-  blue-gem-200: "#d5d0ff"
-  blue-gem-300: "#b7abff"
-  blue-gem-400: "#947bff"
-  blue-gem-500: "#7346ff"
-  blue-gem-600: "#6221ff"
-  blue-gem-700: "#540ff2"
-  blue-gem-800: "#450ccb"
-  blue-gem-900: "#3a0ca3"
-  blue-gem-950: "#220471"
+  # Torch Red — Hue 22° (destructive)
+  torch-red-50:  "oklch(97.2% 0.013 22)"
+  torch-red-100: "oklch(94.0% 0.028 22)"
+  torch-red-200: "oklch(88.0% 0.060 22)"
+  torch-red-300: "oklch(79.0% 0.118 22)"
+  torch-red-400: "oklch(68.0% 0.190 22)"
+  torch-red-500: "oklch(60.0% 0.235 22)"
+  torch-red-600: "oklch(53.0% 0.225 22)"
+  torch-red-700: "oklch(45.0% 0.190 22)"
+  torch-red-800: "oklch(36.0% 0.150 22)"
+  torch-red-900: "oklch(28.0% 0.110 22)"
+  torch-red-950: "oklch(18.0% 0.075 22)"
 
-  # --- Caribbean Green (Standard / Success) ----------------------------------
-  caribbean-green-50: "#eafff8"
-  caribbean-green-100: "#cdfeeb"
-  caribbean-green-200: "#9ffbdd"
-  caribbean-green-300: "#61f4cd"
-  caribbean-green-400: "#27e4b8"
-  caribbean-green-500: "#00cba2"
-  caribbean-green-600: "#00a585"
-  caribbean-green-700: "#00846d"
-  caribbean-green-800: "#006858"
-  caribbean-green-900: "#00554a"
-  caribbean-green-950: "#00302a"
+  # Blue Gem — Hue 285° (collectible, violet-blue)
+  blue-gem-50:  "oklch(97.2% 0.014 285)"
+  blue-gem-100: "oklch(94.0% 0.030 285)"
+  blue-gem-200: "oklch(88.0% 0.065 285)"
+  blue-gem-300: "oklch(79.0% 0.130 285)"
+  blue-gem-400: "oklch(68.0% 0.205 285)"
+  blue-gem-500: "oklch(58.0% 0.265 285)"
+  blue-gem-600: "oklch(48.0% 0.265 285)"
+  blue-gem-700: "oklch(40.0% 0.225 285)"
+  blue-gem-800: "oklch(31.0% 0.180 285)"
+  blue-gem-900: "oklch(23.0% 0.135 285)"
+  blue-gem-950: "oklch(15.0% 0.090 285)"
 
-  # --- Torch Red (Destructive) -----------------------------------------------
-  torch-red-50: "#fff0f4"
-  torch-red-100: "#ffdde5"
-  torch-red-200: "#ffc0cf"
-  torch-red-300: "#ff94ad"
-  torch-red-400: "#ff577f"
-  torch-red-500: "#ff2357"
-  torch-red-600: "#ff003c"
-  torch-red-700: "#d70033"
-  torch-red-800: "#b1032c"
-  torch-red-900: "#920a2a"
-  torch-red-950: "#500013"
+  # Purple Heart — Hue 309° (edition / brand accent, magenta-purple)
+  purple-heart-50:  "oklch(97.2% 0.014 309)"
+  purple-heart-100: "oklch(94.0% 0.030 309)"
+  purple-heart-200: "oklch(88.0% 0.065 309)"
+  purple-heart-300: "oklch(79.0% 0.135 309)"
+  purple-heart-400: "oklch(68.0% 0.215 309)"
+  purple-heart-500: "oklch(60.0% 0.275 309)"
+  purple-heart-600: "oklch(52.0% 0.275 309)"
+  purple-heart-700: "oklch(43.0% 0.230 309)"
+  purple-heart-800: "oklch(33.0% 0.180 309)"
+  purple-heart-900: "oklch(24.0% 0.135 309)"
+  purple-heart-950: "oklch(15.0% 0.090 309)"
 
-  # --- Flush Orange (Warning) ------------------------------------------------
-  flush-orange-50: "#fffaec"
-  flush-orange-100: "#fff4d3"
-  flush-orange-500: "#ff980a"
-  flush-orange-600: "#ff8000"
-  flush-orange-700: "#cc5d02"
+  # Caribbean Green — Hue 173° (standard / success, teal-green)
+  caribbean-green-50:  "oklch(97.2% 0.018 173)"
+  caribbean-green-100: "oklch(94.0% 0.035 173)"
+  caribbean-green-200: "oklch(88.0% 0.070 173)"
+  caribbean-green-300: "oklch(79.0% 0.115 173)"
+  caribbean-green-400: "oklch(68.0% 0.140 173)"
+  caribbean-green-500: "oklch(58.0% 0.135 173)"
+  caribbean-green-600: "oklch(45.0% 0.118 173)"
+  caribbean-green-700: "oklch(38.0% 0.100 173)"
+  caribbean-green-800: "oklch(30.0% 0.080 173)"
+  caribbean-green-900: "oklch(23.0% 0.060 173)"
+  caribbean-green-950: "oklch(15.0% 0.040 173)"
 
-  # --- Azure Radiance (Info) -------------------------------------------------
-  azure-radiance-50: "#eff7ff"
-  azure-radiance-400: "#5db3fd"
-  azure-radiance-500: "#3792fa"
-  azure-radiance-600: "#2e7cf0"
+  # Flush Orange — Hue 52° (warning, amber-orange)
+  flush-orange-50:  "oklch(97.2% 0.018 52)"
+  flush-orange-100: "oklch(94.0% 0.038 52)"
+  flush-orange-200: "oklch(88.0% 0.075 52)"
+  flush-orange-300: "oklch(79.0% 0.130 52)"
+  flush-orange-400: "oklch(72.0% 0.170 52)"
+  flush-orange-500: "oklch(68.0% 0.180 52)"
+  flush-orange-600: "oklch(54.0% 0.155 52)"
+  flush-orange-700: "oklch(45.0% 0.130 52)"
+  flush-orange-800: "oklch(36.0% 0.105 52)"
+  flush-orange-900: "oklch(28.0% 0.080 52)"
+  flush-orange-950: "oklch(18.0% 0.055 52)"
 
-  # --- Semantic tokens (dark — brand default) --------------------------------
-  background: "#09090b"
-  foreground: "#fafafa"
-  card: "#18181b"
-  card-foreground: "#fafafa"
-  popover: "#18181b"
-  popover-foreground: "#fafafa"
-  primary: "#fafafa"
-  primary-foreground: "#09090b"
-  secondary: "#27272a"
-  secondary-foreground: "#fafafa"
-  muted: "#27272a"
-  muted-foreground: "#a1a1aa"
-  accent: "#27272a"
-  accent-foreground: "#fafafa"
-  destructive: "#ff2357"
-  destructive-foreground: "#ffffff"
-  border: "#3f3f46"
-  input: "#3f3f46"
-  ring: "#71717a"
-  sidebar: "#09090b"
-  sidebar-foreground: "#fafafa"
-  sidebar-primary: "#fafafa"
-  sidebar-accent: "#27272a"
-  sidebar-border: "#18181b"
+  # Azure Radiance — Hue 250° (info, sky-blue)
+  azure-radiance-50:  "oklch(97.2% 0.014 250)"
+  azure-radiance-100: "oklch(94.0% 0.030 250)"
+  azure-radiance-200: "oklch(88.0% 0.060 250)"
+  azure-radiance-300: "oklch(79.0% 0.115 250)"
+  azure-radiance-400: "oklch(68.0% 0.175 250)"
+  azure-radiance-500: "oklch(60.0% 0.215 250)"
+  azure-radiance-600: "oklch(52.0% 0.225 250)"
+  azure-radiance-700: "oklch(43.0% 0.195 250)"
+  azure-radiance-800: "oklch(34.0% 0.155 250)"
+  azure-radiance-900: "oklch(25.0% 0.115 250)"
+  azure-radiance-950: "oklch(16.0% 0.075 250)"
 
-  # --- Semantic tokens (light — counterpart) ---------------------------------
+  # ═══════════════════════════════════════════════════════════════════════
+  # Dark-mode-tuned tone overrides — boosted chroma for vibrancy on the
+  # dark canvas. Activated via .dark class. Edition leans pinker by design.
+  # ═══════════════════════════════════════════════════════════════════════
+
+  tone-edition-dark:     "oklch(62.0% 0.295 318)"
+  tone-collectible-dark: "oklch(72.0% 0.225 285)"
+  tone-standard-dark:    "oklch(78.0% 0.205 168)"
+  tone-info-dark:        "oklch(76.0% 0.165 235)"
+  tone-warning-dark:     "oklch(82.0% 0.165 65)"
+  highlight-dark:        "oklch(70.0% 0.285 318)"
+  destructive-dark:      "oklch(68.0% 0.225 25)"
+
+  # ═══════════════════════════════════════════════════════════════════════
+  # Semantic tokens — light mode (counterpart)
+  # All tone-* tokens were re-anchored from 500/600 to 600/700 so each
+  # passes WCAG AA (4.5:1) on white as text or icon color.
+  # ═══════════════════════════════════════════════════════════════════════
+
   background-light: "#ffffff"
-  foreground-light: "#09090b"
+  foreground-light: "{colors.zinc-950}"
   card-light: "#ffffff"
-  card-foreground-light: "#09090b"
-  primary-light: "#09090b"
-  primary-foreground-light: "#fafafa"
-  secondary-light: "#f4f4f5"
-  secondary-foreground-light: "#09090b"
-  muted-light: "#f4f4f5"
-  muted-foreground-light: "#52525b"
-  accent-light: "#f4f4f5"
-  accent-foreground-light: "#09090b"
-  destructive-light: "#ff003c"
-  border-light: "#e4e4e7"
-  input-light: "#e4e4e7"
-  ring-light: "#a1a1aa"
+  card-foreground-light: "{colors.zinc-950}"
+  popover-light: "#ffffff"
+  popover-foreground-light: "{colors.zinc-950}"
+  primary-light: "{colors.zinc-950}"
+  primary-foreground-light: "{colors.zinc-50}"
+  secondary-light: "{colors.zinc-100}"
+  secondary-foreground-light: "{colors.zinc-950}"
+  muted-light: "{colors.zinc-100}"
+  muted-foreground-light: "{colors.zinc-600}"
+  accent-light: "{colors.zinc-100}"
+  accent-foreground-light: "{colors.zinc-950}"
+  destructive-light: "{colors.torch-red-600}"
+  destructive-foreground-light: "#ffffff"
+  border-light: "{colors.zinc-200}"
+  input-light: "{colors.zinc-200}"
+  ring-light: "{colors.zinc-400}"
+  tone-standard-light: "{colors.caribbean-green-600}"
+  tone-collectible-light: "{colors.blue-gem-600}"
+  tone-edition-light: "{colors.purple-heart-700}"
+  tone-warning-light: "{colors.flush-orange-700}"
+  tone-info-light: "{colors.azure-radiance-600}"
+  highlight-light: "{colors.purple-heart-700}"
 
-  # --- Post-type tones (dark — brand default) --------------------------------
-  tone-standard: "#27e4b8"
-  tone-collectible: "#947bff"
-  tone-edition: "#b439ff"
-  tone-warning: "#ff980a"
-  tone-info: "#5db3fd"
-  highlight: "#a213ff"
+  # ═══════════════════════════════════════════════════════════════════════
+  # Semantic tokens — dark mode (brand default)
+  # ═══════════════════════════════════════════════════════════════════════
 
-  # --- Post-type tones (light counterpart) -----------------------------------
-  tone-standard-light: "#00cba2"
-  tone-collectible-light: "#6221ff"
-  tone-edition-light: "#8d04ec"
-  tone-warning-light: "#ff8000"
-  tone-info-light: "#3792fa"
-  highlight-light: "#8d04ec"
+  background: "{colors.zinc-950}"
+  foreground: "{colors.zinc-50}"
+  card: "{colors.zinc-900}"
+  card-foreground: "{colors.zinc-50}"
+  popover: "{colors.zinc-900}"
+  popover-foreground: "{colors.zinc-50}"
+  primary: "{colors.zinc-50}"
+  primary-foreground: "{colors.zinc-950}"
+  secondary: "{colors.zinc-800}"
+  secondary-foreground: "{colors.zinc-50}"
+  muted: "{colors.zinc-800}"
+  muted-foreground: "{colors.zinc-400}"
+  accent: "{colors.zinc-800}"
+  accent-foreground: "{colors.zinc-50}"
+  destructive: "{colors.destructive-dark}"
+  destructive-foreground: "#ffffff"
+  border: "{colors.zinc-700}"
+  input: "{colors.zinc-700}"
+  ring: "{colors.zinc-500}"
+  sidebar: "{colors.zinc-950}"
+  sidebar-foreground: "{colors.zinc-50}"
+  sidebar-primary: "{colors.zinc-50}"
+  sidebar-primary-foreground: "{colors.zinc-950}"
+  sidebar-accent: "{colors.zinc-800}"
+  sidebar-accent-foreground: "{colors.zinc-50}"
+  sidebar-border: "{colors.zinc-900}"
+  sidebar-ring: "{colors.zinc-500}"
+  tone-standard: "{colors.tone-standard-dark}"
+  tone-collectible: "{colors.tone-collectible-dark}"
+  tone-edition: "{colors.tone-edition-dark}"
+  tone-warning: "{colors.tone-warning-dark}"
+  tone-info: "{colors.tone-info-dark}"
+  highlight: "{colors.highlight-dark}"
 
 typography:
+  # Display tier — marketing only. Display 4XL is fluid via clamp() for
+  # editorial wordmarks; the rest are fixed scale.
+  display-4xl:
+    fontFamily: Figtree
+    fontSize: clamp(4.5rem, 12vw, 12rem)
+    fontWeight: 800
+    lineHeight: 0.9
+    letterSpacing: -0.05em
+  display-3xl:
+    fontFamily: Figtree
+    fontSize: 6rem
+    fontWeight: 700
+    lineHeight: 0.95
+    letterSpacing: -0.045em
+  display-2xl:
+    fontFamily: Figtree
+    fontSize: 4.5rem
+    fontWeight: 700
+    lineHeight: 1.0
+    letterSpacing: -0.04em
+  display-xl:
+    fontFamily: Figtree
+    fontSize: 3.75rem
+    fontWeight: 700
+    lineHeight: 1.05
+    letterSpacing: -0.035em
   display-lg:
     fontFamily: Figtree
-    fontSize: 2.986rem
-    fontWeight: 600
-    lineHeight: 3.5rem
-    letterSpacing: -0.02em
-  display-md:
+    fontSize: 3rem
+    fontWeight: 700
+    lineHeight: 1.1
+    letterSpacing: -0.03em
+
+  # Heading tier — semantic h1–h4. One heading-1 per route.
+  heading-1:
     fontFamily: Figtree
-    fontSize: 2.488rem
+    fontSize: 2.25rem
     fontWeight: 600
-    lineHeight: 3rem
-    letterSpacing: -0.02em
-  headline-lg:
+    lineHeight: 1.15
+    letterSpacing: -0.025em
+  heading-2:
     fontFamily: Figtree
-    fontSize: 2.074rem
+    fontSize: 1.75rem
     fontWeight: 600
-    lineHeight: 2.5rem
+    lineHeight: 1.2
+    letterSpacing: -0.02em
+  heading-3:
+    fontFamily: Figtree
+    fontSize: 1.375rem
+    fontWeight: 600
+    lineHeight: 1.25
     letterSpacing: -0.015em
-  headline-md:
+  heading-4:
     fontFamily: Figtree
-    fontSize: 1.728rem
+    fontSize: 1.125rem
     fontWeight: 600
-    lineHeight: 2.25rem
+    lineHeight: 1.3
     letterSpacing: -0.01em
-  headline-sm:
-    fontFamily: Figtree
-    fontSize: 1.44rem
-    fontWeight: 600
-    lineHeight: 2rem
-    letterSpacing: -0.01em
-  title:
-    fontFamily: Figtree
-    fontSize: 1.2rem
-    fontWeight: 600
-    lineHeight: 1.75rem
-    letterSpacing: -0.01em
-  body-lg:
-    fontFamily: Figtree
-    fontSize: 1.2rem
-    fontWeight: 500
-    lineHeight: 1.75rem
-    letterSpacing: -0.01em
-  body-md:
+
+  # Title tier — repeating UI primitives (card titles, modal headers).
+  title-lg:
     fontFamily: Figtree
     fontSize: 1rem
-    fontWeight: 500
-    lineHeight: 1.5rem
+    fontWeight: 600
+    lineHeight: 1.4
     letterSpacing: -0.01em
+  title-sm:
+    fontFamily: Figtree
+    fontSize: 0.875rem
+    fontWeight: 600
+    lineHeight: 1.4
+    letterSpacing: -0.005em
+
+  # Body tier — reading text.
+  body-lg:
+    fontFamily: Figtree
+    fontSize: 1.0625rem
+    fontWeight: 400
+    lineHeight: 1.6
+    letterSpacing: -0.005em
+  body-md:
+    fontFamily: Figtree
+    fontSize: 0.9375rem
+    fontWeight: 400
+    lineHeight: 1.55
+    letterSpacing: -0.005em
   body-sm:
     fontFamily: Figtree
-    fontSize: 0.833rem
-    fontWeight: 500
-    lineHeight: 1.25rem
-    letterSpacing: -0.01em
+    fontSize: 0.8125rem
+    fontWeight: 400
+    lineHeight: 1.5
+    letterSpacing: 0
+
+  # Label tier — functional UI text. Tighter than body, never wraps to a
+  # third line. Caption is the only non-semibold label.
+  label-lg:
+    fontFamily: Figtree
+    fontSize: 0.875rem
+    fontWeight: 600
+    lineHeight: 1.25
+    letterSpacing: -0.005em
   label-md:
     fontFamily: Figtree
-    fontSize: 0.833rem
+    fontSize: 0.75rem
     fontWeight: 600
-    lineHeight: 1rem
+    lineHeight: 1.2
     letterSpacing: 0
-  label-sm:
+  label-xs:
     fontFamily: Figtree
-    fontSize: 0.694rem
+    fontSize: 0.6875rem
     fontWeight: 600
-    lineHeight: 1rem
-    letterSpacing: 0.01em
-  label-caps:
+    lineHeight: 1.2
+    letterSpacing: 0.06em
+    textTransform: uppercase
+  caption:
     fontFamily: Figtree
-    fontSize: 0.694rem
-    fontWeight: 600
-    lineHeight: 1rem
-    letterSpacing: 0.08em
+    fontSize: 0.75rem
+    fontWeight: 400
+    lineHeight: 1.4
+    letterSpacing: 0
+
+  # Mono tier — for on-chain data, IDs, code. Always tabular figures.
+  mono-md:
+    fontFamily: DM Mono
+    fontSize: 0.8125rem
+    fontWeight: 400
+    lineHeight: 1.5
+    letterSpacing: 0
+    fontVariant: tabular-nums
   mono-sm:
     fontFamily: DM Mono
-    fontSize: 0.833rem
-    fontWeight: 400
-    lineHeight: 1.25rem
-  mono-pill:
-    fontFamily: Figtree
-    fontSize: 0.625rem
-    fontWeight: 600
-    lineHeight: 1rem
-    letterSpacing: 0.015em
+    fontSize: 0.6875rem
+    fontWeight: 500
+    lineHeight: 1.2
+    letterSpacing: 0.02em
+    fontVariant: tabular-nums
 
 rounded:
   none: 0px
@@ -257,17 +354,18 @@ spacing:
   sidebar-width: 256px
   feed-max: 1024px
   wide-max: 1536px
+  ultrawide-max: 1800px
   body-measure: 65ch
   # Platform-specific minimum touch targets
   touch-ios: 44px
   touch-android: 48px
 
 components:
-  # --- Buttons ---------------------------------------------------------------
+  # ─── Buttons ─────────────────────────────────────────────────────────────
   button-primary:
     backgroundColor: "{colors.primary}"
     textColor: "{colors.primary-foreground}"
-    typography: "{typography.label-md}"
+    typography: "{typography.label-lg}"
     rounded: "{rounded.full}"
     height: 40px
     padding: 0 16px
@@ -278,7 +376,7 @@ components:
   button-secondary:
     backgroundColor: "{colors.secondary}"
     textColor: "{colors.secondary-foreground}"
-    typography: "{typography.label-md}"
+    typography: "{typography.label-lg}"
     rounded: "{rounded.full}"
     height: 40px
     padding: 0 16px
@@ -287,14 +385,14 @@ components:
   button-destructive:
     backgroundColor: "{colors.destructive}"
     textColor: "{colors.destructive-foreground}"
-    typography: "{typography.label-md}"
+    typography: "{typography.label-lg}"
     rounded: "{rounded.full}"
     height: 40px
     padding: 0 16px
   button-ghost:
     backgroundColor: transparent
     textColor: "{colors.foreground}"
-    typography: "{typography.label-md}"
+    typography: "{typography.label-lg}"
     rounded: "{rounded.full}"
     height: 40px
     padding: 0 12px
@@ -303,7 +401,7 @@ components:
   button-outline:
     backgroundColor: transparent
     textColor: "{colors.foreground}"
-    typography: "{typography.label-md}"
+    typography: "{typography.label-lg}"
     rounded: "{rounded.full}"
     height: 40px
     padding: 0 16px
@@ -313,12 +411,8 @@ components:
     rounded: "{rounded.full}"
     height: 40px
     width: 40px
-  button-link:
-    backgroundColor: transparent
-    textColor: "{colors.foreground}"
-    typography: "{typography.label-md}"
 
-  # --- Card ------------------------------------------------------------------
+  # ─── Card ────────────────────────────────────────────────────────────────
   card:
     backgroundColor: "{colors.card}"
     textColor: "{colors.card-foreground}"
@@ -330,7 +424,7 @@ components:
     rounded: "{rounded.lg}"
     padding: 24px
 
-  # --- Inputs ----------------------------------------------------------------
+  # ─── Inputs ──────────────────────────────────────────────────────────────
   input-field:
     backgroundColor: "{colors.card}"
     textColor: "{colors.foreground}"
@@ -338,8 +432,6 @@ components:
     rounded: "{rounded.sm}"
     height: 40px
     padding: 0 12px
-  input-field-focus:
-    backgroundColor: "{colors.card}"
   input-field-invalid:
     backgroundColor: "{colors.card}"
   textarea:
@@ -349,85 +441,79 @@ components:
     rounded: "{rounded.sm}"
     padding: 12px
 
-  # --- Badges ----------------------------------------------------------------
+  # ─── Badges ──────────────────────────────────────────────────────────────
   badge-default:
     backgroundColor: "{colors.secondary}"
     textColor: "{colors.secondary-foreground}"
-    typography: "{typography.label-sm}"
+    typography: "{typography.label-md}"
     rounded: "{rounded.full}"
     padding: 2px 10px
   badge-destructive:
     backgroundColor: "{colors.destructive}"
     textColor: "{colors.destructive-foreground}"
-    typography: "{typography.label-sm}"
+    typography: "{typography.label-md}"
     rounded: "{rounded.full}"
   badge-success:
     backgroundColor: "{colors.tone-standard}"
     textColor: "{colors.zinc-950}"
-    typography: "{typography.label-sm}"
+    typography: "{typography.label-md}"
     rounded: "{rounded.full}"
   badge-warning:
     backgroundColor: "{colors.tone-warning}"
     textColor: "{colors.zinc-950}"
-    typography: "{typography.label-sm}"
+    typography: "{typography.label-md}"
     rounded: "{rounded.full}"
   badge-outline:
     backgroundColor: transparent
     textColor: "{colors.foreground}"
-    typography: "{typography.label-sm}"
+    typography: "{typography.label-md}"
     rounded: "{rounded.full}"
 
-  # --- Category pill (tappable tag) -----------------------------------------
+  # ─── Pills ───────────────────────────────────────────────────────────────
   pill-display:
     backgroundColor: "{colors.secondary}"
     textColor: "{colors.secondary-foreground}"
-    typography: "{typography.label-sm}"
+    typography: "{typography.label-md}"
     rounded: "{rounded.full}"
     padding: 2px 8px
   pill-interactive:
     backgroundColor: "{colors.secondary}"
     textColor: "{colors.secondary-foreground}"
-    typography: "{typography.label-sm}"
+    typography: "{typography.label-md}"
     rounded: "{rounded.full}"
     padding: 2px 8px
   pill-interactive-selected:
     backgroundColor: "{colors.primary}"
     textColor: "{colors.primary-foreground}"
 
-  # --- Media pills (overlays on imagery) -------------------------------------
+  # ─── Media pills (overlays on imagery) ───────────────────────────────────
   media-pill-dark:
-    backgroundColor: rgba(9, 9, 11, 0.85)
+    backgroundColor: "rgba(9, 9, 11, 0.85)"
     textColor: "#ffffff"
-    typography: "{typography.mono-pill}"
+    typography: "{typography.mono-sm}"
     rounded: "{rounded.full}"
     height: 24px
     padding: 0 10px
-  media-pill-muted:
-    backgroundColor: "{colors.zinc-700}"
-    textColor: "#ffffff"
-    typography: "{typography.mono-pill}"
-    rounded: "{rounded.full}"
-    height: 24px
   media-pill-tone-edition:
     backgroundColor: "{colors.tone-edition}"
     textColor: "{colors.zinc-950}"
-    typography: "{typography.mono-pill}"
+    typography: "{typography.mono-sm}"
     rounded: "{rounded.full}"
     height: 24px
   media-pill-tone-collectible:
     backgroundColor: "{colors.tone-collectible}"
     textColor: "{colors.zinc-950}"
-    typography: "{typography.mono-pill}"
+    typography: "{typography.mono-sm}"
     rounded: "{rounded.full}"
     height: 24px
   media-pill-tone-standard:
     backgroundColor: "{colors.tone-standard}"
     textColor: "{colors.zinc-950}"
-    typography: "{typography.mono-pill}"
+    typography: "{typography.mono-sm}"
     rounded: "{rounded.full}"
     height: 24px
 
-  # --- Navigation -----------------------------------------------------------
+  # ─── Navigation ──────────────────────────────────────────────────────────
   nav-sidebar-item:
     backgroundColor: transparent
     textColor: "{colors.sidebar-foreground}"
@@ -442,7 +528,7 @@ components:
   nav-bottom-item:
     backgroundColor: transparent
     textColor: "{colors.muted-foreground}"
-    typography: "{typography.label-sm}"
+    typography: "{typography.label-md}"
     height: 56px
   nav-bottom-item-active:
     textColor: "{colors.foreground}"
@@ -451,15 +537,15 @@ components:
     textColor: "{colors.foreground}"
     height: 56px
 
-  # --- Notification badge ---------------------------------------------------
+  # ─── Notification badge ──────────────────────────────────────────────────
   notification-badge:
     backgroundColor: "{colors.destructive}"
     textColor: "{colors.destructive-foreground}"
-    typography: "{typography.label-sm}"
+    typography: "{typography.label-md}"
     rounded: "{rounded.full}"
     height: 20px
 
-  # --- Surfaces -------------------------------------------------------------
+  # ─── Surfaces ────────────────────────────────────────────────────────────
   dialog:
     backgroundColor: "{colors.card}"
     textColor: "{colors.card-foreground}"
@@ -472,7 +558,7 @@ components:
   tooltip:
     backgroundColor: "{colors.zinc-900}"
     textColor: "{colors.foreground}"
-    typography: "{typography.label-sm}"
+    typography: "{typography.label-md}"
     rounded: "{rounded.sm}"
     padding: 6px 10px
   toast:
@@ -481,7 +567,7 @@ components:
     rounded: "{rounded.md}"
     padding: 12px 16px
 
-  # --- Post card (composite) ------------------------------------------------
+  # ─── Post card (composite) ───────────────────────────────────────────────
   post-card:
     backgroundColor: "{colors.card}"
     textColor: "{colors.card-foreground}"
@@ -490,7 +576,7 @@ components:
   post-action-button:
     backgroundColor: transparent
     textColor: "{colors.foreground}"
-    typography: "{typography.label-md}"
+    typography: "{typography.label-lg}"
     rounded: "{rounded.full}"
     height: 40px
   post-action-button-hover:
@@ -502,8 +588,31 @@ components:
 
 Desperse is a Web3 social platform for creators on Solana. This document is
 the single source of truth for its visual identity. The YAML tokens above
-define the atoms. The prose below explains **how and why** to apply them
+define the atoms; the prose below explains **how and why** to apply them
 across web, responsive web, iOS, and Android.
+
+## Where the system lives
+
+This document is one of three artifacts that together form the design
+system. Treat them as one thing in three layers:
+
+| Layer | Artifact | Purpose |
+|---|---|---|
+| **Spec** | `DESIGN.md` (this file) | Tokens + rationale. Read before any visual work. Follows the Google `design.md` format. |
+| **Implementation** | `src/styles.css` | CSS custom properties for the OKLCH palette, semantic tokens (light + dark), dark-tuned tone overrides, paired typography utilities, radii, shadows. |
+| **Living demo** | `/dev/typography-test` | Standalone route in the app. Renders every token, palette ramp, dark-tuned tone, vertical rhythm, and pattern from this spec, with a working theme switcher. |
+
+**The relationship.** The YAML tokens below mirror the CSS custom properties
+in `src/styles.css`. The Markdown prose explains the same rules the
+`/dev/typography-test` page demonstrates visually. If the three ever
+disagree, this document is right and the others are drifting — fix them.
+
+**When making visual changes:** read the relevant section here, use existing
+tokens via Tailwind classes (`bg-card`, `text-muted-foreground`,
+`bg-tone-edition`, `text-heading-1`) or palette steps via
+`text-(--purple-heart-500)` syntax, and verify against the rendered demo
+page. If the system genuinely lacks what you need, propose an addition here
+first, then add it to `src/styles.css`, then use it.
 
 ## Overview
 
@@ -517,114 +626,144 @@ for their time. The interface should feel like a sharp instrument — fast to
 learn, faster to use, never in the way of the content.
 
 **Emotional response.** Quiet confidence. The app should feel like a gallery
-at night — dark walls, lit artwork, nothing superfluous on the walls. Not
-cold, not loud. Premium, legible, and fast.
+at night — dark walls, lit artwork, nothing superfluous on the walls.
+Premium, legible, fast.
 
-**References.** Zora and Foundation (art-forward, Web3-native), SuperRare and
-Exchange.Art (premium collectible feel), Linear and Vercel (developer-grade
-polish and speed), Instagram and TikTok (proven content-first social
-patterns).
+**References.** Zora and Foundation (art-forward, Web3-native), SuperRare
+and Exchange.Art (premium collectible feel), Linear and Vercel
+(developer-grade polish and speed), Instagram and TikTok (proven
+content-first social patterns).
 
-**Anti-patterns.** Overly playful UI, excessive animation, neon glow effects,
-glassmorphism as decoration, busy dashboards, "Web3-for-Web3's-sake"
+**Anti-patterns.** Overly playful UI, excessive animation, neon glow
+effects, glassmorphism as decoration, busy dashboards, "Web3-for-Web3's-sake"
 aesthetics (wallet jargon, hex addresses in faces, blockchain-first UX).
 
-**Cross-surface intent.** The same tokens ship on:
+**Cross-surface intent.** A single token set drives all four platforms.
+Native shells generate platform-specific theme files at build time.
 
 - **Web (desktop ≥ 1024px).** Sidebar navigation (256px), max feed width
   1024px, hover states, keyboard focus.
-- **Responsive web (< 1024px).** Fixed top bar (56px) with `env(safe-area-inset-top)`
-  applied, bottom tab bar (56px), full-bleed cards on mobile.
-- **iOS (PWA and native shell).** Respects notches and home indicator via
-  `env(safe-area-inset-*)`. 44pt minimum touch target. Haptic feedback on
-  destructive and collect actions.
-- **Android (PWA and native shell).** 48dp minimum touch target. Material
-  ripple replaced with Desperse's zinc-800 hover state for consistency across
-  platforms. System back handler integrated with TanStack Router history.
-
-A single token set drives all four surfaces. Native shells read the YAML and
-generate platform-specific theme files (iOS: `Colors.xcassets`; Android:
-`colors.xml` / Jetpack Compose `ColorScheme`).
+- **Responsive web (< 1024px).** Fixed top bar (56px) with safe-area inset,
+  bottom tab bar (56px), full-bleed cards on mobile.
+- **iOS (PWA + native shell).** 44pt minimum touch target. Haptic feedback
+  on destructive and collect actions.
+- **Android (PWA + native shell).** 48dp minimum touch target. Material
+  ripple replaced with the Desperse `zinc-800` hover state for cross-platform
+  consistency.
 
 ## Colors
 
-The palette is a disciplined duotone: **zinc neutrals** as the stage,
-**purple-heart** as the single brand accent, and **three post-type tones**
-that carry meaning (not decoration). Semantic colors are exposed as roles so
-that surfaces and components reference intent, not hex.
+The palette is **authored in OKLCH**: every color is described as
+lightness, chroma, hue. This gives us perceptually-uniform ramps (each step
+visually feels equally separated from the next), locked hue across a palette
+(no accidental hue drift between 50 and 950), and gamut-aware chroma (the
+brightest in-gamut saturation at every step). It also unlocks a feature
+unique to dark mode: dedicated **dark-tuned tone overrides** with chroma
+boosted past what a single ramp can offer, so the dark surface feels
+electric instead of conservative.
 
-### Neutrals — Zinc (the stage)
+### Palette construction
 
-Zinc 50 → 950 forms the entire neutral ladder. No true black (`#000`) and no
-pure white (`#fff`) appear anywhere in product UI; `zinc-950` (`#09090b`) is
-the floor and `zinc-50` (`#fafafa`) is the ceiling. Both are subtly tinted so
-white never looks clinical and black never looks dead.
+Seven palettes:
 
-The brand defaults to **dark**. The sole reason is viewing context: this
-product is consumed by night-owl creators scrolling high-saturation imagery.
-Dark surface + tinted neutrals makes color-rich media pop without burning
-retinas. Light mode exists and is fully supported, but it is the alternate
-— not a co-equal default.
+| Palette | Hue | Role |
+|---|---|---|
+| zinc | 264° | Neutral. Background, text, borders. |
+| purple-heart | 309° | Edition tone / brand accent. Magenta-purple. |
+| blue-gem | 285° | Collectible tone. Violet-blue. |
+| caribbean-green | 173° | Standard tone / success. Teal-green. |
+| azure-radiance | 250° | Info. Sky-blue. |
+| flush-orange | 52° | Warning. Amber-orange. |
+| torch-red | 22° | Destructive. |
 
-### Accent — Purple Heart (the signal)
+Each palette is 11 stops (50 → 950). Lightness steps from ~97% to ~15%,
+roughly even in OKLCH L, with deliberate adjustments where AA contrast
+required them:
 
-`purple-heart-700` (`#8d04ec`, light) / `purple-heart-500` (`#b439ff`, dark)
-is used for **one thing**: highlighting editions and text selection. It is
-rare on purpose. When you see purple, you are looking at value.
+- `caribbean-green-600` is darkened to L=45% so it clears AA on white
+  (teal sRGB volume is narrow at 48%).
+- `torch-red-600` is darkened to L=53% so destructive-on-white passes AA.
+- `flush-orange-600` is the **one exception**: orange at this hue cannot
+  pass AA body-text on white in sRGB without going muddy brown. Use
+  `flush-orange-700` for body text on white; `600` is fine for icons,
+  large text, and dark-mode surfaces.
 
-### Post-type tones (the taxonomy)
+### The dark-tuned tones
 
-Desperse posts have three economic modes. Each one has a tone that appears
+Dark mode does not reuse the standard ramp. It uses dedicated values with
+**~10–25% higher chroma** than the equivalent light-mode tones, because
+dark backgrounds tolerate (and benefit from) more saturation.
+
+| Token | OKLCH | Notes |
+|---|---|---|
+| `tone-edition-dark` | `oklch(62% 0.295 318)` | Electric magenta. Hue pulled to 318° because pure 309° caps at lower chroma in sRGB and reads more lavender than neon. |
+| `tone-collectible-dark` | `oklch(72% 0.225 285)` | Saturated violet, the cooler sibling. |
+| `tone-standard-dark` | `oklch(78% 0.205 168)` | Vivid mint — alive, not forest. |
+| `tone-info-dark` | `oklch(76% 0.165 235)` | Clean cyan-blue, distinctly not violet. |
+| `tone-warning-dark` | `oklch(82% 0.165 65)` | Warm amber, never yellow. |
+| `highlight-dark` | `oklch(70% 0.285 318)` | Edition family, alpha-tuned for fills and overlays. |
+| `destructive-dark` | `oklch(68% 0.225 25)` | Threads both contrast walls — 5.1:1 on canvas, 3.1:1 reverse. |
+
+`tone-edition-dark` and `highlight-dark` are sRGB-clamped at the magenta
+boundary near C=0.295. In Display-P3 they reach C≈0.36 — a future
+`@media (color-gamut: p3)` override pass would unlock genuinely fluorescent
+magenta on capable displays.
+
+### Semantic tokens
+
+Components reference **semantic tokens**, never palette steps directly.
+The semantic layer (`background`, `foreground`, `card`, `muted-foreground`,
+`primary`, `destructive`, `tone-*`, etc.) is what reads in component code;
+the palette layer is the implementation.
+
+In dark mode, `primary` is `zinc-50` and `primary-foreground` is `zinc-950`
+— intentional inversion, so a "primary button" in dark mode is a white pill,
+and in light mode it is a near-black pill. The brand never relies on purple
+for primary CTAs.
+
+### Tone system (the taxonomy)
+
+Desperse posts have three economic modes, each with a tone that appears
 consistently wherever the post is represented — the action button, the media
-overlay pill, and the subtle indicator on the compose tray.
+overlay pill, and the indicator on the compose tray.
 
-- **Standard (Caribbean Green).** Free-form posts. `#00cba2` / `#27e4b8`.
-- **Collectible (Blue Gem).** Free to mint as an NFT. `#6221ff` / `#947bff`.
-- **Edition (Purple Heart).** Paid NFT editions. `#8d04ec` / `#b439ff`.
+- **Standard.** Free-form posts. `tone-standard` (caribbean-green family).
+- **Collectible.** Free-to-mint NFTs. `tone-collectible` (blue-gem family).
+- **Edition.** Paid NFT editions. `tone-edition` (purple-heart family).
 
-Because Edition and Collectible are both in the purple-violet family, they
-are **intentionally close but distinct**: Edition is redder (warmer, more
-premium); Collectible is bluer (cooler, more community). The hue shift is
-the semantic signal.
-
-### Support tones
-
-- **Warning (Flush Orange):** `#ff8000` / `#ff980a`.
-- **Info (Azure Radiance):** `#3792fa` / `#5db3fd`.
-- **Destructive (Torch Red):** `#ff003c` / `#ff2357`.
-
-### Semantic roles
-
-The `primary`, `secondary`, `muted`, `accent`, `card`, `popover`, `border`,
-`input`, `ring` tokens mirror the shadcn/ui convention and are what
-components actually reference. In dark mode, `primary` is zinc-50 and the
-`primary-foreground` is zinc-950 — intentional inversion, so a "primary
-button" in dark mode is a white pill, and in light mode it is a near-black
-pill. The brand never relies on purple for primary CTAs.
+Edition and Collectible are intentionally close but distinct: Edition is
+redder (warmer, more premium); Collectible is bluer (cooler, more
+community). The hue shift is the semantic signal.
 
 ### Contrast targets
 
-All foreground / background pairings meet **WCAG AA** (4.5:1 for body text,
-3:1 for large text and UI elements). Muted text on card surfaces is tuned
-for the dark default:
+All foreground/background pairings meet **WCAG AA** (4.5:1 body text,
+3:1 large text and UI elements).
 
-| Pair | Ratio |
-|---|---|
-| `foreground` on `background` (dark) | 18.9 : 1 |
-| `foreground` on `card` (dark) | 16.2 : 1 |
-| `muted-foreground` on `background` (dark) | 6.8 : 1 |
-| `foreground-light` on `background-light` | 19.5 : 1 |
-| `muted-foreground-light` on `background-light` | 6.6 : 1 |
+| Pair | Mode | Ratio |
+|---|---|---|
+| `foreground` on `background` | dark | 19 : 1 |
+| `foreground` on `card` | dark | 16 : 1 |
+| `muted-foreground` on `background` | dark | 7 : 1 |
+| `tone-edition` (dark-tuned) on `background` | dark | 5.5 : 1 |
+| `destructive` (dark-tuned) on `background` | dark | 5.1 : 1 |
+| `foreground-light` on `background-light` | light | 19 : 1 |
+| `muted-foreground-light` on `background-light` | light | 7 : 1 |
+| `tone-standard-light` (caribbean-green-600) on white | light | 4.6 : 1 |
+| `tone-warning-light` (flush-orange-700) on white | light | 5.2 : 1 |
+| `destructive-light` (torch-red-600) on white | light | 4.6 : 1 |
 
 ### Native-platform mapping
 
-- **iOS.** `background` → `UIColor.systemBackground`; dynamic color assets
-  should pair the dark and light hexes so `UITraitCollection` handles the
-  swap. `tone-*` colors map to custom named colors in `Assets.xcassets`.
+- **iOS.** Map semantic tokens to dynamic color assets in `Assets.xcassets`
+  pairing dark/light variants so `UITraitCollection` handles the swap.
+  `tone-*` colors live as named colors. Modern iOS supports `oklch()` via
+  Core Graphics' wide-color paths; fall back to sRGB conversions on older
+  versions.
 - **Android.** Map semantic tokens to `MaterialTheme.colorScheme`:
   `background` → `surface`, `card` → `surfaceContainer`, `primary` →
-  `onSurface` (so Material ripple lands on the right hue), `destructive` →
-  `error`. Post-type tones live as extension colors.
+  `onSurface`, `destructive` → `error`. Post-type tones live as extension
+  colors. OKLCH values convert at build time to `Color()` literals.
 
 ## Typography
 
@@ -633,81 +772,105 @@ for on-chain data (signatures, hashes, balances, mint supply counts), never
 as "technical vibes" decoration.
 
 Figtree was chosen over the reflex defaults (Inter, DM Sans) because it
-hits a specific note: its geometric construction is as clean as Inter, but
-its slightly softer terminals and open apertures give it warmth — which
-matters on a creator-facing product where Inter reads as too much like a
-developer tool.
+hits a specific note: geometric construction as clean as Inter, but slightly
+softer terminals and open apertures give it warmth — which matters on a
+creator-facing product where Inter can read as too much like a developer
+tool.
 
-### Weight strategy
+### The six tiers
 
-- **500 (Medium)** is the body weight. Not 400. Figtree at 400 reads as
-  anemic on dark backgrounds; stepping up to 500 restores perceived weight
-  without looking bold.
-- **600 (Semibold)** is the only heading weight. All `<h1>`–`<h6>`, `<b>`,
-  and `<strong>` render at 600. The design does not use 700 or higher.
-- **400** appears only in DM Mono when on-chain data is shown.
+The system is six tiers — Display, Heading, Title, Body, Label, Mono. Each
+utility bundles four properties (size, weight, line-height, letter-spacing)
+as a single token. **Compose with color and margin; never override the four
+paired properties individually.**
 
-A maximum of **two weights on any single screen** is enforced.
+- **Display** — marketing only. `display-2xl` for hero (one per page max).
+  `display-3xl` and `display-4xl` for editorial wordmarks, the latter using
+  `clamp()` for fluid sizing on landing pages.
+- **Heading** — semantic h1–h4. One `heading-1` per route. Anything below
+  h4 should be a Title, not a Heading.
+- **Title** — repeating UI primitives (card titles, modal headers, list-row
+  titles). Not page hierarchy; sits inside Headings.
+- **Body** — reading text. `body-lg` for long-form, `body-md` for default
+  UI prose, `body-sm` for dense secondary content.
+- **Label** — functional UI text. Tighter than body, never wraps to a third
+  line. `label-xs` is auto-uppercase with eyebrow tracking.
+- **Mono** — DM Mono for code, addresses, hashes, IDs. Always renders with
+  tabular figures.
 
 ### Scale
 
-The type scale is a **1.2 (minor third)** modular scale computed from a
-responsive root:
+A **1.2 (minor third)** modular scale computed from a responsive root:
 
 - Mobile (`< 768px`): root is **16px**.
 - Desktop (`≥ 768px`): root is **14px**.
 
-This means `body-md` (1rem) is 16px on mobile but 14px on desktop — which
-matches the ergonomics of each surface (readable on phones held at arm's
-length, denser on monitors at viewing distance). All other sizes inherit
-from this root via rem, so the entire scale flexes with one variable.
+This means `body-md` (≈1rem) is 16px on mobile but 14px on desktop —
+matching the ergonomics of each surface (readable at arm's length on
+phones, denser at viewing distance on monitors). All sizes inherit from
+this root via `rem`, so the entire scale flexes with one variable.
 
-**Hierarchy levels:**
+### Weight strategy
 
-- `display-lg` / `display-md` — reserved for marketing pages and onboarding
-  headers. Do not use inside the feed.
-- `headline-lg` / `headline-md` / `headline-sm` — section and page titles.
-- `title` — component titles (card headers, dialog titles).
-- `body-lg` / `body-md` / `body-sm` — prose, post captions, form field
-  helper text. Captions cap at `body-measure` (65ch).
-- `label-md` / `label-sm` / `label-caps` — buttons, chip labels, metadata.
-- `mono-sm` / `mono-pill` — on-chain data and media overlays.
+- **400 (Regular)** for body text. The new system relies on increased
+  line-height + paired tracking to make 400 feel substantial on dark.
+- **500 (Medium)** for body in legacy code paths only — the system has
+  consolidated on 400 in Body and 600 in Heading/Title/Label.
+- **600 (Semibold)** is the only heading weight. All Heading and Title
+  utilities, plus most Label utilities. The design does not use 700+ in
+  product UI. (Display tier uses 700/800 for marketing only.)
+- **400 in DM Mono** for chain data.
 
-### Global typographic settings
+A maximum of **two weights on any single screen** is enforced.
 
-- **Letter-spacing:** `-0.01em` on buttons, inputs, selects, textareas.
-  Small negative tracking tightens interactive copy and matches Figtree's
-  geometric rhythm.
-- **Line-height for form elements:** `1.25`. Longer reading copy uses the
-  per-level line-heights in the token table.
-- **Font features:** `cv01, ss01` enabled on Figtree where available (opens
-  the lowercase `a` and `g` for a cleaner display appearance). Enable via
-  `font-feature-settings` on the body root.
+### OpenType features
+
+Body text app-wide enables `kern`, `liga`, `calt` via
+`font-feature-settings`. `calt` activates Figtree's contextual alternates,
+visibly tightening spacing around capitals and certain glyph pairs. Kerning
+is enabled explicitly via `font-kerning: normal`.
+
+Mono utilities (`text-mono-md`, `text-mono-sm`, `code`, `.font-mono`) all
+set `font-variant-numeric: tabular-nums`. Digits in addresses, hashes, IDs,
+and spec values align column-by-column without alignment hacks.
+
+### Vertical rhythm
+
+Margins between content blocks are tied to the **heading tier above**, not
+the content below. This gives consistent breathing room regardless of what
+follows.
+
+| Element | Top | Bottom | Notes |
+|---|---|---|---|
+| Display | 0 | mb-6 | Hero owns its own spacing |
+| Heading 1 | 0 | mb-4 | One per route, top of page |
+| Heading 2 (mid-doc) | mt-12 | mb-3 | First H2 in a section: mt-0 |
+| Heading 3 | mt-8 | mb-2 | — |
+| Heading 4 | mt-6 | mb-2 | — |
+| Title (in card) | 0 | mb-1.5 | Subtitle/body sits tight beneath |
+| Paragraph (Body) | 0 | mb-4 | Last child: mb-0 |
+| List (ul/ol) | 0 | mb-4 | Items: mb-1 |
+| Eyebrow / Label XS | 0 | mb-3 | Above its parent heading |
+| Hr / divider | my-8 | — | Major section break |
 
 ### Native-platform mapping
 
-- **iOS.** Ship Figtree as a bundled `.ttf` via `Info.plist
-  UIAppFonts`. Fallback to `-apple-system`/San Francisco at render time
-  only if the font fails to load. Map `body-md` to `.body` dynamic type at
-  default, `headline-sm` to `.title3`, `display-md` to `.largeTitle`. Dynamic
-  Type scaling is respected — the 16px mobile root accommodates up to
-  "Accessibility Large" without layout break.
-- **Android.** Ship Figtree via `font/figtree_*.xml` + XML families or the
-  Compose `FontFamily.resource()`. Fallback is `Roboto`. Text appearance
-  styles (`TextAppearance.Desperse.BodyMedium`, etc.) mirror the token
-  names.
-
-### Platform text APIs
-
 | Token | iOS UIFont | Android TextAppearance |
 |---|---|---|
-| `display-lg` | `largeTitle` 700 | `displayMedium` |
-| `headline-md` | `title2` 600 | `headlineMedium` |
-| `title` | `title3` 600 | `titleLarge` |
-| `body-md` | `body` 500 | `bodyLarge` |
-| `body-sm` | `subheadline` 500 | `bodyMedium` |
-| `label-md` | `footnote` 600 | `labelLarge` |
-| `label-sm` | `caption1` 600 | `labelSmall` |
+| `display-2xl` | `largeTitle` 700 | `displayLarge` |
+| `heading-1` | `title1` 600 | `headlineLarge` |
+| `heading-2` | `title2` 600 | `headlineMedium` |
+| `title-lg` | `title3` 600 | `titleLarge` |
+| `body-lg` | `body` 400 | `bodyLarge` |
+| `body-md` | `body` 400 | `bodyMedium` |
+| `body-sm` | `subheadline` 400 | `bodySmall` |
+| `label-lg` | `footnote` 600 | `labelLarge` |
+| `label-md` | `caption1` 600 | `labelMedium` |
+| `label-xs` | `caption2` 600 | `labelSmall` |
+
+iOS Dynamic Type scaling is respected — the 16px mobile root accommodates
+up to "Accessibility Large" without layout break. Android `Configuration`
+font scaling honored via `Compose` `MaterialTheme`.
 
 ## Layout
 
@@ -726,25 +889,21 @@ expressed through intent, not math.
 
 | Name | Width | Behavior |
 |---|---|---|
-| `sm` | 640px | Large phones; typography begins to unwind |
-| `md` | 768px | Tablets; type root drops from 16 → 14px |
+| `sm` | 640px | Large phones; 2-column layouts begin |
+| `md` | 768px | Tablets; type root drops 16 → 14px |
 | `lg` | 1024px | Desktops; sidebar appears, bottom nav hides |
-| `xl` | 1280px | Comfortable desktop |
-| `2xl` | 1536px | Admin / settings max width |
+| `xl` | 1280px | Comfortable desktop; extra side padding |
+| `2xl` | 1536px | Admin / settings max width; ultrawide cap engages |
 
-### Shell patterns
-
-- **Mobile (`< 1024px`).** Top bar (56px, sticky, hides on scroll-down) +
-  bottom tab bar (56px, sticky). Content receives
-  `padding-top: calc(3.5rem + env(safe-area-inset-top, 0px))` and
-  `padding-bottom: calc(3.5rem + env(safe-area-inset-bottom, 0px))`.
-- **Desktop (`≥ 1024px`).** Left sidebar (256px, fixed) + content column.
-  No top bar. No bottom bar.
+Breakpoints are **content-driven, not generic** — they kick in where the
+design actually breaks, not at fixed device widths.
 
 ### Container widths
 
 - **Feed and standard routes:** `max-width: 1024px`, centered.
 - **Settings / admin / post detail:** `max-width: 1536px`, left-aligned.
+- **Documentation pages:** full-bleed with `max-width: 1800px` cap on
+  ultrawide so line lengths stay readable.
 - **Post detail:** full width; the media is the layout.
 - **Prose (post caption, about, changelog):** clamp line length to `65ch`.
 
@@ -752,8 +911,8 @@ expressed through intent, not math.
 
 - **iOS:** 44×44pt minimum for any tappable element.
 - **Android:** 48×48dp minimum.
-- **Web mobile:** 40px is acceptable for secondary actions; all primary
-  actions and the bottom tab bar hit 48px.
+- **Web mobile:** 40px is acceptable for secondary actions; primary actions
+  and the bottom tab bar hit 48px.
 
 Icon buttons in desktop density (`32px`) exist for power users in settings
 and admin tooling only — never in the feed.
@@ -765,14 +924,18 @@ bar adds inset-top to its padding, the bottom tab bar adds inset-bottom,
 and any full-screen modal applies both. Landscape insets are honored on
 iOS.
 
-### Motion and scroll
+### Motion
 
-- **Scroll-driven nav.** Top and bottom bars hide on scroll-down and
-  reappear on scroll-up. Transition: `transform 200ms ease-out`. The bars
-  never block interaction while hidden (they translate off-screen).
-- **Smooth scroll.** Enabled via Lenis on web for feed browsing.
+- **Scroll-driven nav.** Top and bottom bars hide on scroll-down, reappear
+  on scroll-up. `transform 200ms ease-out`.
+- **Smooth scroll.** Lenis on web for feed browsing.
 - **Reduced motion.** All scroll-linked and decorative animations honor
   `prefers-reduced-motion: reduce` by switching to instant transitions.
+
+Default transition: `transition-colors duration-150`. Hover on cards uses
+either scale or shadow, never both. Anything longer than 300ms must be
+skippable. No bounce, spring, or overshoot in product UI — physical motion
+belongs to the marketing surface only.
 
 ## Elevation & Depth
 
@@ -781,23 +944,23 @@ shadow; it is a step up the zinc ladder.
 
 ### Tonal elevation (dark mode)
 
-| Layer | Surface | Hex |
+| Layer | Surface | Token |
 |---|---|---|
-| 0 — base | `background` | `#09090b` |
-| 1 — card / popover | `card` | `#18181b` |
-| 2 — hover / secondary | `secondary` | `#27272a` |
-| 3 — floating (menu) | `popover` + border | `#18181b` + border |
-| 4 — dialog / sheet | `card` + overlay scrim | `#18181b` + `rgba(0,0,0,0.5)` |
+| 0 — base | `background` | zinc-950 |
+| 1 — card / popover | `card` | zinc-900 |
+| 2 — hover / secondary | `secondary` | zinc-800 |
+| 3 — floating (menu) | `popover` + border | zinc-900 + zinc-700 border |
+| 4 — dialog / sheet | `card` + scrim | zinc-900 + 50% black overlay |
 
 ### Tonal elevation (light mode)
 
-| Layer | Surface | Hex |
+| Layer | Surface | Token |
 |---|---|---|
-| 0 — base | `background-light` | `#ffffff` |
-| 1 — card | `card-light` | `#ffffff` (subtle shadow distinguishes) |
-| 2 — hover / secondary | `secondary-light` | `#f4f4f5` |
-| 3 — floating | `popover` + border | `#ffffff` + `#e4e4e7` |
-| 4 — dialog / sheet | `card` + overlay | `#ffffff` + `rgba(0,0,0,0.4)` |
+| 0 — base | `background-light` | white |
+| 1 — card | `card-light` | white (subtle shadow distinguishes) |
+| 2 — hover / secondary | `secondary-light` | zinc-100 |
+| 3 — floating | `popover` + border | white + zinc-200 border |
+| 4 — dialog / sheet | `card` + overlay | white + 40% black overlay |
 
 ### Shadow tokens
 
@@ -814,28 +977,28 @@ entirely by tonal contrast. Shadows are kept for light mode.
 ### Borders instead of shadow
 
 Components in dark mode define edges with a translucent border:
-`border: 1px solid oklch(from var(--zinc-700) l c h / 0.4)`. This reads
-crisper than a shadow on dark backgrounds and mirrors the "light refraction
-edge" of premium OLED UI.
+`border: 1px solid oklch(from var(--zinc-700) l c h / 0.4)`. Crisper than
+shadow on dark backgrounds and mirrors the "light refraction edge" of
+premium OLED UI.
 
-### Platform elevation mapping
+### Platform mapping
 
-- **iOS.** Use `UIBlurEffect` sparingly — only on sticky bars when scrim is
-  required for legibility over media. Materials are not a brand element.
+- **iOS.** `UIBlurEffect` only on sticky bars where scrim is required for
+  legibility over media. Materials are not a brand element.
 - **Android.** Disable Material 3 tonal elevation overlays. Provide
-  `Surface(tonalElevation = 0.dp)` and use the tonal ladder above instead.
-  Compose `Modifier.shadow` only on `lg` / `xl` surfaces.
+  `Surface(tonalElevation = 0.dp)` and use the tonal ladder above. Compose
+  `Modifier.shadow` only on `lg`/`xl` surfaces.
 
 ## Shapes
 
 **Tight radii. Pill-shaped actions. Soft-square containers.** No sharp
-(0-radius) corners anywhere in the product. No fully-rounded containers
+(0-radius) corners anywhere in product UI. No fully-rounded containers
 either — only actions are pills.
 
 ### Radius ladder
 
-- `none` (0px) — never used in UI, reserved for media viewports.
-- `xs` (4px) — tight utilities (focus outlines, badges on dense rows).
+- `none` (0px) — reserved for media viewports.
+- `xs` (4px) — focus outlines, badges on dense rows.
 - `sm` (8px) — inputs, small pills, selects, badges.
 - `md` (12px) — popovers, toasts, small modals, icon tiles.
 - `lg` (16px) — cards, dialog containers, sheets.
@@ -845,31 +1008,31 @@ either — only actions are pills.
 ### Rules
 
 - **Actions are always `full` radius.** Primary, secondary, ghost,
-  destructive, icon buttons — all pills. This is the single most
-  recognizable shape signal in the system.
+  destructive, icon buttons — all pills. The single most recognizable
+  shape signal in the system.
 - **Containers are always `lg`.** Cards, dialogs, sheets — 16px. Media
-  carousels inside cards get `md` (12px).
+  carousels inside cards get `md`.
 - **Inputs are `sm`.** 8px. Never pills. An input that looks like a button
   is a bad input.
-- **Never mix**: a card should not contain a sharp-cornered element, and a
-  pill should not contain a square-cornered affordance.
+- **Never mix.** A card should not contain a sharp-cornered element, and
+  a pill should not contain a square-cornered affordance.
 
 ### Platform notes
 
 - **iOS.** Native system controls (`UISwitch`, `UISegmentedControl`) follow
   Apple's default corner radii. Custom controls match the Desperse ladder.
-- **Android.** Material 3 `Shapes` theme overrides all corner families to
-  the ladder above: `Shapes(small = 8.dp, medium = 12.dp, large = 16.dp)`.
+- **Android.** Material 3 `Shapes` theme overrides all corner families:
+  `Shapes(small = 8.dp, medium = 12.dp, large = 16.dp)`.
 
 ## Components
 
 Component behavior is fully specified in the YAML front matter. Prose here
-covers only the "why" and the cross-platform nuance.
+covers the "why" and cross-platform nuance.
 
 ### Buttons
 
-Pill-shaped, Medium-weight label, tight letter-spacing. Three visual tiers
-from loudest to quietest:
+Pill-shaped, label-lg typography, tight letter-spacing. Three visual tiers
+loudest to quietest:
 
 1. **Primary.** Solid fill of the inverted neutral (`zinc-50` in dark mode,
    `zinc-950` in light). One per screen, maximum.
@@ -878,123 +1041,110 @@ from loudest to quietest:
 3. **Ghost.** Transparent, fills on hover with `zinc-800` (dark) or
    `zinc-100` (light). For tertiary actions inside a card.
 
-**Destructive** is reserved for Torch Red and only for irrevocable actions
-(delete post, remove follower, revoke access). Never use it for cancel.
+**Destructive** is reserved for the destructive token (torch-red derivative)
+and only for irrevocable actions (delete post, remove follower, revoke
+access). Never use it for cancel.
 
 **Size ladder.** 40px (mobile, also the CTA height) → 32px (desktop
-density). Icon buttons inherit those. A 44px "cta" size exists on mobile
-for the primary commerce action (Buy, Collect) to meet iOS HIG.
+density). A 44px "cta" size exists on mobile for the primary commerce
+action (Buy, Collect) to meet iOS HIG.
 
 ### Post card
 
 The feed atom. Structure: media (full-bleed inside the card), metadata
 overlay pill on the media, caption, category pills, action row.
 
-- **Media overlay pill.** Bottom-left of the media. Uses `media-pill-tone-*`
-  tokens so the pill color carries the post type. Example: an Edition post
-  shows `0.5 SOL` in a purple-heart pill.
+- **Media overlay pill.** Bottom-left of the media. Uses
+  `media-pill-tone-*` tokens so the pill color carries the post type.
+  Example: an Edition post shows `0.5 SOL` in a magenta pill.
 - **Action row.** Like, Comment, Collect/Buy. The action button for
   Collect/Buy inherits the post-type tone; Like and Comment are neutral.
 - **Collected state.** "Collected" swaps in place of the action button.
   The media pill remains visible so the post's economic identity is never
   hidden.
 
-### Category pill
-
-Two variants: display (non-interactive, sits below a caption) and
-interactive (toggles a filter). Selected state swaps to the `primary`
-surface — this is the one place the primary color appears as a
-content-level state, and it's the correct choice because selection is an
-explicit user action.
-
 ### Media pill
 
 Short, mono-tracked label overlaid on media. Three variants: `dark` (the
-default for neutral metadata like "3 images"), `muted` (for informational
-state like "Sold Out"), and `tone` (for price and type cues). All pills are
-24px tall — small enough to not dominate media, large enough to be legible
-on a phone.
+default for neutral metadata like "3 images"), `muted` (informational state
+like "Sold Out"), and `tone` (price and type cues). All pills are 24px tall
+— small enough to not dominate media, large enough to be legible on a
+phone.
 
-Tone pills use **`zinc-950` text on the tone fill**, not white. Small-cap
-pill type (10px) on bright purple/blue fails WCAG AA at white; dark text on
-those same fills passes cleanly. The rule is consistent across all three
-post-type tones, so the visual family is preserved.
+Tone pills use **`zinc-950` text on the tone fill**, not white. Mono pill
+type (~10px) on the new dark-tuned magenta/violet would clear AA at white,
+but `zinc-950` text reads more authoritative and matches the tonal-system
+intent. The rule is consistent across all three post-type tones.
 
 ### Inputs
 
 Soft-square (`rounded-sm`), no shadow, 40px tall on mobile / 32px on
-desktop. Focus state uses a 2px `ring`-colored ring at 30% opacity
-(`ring-ring/30`). Invalid state swaps the ring to `destructive`. No
-validation icons inside the input — the error message below carries the
-signal. Placeholder text is `muted-foreground` weight 400.
+desktop. Focus state uses a 2px `ring`-colored ring at 30% opacity. Invalid
+state swaps the ring to `destructive`. No validation icons inside the
+input — the error message below carries the signal. Placeholder text is
+`muted-foreground` weight 400.
 
 ### Navigation
 
 - **Sidebar (desktop).** 256px, full-height, sticky. Nav items are
   full-radius pills at 40px tall; hover fills with `zinc-800`, active state
   fills with `sidebar-accent` and swaps the icon to filled.
-- **Bottom bar (mobile).** 56px tall. Icon + label, label is `label-sm`.
-  Active state changes the icon to its solid Font Awesome variant and
-  raises the text to `foreground`.
-- **Top bar (mobile).** 56px, shows page title (or logo on home), back
-  button on secondary pages, optional trailing action icon. Translucent
-  scrim not used — we prefer a solid `background` so typography over media
-  stays readable.
+- **Bottom bar (mobile).** 56px tall. Icon + label-md text. Active state
+  changes the icon to its solid Font Awesome variant and raises text to
+  `foreground`.
+- **Top bar (mobile).** 56px, page title (or logo on home), back button on
+  secondary pages, optional trailing action. Solid `background` so
+  typography over media stays readable — never a translucent scrim.
 
 ### Notifications (unread indicator)
 
-A solid `destructive` dot (4px) or count pill (20px tall). The count pill
-caps at `99+`. Never use purple for unread — that conflates value (purple)
-with activity (red).
+A solid `destructive` dot (4px) or count pill (20px tall). The count caps
+at `99+`. Never use purple for unread — that conflates value (purple) with
+activity (red).
 
-### Surfaces (dialogs, sheets, toasts, tooltips)
+### Surfaces
 
 - **Dialog.** Centered on desktop (`max-width: 500px`), full-screen sheet
-  on mobile. Backdrop is `rgba(0,0,0,0.5)`.
+  on mobile. Backdrop is 50% black.
 - **Sheet.** Slides from bottom on mobile, from right on desktop.
 - **Toast.** Top-right (desktop) / top (mobile). Auto-dismiss 4s; error
   toasts require manual dismiss.
 - **Tooltip.** `zinc-900` fill, 8px side padding, 6px vertical. Show after
-  400ms hover on pointer devices. Long-press equivalent on touch (500ms).
+  400ms hover on pointer devices; long-press equivalent on touch (500ms).
 
 ### Icons
 
-**Font Awesome Pro** is the primary icon family (solid for active states
-and filled affordances; regular for idle states). **Lucide** is used only
-where Font Awesome lacks a good match (close `X`, chevrons in Radix
-primitives). All icons inherit text color — never colored icons except in
-post-type action buttons where the tone is the point.
+**Font Awesome Pro** is the primary icon family — solid for active states
+and filled affordances, regular for idle states. Icons inherit text color
+— never colored icons except in post-type action buttons where the tone is
+the point. Icons are sized via `text-{size}` classes (e.g., `text-base`,
+`text-2xl`) — typography utilities (`text-body-md`) must not be applied to
+icons; those are paired type tokens, not size scales.
 
 ### Focus states
 
 Interactive elements use a 2px `ring`-colored outline with 30% opacity,
-offset by 1-2px depending on component density.
-
-Buttons and clickable containers have their browser focus ring suppressed
-(`outline: none !important` on `button:focus-visible`) — a historical
-choice in the codebase. Form inputs, checkboxes, toggles, and category
-pills **retain** focus rings; that's the accessibility floor. Any new
-interactive element that isn't a `<button>`/`<a>` must opt into a ring.
-
-Focus rings are not defined as a standalone component in the YAML because
-the spec's component sub-token vocabulary doesn't include `borderColor` /
-`outlineColor`. Treat them as a cross-cutting style rule: 2px ring, color
-`ring` (from the color tokens), 30% opacity, 1–2px offset depending on
-component density.
+offset by 1–2px depending on component density. Buttons and clickable
+containers have their browser focus ring suppressed; form inputs,
+checkboxes, toggles, and category pills retain rings as the accessibility
+floor. Any new interactive element that isn't a `<button>`/`<a>` must opt
+into a ring.
 
 ## Do's and Don'ts
 
 ### Do
 
 - Do treat the post-type tone as semantic. If you introduce a new color
-  anywhere near a post, ask: does this belong on the standard / collectible /
+  near a post, ask: does this belong on the standard / collectible /
   edition axis, or is it truly new information?
 - Do default to **dark** when making a new component. Build light as a
   counterpart, not a co-equal.
 - Do use `primary` for exactly one action per screen. If you can't pick
   one, the hierarchy is wrong.
-- Do respect `env(safe-area-inset-*)` on every fixed-position surface. iOS
-  notches and Android gesture bars are not edge cases.
+- Do reach for the **dark-tuned tone tokens** (`tone-edition-dark`, etc.)
+  rather than picking a brighter step from the ramp. They are tuned to be
+  vibrant on dark canvas.
+- Do respect `env(safe-area-inset-*)` on every fixed-position surface.
 - Do ship Figtree as a bundled font on native shells. Fall back to
   `-apple-system` / Roboto only if bundling fails.
 - Do cap prose at `65ch` line length. Feeds scroll; paragraphs read.
@@ -1002,27 +1152,38 @@ component density.
   correction, not a drift.
 - Do match touch-target minimums per platform (44pt iOS / 48dp Android).
 - Do honor `prefers-reduced-motion` for all non-essential animation.
+- Do use `flush-orange-700` for body text on white. `flush-orange-600`
+  is the one exception in the palette that fails AA at body-text scale.
 
 ### Don't
 
-- Don't use **pure black** (`#000`) or **pure white** (`#fff`) anywhere in
-  product UI. Always use `zinc-950` and `zinc-50`.
-- Don't use **gradient text**. Ever. Use weight or size for emphasis.
-- Don't use purple for primary CTAs. Purple is for Editions and selection
-  only.
-- Don't use side-stripe borders (`border-left: 3px solid accent`) on cards,
-  callouts, or list items. It is the most recognizable AI-design tell.
+- Don't write `oklch()` values inline in components. The seven palettes
+  and their tone tokens cover every case — extend the system if you need
+  a new value.
+- Don't use **pure black** (`#000`) or **pure white** (`#fff`) anywhere
+  in product UI. Always use `zinc-950` and `zinc-50` (which are subtly
+  tinted in OKLCH).
+- Don't use **gradient text**. Use weight or color for emphasis.
+- Don't use purple for primary CTAs. Purple is for Editions and
+  selection only.
+- Don't use side-stripe borders (`border-left: 3px solid accent`) on
+  cards, callouts, or list items. The most recognizable AI-design tell.
 - Don't nest cards inside cards. Flatten the hierarchy.
 - Don't mix radii inside one component. Pill buttons should never sit
   inside a sharp-cornered frame.
-- Don't use more than **two font weights** on a single screen (500 body +
-  600 heading is the normal pair; DM Mono 400 for chain data is the rare
-  third).
-- Don't use `text-uppercase` on body copy. Caps are for `label-caps` only.
+- Don't override the four paired typography properties (size, weight,
+  line-height, tracking) individually. Pick a utility, use it as-is.
+- Don't use more than **two font weights** on a single screen (400 body
+  + 600 heading is the normal pair; DM Mono 400 for chain data is the
+  rare third).
+- Don't use `text-uppercase` on body copy. Caps are for `label-xs` only,
+  which auto-applies them.
+- Don't apply typography utilities (`text-body-md`) to icons. Use
+  `text-{size}` (`text-base`, `text-2xl`) for icon sizing.
 - Don't ship icons in a color that isn't the active text color — except
   post-type action buttons, where tone is the point.
 - Don't use Material ripple on Android. Replace with the same hover state
-  the web uses (`zinc-800` fill) for consistency.
+  the web uses (`zinc-800` fill) for cross-platform consistency.
 - Don't implement features that only work on desktop. Every capability
   must have a mobile path; adapt, don't amputate.
 - Don't call `primary-foreground` "white" or `primary` "black" — they

@@ -246,39 +246,33 @@ try {
 - @solana/kit for Solana RPC (NOT web3.js)
 - Path alias: `@/` maps to `./src/`
 
-## Design Context
+## Design System
 
-### Users
-Crypto-native creators who already live in Web3 and want a polished, powerful creative tool. They expect speed, precision, and respect for their time. The interface should feel like a sharp instrument — fast to learn, faster to use, never in the way of the content.
+**The design system is the source of truth for everything visual.** Three artifacts, one system:
 
-### Brand Personality
-**Minimal. Focused. Sharp.**
+| Artifact | Role |
+|---|---|
+| `DESIGN.md` (repo root) | The spec. YAML tokens (Google `design.md` format) + prose rationale. Read this before any visual work. |
+| `src/styles.css` | The implementation. CSS custom properties for the OKLCH palette, semantic tokens, dark-tuned tone overrides, paired typography utilities (`text-display-*`, `text-heading-*`, `text-title-*`, `text-body-*`, `text-label-*`, `text-mono-*`), radii, shadows. |
+| `/dev/typography-test` | The living, interactive demo. Standalone route. Rendered showcase of every token, palette ramp, dark-tuned tone, and pattern. |
 
-Desperse is a content-first platform. Every pixel should serve the creator's work. The UI recedes so the art advances. Confidence comes from restraint, not decoration.
+**When making any visual change**, in this order:
 
-### Aesthetic Direction
-- **Dark by default** — zinc-950 base, purple-heart accent for interactive highlights
-- **Content is the hero** — generous whitespace, minimal chrome, let media breathe
-- **Quiet confidence** — subtle shadows, tight radius (4-8px), no gratuitous gradients or glow
-- **Typography-driven** — Figtree at medium weight, minor-third scale, tight letter-spacing
+1. **Read `DESIGN.md`** for the relevant section (Colors, Typography, Components, Do's and Don'ts).
+2. **Use existing tokens** — never write `oklch()`, hex, or arbitrary spacing/radius values inline. Use semantic tokens (`bg-card`, `text-muted-foreground`, `bg-tone-edition`) or palette references (`text-(--purple-heart-500)`).
+3. **Apply paired typography utilities** — `text-heading-1`, `text-body-md`, `text-label-lg`, etc. Don't combine `text-{size}` + `font-{weight}` + `tracking-{x}` independently — those are paired in the utility.
+4. **Verify against `/dev/typography-test`** — if a new component looks foreign next to the rendered tokens on that page, it's drifting from the system.
+5. **If the system genuinely lacks something**, propose an addition to `DESIGN.md` first; then add the token to `styles.css`; then use it. Never add a one-off.
 
-**References:** Zora and Foundation (art-forward, Web3-native), SuperRare and Exchange.Art (premium collectible feel), Linear and Vercel (developer-grade polish and speed), Instagram and TikTok (proven content-first social patterns).
+### Quick orientation
 
-**Anti-patterns to avoid:** Overly playful/bubbly UI, excessive animations, neon glow effects, busy dashboards, "Web3 for Web3's sake" aesthetics (wallet jargon, hex addresses in faces, blockchain-first UX).
+- **Dark by default.** zinc-950 base. Light mode is a counterpart, not a co-equal.
+- **Brand accent:** `purple-heart-700` (light) / dark-tuned `tone-edition-dark` (dark, electric magenta). Used for editions and selection only — never for primary CTAs.
+- **Primary CTA:** inverted neutral (`zinc-50` in dark, `zinc-950` in light). One per screen.
+- **Three post-type tones:** `tone-standard` (caribbean-green), `tone-collectible` (blue-gem), `tone-edition` (purple-heart). They carry meaning, not decoration.
+- **Typography:** Figtree at 400 body / 600 heading. DM Mono for chain data only. Two weights per screen, max.
+- **Touch targets:** 44pt iOS / 48dp Android / 40px web mobile minimum.
+- **Accessibility floor:** WCAG AA (4.5:1 body / 3:1 large + UI). All semantic pairs in `DESIGN.md` are pre-verified.
+- **Anti-patterns:** never `#000` or `#fff` (use `zinc-950`/`zinc-50` — they're subtly tinted). No gradient text. No side-stripe borders. No nested cards. No purple primary CTAs.
 
-### Design Principles
-
-1. **Content over chrome** — The creator's work is the interface. Minimize UI that competes with media. Navigation, controls, and metadata should support, never overshadow.
-
-2. **Speed is a feature** — Every interaction should feel instant. Prefer skeleton states over spinners. Reduce clicks to complete actions. Perceived performance matters as much as real performance.
-
-3. **Progressive disclosure** — Show the essential, reveal the advanced. Blockchain complexity (minting, transactions, wallets) should be abstracted behind familiar patterns until the user needs detail.
-
-4. **Earned density** — Start sparse, allow density. Feeds are generous; settings and admin views can be compact. Match information density to user intent.
-
-5. **Systematic consistency** — Use the design token system (8px grid, zinc neutrals, post-type tones). Every new element should feel like it was always part of the family. When in doubt, use what exists.
-
-### Accessibility
-- Target WCAG AA compliance for contrast ratios and keyboard navigation
-- Respect `prefers-reduced-motion` for all non-essential animations
-- All interactive elements must have visible focus states and appropriate ARIA attributes
+For full rationale, references, anti-patterns, design principles, native-platform mapping, vertical rhythm, and component specs — go to `DESIGN.md`.

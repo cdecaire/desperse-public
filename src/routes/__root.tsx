@@ -11,7 +11,7 @@ import AppShell from '../components/layout/AppShell'
 
 // Routes that should not be wrapped in the AppShell (standalone pages)
 // Note: '/' is conditionally standalone based on auth state (see RpcHealthProviderWrapper)
-const STANDALONE_ROUTES = ['/about', '/privacy', '/terms', '/fees', '/changelog', '/browse', '/export-wallet', '/echoes', '/preservation', '/download']
+const STANDALONE_ROUTES = ['/about', '/privacy', '/terms', '/fees', '/changelog', '/browse', '/export-wallet', '/echoes', '/preservation', '/download', '/dev/typography-test']
 import { PrivyProvider } from '../components/providers/PrivyProvider'
 import { QueryProvider } from '../components/providers/QueryProvider'
 import { RpcHealthProvider } from '../components/providers/RpcHealthProvider'
@@ -19,7 +19,7 @@ import { ThemeProvider } from '../components/providers/ThemeProvider'
 import { ThemeSync } from '../components/providers/ThemeSync'
 import { ErrorBoundary } from '../components/shared/ErrorBoundary'
 import { SplashScreen } from '../components/shared/SplashScreen'
-import { NotFoundPage } from './$'
+import { NotFoundPage } from '../components/shared/NotFoundPage'
 import { useAuth } from '../hooks/useAuth'
 
 import appCss from '../styles.css?url'

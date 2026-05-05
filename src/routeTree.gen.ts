@@ -42,6 +42,7 @@ import { Route as EchoesFaqRouteImport } from './routes/echoes/faq'
 import { Route as EchoesFactionsRouteImport } from './routes/echoes/factions'
 import { Route as EchoesCollectionRouteImport } from './routes/echoes/collection'
 import { Route as DevWalletTestRouteImport } from './routes/dev/wallet-test'
+import { Route as DevTypographyTestRouteImport } from './routes/dev/typography-test'
 import { Route as DevToastTestRouteImport } from './routes/dev/toast-test'
 import { Route as DevInputsTestRouteImport } from './routes/dev/inputs-test'
 import { Route as DevDbTestRouteImport } from './routes/dev/db-test'
@@ -231,6 +232,11 @@ const DevWalletTestRoute = DevWalletTestRouteImport.update({
   path: '/dev/wallet-test',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DevTypographyTestRoute = DevTypographyTestRouteImport.update({
+  id: '/dev/typography-test',
+  path: '/dev/typography-test',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DevToastTestRoute = DevToastTestRouteImport.update({
   id: '/dev/toast-test',
   path: '/dev/toast-test',
@@ -380,6 +386,7 @@ export interface FileRoutesByFullPath {
   '/dev/db-test': typeof DevDbTestRoute
   '/dev/inputs-test': typeof DevInputsTestRoute
   '/dev/toast-test': typeof DevToastTestRoute
+  '/dev/typography-test': typeof DevTypographyTestRoute
   '/dev/wallet-test': typeof DevWalletTestRoute
   '/echoes/collection': typeof EchoesCollectionRoute
   '/echoes/factions': typeof EchoesFactionsRoute
@@ -436,6 +443,7 @@ export interface FileRoutesByTo {
   '/dev/db-test': typeof DevDbTestRoute
   '/dev/inputs-test': typeof DevInputsTestRoute
   '/dev/toast-test': typeof DevToastTestRoute
+  '/dev/typography-test': typeof DevTypographyTestRoute
   '/dev/wallet-test': typeof DevWalletTestRoute
   '/echoes/collection': typeof EchoesCollectionRoute
   '/echoes/factions': typeof EchoesFactionsRoute
@@ -494,6 +502,7 @@ export interface FileRoutesById {
   '/dev/db-test': typeof DevDbTestRoute
   '/dev/inputs-test': typeof DevInputsTestRoute
   '/dev/toast-test': typeof DevToastTestRoute
+  '/dev/typography-test': typeof DevTypographyTestRoute
   '/dev/wallet-test': typeof DevWalletTestRoute
   '/echoes/collection': typeof EchoesCollectionRoute
   '/echoes/factions': typeof EchoesFactionsRoute
@@ -554,6 +563,7 @@ export interface FileRouteTypes {
     | '/dev/db-test'
     | '/dev/inputs-test'
     | '/dev/toast-test'
+    | '/dev/typography-test'
     | '/dev/wallet-test'
     | '/echoes/collection'
     | '/echoes/factions'
@@ -610,6 +620,7 @@ export interface FileRouteTypes {
     | '/dev/db-test'
     | '/dev/inputs-test'
     | '/dev/toast-test'
+    | '/dev/typography-test'
     | '/dev/wallet-test'
     | '/echoes/collection'
     | '/echoes/factions'
@@ -667,6 +678,7 @@ export interface FileRouteTypes {
     | '/dev/db-test'
     | '/dev/inputs-test'
     | '/dev/toast-test'
+    | '/dev/typography-test'
     | '/dev/wallet-test'
     | '/echoes/collection'
     | '/echoes/factions'
@@ -724,6 +736,7 @@ export interface RootRouteChildren {
   DevDbTestRoute: typeof DevDbTestRoute
   DevInputsTestRoute: typeof DevInputsTestRoute
   DevToastTestRoute: typeof DevToastTestRoute
+  DevTypographyTestRoute: typeof DevTypographyTestRoute
   DevWalletTestRoute: typeof DevWalletTestRoute
   PostPostIdRoute: typeof PostPostIdRouteWithChildren
   ProfileSlugRoute: typeof ProfileSlugRoute
@@ -967,6 +980,13 @@ declare module '@tanstack/react-router' {
       path: '/dev/wallet-test'
       fullPath: '/dev/wallet-test'
       preLoaderRoute: typeof DevWalletTestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dev/typography-test': {
+      id: '/dev/typography-test'
+      path: '/dev/typography-test'
+      fullPath: '/dev/typography-test'
+      preLoaderRoute: typeof DevTypographyTestRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dev/toast-test': {
@@ -1259,6 +1279,7 @@ const rootRouteChildren: RootRouteChildren = {
   DevDbTestRoute: DevDbTestRoute,
   DevInputsTestRoute: DevInputsTestRoute,
   DevToastTestRoute: DevToastTestRoute,
+  DevTypographyTestRoute: DevTypographyTestRoute,
   DevWalletTestRoute: DevWalletTestRoute,
   PostPostIdRoute: PostPostIdRouteWithChildren,
   ProfileSlugRoute: ProfileSlugRoute,

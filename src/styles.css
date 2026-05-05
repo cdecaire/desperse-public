@@ -27,6 +27,10 @@ body {
   font-weight: 500;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* OpenType features: kerning, standard ligatures, contextual alternates.
+     Figtree's `calt` improves spacing around capitals and certain glyph pairs. */
+  font-feature-settings: "kern", "liga", "calt";
+  font-kerning: normal;
   /* Prevent layout shift when scrollbar disappears (e.g., when modals open) */
   scrollbar-gutter: stable;
 }
@@ -34,10 +38,13 @@ body {
 code {
   font-family: 'DM Mono', source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+  /* Tabular figures so digits align in addresses, hashes, IDs. */
+  font-variant-numeric: tabular-nums;
 }
 
 .font-mono {
   font-family: 'DM Mono', ui-monospace, SFMono-Regular, monospace;
+  font-variant-numeric: tabular-nums;
 }
 
 @theme inline {
@@ -95,6 +102,141 @@ code {
   --animate-heart-pop: heart-pop 0.8s ease-out forwards;
 }
 
+/* Typography system — see /dev/typography-test for the living spec.
+   Each utility bundles size + weight + line-height + tracking. Compose with
+   color/margin/etc. Don't override the four paired properties individually. */
+
+@utility text-display-4xl {
+  font-size: clamp(4.5rem, 12vw, 12rem);
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.05em;
+}
+@utility text-display-3xl {
+  font-size: 6rem;
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.045em;
+}
+@utility text-display-2xl {
+  font-size: 4.5rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+@utility text-display-xl {
+  font-size: 3.75rem;
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+@utility text-display-lg {
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+@utility text-heading-1 {
+  font-size: 2.25rem;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+}
+@utility text-heading-2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+@utility text-heading-3 {
+  font-size: 1.375rem;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+}
+@utility text-heading-4 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+@utility text-title-lg {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+@utility text-title-sm {
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.005em;
+}
+
+@utility text-body-lg {
+  font-size: 1.0625rem;
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: -0.005em;
+}
+@utility text-body-md {
+  font-size: 0.9375rem;
+  font-weight: 400;
+  line-height: 1.55;
+  letter-spacing: -0.005em;
+}
+@utility text-body-sm {
+  font-size: 0.8125rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+
+@utility text-label-lg {
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.005em;
+}
+@utility text-label-md {
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+@utility text-label-xs {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+@utility text-caption {
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0;
+}
+
+@utility text-mono-md {
+  font-family: 'DM Mono', ui-monospace, SFMono-Regular, monospace;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+}
+@utility text-mono-sm {
+  font-family: 'DM Mono', ui-monospace, SFMono-Regular, monospace;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
 @keyframes heart-pop {
   0% { transform: scale(0); opacity: 0; }
   15% { transform: scale(1.3); opacity: 1; }
@@ -107,96 +249,124 @@ code {
 :root {
   --radius: 0.625rem; /* Legacy, kept for backward compatibility */
 
-  /* Zinc palette tokens */
-  --zinc-50: #fafafa;
-  --zinc-100: #f4f4f5;
-  --zinc-200: #e4e4e7;
-  --zinc-300: #d4d4d8;
-  --zinc-400: #a1a1aa;
-  --zinc-500: #71717a;
-  --zinc-600: #52525b;
-  --zinc-700: #3f3f46;
-  --zinc-800: #27272a;
-  --zinc-900: #18181b;
-  --zinc-950: #09090b;
+  /* ----------------------------------------------------------------------
+     Color palettes — OKLCH ramps
+     Construction: locked hue per palette, perceptually-uniform L curve
+     (50→97% / 950→15%), chroma peak at 500 or 600 step capped to sRGB
+     gamut. Each 600 step clears WCAG AA (4.5:1) for body text on white,
+     except flush-orange-600 which is AA-Large only — use orange-700 for
+     body text on white. See /dev/typography-test for documentation.
+     ---------------------------------------------------------------------- */
 
-  /* Torch Red palette tokens (destructive) */
-  --torch-red-50: #fff0f4;
-  --torch-red-100: #ffdde5;
-  --torch-red-200: #ffc0cf;
-  --torch-red-300: #ff94ad;
-  --torch-red-400: #ff577f;
-  --torch-red-500: #ff2357;
-  --torch-red-600: #ff003c;
-  --torch-red-700: #d70033;
-  --torch-red-800: #b1032c;
-  --torch-red-900: #920a2a;
-  --torch-red-950: #500013;
+  /* Zinc — Hue 264° (cool neutral, near-zero chroma) */
+  --zinc-50:  oklch(97.2% 0.002 264);
+  --zinc-100: oklch(94.0% 0.003 264);
+  --zinc-200: oklch(88.0% 0.004 264);
+  --zinc-300: oklch(79.0% 0.004 264);
+  --zinc-400: oklch(68.0% 0.004 264);
+  --zinc-500: oklch(58.0% 0.005 264);
+  --zinc-600: oklch(48.0% 0.005 264);
+  --zinc-700: oklch(39.0% 0.004 264);
+  --zinc-800: oklch(30.0% 0.004 264);
+  --zinc-900: oklch(23.0% 0.003 264);
+  --zinc-950: oklch(15.0% 0.003 264);
 
-  /* Blue Gem palette tokens (collectible) */
-  --blue-gem-50: #f3f1ff;
-  --blue-gem-100: #e9e6ff;
-  --blue-gem-200: #d5d0ff;
-  --blue-gem-300: #b7abff;
-  --blue-gem-400: #947bff;
-  --blue-gem-500: #7346ff;
-  --blue-gem-600: #6221ff;
-  --blue-gem-700: #540ff2;
-  --blue-gem-800: #450ccb;
-  --blue-gem-900: #3a0ca3;
-  --blue-gem-950: #220471;
+  /* Torch Red — Hue 22° (destructive). 600 darkened to 53% L for AA on white. */
+  --torch-red-50:  oklch(97.2% 0.013 22);
+  --torch-red-100: oklch(94.0% 0.028 22);
+  --torch-red-200: oklch(88.0% 0.060 22);
+  --torch-red-300: oklch(79.0% 0.118 22);
+  --torch-red-400: oklch(68.0% 0.190 22);
+  --torch-red-500: oklch(60.0% 0.235 22);
+  --torch-red-600: oklch(53.0% 0.225 22);
+  --torch-red-700: oklch(45.0% 0.190 22);
+  --torch-red-800: oklch(36.0% 0.150 22);
+  --torch-red-900: oklch(28.0% 0.110 22);
+  --torch-red-950: oklch(18.0% 0.075 22);
 
-  /* Purple Heart palette tokens (edition/accent) */
-  --purple-heart-50: #fbf3ff;
-  --purple-heart-100: #f4e4ff;
-  --purple-heart-200: #ecceff;
-  --purple-heart-300: #dda7ff;
-  --purple-heart-400: #c86fff;
-  --purple-heart-500: #b439ff;
-  --purple-heart-600: #a213ff;
-  --purple-heart-700: #8d04ec;
-  --purple-heart-800: #7209b7;
-  --purple-heart-900: #62099a;
-  --purple-heart-950: #430074;
+  /* Blue Gem — Hue 285° (collectible, violet-blue) */
+  --blue-gem-50:  oklch(97.2% 0.014 285);
+  --blue-gem-100: oklch(94.0% 0.030 285);
+  --blue-gem-200: oklch(88.0% 0.065 285);
+  --blue-gem-300: oklch(79.0% 0.130 285);
+  --blue-gem-400: oklch(68.0% 0.205 285);
+  --blue-gem-500: oklch(58.0% 0.265 285);
+  --blue-gem-600: oklch(48.0% 0.265 285);
+  --blue-gem-700: oklch(40.0% 0.225 285);
+  --blue-gem-800: oklch(31.0% 0.180 285);
+  --blue-gem-900: oklch(23.0% 0.135 285);
+  --blue-gem-950: oklch(15.0% 0.090 285);
 
-  /* Caribbean Green palette tokens (success) */
-  --caribbean-green-50: #eafff8;
-  --caribbean-green-100: #cdfeeb;
-  --caribbean-green-200: #9ffbdd;
-  --caribbean-green-300: #61f4cd;
-  --caribbean-green-400: #27e4b8;
-  --caribbean-green-500: #00cba2;
-  --caribbean-green-600: #00a585;
-  --caribbean-green-700: #00846d;
-  --caribbean-green-800: #006858;
-  --caribbean-green-900: #00554a;
-  --caribbean-green-950: #00302a;
+  /* Purple Heart — Hue 309° (edition / brand accent, magenta-purple) */
+  --purple-heart-50:  oklch(97.2% 0.014 309);
+  --purple-heart-100: oklch(94.0% 0.030 309);
+  --purple-heart-200: oklch(88.0% 0.065 309);
+  --purple-heart-300: oklch(79.0% 0.135 309);
+  --purple-heart-400: oklch(68.0% 0.215 309);
+  --purple-heart-500: oklch(60.0% 0.275 309);
+  --purple-heart-600: oklch(52.0% 0.275 309);
+  --purple-heart-700: oklch(43.0% 0.230 309);
+  --purple-heart-800: oklch(33.0% 0.180 309);
+  --purple-heart-900: oklch(24.0% 0.135 309);
+  --purple-heart-950: oklch(15.0% 0.090 309);
 
-  /* Flush Orange palette tokens (warning) */
-  --flush-orange-50: #fffaec;
-  --flush-orange-100: #fff4d3;
-  --flush-orange-200: #ffe5a5;
-  --flush-orange-300: #ffd16d;
-  --flush-orange-400: #ffb232;
-  --flush-orange-500: #ff980a;
-  --flush-orange-600: #ff8000;
-  --flush-orange-700: #cc5d02;
-  --flush-orange-800: #a1480b;
-  --flush-orange-900: #823d0c;
-  --flush-orange-950: #461d04;
+  /* Caribbean Green — Hue 173° (standard / success, teal-green).
+     600 darkened to 45% L for AA on white (teal sRGB volume is narrow). */
+  --caribbean-green-50:  oklch(97.2% 0.018 173);
+  --caribbean-green-100: oklch(94.0% 0.035 173);
+  --caribbean-green-200: oklch(88.0% 0.070 173);
+  --caribbean-green-300: oklch(79.0% 0.115 173);
+  --caribbean-green-400: oklch(68.0% 0.140 173);
+  --caribbean-green-500: oklch(58.0% 0.135 173);
+  --caribbean-green-600: oklch(45.0% 0.118 173);
+  --caribbean-green-700: oklch(38.0% 0.100 173);
+  --caribbean-green-800: oklch(30.0% 0.080 173);
+  --caribbean-green-900: oklch(23.0% 0.060 173);
+  --caribbean-green-950: oklch(15.0% 0.040 173);
 
-  /* Azure Radiance palette tokens (info) */
-  --azure-radiance-50: #eff7ff;
-  --azure-radiance-100: #daedff;
-  --azure-radiance-200: #bee1ff;
-  --azure-radiance-300: #91cfff;
-  --azure-radiance-400: #5db3fd;
-  --azure-radiance-500: #3792fa;
-  --azure-radiance-600: #2e7cf0;
-  --azure-radiance-700: #195ddc;
-  --azure-radiance-800: #1b4bb2;
-  --azure-radiance-900: #1c438c;
-  --azure-radiance-950: #162a55;
+  /* Flush Orange — Hue 52° (warning, amber-orange).
+     600 cannot pass AA body-text on white in sRGB without going brown —
+     use --flush-orange-700 for body text on white. 600 is fine for
+     icons/large text/dark-mode surfaces. */
+  --flush-orange-50:  oklch(97.2% 0.018 52);
+  --flush-orange-100: oklch(94.0% 0.038 52);
+  --flush-orange-200: oklch(88.0% 0.075 52);
+  --flush-orange-300: oklch(79.0% 0.130 52);
+  --flush-orange-400: oklch(72.0% 0.170 52);
+  --flush-orange-500: oklch(68.0% 0.180 52);
+  --flush-orange-600: oklch(54.0% 0.155 52);
+  --flush-orange-700: oklch(45.0% 0.130 52);
+  --flush-orange-800: oklch(36.0% 0.105 52);
+  --flush-orange-900: oklch(28.0% 0.080 52);
+  --flush-orange-950: oklch(18.0% 0.055 52);
+
+  /* Azure Radiance — Hue 250° (info, sky-blue) */
+  --azure-radiance-50:  oklch(97.2% 0.014 250);
+  --azure-radiance-100: oklch(94.0% 0.030 250);
+  --azure-radiance-200: oklch(88.0% 0.060 250);
+  --azure-radiance-300: oklch(79.0% 0.115 250);
+  --azure-radiance-400: oklch(68.0% 0.175 250);
+  --azure-radiance-500: oklch(60.0% 0.215 250);
+  --azure-radiance-600: oklch(52.0% 0.225 250);
+  --azure-radiance-700: oklch(43.0% 0.195 250);
+  --azure-radiance-800: oklch(34.0% 0.155 250);
+  --azure-radiance-900: oklch(25.0% 0.115 250);
+  --azure-radiance-950: oklch(16.0% 0.075 250);
+
+  /* ----------------------------------------------------------------------
+     Dark-mode-tuned tone values
+     Defined here for documentation; activated via .dark below.
+     Higher chroma than light-mode tones to recover perceived vibrancy on
+     a near-black canvas (~oklch(15% 0.005 270)). All values clear AA
+     (4.5:1) as text on dark. See agents/research notes for rationale.
+     ---------------------------------------------------------------------- */
+  --tone-edition-dark:     oklch(62.0% 0.295 318); /* electric magenta — fill-tuned */
+  --tone-collectible-dark: oklch(72.0% 0.225 285); /* deep saturated violet */
+  --tone-standard-dark:    oklch(78.0% 0.205 168); /* vivid mint, alive green */
+  --tone-info-dark:        oklch(76.0% 0.165 235); /* clean cyan-blue */
+  --tone-warning-dark:     oklch(82.0% 0.165 65);  /* warm amber, not yellow */
+  --highlight-dark:        oklch(70.0% 0.285 318); /* same family as edition, alpha-tuned */
+  --destructive-dark:      oklch(68.0% 0.225 25);  /* clears both directions on dark + reverse */
 
   /* Background & surface */
   --background: #ffffff;
@@ -220,12 +390,12 @@ code {
   --destructive: var(--torch-red-600);
   --destructive-foreground: #ffffff;
 
-  /* Post type tones - for light mode */
-  --tone-standard: var(--caribbean-green-500);
+  /* Post type tones - for light mode (all tones clear WCAG AA on white) */
+  --tone-standard: var(--caribbean-green-600);
   --tone-collectible: var(--blue-gem-600);
   --tone-edition: var(--purple-heart-700);
-  --tone-warning: var(--flush-orange-600);
-  --tone-info: var(--azure-radiance-500);
+  --tone-warning: var(--flush-orange-700);
+  --tone-info: var(--azure-radiance-600);
   --highlight: var(--purple-heart-700);
 
   /* Borders & inputs */
@@ -265,16 +435,16 @@ code {
   --muted-foreground: var(--zinc-400);
   --accent: var(--zinc-800);
   --accent-foreground: var(--zinc-50);
-  --destructive: var(--torch-red-500);
+  --destructive: var(--destructive-dark);
   --destructive-foreground: #ffffff;
 
-  /* Post type tones - for dark mode (one step lighter for readability on dark bg) */
-  --tone-standard: var(--caribbean-green-400);
-  --tone-collectible: var(--blue-gem-400);
-  --tone-edition: var(--purple-heart-500);
-  --tone-warning: var(--flush-orange-500);
-  --tone-info: var(--azure-radiance-400);
-  --highlight: var(--purple-heart-600);
+  /* Post type tones - dark-tuned values (boosted chroma for vibrancy on dark canvas) */
+  --tone-standard: var(--tone-standard-dark);
+  --tone-collectible: var(--tone-collectible-dark);
+  --tone-edition: var(--tone-edition-dark);
+  --tone-warning: var(--tone-warning-dark);
+  --tone-info: var(--tone-info-dark);
+  --highlight: var(--highlight-dark);
 
   /* Borders & inputs */
   --border: oklch(from var(--zinc-700) l c h / 0.4);

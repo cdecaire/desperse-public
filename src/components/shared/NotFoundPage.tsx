@@ -1,0 +1,20 @@
+import { useAuth } from '@/hooks/useAuth'
+import { EmptyState } from '@/components/shared/EmptyState'
+import { Icon } from '@/components/ui/icon'
+
+export function NotFoundPage() {
+  const { isAuthenticated } = useAuth()
+
+  return (
+    <div className="flex items-center justify-center min-h-[60vh]">
+      <EmptyState
+        icon={<Icon name="compass" variant="regular" className="text-4xl" />}
+        title="Page not found"
+        description="This page doesn't exist or may have been moved."
+        action={{ label: 'Go to Feed', to: '/' }}
+        secondaryAction={isAuthenticated ? { label: 'Create Post', to: '/create' } : undefined}
+        supportText="If you think this is a mistake, contact support."
+      />
+    </div>
+  )
+}

@@ -13,3 +13,11 @@ export function extractSignupMetadata(event: H3Event): SignupMetadata {
 	const userAgent = getHeader(event, 'user-agent') || null
 	return { ip, country, userAgent }
 }
+
+export function extractSignupMetadataFromHeaders(headers: Headers): SignupMetadata {
+	const xff = headers.get('x-forwarded-for')
+	const ip = xff ? xff.split(',')[0].trim() : (headers.get('x-real-ip') || null)
+	const country = headers.get('x-vercel-ip-country') || null
+	const userAgent = headers.get('user-agent') || null
+	return { ip, country, userAgent }
+}

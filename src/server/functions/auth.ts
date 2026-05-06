@@ -4,12 +4,14 @@
  */
 
 import { createServerFn } from '@tanstack/react-start'
+import { getRequest } from '@tanstack/react-start/server'
 import { db } from '@/server/db'
 import { users } from '@/server/db/schema'
 import { eq } from 'drizzle-orm'
 import { z } from 'zod'
 import { generateUniqueSlug, isReservedHandle, isSlugTaken, normalizeSlug } from '@/server/utils/slug-utils'
 import { isUniqueViolation } from '@/server/utils/db-errors'
+import { extractSignupMetadataFromHeaders, type SignupMetadata } from '@/server/utils/signup-metadata'
 import {
   extractAuthorizationFromPayload,
   verifyPrivyToken,
@@ -180,6 +182,15 @@ export const initAuth = createServerFn({
     // Generate display name from email, name, or linked wallet
     const displayName = name || email?.split('@')[0] || walletLabel.display
 
+    // Capture signup attribution (best-effort — getRequest can fail in some contexts)
+    let signupMetadata: SignupMetadata = { ip: null, country: null, userAgent: null }
+    try {
+      const request = getRequest()
+      if (request) signupMetadata = extractSignupMetadataFromHeaders(request.headers)
+    } catch {
+      // continue without metadata
+    }
+
     // Race-tolerant insert: Privy can fire initAuth twice in fast succession
     // (especially on external-wallet flows), so two parallel calls can both
     // SELECT before either INSERTs. The second call hits a unique-constraint
@@ -195,9 +206,21 @@ export const initAuth = createServerFn({
           usernameSlug,
           displayName,
           avatarUrl: avatarUrl || null,
+          signupIp: signupMetadata.ip,
+          signupCountry: signupMetadata.country,
+          signupUserAgent: signupMetadata.userAgent,
+          signupMethod: 'privy',
         })
         .returning()
       newUser = inserted[0]
+      console.log('[signup]', JSON.stringify({
+        userId: newUser.id,
+        slug: newUser.usernameSlug,
+        method: 'privy',
+        ip: signupMetadata.ip,
+        country: signupMetadata.country,
+        ua: signupMetadata.userAgent,
+      }))
     } catch (insertError) {
       if (!isUniqueViolation(insertError)) throw insertError
       const [existing] = await db

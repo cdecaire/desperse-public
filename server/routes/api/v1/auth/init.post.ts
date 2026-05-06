@@ -10,6 +10,7 @@
 
 import { defineEventHandler, readBody, getHeader, setHeaders, setResponseStatus } from 'h3'
 import { initAuthWithToken } from '@/server/utils/auth-standalone'
+import { extractSignupMetadata } from '@/server/utils/signup-metadata'
 
 export default defineEventHandler(async (event) => {
 	const requestId = `req_${crypto.randomUUID().slice(0, 12)}`
@@ -60,7 +61,8 @@ export default defineEventHandler(async (event) => {
 	// Call the standalone auth function (not TanStack server function)
 	const result = await initAuthWithToken(
 		token,
-		body as { walletAddress: string; email?: string; name?: string; avatarUrl?: string }
+		body as { walletAddress: string; email?: string; name?: string; avatarUrl?: string },
+		extractSignupMetadata(event)
 	)
 
 	// Debug logging

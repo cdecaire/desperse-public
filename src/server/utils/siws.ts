@@ -328,7 +328,11 @@ async function upgradeSyntheticPrivyId(userId: string, walletAddress: string): P
  * Also upgrades existing users from synthetic privyId to real Privy ID
  * as a background operation.
  */
-export async function findOrCreateWalletUser(walletAddress: string, walletName?: string): Promise<FindOrCreateUserResult> {
+export async function findOrCreateWalletUser(
+  walletAddress: string,
+  walletName?: string,
+  signupMetadata?: { ip: string | null; country: string | null; userAgent: string | null }
+): Promise<FindOrCreateUserResult> {
   try {
     // 1. Check userWallets table
     const [walletRecord] = await db
@@ -451,6 +455,10 @@ export async function findOrCreateWalletUser(walletAddress: string, walletName?:
         walletAddress,
         usernameSlug,
         displayName: abbreviated,
+        signupIp: signupMetadata?.ip ?? null,
+        signupCountry: signupMetadata?.country ?? null,
+        signupUserAgent: signupMetadata?.userAgent ?? null,
+        signupMethod: 'siws',
       })
       .returning({
         id: users.id,
@@ -486,6 +494,14 @@ export async function findOrCreateWalletUser(walletAddress: string, walletName?:
     }
 
     console.log(`[findOrCreateWalletUser] Created new SIWS user: ${newUser.id} (${usernameSlug}) privyId=${privyId.startsWith('did:') ? privyId : 'synthetic'}`)
+    console.log('[signup]', JSON.stringify({
+      userId: newUser.id,
+      slug: usernameSlug,
+      method: 'siws',
+      ip: signupMetadata?.ip ?? null,
+      country: signupMetadata?.country ?? null,
+      ua: signupMetadata?.userAgent ?? null,
+    }))
 
     return {
       success: true,

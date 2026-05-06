@@ -75,6 +75,14 @@ export const users = pgTable(
     preferences: jsonb('preferences').$type<UserPreferencesJson>().notNull().default({}),
     // Username change tracking - null means never changed (first change is free)
     usernameLastChangedAt: timestamp('username_last_changed_at'),
+    // Signup attribution — captured at user creation, never updated
+    signupIp: text('signup_ip'),
+    signupCountry: text('signup_country'),
+    signupUserAgent: text('signup_user_agent'),
+    signupMethod: text('signup_method'), // 'privy' | 'siws'
+    // Moderation status — 'active' | 'flagged' | 'banned'
+    status: text('status').notNull().default('active'),
+    flaggedReason: text('flagged_reason'),
     createdAt: timestamp('created_at').notNull().defaultNow(),
     updatedAt: timestamp('updated_at').notNull().defaultNow(),
   },
@@ -82,6 +90,8 @@ export const users = pgTable(
     walletAddressIdx: index('users_wallet_address_idx').on(table.walletAddress),
     privyIdIdx: index('users_privy_id_idx').on(table.privyId),
     usernameSlugIdx: index('users_username_slug_idx').on(table.usernameSlug),
+    signupIpIdx: index('users_signup_ip_idx').on(table.signupIp),
+    statusIdx: index('users_status_idx').on(table.status),
   }),
 );
 

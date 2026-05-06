@@ -23,6 +23,7 @@ import {
   findOrCreateWalletUser,
   generateSessionToken,
 } from '@/server/utils/siws'
+import { extractSignupMetadata } from '@/server/utils/signup-metadata'
 
 export default defineEventHandler(async (event) => {
   const requestId = `req_${randomUUID().slice(0, 12)}`
@@ -151,7 +152,7 @@ export default defineEventHandler(async (event) => {
     // 2. Find or create the user
     console.log(`[siws-verify][${requestId}] Signature verified, finding/creating user...`)
 
-    const userResult = await findOrCreateWalletUser(walletAddress, walletName)
+    const userResult = await findOrCreateWalletUser(walletAddress, walletName, extractSignupMetadata(event))
 
     if (!userResult.success || !userResult.user) {
       console.error(`[siws-verify][${requestId}] User creation failed: ${userResult.error}`)

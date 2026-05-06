@@ -124,7 +124,8 @@ export async function getCurrentUserByToken(accessToken: string | null | undefin
  */
 export async function initAuthWithToken(
   accessToken: string,
-  data: { walletAddress: string; email?: string; name?: string; avatarUrl?: string }
+  data: { walletAddress: string; email?: string; name?: string; avatarUrl?: string },
+  signupMetadata?: { ip: string | null; country: string | null; userAgent: string | null }
 ): Promise<{
   success: boolean
   user?: ApiUser
@@ -287,10 +288,21 @@ export async function initAuthWithToken(
           usernameSlug,
           displayName,
           avatarUrl: avatarUrl || null,
+          signupIp: signupMetadata?.ip ?? null,
+          signupCountry: signupMetadata?.country ?? null,
+          signupUserAgent: signupMetadata?.userAgent ?? null,
+          signupMethod: 'privy',
         })
         .returning()
 
-      console.log('[initAuthWithToken] Created new user:', newUser.id, newUser.usernameSlug)
+      console.log('[signup]', JSON.stringify({
+        userId: newUser.id,
+        slug: newUser.usernameSlug,
+        method: 'privy',
+        ip: signupMetadata?.ip ?? null,
+        country: signupMetadata?.country ?? null,
+        ua: signupMetadata?.userAgent ?? null,
+      }))
       return { success: true, user: transformUserForApi(newUser), isNewUser: true }
     } catch (insertError) {
       if (isUniqueViolation(insertError)) {

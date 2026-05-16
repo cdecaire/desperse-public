@@ -19,7 +19,7 @@ interface UsePostCountsPollingOptions {
   postIds: string[];
   /** Whether polling is enabled */
   enabled?: boolean;
-  /** Polling interval in milliseconds (default: 8 seconds) */
+  /** Polling interval in milliseconds (default: 20 seconds) */
   intervalMs?: number;
 }
 
@@ -31,7 +31,7 @@ interface UsePostCountsPollingOptions {
 export function usePostCountsPolling({
   postIds,
   enabled = true,
-  intervalMs = 8000, // 8 seconds - good balance between freshness and server load
+  intervalMs = 20000,
 }: UsePostCountsPollingOptions): Record<string, PostCounts> {
   const { data } = useQuery({
     queryKey: ['postCounts', [...postIds].sort().join(',')],
@@ -63,6 +63,7 @@ export function usePostCountsPolling({
     },
     enabled: enabled && postIds.length > 0,
     refetchInterval: intervalMs,
+    refetchIntervalInBackground: false,
     staleTime: intervalMs / 2,
     gcTime: 30 * 1000,
   });

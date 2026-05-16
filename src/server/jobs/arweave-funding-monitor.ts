@@ -201,7 +201,10 @@ async function sendUnfundedNotification(
 export async function runArweaveFundingMonitor(): Promise<MonitorResult> {
 	console.log("[ArweaveFundingMonitor] Starting funding check...");
 
-	// Step 1: Query all active Arweave editions that need monitoring
+	// Step 1: Query all active Arweave editions that need monitoring.
+	// Bounded to prevent a full-table scan if storage-type='arweave' rows grow large;
+	// raise the cap (or batch) before this becomes a real ceiling.
+	const MONITORED_POSTS_LIMIT = 500;
 	const monitoredPosts = await db
 		.select({
 			id: posts.id,
@@ -217,7 +220,14 @@ export async function runArweaveFundingMonitor(): Promise<MonitorResult> {
 				sql`${posts.arweaveStatus} IN ('funded', 'unfunded')`,
 				eq(posts.isDeleted, false),
 			),
+		)
+		.limit(MONITORED_POSTS_LIMIT);
+
+	if (monitoredPosts.length === MONITORED_POSTS_LIMIT) {
+		console.warn(
+			`[ArweaveFundingMonitor] Hit row cap (${MONITORED_POSTS_LIMIT}); some Arweave posts not checked this run`,
 		);
+	}
 
 	if (monitoredPosts.length === 0) {
 		console.log(

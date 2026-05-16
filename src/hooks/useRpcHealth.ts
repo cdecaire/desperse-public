@@ -12,7 +12,7 @@ export interface UseRpcHealthReturn {
   checkHealth: () => Promise<void>
 }
 
-const HEALTH_CHECK_INTERVAL_MS = 30_000 // 30 seconds
+const HEALTH_CHECK_INTERVAL_MS = 5 * 60_000 // 5 minutes
 // Require 2 consecutive failures before marking as unhealthy (prevents false positives)
 const FAILURE_THRESHOLD = 2
 
@@ -87,8 +87,11 @@ export function useRpcHealth(isAuthenticated: boolean): UseRpcHealthReturn {
     // Perform initial check
     checkHealth()
 
-    // Set up interval for periodic checks
+    // Set up interval for periodic checks (skip when tab is hidden)
     intervalRef.current = setInterval(() => {
+      if (typeof document !== 'undefined' && document.visibilityState === 'hidden') {
+        return
+      }
       checkHealth()
     }, HEALTH_CHECK_INTERVAL_MS)
 

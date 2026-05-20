@@ -10,7 +10,6 @@ import { Button } from '@/components/ui/button'
 import { formatPrice } from './postDisplay'
 import { PriceTooltip } from './PriceTooltip'
 import { ModelViewer } from '@/components/shared/ModelViewer'
-import { useGatedDownload } from '@/hooks/useGatedDownload'
 import { getResponsiveImageProps } from '@/lib/imageUrl'
 import { detectMediaType, type MediaType } from '@/lib/media'
 import { MediaCarousel, type CarouselAsset } from './MediaCarousel'
@@ -71,9 +70,12 @@ export function PostMedia({
   preview = false,
   price,
   currency,
-  hasAccess = true, // Default to true for backward compatibility
-  postType,
-  assetId,
+  // hasAccess/postType/assetId are accepted for backward compatibility but
+  // no longer drive in-component download. Download is an explicit action on
+  // the post detail page; tapping the cover navigates via the parent onClick.
+  hasAccess: _hasAccess = true,
+  postType: _postType,
+  assetId: _assetId,
   noBorder = false,
   maxAspectRatio,
   sellerFeeBasisPoints,
@@ -121,9 +123,6 @@ export function PostMedia({
   const wasManuallyPlayedRef = useRef(wasManuallyPlayed)
   isMutedRef.current = isMuted
   wasManuallyPlayedRef.current = wasManuallyPlayed
-  
-  // Hook for gated downloads
-  const { downloadProtectedAsset, isAuthenticating } = useGatedDownload()
   
   // Use original mediaUrl for type detection (file extension)
   const mediaType = providedMediaType || detectMediaType(mediaUrl)
@@ -813,47 +812,16 @@ export function PostMedia({
       setIsLoaded(true)
     }
 
-    // Check if access should be restricted (paid editions/collectibles require purchase)
-    const requiresAccess = (postType === 'edition' || postType === 'collectible') && (price !== null && price !== undefined)
-    const isLocked = requiresAccess && !hasAccess
-
-    const handleDocumentClick = async (e: React.MouseEvent) => {
-      e.preventDefault()
-      e.stopPropagation()
-
-      // Only allow download if unlocked
-      if (isLocked) {
-        return
-      }
-
-      // For protected downloads (editions with assetId), authenticate first
-      if (postType === 'edition' && assetId && !isAuthenticating) {
-        try {
-          const downloadUrl = await downloadProtectedAsset(assetId)
-          if (downloadUrl) {
-            window.open(downloadUrl, '_blank', 'noopener,noreferrer')
-            onClick?.()
-          }
-        } catch (error) {
-          console.error('Error downloading protected asset:', error)
-        }
-      } else if (!isLocked) {
-        // For non-protected assets, open directly
-        window.open(effectiveMediaUrl, '_blank', 'noopener,noreferrer')
-        onClick?.()
-      }
-    }
-
     const documentContent = (
       <div
         className={cn(
           containerClass,
           !displayImage && 'aspect-square',
           contained && 'flex items-center justify-center',
-          !isLocked && 'cursor-pointer'
+          onClick && 'cursor-pointer'
         )}
         style={isExtraTall && maxAspectRatio ? { aspectRatio: `1 / ${maxAspectRatio}` } : undefined}
-        onClick={!isLocked ? handleDocumentClick : undefined}
+        onClick={onClick}
       >
         {/* Blurred background for extra-tall document covers or contained mode */}
         {contained && displayImage && optimizedDocCoverProps && (

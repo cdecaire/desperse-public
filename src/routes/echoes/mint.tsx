@@ -16,7 +16,7 @@ export const Route = createFileRoute("/echoes/mint")({
 			{ name: "description", content: "Recover a despersed identity from the DSPRS event. 4,444 generative cyberpunk PFPs on Solana." },
 			{ name: "theme-color", content: "#131313" },
 			{ property: "og:title", content: "ECHOES // MINT PROTOCOL" },
-			{ property: "og:description", content: "Recover a despersed identity from the DSPRS event. 8,888 generative cyberpunk PFPs on Solana." },
+			{ property: "og:description", content: "Recover a despersed identity from the DSPRS event. 4,444 generative cyberpunk PFPs on Solana." },
 			{ property: "og:type", content: "website" },
 			{ property: "og:url", content: "https://desperse.com/echoes/mint" },
 			{ name: "twitter:card", content: "summary_large_image" },

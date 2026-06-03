@@ -20,7 +20,7 @@ export const FAQ_ITEMS: FaqItem[] = [
 	// General
 	{
 		question: "What is this collection?",
-		answer: "Echoes is a generative cyberpunk PFP collection from Desperse, featuring 8,888 recovered identities shaped by faction, signal exposure, and the fallout of the DSPRS event. Each Echo carries faction alignment, modification grade, and continuity status from the Cascade.",
+		answer: "Echoes is a generative cyberpunk PFP collection from Desperse, featuring 4,444 recovered identities shaped by faction, signal exposure, and the fallout of the DSPRS event. Each Echo carries faction alignment, modification grade, and continuity status from the Cascade.",
 		category: "general",
 	},
 	{

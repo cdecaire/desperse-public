@@ -46,7 +46,7 @@ function EchoesLayout() {
 			"  ╚═════╝ ╚══════╝╚═╝     ╚═╝  ╚═╝╚══════╝\n" +
 			"\n" +
 			"  TRACE DETECTED // SIGNAL PERSISTS\n" +
-			"  ECHOES — 8,888 DESPERSED IDENTITIES\n",
+			"  ECHOES — 4,444 DESPERSED IDENTITIES\n",
 			"color: #00BFA6; font-family: monospace; font-size: 10px;"
 		)
 	}, [])

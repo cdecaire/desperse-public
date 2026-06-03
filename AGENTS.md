@@ -2,6 +2,9 @@
 
 Desperse is a Web3 social media platform on Solana. See `memory/ARCHITECTURE.md` for full system documentation.
 
+**Echoes Website Skills**
+- Use the `echoes-pr-workflow` skill for Echoes website tasks on this repo. It encodes the exact clone URL, branch workflow, allowed file paths, PR label convention, and kanban close-the-loop rules. Do not guess the owner/repo slug or improvise the GitHub workflow when a task touches the Echoes pages.
+
 **Tech Stack:** TanStack Start (Vite + React 19 + SSR), TanStack Router (file-based), TanStack Query v5, PostgreSQL (Neon) + Drizzle ORM, Privy auth, Solana mainnet via Helius RPC, Metaplex (Bubblegum cNFTs + Core editions), Ably real-time, Vercel Blob storage.
 
 ## Commands

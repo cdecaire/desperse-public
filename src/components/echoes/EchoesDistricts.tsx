@@ -7,7 +7,7 @@ export function EchoesDistricts() {
 					FACTIONS OF TESSERA
 				</h2>
 				<p className="font-label text-xs tracking-[0.2em] uppercase nx-text-outline">
-					5 FACTIONS // 8,888 ECHOES // DESPERSED IDENTITIES
+					5 FACTIONS // 4,444 ECHOES // DESPERSED IDENTITIES
 				</p>
 			</div>
 
@@ -67,7 +67,7 @@ export function EchoesDistricts() {
 						</div>
 						<div className="flex justify-between items-end pb-2 border-b nx-border-subtle">
 							<span className="font-label text-xs uppercase tracking-widest nx-text-on-surface-variant">Total Supply</span>
-							<span className="font-headline text-lg md:text-xl">8,888 ECHOES</span>
+							<span className="font-headline text-lg md:text-xl">4,444 ECHOES</span>
 						</div>
 						<div className="pt-4">
 							<div className="font-label text-[10px] uppercase tracking-[0.2em] mb-2 nx-text-outline">

@@ -129,7 +129,7 @@ const BOOT_SEQUENCE: BootLine[] = [
 	// ── Signal detection ──
 	{ text: ">> ANOMAL▒US SIGNAL ON DEAD CHANNEL", delay: 60, style: "system" },
 	{ text: ">> FREQU▌NCY: DSPRS-3E", delay: 80, style: "system" },
-	{ text: ">> CARRI▌R COUNT: 8,888", delay: 80, style: "system" },
+	{ text: ">> CARRI▌R COUNT: 4,444", delay: 80, style: "system" },
 	{ text: "", delay: 300 },
 	// ── Trace / awaiting instructions (no gap — TerminalCommandPrompt follows immediately) ──
 	{ text: "TRACE DET▒CTED // SIGNAL P▌RSISTS", delay: 100, style: "signal" },

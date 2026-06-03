@@ -46,7 +46,7 @@ export function EchoesExplainer() {
 						{/* Overlay label */}
 						<div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-[rgba(8,9,12,0.95)] to-transparent">
 							<span className="font-label text-[9px] tracking-[0.2em] uppercase nx-text-primary-container">
-								8,888 RECOVERED IDENTITIES // SOLANA
+								4,444 RECOVERED IDENTITIES // SOLANA
 							</span>
 						</div>
 					</div>

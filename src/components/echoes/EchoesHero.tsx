@@ -103,7 +103,7 @@ export function EchoesHero() {
 
 				<div className="relative z-10 max-w-4xl">
 					<div className="mb-4 inline-block px-3 py-1 font-label text-[10px] tracking-[0.2em] uppercase nx-bg-secondary-container nx-text-on-secondary" data-reveal-stagger style={{ "--stagger-index": 0 } as React.CSSProperties}>
-						ECHOES // 8,888 DESPERSED IDENTITIES // SOLANA
+						ECHOES // 4,444 DESPERSED IDENTITIES // SOLANA
 					</div>
 
 					<h1 className="font-headline text-4xl sm:text-6xl md:text-8xl tracking-[-0.05em] leading-[1.1] mb-6 uppercase" data-reveal-stagger style={{ "--stagger-index": 1 } as React.CSSProperties}>
@@ -117,7 +117,7 @@ export function EchoesHero() {
 					</h1>
 
 					<p className="font-body text-base md:text-xl max-w-2xl mb-8 md:mb-12 pl-4 md:pl-6 nx-text-on-surface-variant border-l-2 border-[var(--nx-primary-container)]" data-reveal-stagger style={{ "--stagger-index": 2 } as React.CSSProperties}>
-						8,888 identities dispersed by the 3E Cascade. Recovered from the archive.
+						4,444 identities dispersed by the 3E Cascade. Recovered from the archive.
 						Shaped by faction, signal exposure, and survival. Yours to claim.
 					</p>
 
@@ -167,7 +167,7 @@ export function EchoesHero() {
 					</div>
 				</div>
 				<div className="mt-2 text-[10px] font-label uppercase tracking-widest nx-text-outline">
-					SUPPLY: 8,888 // PRICE: TBA
+					SUPPLY: 4,444 // PRICE: TBA
 				</div>
 			</div>
 		</header>

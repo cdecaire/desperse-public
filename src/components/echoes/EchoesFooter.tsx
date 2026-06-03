@@ -19,7 +19,7 @@ export function EchoesFooter() {
 							ECHOES // DESPERSE
 						</div>
 						<p className="font-body text-xs nx-text-on-surface-variant max-w-xs leading-relaxed">
-							A generative cyberpunk PFP collection featuring 8,888 recovered identities
+							A generative cyberpunk PFP collection featuring 4,444 recovered identities
 							shaped by faction, signal exposure, and survival.
 						</p>
 					</div>
@@ -90,7 +90,7 @@ export function EchoesFooter() {
 						&copy;{new Date().getFullYear()} ECHOES BY DESPERSE // SIGNAL PERSISTS
 					</span>
 					<span className="font-label text-[9px] tracking-[0.2em] uppercase nx-text-muted-40">
-						8,888 DESPERSED IDENTITIES // SOLANA
+						4,444 DESPERSED IDENTITIES // SOLANA
 					</span>
 				</div>
 			</div>

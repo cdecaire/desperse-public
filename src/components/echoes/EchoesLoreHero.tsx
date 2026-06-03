@@ -55,7 +55,7 @@ export function EchoesLoreHero() {
 					<div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-8 border-t nx-border-subtle pt-8" data-reveal-stagger style={{ "--stagger-index": 4 } as React.CSSProperties}>
 						<div>
 							<p className="font-label text-xs nx-text-on-surface-variant uppercase tracking-widest mb-1">ARCHIVE_SLOTS</p>
-							<p className="font-headline text-2xl">8,888</p>
+							<p className="font-headline text-2xl">4,444</p>
 						</div>
 						<div>
 							<p className="font-label text-xs nx-text-on-surface-variant uppercase tracking-widest mb-1">FACTIONS</p>

@@ -16,7 +16,7 @@ export function EchoesMintDetails() {
 	const { data: mintInfo } = useEchoesMintInfo()
 
 	const details = [
-		{ label: "TOTAL SUPPLY", value: mintInfo?.supply ? mintInfo.supply.total.toLocaleString() : "8,888" },
+		{ label: "TOTAL SUPPLY", value: mintInfo?.supply ? mintInfo.supply.total.toLocaleString() : "4,444" },
 		{ label: "MINT PRICE", value: mintInfo?.price ? mintInfo.price.display : "TBA" },
 		{ label: "NETWORK", value: "SOLANA" },
 		{ label: "MINTED", value: mintInfo?.supply ? `${mintInfo.supply.minted.toLocaleString()} / ${mintInfo.supply.total.toLocaleString()}` : "—" },

@@ -15,7 +15,7 @@ export const Route = createFileRoute("/echoes/")({
 	head: () => ({
 		meta: [
 			{ title: "ECHOES // DSPRS TRACE DETECTED" },
-			{ name: "description", content: "Recovered identities from the DSPRS event. A generative cyberpunk PFP collection from Desperse. 8,888 Echoes on Solana." },
+			{ name: "description", content: "Recovered identities from the DSPRS event. A generative cyberpunk PFP collection from Desperse. 4,444 Echoes on Solana." },
 			{ name: "theme-color", content: "#131313" },
 			{ property: "og:title", content: "ECHOES // DSPRS TRACE DETECTED" },
 			{ property: "og:description", content: "Recovered identities from the DSPRS event. A generative cyberpunk PFP collection from Desperse." },

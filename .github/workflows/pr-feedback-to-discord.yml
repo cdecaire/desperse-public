@@ -1,0 +1,55 @@
+name: PR feedback → Discord (Hermes trigger)
+
+# When a human leaves review feedback on one of the agent's OWN PRs, ping the
+# Hermes Discord bot in #github so it runs the echoes-pr-workflow.
+# Both legs are outbound (Action -> Discord; the Hermes box long-polls Discord),
+# so no public endpoint or tunnel is needed.
+
+on:
+  pull_request_review:
+    types: [submitted]
+  pull_request_review_comment:
+    types: [created]
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+
+jobs:
+  notify-discord:
+    runs-on: ubuntu-latest
+    # Fire only on human feedback (not the bot's own activity), and only on the
+    # bot's own PRs. issue_comment also fires on plain issues -> gate to PRs.
+    if: >-
+      github.event.sender.login != 'desperse-agent' &&
+      (
+        (github.event_name == 'issue_comment'
+          && github.event.issue.pull_request != null
+          && github.event.issue.user.login == 'desperse-agent')
+        ||
+        ((github.event_name == 'pull_request_review' || github.event_name == 'pull_request_review_comment')
+          && github.event.pull_request.user.login == 'desperse-agent')
+      )
+    steps:
+      - name: Post feedback to Discord
+        env:
+          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          BOT_ID: "1511935966108061766"
+          PR_NUM:   ${{ github.event.pull_request.number || github.event.issue.number }}
+          PR_TITLE: ${{ github.event.pull_request.title  || github.event.issue.title }}
+          PR_URL:   ${{ github.event.pull_request.html_url || github.event.issue.html_url }}
+          REVIEWER: ${{ github.event.review.user.login || github.event.comment.user.login || github.event.sender.login }}
+          FEEDBACK: ${{ github.event.review.body || github.event.comment.body }}
+        run: |
+          FEEDBACK_TRIMMED="${FEEDBACK:0:1400}"   # keep under Discord's 2000-char limit
+          MSG="<@${BOT_ID}> PR #${PR_NUM} \"${PR_TITLE}\" has new review feedback from ${REVIEWER}:
+
+          ${FEEDBACK_TRIMMED}
+
+          ${PR_URL}
+
+          Review the unaddressed feedback on this PR and run the echoes-pr-workflow to address it."
+          jq -n --arg content "$MSG" --arg uid "$BOT_ID" \
+            '{username:"GitHub", content:$content, allowed_mentions:{users:[$uid]}}' \
+          | curl -sS -X POST "$WEBHOOK_URL" -H "Content-Type: application/json" --data-binary @-

@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router"
+import { createFileRoute, Link, Outlet, useMatchRoute } from "@tanstack/react-router"
 import { FACTIONS } from "@/data/echoes-factions"
 
 export const Route = createFileRoute("/echoes/factions")({
@@ -21,6 +21,13 @@ export const Route = createFileRoute("/echoes/factions")({
 })
 
 function EchoesFactionsIndexPage() {
+	const matchRoute = useMatchRoute()
+	const isDossierPage = matchRoute({ to: "/echoes/factions/$factionSlug" })
+
+	if (isDossierPage) {
+		return <Outlet />
+	}
+
 	return (
 		<section className="min-h-screen px-4 md:px-20 py-20 md:py-28 nx-bg-surface-lowest">
 			<div className="max-w-5xl mx-auto">

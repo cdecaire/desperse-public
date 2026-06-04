@@ -176,6 +176,75 @@ function getTrait(item: EchoMetadata, traitType: string): string {
 	return val != null ? String(val) : "None"
 }
 
+type RegistryLandingState = {
+	label: string
+	tone: "verified" | "flagged" | "ghost" | "pending"
+	heading: string
+	description: string
+	meta: string
+}
+
+function resolveRegistryLandingState(item: EchoMetadata, isRevealed: boolean): RegistryLandingState {
+	if (!isRevealed) {
+		return {
+			label: "Unverified",
+			tone: "pending",
+			heading: "Identity pending recovery",
+			description: "The Registry has no public identity record yet. Faction, role, and continuity details stay redacted until this Echo is minted.",
+			meta: "Registry state: sealed / unresolved",
+		}
+	}
+
+	const signal = getTrait(item, "Signal")
+	const substrate = getTrait(item, "Substrate")
+	const isGhostClass = signal.toLowerCase().includes("ghost-class")
+	const isContinuityFlagged = isGhostClass || ["Signal-Burned", "Corrupted"].includes(signal)
+
+	if (isGhostClass) {
+		return {
+			label: "Ghost-Class",
+			tone: "ghost",
+			heading: "Continuity anomaly",
+			description: "This record matches the world-bible Ghost-Class taxonomy: identity persists, but never fully resolves into a stable Registry body record.",
+			meta: `Condition: ${substrate} / ${signal}`,
+		}
+	}
+
+	if (isContinuityFlagged) {
+		return {
+			label: "Continuity flagged",
+			tone: "flagged",
+			heading: "Registry review required",
+			description: "This Echo resolves, but its signal condition is unstable enough for Registry systems to flag the identity for continuity review.",
+			meta: `Condition: ${substrate} / ${signal}`,
+		}
+	}
+
+	return {
+		label: "Verified",
+		tone: "verified",
+		heading: "Registry record resolved",
+		description: "Faction, role, rank, and continuity state are legible. No special Registry hold is shown for this Echo.",
+		meta: `Condition: ${substrate} / ${signal}`,
+	}
+}
+
+function RegistryStatePill({ state, compact = false }: { state: RegistryLandingState; compact?: boolean }) {
+	const toneClass = {
+		verified: "border-[rgba(var(--nx-primary-container-rgb),0.35)] nx-text-primary-container bg-[rgba(var(--nx-primary-container-rgb),0.08)]",
+		flagged: "border-[rgba(var(--nx-secondary-container-rgb),0.45)] nx-text-secondary-container bg-[rgba(var(--nx-secondary-container-rgb),0.1)]",
+		ghost: "border-[rgba(var(--nx-on-tertiary-container-rgb),0.45)] nx-text-on-tertiary-container bg-[rgba(var(--nx-on-tertiary-container-rgb),0.1)]",
+		pending: "nx-border-subtle-30 nx-text-outline bg-[rgba(var(--nx-surface-rgb),0.45)]",
+	}[state.tone]
+
+	return (
+		<span className={`inline-flex items-center gap-1.5 border font-label uppercase tracking-[0.12em] ${toneClass} ${compact ? "px-1.5 py-0.5 text-[8px]" : "px-2.5 py-1 text-[10px]"}`}>
+			<span className="inline-block h-1.5 w-1.5 bg-current" aria-hidden="true" />
+			{state.label}
+		</span>
+	)
+}
+
 type TraitDist = { value: string; count: number; pct: number }[]
 
 function computeTraitDistribution(traitType: string, items: EchoMetadata[] = ECHOES_METADATA): TraitDist {
@@ -907,6 +976,7 @@ function GalleryGrid({ items, selectedId, onSelect, onClearFilters, hasFilters, 
 						const faction = isRevealed ? getTrait(item, "Faction") : null
 						const rank = isRevealed ? getTrait(item, "Rank") : null
 						const role = isRevealed ? getTrait(item, "Role") : null
+						const registryState = resolveRegistryLandingState(item, isRevealed)
 						const imagePaths = isRevealed ? getCachedImagePaths(item) : null
 						const imgSrc = isRevealed && imagePaths ? imagePaths[0] : getEchoPlaceholder(echoId)
 						const isSelected = selectedId === item.name
@@ -949,7 +1019,7 @@ function GalleryGrid({ items, selectedId, onSelect, onClearFilters, hasFilters, 
 									{isRevealed && rank ? (
 										<RarityBadge rank={rank} rarityRank={getRarityRank(item)} size="sm" />
 									) : (
-										<span className="font-label text-[9px] nx-text-outline uppercase tracking-wider px-1.5 py-0.5 border nx-border-subtle-10">???</span>
+										<RegistryStatePill state={registryState} compact />
 									)}
 								</div>
 								{/* Desktop list row */}
@@ -967,7 +1037,7 @@ function GalleryGrid({ items, selectedId, onSelect, onClearFilters, hasFilters, 
 									) : (
 										<>
 											<p className="font-headline text-sm uppercase truncate nx-text-on-surface-variant">Unresolved #{String(echoId).padStart(4, "0")}</p>
-											<span className="font-label text-[10px] uppercase tracking-wider truncate nx-text-outline">???</span>
+											<RegistryStatePill state={registryState} compact />
 											<span className="font-body text-sm truncate nx-text-outline">???</span>
 											<span className="font-label text-[9px] nx-text-outline uppercase tracking-wider px-1.5 py-0.5 border nx-border-subtle-10">???</span>
 										</>
@@ -996,6 +1066,7 @@ function GalleryGrid({ items, selectedId, onSelect, onClearFilters, hasFilters, 
 						const faction = isRevealed ? getTrait(item, "Faction") : null
 						const rank = isRevealed ? getTrait(item, "Rank") : null
 						const role = isRevealed ? getTrait(item, "Role") : null
+						const registryState = resolveRegistryLandingState(item, isRevealed)
 						const isSelected = selectedId === item.name
 						const imagePaths = isRevealed ? getCachedImagePaths(item) : null
 						const isDimmed = selectedId !== null && !isSelected
@@ -1021,6 +1092,10 @@ function GalleryGrid({ items, selectedId, onSelect, onClearFilters, hasFilters, 
 								aria-expanded={isSelected}
 								aria-label={isRevealed ? `${item.name}, ${faction} ${rank}` : `Unresolved Echo #${echoId}`}
 							>
+								<div className="absolute left-2 top-2 z-10">
+									<RegistryStatePill state={registryState} compact />
+								</div>
+
 								{/* Image area — clipped so content doesn't overflow */}
 								<div className="absolute inset-0 overflow-hidden">
 									<img
@@ -1104,6 +1179,7 @@ function DetailModal({ item, onClose, onNext, onPrev, isRevealed, nftMintAddress
 	const faction = isRevealed ? getTrait(item, "Faction") : null
 	const rank = isRevealed ? getTrait(item, "Rank") : null
 	const echoId = getEchoId(item)
+	const registryState = resolveRegistryLandingState(item, isRevealed)
 	const imagePaths = useMemo(() => {
 		if (!isRevealed) return null
 		return getEchoVariants(echoId, 800)
@@ -1259,6 +1335,18 @@ function DetailModal({ item, onClose, onNext, onPrev, isRevealed, nftMintAddress
 									<RarityBadge rank={rank!} rarityRank={getRarityRank(item)} size="md" />
 								</div>
 
+								<div className="mb-8 border nx-border-subtle-10 nx-bg-surface-low px-4 py-3">
+									<div className="flex items-center justify-between gap-3 mb-3">
+										<span className="font-label text-[10px] nx-text-on-surface-variant uppercase tracking-[0.18em]">
+											Registry landing state
+										</span>
+										<RegistryStatePill state={registryState} />
+									</div>
+									<p className="font-headline text-sm uppercase tracking-tight mb-1">{registryState.heading}</p>
+									<p className="font-body text-xs nx-text-on-surface-variant leading-relaxed mb-2">{registryState.description}</p>
+									<p className="font-label text-[9px] nx-text-outline uppercase tracking-[0.15em]">{registryState.meta}</p>
+								</div>
+
 								{/* Trait list */}
 								<div className="space-y-0">
 									{item.attributes
@@ -1300,13 +1388,11 @@ function DetailModal({ item, onClose, onNext, onPrev, isRevealed, nftMintAddress
 								</h3>
 
 								<div className="flex items-center gap-2 mb-8">
-									<span className="font-label text-[10px] px-2.5 py-1 uppercase tracking-[0.15em] border nx-border-subtle-10 nx-text-outline">
-										Identity Pending
-									</span>
+									<RegistryStatePill state={registryState} />
 								</div>
 
 								<p className="font-body text-sm nx-text-on-surface-variant leading-relaxed mb-8">
-									This echo has not yet been recovered from the DSPRS event. Its identity, faction, and attributes remain unresolved until minted.
+									{registryState.description}
 								</p>
 
 								{/* Redacted trait list */}

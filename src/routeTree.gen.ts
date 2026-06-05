@@ -64,6 +64,7 @@ import { Route as SettingsAccountCopyrightRouteImport } from './routes/settings/
 import { Route as SettingsAccountBlockedUsersRouteImport } from './routes/settings/account/blocked-users'
 import { Route as SettingsAccountAppRouteImport } from './routes/settings/account/app'
 import { Route as PostPostIdEditRouteImport } from './routes/post/$postId/edit'
+import { Route as EchoesFactionsFactionSlugRouteImport } from './routes/echoes/factions/$factionSlug'
 import { Route as AdminModerationReportIdRouteImport } from './routes/admin/moderation/$reportId'
 import { Route as AdminFeedbackFeedbackIdRouteImport } from './routes/admin/feedback/$feedbackId'
 
@@ -348,6 +349,12 @@ const PostPostIdEditRoute = PostPostIdEditRouteImport.update({
   path: '/edit',
   getParentRoute: () => PostPostIdRoute,
 } as any)
+const EchoesFactionsFactionSlugRoute =
+  EchoesFactionsFactionSlugRouteImport.update({
+    id: '/$factionSlug',
+    path: '/$factionSlug',
+    getParentRoute: () => EchoesFactionsRoute,
+  } as any)
 const AdminModerationReportIdRoute = AdminModerationReportIdRouteImport.update({
   id: '/$reportId',
   path: '/$reportId',
@@ -389,7 +396,7 @@ export interface FileRoutesByFullPath {
   '/dev/typography-test': typeof DevTypographyTestRoute
   '/dev/wallet-test': typeof DevWalletTestRoute
   '/echoes/collection': typeof EchoesCollectionRoute
-  '/echoes/factions': typeof EchoesFactionsRoute
+  '/echoes/factions': typeof EchoesFactionsRouteWithChildren
   '/echoes/faq': typeof EchoesFaqRoute
   '/echoes/lore': typeof EchoesLoreRoute
   '/echoes/mint': typeof EchoesMintRoute
@@ -406,6 +413,7 @@ export interface FileRoutesByFullPath {
   '/settings/': typeof SettingsIndexRoute
   '/admin/feedback/$feedbackId': typeof AdminFeedbackFeedbackIdRoute
   '/admin/moderation/$reportId': typeof AdminModerationReportIdRoute
+  '/echoes/factions/$factionSlug': typeof EchoesFactionsFactionSlugRoute
   '/post/$postId/edit': typeof PostPostIdEditRoute
   '/settings/account/app': typeof SettingsAccountAppRoute
   '/settings/account/blocked-users': typeof SettingsAccountBlockedUsersRoute
@@ -446,7 +454,7 @@ export interface FileRoutesByTo {
   '/dev/typography-test': typeof DevTypographyTestRoute
   '/dev/wallet-test': typeof DevWalletTestRoute
   '/echoes/collection': typeof EchoesCollectionRoute
-  '/echoes/factions': typeof EchoesFactionsRoute
+  '/echoes/factions': typeof EchoesFactionsRouteWithChildren
   '/echoes/faq': typeof EchoesFaqRoute
   '/echoes/lore': typeof EchoesLoreRoute
   '/echoes/mint': typeof EchoesMintRoute
@@ -462,6 +470,7 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsIndexRoute
   '/admin/feedback/$feedbackId': typeof AdminFeedbackFeedbackIdRoute
   '/admin/moderation/$reportId': typeof AdminModerationReportIdRoute
+  '/echoes/factions/$factionSlug': typeof EchoesFactionsFactionSlugRoute
   '/post/$postId/edit': typeof PostPostIdEditRoute
   '/settings/account/app': typeof SettingsAccountAppRoute
   '/settings/account/blocked-users': typeof SettingsAccountBlockedUsersRoute
@@ -505,7 +514,7 @@ export interface FileRoutesById {
   '/dev/typography-test': typeof DevTypographyTestRoute
   '/dev/wallet-test': typeof DevWalletTestRoute
   '/echoes/collection': typeof EchoesCollectionRoute
-  '/echoes/factions': typeof EchoesFactionsRoute
+  '/echoes/factions': typeof EchoesFactionsRouteWithChildren
   '/echoes/faq': typeof EchoesFaqRoute
   '/echoes/lore': typeof EchoesLoreRoute
   '/echoes/mint': typeof EchoesMintRoute
@@ -522,6 +531,7 @@ export interface FileRoutesById {
   '/settings/': typeof SettingsIndexRoute
   '/admin/feedback/$feedbackId': typeof AdminFeedbackFeedbackIdRoute
   '/admin/moderation/$reportId': typeof AdminModerationReportIdRoute
+  '/echoes/factions/$factionSlug': typeof EchoesFactionsFactionSlugRoute
   '/post/$postId/edit': typeof PostPostIdEditRoute
   '/settings/account/app': typeof SettingsAccountAppRoute
   '/settings/account/blocked-users': typeof SettingsAccountBlockedUsersRoute
@@ -583,6 +593,7 @@ export interface FileRouteTypes {
     | '/settings/'
     | '/admin/feedback/$feedbackId'
     | '/admin/moderation/$reportId'
+    | '/echoes/factions/$factionSlug'
     | '/post/$postId/edit'
     | '/settings/account/app'
     | '/settings/account/blocked-users'
@@ -639,6 +650,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/admin/feedback/$feedbackId'
     | '/admin/moderation/$reportId'
+    | '/echoes/factions/$factionSlug'
     | '/post/$postId/edit'
     | '/settings/account/app'
     | '/settings/account/blocked-users'
@@ -698,6 +710,7 @@ export interface FileRouteTypes {
     | '/settings/'
     | '/admin/feedback/$feedbackId'
     | '/admin/moderation/$reportId'
+    | '/echoes/factions/$factionSlug'
     | '/post/$postId/edit'
     | '/settings/account/app'
     | '/settings/account/blocked-users'
@@ -1136,6 +1149,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PostPostIdEditRouteImport
       parentRoute: typeof PostPostIdRoute
     }
+    '/echoes/factions/$factionSlug': {
+      id: '/echoes/factions/$factionSlug'
+      path: '/$factionSlug'
+      fullPath: '/echoes/factions/$factionSlug'
+      preLoaderRoute: typeof EchoesFactionsFactionSlugRouteImport
+      parentRoute: typeof EchoesFactionsRoute
+    }
     '/admin/moderation/$reportId': {
       id: '/admin/moderation/$reportId'
       path: '/$reportId'
@@ -1191,9 +1211,21 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface EchoesFactionsRouteChildren {
+  EchoesFactionsFactionSlugRoute: typeof EchoesFactionsFactionSlugRoute
+}
+
+const EchoesFactionsRouteChildren: EchoesFactionsRouteChildren = {
+  EchoesFactionsFactionSlugRoute: EchoesFactionsFactionSlugRoute,
+}
+
+const EchoesFactionsRouteWithChildren = EchoesFactionsRoute._addFileChildren(
+  EchoesFactionsRouteChildren,
+)
+
 interface EchoesRouteChildren {
   EchoesCollectionRoute: typeof EchoesCollectionRoute
-  EchoesFactionsRoute: typeof EchoesFactionsRoute
+  EchoesFactionsRoute: typeof EchoesFactionsRouteWithChildren
   EchoesFaqRoute: typeof EchoesFaqRoute
   EchoesLoreRoute: typeof EchoesLoreRoute
   EchoesMintRoute: typeof EchoesMintRoute
@@ -1202,7 +1234,7 @@ interface EchoesRouteChildren {
 
 const EchoesRouteChildren: EchoesRouteChildren = {
   EchoesCollectionRoute: EchoesCollectionRoute,
-  EchoesFactionsRoute: EchoesFactionsRoute,
+  EchoesFactionsRoute: EchoesFactionsRouteWithChildren,
   EchoesFaqRoute: EchoesFaqRoute,
   EchoesLoreRoute: EchoesLoreRoute,
   EchoesMintRoute: EchoesMintRoute,

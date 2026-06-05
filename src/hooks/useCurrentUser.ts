@@ -6,6 +6,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAuth } from './useAuth'
 import { initAuth, getCurrentUser } from '@/server/functions/auth'
+import { deriveOnboardingState, type OnboardingState } from '@/lib/onboarding'
 import type { User } from '@/server/db/schema'
 import { useEffect, useRef, useState, useCallback } from 'react'
 
@@ -23,6 +24,13 @@ export interface UseCurrentUserReturn {
 
   // Error state
   error: Error | null
+
+  // Derived onboarding state for first-run flows
+  onboardingState: OnboardingState
+  isNewUser: boolean
+  isProfileIncomplete: boolean
+  shouldShowOnboarding: boolean
+  missingProfileFields: OnboardingState['missingProfileFields']
 
   // Actions
   refetch: () => void
@@ -247,6 +255,12 @@ export function useCurrentUser(): UseCurrentUserReturn {
   // IMPORTANT: Distinguish between "auth initializing" and "confirmed logged out"
   if (!isReady || !isAuthenticated || !privyId) {
     const isAuthInitializing = !isReady
+    const onboardingState = deriveOnboardingState(null, {
+      isAuthenticated: false,
+      isAuthInitializing,
+      isLoading: isAuthInitializing,
+    })
+
     return {
       user: null,
       // isLoading is true while auth is initializing (prevents logged-out UI flash)
@@ -255,6 +269,11 @@ export function useCurrentUser(): UseCurrentUserReturn {
       isInitializing: false,
       isFetching: false,
       error: null,
+      onboardingState,
+      isNewUser: onboardingState.isNewUser,
+      isProfileIncomplete: onboardingState.isProfileIncomplete,
+      shouldShowOnboarding: onboardingState.shouldShowOnboarding,
+      missingProfileFields: onboardingState.missingProfileFields,
       refetch: () => Promise.resolve(null),
     }
   }
@@ -268,14 +287,25 @@ export function useCurrentUser(): UseCurrentUserReturn {
 
   // Get error from either query or mutation
   const error = userQuery.error || initMutation.error || null
+  const user = userQuery.data || null
+  const onboardingState = deriveOnboardingState(user, {
+    isAuthenticated: true,
+    isAuthInitializing: false,
+    isLoading,
+  })
 
   return {
-    user: userQuery.data || null,
+    user,
     isLoading,
     isAuthInitializing: false, // Auth is ready if we reach here
     isInitializing,
     isFetching,
     error: error as Error | null,
+    onboardingState,
+    isNewUser: onboardingState.isNewUser,
+    isProfileIncomplete: onboardingState.isProfileIncomplete,
+    shouldShowOnboarding: onboardingState.shouldShowOnboarding,
+    missingProfileFields: onboardingState.missingProfileFields,
     refetch: userQuery.refetch,
   }
 }

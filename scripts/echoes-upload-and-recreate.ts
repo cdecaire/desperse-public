@@ -366,10 +366,15 @@ async function main() {
 
 	// Calculate URI prefix and length from uploaded URIs
 	const firstUri = uploadedUris[0]
+	if (!firstUri) {
+		throw new Error('No uploaded URIs available — cannot derive Candy Machine URI settings')
+	}
 	const lastSlash = firstUri.lastIndexOf('/') + 1
 	const prefix = firstUri.substring(0, lastSlash)
 	log(`Detected URI prefix: ${prefix}`)
-	const maxUriLength = Math.max(...uploadedUris.map(u => u.replace(prefix, '').length))
+	const maxUriLength = Math.max(
+		...uploadedUris.filter((u): u is string => u != null).map(u => u.replace(prefix, '').length),
+	)
 
 	const nowTimestamp = BigInt(Math.floor(Date.now() / 1000))
 	const configLineSettings = some({

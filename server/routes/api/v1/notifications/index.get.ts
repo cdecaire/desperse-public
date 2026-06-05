@@ -100,8 +100,9 @@ export default defineEventHandler(async (event) => {
 	// direction so blocked users can't generate notifications you see.
 	const blockedSet = await getBlockedUserIdSet(userId)
 	const filteredNotifications = blockedSet.size > 0
-		? (result.notifications ?? []).filter((n: { actor?: { id?: string } } & Record<string, unknown>) => {
-			const actorId = (n.actor?.id as string | undefined) ?? (n as { actorId?: string }).actorId
+		? (result.notifications ?? []).filter((n) => {
+			const actor = n as { actor?: { id?: string }; actorId?: string }
+			const actorId = actor.actor?.id ?? actor.actorId
 			return !(actorId && blockedSet.has(actorId))
 		})
 		: result.notifications ?? []

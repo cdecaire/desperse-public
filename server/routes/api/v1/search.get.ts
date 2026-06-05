@@ -78,8 +78,9 @@ export default defineEventHandler(async (event) => {
       ? (result.users ?? []).filter((u: { id: string }) => !blockedSet.has(u.id))
       : result.users ?? []
     const filteredPosts = blockedSet.size > 0
-      ? (result.posts ?? []).filter((p: { user?: { id?: string } } & Record<string, unknown>) => {
-          const authorId = (p.user?.id as string | undefined) ?? (p as { userId?: string }).userId
+      ? (result.posts ?? []).filter((p) => {
+          const post = p as { user?: { id?: string }; userId?: string }
+          const authorId = post.user?.id ?? post.userId
           return !(authorId && blockedSet.has(authorId))
         })
       : result.posts ?? []

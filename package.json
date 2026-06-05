@@ -10,6 +10,7 @@
     "build": "node scripts/build.js",
     "serve": "vite preview",
     "test": "vitest run",
+    "routes:generate": "tsr generate",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
@@ -107,6 +108,7 @@
   },
   "devDependencies": {
     "@esbuild/win32-x64": "0.27.3",
+    "@tanstack/router-cli": "1.167.13",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.3.2",
     "@types/node": "^22.19.7",

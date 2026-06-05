@@ -26,6 +26,7 @@ import {
 } from '@/server/storage/blob'
 import { env } from '@/config/env'
 import { withAuth } from '@/server/auth'
+import { deleteOwnedMedia, recordMediaUpload } from '@/server/utils/upload-ownership'
 
 // Schema for upload request
 const uploadMediaSchema = z.object({
@@ -123,6 +124,29 @@ export const uploadMedia = createServerFn({
       return result
     }
 
+    try {
+      await recordMediaUpload({
+        userId: authResult.auth.userId,
+        url: result.url,
+        pathname: result.pathname,
+        originalName: fileName,
+        mimeType,
+        mediaType: result.mediaType,
+        fileSize,
+      })
+    } catch (recordError) {
+      console.error('Failed to record media upload ownership:', recordError)
+      await deleteFromBlob(result.url).catch((cleanupError) => {
+        console.warn('Failed to clean up untracked media upload:', cleanupError)
+      })
+
+      return {
+        success: false,
+        error: 'Upload failed. Please try again.',
+        code: 'UPLOAD_FAILED',
+      }
+    }
+
     return {
       success: true,
       url: result.url,
@@ -147,13 +171,8 @@ const deleteMediaSchema = z.object({
  * Delete media file from Vercel Blob storage
  * Used when user cancels upload or replaces media
  *
- * SECURITY: Requires authentication. Currently does not verify file ownership
- * because files are not tracked in the database with owner information.
- * Full ownership verification would require a file tracking table.
- *
- * TODO: For complete security, implement file ownership tracking:
- * - Option A: Add a 'media' table with userId foreign key
- * - Option B: Check if URL is referenced in user's posts
+ * SECURITY: Requires authentication and verifies the file belongs to the
+ * authenticated user before deleting it from storage.
  */
 export const deleteMedia = createServerFn({
   method: 'POST',
@@ -179,15 +198,11 @@ export const deleteMedia = createServerFn({
 
     const { url } = authResult.input
 
-    // TODO: Add ownership verification once file tracking is implemented
-    // For now, only authenticated users can delete files
-    // The auth user ID is available as authResult.auth.userId
-
-    const deleted = await deleteFromBlob(url)
+    const result = await deleteOwnedMedia(url, authResult.auth.userId)
 
     return {
-      success: deleted,
-      error: deleted ? undefined : 'Failed to delete file.',
+      success: result.success,
+      error: result.success ? undefined : result.error,
     }
   } catch (error) {
     console.error('Error in deleteMedia:', error)

@@ -2,6 +2,7 @@ import { Component, type ReactNode } from 'react'
 import { Link } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { reportClientError } from '@/lib/error-reporting'
 
 interface ErrorBoundaryProps {
   children: ReactNode
@@ -25,8 +26,11 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    // TODO: hook up Sentry
-    console.error('ErrorBoundary caught an error:', error, errorInfo)
+    reportClientError({
+      source: 'react_error_boundary',
+      error,
+      componentStack: errorInfo.componentStack,
+    })
     this.setState({ errorInfo })
   }
 

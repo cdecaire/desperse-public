@@ -529,6 +529,29 @@ export const postAssets = pgTable(
   }),
 );
 
+// Uploaded media ownership table (for temporary and pre-post Vercel Blob uploads)
+export const mediaUploads = pgTable(
+  'media_uploads',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    url: text('url').notNull(),
+    pathname: text('pathname'),
+    originalName: text('original_name').notNull(),
+    mimeType: text('mime_type').notNull(),
+    mediaType: text('media_type').notNull(),
+    fileSize: integer('file_size'),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    deletedAt: timestamp('deleted_at'),
+  },
+  (table) => ({
+    userIdIdx: index('media_uploads_user_id_idx').on(table.userId),
+    urlIdx: uniqueIndex('media_uploads_url_idx').on(table.url),
+  }),
+);
+
 // Download nonces table (for gated download authentication)
 export const downloadNonces = pgTable(
   'download_nonces',

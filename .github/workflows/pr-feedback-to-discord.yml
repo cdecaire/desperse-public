@@ -19,10 +19,15 @@ permissions:
 jobs:
   notify-discord:
     runs-on: ubuntu-latest
-    # Fire only on human feedback (not the bot's own activity), and only on the
-    # bot's own PRs. issue_comment also fires on plain issues -> gate to PRs.
+    # Fire only on HUMAN feedback, and only on the bot's own PRs:
+    #   - exclude the bot's own activity (desperse-agent);
+    #   - exclude every other bot sender (vercel[bot], github-actions[bot], …) —
+    #     Vercel posts a deploy comment seconds after each push, which would
+    #     otherwise trigger the agent with no real review feedback (and could loop);
+    #   - issue_comment also fires on plain issues -> gate to PRs.
     if: >-
       github.event.sender.login != 'desperse-agent' &&
+      !endsWith(github.event.sender.login, '[bot]') &&
       (
         (github.event_name == 'issue_comment'
           && github.event.issue.pull_request != null

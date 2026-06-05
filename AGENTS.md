@@ -12,9 +12,9 @@ Desperse is a Web3 social media platform on Solana. See `memory/ARCHITECTURE.md`
 ```bash
 pnpm dev              # Start dev server on port 3000
 pnpm build            # Production build
-pnpm db:generate      # Generate migrations from schema changes
-pnpm db:migrate       # Run migrations
-pnpm db:push          # Push schema directly (dev only)
+pnpm db:generate      # Generate migration + snapshot from schema changes (REQUIRED for any schema change)
+pnpm db:migrate       # Apply pending migrations to the database
+pnpm db:push          # ⛔ DO NOT USE — caused the migration drift; see "Database Migrations"
 pnpm db:studio        # Open Drizzle Studio
 pnpm test             # Run vitest tests
 npx tsc               # Type check (noEmit mode)
@@ -27,6 +27,24 @@ pnpm promote-user            # Grant admin role
 ## Deployment
 
 Vercel GitHub Integration deploys automatically. **DO NOT** run `npx vercel --prod` manually — push to `main` for production, any other branch for preview.
+
+## Database Migrations (CRITICAL)
+
+The migration system (`drizzle/*.sql` + `drizzle/meta/`) and the live database **must stay in lockstep**. Past use of `db:push` diverged them (objects existed in prod but in no migration), which broke `db:migrate` and made `db:generate` perpetually re-emit "drift." As of migration `0038` the system is reconciled — keep it that way.
+
+### The only schema-change workflow
+1. Edit `src/server/db/schema.ts`.
+2. `pnpm db:generate` — produces a new `drizzle/NNNN_*.sql` **and** its `drizzle/meta/NNNN_snapshot.json` + a `_journal.json` entry. **Always commit all three together.** Never delete or hand-trim the snapshot.
+3. Read the generated SQL. It must contain **only** your change. If it also contains unrelated tables/columns, the snapshot lineage has drifted — STOP and fix the drift first (do not ship a migration that recreates existing objects).
+4. `pnpm db:migrate` to apply.
+5. Re-run `pnpm db:generate` — it must report **"No schema changes."** That is the consistency check; a non-empty result means something is still out of sync.
+
+### Hard rules
+- **Never run `db:push`.** It mutates the DB without recording a migration and is the root cause of all prior drift.
+- **Never edit an already-applied migration** or its snapshot. Move forward with a new migration.
+- A migration's `.sql`, its `NNNN_snapshot.json`, and the `_journal.json` entry are a **set** — commit/modify them together, never one without the others.
+- If you must reconcile objects that already exist in some environments (a baseline), write the migration **idempotently** (`CREATE TABLE/ADD COLUMN/INDEX ... IF NOT EXISTS`; guard `ADD CONSTRAINT` with a `pg_constraint` `DO $$ ... $$` check) so it is a no-op where the object exists and creates it where it doesn't — see `drizzle/0038_baseline_orphan_reconciliation.sql`.
+- New `WHERE`/lookup columns on tables >10k rows need an index in the same migration (see Performance Guardrails).
 
 ## Workflow Orchestration
 

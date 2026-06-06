@@ -34,6 +34,7 @@ import {
 	signerIdentity,
 	sol,
 	some,
+	publicKey,
 	type PublicKey,
 
 } from '@metaplex-foundation/umi'
@@ -96,7 +97,7 @@ function resolveSetupAddress(key: string, label: string, fallback: PublicKey): P
 	const configured = readAddressSetting(key)
 	if (configured) {
 		log(`${label}: ${configured}`)
-		return configured as PublicKey
+		return publicKey(configured)
 	}
 
 	log(`${label}: ${fallback.toString()} (fee payer fallback)`)

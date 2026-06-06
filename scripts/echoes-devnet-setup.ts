@@ -9,6 +9,11 @@
  * 5. Inserts test items (10 for initial testing)
  * 6. Outputs env vars to add to .env.local
  *
+ * Mainnet-readiness note: this script still targets devnet intentionally.
+ * Creator/payment addresses are configurable via PFP_CREATOR_WALLET and
+ * PFP_PAYMENT_WALLET so setup output does not bake fee-payer assumptions into
+ * collection royalties or paid mint guards.
+ *
  * Usage: npx tsx scripts/echoes-devnet-setup.ts
  */
 
@@ -29,6 +34,7 @@ import {
 	signerIdentity,
 	sol,
 	some,
+	type PublicKey,
 
 } from '@metaplex-foundation/umi'
 import { pluginAuthorityPair } from '@metaplex-foundation/mpl-core'
@@ -65,6 +71,7 @@ const DEVNET_RPC = process.env.ECHOES_HELIUS_API_KEY
 
 const TEST_ITEM_COUNT = 10
 const KEYPAIR_FILE = path.join(process.cwd(), 'echoes-fee-payer.json')
+const ENV_LOCAL_PATH = path.join(process.cwd(), '.env.local')
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -72,6 +79,28 @@ const KEYPAIR_FILE = path.join(process.cwd(), 'echoes-fee-payer.json')
 
 function log(msg: string) {
 	console.log(`[echoes-setup] ${msg}`)
+}
+
+function readAddressSetting(key: string): string {
+	const fromProcess = process.env[key]?.trim()
+	if (fromProcess) return fromProcess
+
+	if (!fs.existsSync(ENV_LOCAL_PATH)) return ''
+
+	const envContent = fs.readFileSync(ENV_LOCAL_PATH, 'utf-8')
+	const match = envContent.match(new RegExp(`^${key}=(.+)$`, 'm'))
+	return match?.[1]?.trim() ?? ''
+}
+
+function resolveSetupAddress(key: string, label: string, fallback: PublicKey): PublicKey {
+	const configured = readAddressSetting(key)
+	if (configured) {
+		log(`${label}: ${configured}`)
+		return configured as PublicKey
+	}
+
+	log(`${label}: ${fallback.toString()} (fee payer fallback)`)
+	return fallback
 }
 
 async function airdrop(_umi: ReturnType<typeof createUmi>, address: string, amount: number) {
@@ -151,12 +180,12 @@ async function main() {
 		log(`Balance after airdrop: ${Number(newBalance.basisPoints) / 1_000_000_000} SOL`)
 	}
 
+	const creatorAddress = resolveSetupAddress('PFP_CREATOR_WALLET', 'Royalty creator wallet', signer.publicKey)
+	const paymentDestination = resolveSetupAddress('PFP_PAYMENT_WALLET', 'Payment destination', signer.publicKey)
+
 	// 4. Create Core Collection
 	log('Creating Core Collection...')
 	const collectionSigner = generateSigner(umi)
-
-	// TODO: For mainnet, replace this address with the actual creator/team wallet
-	const creatorAddress = signer.publicKey
 
 	const createCollectionTx = createCollectionV2(umi, {
 		collection: collectionSigner,
@@ -215,7 +244,7 @@ async function main() {
 	// --- OG Discount group: discounted mint for OGs ---
 	const ogDiscountGuards: Record<string, any> = {
 		botTax: some({ lamports: sol(BOT_TAX_SOL), lastInstruction: true }),
-		solPayment: some({ lamports: sol(OG_DISCOUNT_PRICE_SOL), destination: signer.publicKey }),
+		solPayment: some({ lamports: sol(OG_DISCOUNT_PRICE_SOL), destination: paymentDestination }),
 		startDate: some({ date: dateToTimestamp(OG_DISCOUNT_START_DATE) ?? nowTimestamp }),
 		mintLimit: some({ id: 2, limit: OG_DISCOUNT_MINT_LIMIT }),
 	}
@@ -230,7 +259,7 @@ async function main() {
 	// --- WL group: standard mint for whitelisted wallets ---
 	const wlGuards: Record<string, any> = {
 		botTax: some({ lamports: sol(BOT_TAX_SOL), lastInstruction: true }),
-		solPayment: some({ lamports: sol(WL_PRICE_SOL), destination: signer.publicKey }),
+		solPayment: some({ lamports: sol(WL_PRICE_SOL), destination: paymentDestination }),
 		startDate: some({ date: dateToTimestamp(WL_START_DATE) ?? nowTimestamp }),
 		mintLimit: some({ id: 3, limit: WL_MINT_LIMIT }),
 	}
@@ -248,7 +277,7 @@ async function main() {
 	// --- Public group: open to everyone ---
 	const publicGuards: Record<string, any> = {
 		botTax: some({ lamports: sol(BOT_TAX_SOL), lastInstruction: true }),
-		solPayment: some({ lamports: sol(PUBLIC_PRICE_SOL), destination: signer.publicKey }),
+		solPayment: some({ lamports: sol(PUBLIC_PRICE_SOL), destination: paymentDestination }),
 		startDate: some({ date: dateToTimestamp(PUBLIC_START_DATE) ?? nowTimestamp }),
 		// No mintLimit — unlimited
 		// No endDate — runs until sold out
@@ -309,7 +338,8 @@ async function main() {
 	console.log(`ECHOES_FEE_PAYER_PRIVATE_KEY=${feePayerBase58}`)
 	console.log(`PFP_CANDY_MACHINE_ADDRESS=${candyMachineAddress}`)
 	console.log(`PFP_COLLECTION_ADDRESS=${collectionAddress}`)
-	console.log(`PFP_PAYMENT_WALLET=${feePayerAddress}`)
+	console.log(`PFP_CREATOR_WALLET=${creatorAddress.toString()}`)
+	console.log(`PFP_PAYMENT_WALLET=${paymentDestination.toString()}`)
 	console.log(`VITE_PFP_MINT_ENABLED=true`)
 	console.log('='.repeat(60))
 	console.log('\nAlso ensure ECHOES_HELIUS_API_KEY is set (your existing Helius key works for devnet)')

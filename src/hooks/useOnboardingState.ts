@@ -1,5 +1,3 @@
-import { useMemo } from 'react'
-
 import { useCurrentUser } from './useCurrentUser'
 import type { OnboardingState } from '@/lib/onboarding'
 
@@ -26,28 +24,16 @@ export function useOnboardingState(): UseOnboardingStateReturn {
     error,
   } = useCurrentUser()
 
-  return useMemo(
-    () => ({
-      onboardingState,
-      isNewUser,
-      isProfileIncomplete,
-      shouldShowOnboarding,
-      missingProfileFields,
-      isLoading,
-      isAuthInitializing,
-      error,
-    }),
-    [
-      onboardingState,
-      isNewUser,
-      isProfileIncomplete,
-      shouldShowOnboarding,
-      missingProfileFields,
-      isLoading,
-      isAuthInitializing,
-      error,
-    ]
-  )
+  return {
+    onboardingState,
+    isNewUser,
+    isProfileIncomplete,
+    shouldShowOnboarding,
+    missingProfileFields,
+    isLoading,
+    isAuthInitializing,
+    error,
+  }
 }
 
 export default useOnboardingState

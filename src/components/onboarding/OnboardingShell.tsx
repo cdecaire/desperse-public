@@ -79,15 +79,15 @@ export function OnboardingShell({
   return (
     <main className="min-h-screen bg-background px-4 py-8 md:px-6 lg:px-8">
       <div className="mx-auto flex w-full max-w-4xl flex-col gap-6">
-        <section className="rounded-3xl border bg-card p-6 shadow-sm md:p-8">
+        <Card className="p-6 md:p-8">
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div className="space-y-3">
               <Badge variant="outline">First-run setup</Badge>
               <div className="space-y-2">
-                <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">
+                <h1 className="text-heading-1">
                   Get your Desperse creator profile ready
                 </h1>
-                <p className="max-w-2xl text-muted-foreground">
+                <p className="max-w-2xl text-body-md text-muted-foreground">
                   A short path from sign-in to a usable public profile and first post. No advanced minting choices required yet.
                 </p>
               </div>
@@ -99,7 +99,7 @@ export function OnboardingShell({
               </Link>
             </Button>
           </div>
-        </section>
+        </Card>
 
         {isLoading ? (
           <Card>
@@ -114,7 +114,7 @@ export function OnboardingShell({
               <Card key={step.id} className={step.status === 'current' ? 'border-primary/60 shadow-md' : undefined}>
                 <CardHeader>
                   <div className="flex items-center justify-between gap-3">
-                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-sm font-semibold">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-label-lg">
                       {index + 1}
                     </span>
                     <StepBadge status={step.status} />

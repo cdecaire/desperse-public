@@ -31,8 +31,8 @@ function OnboardingContent() {
     return (
       <main className="flex min-h-[60vh] items-center justify-center px-4">
         <div className="max-w-md rounded-2xl border bg-card p-6 text-center shadow-sm">
-          <h1 className="text-xl font-semibold">We could not load onboarding yet</h1>
-          <p className="mt-2 text-sm text-muted-foreground">
+          <h1 className="text-heading-3">We could not load onboarding yet</h1>
+          <p className="mt-2 text-body-sm text-muted-foreground">
             Refresh and try again. If this keeps happening, continue from profile settings.
           </p>
         </div>
@@ -45,7 +45,7 @@ function OnboardingContent() {
       <main className="flex min-h-[60vh] items-center justify-center px-4">
         <div className="flex flex-col items-center gap-3 text-muted-foreground">
           <LoadingSpinner size="lg" />
-          <p className="text-sm">Checking your onboarding state...</p>
+          <p className="text-body-sm">Checking your onboarding state...</p>
         </div>
       </main>
     )

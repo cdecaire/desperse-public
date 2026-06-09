@@ -24,6 +24,9 @@ import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icon'
 import { setLastSeen, getLastSeen } from '@/lib/utils'
 import { LandingPage } from '@/components/landing/LandingPage'
+import { useNavigate } from '@tanstack/react-router'
+import { useOnboardingState } from '@/hooks/useOnboardingState'
+import { isOnboardingV1Enabled } from '@/config/env'
 
 export const Route = createFileRoute('/')({
   component: FeedPage,
@@ -31,6 +34,8 @@ export const Route = createFileRoute('/')({
 
 function FeedPage() {
   const { isAuthenticated, isReady } = useAuth()
+  const navigate = useNavigate()
+  const { shouldShowOnboarding } = useOnboardingState()
 
   // Show loading state while auth is initializing
   if (!isReady) {
@@ -40,6 +45,16 @@ function FeedPage() {
   // Show landing page for unauthenticated users
   if (!isAuthenticated) {
     return <LandingPage />
+  }
+
+  // Redirect first-run users to onboarding when feature is enabled
+  if (isOnboardingV1Enabled() && shouldShowOnboarding) {
+    navigate({ to: '/onboarding', replace: true })
+    return (
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <LoadingSpinner size="lg" />
+      </div>
+    )
   }
 
   // Show feed for authenticated users

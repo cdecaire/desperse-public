@@ -4,6 +4,8 @@ import { AuthGuard } from '@/components/shared/AuthGuard'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { useAuth } from '@/hooks/useAuth'
+import { useOnboardingState } from '@/hooks/useOnboardingState'
+import { isOnboardingV1Enabled } from '@/config/env'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icon'
 
@@ -21,12 +23,22 @@ function ProfileIndexPage() {
 
 /**
  * Redirects to the current user's profile page by slug
+ * If onboarding is active and incomplete, redirect to /onboarding instead
  */
 function ProfileRedirect() {
   const { user, isLoading, error } = useCurrentUser()
   const { walletAddress } = useAuth()
   const navigate = useNavigate()
+  const { shouldShowOnboarding } = useOnboardingState()
 
+  // Redirect incomplete new users to onboarding (avoids landing on an empty profile)
+  useEffect(() => {
+    if (isOnboardingV1Enabled() && shouldShowOnboarding) {
+      navigate({ to: '/onboarding', replace: true })
+    }
+  }, [shouldShowOnboarding, navigate])
+
+  // Normal profile redirect for complete users
   useEffect(() => {
     if (user?.usernameSlug) {
       navigate({

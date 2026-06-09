@@ -4,12 +4,11 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   Card,
-  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import type { MissingProfileField } from '@/lib/onboarding'
+import { ProfileSetupStep } from './ProfileSetupStep'
 
 export interface OnboardingStep {
   id: 'profile' | 'firstPost' | 'advanced'
@@ -21,14 +20,6 @@ export interface OnboardingStep {
 interface OnboardingShellProps {
   isLoading?: boolean
   isComplete?: boolean
-  missingProfileFields?: MissingProfileField[]
-}
-
-const missingProfileFieldLabels: Record<MissingProfileField, string> = {
-  displayName: 'display name',
-  avatarUrl: 'avatar',
-  bio: 'bio',
-  socialOrWebsite: 'social or website link',
 }
 
 export function getOnboardingSteps({
@@ -71,10 +62,8 @@ function StepBadge({ status }: { status: OnboardingStep['status'] }) {
 export function OnboardingShell({
   isLoading = false,
   isComplete = false,
-  missingProfileFields = [],
 }: OnboardingShellProps) {
   const steps = getOnboardingSteps({ isComplete })
-  const missingLabels = missingProfileFields.map((field) => missingProfileFieldLabels[field])
 
   return (
     <main className="min-h-screen bg-background px-4 py-8 md:px-6 lg:px-8">
@@ -127,20 +116,8 @@ export function OnboardingShell({
           </div>
         )}
 
-        {!isLoading && !isComplete && missingLabels.length > 0 ? (
-          <Card>
-            <CardHeader>
-              <CardTitle>Profile fields still needed</CardTitle>
-              <CardDescription>
-                Add {missingLabels.join(', ')} so the onboarding flow can move you into first-post creation.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button asChild variant="outline">
-                <Link to="/settings/profile">Open profile settings</Link>
-              </Button>
-            </CardContent>
-          </Card>
+        {!isLoading && !isComplete ? (
+          <ProfileSetupStep />
         ) : null}
       </div>
     </main>

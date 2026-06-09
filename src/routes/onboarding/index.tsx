@@ -22,7 +22,6 @@ function OnboardingContent() {
     isLoading,
     isAuthInitializing,
     shouldShowOnboarding,
-    missingProfileFields,
     error,
   } = useOnboardingState()
   const isResolving = isLoading || isAuthInitializing
@@ -54,7 +53,6 @@ function OnboardingContent() {
   return (
     <OnboardingShell
       isComplete={!shouldShowOnboarding}
-      missingProfileFields={missingProfileFields}
     />
   )
 }

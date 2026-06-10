@@ -4,6 +4,8 @@ import { AuthGuard } from '@/components/shared/AuthGuard'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { useAuth } from '@/hooks/useAuth'
+import { useOnboardingState } from '@/hooks/useOnboardingState'
+import { isOnboardingV1Enabled } from '@/config/env'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icon'
 
@@ -20,14 +22,27 @@ function ProfileIndexPage() {
 }
 
 /**
- * Redirects to the current user's profile page by slug
+ * Redirects to the current user's profile page by slug.
+ * If onboarding is active and incomplete, redirect to /onboarding instead.
+ *
+ * NOTE: We use useEffect (not beforeLoad + throw redirect) because onboarding
+ * state is client-derived (Privy + react-query) and not cleanly available
+ * in the route loader context.
  */
 function ProfileRedirect() {
   const { user, isLoading, error } = useCurrentUser()
   const { walletAddress } = useAuth()
   const navigate = useNavigate()
+  const { shouldShowOnboarding } = useOnboardingState()
 
+  // Onboarding takes priority over the slug redirect: a fresh incomplete user
+  // has both usernameSlug and shouldShowOnboarding === true, so we must guard
+  // the slug redirect so onboarding always wins.
   useEffect(() => {
+    if (isOnboardingV1Enabled() && shouldShowOnboarding) {
+      navigate({ to: '/onboarding', replace: true })
+      return
+    }
     if (user?.usernameSlug) {
       navigate({
         to: '/profile/$slug',
@@ -35,7 +50,7 @@ function ProfileRedirect() {
         replace: true,
       })
     }
-  }, [user?.usernameSlug, navigate])
+  }, [user?.usernameSlug, shouldShowOnboarding, navigate])
 
   if (isLoading) {
     return (

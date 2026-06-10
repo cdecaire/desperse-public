@@ -46,6 +46,7 @@ export const env = {
   DEV_POSTS: getEnvVar('DEV_POSTS', 'false') === 'true',
 
   // Feature flags
+  FEATURE_ONBOARDING_V1: getEnvVar('VITE_FEATURE_ONBOARDING_V1', 'false') === 'true',
   FEATURE_MULTI_ASSET_STANDARD: getEnvVar('VITE_FEATURE_MULTI_ASSET_STANDARD', 'true') === 'true',
   FEATURE_MULTI_ASSET_COLLECTIBLE: getEnvVar('VITE_FEATURE_MULTI_ASSET_COLLECTIBLE', 'true') === 'true',
   FEATURE_MULTI_ASSET_EDITION: getEnvVar('VITE_FEATURE_MULTI_ASSET_EDITION', 'true') === 'true',
@@ -138,6 +139,13 @@ export function isBlockchainEnabled(): boolean {
  */
 export function isArweaveStorageEnabled(): boolean {
   return env.FEATURE_ARWEAVE_STORAGE;
+}
+
+/**
+ * Check if onboarding v1 feature is enabled
+ */
+export function isOnboardingV1Enabled(): boolean {
+  return env.FEATURE_ONBOARDING_V1;
 }
 
 /**

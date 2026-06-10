@@ -24,6 +24,9 @@ import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icon'
 import { setLastSeen, getLastSeen } from '@/lib/utils'
 import { LandingPage } from '@/components/landing/LandingPage'
+import { useNavigate } from '@tanstack/react-router'
+import { useOnboardingState } from '@/hooks/useOnboardingState'
+import { isOnboardingV1Enabled } from '@/config/env'
 
 export const Route = createFileRoute('/')({
   component: FeedPage,
@@ -31,6 +34,17 @@ export const Route = createFileRoute('/')({
 
 function FeedPage() {
   const { isAuthenticated, isReady } = useAuth()
+  const navigate = useNavigate()
+  const { shouldShowOnboarding } = useOnboardingState()
+
+  // Redirect first-run users to onboarding when feature is enabled.
+  // Moved into useEffect (not render-phase) to avoid React 19 warnings
+  // and to match the redirect pattern used in profile/index.tsx.
+  useEffect(() => {
+    if (isOnboardingV1Enabled() && shouldShowOnboarding) {
+      navigate({ to: '/onboarding', replace: true })
+    }
+  }, [shouldShowOnboarding, navigate])
 
   // Show loading state while auth is initializing
   if (!isReady) {

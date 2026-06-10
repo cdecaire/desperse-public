@@ -91,9 +91,9 @@ function FeedContent() {
     currentUserId: user?.id,
     enabled: isReady,
   })
-
+  
   const posts = getFeedPosts(data)
-
+  
   // Get list of followed user IDs for cross-feed cursor sync and avatar prioritization
   const { data: followingList } = useFollowingList(user?.id, user?.id)
   const followedUserIds = useMemo(() => {
@@ -102,68 +102,68 @@ function FeedContent() {
   const followingUserIdsArray = useMemo(() => {
     return followingList?.map(f => f.id) || []
   }, [followingList])
-
+  
   // Get notification counters - pause polling when feed is actively fetching
   const { data: notificationCounters } = useNotificationCounters({
     paused: isFetching,
     followingUserIds: followingUserIdsArray,
   })
-
+  
   // Get notification counts and creators (available throughout the component)
   const forYouNewPostsCount = notificationCounters?.forYouNewPostsCount ?? 0
   const followingNewPostsCount = notificationCounters?.followingNewPostsCount ?? 0
   const forYouNewPostCreators = notificationCounters?.forYouNewPostCreators ?? []
   const followingNewPostCreators = notificationCounters?.followingNewPostCreators ?? []
-
+  
   // Determine which toast to show based on current tab
-  const currentTabHasNewPosts = effectiveTab === 'for-you'
-    ? forYouNewPostsCount > 0
+  const currentTabHasNewPosts = effectiveTab === 'for-you' 
+    ? forYouNewPostsCount > 0 
     : followingNewPostsCount > 0
-  const currentTabCreators = effectiveTab === 'for-you'
-    ? forYouNewPostCreators
+  const currentTabCreators = effectiveTab === 'for-you' 
+    ? forYouNewPostCreators 
     : followingNewPostCreators
-
+  
   // Get post IDs for polling (only collectibles and editions need polling)
   const postIdsToPoll = useMemo(() => {
     return posts
       .filter(p => p.type === 'collectible' || p.type === 'edition')
       .map(p => p.id)
   }, [posts])
-
+  
   // Poll for counts every 8 seconds
   const polledCounts = usePostCountsPolling({
     postIds: postIdsToPoll,
     enabled: postIdsToPoll.length > 0,
     intervalMs: 8000, // 8 seconds
   })
-
+  
   // Handle feed refresh when clicking Home while already on home page
   // This provides smooth scroll to top and refetches if there are new posts
   const handleFeedRefresh = useCallback(() => {
     // Determine if there are new posts based on current tab
-    const hasNewPosts = effectiveTab === 'for-you'
-      ? forYouNewPostsCount > 0
+    const hasNewPosts = effectiveTab === 'for-you' 
+      ? forYouNewPostsCount > 0 
       : followingNewPostsCount > 0
-
+    
     // Always refetch to ensure fresh content when user explicitly taps Home
     // This provides a good UX even if notification counters haven't caught up yet
     if (hasNewPosts || !isFetching) {
       refetch()
     }
   }, [effectiveTab, forYouNewPostsCount, followingNewPostsCount, isFetching, refetch])
-
+  
   // Listen for feed refresh events from navigation
   useFeedRefreshListener(handleFeedRefresh, { duration: 500 })
-
+  
   // Handle toast click - refresh the feed
   const handleToastRefresh = useCallback(async () => {
     await refetch()
   }, [refetch])
-
+  
   // Track the last feed data hash to prevent re-setting lastSeen on re-renders
   const lastForYouHashRef = useRef<string | null>(null)
   const lastFollowingHashRef = useRef<string | null>(null)
-
+  
   // Update lastSeenForYouAt when For You feed successfully loads
   // Set to the createdAt of the most recent post (what user actually saw)
   // Also sync lastSeenFollowingAt if the most recent post is from a followed user
@@ -171,25 +171,25 @@ function FeedContent() {
     // Only update For You cursor when on For You tab
     if (effectiveTab !== 'for-you') return
     if (isLoading || isFetching || isError) return
-
+    
     // Get the most recent post's createdAt (posts are ordered by createdAt desc)
     const mostRecentPost = posts[0]
-
+    
     // Use most recent post's createdAt, or fallback to "now" if feed is empty
-    const lastSeenTimestamp = mostRecentPost?.createdAt
+    const lastSeenTimestamp = mostRecentPost?.createdAt 
       ? new Date(mostRecentPost.createdAt).toISOString()
       : new Date().toISOString()
-
+    
     // Create a hash of the feed to detect if it's actually a new load
-    const feedHash = posts.length > 0
+    const feedHash = posts.length > 0 
       ? `forYou-${posts.length}-${mostRecentPost?.id}-${mostRecentPost?.createdAt}`
       : `forYou-empty-${lastSeenTimestamp}`
-
+    
     // Only update if this is a genuinely new feed load (not just a re-render)
     if (lastForYouHashRef.current !== feedHash) {
       setLastSeen('forYou', lastSeenTimestamp)
       lastForYouHashRef.current = feedHash
-
+      
       // Cross-feed sync: If the most recent post is from a followed user,
       // also update lastSeenFollowingAt to prevent duplicate badge
       if (mostRecentPost?.user?.id && followedUserIds.has(mostRecentPost.user.id)) {
@@ -199,12 +199,12 @@ function FeedContent() {
           setLastSeen('following', lastSeenTimestamp)
         }
       }
-
+      
       // Invalidate notification counters to pick up the new lastSeen value
       queryClient.invalidateQueries({ queryKey: ['notification-counters'] })
     }
   }, [effectiveTab, isLoading, isFetching, isError, posts, queryClient, followedUserIds])
-
+  
   // Update lastSeenFollowingAt ONLY when:
   // 1. User is currently on Following tab
   // 2. Following feed refresh succeeds
@@ -214,25 +214,25 @@ function FeedContent() {
     // Only update Following cursor when on Following tab
     if (effectiveTab !== 'following') return
     if (isLoading || isFetching || isError) return
-
+    
     // Get the most recent post's createdAt (posts are ordered by createdAt desc)
     const mostRecentPost = posts[0]
-
+    
     // Use most recent post's createdAt, or fallback to "now" if feed is empty
-    const lastSeenTimestamp = mostRecentPost?.createdAt
+    const lastSeenTimestamp = mostRecentPost?.createdAt 
       ? new Date(mostRecentPost.createdAt).toISOString()
       : new Date().toISOString()
-
+    
     // Create a hash of the feed to detect if it's actually a new load
-    const feedHash = posts.length > 0
+    const feedHash = posts.length > 0 
       ? `following-${posts.length}-${mostRecentPost?.id}-${mostRecentPost?.createdAt}`
       : `following-empty-${lastSeenTimestamp}`
-
+    
     // Only update if this is a genuinely new feed load (not just a re-render)
     if (lastFollowingHashRef.current !== feedHash) {
       setLastSeen('following', lastSeenTimestamp)
       lastFollowingHashRef.current = feedHash
-
+      
       // Cross-feed sync: Following posts also appear in For You feed,
       // so update lastSeenForYouAt to prevent duplicate badge
       const currentForYouLastSeen = getLastSeen('forYou')
@@ -240,19 +240,19 @@ function FeedContent() {
       if (!currentForYouLastSeen || new Date(lastSeenTimestamp) > new Date(currentForYouLastSeen)) {
         setLastSeen('forYou', lastSeenTimestamp)
       }
-
+      
       // Invalidate notification counters to pick up the new lastSeen value
       queryClient.invalidateQueries({ queryKey: ['notification-counters'] })
     }
   }, [effectiveTab, isLoading, isFetching, isError, posts, queryClient])
-
+  
   // Handle tab change (only for authenticated users)
   const handleTabChange = useCallback((tab: FeedTab) => {
     if (isAuthenticated) {
       setCurrentTab(tab)
     }
   }, [isAuthenticated])
-
+  
   // Handle tab click with new posts - triggers refresh
   const handleTabClickWithNewPosts = useCallback(async (tab: FeedTab) => {
     // Switch to the tab first
@@ -262,13 +262,13 @@ function FeedContent() {
     // Then refresh the feed
     await refetch()
   }, [isAuthenticated, refetch])
-
+  
   // Infinite scroll observer
   useEffect(() => {
     if (observerRef.current) {
       observerRef.current.disconnect()
     }
-
+    
     observerRef.current = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
@@ -277,24 +277,24 @@ function FeedContent() {
       },
       { threshold: 0.1 }
     )
-
+    
     if (loadMoreRef.current) {
       observerRef.current.observe(loadMoreRef.current)
     }
-
+    
     return () => {
       observerRef.current?.disconnect()
     }
   }, [hasNextPage, isFetchingNextPage, fetchNextPage])
-
+  
   // Loading state - only block on isReady and actual feed loading
   // For unauthenticated users, isUserLoading is always false so we load faster
   if (!isReady || isLoading) {
     return (
       <div>
         {isAuthenticated && (
-          <FeedTabs
-            activeTab={effectiveTab}
+          <FeedTabs 
+            activeTab={effectiveTab} 
             onTabChange={handleTabChange}
             forYouNewPostsCount={forYouNewPostsCount}
             followingNewPostsCount={followingNewPostsCount}
@@ -305,14 +305,14 @@ function FeedContent() {
       </div>
     )
   }
-
+  
   // Error state
   if (isError) {
     return (
       <div>
         {isAuthenticated && (
-          <FeedTabs
-            activeTab={effectiveTab}
+          <FeedTabs 
+            activeTab={effectiveTab} 
             onTabChange={handleTabChange}
             forYouNewPostsCount={forYouNewPostsCount}
             followingNewPostsCount={followingNewPostsCount}
@@ -333,14 +333,14 @@ function FeedContent() {
       </div>
     )
   }
-
+  
   // Empty states
   if (posts.length === 0) {
     if (effectiveTab === 'following') {
       return (
         <div>
-          <FeedTabs
-            activeTab={effectiveTab}
+          <FeedTabs 
+            activeTab={effectiveTab} 
             onTabChange={handleTabChange}
             followingNewPostsCount={followingNewPostsCount}
           />
@@ -357,12 +357,12 @@ function FeedContent() {
         </div>
       )
     }
-
+    
     return (
       <div>
         {isAuthenticated && (
-          <FeedTabs
-            activeTab={effectiveTab}
+          <FeedTabs 
+            activeTab={effectiveTab} 
             onTabChange={handleTabChange}
             forYouNewPostsCount={forYouNewPostsCount}
             followingNewPostsCount={followingNewPostsCount}
@@ -378,7 +378,7 @@ function FeedContent() {
       </div>
     )
   }
-
+  
   return (
     <PullToRefresh onRefresh={handleToastRefresh}>
       <div>

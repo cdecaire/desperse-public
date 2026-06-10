@@ -37,6 +37,15 @@ function FeedPage() {
   const navigate = useNavigate()
   const { shouldShowOnboarding } = useOnboardingState()
 
+  // Redirect first-run users to onboarding when feature is enabled.
+  // Moved into useEffect (not render-phase) to avoid React 19 warnings
+  // and to match the redirect pattern used in profile/index.tsx.
+  useEffect(() => {
+    if (isOnboardingV1Enabled() && shouldShowOnboarding) {
+      navigate({ to: '/onboarding', replace: true })
+    }
+  }, [shouldShowOnboarding, navigate])
+
   // Show loading state while auth is initializing
   if (!isReady) {
     return <FeedSkeleton count={3} />
@@ -45,16 +54,6 @@ function FeedPage() {
   // Show landing page for unauthenticated users
   if (!isAuthenticated) {
     return <LandingPage />
-  }
-
-  // Redirect first-run users to onboarding when feature is enabled
-  if (isOnboardingV1Enabled() && shouldShowOnboarding) {
-    navigate({ to: '/onboarding', replace: true })
-    return (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <LoadingSpinner size="lg" />
-      </div>
-    )
   }
 
   // Show feed for authenticated users

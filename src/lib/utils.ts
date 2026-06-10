@@ -24,7 +24,7 @@ const dsTypographyTokens = [
   "mono-sm",
 ] as const
 
-const twMerge = extendTailwindMerge({
+const twMerge = extendTailwindMerge<'ds-typography'>({
   extend: {
     classGroups: {
       "ds-typography": [{ text: dsTypographyTokens }],

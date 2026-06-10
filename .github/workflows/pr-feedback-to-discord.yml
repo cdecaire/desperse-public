@@ -1,9 +1,15 @@
 name: PR feedback → Discord (Hermes trigger)
 
 # When a human leaves review feedback on one of the agent's OWN PRs, ping the
-# Hermes Discord bot in #github so it runs the echoes-pr-workflow.
+# Hermes Discord bot in #github so it can triage it.
 # Both legs are outbound (Action -> Discord; the Hermes box long-polls Discord),
 # so no public endpoint or tunnel is needed.
+#
+# The instruction the bot receives depends on PR state:
+#   - merged/closed PR  -> bookkeeping only: mark the linked kanban card done. No code.
+#   - open PR           -> triage per the echoes-pr-workflow #github channel rule
+#                          (formal reviews are auto-requeued by the PR Feedback Requeue
+#                          cron; comment feedback gets requeued as a card; never code inline).
 
 on:
   pull_request_review:
@@ -44,17 +50,28 @@ jobs:
           PR_NUM:   ${{ github.event.pull_request.number || github.event.issue.number }}
           PR_TITLE: ${{ github.event.pull_request.title  || github.event.issue.title }}
           PR_URL:   ${{ github.event.pull_request.html_url || github.event.issue.html_url }}
+          PR_STATE: ${{ github.event.pull_request.state || github.event.issue.state }}
+          PR_MERGED: ${{ github.event.pull_request.merged || false }}
           REVIEWER: ${{ github.event.review.user.login || github.event.comment.user.login || github.event.sender.login }}
           FEEDBACK: ${{ github.event.review.body || github.event.comment.body }}
         run: |
-          FEEDBACK_TRIMMED="${FEEDBACK:0:1400}"   # keep under Discord's 2000-char limit
-          MSG="<@${BOT_ID}> PR #${PR_NUM} \"${PR_TITLE}\" has new review feedback from ${REVIEWER}:
+          FEEDBACK_TRIMMED="${FEEDBACK:0:1200}"   # keep under Discord's 2000-char limit
+
+          # issue_comment on a merged PR reports state=closed (merged flag absent),
+          # so treat closed and merged identically: bookkeeping only.
+          if [ "$PR_MERGED" = "true" ] || [ "$PR_STATE" = "closed" ]; then
+            INSTRUCTION="This PR is merged/closed. BOOKKEEPING ONLY: do NOT run any workflow, do NOT touch any working tree, do NOT push anything. If a kanban card is linked to this PR and not yet done, mark it complete (hermes kanban complete) and reply with the card id. Otherwise reply noop."
+          else
+            INSTRUCTION="Triage per the echoes-pr-workflow #github channel rule. Formal CHANGES_REQUESTED reviews are auto-requeued as kanban cards by the PR Feedback Requeue cron — do NOT duplicate, just acknowledge. Comment-type feedback: requeue it as a fresh kanban card (PR URL in the card BODY, assignee coding). Pure metadata asks (retarget base, labels): one gh api PATCH call max. NEVER edit code, clone, rebase, or push from this channel."
+          fi
+
+          MSG="<@${BOT_ID}> PR #${PR_NUM} \"${PR_TITLE}\" has new review feedback from ${REVIEWER} (state: ${PR_STATE}, merged: ${PR_MERGED}):
 
           ${FEEDBACK_TRIMMED}
 
           ${PR_URL}
 
-          Review the unaddressed feedback on this PR and run the echoes-pr-workflow to address it."
+          ${INSTRUCTION}"
           jq -n --arg content "$MSG" --arg uid "$BOT_ID" \
             '{username:"GitHub", content:$content, allowed_mentions:{users:[$uid]}}' \
           | curl -sS -X POST "$WEBHOOK_URL" -H "Content-Type: application/json" --data-binary @-

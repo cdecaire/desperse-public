@@ -27,7 +27,7 @@ const dsTypographyTokens = [
 const twMerge = extendTailwindMerge<'ds-typography'>({
   extend: {
     classGroups: {
-      "ds-typography": [{ text: dsTypographyTokens as unknown as string[] }],
+      "ds-typography": [{ text: dsTypographyTokens }],
     },
     conflictingClassGroups: {
       "ds-typography": ["font-size", "leading", "font-weight", "tracking"],

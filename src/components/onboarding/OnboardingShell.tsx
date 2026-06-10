@@ -105,7 +105,7 @@ export function OnboardingShell({
           <Card>
             <CardHeader>
               <CardTitle className="text-title-lg">Loading your onboarding state</CardTitle>
-              <CardDescription className="text-body-sm text-muted-foreground">Checking your profile before showing the next step.</CardDescription>
+              <CardDescription className="text-body-sm">Checking your profile before showing the next step.</CardDescription>
             </CardHeader>
           </Card>
         ) : (
@@ -120,7 +120,7 @@ export function OnboardingShell({
                     <StepBadge status={step.status} />
                   </div>
                   <CardTitle className="text-title-lg">{step.title}</CardTitle>
-                  <CardDescription className="text-body-sm text-muted-foreground">{step.description}</CardDescription>
+                  <CardDescription className="text-body-sm">{step.description}</CardDescription>
                 </CardHeader>
               </Card>
             ))}
@@ -131,7 +131,7 @@ export function OnboardingShell({
           <Card>
             <CardHeader>
               <CardTitle className="text-title-lg">Profile fields still needed</CardTitle>
-              <CardDescription className="text-body-sm text-muted-foreground">
+              <CardDescription className="text-body-sm">
                 Add {missingLabels.join(', ')} so the onboarding flow can move you into first-post creation.
               </CardDescription>
             </CardHeader>

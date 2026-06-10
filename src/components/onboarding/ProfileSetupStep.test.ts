@@ -1,8 +1,20 @@
 import { describe, expect, it } from 'vitest'
 
-import { isValidUrl } from './ProfileSetupStep'
+import { isValidUrl, normalizeUrl } from './ProfileSetupStep'
 
 describe('ProfileSetupStep validation', () => {
+  it('normalizes URL without protocol', () => {
+    expect(normalizeUrl('example.com')).toBe('https://example.com')
+  })
+
+  it('preserves existing protocol when normalizing', () => {
+    expect(normalizeUrl('http://example.com')).toBe('http://example.com')
+  })
+
+  it('returns empty string when normalizing blank input', () => {
+    expect(normalizeUrl('   ')).toBe('')
+  })
+
   it('accepts empty link as optional', () => {
     expect(isValidUrl('')).toBe(true)
   })

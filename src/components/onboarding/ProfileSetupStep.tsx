@@ -19,16 +19,19 @@ import { useProfileUpdate, useAvatarUpload } from '@/hooks/useProfileQuery'
 
 export function isValidUrl(value: string): boolean {
   if (!value.trim()) return true
-  let normalized = value.trim()
-  if (!normalized.match(/^https?:\/\//i)) {
-    normalized = `https://${normalized}`
-  }
   try {
-    new URL(normalized)
+    new URL(normalizeUrl(value))
     return true
   } catch {
     return false
   }
+}
+
+export function normalizeUrl(value: string): string {
+  const normalized = value.trim()
+  if (!normalized) return ''
+
+  return normalized.match(/^https?:\/\//i) ? normalized : `https://${normalized}`
 }
 
 export function ProfileSetupStep() {
@@ -48,7 +51,6 @@ export function ProfileSetupStep() {
     link?: string
   }>({})
   const [isRemovingAvatar, setIsRemovingAvatar] = useState(false)
-  const [isSubmitted, setIsSubmitted] = useState(false)
 
   useEffect(() => {
     if (currentUser) {
@@ -133,13 +135,14 @@ export function ProfileSetupStep() {
     setErrors({})
 
     try {
+      const normalizedLink = normalizeUrl(link)
+
       await profileUpdate.mutateAsync({
         displayName: displayName.trim(),
         bio: bio.trim() || undefined,
         avatarUrl: avatarUrl.trim() || undefined,
-        link: link.trim() || null,
+        link: normalizedLink || null,
       })
-      setIsSubmitted(true)
       toast.success('Profile saved')
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to save profile'
@@ -148,24 +151,6 @@ export function ProfileSetupStep() {
   }
 
   const isSaving = profileUpdate.isPending || avatarUpload.isPending || isRemovingAvatar
-
-  if (isSubmitted) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Profile complete</CardTitle>
-          <CardDescription>
-            Your profile is set up. You are ready for the next step.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Button asChild>
-            <a href="/create">Create first post</a>
-          </Button>
-        </CardContent>
-      </Card>
-    )
-  }
 
   return (
     <Card>
@@ -242,7 +227,7 @@ export function ProfileSetupStep() {
               </div>
             </div>
             {errors.displayName && (
-              <p className="text-xs text-[var(--tone-error)]">{errors.displayName}</p>
+              <p className="text-xs text-destructive">{errors.displayName}</p>
             )}
           </div>
 
@@ -281,7 +266,7 @@ export function ProfileSetupStep() {
               aria-invalid={errors.link ? 'true' : 'false'}
             />
             {errors.link && (
-              <p className="text-xs text-[var(--tone-error)]">{errors.link}</p>
+              <p className="text-xs text-destructive">{errors.link}</p>
             )}
           </div>
 

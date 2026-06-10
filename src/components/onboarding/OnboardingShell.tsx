@@ -1,9 +1,11 @@
 import { Link } from '@tanstack/react-router'
+import { useEffect, useState } from 'react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   Card,
+  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
@@ -63,7 +65,19 @@ export function OnboardingShell({
   isLoading = false,
   isComplete = false,
 }: OnboardingShellProps) {
-  const steps = getOnboardingSteps({ isComplete })
+  const [isProfileComplete, setIsProfileComplete] = useState(isComplete)
+
+  useEffect(() => {
+    setIsProfileComplete(isComplete)
+  }, [isComplete])
+
+  const steps = getOnboardingSteps({ isComplete: isProfileComplete })
+  const heading = isProfileComplete
+    ? 'Your profile is ready. Make your first post.'
+    : 'Get your Desperse creator profile ready'
+  const description = isProfileComplete
+    ? 'You are through the setup step. Publish one simple Standard post to start your public profile.'
+    : 'A short path from sign-in to a usable public profile and first post. No advanced minting choices required yet.'
 
   return (
     <main className="min-h-screen bg-background px-4 py-8 md:px-6 lg:px-8">
@@ -74,17 +88,17 @@ export function OnboardingShell({
               <Badge variant="outline">First-run setup</Badge>
               <div className="space-y-2">
                 <h1 className="text-heading-1">
-                  Get your Desperse creator profile ready
+                  {heading}
                 </h1>
                 <p className="max-w-2xl text-body-md text-muted-foreground">
-                  A short path from sign-in to a usable public profile and first post. No advanced minting choices required yet.
+                  {description}
                 </p>
               </div>
             </div>
 
             <Button asChild size="cta">
-              <Link to={isComplete ? '/create' : '/settings/profile'}>
-                {isComplete ? 'Create first post' : 'Finish profile'}
+              <Link to={isProfileComplete ? '/create' : '/settings/profile'}>
+                {isProfileComplete ? 'Create your first post' : 'Finish profile'}
               </Link>
             </Button>
           </div>
@@ -116,8 +130,27 @@ export function OnboardingShell({
           </div>
         )}
 
-        {!isLoading && !isComplete ? (
-          <ProfileSetupStep />
+        {!isLoading && isProfileComplete ? (
+          <Card className="border-primary/50 bg-primary/5">
+            <CardHeader>
+              <CardTitle className="text-title-lg">Profile complete</CardTitle>
+              <CardDescription className="text-body-sm">
+                You can skip the empty profile dead end now. Start with one Standard post and come back for collectibles or editions later.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-body-sm text-muted-foreground">
+                This takes you straight into creation with the lightweight first-post path next.
+              </p>
+              <Button asChild size="cta">
+                <Link to="/create">Create your first post</Link>
+              </Button>
+            </CardContent>
+          </Card>
+        ) : null}
+
+        {!isLoading && !isProfileComplete ? (
+          <ProfileSetupStep onSuccess={() => setIsProfileComplete(true)} />
         ) : null}
       </div>
     </main>

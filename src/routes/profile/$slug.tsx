@@ -17,8 +17,10 @@ import { PostMedia } from '@/components/feed/PostMedia'
 import { detectMediaType } from '@/lib/media'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
+import { useOnboardingState } from '@/hooks/useOnboardingState'
 import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/ui/button'
+import { shouldShowFirstPostCta } from '@/lib/onboarding'
 import {
   useProfileUser,
   useFollowStats,
@@ -212,6 +214,7 @@ function ProfilePage() {
   const { slug } = Route.useParams()
   const { tab: initialTab } = Route.useSearch()
   const { user: currentUser, isLoading: isCurrentUserLoading, isAuthInitializing } = useCurrentUser()
+  const { shouldShowOnboarding } = useOnboardingState()
   const { isAuthenticated, isReady, login } = useAuth()
   const [activeTab, setActiveTab] = useState<ProfileTab>(initialTab || 'posts')
   const [followersModalOpen, setFollowersModalOpen] = useState(false)
@@ -285,6 +288,11 @@ function ProfilePage() {
   const isOwnProfile = currentUser?.usernameSlug === slug
   const isFollowing = followStats?.isFollowing || false
   const isBlocked = !!profileData?.isBlocked
+  const showFirstPostCta = shouldShowFirstPostCta({
+    isOwnProfile,
+    postCount: userPosts.length,
+    shouldShowOnboarding,
+  })
 
   const [showBlockDialog, setShowBlockDialog] = useState(false)
   const blockMutation = useBlockUser()
@@ -697,6 +705,7 @@ function ProfilePage() {
             isLoading={isPostsLoading}
             isOwnProfile={isOwnProfile}
             isAuthenticated={isAuthenticated}
+            showFirstPostCta={showFirstPostCta}
             hasNextPage={hasMorePosts}
             isFetchingNextPage={isFetchingMorePosts}
             fetchNextPage={fetchMorePosts}
@@ -831,6 +840,7 @@ interface PostsTabProps {
   isLoading: boolean
   isOwnProfile: boolean
   isAuthenticated: boolean
+  showFirstPostCta?: boolean
   hasNextPage?: boolean
   isFetchingNextPage: boolean
   fetchNextPage: () => void
@@ -840,6 +850,7 @@ function PostsTab({
   posts,
   isLoading,
   isOwnProfile,
+  showFirstPostCta = false,
   hasNextPage,
   isFetchingNextPage,
   fetchNextPage,
@@ -860,10 +871,12 @@ function PostsTab({
     return (
       <EmptyState
         icon={<Icon name="images" variant="regular" className="text-4xl text-muted-foreground" />}
-        title="No posts yet"
+        title={showFirstPostCta ? 'Create your first post' : 'No posts yet'}
         description={
           isOwnProfile
-            ? "You haven't created any posts yet. Share your first creation!"
+            ? showFirstPostCta
+              ? 'Your profile is ready. Publish one Standard post to make your profile feel alive.'
+              : "You haven't created any posts yet. Share your first creation!"
             : "This user hasn't created any posts yet."
         }
         action={
@@ -871,7 +884,7 @@ function PostsTab({
             <Link to="/create">
               <Button>
                 <Icon name="plus" variant="regular" className="mr-2" />
-                Create Post
+                {showFirstPostCta ? 'Create your first post' : 'Create Post'}
               </Button>
             </Link>
           )
@@ -903,6 +916,7 @@ interface SimpleTabProps {
   isLoading: boolean
   isOwnProfile: boolean
   isAuthenticated: boolean
+  showFirstPostCta?: boolean
   hasNextPage?: boolean
   isFetchingNextPage: boolean
   fetchNextPage: () => void

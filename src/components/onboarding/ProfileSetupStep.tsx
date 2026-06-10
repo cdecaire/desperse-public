@@ -34,7 +34,11 @@ export function normalizeUrl(value: string): string {
   return normalized.match(/^https?:\/\//i) ? normalized : `https://${normalized}`
 }
 
-export function ProfileSetupStep() {
+interface ProfileSetupStepProps {
+  onSuccess?: () => void
+}
+
+export function ProfileSetupStep({ onSuccess }: ProfileSetupStepProps) {
   const queryClient = useQueryClient()
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const { user: currentUser } = useCurrentUser()
@@ -144,6 +148,7 @@ export function ProfileSetupStep() {
         link: normalizedLink || null,
       })
       toast.success('Profile saved')
+      onSuccess?.()
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to save profile'
       toast.error(message)

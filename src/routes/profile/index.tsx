@@ -22,8 +22,12 @@ function ProfileIndexPage() {
 }
 
 /**
- * Redirects to the current user's profile page by slug
- * If onboarding is active and incomplete, redirect to /onboarding instead
+ * Redirects to the current user's profile page by slug.
+ * If onboarding is active and incomplete, redirect to /onboarding instead.
+ *
+ * NOTE: We use useEffect (not beforeLoad + throw redirect) because onboarding
+ * state is client-derived (Privy + react-query) and not cleanly available
+ * in the route loader context.
  */
 function ProfileRedirect() {
   const { user, isLoading, error } = useCurrentUser()
@@ -31,15 +35,14 @@ function ProfileRedirect() {
   const navigate = useNavigate()
   const { shouldShowOnboarding } = useOnboardingState()
 
-  // Redirect incomplete new users to onboarding (avoids landing on an empty profile)
+  // Onboarding takes priority over the slug redirect: a fresh incomplete user
+  // has both usernameSlug and shouldShowOnboarding === true, so we must guard
+  // the slug redirect so onboarding always wins.
   useEffect(() => {
     if (isOnboardingV1Enabled() && shouldShowOnboarding) {
       navigate({ to: '/onboarding', replace: true })
+      return
     }
-  }, [shouldShowOnboarding, navigate])
-
-  // Normal profile redirect for complete users
-  useEffect(() => {
     if (user?.usernameSlug) {
       navigate({
         to: '/profile/$slug',
@@ -47,7 +50,7 @@ function ProfileRedirect() {
         replace: true,
       })
     }
-  }, [user?.usernameSlug, navigate])
+  }, [user?.usernameSlug, shouldShowOnboarding, navigate])
 
   if (isLoading) {
     return (

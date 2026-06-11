@@ -88,4 +88,21 @@ describe("legacy attachment backfill planning", () => {
 		expect(isNonDisplayableAttachmentUrl("https://cdn.example.com/file.zip#download")).toBe(true)
 		expect(inferCoverMimeType("https://cdn.example.com/cover.avif")).toBe("image/avif")
 	})
+
+	it("normalizes logged mediaUrl values before returning a plan", () => {
+		const plan = buildLegacyAttachmentMigrationPlan({
+			id: "post-5",
+			mediaUrl: "  https://blob.vercel-storage.com/files/art-book.zip  ",
+			coverUrl: "https://blob.vercel-storage.com/covers/art-book.png",
+			downloadAssets: [
+				{
+					id: "asset-5",
+					storageKey: "https://blob.vercel-storage.com/files/art-book.zip",
+					mimeType: "application/zip",
+				},
+			],
+		})
+
+		expect(plan?.mediaUrl).toBe("https://blob.vercel-storage.com/files/art-book.zip")
+	})
 })

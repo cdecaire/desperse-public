@@ -87,7 +87,7 @@ export function buildLegacyAttachmentMigrationPlan(post: LegacyAttachmentPost): 
 	if (matchedDownloadAssetIds.length > 0) {
 		return {
 			postId: post.id,
-			mediaUrl: post.mediaUrl,
+			mediaUrl,
 			coverUrl: post.coverUrl,
 			coverMimeType,
 			storageProvider: getStorageProvider(post.coverUrl),
@@ -99,7 +99,7 @@ export function buildLegacyAttachmentMigrationPlan(post: LegacyAttachmentPost): 
 	if (isNonDisplayableAttachmentUrl(post.mediaUrl)) {
 		return {
 			postId: post.id,
-			mediaUrl: post.mediaUrl,
+			mediaUrl,
 			coverUrl: post.coverUrl,
 			coverMimeType,
 			storageProvider: getStorageProvider(post.coverUrl),

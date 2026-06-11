@@ -8,7 +8,8 @@
  * cover_url, and clears posts.cover_url.
  *
  * Safe to run multiple times — migrated posts are skipped because they now have
- * a role='media' asset.
+ * a role='media' asset. Do not run two copies in parallel: idempotency relies on
+ * a WHERE NOT EXISTS guard, not a unique constraint on post_assets.
  *
  * Usage:
  *   pnpm tsx scripts/backfill-legacy-attachment-posts.ts --dry-run

@@ -19,6 +19,7 @@ export const SUPPORTED_AUDIO_TYPES = ['audio/mpeg', 'audio/wav', 'audio/ogg', 'a
 export const SUPPORTED_DOCUMENT_TYPES = [
   'application/pdf', // Comics, books, zines, art prints
   'application/zip', // ZIP archives
+  'application/epub+zip', // EPUB ebooks
 ]
 export const SUPPORTED_3D_TYPES = [
   'model/gltf-binary',    // GLB - 3D models (common for NFTs)
@@ -48,6 +49,7 @@ export const MIME_TO_EXTENSION: Record<string, string> = {
   'audio/ogg': 'ogg',
   'application/pdf': 'pdf',
   'application/zip': 'zip',
+  'application/epub+zip': 'epub',
   'model/gltf-binary': 'glb',
   'model/gltf+json': 'gltf',
 }

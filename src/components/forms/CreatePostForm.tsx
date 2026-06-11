@@ -8,6 +8,7 @@ import { useNavigate, useBlocker } from '@tanstack/react-router'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toastSuccess, toastError, toastInfo } from '@/lib/toast'
 import { MediaUpload, type UploadedMedia } from './MediaUpload'
+import { AttachmentUpload, type UploadedAttachment } from './AttachmentUpload'
 import { MultiMediaUpload, type UploadedMediaItem } from './MultiMediaUpload'
 import { NON_PREVIEWABLE_TYPES } from '@/lib/media'
 import { isMultiAssetEnabled, isMultiAssetCollectibleEnabled, isMultiAssetEditionEnabled, isArweaveStorageEnabled } from '@/config/env'
@@ -264,6 +265,8 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
   // Form state
   const [uploadedMedia, setUploadedMedia] = useState<UploadedMedia | null>(null)
   const [uploadedMediaInfo, setUploadedMediaInfo] = useState<{ mimeType: string; fileSize: number } | null>(null)
+  const [uploadedAttachment, setUploadedAttachment] = useState<UploadedAttachment | null>(null)
+  const [attachmentStatus, setAttachmentStatus] = useState<'idle' | 'uploading' | 'success' | 'error'>('idle')
   const [formState, setFormState] = useState<FormState>(getInitialFormState)
   const [isPreviewOpen, setIsPreviewOpen] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
@@ -501,9 +504,8 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
       const authHeaders = await getAuthHeaders()
       const authorization = authHeaders.Authorization || ''
       const isNftPost = formState.type === 'edition' || formState.type === 'collectible'
-
-      // Prepare assets array for multi-asset posts (Phase 1: standard posts, Phase 2: collectibles, Phase 3: editions)
-      const assetsForCreate = multiAssetItems.length > 0 &&
+      const primaryMediaType = uploadedMedia?.mediaType ?? null
+      const displayAssets = multiAssetItems.length > 0 &&
         (formState.type === 'post' || formState.type === 'collectible' || formState.type === 'edition')
         ? multiAssetItems.map((item, index) => ({
             url: item.url,
@@ -513,7 +515,30 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
             fileSize: item.fileSize,
             sortOrder: item.sortOrder ?? index,
           }))
+        : uploadedMedia && uploadedMedia.url && primaryMediaType !== 'audio' && primaryMediaType !== '3d'
+          ? [{
+              url: uploadedMedia.url,
+              mediaType: uploadedMedia.mediaType,
+              fileName: uploadedMedia.fileName,
+              mimeType: uploadedMedia.mimeType,
+              fileSize: uploadedMedia.fileSize,
+              sortOrder: 0,
+            }]
+          : []
+
+      const attachmentAsset = uploadedAttachment
+        ? {
+            url: uploadedAttachment.url,
+            mediaType: 'document' as const,
+            fileName: uploadedAttachment.fileName,
+            mimeType: uploadedAttachment.mimeType,
+            fileSize: uploadedAttachment.fileSize,
+            sortOrder: displayAssets.length,
+          }
         : null
+
+      const assetsForCreate = [...displayAssets, ...(attachmentAsset ? [attachmentAsset] : [])]
+      const hasDocumentAttachment = !!uploadedAttachment
 
       const result = await createPost(
         wrapInput({
@@ -524,7 +549,7 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
           categories: formState.categories.length > 0 ? categoriesToStrings(formState.categories) : null,
           type: formState.type,
           // Multi-asset support (Phase 1: standard posts only)
-          assets: assetsForCreate,
+          assets: assetsForCreate.length > 0 ? assetsForCreate : null,
           // Edition-only: commerce & supply
           maxSupply: formState.type === 'edition' ? formState.maxSupply : null,
           price: formState.type === 'edition' ? formState.price : null,
@@ -539,9 +564,10 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
           copyrightLicense: isNftPost ? (formState.copyrightLicense || null) : null,
           copyrightHolder: isNftPost ? (formState.copyrightHolder || null) : null,
           copyrightStatement: isNftPost ? (formState.copyrightStatement || null) : null,
-          // Protect download only applies to downloadable document types (PDF, ZIP) for editions
-          // Check both single-asset (uploadedMedia) and multi-asset (multiAssetItems) modes
+          // Protect download only applies to downloadable document types (PDF, ZIP, EPUB) for editions
+          // Check both single-asset (uploadedMedia), independent attachment, and multi-asset modes
           protectDownload: formState.type === 'edition' && (
+            hasDocumentAttachment ||
             uploadedMedia?.mediaType === 'document' ||
             multiAssetItems.some(item => item.mediaType === 'document')
           ) ? formState.protectDownload : false,
@@ -612,6 +638,14 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
     setFormState(prev => ({ ...prev, coverUrl: null }))
   }
 
+  const handleAttachmentUpload = (attachment: UploadedAttachment) => {
+    setUploadedAttachment(attachment)
+  }
+
+  const handleAttachmentRemove = () => {
+    setUploadedAttachment(null)
+  }
+
   // Multi-asset change handler (Phase 1)
   const handleMultiAssetChange = (items: UploadedMediaItem[]) => {
     setMultiAssetItems(items)
@@ -646,6 +680,8 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
   // Validation
   const canSubmit = () => {
     if (!formState.mediaUrl) return false
+    const attachmentReady = attachmentStatus === 'idle' || attachmentStatus === 'success'
+    if (!attachmentReady) return false
     if (formState.type === 'edition') {
       // Validate required edition fields (both create and edit)
       if (!formState.nftName || formState.nftName.trim() === '') return false
@@ -921,6 +957,15 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
           )}
         </div>
 
+        {!isEditMode && (
+          <AttachmentUpload
+            onUpload={handleAttachmentUpload}
+            onRemove={handleAttachmentRemove}
+            onStatusChange={setAttachmentStatus}
+            disabled={isSubmitting}
+          />
+        )}
+
         {/* Minted Details (read-only snapshot of on-chain data) */}
         {isEditMode && isMinted && mintedMetadataJson && (
           <div className="p-4 bg-card border border-border rounded-xl shadow-md">
@@ -1057,9 +1102,10 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
             onPriceChange={(value) => setFormState(prev => ({ ...prev, price: value }))}
             onCurrencyChange={(currency) => setFormState(prev => ({ ...prev, currency }))}
             onMaxSupplyChange={(value) => setFormState(prev => ({ ...prev, maxSupply: value }))}
-            // Only show protect download toggle for downloadable document types (PDF, ZIP)
-            // Check both single-asset (uploadedMedia) and multi-asset (multiAssetItems) modes
+            // Only show protect download toggle for downloadable document types (PDF, ZIP, EPUB)
+            // Check both single-asset (uploadedMedia), independent attachment, and multi-asset modes
             onProtectDownloadChange={
+              uploadedAttachment ||
               uploadedMedia?.mediaType === 'document' ||
               multiAssetItems.some(item => item.mediaType === 'document')
                 ? (value) => setFormState(prev => ({ ...prev, protectDownload: value }))

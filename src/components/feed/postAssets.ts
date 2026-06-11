@@ -128,8 +128,8 @@ export function getAssetTypeLabel(asset: Pick<PostAsset, 'mimeType' | 'url'>): s
   if (mimeType?.startsWith('video/')) return 'Video'
   if (mimeType?.startsWith('image/')) return 'Image'
   if (mimeType === 'application/pdf') return 'PDF'
-  if (mimeType === 'application/zip') return 'ZIP'
   if (mimeType === 'application/epub+zip') return 'EPUB'
+  if (mimeType === 'application/zip' || mimeType === 'application/x-zip-compressed' || mimeType === 'application/x-zip') return 'ZIP'
   if (mimeType?.includes('gltf') || mimeType?.includes('model')) return '3D Model'
 
   const extension = asset.url.split('.').pop()?.toLowerCase()?.split('?')[0]

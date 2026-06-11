@@ -15,6 +15,7 @@ import { CollectButton } from '@/components/feed/CollectButton'
 import { BuyButton } from '@/components/feed/BuyButton'
 import { LikeButton } from '@/components/feed/LikeButton'
 import { CommentButton } from '@/components/feed/CommentButton'
+import { DownloadButton } from '@/components/feed/DownloadButton'
 import { CommentSection } from '@/components/feed/CommentSection'
 import { PostCardMenu } from '@/components/feed/PostCardMenu'
 import { DownloadableAssetsSection } from '@/components/feed/DownloadableAssetsSection'
@@ -631,6 +632,14 @@ function PostDetailPage() {
           variant="ghost"
           showCount={true}
           onClick={onCommentClick}
+        />
+        <DownloadButton
+          postId={post.id}
+          postType={post.type}
+          assets={downloadableAssets}
+          isCollected={isCollected}
+          variant="ghost"
+          showCount={true}
         />
       </div>
 

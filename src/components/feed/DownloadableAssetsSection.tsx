@@ -1,6 +1,8 @@
+import { useState } from 'react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icon'
+import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { toast } from '@/hooks/use-toast'
 import { useGatedDownload } from '@/hooks/useGatedDownload'
 import { recordDownload } from '@/lib/recordDownload'
@@ -29,6 +31,10 @@ export function DownloadableAssetsSection({
 }: DownloadableAssetsSectionProps) {
   const { downloadProtectedAsset, isAuthenticating } = useGatedDownload()
   const canDownload = hasDownloadAccess(postType, isCollected)
+  // Optimistic per-asset download bumps + in-flight asset id, so the count ticks
+  // up immediately and the button shows a spinner (matching the like affordance).
+  const [bumps, setBumps] = useState<Record<string, number>>({})
+  const [pendingId, setPendingId] = useState<string | null>(null)
 
   if (!assets?.length) return null
 
@@ -38,17 +44,27 @@ export function DownloadableAssetsSection({
       return
     }
 
-    if (postType === 'edition' || asset.isGated) {
-      const downloadUrl = await downloadProtectedAsset(asset.id)
-      if (downloadUrl) {
-        window.open(downloadUrl, '_blank')
-        recordDownload(asset.id)
+    setPendingId(asset.id)
+    try {
+      let opened = false
+      if (postType === 'edition' || asset.isGated) {
+        const downloadUrl = await downloadProtectedAsset(asset.id)
+        if (downloadUrl) {
+          window.open(downloadUrl, '_blank')
+          opened = true
+        }
+      } else {
+        window.open(asset.url, '_blank')
+        opened = true
       }
-      return
-    }
 
-    window.open(asset.url, '_blank')
-    recordDownload(asset.id)
+      if (opened) {
+        recordDownload(asset.id)
+        setBumps((prev) => ({ ...prev, [asset.id]: (prev[asset.id] ?? 0) + 1 }))
+      }
+    } finally {
+      setPendingId(null)
+    }
   }
 
   return (
@@ -65,16 +81,15 @@ export function DownloadableAssetsSection({
             const locked = !canDownload
             const fileSize = formatAssetFileSize(asset.fileSize)
             const fileType = getAssetTypeLabel(asset)
-            const downloadCount = asset.downloadCount ?? 0
+            const downloadCount = (asset.downloadCount ?? 0) + (bumps[asset.id] ?? 0)
+            const downloading = pendingId === asset.id
 
             return (
               <div
                 key={asset.id}
                 className="flex items-center gap-3 rounded-lg border border-border bg-muted/20 px-3 py-2"
               >
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-background text-muted-foreground">
-                  <Icon name={getAssetIconName(asset)} variant="regular" className="text-sm" />
-                </div>
+                <Icon name={getAssetIconName(asset)} variant="regular" className="shrink-0 text-2xl text-muted-foreground" />
 
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 text-sm font-medium text-foreground">
@@ -97,11 +112,18 @@ export function DownloadableAssetsSection({
                   <Button
                     type="button"
                     variant="secondary"
-                    disabled={isAuthenticating}
+                    disabled={downloading}
                     onClick={() => handleDownload(asset)}
-                    className="shrink-0"
+                    className="shrink-0 gap-2"
                   >
-                    {isAuthenticating ? 'Verifying...' : 'Download'}
+                    {downloading ? (
+                      <>
+                        <LoadingSpinner size="sm" />
+                        {isAuthenticating ? 'Verifying...' : 'Downloading...'}
+                      </>
+                    ) : (
+                      'Download'
+                    )}
                   </Button>
                 )}
               </div>

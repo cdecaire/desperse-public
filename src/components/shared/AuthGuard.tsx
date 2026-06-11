@@ -4,8 +4,9 @@
  */
 
 import { useNavigate } from '@tanstack/react-router'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useAuth } from '@/hooks/useAuth'
+import { buildCreateIntent, saveCreateIntent, shouldPreserveCreateIntent } from '@/lib/createIntent'
 import { LoadingSpinner } from './LoadingSpinner'
 
 interface AuthGuardProps {
@@ -16,15 +17,28 @@ interface AuthGuardProps {
  * Wraps protected content and redirects to home if not authenticated
  */
 export function AuthGuard({ children }: AuthGuardProps) {
-  const { isAuthenticated, isReady, isLoading } = useAuth()
+  const { isAuthenticated, isReady, isLoading, login } = useAuth()
   const navigate = useNavigate()
+  const hasRequestedAuthRef = useRef(false)
 
   useEffect(() => {
+    if (!isReady || isAuthenticated || hasRequestedAuthRef.current) {
+      return
+    }
+
+    hasRequestedAuthRef.current = true
+
+    if (typeof window !== 'undefined' && shouldPreserveCreateIntent(window.location.pathname)) {
+      saveCreateIntent(buildCreateIntent(window.location.search))
+      login()
+      return
+    }
+
+    // Redirect to home (landing page) for unauthenticated users
     if (isReady && !isAuthenticated) {
-      // Redirect to home (landing page) for unauthenticated users
       navigate({ to: '/' })
     }
-  }, [isReady, isAuthenticated, navigate])
+  }, [isReady, isAuthenticated, login, navigate])
 
   // Show loading state while checking auth
   if (isLoading || !isReady) {

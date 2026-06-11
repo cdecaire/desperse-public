@@ -15,8 +15,11 @@ import { CollectButton } from '@/components/feed/CollectButton'
 import { BuyButton } from '@/components/feed/BuyButton'
 import { LikeButton } from '@/components/feed/LikeButton'
 import { CommentButton } from '@/components/feed/CommentButton'
+import { DownloadButton } from '@/components/feed/DownloadButton'
 import { CommentSection } from '@/components/feed/CommentSection'
 import { PostCardMenu } from '@/components/feed/PostCardMenu'
+import { DownloadableAssetsSection } from '@/components/feed/DownloadableAssetsSection'
+import { getPrimaryDisplayMedia, type DownloadableAsset } from '@/components/feed/postAssets'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { EmptyState } from '@/components/shared/EmptyState'
@@ -31,11 +34,11 @@ import { MintWindowBadge } from '@/components/feed/MintWindowBadge'
 import { useGatedDownload } from '@/hooks/useGatedDownload'
 import { getExplorerUrl } from '@/server/functions/preferences'
 import { formatRelativeTime } from '@/lib/dates'
+import { recordDownload } from '@/lib/recordDownload'
 import { LICENSE_LABELS } from '@/components/forms/CopyrightFields'
 import { usePreferences } from '@/hooks/usePreferences'
 import { usePostCollectors, useFollowMutation } from '@/hooks/useProfileQuery'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
-import { detectMediaType } from '@/lib/media'
 import { toast } from '@/hooks/use-toast'
 
 const BASE_URL = "https://desperse.com"
@@ -434,7 +437,7 @@ function CollectorsList({
 
 function PostDetailPage() {
   const { postId } = Route.useParams()
-  const { isAuthenticated, isReady, login } = useAuth()
+  const { isAuthenticated, isReady, login, getAccessToken } = useAuth()
   const { user: currentUser, isLoading: isCurrentUserLoading, isAuthInitializing } = useCurrentUser()
   // User state is settled when auth is initialized and user data is loaded
   const isUserReady = !isAuthInitializing && !isCurrentUserLoading
@@ -520,7 +523,13 @@ function PostDetailPage() {
   const editionSupply = localEditionSupply ?? post.currentSupply ?? 0
   const isCollected = localIsOwned || initialCollected
 
-  const mediaType = detectMediaType(post.mediaUrl, (post as any).mediaMimeType)
+  const displayMedia = getPrimaryDisplayMedia({
+    mediaUrl: post.mediaUrl,
+    coverUrl: post.coverUrl,
+    mediaMimeType: (post as any).mediaMimeType,
+    assets: (post as any).assets,
+  })
+  const mediaType = displayMedia.mediaType
 
   const display = getPostDisplayState(
     {
@@ -555,22 +564,29 @@ function PostDetailPage() {
   const isMintingPaused = arweaveStatus === 'unfunded' || arweaveStatus === 'failed'
 
   // Download: show download button when user has collected and post has downloadable content
-  const downloadableAssets = (post as any).downloadableAssets as Array<{ id: string; url: string; mimeType: string | null }> | undefined
-  const hasDownloads = mediaType === 'document' || mediaType === '3d' || (downloadableAssets && downloadableAssets.length > 0)
-  const showDownload = isCollected && hasDownloads
+  const downloadableAssets = (post as any).downloadableAssets as DownloadableAsset[] | undefined
+  const hasLegacyDownload = mediaType === 'document' || mediaType === '3d'
+  const showDownload = isCollected && hasLegacyDownload && !downloadableAssets?.length
 
   const handleDownload = async () => {
     if (post.type === 'edition' && post.assetId) {
       // Gated download — signature verification
       const downloadUrl = await downloadProtectedAsset(post.assetId)
-      if (downloadUrl) window.open(downloadUrl, '_blank')
+      if (downloadUrl) {
+        window.open(downloadUrl, '_blank')
+        recordDownload(post.assetId, await getAccessToken())
+      }
     } else if (downloadableAssets && downloadableAssets.length > 0) {
       // Use first downloadable asset
       if (post.type === 'edition') {
         const downloadUrl = await downloadProtectedAsset(downloadableAssets[0].id)
-        if (downloadUrl) window.open(downloadUrl, '_blank')
+        if (downloadUrl) {
+          window.open(downloadUrl, '_blank')
+          recordDownload(downloadableAssets[0].id, await getAccessToken())
+        }
       } else {
         window.open(downloadableAssets[0].url, '_blank')
+        recordDownload(downloadableAssets[0].id, await getAccessToken())
       }
     } else if (post.mediaUrl) {
       window.open(post.mediaUrl, '_blank')
@@ -616,6 +632,14 @@ function PostDetailPage() {
           variant="ghost"
           showCount={true}
           onClick={onCommentClick}
+        />
+        <DownloadButton
+          postId={post.id}
+          postType={post.type}
+          assets={downloadableAssets}
+          isCollected={isCollected}
+          variant="ghost"
+          showCount={true}
         />
       </div>
 
@@ -923,9 +947,9 @@ function PostDetailPage() {
           {/* Left column: Media */}
           <div className="flex-1 bg-black min-w-0 relative overflow-hidden">
             <PostMedia
-              mediaUrl={post.mediaUrl}
-              coverUrl={post.coverUrl}
-              mediaType={mediaType}
+              mediaUrl={displayMedia.mediaUrl}
+              coverUrl={displayMedia.coverUrl}
+              mediaType={displayMedia.mediaType}
               alt={post.caption || 'Post media'}
               aspectRatio="auto"
               lazy={false}
@@ -938,7 +962,7 @@ function PostDetailPage() {
               contained
               statusPillText={(mediaType === 'document' || mediaType === '3d') ? display.statusPillText : undefined}
               statusPillColor={postTypeColor}
-              assets={(post as any).assets}
+              assets={displayMedia.displayAssets}
             />
             <MediaOverlay />
           </div>
@@ -1018,6 +1042,12 @@ function PostDetailPage() {
                     ) : null
                   )}
 
+                  <DownloadableAssetsSection
+                    assets={downloadableAssets}
+                    postType={post.type}
+                    isCollected={isCollected}
+                  />
+
                 </div>
 
                 {/* Post info: title, description, action buttons */}
@@ -1042,6 +1072,12 @@ function PostDetailPage() {
                   <UserHeader />
                   {post.caption && <CaptionBlock caption={post.caption} className="mt-3" />}
                   <ActionButtons className="mt-2 -ml-2" />
+                  <DownloadableAssetsSection
+                    assets={downloadableAssets}
+                    postType={post.type}
+                    isCollected={isCollected}
+                    className="mt-3"
+                  />
                 </div>
 
                 <TabBar activeTab={desktopTab} onTabChange={setDesktopTab} />
@@ -1066,9 +1102,9 @@ function PostDetailPage() {
           {/* Media - Full bleed on mobile */}
           <div className="relative bg-background mx-0 md:mx-0">
             <PostMedia
-              mediaUrl={post.mediaUrl}
-              coverUrl={post.coverUrl}
-              mediaType={mediaType}
+              mediaUrl={displayMedia.mediaUrl}
+              coverUrl={displayMedia.coverUrl}
+              mediaType={displayMedia.mediaType}
               alt={post.caption || 'Post media'}
               aspectRatio="auto"
               lazy={false}
@@ -1080,7 +1116,7 @@ function PostDetailPage() {
               assetId={post.assetId}
               statusPillText={(mediaType === 'document' || mediaType === '3d') ? display.statusPillText : undefined}
               statusPillColor={postTypeColor}
-              assets={(post as any).assets}
+              assets={displayMedia.displayAssets}
             />
             <MediaOverlay />
           </div>
@@ -1159,6 +1195,12 @@ function PostDetailPage() {
                       </Button>
                     ) : null
                   )}
+
+                  <DownloadableAssetsSection
+                    assets={downloadableAssets}
+                    postType={post.type}
+                    isCollected={isCollected}
+                  />
                 </div>
 
                 {/* Title + description */}
@@ -1178,6 +1220,11 @@ function PostDetailPage() {
                 {/* Standard post: action buttons + caption */}
                 <div className="pb-4 border-b border-border space-y-2">
                   <ActionButtons onCommentClick={() => setMobileTab('comments')} />
+                  <DownloadableAssetsSection
+                    assets={downloadableAssets}
+                    postType={post.type}
+                    isCollected={isCollected}
+                  />
                   <Caption showAvatar={true} />
                 </div>
 

@@ -520,12 +520,37 @@ export const postAssets = pgTable(
     sortOrder: integer('sort_order').notNull().default(0), // Display order (0-indexed)
     role: assetRoleEnum('role').notNull().default('media'), // 'media' (carousel) or 'download' (download-only)
     isPreviewable: boolean('is_previewable').notNull().default(true), // Whether asset can be previewed in carousel
+    downloadCount: integer('download_count').notNull().default(0), // Net-new download tally (no historical backfill)
     createdAt: timestamp('created_at').notNull().defaultNow(),
   },
   (table) => ({
     postIdIdx: index('post_assets_post_id_idx').on(table.postId),
     postSortIdx: index('post_assets_post_sort_idx').on(table.postId, table.sortOrder),
     postRoleSortIdx: index('post_assets_post_role_sort_idx').on(table.postId, table.role, table.sortOrder),
+  }),
+);
+
+// Per-user download records — powers the unique-per-user download tally.
+// Counting only; never gates the actual download. No historical backfill.
+export const assetDownloads = pgTable(
+  'asset_downloads',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    assetId: uuid('asset_id')
+      .notNull()
+      .references(() => postAssets.id, { onDelete: 'cascade' }),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  },
+  (table) => ({
+    // One counted download per (asset, user); repeat downloads no-op on insert.
+    assetUserUniqueIdx: uniqueIndex('asset_downloads_asset_user_unique_idx').on(
+      table.assetId,
+      table.userId,
+    ),
+    assetIdIdx: index('asset_downloads_asset_id_idx').on(table.assetId),
   }),
 );
 

@@ -210,6 +210,7 @@ export default defineEventHandler(async (event) => {
 						fileSize: postAssets.fileSize,
 						sortOrder: postAssets.sortOrder,
 						isGated: postAssets.isGated,
+						downloadCount: postAssets.downloadCount,
 					})
 					.from(postAssets)
 					.where(
@@ -444,6 +445,7 @@ export default defineEventHandler(async (event) => {
 							fileSize: a.fileSize,
 							sortOrder: a.sortOrder,
 							isGated: a.isGated,
+							downloadCount: a.downloadCount,
 						})) }
 					: {}),
 				user: {

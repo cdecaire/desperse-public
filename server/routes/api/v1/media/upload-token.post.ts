@@ -19,6 +19,7 @@ import { randomUUID } from 'node:crypto'
 import { authenticateWithToken } from '@/server/auth'
 import { generateClientTokenFromReadWriteToken } from '@vercel/blob/client'
 import { SUPPORTED_MEDIA_TYPES, MAX_UPLOAD_MB } from '@/server/storage/blob'
+import { FILE_TOO_LARGE_MESSAGE } from '@/lib/uploadParity'
 
 const MAX_UPLOAD_BYTES = MAX_UPLOAD_MB * 1024 * 1024
 
@@ -95,7 +96,7 @@ export default defineEventHandler(async (event) => {
 		setResponseStatus(event, 400)
 		return {
 			success: false,
-			error: { code: 'VALIDATION_ERROR', message: `File too large. Maximum size is ${MAX_UPLOAD_MB}MB` },
+			error: { code: 'VALIDATION_ERROR', message: FILE_TOO_LARGE_MESSAGE },
 			requestId,
 		}
 	}

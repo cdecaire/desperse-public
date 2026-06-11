@@ -16,6 +16,7 @@ import { processMentions, deleteMentions } from '@/server/utils/mentions'
 import { processHashtags } from '@/server/utils/hashtags'
 import { generateNftMetadata } from '@/server/utils/nft-metadata'
 import { validateMintWindow } from '@/server/utils/mintWindowStatus'
+import { MAX_ASSETS_PER_POST } from '@/lib/uploadParity'
 import { env } from '@/config/env'
 import { excludeDevPostsForUser } from '@/server/utils/dev-posts'
 import { getBlockedUserIdSet, getDirectedBlockState } from '@/server/utils/blocks'
@@ -49,9 +50,6 @@ function validateEditionPrice(price: number, currency: 'SOL' | 'USDC'): string |
   return null
 }
 
-// Max assets per post (for multi-asset support)
-const MAX_ASSETS_PER_POST = 10
-
 // Schema for individual asset in multi-asset posts
 const assetSchema = z.object({
   url: z.string().url(),
@@ -72,8 +70,10 @@ const createPostSchema = z.object({
   categories: z.array(z.string()).max(3).optional().nullable(), // Max 3 categories, validated against presets
   type: postTypeSchema,
   // Multi-asset support (Phase 1: standard posts only)
-  // When provided, mediaUrl is ignored and first asset becomes mediaUrl
+  // When provided, mediaUrl is ignored and first display asset becomes mediaUrl
   assets: z.array(assetSchema).max(MAX_ASSETS_PER_POST).optional().nullable(),
+  // Download-only attachments for bare audio/3D posts
+  downloadableAssets: z.array(assetSchema).max(MAX_ASSETS_PER_POST).optional().nullable(),
   // Collectible-specific fields
   maxSupply: z.number().int().positive().optional().nullable(), // null = unlimited
   // Edition-specific fields
@@ -149,6 +149,9 @@ export const createPost = createServerFn({
     // For multi-asset posts, use the first asset's URL
     const sortedAssets = postData.assets
       ? [...postData.assets].sort((a, b) => a.sortOrder - b.sortOrder)
+      : null
+    const sortedDownloadableAssets = postData.downloadableAssets
+      ? [...postData.downloadableAssets].sort((a, b) => a.sortOrder - b.sortOrder)
       : null
     const primaryMediaUrl = sortedAssets && sortedAssets.length > 0
       ? sortedAssets[0].url
@@ -306,6 +309,17 @@ export const createPost = createServerFn({
       return 'application/octet-stream'
     }
 
+    const isPreviewableMimeType = (mimeType: string): boolean =>
+      mimeType.startsWith('image/') || mimeType.startsWith('video/')
+
+    // Gating applies only to downloadable document types (PDF/ZIP/EPUB), never to
+    // public display media. An image-primary edition with a gated document must keep
+    // its preview image ungated while the document download stays protected.
+    const isDocumentMimeType = (mimeType: string): boolean =>
+      mimeType === 'application/pdf' ||
+      mimeType === 'application/zip' ||
+      mimeType === 'application/epub+zip'
+
     // Determine if download should be protected (editions only, defaults to TRUE for new editions)
     // Non-edition posts are never gated
     const protectDownload = postData.type === 'edition' ? (postData.protectDownload ?? true) : false
@@ -326,7 +340,8 @@ export const createPost = createServerFn({
         storageKey: asset.url,
         mimeType: asset.mimeType || inferMimeType(asset.url),
         fileSize: asset.fileSize || null,
-        isGated: protectDownload,
+        // Gate only document assets — display media (image/video) stays public.
+        isGated: protectDownload && asset.mediaType === 'document',
         sortOrder: index,
         role: 'media' as const,
         isPreviewable: PREVIEWABLE_TYPES.includes(asset.mediaType),
@@ -345,14 +360,32 @@ export const createPost = createServerFn({
         storageKey: mediaUrl,
         mimeType: mimeType,
         fileSize: postData.mediaFileSize || null,
-        isGated: protectDownload,
+        // Gate only when the single primary is itself a document (e.g. a PDF edition).
+        isGated: protectDownload && isDocumentMimeType(mimeType),
         sortOrder: 0,
         role: 'media' as const,
-        isPreviewable: true,
+        isPreviewable: isPreviewableMimeType(mimeType),
       }).returning()
 
       newAsset = singleAsset
       insertedAssets = [singleAsset]
+    }
+
+    if (sortedDownloadableAssets && sortedDownloadableAssets.length > 0) {
+      const baseSortOrder = insertedAssets.length
+      const downloadableValues = sortedDownloadableAssets.map((asset, index) => ({
+        postId: newPost.id,
+        storageProvider: getStorageProvider(asset.url),
+        storageKey: asset.url,
+        mimeType: asset.mimeType || inferMimeType(asset.url),
+        fileSize: asset.fileSize || null,
+        isGated: protectDownload,
+        sortOrder: baseSortOrder + index,
+        role: 'media' as const,
+        isPreviewable: false,
+      }))
+      const insertedDownloadableAssets = await db.insert(postAssets).values(downloadableValues).returning()
+      insertedAssets = [...insertedAssets, ...insertedDownloadableAssets]
     }
 
     // Generate and upload metadata for NFT types
@@ -621,6 +654,8 @@ export const getPost = createServerFn({
         mimeType: postAssets.mimeType,
         fileSize: postAssets.fileSize,
         sortOrder: postAssets.sortOrder,
+        isGated: postAssets.isGated,
+        downloadCount: postAssets.downloadCount,
       })
       .from(postAssets)
       .where(
@@ -993,7 +1028,7 @@ export const getFeed = createServerFn({
     }
 
     // Get downloadable assets for download menu (non-previewable: audio, documents, 3D)
-    let allDownloadableAssets: { postId: string; id: string; url: string; mimeType: string; fileSize: number | null; sortOrder: number }[] = []
+    let allDownloadableAssets: { postId: string; id: string; url: string; mimeType: string; fileSize: number | null; sortOrder: number; isGated: boolean; downloadCount: number }[] = []
     if (allPostIds.length > 0) {
       const downloadableResults = await db
         .select({
@@ -1003,6 +1038,8 @@ export const getFeed = createServerFn({
           mimeType: postAssets.mimeType,
           fileSize: postAssets.fileSize,
           sortOrder: postAssets.sortOrder,
+          isGated: postAssets.isGated,
+          downloadCount: postAssets.downloadCount,
         })
         .from(postAssets)
         .where(

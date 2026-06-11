@@ -3,7 +3,7 @@ export type MediaType = 'image' | 'video' | 'audio' | 'document' | '3d'
 const IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg']
 const VIDEO_EXTENSIONS = ['mp4', 'webm', 'mov']
 const AUDIO_EXTENSIONS = ['mp3', 'wav', 'ogg', 'aac']
-const DOCUMENT_EXTENSIONS = ['pdf', 'zip']
+const DOCUMENT_EXTENSIONS = ['pdf', 'zip', 'epub']
 const THREE_D_EXTENSIONS = ['glb', 'gltf']
 
 /** Media types that require a cover image and are not inline-previewable */
@@ -25,7 +25,7 @@ export function detectMediaType(url: string, mimeType?: string | null): MediaTyp
 		if (mimeType.startsWith('image/')) return 'image'
 		if (mimeType.startsWith('video/')) return 'video'
 		if (mimeType.startsWith('audio/')) return 'audio'
-		if (mimeType === 'application/pdf' || mimeType === 'application/zip') return 'document'
+		if (mimeType === 'application/pdf' || mimeType === 'application/zip' || mimeType === 'application/epub+zip') return 'document'
 	}
 
 	return 'image'

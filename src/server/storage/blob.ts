@@ -4,7 +4,8 @@
  */
 
 import { put, del } from '@vercel/blob'
-import { env } from '@/config/env'
+import { FILE_TOO_LARGE_MESSAGE, MAX_UPLOAD_BYTES } from '@/lib/uploadParity'
+export { MAX_UPLOAD_MB } from '@/lib/uploadParity'
 
 // Supported file types
 export const SUPPORTED_IMAGE_TYPES = [
@@ -18,6 +19,7 @@ export const SUPPORTED_VIDEO_TYPES = ['video/mp4', 'video/webm']
 export const SUPPORTED_AUDIO_TYPES = ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/mp3']
 export const SUPPORTED_DOCUMENT_TYPES = [
   'application/pdf', // Comics, books, zines, art prints
+  'application/epub+zip', // EPUB books
   'application/zip', // ZIP archives
 ]
 export const SUPPORTED_3D_TYPES = [
@@ -47,6 +49,7 @@ export const MIME_TO_EXTENSION: Record<string, string> = {
   'audio/wav': 'wav',
   'audio/ogg': 'ogg',
   'application/pdf': 'pdf',
+  'application/epub+zip': 'epub',
   'application/zip': 'zip',
   'model/gltf-binary': 'glb',
   'model/gltf+json': 'gltf',
@@ -91,10 +94,7 @@ export function isValidMediaType(mimeType: string): boolean {
 /**
  * Validate file size (in bytes)
  */
-// Hard-cap uploads to avoid browser crashes and server limits.
-// Even if env is set higher, we won't accept files larger than this cap.
-export const MAX_UPLOAD_MB = Math.min(env.MAX_FILE_SIZE_MB, 25)
-const MAX_UPLOAD_BYTES = MAX_UPLOAD_MB * 1024 * 1024
+// Hard-cap uploads to match iOS and API limits.
 
 export function isValidFileSize(sizeInBytes: number): boolean {
   return sizeInBytes <= MAX_UPLOAD_BYTES
@@ -160,7 +160,7 @@ export async function uploadToBlob(
   if (!isValidFileSize(file.size)) {
     return {
       success: false,
-      error: `File too large. Maximum size is ${env.MAX_FILE_SIZE_MB} MB.`,
+      error: FILE_TOO_LARGE_MESSAGE,
       code: 'FILE_TOO_LARGE',
     }
   }

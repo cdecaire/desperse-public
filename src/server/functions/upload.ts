@@ -24,7 +24,7 @@ import {
   MAX_UPLOAD_MB,
   type MediaType,
 } from '@/server/storage/blob'
-import { env } from '@/config/env'
+import { FILE_TOO_LARGE_MESSAGE, MAX_UPLOAD_BYTES } from '@/lib/uploadParity'
 import { withAuth } from '@/server/auth'
 import { deleteOwnedMedia, recordMediaUpload } from '@/server/utils/upload-ownership'
 
@@ -107,7 +107,7 @@ export const uploadMedia = createServerFn({
     if (!isValidFileSize(fileSize)) {
       return {
         success: false,
-        error: `File too large. Maximum size is ${MAX_UPLOAD_MB} MB.`,
+        error: FILE_TOO_LARGE_MESSAGE,
         code: 'FILE_TOO_LARGE',
       }
     }
@@ -221,8 +221,8 @@ export const getUploadConfig = createServerFn({
   method: 'GET',
 }).handler(async () => {
   return {
-    maxFileSizeMB: env.MAX_FILE_SIZE_MB,
-    maxFileSizeBytes: env.MAX_FILE_SIZE_MB * 1024 * 1024,
+    maxFileSizeMB: MAX_UPLOAD_MB,
+    maxFileSizeBytes: MAX_UPLOAD_BYTES,
     supportedTypes: SUPPORTED_MEDIA_TYPES,
     supportedImageTypes: SUPPORTED_IMAGE_TYPES,
     supportedVideoTypes: SUPPORTED_VIDEO_TYPES,

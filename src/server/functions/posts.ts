@@ -19,6 +19,7 @@ import { validateMintWindow } from '@/server/utils/mintWindowStatus'
 import { env } from '@/config/env'
 import { excludeDevPostsForUser } from '@/server/utils/dev-posts'
 import { getBlockedUserIdSet, getDirectedBlockState } from '@/server/utils/blocks'
+import { hasProtectedDocumentAsset, shouldGateAssetDownload, sortCreatePostAssets } from '@/lib/postAssets'
 
 // Post type enum
 const postTypeSchema = z.enum(['post', 'collectible', 'edition'])
@@ -147,10 +148,8 @@ export const createPost = createServerFn({
 
     // Determine the primary media URL
     // For multi-asset posts, use the first asset's URL
-    const sortedAssets = postData.assets
-      ? [...postData.assets].sort((a, b) => a.sortOrder - b.sortOrder)
-      : null
-    const primaryMediaUrl = sortedAssets && sortedAssets.length > 0
+    const sortedAssets = sortCreatePostAssets(postData.assets)
+    const primaryMediaUrl = sortedAssets.length > 0
       ? sortedAssets[0].url
       : postData.mediaUrl
 
@@ -171,9 +170,14 @@ export const createPost = createServerFn({
 
       // Require cover image for protected document downloads (ZIP, PDF, EPUB)
       // This prevents exposing the actual asset URL in NFT metadata
-      const isDocumentType = primaryMediaUrl.match(/\.(pdf|zip|epub)$/i)
       const protectDownload = postData.protectDownload ?? true
-      if (isDocumentType && protectDownload && !postData.coverUrl) {
+      const requiresProtectedDocumentCover = hasProtectedDocumentAsset({
+        assets: sortedAssets,
+        fallbackMediaUrl: postData.mediaUrl,
+        fallbackMediaMimeType: postData.mediaMimeType,
+        protectDownload,
+      })
+      if (requiresProtectedDocumentCover && !postData.coverUrl) {
         return {
           success: false,
           error: 'Cover image is required for protected document downloads.',
@@ -316,7 +320,7 @@ export const createPost = createServerFn({
     let newAsset: typeof postAssets.$inferSelect
     let insertedAssets: typeof postAssets.$inferSelect[] = []
 
-    if (sortedAssets && sortedAssets.length > 0) {
+    if (sortedAssets.length > 0) {
       // Multi-asset flow
       // Previewable types go in carousel, downloadable types are available via menu
       const PREVIEWABLE_TYPES = ['image', 'video']
@@ -326,7 +330,7 @@ export const createPost = createServerFn({
         storageKey: asset.url,
         mimeType: asset.mimeType || inferMimeType(asset.url),
         fileSize: asset.fileSize || null,
-        isGated: protectDownload,
+        isGated: shouldGateAssetDownload(asset, protectDownload),
         sortOrder: index,
         role: 'media' as const,
         isPreviewable: PREVIEWABLE_TYPES.includes(asset.mediaType),

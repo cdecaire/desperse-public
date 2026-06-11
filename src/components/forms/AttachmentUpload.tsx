@@ -34,16 +34,18 @@ interface AttachmentUploadProps {
 	initialAttachment?: UploadedAttachment | null
 }
 
+type DeleteMediaInput = Parameters<typeof deleteMedia>[0]
+
 function isDocumentByExtension(fileName: string): boolean {
 	const ext = fileName.toLowerCase().split(".").pop()
 	return ext === "pdf" || ext === "zip" || ext === "epub"
 }
 
 function normalizeMimeType(file: File): string {
+	if (file.name.toLowerCase().endsWith(".epub")) return "application/epub+zip"
 	if (file.type && SUPPORTED_ATTACHMENT_TYPES.includes(file.type)) return file.type
 	if (file.name.toLowerCase().endsWith(".pdf")) return "application/pdf"
 	if (file.name.toLowerCase().endsWith(".zip")) return "application/zip"
-	if (file.name.toLowerCase().endsWith(".epub")) return "application/epub+zip"
 	return file.type || "application/octet-stream"
 }
 
@@ -196,7 +198,12 @@ export function AttachmentUpload({
 		if (attachment?.url) {
 			const accessToken = await getAccessToken()
 			if (accessToken) {
-				deleteMedia({ data: { _authorization: accessToken, url: attachment.url } } as unknown as Parameters<typeof deleteMedia>[0]).catch(console.error)
+				const deletePayload = { _authorization: accessToken, url: attachment.url } satisfies {
+					_authorization: string
+					url: string
+				}
+				const deleteInput = { data: deletePayload } as unknown as DeleteMediaInput
+				deleteMedia(deleteInput).catch(console.error)
 			}
 		}
 

@@ -11,6 +11,7 @@ import { MediaUpload, type UploadedMedia } from './MediaUpload'
 import { AttachmentUpload, type UploadedAttachment } from './AttachmentUpload'
 import { MultiMediaUpload, type UploadedMediaItem } from './MultiMediaUpload'
 import { NON_PREVIEWABLE_TYPES } from '@/lib/media'
+import { buildCreatePostAssets } from '@/lib/postAssets'
 import { isMultiAssetEnabled, isMultiAssetCollectibleEnabled, isMultiAssetEditionEnabled, isArweaveStorageEnabled } from '@/config/env'
 import { PostTypeSelector, type PostType } from './PostTypeSelector'
 import { useCreatorSettings } from '@/hooks/useCreatorSettings'
@@ -504,41 +505,11 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
       const authHeaders = await getAuthHeaders()
       const authorization = authHeaders.Authorization || ''
       const isNftPost = formState.type === 'edition' || formState.type === 'collectible'
-      const primaryMediaType = uploadedMedia?.mediaType ?? null
-      const displayAssets = multiAssetItems.length > 0 &&
-        (formState.type === 'post' || formState.type === 'collectible' || formState.type === 'edition')
-        ? multiAssetItems.map((item, index) => ({
-            url: item.url,
-            mediaType: item.mediaType,
-            fileName: item.fileName,
-            mimeType: item.mimeType,
-            fileSize: item.fileSize,
-            sortOrder: item.sortOrder ?? index,
-          }))
-        : uploadedMedia && uploadedMedia.url && primaryMediaType !== 'audio' && primaryMediaType !== '3d'
-          ? [{
-              url: uploadedMedia.url,
-              mediaType: uploadedMedia.mediaType,
-              fileName: uploadedMedia.fileName,
-              mimeType: uploadedMedia.mimeType,
-              fileSize: uploadedMedia.fileSize,
-              sortOrder: 0,
-            }]
-          : []
-
-      const attachmentAsset = uploadedAttachment
-        ? {
-            url: uploadedAttachment.url,
-            mediaType: 'document' as const,
-            fileName: uploadedAttachment.fileName,
-            mimeType: uploadedAttachment.mimeType,
-            fileSize: uploadedAttachment.fileSize,
-            sortOrder: displayAssets.length,
-          }
-        : null
-
-      const assetsForCreate = [...displayAssets, ...(attachmentAsset ? [attachmentAsset] : [])]
-      const hasDocumentAttachment = !!uploadedAttachment
+      const { assetsForCreate, hasDocumentAttachment } = buildCreatePostAssets({
+        multiAssetItems,
+        uploadedMedia,
+        uploadedAttachment,
+      })
 
       const result = await createPost(
         wrapInput({

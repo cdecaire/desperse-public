@@ -312,6 +312,14 @@ export const createPost = createServerFn({
     const isPreviewableMimeType = (mimeType: string): boolean =>
       mimeType.startsWith('image/') || mimeType.startsWith('video/')
 
+    // Gating applies only to downloadable document types (PDF/ZIP/EPUB), never to
+    // public display media. An image-primary edition with a gated document must keep
+    // its preview image ungated while the document download stays protected.
+    const isDocumentMimeType = (mimeType: string): boolean =>
+      mimeType === 'application/pdf' ||
+      mimeType === 'application/zip' ||
+      mimeType === 'application/epub+zip'
+
     // Determine if download should be protected (editions only, defaults to TRUE for new editions)
     // Non-edition posts are never gated
     const protectDownload = postData.type === 'edition' ? (postData.protectDownload ?? true) : false
@@ -332,7 +340,8 @@ export const createPost = createServerFn({
         storageKey: asset.url,
         mimeType: asset.mimeType || inferMimeType(asset.url),
         fileSize: asset.fileSize || null,
-        isGated: protectDownload,
+        // Gate only document assets — display media (image/video) stays public.
+        isGated: protectDownload && asset.mediaType === 'document',
         sortOrder: index,
         role: 'media' as const,
         isPreviewable: PREVIEWABLE_TYPES.includes(asset.mediaType),
@@ -351,7 +360,8 @@ export const createPost = createServerFn({
         storageKey: mediaUrl,
         mimeType: mimeType,
         fileSize: postData.mediaFileSize || null,
-        isGated: protectDownload,
+        // Gate only when the single primary is itself a document (e.g. a PDF edition).
+        isGated: protectDownload && isDocumentMimeType(mimeType),
         sortOrder: 0,
         role: 'media' as const,
         isPreviewable: isPreviewableMimeType(mimeType),

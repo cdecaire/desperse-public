@@ -520,6 +520,7 @@ export const postAssets = pgTable(
     sortOrder: integer('sort_order').notNull().default(0), // Display order (0-indexed)
     role: assetRoleEnum('role').notNull().default('media'), // 'media' (carousel) or 'download' (download-only)
     isPreviewable: boolean('is_previewable').notNull().default(true), // Whether asset can be previewed in carousel
+    downloadCount: integer('download_count').notNull().default(0), // Net-new download tally (no historical backfill)
     createdAt: timestamp('created_at').notNull().defaultNow(),
   },
   (table) => ({

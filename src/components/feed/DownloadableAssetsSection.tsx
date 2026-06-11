@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icon'
 import { toast } from '@/hooks/use-toast'
 import { useGatedDownload } from '@/hooks/useGatedDownload'
+import { recordDownload } from '@/lib/recordDownload'
 import {
   formatAssetFileSize,
   getAssetIconName,
@@ -39,11 +40,15 @@ export function DownloadableAssetsSection({
 
     if (postType === 'edition' || asset.isGated) {
       const downloadUrl = await downloadProtectedAsset(asset.id)
-      if (downloadUrl) window.open(downloadUrl, '_blank')
+      if (downloadUrl) {
+        window.open(downloadUrl, '_blank')
+        recordDownload(asset.id)
+      }
       return
     }
 
     window.open(asset.url, '_blank')
+    recordDownload(asset.id)
   }
 
   return (

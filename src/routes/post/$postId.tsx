@@ -33,6 +33,7 @@ import { MintWindowBadge } from '@/components/feed/MintWindowBadge'
 import { useGatedDownload } from '@/hooks/useGatedDownload'
 import { getExplorerUrl } from '@/server/functions/preferences'
 import { formatRelativeTime } from '@/lib/dates'
+import { recordDownload } from '@/lib/recordDownload'
 import { LICENSE_LABELS } from '@/components/forms/CopyrightFields'
 import { usePreferences } from '@/hooks/usePreferences'
 import { usePostCollectors, useFollowMutation } from '@/hooks/useProfileQuery'
@@ -570,14 +571,21 @@ function PostDetailPage() {
     if (post.type === 'edition' && post.assetId) {
       // Gated download — signature verification
       const downloadUrl = await downloadProtectedAsset(post.assetId)
-      if (downloadUrl) window.open(downloadUrl, '_blank')
+      if (downloadUrl) {
+        window.open(downloadUrl, '_blank')
+        recordDownload(post.assetId)
+      }
     } else if (downloadableAssets && downloadableAssets.length > 0) {
       // Use first downloadable asset
       if (post.type === 'edition') {
         const downloadUrl = await downloadProtectedAsset(downloadableAssets[0].id)
-        if (downloadUrl) window.open(downloadUrl, '_blank')
+        if (downloadUrl) {
+          window.open(downloadUrl, '_blank')
+          recordDownload(downloadableAssets[0].id)
+        }
       } else {
         window.open(downloadableAssets[0].url, '_blank')
+        recordDownload(downloadableAssets[0].id)
       }
     } else if (post.mediaUrl) {
       window.open(post.mediaUrl, '_blank')

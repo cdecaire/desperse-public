@@ -215,6 +215,7 @@ export async function getPostDirect(
 				fileSize: postAssets.fileSize,
 				sortOrder: postAssets.sortOrder,
 				isGated: postAssets.isGated,
+				downloadCount: postAssets.downloadCount,
 			})
 			.from(postAssets)
 			.where(

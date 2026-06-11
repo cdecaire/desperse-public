@@ -654,6 +654,8 @@ export const getPost = createServerFn({
         mimeType: postAssets.mimeType,
         fileSize: postAssets.fileSize,
         sortOrder: postAssets.sortOrder,
+        isGated: postAssets.isGated,
+        downloadCount: postAssets.downloadCount,
       })
       .from(postAssets)
       .where(
@@ -1026,7 +1028,7 @@ export const getFeed = createServerFn({
     }
 
     // Get downloadable assets for download menu (non-previewable: audio, documents, 3D)
-    let allDownloadableAssets: { postId: string; id: string; url: string; mimeType: string; fileSize: number | null; sortOrder: number }[] = []
+    let allDownloadableAssets: { postId: string; id: string; url: string; mimeType: string; fileSize: number | null; sortOrder: number; isGated: boolean; downloadCount: number }[] = []
     if (allPostIds.length > 0) {
       const downloadableResults = await db
         .select({
@@ -1036,6 +1038,8 @@ export const getFeed = createServerFn({
           mimeType: postAssets.mimeType,
           fileSize: postAssets.fileSize,
           sortOrder: postAssets.sortOrder,
+          isGated: postAssets.isGated,
+          downloadCount: postAssets.downloadCount,
         })
         .from(postAssets)
         .where(

@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils'
 import { Icon } from '@/components/ui/icon'
 import { toast } from '@/hooks/use-toast'
 import { useGatedDownload } from '@/hooks/useGatedDownload'
+import { recordDownload } from '@/lib/recordDownload'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import {
   getTotalDownloadCount,
@@ -64,11 +65,15 @@ export function DownloadButton({
 
     if (postType === 'edition' || single.isGated) {
       const downloadUrl = await downloadProtectedAsset(single.id)
-      if (downloadUrl) window.open(downloadUrl, '_blank')
+      if (downloadUrl) {
+        window.open(downloadUrl, '_blank')
+        recordDownload(single.id)
+      }
       return
     }
 
     window.open(single.url, '_blank')
+    recordDownload(single.id)
   }
 
   const locked = !canDownload

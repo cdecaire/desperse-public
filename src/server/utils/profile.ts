@@ -381,7 +381,7 @@ export async function getUserPostsDirect(
 		const likedPostIds = new Set<string>()
 		const collectedPostIds = new Set<string>()
 		const assetsByPostId = new Map<string, Array<{ id: string; url: string; mimeType: string; sortOrder: number }>>()
-		const downloadableByPostId = new Map<string, Array<{ id: string; postId: string; url: string; mimeType: string; fileSize: number | null; sortOrder: number }>>()
+		const downloadableByPostId = new Map<string, Array<{ id: string; postId: string; url: string; mimeType: string; fileSize: number | null; sortOrder: number; isGated: boolean; downloadCount: number }>>()
 
 		if (postIds.length > 0) {
 			// Like counts using Drizzle query builder
@@ -498,6 +498,8 @@ export async function getUserPostsDirect(
 					mimeType: postAssets.mimeType,
 					fileSize: postAssets.fileSize,
 					sortOrder: postAssets.sortOrder,
+					isGated: postAssets.isGated,
+					downloadCount: postAssets.downloadCount,
 				})
 				.from(postAssets)
 				.where(
@@ -586,6 +588,8 @@ export async function getUserPostsDirect(
 								mimeType: a.mimeType,
 								fileSize: a.fileSize,
 								sortOrder: a.sortOrder,
+								isGated: a.isGated,
+								downloadCount: a.downloadCount,
 							})) }
 						: {}),
 					user: {

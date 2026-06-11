@@ -1,19 +1,26 @@
 import { and, eq, sql } from 'drizzle-orm'
 import { db } from '@/server/db'
-import { postAssets } from '@/server/db/schema'
+import { assetDownloads, postAssets } from '@/server/db/schema'
 
 /**
- * Atomically record one net-new download for a downloadable asset.
+ * Record a unique-per-user download for a downloadable asset.
  *
- * Uses an atomic `UPDATE ... +1` (no read-modify-write, per the codebase's
- * concurrency rules). Scoped to actual downloadable assets (role 'media',
- * non-previewable) so it can't be used to bump arbitrary rows. Returns whether
- * a row was updated.
+ * Counting only — this never gates or blocks the actual download; the caller has
+ * already served the file. A user may re-download freely; only their first
+ * download of a given asset is counted.
+ *
+ * Inserts an (asset, user) row with ON CONFLICT DO NOTHING. If (and only if) a
+ * new row is created, the denormalized `post_assets.download_count` is atomically
+ * bumped. Returns whether this download was newly counted.
  */
-export async function recordAssetDownload(assetId: string): Promise<boolean> {
-  const updated = await db
-    .update(postAssets)
-    .set({ downloadCount: sql`${postAssets.downloadCount} + 1` })
+export async function recordAssetDownload(
+  assetId: string,
+  userId: string,
+): Promise<{ recorded: boolean }> {
+  // Guard: only real downloadable assets can be counted.
+  const [asset] = await db
+    .select({ id: postAssets.id })
+    .from(postAssets)
     .where(
       and(
         eq(postAssets.id, assetId),
@@ -21,7 +28,27 @@ export async function recordAssetDownload(assetId: string): Promise<boolean> {
         eq(postAssets.isPreviewable, false),
       ),
     )
-    .returning({ id: postAssets.id })
+    .limit(1)
 
-  return updated.length > 0
+  if (!asset) return { recorded: false }
+
+  const inserted = await db
+    .insert(assetDownloads)
+    .values({ assetId, userId })
+    .onConflictDoNothing({
+      target: [assetDownloads.assetId, assetDownloads.userId],
+    })
+    .returning({ id: assetDownloads.id })
+
+  if (inserted.length === 0) {
+    // This user already counted toward this asset — no-op (re-download is fine).
+    return { recorded: false }
+  }
+
+  await db
+    .update(postAssets)
+    .set({ downloadCount: sql`${postAssets.downloadCount} + 1` })
+    .where(eq(postAssets.id, assetId))
+
+  return { recorded: true }
 }

@@ -2,21 +2,23 @@
  * Record Download Endpoint
  * POST /api/v1/media/record-download
  *
- * Increments the net-new download tally for a downloadable asset. Called as a
- * fire-and-forget beacon by the web client after a successful download (both
- * free and gated). Intentionally unauthenticated — free downloads are anonymous
- * — and scoped server-side to real downloadable assets.
+ * Records a unique-per-user download for a downloadable asset (counting only —
+ * never gates the download). Requires auth: the count is keyed on the user, so
+ * anonymous downloads are simply not counted (and never error the download UX).
  *
- * Body: { assetId: string }
+ * Header: Authorization: Bearer <token>
+ * Body:   { assetId: string }
+ * Returns: { success, data: { recorded: boolean } }
  */
 
 import {
 	defineEventHandler,
+	getHeader,
 	readBody,
 	setHeaders,
-	setResponseStatus,
 } from 'h3'
 import { randomUUID } from 'node:crypto'
+import { authenticateWithToken } from '@/server/auth'
 import { recordAssetDownload } from '@/server/utils/downloads'
 
 export default defineEventHandler(async (event) => {
@@ -28,42 +30,38 @@ export default defineEventHandler(async (event) => {
 		'Cache-Control': 'no-store',
 	})
 
+	// Parse body
 	let body: { assetId?: string }
 	try {
 		body = ((await readBody(event)) as typeof body) ?? {}
 	} catch {
-		setResponseStatus(event, 400)
-		return {
-			success: false,
-			error: { code: 'VALIDATION_ERROR', message: 'Invalid request body' },
-			requestId,
-		}
+		return { success: true, data: { recorded: false }, requestId }
 	}
 
 	const assetId = body.assetId?.trim()
 	if (!assetId) {
-		setResponseStatus(event, 400)
-		return {
-			success: false,
-			error: { code: 'VALIDATION_ERROR', message: 'assetId is required' },
-			requestId,
-		}
+		return { success: true, data: { recorded: false }, requestId }
+	}
+
+	// Auth is required to attribute a unique download. Missing/invalid auth is not
+	// an error — the download already happened; we just don't count it.
+	const authHeader = getHeader(event, 'authorization')
+	const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : authHeader
+	if (!token) {
+		return { success: true, data: { recorded: false }, requestId }
+	}
+
+	const auth = await authenticateWithToken(token)
+	if (!auth) {
+		return { success: true, data: { recorded: false }, requestId }
 	}
 
 	try {
-		const recorded = await recordAssetDownload(assetId)
-		return {
-			success: true,
-			data: { recorded },
-			requestId,
-		}
+		const { recorded } = await recordAssetDownload(assetId, auth.userId)
+		return { success: true, data: { recorded }, requestId }
 	} catch (error) {
 		console.error(`[record-download][${requestId}] Error:`, error)
-		setResponseStatus(event, 500)
-		return {
-			success: false,
-			error: { code: 'INTERNAL_ERROR', message: 'Failed to record download' },
-			requestId,
-		}
+		// Never surface a failure to the download UX — just don't count.
+		return { success: true, data: { recorded: false }, requestId }
 	}
 })

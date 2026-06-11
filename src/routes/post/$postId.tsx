@@ -437,7 +437,7 @@ function CollectorsList({
 
 function PostDetailPage() {
   const { postId } = Route.useParams()
-  const { isAuthenticated, isReady, login } = useAuth()
+  const { isAuthenticated, isReady, login, getAccessToken } = useAuth()
   const { user: currentUser, isLoading: isCurrentUserLoading, isAuthInitializing } = useCurrentUser()
   // User state is settled when auth is initialized and user data is loaded
   const isUserReady = !isAuthInitializing && !isCurrentUserLoading
@@ -574,7 +574,7 @@ function PostDetailPage() {
       const downloadUrl = await downloadProtectedAsset(post.assetId)
       if (downloadUrl) {
         window.open(downloadUrl, '_blank')
-        recordDownload(post.assetId)
+        recordDownload(post.assetId, await getAccessToken())
       }
     } else if (downloadableAssets && downloadableAssets.length > 0) {
       // Use first downloadable asset
@@ -582,11 +582,11 @@ function PostDetailPage() {
         const downloadUrl = await downloadProtectedAsset(downloadableAssets[0].id)
         if (downloadUrl) {
           window.open(downloadUrl, '_blank')
-          recordDownload(downloadableAssets[0].id)
+          recordDownload(downloadableAssets[0].id, await getAccessToken())
         }
       } else {
         window.open(downloadableAssets[0].url, '_blank')
-        recordDownload(downloadableAssets[0].id)
+        recordDownload(downloadableAssets[0].id, await getAccessToken())
       }
     } else if (post.mediaUrl) {
       window.open(post.mediaUrl, '_blank')

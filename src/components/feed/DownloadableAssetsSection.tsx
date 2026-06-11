@@ -5,6 +5,7 @@ import { Icon } from '@/components/ui/icon'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { toast } from '@/hooks/use-toast'
 import { useGatedDownload } from '@/hooks/useGatedDownload'
+import { useAuth } from '@/hooks/useAuth'
 import { recordDownload } from '@/lib/recordDownload'
 import {
   formatAssetFileSize,
@@ -30,6 +31,7 @@ export function DownloadableAssetsSection({
   compact = false,
 }: DownloadableAssetsSectionProps) {
   const { downloadProtectedAsset, isAuthenticating } = useGatedDownload()
+  const { getAccessToken } = useAuth()
   const canDownload = hasDownloadAccess(postType, isCollected)
   // Optimistic per-asset download bumps + in-flight asset id, so the count ticks
   // up immediately and the button shows a spinner (matching the like affordance).
@@ -59,8 +61,12 @@ export function DownloadableAssetsSection({
       }
 
       if (opened) {
-        recordDownload(asset.id)
-        setBumps((prev) => ({ ...prev, [asset.id]: (prev[asset.id] ?? 0) + 1 }))
+        // Count once per user; the download already happened regardless.
+        const token = await getAccessToken()
+        const recorded = await recordDownload(asset.id, token)
+        if (recorded) {
+          setBumps((prev) => ({ ...prev, [asset.id]: (prev[asset.id] ?? 0) + 1 }))
+        }
       }
     } finally {
       setPendingId(null)

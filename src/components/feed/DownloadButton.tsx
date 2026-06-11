@@ -17,6 +17,7 @@ import { cn } from '@/lib/utils'
 import { Icon } from '@/components/ui/icon'
 import { toast } from '@/hooks/use-toast'
 import { useGatedDownload } from '@/hooks/useGatedDownload'
+import { useAuth } from '@/hooks/useAuth'
 import { recordDownload } from '@/lib/recordDownload'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import {
@@ -46,6 +47,7 @@ export function DownloadButton({
 }: DownloadButtonProps) {
   const navigate = useNavigate()
   const { downloadProtectedAsset, isAuthenticating } = useGatedDownload()
+  const { getAccessToken } = useAuth()
   const serverCount = getTotalDownloadCount(assets)
   const [localCount, setLocalCount] = useState(serverCount)
   const [pending, setPending] = useState(false)
@@ -89,8 +91,10 @@ export function DownloadButton({
       }
 
       if (opened) {
-        recordDownload(single.id)
-        setLocalCount((current) => current + 1)
+        // Count once per user; never blocks the download that already happened.
+        const token = await getAccessToken()
+        const recorded = await recordDownload(single.id, token)
+        if (recorded) setLocalCount((current) => current + 1)
       }
     } finally {
       setPending(false)

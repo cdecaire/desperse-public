@@ -530,6 +530,30 @@ export const postAssets = pgTable(
   }),
 );
 
+// Per-user download records — powers the unique-per-user download tally.
+// Counting only; never gates the actual download. No historical backfill.
+export const assetDownloads = pgTable(
+  'asset_downloads',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    assetId: uuid('asset_id')
+      .notNull()
+      .references(() => postAssets.id, { onDelete: 'cascade' }),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  },
+  (table) => ({
+    // One counted download per (asset, user); repeat downloads no-op on insert.
+    assetUserUniqueIdx: uniqueIndex('asset_downloads_asset_user_unique_idx').on(
+      table.assetId,
+      table.userId,
+    ),
+    assetIdIdx: index('asset_downloads_asset_id_idx').on(table.assetId),
+  }),
+);
+
 // Uploaded media ownership table (for temporary and pre-post Vercel Blob uploads)
 export const mediaUploads = pgTable(
   'media_uploads',

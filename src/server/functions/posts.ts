@@ -72,8 +72,10 @@ const createPostSchema = z.object({
   categories: z.array(z.string()).max(3).optional().nullable(), // Max 3 categories, validated against presets
   type: postTypeSchema,
   // Multi-asset support (Phase 1: standard posts only)
-  // When provided, mediaUrl is ignored and first asset becomes mediaUrl
+  // When provided, mediaUrl is ignored and first display asset becomes mediaUrl
   assets: z.array(assetSchema).max(MAX_ASSETS_PER_POST).optional().nullable(),
+  // Download-only attachments for bare audio/3D posts
+  downloadableAssets: z.array(assetSchema).max(MAX_ASSETS_PER_POST).optional().nullable(),
   // Collectible-specific fields
   maxSupply: z.number().int().positive().optional().nullable(), // null = unlimited
   // Edition-specific fields
@@ -149,6 +151,9 @@ export const createPost = createServerFn({
     // For multi-asset posts, use the first asset's URL
     const sortedAssets = postData.assets
       ? [...postData.assets].sort((a, b) => a.sortOrder - b.sortOrder)
+      : null
+    const sortedDownloadableAssets = postData.downloadableAssets
+      ? [...postData.downloadableAssets].sort((a, b) => a.sortOrder - b.sortOrder)
       : null
     const primaryMediaUrl = sortedAssets && sortedAssets.length > 0
       ? sortedAssets[0].url
@@ -306,6 +311,9 @@ export const createPost = createServerFn({
       return 'application/octet-stream'
     }
 
+    const isPreviewableMimeType = (mimeType: string): boolean =>
+      mimeType.startsWith('image/') || mimeType.startsWith('video/')
+
     // Determine if download should be protected (editions only, defaults to TRUE for new editions)
     // Non-edition posts are never gated
     const protectDownload = postData.type === 'edition' ? (postData.protectDownload ?? true) : false
@@ -348,11 +356,28 @@ export const createPost = createServerFn({
         isGated: protectDownload,
         sortOrder: 0,
         role: 'media' as const,
-        isPreviewable: true,
+        isPreviewable: isPreviewableMimeType(mimeType),
       }).returning()
 
       newAsset = singleAsset
       insertedAssets = [singleAsset]
+    }
+
+    if (sortedDownloadableAssets && sortedDownloadableAssets.length > 0) {
+      const baseSortOrder = insertedAssets.length
+      const downloadableValues = sortedDownloadableAssets.map((asset, index) => ({
+        postId: newPost.id,
+        storageProvider: getStorageProvider(asset.url),
+        storageKey: asset.url,
+        mimeType: asset.mimeType || inferMimeType(asset.url),
+        fileSize: asset.fileSize || null,
+        isGated: protectDownload,
+        sortOrder: baseSortOrder + index,
+        role: 'media' as const,
+        isPreviewable: false,
+      }))
+      const insertedDownloadableAssets = await db.insert(postAssets).values(downloadableValues).returning()
+      insertedAssets = [...insertedAssets, ...insertedDownloadableAssets]
     }
 
     // Generate and upload metadata for NFT types

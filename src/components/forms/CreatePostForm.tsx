@@ -98,6 +98,7 @@ interface FormState {
 
 interface CreatePostFormProps {
   mode?: 'create' | 'edit'
+  firstPostMode?: boolean
   initialPost?: {
     id: string
     type: PostType
@@ -128,7 +129,7 @@ interface CreatePostFormProps {
   }
 }
 
-export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormProps = {}) {
+export function CreatePostForm({ mode = 'create', firstPostMode = false, initialPost }: CreatePostFormProps = {}) {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const { user } = useCurrentUser()
@@ -840,6 +841,7 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
               storageType: type === 'edition' ? prev.storageType : 'centralized',
             }))}
             disabled={isSubmitting}
+            firstPostMode={firstPostMode}
           />
         )}
 

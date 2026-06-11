@@ -15,10 +15,15 @@ import { PageHeader } from '@/components/shared/PageHeader'
 import { clearCreateIntent, readCreateIntent } from '@/lib/createIntent'
 
 const createSearchSchema = z.object({
-  firstPost: z.preprocess(
-    (value) => value === true || value === 'true' || value === '1',
-    z.boolean().optional().default(false)
-  ),
+  // Optional on input so `<Link to="/create">` doesn't require a search param;
+  // coerces the string query value to a boolean, defaulting to false when absent.
+  firstPost: z
+    .preprocess(
+      (value) => value === true || value === 'true' || value === '1',
+      z.boolean(),
+    )
+    .optional()
+    .default(false),
 })
 
 export const Route = createFileRoute('/create/')({

@@ -22,6 +22,9 @@ export function AuthGuard({ children }: AuthGuardProps) {
   const { isOpen: isAuthModalOpen } = useModalStatus()
   const navigate = useNavigate()
   const hasRequestedAuthRef = useRef(false)
+  // Tracks that the login modal actually opened, so we don't bounce home in the
+  // brief window after login() is called but before the modal has rendered.
+  const hasOpenedModalRef = useRef(false)
 
   useEffect(() => {
     if (!isReady || isAuthenticated) {
@@ -45,8 +48,20 @@ export function AuthGuard({ children }: AuthGuardProps) {
     }
   }, [isReady, isAuthenticated, login, navigate])
 
+  // Record that the auth modal has opened at least once for this request.
   useEffect(() => {
-    if (!isReady || isAuthenticated || !hasRequestedAuthRef.current || isAuthModalOpen) {
+    if (isAuthModalOpen) {
+      hasOpenedModalRef.current = true
+    }
+  }, [isAuthModalOpen])
+
+  // Once the modal has been opened and then dismissed without authenticating,
+  // send the user home instead of stranding them on the spinner.
+  useEffect(() => {
+    if (!isReady || isAuthenticated || !hasRequestedAuthRef.current) {
+      return
+    }
+    if (!hasOpenedModalRef.current || isAuthModalOpen) {
       return
     }
 

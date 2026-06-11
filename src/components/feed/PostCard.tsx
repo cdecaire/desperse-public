@@ -7,7 +7,6 @@ import { Link, useNavigate } from '@tanstack/react-router'
 import { useQueryClient } from '@tanstack/react-query'
 import { cn } from '@/lib/utils'
 import { PostMedia } from './PostMedia'
-import { detectMediaType } from '@/lib/media'
 import type { CarouselAsset } from './MediaCarousel'
 import { CollectButton } from './CollectButton'
 import { BuyButton } from './BuyButton'
@@ -16,6 +15,8 @@ import { CommentButton } from './CommentButton'
 import { CommentSheet } from './CommentSheet'
 import { HeartAnimation } from './HeartAnimation'
 import { PostCardMenu } from './PostCardMenu'
+import { DownloadableAssetsSection } from './DownloadableAssetsSection'
+import { getPrimaryDisplayMedia, type DownloadableAsset } from './postAssets'
 import { PriceTooltip } from './PriceTooltip'
 import { useCommentCount } from '@/hooks/useComments'
 import { useCreateReport } from '@/hooks/useReports'
@@ -129,14 +130,8 @@ export interface PostCardData {
   sellerFeeBasisPoints?: number | null
   /** Multi-asset support: array of carousel assets */
   assets?: CarouselAsset[]
-  /** Downloadable assets (audio, documents, 3D) for download menu */
-  downloadableAssets?: Array<{
-    id: string
-    url: string
-    mimeType: string | null
-    fileSize: number | null
-    sortOrder: number
-  }>
+  /** Downloadable assets (audio, documents, 3D) for attachment rows */
+  downloadableAssets?: DownloadableAsset[]
   /** Timed edition: when the mint window opens */
   mintWindowStart?: Date | string | null
   /** Timed edition: when the mint window closes */
@@ -223,8 +218,13 @@ export function PostCard({
   }, [post.currentSupply])
   
   const user = propUser || post.user
-  const mediaMimeType = (post as any).mediaMimeType || post.downloadableAssets?.[0]?.mimeType
-  const mediaType = detectMediaType(post.mediaUrl, mediaMimeType)
+  const displayMedia = getPrimaryDisplayMedia({
+    mediaUrl: post.mediaUrl,
+    coverUrl: post.coverUrl,
+    mediaMimeType: (post as any).mediaMimeType || post.downloadableAssets?.[0]?.mimeType,
+    assets: post.assets,
+  })
+  const mediaType = displayMedia.mediaType
 
   // Media tap/click: single = open post, double = like
   // Video/audio/3D have native controls that need tap events
@@ -472,9 +472,9 @@ export function PostCard({
       {/* Media - Full bleed on mobile */}
       <div className={cn('relative -mx-4 md:mx-0', !mediaIsInteractive && !isPreview && 'cursor-pointer')}>
         <PostMedia
-          mediaUrl={post.mediaUrl}
-          coverUrl={post.coverUrl}
-          mediaType={mediaType}
+          mediaUrl={displayMedia.mediaUrl}
+          coverUrl={displayMedia.coverUrl}
+          mediaType={displayMedia.mediaType}
           alt={post.caption || 'Post media'}
           aspectRatio="auto"
           price={post.price ?? null}
@@ -487,7 +487,7 @@ export function PostCard({
           sellerFeeBasisPoints={post.sellerFeeBasisPoints}
           statusPillText={(mediaType === 'document' || mediaType === '3d') ? display.statusPillText : undefined}
           statusPillColor={postTypeColor}
-          assets={post.assets}
+          assets={displayMedia.displayAssets}
           onClick={!isPreview && !mediaIsInteractive ? handleMediaClick : undefined}
         />
         <HeartAnimation trigger={heartTrigger} />
@@ -634,6 +634,13 @@ export function PostCard({
           )}
           </div>
         )}
+
+        <DownloadableAssetsSection
+          assets={post.downloadableAssets}
+          postType={post.type}
+          isCollected={!!computedPost.isCollected}
+          compact
+        />
 
         {/* Caption */}
         {post.caption && user && (

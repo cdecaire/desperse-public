@@ -3,6 +3,7 @@
  * Redirects unauthenticated users to home page (landing page)
  */
 
+import { useModalStatus } from '@privy-io/react-auth'
 import { useNavigate } from '@tanstack/react-router'
 import { useEffect, useRef } from 'react'
 import { useAuth } from '@/hooks/useAuth'
@@ -18,17 +19,21 @@ interface AuthGuardProps {
  */
 export function AuthGuard({ children }: AuthGuardProps) {
   const { isAuthenticated, isReady, isLoading, login } = useAuth()
+  const { isOpen: isAuthModalOpen } = useModalStatus()
   const navigate = useNavigate()
   const hasRequestedAuthRef = useRef(false)
 
   useEffect(() => {
-    if (!isReady || isAuthenticated || hasRequestedAuthRef.current) {
+    if (!isReady || isAuthenticated) {
       return
     }
 
-    hasRequestedAuthRef.current = true
-
     if (typeof window !== 'undefined' && shouldPreserveCreateIntent(window.location.pathname)) {
+      if (hasRequestedAuthRef.current) {
+        return
+      }
+
+      hasRequestedAuthRef.current = true
       saveCreateIntent(buildCreateIntent(window.location.search))
       login()
       return
@@ -39,6 +44,14 @@ export function AuthGuard({ children }: AuthGuardProps) {
       navigate({ to: '/' })
     }
   }, [isReady, isAuthenticated, login, navigate])
+
+  useEffect(() => {
+    if (!isReady || isAuthenticated || !hasRequestedAuthRef.current || isAuthModalOpen) {
+      return
+    }
+
+    navigate({ to: '/', replace: true })
+  }, [isAuthenticated, isAuthModalOpen, isReady, navigate])
 
   // Show loading state while checking auth
   if (isLoading || !isReady) {

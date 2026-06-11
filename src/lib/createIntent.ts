@@ -1,9 +1,11 @@
 const CREATE_INTENT_STORAGE_KEY = 'desperse:create-intent'
 const CREATE_PATH = '/create'
+const CREATE_INTENT_TTL_MS = 60 * 60 * 1000
 
 export interface CreateIntent {
   path: typeof CREATE_PATH
   firstPost: boolean
+  createdAt: number
 }
 
 function getStorage(storage?: Storage): Storage | null {
@@ -29,7 +31,9 @@ export function buildCreateIntent(search = ''): CreateIntent {
 
   return {
     path: CREATE_PATH,
+    // Signed-out /create visits use first-post framing by default until the route explicitly opts out.
     firstPost: params.has('firstPost') ? parseFirstPostValue(params.get('firstPost')) : true,
+    createdAt: Date.now(),
   }
 }
 
@@ -49,7 +53,12 @@ export function readCreateIntent(storage?: Storage): CreateIntent | null {
 
   try {
     const parsed = JSON.parse(raw) as Partial<CreateIntent>
-    if (parsed.path !== CREATE_PATH || typeof parsed.firstPost !== 'boolean') {
+    if (
+      parsed.path !== CREATE_PATH ||
+      typeof parsed.firstPost !== 'boolean' ||
+      typeof parsed.createdAt !== 'number' ||
+      Date.now() - parsed.createdAt > CREATE_INTENT_TTL_MS
+    ) {
       resolvedStorage.removeItem(CREATE_INTENT_STORAGE_KEY)
       return null
     }
@@ -57,6 +66,7 @@ export function readCreateIntent(storage?: Storage): CreateIntent | null {
     return {
       path: CREATE_PATH,
       firstPost: parsed.firstPost,
+      createdAt: parsed.createdAt,
     }
   } catch {
     resolvedStorage.removeItem(CREATE_INTENT_STORAGE_KEY)

@@ -15,7 +15,7 @@ import { CommentButton } from './CommentButton'
 import { CommentSheet } from './CommentSheet'
 import { HeartAnimation } from './HeartAnimation'
 import { PostCardMenu } from './PostCardMenu'
-import { DownloadableAssetsSection } from './DownloadableAssetsSection'
+import { DownloadButton } from './DownloadButton'
 import { getPrimaryDisplayMedia, type DownloadableAsset } from './postAssets'
 import { PriceTooltip } from './PriceTooltip'
 import { useCommentCount } from '@/hooks/useComments'
@@ -571,6 +571,14 @@ export function PostCard({
                   showCount={true}
                 />
               </div>
+              <DownloadButton
+                postId={post.id}
+                postType={post.type}
+                assets={post.downloadableAssets}
+                isCollected={!!computedPost.isCollected}
+                variant="ghost"
+                showCount={true}
+              />
             </div>
           
           {/* Collect/Buy Button */}
@@ -634,13 +642,6 @@ export function PostCard({
           )}
           </div>
         )}
-
-        <DownloadableAssetsSection
-          assets={post.downloadableAssets}
-          postType={post.type}
-          isCollected={!!computedPost.isCollected}
-          compact
-        />
 
         {/* Caption */}
         {post.caption && user && (

@@ -5,6 +5,7 @@ import { toast } from '@/hooks/use-toast'
 import { useGatedDownload } from '@/hooks/useGatedDownload'
 import {
   formatAssetFileSize,
+  getAssetIconName,
   getAssetTypeLabel,
   hasDownloadAccess,
   type DownloadableAsset,
@@ -59,6 +60,7 @@ export function DownloadableAssetsSection({
             const locked = !canDownload
             const fileSize = formatAssetFileSize(asset.fileSize)
             const fileType = getAssetTypeLabel(asset)
+            const downloadCount = asset.downloadCount ?? 0
 
             return (
               <div
@@ -66,32 +68,37 @@ export function DownloadableAssetsSection({
                 className="flex items-center gap-3 rounded-lg border border-border bg-muted/20 px-3 py-2"
               >
                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-background text-muted-foreground">
-                  <Icon name={locked ? 'lock' : 'paperclip'} variant="regular" className="text-sm" />
+                  <Icon name={getAssetIconName(asset)} variant="regular" className="text-sm" />
                 </div>
 
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 text-sm font-medium text-foreground">
                     <span className="truncate">{fileType}</span>
                     {locked && (
-                      <span className="rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
-                        Locked
-                      </span>
+                      <Icon name="lock" variant="solid" className="shrink-0 text-xs text-muted-foreground" aria-label="Locked" />
                     )}
                   </div>
                   <div className="truncate text-xs text-muted-foreground">
-                    {[asset.mimeType, fileSize].filter(Boolean).join(' · ')}
+                    {[asset.mimeType, fileSize, downloadCount > 0 ? `${downloadCount} download${downloadCount === 1 ? '' : 's'}` : null].filter(Boolean).join(' · ')}
                   </div>
                 </div>
 
-                <Button
-                  type="button"
-                  variant={locked ? 'outline' : 'secondary'}
-                  disabled={isAuthenticating}
-                  onClick={() => handleDownload(asset)}
-                  className="shrink-0"
-                >
-                  {locked ? 'Collect to download' : isAuthenticating ? 'Verifying...' : 'Download'}
-                </Button>
+                {locked ? (
+                  // Gated and no access: surface the lock + count, but not actionable.
+                  <span className="shrink-0 text-xs font-medium text-muted-foreground">
+                    Collect to download
+                  </span>
+                ) : (
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    disabled={isAuthenticating}
+                    onClick={() => handleDownload(asset)}
+                    className="shrink-0"
+                  >
+                    {isAuthenticating ? 'Verifying...' : 'Download'}
+                  </Button>
+                )}
               </div>
             )
           })}

@@ -10,6 +10,7 @@ export interface PostAsset {
   sortOrder?: number | null
   isPreviewable?: boolean | null
   isGated?: boolean | null
+  downloadCount?: number | null
 }
 
 export interface DownloadableAsset extends PostAsset {
@@ -142,4 +143,33 @@ export function getAssetTypeLabel(asset: Pick<PostAsset, 'mimeType' | 'url'>): s
 
 export function hasDownloadAccess(postType: 'post' | 'collectible' | 'edition', isCollected: boolean): boolean {
   return postType === 'post' || postType === 'collectible' || isCollected
+}
+
+/** Registered icon name (see src/lib/icons.ts) for a downloadable asset's file type. */
+export function getAssetIconName(asset: Pick<PostAsset, 'mimeType' | 'url'>): string {
+  const label = getAssetTypeLabel(asset)
+  switch (label) {
+    case 'PDF':
+      return 'file-pdf'
+    case 'ZIP':
+      return 'file-zipper'
+    case 'EPUB':
+      return 'book'
+    case 'Audio':
+      return 'music'
+    case '3D Model':
+      return 'cube'
+    case 'Image':
+      return 'image'
+    case 'Video':
+      return 'video'
+    default:
+      return 'file'
+  }
+}
+
+/** Total recorded downloads across a post's downloadable assets. */
+export function getTotalDownloadCount(assets?: Array<{ downloadCount?: number | null }> | null): number {
+  if (!assets?.length) return 0
+  return assets.reduce((sum, asset) => sum + (asset.downloadCount ?? 0), 0)
 }

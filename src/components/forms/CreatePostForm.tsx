@@ -23,6 +23,7 @@ import { type Category, categoriesToStrings, stringsToCategories } from '@/const
 import { PostCard } from '@/components/feed/PostCard'
 import { PostMedia } from '@/components/feed/PostMedia'
 import { MediaCarousel } from '@/components/feed/MediaCarousel'
+import { buildCreatePostMediaPayload } from './createPostPayload'
 import { Textarea } from '@/components/ui/textarea'
 import { TokenAutocomplete } from '@/components/shared/TokenAutocomplete'
 import { Input } from '@/components/ui/input'
@@ -502,29 +503,24 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
       const authorization = authHeaders.Authorization || ''
       const isNftPost = formState.type === 'edition' || formState.type === 'collectible'
 
-      // Prepare assets array for multi-asset posts (Phase 1: standard posts, Phase 2: collectibles, Phase 3: editions)
-      const assetsForCreate = multiAssetItems.length > 0 &&
-        (formState.type === 'post' || formState.type === 'collectible' || formState.type === 'edition')
-        ? multiAssetItems.map((item, index) => ({
-            url: item.url,
-            mediaType: item.mediaType,
-            fileName: item.fileName,
-            mimeType: item.mimeType,
-            fileSize: item.fileSize,
-            sortOrder: item.sortOrder ?? index,
-          }))
-        : null
+      const mediaPayload = buildCreatePostMediaPayload({
+        mediaUrl: formState.mediaUrl,
+        coverUrl: formState.coverUrl,
+        uploadedMediaInfo,
+        multiAssetItems,
+      })
 
       const result = await createPost(
         wrapInput({
           _authorization: authorization,
-          mediaUrl: formState.mediaUrl,
-          coverUrl: formState.coverUrl,
+          mediaUrl: mediaPayload.mediaUrl,
+          coverUrl: mediaPayload.coverUrl,
           caption: formState.caption || null,
           categories: formState.categories.length > 0 ? categoriesToStrings(formState.categories) : null,
           type: formState.type,
           // Multi-asset support (Phase 1: standard posts only)
-          assets: assetsForCreate,
+          assets: mediaPayload.assets,
+          downloadableAssets: mediaPayload.downloadableAssets,
           // Edition-only: commerce & supply
           maxSupply: formState.type === 'edition' ? formState.maxSupply : null,
           price: formState.type === 'edition' ? formState.price : null,
@@ -545,8 +541,8 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
             uploadedMedia?.mediaType === 'document' ||
             multiAssetItems.some(item => item.mediaType === 'document')
           ) ? formState.protectDownload : false,
-          mediaMimeType: uploadedMediaInfo?.mimeType || null,
-          mediaFileSize: uploadedMediaInfo?.fileSize || null,
+          mediaMimeType: mediaPayload.mediaMimeType,
+          mediaFileSize: mediaPayload.mediaFileSize,
           // Timed edition fields
           ...(formState.type === 'edition' && formState.mintWindow.enabled ? {
             mintWindowEnabled: true,

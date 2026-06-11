@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Icon } from '@/components/ui/icon'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
+import { deriveOnboardingState, type OnboardingProfileUser } from '@/lib/onboarding'
 import {
   Card,
   CardContent,
@@ -34,7 +35,19 @@ export function normalizeUrl(value: string): string {
   return normalized.match(/^https?:\/\//i) ? normalized : `https://${normalized}`
 }
 
-export function ProfileSetupStep() {
+interface ProfileSetupStepProps {
+  onSuccess?: () => void
+}
+
+export function shouldAdvanceProfileSetup(user: OnboardingProfileUser): boolean {
+  return !deriveOnboardingState(user, {
+    isAuthenticated: true,
+    isAuthInitializing: false,
+    isLoading: false,
+  }).isProfileIncomplete
+}
+
+export function ProfileSetupStep({ onSuccess }: ProfileSetupStepProps) {
   const queryClient = useQueryClient()
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const { user: currentUser } = useCurrentUser()
@@ -137,13 +150,19 @@ export function ProfileSetupStep() {
     try {
       const normalizedLink = normalizeUrl(link)
 
-      await profileUpdate.mutateAsync({
+      const { user: updatedUser } = await profileUpdate.mutateAsync({
         displayName: displayName.trim(),
         bio: bio.trim() || undefined,
         avatarUrl: avatarUrl.trim() || undefined,
         link: normalizedLink || null,
       })
-      toast.success('Profile saved')
+
+      if (shouldAdvanceProfileSetup(updatedUser)) {
+        toast.success('Profile saved')
+        onSuccess?.()
+      } else {
+        toast.success('Profile saved. Finish the remaining profile fields to continue.')
+      }
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to save profile'
       toast.error(message)

@@ -22,6 +22,12 @@ export interface OnboardingState {
   missingProfileFields: MissingProfileField[]
 }
 
+export interface FirstPostCtaState {
+  isOwnProfile: boolean
+  postCount: number
+  shouldShowOnboarding: boolean
+}
+
 const hasText = (value: string | null | undefined) => Boolean(value?.trim())
 
 export function getMissingProfileFields(
@@ -56,4 +62,12 @@ export function deriveOnboardingState(
     shouldShowOnboarding: canRoute && isProfileIncomplete,
     missingProfileFields,
   }
+}
+
+export function shouldShowFirstPostCta({
+  isOwnProfile,
+  postCount,
+  shouldShowOnboarding,
+}: FirstPostCtaState): boolean {
+  return isOwnProfile && postCount === 0 && !shouldShowOnboarding
 }

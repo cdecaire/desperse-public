@@ -16,6 +16,7 @@ import { processMentions, deleteMentions } from '@/server/utils/mentions'
 import { processHashtags } from '@/server/utils/hashtags'
 import { generateNftMetadata } from '@/server/utils/nft-metadata'
 import { validateMintWindow } from '@/server/utils/mintWindowStatus'
+import { MAX_ASSETS_PER_POST } from '@/lib/uploadParity'
 import { env } from '@/config/env'
 import { excludeDevPostsForUser } from '@/server/utils/dev-posts'
 import { getBlockedUserIdSet, getDirectedBlockState } from '@/server/utils/blocks'
@@ -48,9 +49,6 @@ function validateEditionPrice(price: number, currency: 'SOL' | 'USDC'): string |
   }
   return null
 }
-
-// Max assets per post (for multi-asset support)
-const MAX_ASSETS_PER_POST = 10
 
 // Schema for individual asset in multi-asset posts
 const assetSchema = z.object({

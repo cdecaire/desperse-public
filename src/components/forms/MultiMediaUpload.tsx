@@ -12,9 +12,16 @@ import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { Button } from '@/components/ui/button'
 import { Tooltip } from '@/components/ui/tooltip'
 import { deleteMedia } from '@/server/functions/upload'
-import { env } from '@/config/env'
 import { useAuth } from '@/hooks/useAuth'
 import type { MediaType } from '@/lib/media'
+import {
+  FILE_TOO_LARGE_MESSAGE,
+  MAX_ASSETS_PER_POST,
+  MAX_UPLOAD_BYTES,
+  MAX_UPLOAD_MB,
+  getAttachmentMimeType,
+  normalizeAssetSortOrder,
+} from '@/lib/uploadParity'
 
 export type { MediaType } from '@/lib/media'
 
@@ -26,7 +33,7 @@ const MAX_PER_TYPE: Record<MediaType, number> = {
   '3d': 1,
   document: 1,
 }
-const MAX_TOTAL = 14 // theoretical max if all types filled
+const MAX_TOTAL = MAX_ASSETS_PER_POST
 
 // Supported file types (images, videos for carousel + documents/audio/3d)
 const SUPPORTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
@@ -67,9 +74,6 @@ const ACCEPT_STRING = [
   'model/gltf+json',
 ].join(',')
 
-const MAX_UPLOAD_MB = Math.min(env.MAX_FILE_SIZE_MB, 25)
-const MAX_UPLOAD_BYTES = MAX_UPLOAD_MB * 1024 * 1024
-
 export interface UploadedMediaItem {
   id: string // Unique ID for tracking
   url: string
@@ -100,6 +104,8 @@ interface MediaItemState {
 export interface MultiMediaUploadProps {
   /** Called when media items change (after upload, reorder, or removal) */
   onChange: (items: UploadedMediaItem[]) => void
+  /** Called when all picked files are uploaded successfully and publish can proceed */
+  onReadyChange?: (ready: boolean) => void
   /** Initial media items (for editing) */
   initialItems?: UploadedMediaItem[]
   /** Additional class names */
@@ -308,18 +314,16 @@ function MediaItemCard({
       )}
 
       {/* Remove button */}
-      {item.status !== 'uploading' && (
-        <Button
-          type="button"
-          variant="destructive"
-          size="icon"
-          onClick={() => onRemove(item.id)}
-          className="absolute top-1 right-1 w-6 h-6"
-          aria-label="Remove media"
-        >
-          <Icon name="xmark" className="text-xs" />
-        </Button>
-      )}
+      <Button
+        type="button"
+        variant="destructive"
+        size="icon"
+        onClick={() => onRemove(item.id)}
+        className="absolute top-1 right-1 w-6 h-6"
+        aria-label="Remove media"
+      >
+        <Icon name="xmark" className="text-xs" />
+      </Button>
     </div>
   )
 }
@@ -357,18 +361,16 @@ function DownloadableFileCard({ item, onRemove }: DownloadableFileCardProps) {
         </div>
 
         {/* Remove button */}
-        {item.status !== 'uploading' && (
-          <Button
-            type="button"
-            variant="destructive"
-            size="icon"
-            onClick={() => onRemove(item.id)}
-            className="flex-shrink-0"
-            aria-label="Remove file"
-          >
-            <Icon name="xmark" />
-          </Button>
-        )}
+        <Button
+          type="button"
+          variant="destructive"
+          size="icon"
+          onClick={() => onRemove(item.id)}
+          className="flex-shrink-0"
+          aria-label="Remove file"
+        >
+          <Icon name="xmark" />
+        </Button>
       </div>
 
       {/* Upload Progress Overlay */}
@@ -392,6 +394,7 @@ function DownloadableFileCard({ item, onRemove }: DownloadableFileCardProps) {
 
 export function MultiMediaUpload({
   onChange,
+  onReadyChange,
   initialItems = [],
   className,
   disabled = false,
@@ -417,6 +420,7 @@ export function MultiMediaUpload({
   const [draggedItemId, setDraggedItemId] = useState<string | null>(null)
 
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const uploadControllersRef = useRef<Map<string, AbortController>>(new Map())
 
   // Cleanup preview URLs on unmount
   useEffect(() => {
@@ -424,23 +428,29 @@ export function MultiMediaUpload({
       items.forEach((item) => {
         if (item.previewUrl) URL.revokeObjectURL(item.previewUrl)
       })
+      uploadControllersRef.current.forEach((controller) => controller.abort())
+      uploadControllersRef.current.clear()
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    onReadyChange?.(items.every((item) => item.status === 'success'))
+  }, [items, onReadyChange])
 
   // Notify parent of changes when items change
   const notifyChange = useCallback(
     (newItems: MediaItemState[]) => {
-      const uploadedItems: UploadedMediaItem[] = newItems
+      const uploadedItems: UploadedMediaItem[] = normalizeAssetSortOrder(newItems
         .filter((item) => item.status === 'success' && item.uploadedUrl)
-        .map((item, index) => ({
+        .map((item) => ({
           id: item.id,
           url: item.uploadedUrl!,
           mediaType: item.mediaType,
           fileName: item.fileName,
           mimeType: item.mimeType,
           fileSize: item.fileSize,
-          sortOrder: index,
-        }))
+          sortOrder: item.sortOrder,
+        })))
       onChange(uploadedItems)
     },
     [onChange]
@@ -449,13 +459,16 @@ export function MultiMediaUpload({
   // Handle file upload
   const handleUpload = useCallback(
     async (file: File, itemId: string) => {
+      const mimeType = file.type || getAttachmentMimeType(file.name)
+
       // Validate
-      if (!isValidMediaType(file.type, file.name)) {
+      if (!isValidMediaType(mimeType, file.name)) {
         setItems((prev) =>
           prev.map((item) =>
             item.id === itemId
               ? {
                   ...item,
+                  mimeType,
                   status: 'error' as const,
                   error: 'Unsupported file type. Use images, videos, audio, PDFs, ZIPs, or 3D models.',
                 }
@@ -472,7 +485,7 @@ export function MultiMediaUpload({
               ? {
                   ...item,
                   status: 'error' as const,
-                  error: `File too large. Maximum size is ${MAX_UPLOAD_MB} MB.`,
+                  error: FILE_TOO_LARGE_MESSAGE,
                 }
               : item
           )
@@ -498,6 +511,8 @@ export function MultiMediaUpload({
       }
 
       // Start upload
+      const abortController = new AbortController()
+      uploadControllersRef.current.set(itemId, abortController)
       setItems((prev) =>
         prev.map((item) =>
           item.id === itemId
@@ -512,6 +527,7 @@ export function MultiMediaUpload({
           access: 'public',
           handleUploadUrl: '/api/upload',
           clientPayload: JSON.stringify({ token: accessToken }),
+          abortSignal: abortController.signal,
           onUploadProgress: (progress) => {
             const scaledProgress = 10 + Math.round(progress.percentage * 0.85)
             setItems((prev) =>
@@ -532,6 +548,7 @@ export function MultiMediaUpload({
                   status: 'success' as const,
                   progress: 100,
                   uploadedUrl: blob.url,
+                  mimeType,
                 }
               : item
           )
@@ -540,6 +557,9 @@ export function MultiMediaUpload({
           return newItems
         })
       } catch (error) {
+        if (abortController.signal.aborted) {
+          return
+        }
         console.error('Upload error:', error)
         setItems((prev) =>
           prev.map((item) =>
@@ -556,6 +576,8 @@ export function MultiMediaUpload({
               : item
           )
         )
+      } finally {
+        uploadControllersRef.current.delete(itemId)
       }
     },
     [getAccessToken, notifyChange]
@@ -573,8 +595,11 @@ export function MultiMediaUpload({
       }
       // Filter files by per-type limits and mutual exclusivity
       const addCounts: Record<string, number> = {}
+      let totalAdding = 0
       const filesToAdd = fileArray.filter(file => {
-        const mediaType = getMediaTypeFromMime(file.type, file.name)
+        if (items.length + totalAdding >= MAX_TOTAL) return false
+        const normalizedMimeType = file.type || getAttachmentMimeType(file.name)
+        const mediaType = getMediaTypeFromMime(normalizedMimeType, file.name)
         const limit = MAX_PER_TYPE[mediaType] ?? 1
         const existing = existingCounts[mediaType] || 0
         const adding = addCounts[mediaType] || 0
@@ -593,6 +618,7 @@ export function MultiMediaUpload({
         // When audio/3D is primary, limit images to 1 (cover)
         if (mediaType === 'image' && (has('audio') || has('3d')) && existing + adding >= 1) return false
         addCounts[mediaType] = adding + 1
+        totalAdding += 1
         return true
       })
 
@@ -600,7 +626,8 @@ export function MultiMediaUpload({
 
       const newItems: MediaItemState[] = filesToAdd.map((file, index) => {
         const id = generateId()
-        const mediaType = getMediaTypeFromMime(file.type, file.name)
+        const mimeType = file.type || getAttachmentMimeType(file.name)
+        const mediaType = getMediaTypeFromMime(mimeType, file.name)
         // Only create preview URL for previewable types (images/videos)
         const previewUrl = mediaType === 'image' || mediaType === 'video'
           ? URL.createObjectURL(file)
@@ -611,7 +638,7 @@ export function MultiMediaUpload({
           previewUrl,
           mediaType,
           fileName: file.name,
-          mimeType: file.type,
+          mimeType,
           fileSize: file.size,
           status: 'idle' as const,
           progress: 0,
@@ -640,6 +667,11 @@ export function MultiMediaUpload({
       // Clean up preview URL
       if (item.previewUrl) {
         URL.revokeObjectURL(item.previewUrl)
+      }
+
+      if (item.status === 'uploading') {
+        uploadControllersRef.current.get(itemId)?.abort()
+        uploadControllersRef.current.delete(itemId)
       }
 
       // Delete from storage if uploaded

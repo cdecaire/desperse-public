@@ -14,6 +14,8 @@ import { processMentions } from '@/server/utils/mentions'
 import { processHashtags } from '@/server/utils/hashtags'
 import { generateNftMetadata } from '@/server/utils/nft-metadata'
 import { validateMintWindow } from '@/server/utils/mintWindowStatus'
+import { MAX_ASSETS_PER_POST, normalizeAssetSortOrder } from '@/lib/uploadParity'
+import type { MediaType } from '@/lib/media'
 import { env } from '@/config/env'
 
 // Minimum edition prices
@@ -35,8 +37,6 @@ function validateEditionPrice(price: number, currency: 'SOL' | 'USDC'): string |
   return null
 }
 
-const MAX_ASSETS_PER_POST = 10
-
 
 // Input type for createPostDirect
 export interface CreatePostInput {
@@ -47,7 +47,7 @@ export interface CreatePostInput {
   type: 'post' | 'collectible' | 'edition'
   assets?: Array<{
     url: string
-    mediaType: string
+    mediaType: MediaType
     fileName: string
     mimeType?: string
     fileSize?: number
@@ -106,7 +106,7 @@ export async function createPostDirect(
 
   // Determine primary media URL
   const sortedAssets = data.assets
-    ? [...data.assets].sort((a, b) => a.sortOrder - b.sortOrder)
+    ? normalizeAssetSortOrder(data.assets)
     : null
   const sortedDownloadableAssets = data.downloadableAssets
     ? [...data.downloadableAssets].sort((a, b) => a.sortOrder - b.sortOrder)

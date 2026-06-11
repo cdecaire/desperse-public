@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { Button } from '@/components/ui/button'
 import { deleteMedia } from '@/server/functions/upload'
-import { env } from '@/config/env'
+import { FILE_TOO_LARGE_MESSAGE, MAX_UPLOAD_BYTES, MAX_UPLOAD_MB } from '@/lib/uploadParity'
 import { useAuth } from '@/hooks/useAuth'
 import type { MediaType } from '@/lib/media'
 
@@ -57,8 +57,6 @@ const ACCEPT_STRING = [
 const ACCEPT_IMAGE_STRING = SUPPORTED_IMAGE_TYPES.join(',')
 
 // Hard-cap upload size to avoid browser crashes from huge base64 conversions.
-const MAX_UPLOAD_MB = Math.min(env.MAX_FILE_SIZE_MB, 25)
-const MAX_UPLOAD_BYTES = MAX_UPLOAD_MB * 1024 * 1024
 
 /**
  * Check if file extension suggests a GLB/GLTF file
@@ -226,7 +224,7 @@ export function MediaUpload({
     if (!isValidFileSize(file.size)) {
       return {
         valid: false,
-        error: `File too large. Maximum size is ${env.MAX_FILE_SIZE_MB} MB.`,
+        error: FILE_TOO_LARGE_MESSAGE,
       }
     }
 
@@ -335,7 +333,7 @@ export function MediaUpload({
       setCoverUploadState({
         status: 'error',
         progress: 0,
-        error: `File too large. Maximum size is ${env.MAX_FILE_SIZE_MB} MB.`,
+        error: FILE_TOO_LARGE_MESSAGE,
       })
       return
     }

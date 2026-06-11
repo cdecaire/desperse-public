@@ -9,6 +9,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toastSuccess, toastError, toastInfo } from '@/lib/toast'
 import { MediaUpload, type UploadedMedia } from './MediaUpload'
 import { MultiMediaUpload, type UploadedMediaItem } from './MultiMediaUpload'
+import { MAX_ASSETS_PER_POST } from '@/lib/uploadParity'
 import { NON_PREVIEWABLE_TYPES } from '@/lib/media'
 import { isMultiAssetEnabled, isMultiAssetCollectibleEnabled, isMultiAssetEditionEnabled, isArweaveStorageEnabled } from '@/config/env'
 import { PostTypeSelector, type PostType } from './PostTypeSelector'
@@ -315,6 +316,7 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
 
   // Multi-asset state (Phase 1: standard posts, Phase 2: collectibles, Phase 3: editions)
   const [multiAssetItems, setMultiAssetItems] = useState<UploadedMediaItem[]>([])
+  const [multiAssetReady, setMultiAssetReady] = useState(true)
   const multiAssetEnabled = isMultiAssetEnabled()
   const multiAssetCollectibleEnabled = isMultiAssetCollectibleEnabled()
   const multiAssetEditionEnabled = isMultiAssetEditionEnabled()
@@ -642,6 +644,8 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
   // Validation
   const canSubmit = () => {
     if (!formState.mediaUrl) return false
+    if (!multiAssetReady) return false
+    if (multiAssetItems.length > MAX_ASSETS_PER_POST) return false
     if (formState.type === 'edition') {
       // Validate required edition fields (both create and edit)
       if (!formState.nftName || formState.nftName.trim() === '') return false
@@ -779,6 +783,7 @@ export function CreatePostForm({ mode = 'create', initialPost }: CreatePostFormP
             // Multi-asset upload for standard posts (Phase 1), collectibles (Phase 2), and editions (Phase 3)
             <MultiMediaUpload
               onChange={handleMultiAssetChange}
+              onReadyChange={setMultiAssetReady}
               initialItems={multiAssetItems}
               disabled={isSubmitting}
             />

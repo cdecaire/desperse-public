@@ -1,5 +1,39 @@
 import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { extendTailwindMerge } from "tailwind-merge"
+
+const dsTypographyTokens = [
+  "display-4xl",
+  "display-3xl",
+  "display-2xl",
+  "display-xl",
+  "display-lg",
+  "heading-1",
+  "heading-2",
+  "heading-3",
+  "heading-4",
+  "title-lg",
+  "title-sm",
+  "body-lg",
+  "body-md",
+  "body-sm",
+  "label-lg",
+  "label-md",
+  "label-xs",
+  "caption",
+  "mono-md",
+  "mono-sm",
+] as const
+
+const twMerge = extendTailwindMerge<'ds-typography'>({
+  extend: {
+    classGroups: {
+      "ds-typography": [{ text: dsTypographyTokens }],
+    },
+    conflictingClassGroups: {
+      "ds-typography": ["font-size", "leading", "font-weight", "tracking"],
+    },
+  },
+})
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))

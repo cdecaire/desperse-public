@@ -255,7 +255,9 @@ export function ProfileSetupStep() {
             <Label htmlFor="link">Website or social link</Label>
             <Input
               id="link"
-              type="url"
+              type="text"
+              inputMode="url"
+              autoComplete="url"
               value={link}
               onChange={(e) => {
                 setLink(e.target.value)

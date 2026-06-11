@@ -93,8 +93,8 @@ export function OnboardingShell({
         {isLoading ? (
           <Card>
             <CardHeader>
-              <CardTitle>Loading your onboarding state</CardTitle>
-              <CardDescription>Checking your profile before showing the next step.</CardDescription>
+              <CardTitle className="text-title-lg">Loading your onboarding state</CardTitle>
+              <CardDescription className="text-body-sm">Checking your profile before showing the next step.</CardDescription>
             </CardHeader>
           </Card>
         ) : (
@@ -108,8 +108,8 @@ export function OnboardingShell({
                     </span>
                     <StepBadge status={step.status} />
                   </div>
-                  <CardTitle>{step.title}</CardTitle>
-                  <CardDescription>{step.description}</CardDescription>
+                  <CardTitle className="text-title-lg">{step.title}</CardTitle>
+                  <CardDescription className="text-body-sm">{step.description}</CardDescription>
                 </CardHeader>
               </Card>
             ))}

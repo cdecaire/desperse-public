@@ -282,7 +282,7 @@ function Hero() {
               >
                 {recoveryMessage ? 'Retry sign in' : 'Get Started'}
               </button>
-              {recoveryMessage && (
+              {recoveryMessage && !authenticated && (
                 <p className="max-w-sm text-body-sm text-(--tone-warning)">
                   {recoveryMessage}
                 </p>

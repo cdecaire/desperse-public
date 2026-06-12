@@ -1,11 +1,10 @@
 import { Link } from '@tanstack/react-router'
 import { usePrivy } from '@privy-io/react-auth'
-import { useEffect, useState } from 'react'
 import { useTheme } from '@/components/providers/ThemeProvider'
 import { Switch } from '@/components/ui/switch'
 import { Logo } from '@/components/shared/Logo'
 import { Icon } from '@/components/ui/icon'
-import { clearAuthRecovery, readAuthRecovery } from '@/lib/authRecovery'
+import { useAuthRecoveryMessage } from '@/hooks/useAuthRecoveryMessage'
 
 interface PublicHeaderProps {
   /** Optional nav links rendered between the logo and the right-side controls. */
@@ -22,26 +21,9 @@ interface PublicHeaderProps {
 export function PublicHeader({ navItems }: PublicHeaderProps) {
   const { theme, setTheme, resolvedTheme } = useTheme()
   const { login, ready, authenticated } = usePrivy()
-  const [recoveryMessage, setRecoveryMessage] = useState<string | null>(null)
+  const recoveryMessage = useAuthRecoveryMessage(authenticated)
   const isSystemTheme = theme === 'system' || theme === undefined
   const activeTheme = isSystemTheme ? resolvedTheme || 'dark' : theme
-
-  useEffect(() => {
-    if (authenticated) {
-      clearAuthRecovery()
-      setRecoveryMessage(null)
-      return
-    }
-
-    const recovery = readAuthRecovery()
-    setRecoveryMessage(
-      recovery
-        ? recovery.firstPost
-          ? 'Sign-in didn’t finish. Try email, wallet, or social, and we’ll bring you back to your first post.'
-          : 'Sign-in didn’t finish. Try email, wallet, or social, and we’ll bring you back to create.'
-        : null,
-    )
-  }, [authenticated])
 
   const handleThemeToggle = () => {
     if (isSystemTheme) {
@@ -87,7 +69,7 @@ export function PublicHeader({ navItems }: PublicHeaderProps) {
 
       <div className="flex-1 flex items-center justify-end gap-4">
         {recoveryMessage && !authenticated && (
-          <p className="hidden max-w-xs text-right text-xs text-amber-600 dark:text-amber-300 md:block">
+          <p className="hidden max-w-xs text-right text-body-sm text-(--tone-warning) md:block">
             {recoveryMessage}
           </p>
         )}

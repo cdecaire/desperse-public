@@ -12,7 +12,7 @@ import { useTheme } from '@/components/providers/ThemeProvider'
 import { Switch } from '@/components/ui/switch'
 import { Logo } from '@/components/shared/Logo'
 import { OptimizedImage } from '@/components/shared/OptimizedImage'
-import { clearAuthRecovery, readAuthRecovery } from '@/lib/authRecovery'
+import { useAuthRecoveryMessage } from '@/hooks/useAuthRecoveryMessage'
 import { getOptimizedImageUrl } from '@/lib/imageUrl'
 import { getTrendingPosts, getFeaturedCreators, getLandingProfilePreview } from '@/server/functions/explore'
 import { detectMediaType } from '@/lib/media'
@@ -177,26 +177,9 @@ function useReveal() {
 function Header() {
   const { theme, setTheme, resolvedTheme } = useTheme()
   const { login, ready, authenticated } = usePrivy()
-  const [recoveryMessage, setRecoveryMessage] = useState<string | null>(null)
+  const recoveryMessage = useAuthRecoveryMessage(authenticated)
   const isSystemTheme = theme === 'system' || theme === undefined
   const activeTheme = isSystemTheme ? (resolvedTheme || 'dark') : theme
-
-  useEffect(() => {
-    if (authenticated) {
-      clearAuthRecovery()
-      setRecoveryMessage(null)
-      return
-    }
-
-    const recovery = readAuthRecovery()
-    setRecoveryMessage(
-      recovery
-        ? recovery.firstPost
-          ? 'Sign-in didn’t finish. Try email, wallet, or social, and we’ll bring you back to your first post.'
-          : 'Sign-in didn’t finish. Try email, wallet, or social, and we’ll bring you back to create.'
-        : null,
-    )
-  }, [authenticated])
 
   const handleThemeToggle = () => {
     if (isSystemTheme) {
@@ -228,7 +211,7 @@ function Header() {
       </nav>
       <div className="flex-1 flex items-center justify-end gap-4">
         {recoveryMessage && !authenticated && (
-          <p className="hidden max-w-xs text-right text-xs text-amber-600 dark:text-amber-300 md:block">
+          <p className="hidden max-w-xs text-right text-body-sm text-(--tone-warning) md:block">
             {recoveryMessage}
           </p>
         )}
@@ -266,24 +249,7 @@ function Header() {
 function Hero() {
   const revealRef = useReveal()
   const { login, ready, authenticated } = usePrivy()
-  const [recoveryMessage, setRecoveryMessage] = useState<string | null>(null)
-
-  useEffect(() => {
-    if (authenticated) {
-      clearAuthRecovery()
-      setRecoveryMessage(null)
-      return
-    }
-
-    const recovery = readAuthRecovery()
-    setRecoveryMessage(
-      recovery
-        ? recovery.firstPost
-          ? 'Sign-in didn’t finish. Try email, wallet, or social, and we’ll bring you back to your first post.'
-          : 'Sign-in didn’t finish. Try email, wallet, or social, and we’ll bring you back to create.'
-        : null,
-    )
-  }, [authenticated])
+  const recoveryMessage = useAuthRecoveryMessage(authenticated)
 
   return (
     <section className="min-h-screen flex flex-col justify-center px-6 pt-20 relative overflow-hidden bg-background">
@@ -317,7 +283,7 @@ function Hero() {
                 {recoveryMessage ? 'Retry sign in' : 'Get Started'}
               </button>
               {recoveryMessage && (
-                <p className="max-w-sm text-sm text-amber-600 dark:text-amber-300">
+                <p className="max-w-sm text-body-sm text-(--tone-warning)">
                   {recoveryMessage}
                 </p>
               )}

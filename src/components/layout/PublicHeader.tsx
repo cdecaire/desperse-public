@@ -1,9 +1,11 @@
 import { Link } from '@tanstack/react-router'
 import { usePrivy } from '@privy-io/react-auth'
+import { useEffect, useState } from 'react'
 import { useTheme } from '@/components/providers/ThemeProvider'
 import { Switch } from '@/components/ui/switch'
 import { Logo } from '@/components/shared/Logo'
 import { Icon } from '@/components/ui/icon'
+import { clearAuthRecovery, readAuthRecovery } from '@/lib/authRecovery'
 
 interface PublicHeaderProps {
   /** Optional nav links rendered between the logo and the right-side controls. */
@@ -20,8 +22,26 @@ interface PublicHeaderProps {
 export function PublicHeader({ navItems }: PublicHeaderProps) {
   const { theme, setTheme, resolvedTheme } = useTheme()
   const { login, ready, authenticated } = usePrivy()
+  const [recoveryMessage, setRecoveryMessage] = useState<string | null>(null)
   const isSystemTheme = theme === 'system' || theme === undefined
   const activeTheme = isSystemTheme ? resolvedTheme || 'dark' : theme
+
+  useEffect(() => {
+    if (authenticated) {
+      clearAuthRecovery()
+      setRecoveryMessage(null)
+      return
+    }
+
+    const recovery = readAuthRecovery()
+    setRecoveryMessage(
+      recovery
+        ? recovery.firstPost
+          ? 'Sign-in didn’t finish. Try email, wallet, or social, and we’ll bring you back to your first post.'
+          : 'Sign-in didn’t finish. Try email, wallet, or social, and we’ll bring you back to create.'
+        : null,
+    )
+  }, [authenticated])
 
   const handleThemeToggle = () => {
     if (isSystemTheme) {
@@ -66,6 +86,11 @@ export function PublicHeader({ navItems }: PublicHeaderProps) {
       )}
 
       <div className="flex-1 flex items-center justify-end gap-4">
+        {recoveryMessage && !authenticated && (
+          <p className="hidden max-w-xs text-right text-xs text-amber-600 dark:text-amber-300 md:block">
+            {recoveryMessage}
+          </p>
+        )}
         <label className="flex items-center gap-2 min-h-10 cursor-pointer">
           <Icon name={activeTheme === 'light' ? 'sun-bright' : 'moon'} variant="regular" className="text-sm" />
           <Switch
@@ -87,7 +112,7 @@ export function PublicHeader({ navItems }: PublicHeaderProps) {
             disabled={!ready}
             className="border border-zinc-300 dark:border-zinc-700 px-5 py-2 rounded-full text-sm font-medium hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 transition-colors duration-200 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-950 dark:focus-visible:ring-white"
           >
-            Log in
+            {recoveryMessage ? 'Retry sign in' : 'Log in'}
           </button>
         )}
       </div>

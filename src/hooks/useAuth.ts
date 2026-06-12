@@ -5,7 +5,8 @@
 
 import { usePrivy } from '@privy-io/react-auth'
 import { useWallets } from '@privy-io/react-auth/solana'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
+import { clearAuthRecovery } from '@/lib/authRecovery'
 
 export interface UseAuthReturn {
   // Auth state
@@ -44,6 +45,12 @@ export function useAuth(): UseAuthReturn {
   } = usePrivy()
   
   const { wallets } = useWallets()
+
+  useEffect(() => {
+    if (authenticated) {
+      clearAuthRecovery()
+    }
+  }, [authenticated])
 
   // Get the Solana wallet address
   // Privy can have multiple wallets, we prioritize the embedded (Privy-created) wallet

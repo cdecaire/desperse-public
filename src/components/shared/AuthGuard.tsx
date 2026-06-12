@@ -7,6 +7,7 @@ import { useModalStatus } from '@privy-io/react-auth'
 import { useNavigate } from '@tanstack/react-router'
 import { useEffect, useRef } from 'react'
 import { useAuth } from '@/hooks/useAuth'
+import { buildAuthRecovery, saveAuthRecovery } from '@/lib/authRecovery'
 import { buildCreateIntent, saveCreateIntent, shouldPreserveCreateIntent } from '@/lib/createIntent'
 import { LoadingSpinner } from './LoadingSpinner'
 
@@ -63,6 +64,10 @@ export function AuthGuard({ children }: AuthGuardProps) {
     }
     if (!hasOpenedModalRef.current || isAuthModalOpen) {
       return
+    }
+
+    if (typeof window !== 'undefined' && shouldPreserveCreateIntent(window.location.pathname)) {
+      saveAuthRecovery(buildAuthRecovery(window.location.search))
     }
 
     navigate({ to: '/', replace: true })

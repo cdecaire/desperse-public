@@ -18,6 +18,28 @@ interface PostTypeSelectorProps {
 
 const ADVANCED_POST_TYPES_STORAGE_KEY = 'desperse:create-post:advanced-post-types-visible'
 
+function readAdvancedPostTypesPreference(): boolean | null {
+  if (typeof window === 'undefined') return null
+
+  try {
+    const savedPreference = window.sessionStorage.getItem(ADVANCED_POST_TYPES_STORAGE_KEY)
+    return savedPreference === null ? null : savedPreference === 'true'
+  } catch (error) {
+    console.warn('[PostTypeSelector] Failed to read advanced post type preference:', error)
+    return null
+  }
+}
+
+function writeAdvancedPostTypesPreference(value: boolean) {
+  if (typeof window === 'undefined') return
+
+  try {
+    window.sessionStorage.setItem(ADVANCED_POST_TYPES_STORAGE_KEY, String(value))
+  } catch (error) {
+    console.warn('[PostTypeSelector] Failed to persist advanced post type preference:', error)
+  }
+}
+
 export function PostTypeSelector({ value, onChange, disabled, firstPostMode = false }: PostTypeSelectorProps) {
   const [showAdvanced, setShowAdvanced] = useState(value !== 'post')
 
@@ -27,18 +49,14 @@ export function PostTypeSelector({ value, onChange, disabled, firstPostMode = fa
       return
     }
 
-    if (typeof window !== 'undefined') {
-      const savedPreference = window.sessionStorage.getItem(ADVANCED_POST_TYPES_STORAGE_KEY)
-      if (savedPreference !== null) {
-        setShowAdvanced(savedPreference === 'true')
-      }
+    const savedPreference = readAdvancedPostTypesPreference()
+    if (savedPreference !== null) {
+      setShowAdvanced(savedPreference)
     }
   }, [value])
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      window.sessionStorage.setItem(ADVANCED_POST_TYPES_STORAGE_KEY, String(showAdvanced))
-    }
+    writeAdvancedPostTypesPreference(showAdvanced)
   }, [showAdvanced])
 
   const standardType = POST_TYPE_LIST.find((type) => type.id === 'post')

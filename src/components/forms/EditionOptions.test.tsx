@@ -44,6 +44,7 @@ vi.mock('@/components/ui/date-time-picker', () => ({
 afterEach(() => {
   cleanup()
   window.sessionStorage.clear()
+  vi.restoreAllMocks()
 })
 
 describe('EditionOptions', () => {
@@ -67,5 +68,41 @@ describe('EditionOptions', () => {
     expect(screen.getByRole('button', { name: /edition pricing and supply/i }).getAttribute('aria-expanded')).toBe('true')
     expect(screen.getByLabelText(/price per edition/i)).toBeTruthy()
     expect(screen.getByLabelText(/toggle open edition/i)).toBeTruthy()
+  })
+
+  it('shows a publish hint when pricing is still required inside the collapsed panel', () => {
+    render(
+      <EditionOptions
+        price={null}
+        currency="SOL"
+        maxSupply={null}
+        onPriceChange={() => {}}
+        onCurrencyChange={() => {}}
+        onMaxSupplyChange={() => {}}
+      />,
+    )
+
+    expect(screen.getByText(/set a price to publish this edition/i)).toBeTruthy()
+  })
+
+  it('warns and continues when disclosure state cannot be persisted', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('blocked')
+    })
+
+    render(
+      <EditionOptions
+        price={null}
+        currency="SOL"
+        maxSupply={null}
+        onPriceChange={() => {}}
+        onCurrencyChange={() => {}}
+        onMaxSupplyChange={() => {}}
+        persistState={true}
+      />,
+    )
+
+    expect(warn).toHaveBeenCalledWith('[EditionOptions] Failed to persist disclosure state:', expect.any(Error))
   })
 })

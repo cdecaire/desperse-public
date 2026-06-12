@@ -24,10 +24,33 @@ interface NftMetadataOptionsProps {
   metadataDisabled?: boolean // Disables NFT metadata fields
   mutabilityDisabled?: boolean // Disables mutability toggle (locked after minting)
   mode: 'collectible' | 'edition'
+  defaultExpanded?: boolean
   persistState?: boolean
 }
 
 const NFT_METADATA_STORAGE_KEY_PREFIX = 'desperse:create-post:nft-metadata-open'
+
+function readNftMetadataPreference(storageKey: string): boolean | null {
+  if (typeof window === 'undefined') return null
+
+  try {
+    const savedState = window.sessionStorage.getItem(storageKey)
+    return savedState === null ? null : savedState === 'true'
+  } catch (error) {
+    console.warn('[NftMetadataOptions] Failed to read disclosure state:', error)
+    return null
+  }
+}
+
+function writeNftMetadataPreference(storageKey: string, value: boolean) {
+  if (typeof window === 'undefined') return
+
+  try {
+    window.sessionStorage.setItem(storageKey, String(value))
+  } catch (error) {
+    console.warn('[NftMetadataOptions] Failed to persist disclosure state:', error)
+  }
+}
 
 export function NftMetadataOptions({
   nftSymbol,
@@ -40,25 +63,26 @@ export function NftMetadataOptions({
   metadataDisabled,
   mutabilityDisabled,
   mode,
+  defaultExpanded = false,
   persistState = false,
 }: NftMetadataOptionsProps) {
   const isMetadataDisabled = disabled || metadataDisabled
   const isMutabilityDisabled = disabled || mutabilityDisabled
-  const [isAdvancedOpen, setIsAdvancedOpen] = useState(false)
+  const [isAdvancedOpen, setIsAdvancedOpen] = useState(defaultExpanded)
   const storageKey = `${NFT_METADATA_STORAGE_KEY_PREFIX}:${mode}`
 
   useEffect(() => {
     if (!persistState || typeof window === 'undefined') return
 
-    const savedState = window.sessionStorage.getItem(storageKey)
+    const savedState = readNftMetadataPreference(storageKey)
     if (savedState !== null) {
-      setIsAdvancedOpen(savedState === 'true')
+      setIsAdvancedOpen(savedState)
     }
   }, [persistState, storageKey])
 
   useEffect(() => {
     if (!persistState || typeof window === 'undefined') return
-    window.sessionStorage.setItem(storageKey, String(isAdvancedOpen))
+    writeNftMetadataPreference(storageKey, isAdvancedOpen)
   }, [persistState, storageKey, isAdvancedOpen])
 
   // Convert seller fee basis points to percentage for display

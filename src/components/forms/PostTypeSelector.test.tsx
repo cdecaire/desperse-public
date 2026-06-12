@@ -12,6 +12,7 @@ vi.mock('@/components/ui/icon', () => ({
 afterEach(() => {
   cleanup()
   window.sessionStorage.clear()
+  vi.restoreAllMocks()
 })
 
 describe('PostTypeSelector', () => {
@@ -49,5 +50,16 @@ describe('PostTypeSelector', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /hide advanced options/i }))
     expect(screen.queryByRole('radio', { name: /collectible/i })).toBeNull()
+  })
+
+  it('warns and continues when advanced toggle state cannot be persisted', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('blocked')
+    })
+
+    render(<PostTypeSelector value="post" onChange={() => {}} />)
+
+    expect(warn).toHaveBeenCalledWith('[PostTypeSelector] Failed to persist advanced post type preference:', expect.any(Error))
   })
 })

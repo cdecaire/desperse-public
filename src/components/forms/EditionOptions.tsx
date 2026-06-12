@@ -68,6 +68,28 @@ interface EditionOptionsProps {
 
 const EDITION_OPTIONS_STORAGE_KEY = 'desperse:create-post:edition-options-open'
 
+function readEditionOptionsPreference(): boolean | null {
+  if (typeof window === 'undefined') return null
+
+  try {
+    const savedState = window.sessionStorage.getItem(EDITION_OPTIONS_STORAGE_KEY)
+    return savedState === null ? null : savedState === 'true'
+  } catch (error) {
+    console.warn('[EditionOptions] Failed to read disclosure state:', error)
+    return null
+  }
+}
+
+function writeEditionOptionsPreference(value: boolean) {
+  if (typeof window === 'undefined') return
+
+  try {
+    window.sessionStorage.setItem(EDITION_OPTIONS_STORAGE_KEY, String(value))
+  } catch (error) {
+    console.warn('[EditionOptions] Failed to persist disclosure state:', error)
+  }
+}
+
 // Convert display price to base units
 function toBaseUnits(displayPrice: number, currency: Currency): number {
   if (currency === 'SOL') {
@@ -152,15 +174,15 @@ export function EditionOptions({
   useEffect(() => {
     if (!persistState || typeof window === 'undefined') return
 
-    const savedState = window.sessionStorage.getItem(EDITION_OPTIONS_STORAGE_KEY)
+    const savedState = readEditionOptionsPreference()
     if (savedState !== null) {
-      setIsExpanded(savedState === 'true')
+      setIsExpanded(savedState)
     }
   }, [persistState])
 
   useEffect(() => {
     if (!persistState || typeof window === 'undefined') return
-    window.sessionStorage.setItem(EDITION_OPTIONS_STORAGE_KEY, String(isExpanded))
+    writeEditionOptionsPreference(isExpanded)
   }, [persistState, isExpanded])
 
   const handlePriceInput = (value: string) => {
@@ -178,6 +200,10 @@ export function EditionOptions({
   }
 
   const priceError = validatePrice(displayPrice, currency)
+  const requiresPriceAttention = displayPrice.trim() === '' || priceError !== null
+  const collapsedPriceHint = !isExpanded && requiresPriceAttention
+    ? 'Set a price to publish this edition.'
+    : null
 
   return (
     <div className="p-4 bg-card border border-border rounded-xl shadow-md">
@@ -195,6 +221,12 @@ export function EditionOptions({
           className={cn('transition-transform duration-200', isExpanded && 'rotate-180')}
         />
       </button>
+
+      {collapsedPriceHint && (
+        <p className="mt-2 text-sm text-muted-foreground" role="note">
+          {collapsedPriceHint}
+        </p>
+      )}
 
       {isExpanded && (
         <div id="edition-options-panel" className="mt-4 space-y-4 border-t border-border pt-4">

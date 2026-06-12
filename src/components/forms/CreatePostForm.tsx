@@ -1153,6 +1153,7 @@ export function CreatePostForm({ mode = 'create', firstPostMode = false, initial
             metadataDisabled={false}
             mutabilityDisabled={false}
             mode={formState.type as 'collectible' | 'edition'}
+            defaultExpanded={isEditMode}
             persistState={!isEditMode}
           />
         )}

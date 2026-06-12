@@ -11,26 +11,23 @@ vi.mock('@/components/ui/icon', () => ({
 
 afterEach(() => {
   cleanup()
+  window.sessionStorage.clear()
 })
 
 describe('PostTypeSelector', () => {
-  it('shows all post types by default', () => {
+  it('shows standard by default and keeps advanced post types behind a toggle', () => {
     render(<PostTypeSelector value="post" onChange={() => {}} />)
-
-    expect(screen.getByRole('radio', { name: /standard/i })).toBeTruthy()
-    expect(screen.getByRole('radio', { name: /collectible/i })).toBeTruthy()
-    expect(screen.getByRole('radio', { name: /edition/i })).toBeTruthy()
-  })
-
-  it('starts with advanced options hidden in first-post mode and reveals them on demand', () => {
-    const onChange = vi.fn()
-
-    render(<PostTypeSelector value="post" onChange={onChange} firstPostMode={true} />)
 
     expect(screen.getByRole('radio', { name: /standard/i })).toBeTruthy()
     expect(screen.queryByRole('radio', { name: /collectible/i })).toBeNull()
     expect(screen.queryByRole('radio', { name: /edition/i })).toBeNull()
     expect(screen.getByRole('button', { name: /show advanced options/i })).toBeTruthy()
+  })
+
+  it('reveals advanced post types on demand and keeps them visible for the selected advanced type', () => {
+    const onChange = vi.fn()
+
+    render(<PostTypeSelector value="post" onChange={onChange} firstPostMode={true} />)
 
     fireEvent.click(screen.getByRole('button', { name: /show advanced options/i }))
     expect(screen.getByRole('button', { name: /hide advanced options/i })).toBeTruthy()

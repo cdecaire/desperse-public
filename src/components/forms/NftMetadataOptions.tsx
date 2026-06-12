@@ -11,7 +11,7 @@ import { Switch } from '@/components/ui/switch'
 import { Tooltip } from '@/components/ui/tooltip'
 import { Icon } from '@/components/ui/icon'
 import { cn } from '@/lib/utils'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 interface NftMetadataOptionsProps {
   nftSymbol: string | null
@@ -24,7 +24,10 @@ interface NftMetadataOptionsProps {
   metadataDisabled?: boolean // Disables NFT metadata fields
   mutabilityDisabled?: boolean // Disables mutability toggle (locked after minting)
   mode: 'collectible' | 'edition'
+  persistState?: boolean
 }
+
+const NFT_METADATA_STORAGE_KEY_PREFIX = 'desperse:create-post:nft-metadata-open'
 
 export function NftMetadataOptions({
   nftSymbol,
@@ -37,10 +40,26 @@ export function NftMetadataOptions({
   metadataDisabled,
   mutabilityDisabled,
   mode,
+  persistState = false,
 }: NftMetadataOptionsProps) {
   const isMetadataDisabled = disabled || metadataDisabled
   const isMutabilityDisabled = disabled || mutabilityDisabled
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false)
+  const storageKey = `${NFT_METADATA_STORAGE_KEY_PREFIX}:${mode}`
+
+  useEffect(() => {
+    if (!persistState || typeof window === 'undefined') return
+
+    const savedState = window.sessionStorage.getItem(storageKey)
+    if (savedState !== null) {
+      setIsAdvancedOpen(savedState === 'true')
+    }
+  }, [persistState, storageKey])
+
+  useEffect(() => {
+    if (!persistState || typeof window === 'undefined') return
+    window.sessionStorage.setItem(storageKey, String(isAdvancedOpen))
+  }, [persistState, storageKey, isAdvancedOpen])
 
   // Convert seller fee basis points to percentage for display
   const sellerFeePercent = sellerFeeBasisPoints ? (sellerFeeBasisPoints / 100).toFixed(2) : '0.00'
@@ -53,7 +72,7 @@ export function NftMetadataOptions({
         className="flex items-center justify-between w-full text-sm text-foreground transition-colors hover:text-foreground/80"
         aria-expanded={isAdvancedOpen}
       >
-        <span>Additional details</span>
+        <span>Advanced NFT metadata</span>
         <Icon
           name="chevron-down"
           variant="regular"

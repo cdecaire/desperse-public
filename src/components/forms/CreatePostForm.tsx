@@ -1096,6 +1096,8 @@ export function CreatePostForm({ mode = 'create', firstPostMode = false, initial
             }
             disabled={isSubmitting}
             pricingDisabled={!arePricingFieldsEditable}
+            defaultExpanded={isEditMode}
+            persistState={!isEditMode}
           />
         )}
 
@@ -1151,6 +1153,7 @@ export function CreatePostForm({ mode = 'create', firstPostMode = false, initial
             metadataDisabled={false}
             mutabilityDisabled={false}
             mode={formState.type as 'collectible' | 'edition'}
+            persistState={!isEditMode}
           />
         )}
         

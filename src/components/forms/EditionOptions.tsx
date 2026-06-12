@@ -62,7 +62,11 @@ interface EditionOptionsProps {
   onProtectDownloadChange?: (value: boolean) => void
   disabled?: boolean // Disables all fields (e.g., during submission)
   pricingDisabled?: boolean // Disables pricing fields (price, currency, maxSupply)
+  defaultExpanded?: boolean
+  persistState?: boolean
 }
+
+const EDITION_OPTIONS_STORAGE_KEY = 'desperse:create-post:edition-options-open'
 
 // Convert display price to base units
 function toBaseUnits(displayPrice: number, currency: Currency): number {
@@ -133,25 +137,40 @@ export function EditionOptions({
   onProtectDownloadChange,
   disabled,
   pricingDisabled,
+  defaultExpanded = false,
+  persistState = false,
 }: EditionOptionsProps) {
-  // Compute effective disabled states
   const isPricingDisabled = disabled || pricingDisabled
   const isUnlimited = maxSupply === null
   const [displayPrice, setDisplayPrice] = useState(toDisplayPrice(price, currency))
-  
-  // Sync display price when currency or price changes externally
+  const [isExpanded, setIsExpanded] = useState(defaultExpanded)
+
   useEffect(() => {
     setDisplayPrice(toDisplayPrice(price, currency))
   }, [price, currency])
-  
+
+  useEffect(() => {
+    if (!persistState || typeof window === 'undefined') return
+
+    const savedState = window.sessionStorage.getItem(EDITION_OPTIONS_STORAGE_KEY)
+    if (savedState !== null) {
+      setIsExpanded(savedState === 'true')
+    }
+  }, [persistState])
+
+  useEffect(() => {
+    if (!persistState || typeof window === 'undefined') return
+    window.sessionStorage.setItem(EDITION_OPTIONS_STORAGE_KEY, String(isExpanded))
+  }, [persistState, isExpanded])
+
   const handlePriceInput = (value: string) => {
     setDisplayPrice(value)
-    
+
     if (value === '') {
       onPriceChange(null)
       return
     }
-    
+
     const num = parseFloat(value)
     if (!isNaN(num) && num > 0) {
       onPriceChange(toBaseUnits(num, currency))
@@ -161,143 +180,153 @@ export function EditionOptions({
   const priceError = validatePrice(displayPrice, currency)
 
   return (
-    <div className="space-y-4 p-4 bg-card border border-border rounded-xl shadow-md">
-      {/* Pricing locked warning */}
-      {isPricingDisabled && (
-        <div className="p-3 bg-muted rounded-lg">
-          <p className="text-sm text-muted-foreground">
-            <Icon name="lock" variant="regular" className="mr-2" />
-            Pricing and supply cannot be changed after an edition has been purchased.
-          </p>
-        </div>
-      )}
-      
-      {/* Price & Currency */}
-      <div>
-        <label htmlFor="edition-price" className="text-sm text-foreground mb-2 block">
-          Price per edition <span className="text-destructive">*</span>
-        </label>
-        <div className="flex gap-2">
-          <div className="relative flex-1 max-w-[200px]">
-            <Input
-              id="edition-price"
-              type="number"
-              step="any"
-              min={0}
-              value={displayPrice}
-              onChange={(e) => handlePriceInput(e.target.value)}
-              placeholder="0.00"
-              disabled={isPricingDisabled}
-              aria-required="true"
-              aria-invalid={!!priceError}
-              aria-describedby={priceError ? 'edition-price-error' : undefined}
-              onKeyDown={(e) => {
-                if (e.key === '-' || e.key === 'e' || e.key === 'E') {
-                  e.preventDefault()
-                }
-              }}
-              className={`pr-16 ${priceError ? 'border-destructive' : ''}`}
-            />
-
-            {/* Currency selector inside input */}
-            <div className="absolute right-1 top-1/2 -translate-y-1/2">
-              <Select
-                value={currency}
-                onValueChange={(value) => onCurrencyChange(value as Currency)}
-                disabled={isPricingDisabled}
-              >
-                <SelectTrigger className="h-7 w-[70px] px-2 text-sm font-medium bg-muted dark:bg-zinc-700 border-0 shadow-none focus:ring-0 hover:bg-muted/80 dark:hover:bg-zinc-600">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="SOL">SOL</SelectItem>
-                  <SelectItem value="USDC">USDC</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </div>
-        {/* Price validation error */}
-        {priceError && (
-          <p id="edition-price-error" className="text-sm text-destructive mt-1.5" role="alert">
-            {priceError}
-          </p>
-        )}
-      </div>
-      
-      {/* Max Supply */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <Tooltip content="Maximum number of editions that can be sold. Leave open edition for unlimited.">
-            <label className="text-sm text-foreground cursor-help border-b border-dotted border-muted-foreground/40">
-              {isUnlimited ? 'Open Edition' : 'Limited Supply'}
-            </label>
-          </Tooltip>
-          <Switch
-            checked={isUnlimited}
-            onCheckedChange={(checked) => onMaxSupplyChange(checked ? null : 100)}
-            disabled={isPricingDisabled}
-            aria-label="Toggle open edition"
-          />
-        </div>
-
-        {/* Supply input (when limited) */}
-        {!isUnlimited && (
-          <div className="space-y-1.5">
-            <Input
-              id="edition-max-supply"
-              type="number"
-              min={1}
-              value={maxSupply || ''}
-              onChange={(e) => {
-                const val = e.target.value
-                if (val === '') {
-                  onMaxSupplyChange(1)
-                } else {
-                  const num = parseInt(val, 10)
-                  if (!isNaN(num) && num > 0) {
-                    onMaxSupplyChange(num)
-                  }
-                }
-              }}
-              placeholder="Enter max supply"
-              disabled={isPricingDisabled}
-              aria-label="Maximum supply"
-              className="max-w-[200px]"
-            />
-          </div>
-        )}
-      </div>
-
-      {/* Protect Download */}
-      {onProtectDownloadChange && (
-        <div className="flex items-center justify-between">
-          <Tooltip content="Require NFT ownership to download the original file">
-            <label className="text-sm text-foreground cursor-help border-b border-dotted border-muted-foreground/40">
-              {protectDownload ? 'Protected Download' : 'Protect Download'}
-            </label>
-          </Tooltip>
-          <Switch
-            checked={protectDownload}
-            onCheckedChange={onProtectDownloadChange}
-            disabled={disabled}
-            aria-label="Toggle download protection"
-          />
-        </div>
-      )}
-
-      {/* Timed Edition (Mint Window) */}
-      {onMintWindowChange && mintWindow && (
-        <MintWindowSection
-          mintWindow={mintWindow}
-          onChange={onMintWindowChange}
-          locked={mintWindowLocked}
-          existingStart={existingMintWindowStart}
-          existingEnd={existingMintWindowEnd}
-          disabled={disabled}
+    <div className="p-4 bg-card border border-border rounded-xl shadow-md">
+      <button
+        type="button"
+        onClick={() => setIsExpanded((current) => !current)}
+        className="flex w-full items-center justify-between text-sm text-foreground transition-colors hover:text-foreground/80"
+        aria-expanded={isExpanded}
+        aria-controls="edition-options-panel"
+      >
+        <span>Edition pricing and supply</span>
+        <Icon
+          name="chevron-down"
+          variant="regular"
+          className={cn('transition-transform duration-200', isExpanded && 'rotate-180')}
         />
-      )}
+      </button>
 
+      {isExpanded && (
+        <div id="edition-options-panel" className="mt-4 space-y-4 border-t border-border pt-4">
+            {isPricingDisabled && (
+              <div className="p-3 bg-muted rounded-lg">
+                <p className="text-sm text-muted-foreground">
+                  <Icon name="lock" variant="regular" className="mr-2" />
+                  Pricing and supply cannot be changed after an edition has been purchased.
+                </p>
+              </div>
+            )}
+
+            <div>
+              <label htmlFor="edition-price" className="text-sm text-foreground mb-2 block">
+                Price per edition <span className="text-destructive">*</span>
+              </label>
+              <div className="flex gap-2">
+                <div className="relative flex-1 max-w-[200px]">
+                  <Input
+                    id="edition-price"
+                    type="number"
+                    step="any"
+                    min={0}
+                    value={displayPrice}
+                    onChange={(e) => handlePriceInput(e.target.value)}
+                    placeholder="0.00"
+                    disabled={isPricingDisabled}
+                    aria-required="true"
+                    aria-invalid={!!priceError}
+                    aria-describedby={priceError ? 'edition-price-error' : undefined}
+                    onKeyDown={(e) => {
+                      if (e.key === '-' || e.key === 'e' || e.key === 'E') {
+                        e.preventDefault()
+                      }
+                    }}
+                    className={`pr-16 ${priceError ? 'border-destructive' : ''}`}
+                  />
+
+                  <div className="absolute right-1 top-1/2 -translate-y-1/2">
+                    <Select
+                      value={currency}
+                      onValueChange={(value) => onCurrencyChange(value as Currency)}
+                      disabled={isPricingDisabled}
+                    >
+                      <SelectTrigger className="h-7 w-[70px] px-2 text-sm font-medium bg-muted dark:bg-zinc-700 border-0 shadow-none focus:ring-0 hover:bg-muted/80 dark:hover:bg-zinc-600">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="SOL">SOL</SelectItem>
+                        <SelectItem value="USDC">USDC</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </div>
+              {priceError && (
+                <p id="edition-price-error" className="text-sm text-destructive mt-1.5" role="alert">
+                  {priceError}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Tooltip content="Maximum number of editions that can be sold. Leave open edition for unlimited.">
+                  <label className="text-sm text-foreground cursor-help border-b border-dotted border-muted-foreground/40">
+                    {isUnlimited ? 'Open Edition' : 'Limited Supply'}
+                  </label>
+                </Tooltip>
+                <Switch
+                  checked={isUnlimited}
+                  onCheckedChange={(checked) => onMaxSupplyChange(checked ? null : 100)}
+                  disabled={isPricingDisabled}
+                  aria-label="Toggle open edition"
+                />
+              </div>
+
+              {!isUnlimited && (
+                <div className="space-y-1.5">
+                  <Input
+                    id="edition-max-supply"
+                    type="number"
+                    min={1}
+                    value={maxSupply || ''}
+                    onChange={(e) => {
+                      const val = e.target.value
+                      if (val === '') {
+                        onMaxSupplyChange(1)
+                      } else {
+                        const num = parseInt(val, 10)
+                        if (!isNaN(num) && num > 0) {
+                          onMaxSupplyChange(num)
+                        }
+                      }
+                    }}
+                    placeholder="Enter max supply"
+                    disabled={isPricingDisabled}
+                    aria-label="Maximum supply"
+                    className="max-w-[200px]"
+                  />
+                </div>
+              )}
+            </div>
+
+            {onProtectDownloadChange && (
+              <div className="flex items-center justify-between">
+                <Tooltip content="Require NFT ownership to download the original file">
+                  <label className="text-sm text-foreground cursor-help border-b border-dotted border-muted-foreground/40">
+                    {protectDownload ? 'Protected Download' : 'Protect Download'}
+                  </label>
+                </Tooltip>
+                <Switch
+                  checked={protectDownload}
+                  onCheckedChange={onProtectDownloadChange}
+                  disabled={disabled}
+                  aria-label="Toggle download protection"
+                />
+              </div>
+            )}
+
+            {onMintWindowChange && mintWindow && (
+              <MintWindowSection
+                mintWindow={mintWindow}
+                onChange={onMintWindowChange}
+                locked={mintWindowLocked}
+                existingStart={existingMintWindowStart}
+                existingEnd={existingMintWindowEnd}
+                disabled={disabled}
+              />
+            )}
+        </div>
+      )}
     </div>
   )
 }

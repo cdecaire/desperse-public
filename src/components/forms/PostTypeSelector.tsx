@@ -16,14 +16,30 @@ interface PostTypeSelectorProps {
   firstPostMode?: boolean
 }
 
+const ADVANCED_POST_TYPES_STORAGE_KEY = 'desperse:create-post:advanced-post-types-visible'
+
 export function PostTypeSelector({ value, onChange, disabled, firstPostMode = false }: PostTypeSelectorProps) {
-  const [showAdvanced, setShowAdvanced] = useState(!firstPostMode || value !== 'post')
+  const [showAdvanced, setShowAdvanced] = useState(value !== 'post')
 
   useEffect(() => {
-    if (!firstPostMode || value !== 'post') {
+    if (value !== 'post') {
       setShowAdvanced(true)
+      return
     }
-  }, [firstPostMode, value])
+
+    if (typeof window !== 'undefined') {
+      const savedPreference = window.sessionStorage.getItem(ADVANCED_POST_TYPES_STORAGE_KEY)
+      if (savedPreference !== null) {
+        setShowAdvanced(savedPreference === 'true')
+      }
+    }
+  }, [value])
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.sessionStorage.setItem(ADVANCED_POST_TYPES_STORAGE_KEY, String(showAdvanced))
+    }
+  }, [showAdvanced])
 
   const standardType = POST_TYPE_LIST.find((type) => type.id === 'post')
   const advancedTypes = POST_TYPE_LIST.filter((type) => type.id !== 'post')
@@ -83,41 +99,40 @@ export function PostTypeSelector({ value, onChange, disabled, firstPostMode = fa
   }
 
   const canHideAdvanced = value === 'post'
+  const helperTitle = firstPostMode ? 'Keep your first post simple' : 'Need collectible or edition?'
+  const helperDescription = firstPostMode
+    ? 'Collectible and Edition are still available when you want them, but Standard is the fastest path to publish.'
+    : 'Standard stays front and center. Open advanced options when you want collectible or edition-specific publishing.'
 
   return (
     <div className="space-y-2">
       <label className="text-sm font-medium">Post Type</label>
       <div className="space-y-3">
-        {firstPostMode && (
-          <div className="rounded-xl border border-dashed border-border bg-muted/30 p-3">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <div className="space-y-1">
-                <p className="text-sm font-medium">Keep your first post simple</p>
-                <p className="text-xs text-muted-foreground">
-                  Collectible and Edition are still available when you want them, but Standard is the fastest path to publish.
-                </p>
-              </div>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setShowAdvanced((current) => !current)}
-                disabled={disabled || (showAdvanced && !canHideAdvanced)}
-                aria-expanded={showAdvanced}
-                aria-controls="advanced-post-types"
-              >
-                {showAdvanced ? 'Hide advanced options' : 'Show advanced options'}
-              </Button>
+        <div className="rounded-xl border border-dashed border-border bg-muted/30 p-3">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="space-y-1">
+              <p className="text-sm font-medium">{helperTitle}</p>
+              <p className="text-xs text-muted-foreground">{helperDescription}</p>
             </div>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setShowAdvanced((current) => !current)}
+              disabled={disabled || (showAdvanced && !canHideAdvanced)}
+              aria-expanded={showAdvanced}
+              aria-controls="advanced-post-types"
+            >
+              {showAdvanced ? 'Hide advanced options' : 'Show advanced options'}
+            </Button>
           </div>
-        )}
+        </div>
 
         <div role="radiogroup" aria-label="Post type" className="space-y-3">
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            {renderCard(standardType, firstPostMode ? 'sm:col-span-3' : undefined)}
-            {!firstPostMode && advancedTypes.map((type) => renderCard(type))}
+            {renderCard(standardType, 'sm:col-span-3')}
           </div>
 
-          {firstPostMode && showAdvanced && (
+          {showAdvanced && (
             <div id="advanced-post-types" className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {advancedTypes.map((type) => renderCard(type, 'bg-background'))}
             </div>
@@ -131,4 +146,3 @@ export function PostTypeSelector({ value, onChange, disabled, firstPostMode = fa
 export type { PostType }
 
 export default PostTypeSelector
-

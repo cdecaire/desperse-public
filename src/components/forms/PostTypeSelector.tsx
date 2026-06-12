@@ -82,15 +82,12 @@ export function PostTypeSelector({ value, onChange, disabled, firstPostMode = fa
     )
   }
 
+  const canHideAdvanced = value === 'post'
+
   return (
     <div className="space-y-2">
       <label className="text-sm font-medium">Post Type</label>
-      <div role="radiogroup" aria-label="Post type" className="space-y-3">
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-          {renderCard(standardType, firstPostMode ? 'sm:col-span-3' : undefined)}
-          {!firstPostMode && advancedTypes.map((type) => renderCard(type))}
-        </div>
-
+      <div className="space-y-3">
         {firstPostMode && (
           <div className="rounded-xl border border-dashed border-border bg-muted/30 p-3">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -100,25 +97,32 @@ export function PostTypeSelector({ value, onChange, disabled, firstPostMode = fa
                   Collectible and Edition are still available when you want them, but Standard is the fastest path to publish.
                 </p>
               </div>
-              {!showAdvanced && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setShowAdvanced(true)}
-                  disabled={disabled}
-                >
-                  Show advanced options
-                </Button>
-              )}
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setShowAdvanced((current) => !current)}
+                disabled={disabled || (showAdvanced && !canHideAdvanced)}
+                aria-expanded={showAdvanced}
+                aria-controls="advanced-post-types"
+              >
+                {showAdvanced ? 'Hide advanced options' : 'Show advanced options'}
+              </Button>
             </div>
-
-            {showAdvanced && (
-              <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                {advancedTypes.map((type) => renderCard(type, 'bg-background'))}
-              </div>
-            )}
           </div>
         )}
+
+        <div role="radiogroup" aria-label="Post type" className="space-y-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            {renderCard(standardType, firstPostMode ? 'sm:col-span-3' : undefined)}
+            {!firstPostMode && advancedTypes.map((type) => renderCard(type))}
+          </div>
+
+          {firstPostMode && showAdvanced && (
+            <div id="advanced-post-types" className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {advancedTypes.map((type) => renderCard(type, 'bg-background'))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

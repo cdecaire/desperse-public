@@ -3,7 +3,7 @@
  * Radio card selector for post types (Standard, Collectible, Edition)
  */
 
-import { useEffect, useState } from 'react'
+import { useEffect, useId, useState } from 'react'
 import { POST_TYPE_LIST, type PostType } from '@/constants/postTypes'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icon'
@@ -18,12 +18,14 @@ interface PostTypeSelectorProps {
 
 export function PostTypeSelector({ value, onChange, disabled, firstPostMode = false }: PostTypeSelectorProps) {
   const [showAdvanced, setShowAdvanced] = useState(!firstPostMode || value !== 'post')
+  const advancedOptionsId = useId()
+  const groupLabelId = useId()
 
   useEffect(() => {
-    if (!firstPostMode || value !== 'post') {
+    if (value !== 'post') {
       setShowAdvanced(true)
     }
-  }, [firstPostMode, value])
+  }, [value])
 
   const standardType = POST_TYPE_LIST.find((type) => type.id === 'post')
   const advancedTypes = POST_TYPE_LIST.filter((type) => type.id !== 'post')
@@ -76,8 +78,8 @@ export function PostTypeSelector({ value, onChange, disabled, firstPostMode = fa
           />
         </div>
 
-        <div className="font-medium text-sm">{type.label}</div>
-        <div className="text-xs text-muted-foreground mt-0.5">{type.description}</div>
+        <div className="text-label-lg">{type.label}</div>
+        <div className="mt-0.5 text-body-sm text-muted-foreground">{type.description}</div>
       </button>
     )
   }
@@ -86,14 +88,14 @@ export function PostTypeSelector({ value, onChange, disabled, firstPostMode = fa
 
   return (
     <div className="space-y-2">
-      <label className="text-sm font-medium">Post Type</label>
+      <p id={groupLabelId} className="text-label-lg">Post Type</p>
       <div className="space-y-3">
         {firstPostMode && (
           <div className="rounded-xl border border-dashed border-border bg-muted/30 p-3">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="space-y-1">
-                <p className="text-sm font-medium">Keep your first post simple</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-label-lg">Keep your first post simple</p>
+                <p className="text-body-sm text-muted-foreground">
                   Collectible and Edition are still available when you want them, but Standard is the fastest path to publish.
                 </p>
               </div>
@@ -103,7 +105,7 @@ export function PostTypeSelector({ value, onChange, disabled, firstPostMode = fa
                 onClick={() => setShowAdvanced((current) => !current)}
                 disabled={disabled || (showAdvanced && !canHideAdvanced)}
                 aria-expanded={showAdvanced}
-                aria-controls="advanced-post-types"
+                aria-controls={advancedOptionsId}
               >
                 {showAdvanced ? 'Hide advanced options' : 'Show advanced options'}
               </Button>
@@ -111,14 +113,14 @@ export function PostTypeSelector({ value, onChange, disabled, firstPostMode = fa
           </div>
         )}
 
-        <div role="radiogroup" aria-label="Post type" className="space-y-3">
+        <div role="radiogroup" aria-labelledby={groupLabelId} className="space-y-3">
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             {renderCard(standardType, firstPostMode ? 'sm:col-span-3' : undefined)}
             {!firstPostMode && advancedTypes.map((type) => renderCard(type))}
           </div>
 
           {firstPostMode && showAdvanced && (
-            <div id="advanced-post-types" className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div id={advancedOptionsId} className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {advancedTypes.map((type) => renderCard(type, 'bg-background'))}
             </div>
           )}

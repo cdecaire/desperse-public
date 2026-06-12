@@ -90,7 +90,7 @@ function CreateContent() {
         {isLoading ? (
           <CreatePostFormSkeleton />
         ) : (
-          <CreatePostForm />
+          <CreatePostForm firstPostMode={firstPost} />
         )}
       </div>
     </div>

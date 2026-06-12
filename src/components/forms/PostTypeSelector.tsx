@@ -3,7 +3,7 @@
  * Radio card selector for post types (Standard, Collectible, Edition)
  */
 
-import { useEffect, useState } from 'react'
+import { useEffect, useId, useState } from 'react'
 import { POST_TYPE_LIST, type PostType } from '@/constants/postTypes'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icon'
@@ -18,12 +18,13 @@ interface PostTypeSelectorProps {
 
 export function PostTypeSelector({ value, onChange, disabled, firstPostMode = false }: PostTypeSelectorProps) {
   const [showAdvanced, setShowAdvanced] = useState(!firstPostMode || value !== 'post')
+  const advancedOptionsId = useId()
 
   useEffect(() => {
-    if (!firstPostMode || value !== 'post') {
+    if (value !== 'post') {
       setShowAdvanced(true)
     }
-  }, [firstPostMode, value])
+  }, [value])
 
   const standardType = POST_TYPE_LIST.find((type) => type.id === 'post')
   const advancedTypes = POST_TYPE_LIST.filter((type) => type.id !== 'post')
@@ -103,7 +104,7 @@ export function PostTypeSelector({ value, onChange, disabled, firstPostMode = fa
                 onClick={() => setShowAdvanced((current) => !current)}
                 disabled={disabled || (showAdvanced && !canHideAdvanced)}
                 aria-expanded={showAdvanced}
-                aria-controls="advanced-post-types"
+                aria-controls={advancedOptionsId}
               >
                 {showAdvanced ? 'Hide advanced options' : 'Show advanced options'}
               </Button>
@@ -118,7 +119,7 @@ export function PostTypeSelector({ value, onChange, disabled, firstPostMode = fa
           </div>
 
           {firstPostMode && showAdvanced && (
-            <div id="advanced-post-types" className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div id={advancedOptionsId} className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {advancedTypes.map((type) => renderCard(type, 'bg-background'))}
             </div>
           )}

@@ -53,4 +53,29 @@ describe('PostTypeSelector', () => {
     fireEvent.click(screen.getByRole('button', { name: /hide advanced options/i }))
     expect(screen.queryByRole('radio', { name: /collectible/i })).toBeNull()
   })
+
+  it('uses unique advanced panel ids and keeps advanced options visible for a selected non-standard type', () => {
+    const { rerender } = render(<PostTypeSelector value="post" onChange={() => {}} firstPostMode={true} />)
+
+    rerender(<PostTypeSelector value="collectible" onChange={() => {}} firstPostMode={true} />)
+    const toggle = screen.getByRole('button', { name: /hide advanced options/i })
+    expect(toggle.getAttribute('aria-expanded')).toBe('true')
+    expect(screen.getByRole('radio', { name: /collectible/i })).toBeTruthy()
+
+    cleanup()
+
+    render(
+      <>
+        <PostTypeSelector value="post" onChange={() => {}} firstPostMode={true} />
+        <PostTypeSelector value="post" onChange={() => {}} firstPostMode={true} />
+      </>
+    )
+
+    const toggles = screen.getAllByRole('button', { name: /show advanced options/i })
+    const controls = toggles.map((button) => button.getAttribute('aria-controls'))
+
+    expect(controls[0]).toBeTruthy()
+    expect(controls[1]).toBeTruthy()
+    expect(controls[0]).not.toBe(controls[1])
+  })
 })

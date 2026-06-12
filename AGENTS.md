@@ -26,7 +26,7 @@ pnpm promote-user            # Grant admin role
 
 ## Deployment
 
-Vercel GitHub Integration deploys automatically. **DO NOT** run `npx vercel --prod` manually — push to `main` for production, any other branch for preview.
+Vercel GitHub Integration deploys `main` to production automatically. **DO NOT** run `npx vercel --prod` manually. Preview deployments are **disabled** via `ignoreCommand` in `vercel.json` — do not rely on preview URLs for verification (Privy auth doesn't work there). Verify all changes locally (`pnpm dev`, `npx tsc --noEmit`, `pnpm test`, `pnpm build`) before a PR is considered ready.
 
 ## Database Migrations (CRITICAL)
 

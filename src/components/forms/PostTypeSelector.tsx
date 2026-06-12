@@ -19,6 +19,7 @@ interface PostTypeSelectorProps {
 export function PostTypeSelector({ value, onChange, disabled, firstPostMode = false }: PostTypeSelectorProps) {
   const [showAdvanced, setShowAdvanced] = useState(!firstPostMode || value !== 'post')
   const advancedOptionsId = useId()
+  const groupLabelId = useId()
 
   useEffect(() => {
     if (value !== 'post') {
@@ -77,8 +78,8 @@ export function PostTypeSelector({ value, onChange, disabled, firstPostMode = fa
           />
         </div>
 
-        <div className="font-medium text-sm">{type.label}</div>
-        <div className="text-xs text-muted-foreground mt-0.5">{type.description}</div>
+        <div className="text-label-lg">{type.label}</div>
+        <div className="mt-0.5 text-body-sm text-muted-foreground">{type.description}</div>
       </button>
     )
   }
@@ -87,14 +88,14 @@ export function PostTypeSelector({ value, onChange, disabled, firstPostMode = fa
 
   return (
     <div className="space-y-2">
-      <label className="text-sm font-medium">Post Type</label>
+      <p id={groupLabelId} className="text-label-lg">Post Type</p>
       <div className="space-y-3">
         {firstPostMode && (
           <div className="rounded-xl border border-dashed border-border bg-muted/30 p-3">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="space-y-1">
-                <p className="text-sm font-medium">Keep your first post simple</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-label-lg">Keep your first post simple</p>
+                <p className="text-body-sm text-muted-foreground">
                   Collectible and Edition are still available when you want them, but Standard is the fastest path to publish.
                 </p>
               </div>
@@ -112,7 +113,7 @@ export function PostTypeSelector({ value, onChange, disabled, firstPostMode = fa
           </div>
         )}
 
-        <div role="radiogroup" aria-label="Post type" className="space-y-3">
+        <div role="radiogroup" aria-labelledby={groupLabelId} className="space-y-3">
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             {renderCard(standardType, firstPostMode ? 'sm:col-span-3' : undefined)}
             {!firstPostMode && advancedTypes.map((type) => renderCard(type))}

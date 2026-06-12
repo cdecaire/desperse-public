@@ -41,11 +41,12 @@ describe('PostTypeSelector', () => {
     expect(screen.getByRole('radio', { name: /edition/i })).toBeTruthy()
   })
 
-  it('keeps the helper panel outside the radiogroup and lets standard posts collapse advanced options again', () => {
+  it('keeps the helper panel outside the radiogroup and uses the visible heading as its accessible name', () => {
     render(<PostTypeSelector value="post" onChange={() => {}} firstPostMode={true} />)
 
     const group = screen.getByRole('radiogroup', { name: /post type/i })
     expect(group.textContent).not.toContain('Keep your first post simple')
+    expect(screen.queryByText('Post Type', { selector: 'label' })).toBeNull()
 
     fireEvent.click(screen.getByRole('button', { name: /show advanced options/i }))
     expect(screen.getByRole('radio', { name: /collectible/i })).toBeTruthy()

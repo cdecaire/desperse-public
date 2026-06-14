@@ -33,6 +33,11 @@ export const FAQ_ITEMS: FaqItem[] = [
 		answer: "Echoes are not cosmetic avatars. They are characters embedded in a world with faction conflict, lore, district control, and narrative depth. Every trait has in-world meaning. Every faction represents a different response to power, mutation, and survival.",
 		category: "general",
 	},
+	{
+		question: "What if my Echo is missing a trait?",
+		answer: "If your Echo appears to be missing an obvious trait or important detail, reach out to the team and we will review it. Re-renders are not guaranteed, but we will make a best-effort attempt to correct clear omissions when possible.",
+		category: "general",
+	},
 
 	// Mint
 	{

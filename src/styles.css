@@ -2,6 +2,14 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "@fortawesome/fontawesome-svg-core/styles.css";
+/* Phase 2 — Sable adoption. Bring in @cdecaire/sable's tokens, motion recipes, and
+   paired typography. Desperse's own :root/.dark blocks below come LATER in source
+   order, so Desperse's token VALUES win on conflict (no global visual drift); Sable
+   only adds what Desperse lacks (motion tokens/recipes, overlay, tone-*-foreground).
+   The now-duplicated token/typography blocks get pruned once the app is fully on
+   Sable. The package's own styles.css carries an @source over its dist. */
+@import "@cdecaire/sable/styles.css";
+@source "../node_modules/@cdecaire/sable/dist/**/*.{js,mjs}";
 /* lenis smooth scroll (inlined — package exports don't resolve under Tailwind's style condition) */
 html.lenis, html.lenis body { height: auto; }
 .lenis:not(.lenis-autoToggle).lenis-stopped { overflow: clip; }

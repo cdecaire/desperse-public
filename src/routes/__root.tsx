@@ -7,7 +7,10 @@ import { createServerFn } from '@tanstack/react-start'
 import { useEffect, useState, useRef } from 'react'
 import { Analytics } from '@vercel/analytics/react'
 
+import { IconProvider } from '@cdecaire/sable'
+
 import AppShell from '../components/layout/AppShell'
+import { sableIconSet } from '@/lib/sable-icon-adapter'
 
 // Routes that should not be wrapped in the AppShell (standalone pages)
 // Note: '/' is conditionally standalone based on auth state (see RpcHealthProviderWrapper)
@@ -281,15 +284,17 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <ErrorBoundary>
-          <ThemeProvider>
-            <QueryProvider>
-              <PrivyProvider heliusWsUrl={heliusWsUrl}>
-                <RpcHealthProviderWrapper>
-                  {children}
-                </RpcHealthProviderWrapper>
-              </PrivyProvider>
-            </QueryProvider>
-          </ThemeProvider>
+          <IconProvider set={sableIconSet} defaultVariant="regular">
+            <ThemeProvider>
+              <QueryProvider>
+                <PrivyProvider heliusWsUrl={heliusWsUrl}>
+                  <RpcHealthProviderWrapper>
+                    {children}
+                  </RpcHealthProviderWrapper>
+                </PrivyProvider>
+              </QueryProvider>
+            </ThemeProvider>
+          </IconProvider>
         </ErrorBoundary>
         <Analytics />
         <Scripts />

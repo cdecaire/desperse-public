@@ -1,18 +1,37 @@
 import * as React from "react"
+import {
+	Textarea as SableTextarea,
+	type TextareaProps as SableTextareaProps,
+} from "@cdecaire/sable"
 
-import { cn } from "@/lib/utils"
-
+/**
+ * Migration shim (Phase 2 — Sable adoption).
+ *
+ * The app's <Textarea> now renders @cdecaire/sable's Textarea (a styled native
+ * multi-line `<textarea>`: rounded-sm, card surface, 2px focus ring,
+ * aria-invalid → destructive border) while keeping the LEGACY shadcn API so
+ * existing call sites (~11 files) don't change:
+ *   - Props are the full native `<textarea>` set
+ *     (React.ComponentProps<"textarea">), forwarded to the underlying element.
+ *   - `data-slot="textarea"` is preserved (legacy callers/styles keyed on it).
+ *
+ * Sable adopts its own styling — every prop passes through to the host textarea,
+ * so `placeholder`, `value`/`onChange`, `disabled`, `aria-invalid`, `maxLength`,
+ * `id`, etc. work unchanged. Known visual deltas to audit when fanning out:
+ * Sable uses `bg-card`/`border-input` (vs legacy `bg-zinc-50 dark:bg-zinc-800` +
+ * border-border), `min-h-[80px]` (legacy `min-h-16` ≈ 64px), `ring-ring/40`
+ * focus ring (legacy `ring-ring/30`), and drops the legacy
+ * `field-sizing-content` auto-grow. The aria-invalid error treatment is
+ * preserved (border only; legacy also tinted the ring).
+ */
 function Textarea({ className, ...props }: React.ComponentProps<"textarea">) {
-  return (
-    <textarea
-      data-slot="textarea"
-      className={cn(
-        "border-border dark:border-zinc-700/50 placeholder:text-muted-foreground focus-visible:border-ring dark:focus-visible:border-zinc-500/50 focus-visible:ring-ring/30 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive bg-zinc-50 dark:bg-zinc-800 flex field-sizing-content min-h-16 w-full rounded-sm border px-3 py-2 text-base font-medium leading-snug tracking-[-0.01em] transition-[color,box-shadow] outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
-        className
-      )}
-      {...props}
-    />
-  )
+	return (
+		<SableTextarea
+			data-slot="textarea"
+			className={className}
+			{...(props as SableTextareaProps)}
+		/>
+	)
 }
 
 export { Textarea }

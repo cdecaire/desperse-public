@@ -157,6 +157,10 @@ const config = defineConfig({
   resolve: {
     // Don't alias buffer here - it breaks SSR since buffer-es needs window
     // Client-side Buffer polyfill is handled in __root.tsx
+
+    // @cdecaire/sable's Base UI dependency (useRender, etc.) must resolve the SAME
+    // React instance as the app, or its hooks throw "invalid hook call" / blank page.
+    dedupe: ['react', 'react-dom'],
   },
   ssr: {
     // Bundle these packages during SSR instead of externalizing

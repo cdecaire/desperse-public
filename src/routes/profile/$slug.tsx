@@ -471,7 +471,7 @@ function ProfilePage() {
                   type="button"
                   onClick={() => setActivityModalOpen(true)}
                   variant="ghost"
-                  className="gap-1 px-2"
+                  size="icon"
                   aria-label="View activity"
                 >
                   <Icon name="clock" variant="regular" className="text-base" />
@@ -481,7 +481,7 @@ function ProfilePage() {
                 <Link to="/settings/profile">
                   <Button
                     variant="ghost"
-                    className="gap-1 px-2"
+                    size="icon"
                     aria-label="Edit profile"
                   >
                     <Icon name="user-pen" variant="regular" className="text-base" />

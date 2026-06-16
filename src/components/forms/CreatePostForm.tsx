@@ -37,12 +37,11 @@ import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { cn } from '@/lib/utils'
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import * as DialogPrimitive from '@radix-ui/react-dialog'
-import { XIcon } from 'lucide-react'
 import { ArweaveFundingSection } from './ArweaveFundingSection'
 import { useArweaveFunding } from '@/hooks/useArweaveFunding'
 import { createPost, getPostEditState } from '@/server/functions/posts'
@@ -1202,10 +1201,10 @@ export function CreatePostForm({ mode = 'create', firstPostMode = false, initial
         <DialogContent className="max-w-md p-0 gap-0 overflow-hidden border-0 dark:border" showCloseButton={false}>
           <DialogHeader className="px-4 py-4 flex items-center justify-center relative min-h-12">
             <DialogTitle className="text-center">Post Preview</DialogTitle>
-            <DialogPrimitive.Close className="absolute top-1/2 -translate-y-1/2 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 ring-offset-background focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
-              <XIcon />
+            <DialogClose className="absolute top-1/2 -translate-y-1/2 right-4 rounded-xs opacity-70 motion-interactive hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none ring-offset-background focus:ring-ring">
+              <Icon name="xmark" />
               <span className="sr-only">Close</span>
-            </DialogPrimitive.Close>
+            </DialogClose>
           </DialogHeader>
           
           {formState.mediaUrl && user && (

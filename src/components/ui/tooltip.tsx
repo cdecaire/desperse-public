@@ -1,135 +1,91 @@
 import * as React from "react"
-import { createPortal } from "react-dom"
+import {
+	Tooltip as SableTooltip,
+	TooltipContent as SableTooltipContent,
+	TooltipProvider as SableTooltipProvider,
+	TooltipTrigger as SableTooltipTrigger,
+} from "@cdecaire/sable"
 import { cn } from "@/lib/utils"
 
+/**
+ * Migration shim (Phase 2 — Sable adoption).
+ *
+ * The app's <Tooltip> keeps its LEGACY MONOLITHIC `content`-prop API while
+ * rendering @cdecaire/sable's COMPOSITION underneath (Base UI Tooltip:
+ * Provider → Root → Trigger → Portal/Positioner/Popup). Hover/focus open,
+ * ARIA wiring, and collision-aware positioning all come from Base UI.
+ *
+ * Legacy API (unchanged — all call sites compile as-is):
+ *   - children: the trigger element (rendered via Base UI's `render` prop)
+ *   - content:  the tooltip body (rendered as TooltipContent children)
+ *   - className: forwarded to the popup surface
+ *   - position: 'top' | 'bottom' → mapped to Sable's `side`
+ *
+ * Composition mapping (monolithic → Sable parts):
+ *   <TooltipProvider>          // wrapped INTERNALLY so each tooltip works
+ *     <Tooltip>                //   standalone; delay still groups correctly
+ *       <TooltipTrigger render={children} />   // children → trigger host
+ *       <TooltipContent side={position}>{content}</TooltipContent>
+ *     </Tooltip>
+ *   </TooltipProvider>
+ *
+ * Provider handling: Sable's TooltipProvider only shares open/close DELAYS
+ * across a group; a tooltip works fine without one. We wrap each shim in its
+ * own Provider so a standalone <Tooltip> still behaves correctly even when no
+ * app-level provider exists. (If an ancestor Provider is added later, nesting
+ * is harmless — the nearest one wins for this tooltip's delay.)
+ *
+ * Trigger wrapping: Base UI's Trigger uses `render` to adopt a child element
+ * as the anchor host (merging trigger props + ARIA onto it). `children` at
+ * every call site is a single element (label/span/img/Button), so it maps
+ * directly. As a safety net, non-element children are wrapped in an
+ * inline-flex <span> so the trigger always has a valid host element.
+ *
+ * Ref gotcha (see button.tsx / popover.tsx): forwardRef → Sable needs the
+ * ref cast `ref as React.ComponentProps<typeof SableTooltipTrigger>["ref"]`.
+ */
+
+// Legacy vertical `position` → Base UI positioner `side`.
+const POSITION_TO_SIDE = {
+	top: "top",
+	bottom: "bottom",
+} as const
+
 interface TooltipProps {
-  children: React.ReactNode
-  content: React.ReactNode
-  className?: string
-  /** Preferred position of the tooltip relative to the trigger (will auto-adjust if not enough space) */
-  position?: 'top' | 'bottom'
+	children: React.ReactNode
+	content: React.ReactNode
+	className?: string
+	/** Preferred position of the tooltip relative to the trigger (auto-flips on collision). */
+	position?: "top" | "bottom"
 }
 
-const TOOLTIP_GAP = 8
-const VIEWPORT_PADDING = 12
+export const Tooltip = React.forwardRef<
+	React.ComponentRef<typeof SableTooltipTrigger>,
+	TooltipProps
+>(({ children, content, className, position = "top" }, ref) => {
+	const side = POSITION_TO_SIDE[position] ?? "top"
 
-export function Tooltip({ children, content, className, position = 'top' }: TooltipProps) {
-  const [isVisible, setIsVisible] = React.useState(false)
-  const [mounted, setMounted] = React.useState(false)
-  const triggerRef = React.useRef<HTMLDivElement>(null)
-  const tooltipRef = React.useRef<HTMLDivElement>(null)
-  const [tooltipStyle, setTooltipStyle] = React.useState<React.CSSProperties>({})
+	// children → trigger host. Use the child element directly via `render`;
+	// wrap anything that isn't a single valid element in a <span> so Base UI
+	// always has a concrete element to anchor + wire ARIA onto.
+	const triggerElement = React.isValidElement(children) ? (
+		children
+	) : (
+		<span className="inline-flex items-center">{children}</span>
+	)
 
-  // Ensure we only render portal on client
-  React.useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  // Update tooltip position when visible
-  React.useEffect(() => {
-    if (!isVisible || !triggerRef.current) return
-
-    const updatePosition = () => {
-      if (!triggerRef.current) return
-      const triggerRect = triggerRef.current.getBoundingClientRect()
-      const tooltipEl = tooltipRef.current
-
-      // Get viewport dimensions
-      const viewportWidth = window.innerWidth
-      const viewportHeight = window.innerHeight
-
-      // Get tooltip dimensions (use estimated size if not yet rendered)
-      const tooltipWidth = tooltipEl?.offsetWidth || 200
-      const tooltipHeight = tooltipEl?.offsetHeight || 100
-
-      // Determine vertical position (prefer the specified position, but flip if needed)
-      let actualPosition = position
-      const spaceAbove = triggerRect.top - TOOLTIP_GAP
-      const spaceBelow = viewportHeight - triggerRect.bottom - TOOLTIP_GAP
-
-      if (position === 'bottom' && spaceBelow < tooltipHeight && spaceAbove > tooltipHeight) {
-        actualPosition = 'top'
-      } else if (position === 'top' && spaceAbove < tooltipHeight && spaceBelow > tooltipHeight) {
-        actualPosition = 'bottom'
-      }
-
-      // Calculate vertical position
-      const top = actualPosition === 'top'
-        ? triggerRect.top - TOOLTIP_GAP
-        : triggerRect.bottom + TOOLTIP_GAP
-
-      // Calculate horizontal position (centered on trigger)
-      let left = triggerRect.left + triggerRect.width / 2
-      let transformX = '-50%'
-
-      // Check horizontal overflow and adjust
-      const tooltipLeft = left - tooltipWidth / 2
-      const tooltipRight = left + tooltipWidth / 2
-
-      if (tooltipLeft < VIEWPORT_PADDING) {
-        // Would overflow left - align to left edge with padding
-        left = VIEWPORT_PADDING
-        transformX = '0%'
-      } else if (tooltipRight > viewportWidth - VIEWPORT_PADDING) {
-        // Would overflow right - align to right edge with padding
-        left = viewportWidth - VIEWPORT_PADDING
-        transformX = '-100%'
-      }
-
-      setTooltipStyle({
-        position: 'fixed',
-        top,
-        left,
-        transform: actualPosition === 'top'
-          ? `translate(${transformX}, -100%)`
-          : `translateX(${transformX})`,
-      })
-    }
-
-    // Initial position calculation
-    updatePosition()
-
-    // Recalculate after tooltip renders to get accurate dimensions
-    const rafId = requestAnimationFrame(updatePosition)
-
-    window.addEventListener('scroll', updatePosition, true)
-    window.addEventListener('resize', updatePosition)
-
-    return () => {
-      cancelAnimationFrame(rafId)
-      window.removeEventListener('scroll', updatePosition, true)
-      window.removeEventListener('resize', updatePosition)
-    }
-  }, [isVisible, position])
-
-  const tooltipContent = (
-    <div
-      ref={tooltipRef}
-      className={cn(
-        "z-9999 p-4 text-xs text-popover-foreground bg-popover border border-border rounded-xl shadow-lg w-max max-w-[calc(100vw-24px)]",
-        className
-      )}
-      style={tooltipStyle}
-      role="tooltip"
-    >
-      {content}
-    </div>
-  )
-
-  return (
-    <div className="relative inline-flex items-center">
-      <div
-        ref={triggerRef}
-        onMouseEnter={() => setIsVisible(true)}
-        onMouseLeave={() => setIsVisible(false)}
-        onFocus={() => setIsVisible(true)}
-        onBlur={() => setIsVisible(false)}
-        className="inline-flex items-center"
-      >
-        {children}
-      </div>
-      {isVisible && mounted && createPortal(tooltipContent, document.body)}
-    </div>
-  )
-}
-
+	return (
+		<SableTooltipProvider>
+			<SableTooltip>
+				<SableTooltipTrigger
+					ref={ref as React.ComponentProps<typeof SableTooltipTrigger>["ref"]}
+					render={triggerElement as React.ReactElement}
+				/>
+				<SableTooltipContent side={side} className={cn(className)}>
+					{content}
+				</SableTooltipContent>
+			</SableTooltip>
+		</SableTooltipProvider>
+	)
+})
+Tooltip.displayName = "Tooltip"

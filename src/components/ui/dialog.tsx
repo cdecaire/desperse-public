@@ -1,141 +1,177 @@
 import * as React from "react"
-import * as DialogPrimitive from "@radix-ui/react-dialog"
-import { XIcon } from "lucide-react"
+import {
+	Dialog as SableDialog,
+	DialogClose as SableDialogClose,
+	DialogContent as SableDialogContent,
+	DialogDescription as SableDialogDescription,
+	DialogFooter as SableDialogFooter,
+	DialogHeader as SableDialogHeader,
+	DialogPortal as SableDialogPortal,
+	DialogTitle as SableDialogTitle,
+	DialogTrigger as SableDialogTrigger,
+} from "@cdecaire/sable"
+import { Icon } from "@/components/ui/icon"
 
-import { cn } from "@/lib/utils"
+/**
+ * Migration shim (Phase 2 — Sable adoption).
+ *
+ * The app's <Dialog*> now render @cdecaire/sable's Dialog (Base UI `Dialog.Root`
+ * + `Trigger`/`Portal`/`Backdrop`/`Popup`/`Close`, motion-fade + motion-pop
+ * recipes) while keeping the LEGACY Radix-shaped API so existing call sites don't
+ * change.
+ *
+ * Name mapping (Radix Dialog → Sable Dialog):
+ *   Dialog            → Dialog            (Base.Root; open / onOpenChange pass through)
+ *   DialogTrigger     → DialogTrigger     (Base.Trigger; asChild → render)
+ *   DialogClose       → DialogClose       (Base.Close; asChild → render)
+ *   DialogPortal      → DialogPortal      (Base.Portal)
+ *   DialogContent     → DialogContent     (Backdrop + Popup, single portal'd elem)
+ *   DialogTitle       → DialogTitle       (Base.Title)
+ *   DialogDescription → DialogDescription (Base.Description)
+ *   DialogHeader      → DialogHeader      (styled <div>)
+ *   DialogFooter      → DialogFooter      (styled <div>)
+ *
+ * Adaptations:
+ *   - `showCloseButton` (legacy DialogContent prop, default `true`): Sable's
+ *     DialogContent renders its OWN backdrop/portal but has NO built-in close
+ *     button. We re-create it — a top-right <DialogClose> holding an
+ *     <Icon name="xmark" /> — and render it only when `showCloseButton` is true.
+ *     (The IconProvider is wired app-wide, so the icon renders.)
+ *   - `asChild` (Radix Slot) → Base UI `render` prop on Trigger AND Close, via the
+ *     forwardRef + ref-cast pattern (see popover.tsx). TipButton wraps an <a> via
+ *     <Button asChild> inside a footer; no call site uses asChild on the Dialog
+ *     parts themselves today, but the conversion is preserved for parity.
+ *   - `className` on DialogContent is forwarded straight onto Sable's Popup
+ *     surface, as are arbitrary DOM props (e.g. ModerationRowMenu passes
+ *     `onClick` to stopPropagation).
+ *
+ * DialogOverlay: Sable/Base UI has NO overlay export — the backdrop is rendered
+ * INTERNALLY by DialogContent. No current call site uses <DialogOverlay>
+ * explicitly, so it is exported as a minimal no-op passthrough purely so the name
+ * still resolves. If a future call site needs a standalone overlay, this must be
+ * revisited (Base UI exposes `Dialog.Backdrop`, not re-exported by Sable).
+ */
 
-function Dialog({
-  ...props
-}: React.ComponentProps<typeof DialogPrimitive.Root>) {
-  return <DialogPrimitive.Root data-slot="dialog" {...props} />
+const Dialog = SableDialog
+
+const DialogPortal = SableDialogPortal
+
+const DialogTrigger = React.forwardRef<
+	React.ComponentRef<typeof SableDialogTrigger>,
+	React.ComponentPropsWithoutRef<typeof SableDialogTrigger> & {
+		asChild?: boolean
+	}
+>(({ asChild = false, children, ...props }, ref) => {
+	// asChild (Radix Slot) → Base UI render prop: render the provided child
+	// element as the trigger host (Base UI merges trigger props, keeps children).
+	if (asChild && React.isValidElement(children)) {
+		return (
+			<SableDialogTrigger
+				ref={ref as React.ComponentProps<typeof SableDialogTrigger>["ref"]}
+				render={children}
+				{...props}
+			/>
+		)
+	}
+	return (
+		<SableDialogTrigger
+			ref={ref as React.ComponentProps<typeof SableDialogTrigger>["ref"]}
+			{...props}
+		>
+			{children}
+		</SableDialogTrigger>
+	)
+})
+DialogTrigger.displayName = "DialogTrigger"
+
+const DialogClose = React.forwardRef<
+	React.ComponentRef<typeof SableDialogClose>,
+	React.ComponentPropsWithoutRef<typeof SableDialogClose> & {
+		asChild?: boolean
+	}
+>(({ asChild = false, children, ...props }, ref) => {
+	// asChild (Radix Slot) → Base UI render prop: render the provided child
+	// element as the close host (Base UI merges close props, keeps children).
+	if (asChild && React.isValidElement(children)) {
+		return (
+			<SableDialogClose
+				ref={ref as React.ComponentProps<typeof SableDialogClose>["ref"]}
+				render={children}
+				{...props}
+			/>
+		)
+	}
+	return (
+		<SableDialogClose
+			ref={ref as React.ComponentProps<typeof SableDialogClose>["ref"]}
+			{...props}
+		>
+			{children}
+		</SableDialogClose>
+	)
+})
+DialogClose.displayName = "DialogClose"
+
+type DialogContentProps = React.ComponentPropsWithoutRef<
+	typeof SableDialogContent
+> & {
+	/** Legacy shadcn prop: render the built-in top-right close button. */
+	showCloseButton?: boolean
 }
 
-function DialogTrigger({
-  ...props
-}: React.ComponentProps<typeof DialogPrimitive.Trigger>) {
-  return <DialogPrimitive.Trigger data-slot="dialog-trigger" {...props} />
+const DialogContent = React.forwardRef<
+	React.ComponentRef<typeof SableDialogContent>,
+	DialogContentProps
+>(({ className, children, showCloseButton = true, ...props }, ref) => (
+	// Sable's DialogContent renders the backdrop + portal + centered popup itself.
+	// We forward className (and arbitrary DOM props) onto its Popup surface, then
+	// re-create the legacy top-right close button when requested.
+	<SableDialogContent
+		ref={ref as React.ComponentProps<typeof SableDialogContent>["ref"]}
+		className={className}
+		{...props}
+	>
+		{children}
+		{showCloseButton && (
+			<DialogClose
+				className="absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:outline-none disabled:pointer-events-none"
+				aria-label="Close"
+			>
+				<Icon name="xmark" />
+			</DialogClose>
+		)}
+	</SableDialogContent>
+))
+DialogContent.displayName = "DialogContent"
+
+/**
+ * No-op passthrough for the legacy `DialogOverlay` name. Sable/Base UI has no
+ * overlay primitive (the backdrop is rendered inside DialogContent); this exists
+ * only so the export resolves. Unused by current call sites — renders nothing.
+ */
+function DialogOverlay(
+	_props: React.ComponentProps<"div">,
+): React.ReactElement | null {
+	return null
 }
 
-function DialogPortal({
-  ...props
-}: React.ComponentProps<typeof DialogPrimitive.Portal>) {
-  return <DialogPrimitive.Portal data-slot="dialog-portal" {...props} />
-}
+const DialogHeader = SableDialogHeader
 
-function DialogClose({
-  ...props
-}: React.ComponentProps<typeof DialogPrimitive.Close>) {
-  return <DialogPrimitive.Close data-slot="dialog-close" {...props} />
-}
+const DialogFooter = SableDialogFooter
 
-function DialogOverlay({
-  className,
-  ...props
-}: React.ComponentProps<typeof DialogPrimitive.Overlay>) {
-  return (
-    <DialogPrimitive.Overlay
-      data-slot="dialog-overlay"
-      className={cn(
-        "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/50 backdrop-blur-sm",
-        className
-      )}
-      {...props}
-    />
-  )
-}
+const DialogTitle = SableDialogTitle
 
-function DialogContent({
-  className,
-  children,
-  showCloseButton = true,
-  ...props
-}: React.ComponentProps<typeof DialogPrimitive.Content> & {
-  showCloseButton?: boolean
-}) {
-  return (
-    <DialogPortal data-slot="dialog-portal">
-      <DialogOverlay />
-      <DialogPrimitive.Content
-        data-slot="dialog-content"
-        className={cn(
-          "bg-background data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-lg border p-6 shadow-lg duration-200 sm:max-w-lg",
-          className
-        )}
-        {...props}
-      >
-        {children}
-        {showCloseButton && (
-          <DialogPrimitive.Close
-            data-slot="dialog-close"
-            className="data-[state=open]:bg-accent data-[state=open]:text-muted-foreground absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:outline-none disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
-          >
-            <XIcon />
-            <span className="sr-only">Close</span>
-          </DialogPrimitive.Close>
-        )}
-      </DialogPrimitive.Content>
-    </DialogPortal>
-  )
-}
-
-function DialogHeader({ className, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div
-      data-slot="dialog-header"
-      className={cn("flex flex-col gap-2 text-center sm:text-left", className)}
-      {...props}
-    />
-  )
-}
-
-function DialogFooter({ className, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div
-      data-slot="dialog-footer"
-      className={cn(
-        "flex flex-col-reverse gap-2 sm:flex-row sm:justify-end",
-        className
-      )}
-      {...props}
-    />
-  )
-}
-
-function DialogTitle({
-  className,
-  ...props
-}: React.ComponentProps<typeof DialogPrimitive.Title>) {
-  return (
-    <DialogPrimitive.Title
-      data-slot="dialog-title"
-      className={cn("text-lg leading-none font-semibold", className)}
-      {...props}
-    />
-  )
-}
-
-function DialogDescription({
-  className,
-  ...props
-}: React.ComponentProps<typeof DialogPrimitive.Description>) {
-  return (
-    <DialogPrimitive.Description
-      data-slot="dialog-description"
-      className={cn("text-muted-foreground text-sm", className)}
-      {...props}
-    />
-  )
-}
+const DialogDescription = SableDialogDescription
 
 export {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogOverlay,
-  DialogPortal,
-  DialogTitle,
-  DialogTrigger,
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogOverlay,
+	DialogPortal,
+	DialogTitle,
+	DialogTrigger,
 }

@@ -377,7 +377,7 @@ function ProfileInfoPage() {
                   <Button
                     type="button"
                     variant="destructive"
-                    className="h-9 w-9 p-0"
+                    size="icon"
                     disabled={headerBgUpload.isPending || isRemovingHeaderBg}
                     onClick={handleRemoveHeaderBg}
                     aria-label="Remove header image"
@@ -402,7 +402,7 @@ function ProfileInfoPage() {
                     <Button
                       type="button"
                       variant="destructive"
-                      className="h-9 w-9 p-0"
+                      size="icon"
                       disabled={headerBgUpload.isPending || isRemovingHeaderBg}
                       onClick={handleRemoveHeaderBg}
                       aria-label="Remove header image"
@@ -455,7 +455,7 @@ function ProfileInfoPage() {
               <Button
                 type="button"
                 variant="destructive"
-                className="h-9 w-9 p-0"
+                size="icon"
                 disabled={avatarUpload.isPending || isRemovingAvatar || !avatarUrl}
                 onClick={handleRemoveAvatar}
                 aria-label="Remove photo"

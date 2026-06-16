@@ -1,9 +1,45 @@
 import * as React from "react"
-import { Slot } from "@radix-ui/react-slot"
+import {
+  Button as SableButton,
+  type ButtonProps as SableButtonProps,
+} from "@cdecaire/sable"
 import { cva, type VariantProps } from "class-variance-authority"
 
-import { cn } from "@/lib/utils"
+/**
+ * Migration shim (Phase 2 — Sable adoption).
+ *
+ * The app's <Button> now renders @cdecaire/sable's Button (Base UI `useRender`
+ * + the motion-interactive/motion-press recipes) while keeping the LEGACY shadcn
+ * API so existing call sites don't change:
+ *   - variant: default | destructive | outline | secondary | ghost | link
+ *   - size:    default | cta | icon | icon-lg
+ *   - asChild: Radix Slot semantics → converted to Sable's `render` prop
+ *
+ * `buttonVariants` is preserved unchanged (calendar.tsx styles its day cells with
+ * it). Known deltas to audit when fanning out: Sable sizes are NOT responsive
+ * (legacy shrank to md:h-[32px] on desktop), and Sable defaults type="button"
+ * (a raw <button> defaults to submit inside a <form>).
+ */
 
+// Legacy variant/size strings → Sable's. (icon-lg has no Sable size → icon.)
+const VARIANT_MAP = {
+  default: "primary",
+  destructive: "destructive",
+  outline: "outline",
+  secondary: "secondary",
+  ghost: "ghost",
+  link: "link",
+} as const
+
+const SIZE_MAP = {
+  default: "md",
+  cta: "cta",
+  icon: "icon",
+  "icon-lg": "icon",
+} as const
+
+// Preserved for backward-compat: calendar.tsx imports buttonVariants({ variant }).
+// Mirrors the legacy shadcn classes so non-Button consumers keep their exact look.
 const buttonVariants = cva(
   "inline-flex items-center justify-center whitespace-nowrap rounded-full text-sm font-medium hover-fade focus:outline-none focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50",
   {
@@ -39,14 +75,41 @@ type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
   }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
-    const Comp = asChild ? Slot : "button"
+  ({ className, variant, size, asChild = false, children, ...props }, ref) => {
+    const sableVariant = VARIANT_MAP[variant ?? "default"] ?? "primary"
+    const sableSize = SIZE_MAP[size ?? "default"] ?? "md"
+
+    // asChild (Radix Slot) → Base UI render prop: render the child element as the
+    // host (childless), passing its own children through as the button content.
+    if (asChild && React.isValidElement(children)) {
+      const child = children as React.ReactElement<{
+        children?: React.ReactNode
+      }>
+      const { children: inner, ...childProps } = child.props
+      return (
+        <SableButton
+          variant={sableVariant}
+          size={sableSize}
+          className={className}
+          ref={ref as SableButtonProps["ref"]}
+          render={React.createElement(child.type, childProps)}
+          {...props}
+        >
+          {inner}
+        </SableButton>
+      )
+    }
+
     return (
-      <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
-        ref={ref}
+      <SableButton
+        variant={sableVariant}
+        size={sableSize}
+        className={className}
+        ref={ref as SableButtonProps["ref"]}
         {...props}
-      />
+      >
+        {children}
+      </SableButton>
     )
   }
 )

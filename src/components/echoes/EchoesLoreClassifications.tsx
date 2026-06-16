@@ -13,17 +13,9 @@ const CLASSIFICATIONS = [
 		name: "Augmented",
 		label: "ENHANCED_BIOLOGICAL",
 		description:
-			"Primarily biological, but visibly layered with controlled enhancement: ports, grafts, optics, neural hardware, or utilitarian body modification. Some carry Ghost-Class contamination or signal persistence.",
-		visual: "Visible implants, grafts, ports, and hardware additions over a stable biological form",
+			"Primarily biological, but visibly layered with machinery: ports, grafts, optics, neural hardware, or utilitarian body modification. Augmented Echoes span the full range from light enhancement to deep organism-machine merger — heavier graft logic, structural integration, and visible hardware dependency. Some carry Ghost-Class contamination or signal persistence.",
+		visual: "Implants, grafts, ports, and integrated hardware over a biological form — from light additions to extensive mechanical replacement",
 		rarity: "Common",
-	},
-	{
-		name: "Cyborg",
-		label: "ORGANISM_MACHINE_MERGE",
-		description:
-			"A deeper merger of organism and machinery. Cyborg Echoes show more structural integration, heavier graft logic, and more visible hardware dependency than Augmented types.",
-		visual: "Extensive mechanical replacement, integrated hardware, structural body modifications",
-		rarity: "Uncommon",
 	},
 	{
 		name: "Synth",
@@ -95,7 +87,7 @@ export function EchoesLoreClassifications() {
 				{/* Ghost-Class teaser */}
 				<div
 					data-reveal-stagger
-					style={{ "--stagger-index": 4 } as React.CSSProperties}
+					style={{ "--stagger-index": 3 } as React.CSSProperties}
 					className="nx-bg-surface-lowest p-6 md:p-8 border border-[var(--nx-secondary-container)] border-opacity-30 relative overflow-hidden"
 				>
 					<div className="absolute inset-0 bg-gradient-to-r from-[rgba(var(--nx-secondary-rgb),0.04)] to-transparent pointer-events-none" aria-hidden="true" />

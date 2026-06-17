@@ -1,12 +1,21 @@
 /**
  * PostTypeSelector Component
- * Radio card selector for post types (Standard, Collectible, Edition)
+ * Radio-card selector for post types (Standard, Collectible, Edition).
+ *
+ * Migration shim (Phase 2 — Sable adoption): rebuilt on @cdecaire/sable's
+ * <ChoiceboxGroup>/<Choicebox> (Base UI RadioGroup + Radio — roving focus,
+ * arrow-key nav, ARIA radiogroup/radio wiring, form integration come for free).
+ * The per-type tone is still carried by the icon (type.badgeClass); the checked
+ * card uses Sable's standard primary/accent treatment. Layout is now Choicebox's
+ * vertical radio-card list (was a 3-col grid of icon cards). The first-post
+ * "keep it simple" collapse logic is preserved.
  */
 
 import { useEffect, useId, useState } from 'react'
 import { POST_TYPE_LIST, type PostType } from '@/constants/postTypes'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icon'
+import { Choicebox, ChoiceboxGroup } from '@cdecaire/sable'
 import { cn } from '@/lib/utils'
 
 interface PostTypeSelectorProps {
@@ -34,98 +43,74 @@ export function PostTypeSelector({ value, onChange, disabled, firstPostMode = fa
     return null
   }
 
-  const renderCard = (type: (typeof POST_TYPE_LIST)[number], extraClasses?: string) => {
-    const isSelected = value === type.id
+  const renderCard = (type: (typeof POST_TYPE_LIST)[number]) => {
+    // Icon + label as the card title. Sable's Choicebox `title` is ReactNode at
+    // runtime, but its type collides with the native HTML `title` attr (string)
+    // from ComponentProps<Radio.Root> — Sable should Omit "title". Cast until
+    // that's fixed upstream; the element renders correctly.
+    const titleNode = (
+      <span className="flex items-center gap-2">
+        <Icon name={type.icon} variant={type.iconStyle} className={cn('text-lg', type.badgeClass)} />
+        {type.label}
+      </span>
+    ) as unknown as string
 
     return (
-      <button
+      <Choicebox
         key={type.id}
-        type="button"
-        role="radio"
-        aria-checked={isSelected}
-        aria-label={type.label}
-        onClick={() => !disabled && onChange(type.id)}
+        value={type.id}
         disabled={disabled}
-        className={cn(
-          'relative flex flex-col items-start p-4 rounded-xl border transition-all text-left',
-          'hover:border-foreground/20',
-          isSelected ? 'bg-card shadow-md' : 'border-border bg-card shadow-sm',
-          disabled && 'opacity-50 cursor-not-allowed',
-          extraClasses,
-        )}
-        style={isSelected ? { borderColor: type.tone } : undefined}
-      >
-        <div
-          className={cn(
-            'absolute top-3 right-3 w-5 h-5 rounded-full border flex items-center justify-center',
-            isSelected ? 'border-transparent' : 'border-muted-foreground/30',
-          )}
-          style={isSelected ? { borderColor: type.tone } : undefined}
-        >
-          {isSelected && (
-            <div
-              className="w-2.5 h-2.5 rounded-full"
-              style={{ backgroundColor: type.tone }}
-            />
-          )}
-        </div>
-
-        <div className="mb-3">
-          <Icon
-            name={type.icon}
-            variant={type.iconStyle}
-            className={cn('text-lg', type.badgeClass)}
-          />
-        </div>
-
-        <div className="text-label-lg">{type.label}</div>
-        <div className="mt-0.5 text-body-sm text-muted-foreground">{type.description}</div>
-      </button>
+        title={titleNode}
+        description={type.description}
+      />
     )
   }
 
   const canHideAdvanced = value === 'post'
+  const showAdvancedCards = !firstPostMode || showAdvanced
 
   return (
     <div className="space-y-2">
       <p id={groupLabelId} className="text-label-lg">Post Type</p>
-      <div className="space-y-3">
-        {firstPostMode && (
-          <div className="rounded-xl border border-dashed border-border bg-muted/30 p-3">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <div className="space-y-1">
-                <p className="text-label-lg">Keep your first post simple</p>
-                <p className="text-body-sm text-muted-foreground">
-                  Collectible and Edition are still available when you want them, but Standard is the fastest path to publish.
-                </p>
-              </div>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setShowAdvanced((current) => !current)}
-                disabled={disabled || (showAdvanced && !canHideAdvanced)}
-                aria-expanded={showAdvanced}
-                aria-controls={advancedOptionsId}
-              >
-                {showAdvanced ? 'Hide advanced options' : 'Show advanced options'}
-              </Button>
+
+      {firstPostMode && (
+        <div className="rounded-xl border border-dashed border-border bg-muted/30 p-3">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="space-y-1">
+              <p className="text-label-lg">Keep your first post simple</p>
+              <p className="text-body-sm text-muted-foreground">
+                Collectible and Edition are still available when you want them, but Standard is the fastest path to publish.
+              </p>
             </div>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setShowAdvanced((current) => !current)}
+              disabled={disabled || (showAdvanced && !canHideAdvanced)}
+              aria-expanded={showAdvanced}
+              aria-controls={advancedOptionsId}
+            >
+              {showAdvanced ? 'Hide advanced options' : 'Show advanced options'}
+            </Button>
+          </div>
+        </div>
+      )}
+
+      <ChoiceboxGroup
+        value={value}
+        onValueChange={(next) => {
+          if (next) onChange(next as PostType)
+        }}
+        aria-labelledby={groupLabelId}
+        className="gap-3"
+      >
+        {renderCard(standardType)}
+        {showAdvancedCards && (
+          <div id={advancedOptionsId} className="contents">
+            {advancedTypes.map(renderCard)}
           </div>
         )}
-
-        <div role="radiogroup" aria-labelledby={groupLabelId} className="space-y-3">
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            {renderCard(standardType, firstPostMode ? 'sm:col-span-3' : undefined)}
-            {!firstPostMode && advancedTypes.map((type) => renderCard(type))}
-          </div>
-
-          {firstPostMode && showAdvanced && (
-            <div id={advancedOptionsId} className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {advancedTypes.map((type) => renderCard(type, 'bg-background'))}
-            </div>
-          )}
-        </div>
-      </div>
+      </ChoiceboxGroup>
     </div>
   )
 }
@@ -133,4 +118,3 @@ export function PostTypeSelector({ value, onChange, disabled, firstPostMode = fa
 export type { PostType }
 
 export default PostTypeSelector
-

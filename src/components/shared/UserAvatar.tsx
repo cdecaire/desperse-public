@@ -38,7 +38,7 @@ export function UserAvatar({ src, alt = '', size = 'md', className, role }: User
 	const badgeLabel = isAdmin ? 'Official Desperse account' : 'Desperse moderator'
 
 	return (
-		<div className={cn('relative flex-shrink-0', sizeClasses[size], className)}>
+		<div data-avatar className={cn('relative flex-shrink-0', sizeClasses[size], className)}>
 			<div className="rounded-full bg-muted overflow-hidden w-full h-full">
 				{src ? (
 					<img

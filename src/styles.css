@@ -56,194 +56,14 @@ code {
 }
 
 @theme inline {
-  --radius-none: 0px;
-  --radius-xs: 4px;
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 20px;
-  --radius-full: 9999px;
-
-  /* Soft shadows (lighter opacity + more blur) */
-  --shadow-sm: 0 1px 4px 0 rgb(0 0 0 / 0.03);
-  --shadow: 0 2px 8px 0 rgb(0 0 0 / 0.04);
-  --shadow-md: 0 4px 12px -2px rgb(0 0 0 / 0.05);
-  --shadow-lg: 0 8px 24px -4px rgb(0 0 0 / 0.05);
-  --shadow-xl: 0 16px 40px -8px rgb(0 0 0 / 0.05);
-  
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-border-floating: var(--border-floating);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
-
-  /* Post-type tones exposed to Tailwind so bg-tone and text-tone utilities work. */
-  --color-tone-standard: var(--tone-standard);
-  --color-tone-collectible: var(--tone-collectible);
-  --color-tone-edition: var(--tone-edition);
-  --color-tone-warning: var(--tone-warning);
-  --color-tone-info: var(--tone-info);
-
+  /* Desperse-only. Radii, shadows, and the color-map are now provided by
+     @cdecaire/sable's imported styles (identical values). */
   --animate-heart-pop: heart-pop 0.8s ease-out forwards;
 }
 
-/* Typography system — see /dev/typography-test for the living spec.
-   Each utility bundles size + weight + line-height + tracking. Compose with
-   color/margin/etc. Don't override the four paired properties individually. */
-
-@utility text-display-4xl {
-  font-size: clamp(4.5rem, 12vw, 12rem);
-  font-weight: 800;
-  line-height: 0.9;
-  letter-spacing: -0.05em;
-}
-@utility text-display-3xl {
-  font-size: 6rem;
-  font-weight: 700;
-  line-height: 0.95;
-  letter-spacing: -0.045em;
-}
-@utility text-display-2xl {
-  font-size: 4.5rem;
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: -0.04em;
-}
-@utility text-display-xl {
-  font-size: 3.75rem;
-  font-weight: 700;
-  line-height: 1.05;
-  letter-spacing: -0.035em;
-}
-@utility text-display-lg {
-  font-size: 3rem;
-  font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.03em;
-}
-
-@utility text-heading-1 {
-  font-size: 2.25rem;
-  font-weight: 600;
-  line-height: 1.15;
-  letter-spacing: -0.025em;
-}
-@utility text-heading-2 {
-  font-size: 1.75rem;
-  font-weight: 600;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
-}
-@utility text-heading-3 {
-  font-size: 1.375rem;
-  font-weight: 600;
-  line-height: 1.25;
-  letter-spacing: -0.015em;
-}
-@utility text-heading-4 {
-  font-size: 1.125rem;
-  font-weight: 600;
-  line-height: 1.3;
-  letter-spacing: -0.01em;
-}
-
-@utility text-title-lg {
-  font-size: 1rem;
-  font-weight: 600;
-  line-height: 1.4;
-  letter-spacing: -0.01em;
-}
-@utility text-title-sm {
-  font-size: 0.875rem;
-  font-weight: 600;
-  line-height: 1.4;
-  letter-spacing: -0.005em;
-}
-
-@utility text-body-lg {
-  font-size: 1.0625rem;
-  font-weight: 400;
-  line-height: 1.6;
-  letter-spacing: -0.005em;
-}
-@utility text-body-md {
-  font-size: 0.9375rem;
-  font-weight: 400;
-  line-height: 1.55;
-  letter-spacing: -0.005em;
-}
-@utility text-body-sm {
-  font-size: 0.8125rem;
-  font-weight: 400;
-  line-height: 1.5;
-  letter-spacing: 0;
-}
-
-@utility text-label-lg {
-  font-size: 0.875rem;
-  font-weight: 600;
-  line-height: 1.25;
-  letter-spacing: -0.005em;
-}
-@utility text-label-md {
-  font-size: 0.75rem;
-  font-weight: 600;
-  line-height: 1.2;
-  letter-spacing: 0;
-}
-@utility text-label-xs {
-  font-size: 0.6875rem;
-  font-weight: 600;
-  line-height: 1.2;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-@utility text-caption {
-  font-size: 0.75rem;
-  font-weight: 400;
-  line-height: 1.4;
-  letter-spacing: 0;
-}
-
-@utility text-mono-md {
-  font-family: 'DM Mono', ui-monospace, SFMono-Regular, monospace;
-  font-size: 0.8125rem;
-  font-weight: 400;
-  line-height: 1.5;
-  letter-spacing: 0;
-  font-variant-numeric: tabular-nums;
-}
-@utility text-mono-sm {
-  font-family: 'DM Mono', ui-monospace, SFMono-Regular, monospace;
-  font-size: 0.6875rem;
-  font-weight: 500;
-  line-height: 1.2;
-  letter-spacing: 0.02em;
-  font-variant-numeric: tabular-nums;
-}
+/* Typography system — the paired text-* utilities (display/heading/title/body/
+   label/caption/mono) are now provided by @cdecaire/sable's imported styles
+   (identical values). See /dev/typography-test for the living spec. */
 
 @keyframes heart-pop {
   0% { transform: scale(0); opacity: 0; }
@@ -255,220 +75,17 @@ code {
 }
 
 :root {
+  /* Desperse-only legacy radius. All palette ramps, dark-tuned tone values,
+     and light-mode semantic tokens are now provided by @cdecaire/sable's
+     imported styles (identical values). */
   --radius: 0.625rem; /* Legacy, kept for backward compatibility */
-
-  /* ----------------------------------------------------------------------
-     Color palettes — OKLCH ramps
-     Construction: locked hue per palette, perceptually-uniform L curve
-     (50→97% / 950→15%), chroma peak at 500 or 600 step capped to sRGB
-     gamut. Each 600 step clears WCAG AA (4.5:1) for body text on white,
-     except flush-orange-600 which is AA-Large only — use orange-700 for
-     body text on white. See /dev/typography-test for documentation.
-     ---------------------------------------------------------------------- */
-
-  /* Zinc — Hue 264° (cool neutral, near-zero chroma) */
-  --zinc-50:  oklch(97.2% 0.002 264);
-  --zinc-100: oklch(94.0% 0.003 264);
-  --zinc-200: oklch(88.0% 0.004 264);
-  --zinc-300: oklch(79.0% 0.004 264);
-  --zinc-400: oklch(68.0% 0.004 264);
-  --zinc-500: oklch(58.0% 0.005 264);
-  --zinc-600: oklch(48.0% 0.005 264);
-  --zinc-700: oklch(39.0% 0.004 264);
-  --zinc-800: oklch(30.0% 0.004 264);
-  --zinc-900: oklch(23.0% 0.003 264);
-  --zinc-950: oklch(15.0% 0.003 264);
-
-  /* Torch Red — Hue 22° (destructive). 600 darkened to 53% L for AA on white. */
-  --torch-red-50:  oklch(97.2% 0.013 22);
-  --torch-red-100: oklch(94.0% 0.028 22);
-  --torch-red-200: oklch(88.0% 0.060 22);
-  --torch-red-300: oklch(79.0% 0.118 22);
-  --torch-red-400: oklch(68.0% 0.190 22);
-  --torch-red-500: oklch(60.0% 0.235 22);
-  --torch-red-600: oklch(53.0% 0.225 22);
-  --torch-red-700: oklch(45.0% 0.190 22);
-  --torch-red-800: oklch(36.0% 0.150 22);
-  --torch-red-900: oklch(28.0% 0.110 22);
-  --torch-red-950: oklch(18.0% 0.075 22);
-
-  /* Blue Gem — Hue 285° (collectible, violet-blue) */
-  --blue-gem-50:  oklch(97.2% 0.014 285);
-  --blue-gem-100: oklch(94.0% 0.030 285);
-  --blue-gem-200: oklch(88.0% 0.065 285);
-  --blue-gem-300: oklch(79.0% 0.130 285);
-  --blue-gem-400: oklch(68.0% 0.205 285);
-  --blue-gem-500: oklch(58.0% 0.265 285);
-  --blue-gem-600: oklch(48.0% 0.265 285);
-  --blue-gem-700: oklch(40.0% 0.225 285);
-  --blue-gem-800: oklch(31.0% 0.180 285);
-  --blue-gem-900: oklch(23.0% 0.135 285);
-  --blue-gem-950: oklch(15.0% 0.090 285);
-
-  /* Purple Heart — Hue 309° (edition / brand accent, magenta-purple) */
-  --purple-heart-50:  oklch(97.2% 0.014 309);
-  --purple-heart-100: oklch(94.0% 0.030 309);
-  --purple-heart-200: oklch(88.0% 0.065 309);
-  --purple-heart-300: oklch(79.0% 0.135 309);
-  --purple-heart-400: oklch(68.0% 0.215 309);
-  --purple-heart-500: oklch(60.0% 0.275 309);
-  --purple-heart-600: oklch(52.0% 0.275 309);
-  --purple-heart-700: oklch(43.0% 0.230 309);
-  --purple-heart-800: oklch(33.0% 0.180 309);
-  --purple-heart-900: oklch(24.0% 0.135 309);
-  --purple-heart-950: oklch(15.0% 0.090 309);
-
-  /* Caribbean Green — Hue 173° (standard / success, teal-green).
-     600 darkened to 45% L for AA on white (teal sRGB volume is narrow). */
-  --caribbean-green-50:  oklch(97.2% 0.018 173);
-  --caribbean-green-100: oklch(94.0% 0.035 173);
-  --caribbean-green-200: oklch(88.0% 0.070 173);
-  --caribbean-green-300: oklch(79.0% 0.115 173);
-  --caribbean-green-400: oklch(68.0% 0.140 173);
-  --caribbean-green-500: oklch(58.0% 0.135 173);
-  --caribbean-green-600: oklch(45.0% 0.118 173);
-  --caribbean-green-700: oklch(38.0% 0.100 173);
-  --caribbean-green-800: oklch(30.0% 0.080 173);
-  --caribbean-green-900: oklch(23.0% 0.060 173);
-  --caribbean-green-950: oklch(15.0% 0.040 173);
-
-  /* Flush Orange — Hue 52° (warning, amber-orange).
-     600 cannot pass AA body-text on white in sRGB without going brown —
-     use --flush-orange-700 for body text on white. 600 is fine for
-     icons/large text/dark-mode surfaces. */
-  --flush-orange-50:  oklch(97.2% 0.018 52);
-  --flush-orange-100: oklch(94.0% 0.038 52);
-  --flush-orange-200: oklch(88.0% 0.075 52);
-  --flush-orange-300: oklch(79.0% 0.130 52);
-  --flush-orange-400: oklch(72.0% 0.170 52);
-  --flush-orange-500: oklch(68.0% 0.180 52);
-  --flush-orange-600: oklch(54.0% 0.155 52);
-  --flush-orange-700: oklch(45.0% 0.130 52);
-  --flush-orange-800: oklch(36.0% 0.105 52);
-  --flush-orange-900: oklch(28.0% 0.080 52);
-  --flush-orange-950: oklch(18.0% 0.055 52);
-
-  /* Azure Radiance — Hue 250° (info, sky-blue) */
-  --azure-radiance-50:  oklch(97.2% 0.014 250);
-  --azure-radiance-100: oklch(94.0% 0.030 250);
-  --azure-radiance-200: oklch(88.0% 0.060 250);
-  --azure-radiance-300: oklch(79.0% 0.115 250);
-  --azure-radiance-400: oklch(68.0% 0.175 250);
-  --azure-radiance-500: oklch(60.0% 0.215 250);
-  --azure-radiance-600: oklch(52.0% 0.225 250);
-  --azure-radiance-700: oklch(43.0% 0.195 250);
-  --azure-radiance-800: oklch(34.0% 0.155 250);
-  --azure-radiance-900: oklch(25.0% 0.115 250);
-  --azure-radiance-950: oklch(16.0% 0.075 250);
-
-  /* ----------------------------------------------------------------------
-     Dark-mode-tuned tone values
-     Defined here for documentation; activated via .dark below.
-     Higher chroma than light-mode tones to recover perceived vibrancy on
-     a near-black canvas (~oklch(15% 0.005 270)). All values clear AA
-     (4.5:1) as text on dark. See agents/research notes for rationale.
-     ---------------------------------------------------------------------- */
-  --tone-edition-dark:     oklch(62.0% 0.295 318); /* electric magenta — fill-tuned */
-  --tone-collectible-dark: oklch(72.0% 0.225 285); /* deep saturated violet */
-  --tone-standard-dark:    oklch(78.0% 0.205 168); /* vivid mint, alive green */
-  --tone-info-dark:        oklch(76.0% 0.165 235); /* clean cyan-blue */
-  --tone-warning-dark:     oklch(82.0% 0.165 65);  /* warm amber, not yellow */
-  --highlight-dark:        oklch(70.0% 0.285 318); /* same family as edition, alpha-tuned */
-  --destructive-dark:      oklch(68.0% 0.225 25);  /* clears both directions on dark + reverse */
-
-  /* Background & surface */
-  --background: #ffffff;
-  --card: #ffffff;
-  --popover: #ffffff;
-
-  /* Text & foreground */
-  --foreground: var(--zinc-950);
-  --card-foreground: var(--zinc-950);
-  --popover-foreground: var(--zinc-950);
-
-  /* Interactive / neutrals */
-  --primary: var(--zinc-950);
-  --primary-foreground: var(--zinc-50);
-  --secondary: var(--zinc-100);
-  --secondary-foreground: var(--zinc-950);
-  --muted: var(--zinc-100);
-  --muted-foreground: var(--zinc-600);
-  --accent: var(--zinc-100);
-  --accent-foreground: var(--zinc-950);
-  --destructive: var(--torch-red-600);
-  --destructive-foreground: #ffffff;
-
-  /* Post type tones - for light mode (all tones clear WCAG AA on white) */
-  --tone-standard: var(--caribbean-green-600);
-  --tone-collectible: var(--blue-gem-600);
-  --tone-edition: var(--purple-heart-700);
-  --tone-warning: var(--flush-orange-700);
-  --tone-info: var(--azure-radiance-600);
-  --highlight: var(--purple-heart-700);
-
-  /* Borders & inputs */
-  --border: var(--zinc-200);
-  --border-floating: oklch(from var(--zinc-400) l c h / 0.5);
-  --input: var(--zinc-200);
-  --ring: var(--zinc-400);
-
-  /* Sidebar */
-  --sidebar: #ffffff;
-  --sidebar-foreground: var(--zinc-950);
-  --sidebar-primary: var(--zinc-950);
-  --sidebar-primary-foreground: var(--zinc-50);
-  --sidebar-accent: var(--zinc-100);
-  --sidebar-accent-foreground: var(--zinc-950);
-  --sidebar-border: var(--zinc-200);
-  --sidebar-ring: var(--zinc-400);
 }
 
 .dark {
-  /* Background & surface */
-  --background: var(--zinc-950);
-  --card: var(--zinc-900);
-  --popover: var(--zinc-900);
-
-  /* Text & foreground */
-  --foreground: var(--zinc-50);
-  --card-foreground: var(--zinc-50);
-  --popover-foreground: var(--zinc-50);
-
-  /* Interactive / neutrals */
-  --primary: var(--zinc-50);
-  --primary-foreground: var(--zinc-950);
-  --secondary: var(--zinc-800);
-  --secondary-foreground: var(--zinc-50);
-  --muted: var(--zinc-800);
-  --muted-foreground: var(--zinc-400);
-  --accent: var(--zinc-800);
-  --accent-foreground: var(--zinc-50);
-  --destructive: var(--destructive-dark);
-  --destructive-foreground: #ffffff;
-
-  /* Post type tones - dark-tuned values (boosted chroma for vibrancy on dark canvas) */
-  --tone-standard: var(--tone-standard-dark);
-  --tone-collectible: var(--tone-collectible-dark);
-  --tone-edition: var(--tone-edition-dark);
-  --tone-warning: var(--tone-warning-dark);
-  --tone-info: var(--tone-info-dark);
-  --highlight: var(--highlight-dark);
-
-  /* Borders & inputs */
-  --border: oklch(from var(--zinc-700) l c h / 0.4);
-  --border-floating: oklch(from var(--zinc-500) l c h / 0.5);
-  --input: oklch(from var(--zinc-700) l c h / 0.4);
-  --ring: var(--zinc-500);
-
-  /* Sidebar */
-  --sidebar: var(--zinc-950);
-  --sidebar-foreground: var(--zinc-50);
-  --sidebar-primary: var(--zinc-50);
-  --sidebar-primary-foreground: var(--zinc-950);
-  --sidebar-accent: var(--zinc-800);
-  --sidebar-accent-foreground: var(--zinc-50);
-  --sidebar-border: var(--zinc-900);
-  --sidebar-ring: var(--zinc-500);
+  /* AA-contrast fix: white on the bright dark-mode destructive red fails WCAG AA
+     (~3.3:1). Sable's source uses zinc-950 but its published 0.2.0 dist still ships
+     #ffffff — override here until Sable republishes. */
+  --destructive-foreground: var(--zinc-950);
 }
 
 @layer base {
@@ -556,11 +173,15 @@ code {
   .dark [role="menuitem"]:not(.no-hover-bg) {
     transition: background-color 150ms ease-out !important;
   }
-  .dark aside a:hover:not([class*="bg-transparent"]):not(.no-hover-bg),
-  .dark aside button:hover:not([class*="bg-primary"]):not(.no-hover-bg),
-  .dark [role="menu"] a:hover:not(.no-hover-bg),
-  .dark [role="menu"] button:hover:not([class*="bg-primary"]):not(.no-hover-bg),
-  .dark [role="menuitem"]:hover:not(.no-hover-bg) {
+  /* `:not(:has([data-avatar]))` keeps the square hover fill off avatars
+     (UserAvatar marks its root with data-avatar) when they're wrapped in a square
+     link — the fill would otherwise show at the corners behind the round avatar.
+     Covers both image AND default-icon avatars; icon action buttons are unaffected. */
+  .dark aside a:hover:not([class*="bg-transparent"]):not(.no-hover-bg):not(:has([data-avatar])),
+  .dark aside button:hover:not([class*="bg-primary"]):not(.no-hover-bg):not(:has([data-avatar])),
+  .dark [role="menu"] a:hover:not(.no-hover-bg):not(:has([data-avatar])),
+  .dark [role="menu"] button:hover:not([class*="bg-primary"]):not(.no-hover-bg):not(:has([data-avatar])),
+  .dark [role="menuitem"]:hover:not(.no-hover-bg):not(:has([data-avatar])) {
     background-color: var(--zinc-800) !important;
   }
 
@@ -572,9 +193,9 @@ code {
   .dark article [role="button"]:not(.no-hover-bg) {
     transition: background-color 150ms ease-out !important;
   }
-  .dark article button:hover:not(.no-hover-bg),
-  .dark article a:hover:not([class*="hover:underline"]):not(.no-hover-bg),
-  .dark article [role="button"]:hover:not(.no-hover-bg) {
+  .dark article button:hover:not(.no-hover-bg):not(:has([data-avatar])),
+  .dark article a:hover:not([class*="hover:underline"]):not(.no-hover-bg):not(:has([data-avatar])),
+  .dark article [role="button"]:hover:not(.no-hover-bg):not(:has([data-avatar])) {
     background-color: var(--zinc-900) !important;
   }
   

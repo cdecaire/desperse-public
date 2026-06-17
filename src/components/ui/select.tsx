@@ -1,159 +1,216 @@
 import * as React from "react"
-import * as SelectPrimitive from "@radix-ui/react-select"
-import { Check, ChevronDown, ChevronUp } from "lucide-react"
-
+import {
+	Select as SableSelect,
+	SelectContent as SableSelectContent,
+	SelectGroup as SableSelectGroup,
+	SelectGroupLabel as SableSelectGroupLabel,
+	SelectItem as SableSelectItem,
+	SelectSeparator as SableSelectSeparator,
+	SelectTrigger as SableSelectTrigger,
+} from "@cdecaire/sable"
 import { cn } from "@/lib/utils"
 
-const Select = SelectPrimitive.Root
+/**
+ * Migration shim (Phase 2 — Sable adoption).
+ *
+ * The app's <Select*> now render @cdecaire/sable's Select (Base UI
+ * `Select.Root` + `Trigger`/`Positioner`/`Popup`/`List`/`Item`/`Group`/
+ * `GroupLabel`/`Separator`, motion-pop recipe) while keeping the LEGACY
+ * Radix-shaped `Select*` API so existing call sites don't change.
+ *
+ * Name mapping (Radix Select → Sable Select):
+ *   Select                → Select          (Base.Root; value/onValueChange/disabled pass through)
+ *   SelectGroup           → SelectGroup     (Base.Group)
+ *   SelectValue           → (marker only)   see note below
+ *   SelectTrigger         → SelectTrigger   (Base.Trigger + composed Base.Value + chevron)
+ *   SelectContent         → SelectContent   (Portal + Positioner + Popup + List, one elem)
+ *   SelectLabel           → SelectGroupLabel(Base.GroupLabel)
+ *   SelectItem            → SelectItem      (Base.Item + ItemText + ItemIndicator)
+ *   SelectSeparator       → SelectSeparator (Base.Separator)
+ *   SelectScrollUpButton  → no-op passthrough (Base UI auto-scrolls; unused)
+ *   SelectScrollDownButton→ no-op passthrough (Base UI auto-scrolls; unused)
+ *
+ * KEY ADAPTATION — SelectValue:
+ *   In the Radix API, callers render `<SelectTrigger><SelectValue placeholder="…" /></SelectTrigger>`,
+ *   i.e. SelectValue is a CHILD of the trigger. Sable's SelectTrigger ALREADY
+ *   composes its own `Base.Value` internally and instead takes a `placeholder`
+ *   PROP. Passing a React element as Sable's trigger `children` would be wrong
+ *   (Base.Value's `children` expects a render fn, not an element) and would
+ *   suppress the selected-value label.
+ *
+ *   So the shim's `SelectValue` is a zero-render MARKER: it carries only the
+ *   `placeholder` (and is otherwise inert). The shim's `SelectTrigger` inspects
+ *   its children, lifts the `placeholder` off any `SelectValue` child, forwards
+ *   it to Sable's trigger `placeholder` prop, and drops the marker from the DOM.
+ *   Every current call site uses exactly `<SelectValue />` or
+ *   `<SelectValue placeholder="…" />`, so this fully preserves behavior.
+ *
+ * Positioning: Sable's SelectContent accepts `side`/`align`/`sideOffset` (Base UI
+ * positioner props). No call site passes them, so defaults apply.
+ */
 
-const SelectGroup = SelectPrimitive.Group
+type SableSelectProps = React.ComponentProps<typeof SableSelect>
 
-const SelectValue = SelectPrimitive.Value
+/**
+ * Legacy callers pass `onValueChange: (value: string) => void`; Base UI's Select
+ * fires `(value: string | null, eventDetails)`. Adapt so call sites stay unchanged.
+ */
+type SelectProps = Omit<SableSelectProps, "onValueChange"> & {
+	onValueChange?: (value: string) => void
+}
+function Select({ onValueChange, ...props }: SelectProps) {
+	return (
+		<SableSelect
+			onValueChange={
+				onValueChange
+					? (value) => onValueChange((value ?? "") as string)
+					: undefined
+			}
+			{...props}
+		/>
+	)
+}
+Select.displayName = "Select"
 
-const SelectTrigger = React.forwardRef<
-  React.ElementRef<typeof SelectPrimitive.Trigger>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>
->(({ className, children, ...props }, ref) => (
-  <SelectPrimitive.Trigger
-    ref={ref}
-    className={cn(
-      "flex h-10 w-full items-center justify-between rounded-sm border border-border dark:border-zinc-700/50 bg-zinc-50 px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring dark:focus:ring-zinc-500/30 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 dark:bg-zinc-800",
-      className
-    )}
-    {...props}
-  >
-    {children}
-    <SelectPrimitive.Icon asChild>
-      <ChevronDown className="h-4 w-4 opacity-50" />
-    </SelectPrimitive.Icon>
-  </SelectPrimitive.Trigger>
-))
-SelectTrigger.displayName = SelectPrimitive.Trigger.displayName
+const SelectGroup = SableSelectGroup
 
-const SelectScrollUpButton = React.forwardRef<
-  React.ElementRef<typeof SelectPrimitive.ScrollUpButton>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.ScrollUpButton>
->(({ className, ...props }, ref) => (
-  <SelectPrimitive.ScrollUpButton
-    ref={ref}
-    className={cn(
-      "flex cursor-default items-center justify-center py-1",
-      className
-    )}
-    {...props}
-  >
-    <ChevronUp className="h-4 w-4" />
-  </SelectPrimitive.ScrollUpButton>
-))
-SelectScrollUpButton.displayName = SelectPrimitive.ScrollUpButton.displayName
+/**
+ * Marker component for the legacy `SelectValue` slot. Renders nothing — the
+ * selected-value label is rendered by Sable's <SelectTrigger> itself. The only
+ * meaningful prop is `placeholder`, which the shim's SelectTrigger lifts off the
+ * marker and forwards to Sable. See the file header for the full rationale.
+ */
+interface SelectValueProps {
+	placeholder?: React.ReactNode
+	className?: string
+	children?: React.ReactNode
+}
+function SelectValue(_props: SelectValueProps) {
+	return null
+}
+SelectValue.displayName = "SelectValue"
 
-const SelectScrollDownButton = React.forwardRef<
-  React.ElementRef<typeof SelectPrimitive.ScrollDownButton>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.ScrollDownButton>
->(({ className, ...props }, ref) => (
-  <SelectPrimitive.ScrollDownButton
-    ref={ref}
-    className={cn(
-      "flex cursor-default items-center justify-center py-1",
-      className
-    )}
-    {...props}
-  >
-    <ChevronDown className="h-4 w-4" />
-  </SelectPrimitive.ScrollDownButton>
-))
-SelectScrollDownButton.displayName =
-  SelectPrimitive.ScrollDownButton.displayName
+type SableSelectTriggerProps = React.ComponentProps<typeof SableSelectTrigger>
 
-const SelectContent = React.forwardRef<
-  React.ElementRef<typeof SelectPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>
->(({ className, children, position = "popper", ...props }, ref) => (
-  <SelectPrimitive.Portal>
-    <SelectPrimitive.Content
-      ref={ref}
-      className={cn(
-        "relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-md border border-border dark:border-zinc-700 bg-popover text-popover-foreground shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
-        position === "popper" &&
-          "data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1",
-        className
-      )}
-      position={position}
-      {...props}
-    >
-      <SelectScrollUpButton />
-      <SelectPrimitive.Viewport
-        className={cn(
-          "p-1",
-          position === "popper" &&
-            "h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]"
-        )}
-      >
-        {children}
-      </SelectPrimitive.Viewport>
-      <SelectScrollDownButton />
-    </SelectPrimitive.Content>
-  </SelectPrimitive.Portal>
-))
-SelectContent.displayName = SelectPrimitive.Content.displayName
-
-const SelectLabel = React.forwardRef<
-  React.ElementRef<typeof SelectPrimitive.Label>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Label>
->(({ className, ...props }, ref) => (
-  <SelectPrimitive.Label
-    ref={ref}
-    className={cn("py-1.5 pl-8 pr-2 text-sm font-semibold", className)}
-    {...props}
-  />
-))
-SelectLabel.displayName = SelectPrimitive.Label.displayName
-
-const SelectItem = React.forwardRef<
-  React.ElementRef<typeof SelectPrimitive.Item>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Item>
->(({ className, children, ...props }, ref) => (
-  <SelectPrimitive.Item
-    ref={ref}
-    className={cn(
-      "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
-      className
-    )}
-    {...props}
-  >
-    <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
-      <SelectPrimitive.ItemIndicator>
-        <Check className="h-4 w-4" />
-      </SelectPrimitive.ItemIndicator>
-    </span>
-
-    <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
-  </SelectPrimitive.Item>
-))
-SelectItem.displayName = SelectPrimitive.Item.displayName
-
-const SelectSeparator = React.forwardRef<
-  React.ElementRef<typeof SelectPrimitive.Separator>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Separator>
->(({ className, ...props }, ref) => (
-  <SelectPrimitive.Separator
-    ref={ref}
-    className={cn("-mx-1 my-1 h-px bg-muted", className)}
-    {...props}
-  />
-))
-SelectSeparator.displayName = SelectPrimitive.Separator.displayName
-
-export {
-  Select,
-  SelectGroup,
-  SelectValue,
-  SelectTrigger,
-  SelectContent,
-  SelectLabel,
-  SelectItem,
-  SelectSeparator,
-  SelectScrollUpButton,
-  SelectScrollDownButton,
+type SelectTriggerProps = Omit<SableSelectTriggerProps, "placeholder"> & {
+	/** Optional explicit placeholder (also lifted from a <SelectValue> child). */
+	placeholder?: React.ReactNode
 }
 
+const SelectTrigger = React.forwardRef<
+	React.ComponentRef<typeof SableSelectTrigger>,
+	SelectTriggerProps
+>(({ className, children, placeholder, ...props }, ref) => {
+	// Lift `placeholder` off a <SelectValue> child (legacy Radix composition).
+	// Base UI allows a render-function child; only iterate the element form.
+	let resolvedPlaceholder = placeholder
+	if (typeof children !== "function") {
+		React.Children.forEach(children, (child) => {
+			if (
+				React.isValidElement(child) &&
+				(child.type as { displayName?: string })?.displayName === "SelectValue"
+			) {
+				const childPlaceholder = (child.props as SelectValueProps).placeholder
+				if (childPlaceholder !== undefined) {
+					resolvedPlaceholder = childPlaceholder
+				}
+			}
+		})
+	}
+
+	return (
+		<SableSelectTrigger
+			ref={ref as SableSelectTriggerProps["ref"]}
+			placeholder={resolvedPlaceholder}
+			className={className}
+			{...props}
+		/>
+	)
+})
+SelectTrigger.displayName = "SelectTrigger"
+
+type SelectContentProps = React.ComponentProps<typeof SableSelectContent>
+
+const SelectContent = React.forwardRef<
+	React.ComponentRef<typeof SableSelectContent>,
+	SelectContentProps
+>(({ className, ...props }, ref) => (
+	<SableSelectContent
+		ref={ref as SelectContentProps["ref"]}
+		className={cn(className)}
+		{...props}
+	/>
+))
+SelectContent.displayName = "SelectContent"
+
+type SelectLabelProps = React.ComponentProps<typeof SableSelectGroupLabel>
+
+const SelectLabel = React.forwardRef<
+	React.ComponentRef<typeof SableSelectGroupLabel>,
+	SelectLabelProps
+>(({ className, ...props }, ref) => (
+	<SableSelectGroupLabel
+		ref={ref as SelectLabelProps["ref"]}
+		className={className}
+		{...props}
+	/>
+))
+SelectLabel.displayName = "SelectLabel"
+
+type SelectItemProps = React.ComponentProps<typeof SableSelectItem>
+
+const SelectItem = React.forwardRef<
+	React.ComponentRef<typeof SableSelectItem>,
+	SelectItemProps
+>(({ className, children, ...props }, ref) => (
+	<SableSelectItem
+		ref={ref as SelectItemProps["ref"]}
+		className={className}
+		{...props}
+	>
+		{children}
+	</SableSelectItem>
+))
+SelectItem.displayName = "SelectItem"
+
+type SelectSeparatorProps = React.ComponentProps<typeof SableSelectSeparator>
+
+const SelectSeparator = React.forwardRef<
+	React.ComponentRef<typeof SableSelectSeparator>,
+	SelectSeparatorProps
+>(({ className, ...props }, ref) => (
+	<SableSelectSeparator
+		ref={ref as SelectSeparatorProps["ref"]}
+		className={className}
+		{...props}
+	/>
+))
+SelectSeparator.displayName = "SelectSeparator"
+
+/**
+ * No-op passthroughs for the legacy scroll-button names. Base UI's Select
+ * auto-handles overflow scrolling inside the popup, so these have no Sable
+ * equivalent. Kept only so the exports resolve. No current call site uses them.
+ */
+function SelectScrollUpButton(_props: { className?: string }) {
+	return null
+}
+SelectScrollUpButton.displayName = "SelectScrollUpButton"
+
+function SelectScrollDownButton(_props: { className?: string }) {
+	return null
+}
+SelectScrollDownButton.displayName = "SelectScrollDownButton"
+
+export {
+	Select,
+	SelectGroup,
+	SelectValue,
+	SelectTrigger,
+	SelectContent,
+	SelectLabel,
+	SelectItem,
+	SelectSeparator,
+	SelectScrollUpButton,
+	SelectScrollDownButton,
+}

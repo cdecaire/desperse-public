@@ -81,13 +81,6 @@ code {
   --radius: 0.625rem; /* Legacy, kept for backward compatibility */
 }
 
-.dark {
-  /* AA-contrast fix: white on the bright dark-mode destructive red fails WCAG AA
-     (~3.3:1). Sable's source uses zinc-950 but its published 0.2.0 dist still ships
-     #ffffff — override here until Sable republishes. */
-  --destructive-foreground: var(--zinc-950);
-}
-
 @layer base {
   * {
     @apply border-border outline-ring/50;

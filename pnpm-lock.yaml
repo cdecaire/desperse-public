@@ -16,8 +16,8 @@ importers:
         specifier: ^1.41.0
         version: 1.41.0(@solana/sysvars@5.5.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))(@tanstack/query-core@5.100.8)(@tanstack/react-query@5.100.8(react@19.2.4))(@types/react@19.2.10)(@vercel/blob@2.0.1)(bufferutil@4.1.0)(db0@0.3.4(drizzle-orm@0.45.1(@neondatabase/serverless@1.0.2)(@opentelemetry/api@1.9.0)(@types/pg@8.16.0)(postgres@3.4.8)))(fastestsmallesttextencoderdecoder@1.0.22)(react@19.2.4)(typescript@5.9.3)(utf-8-validate@5.0.10)
       '@cdecaire/sable':
-        specifier: ^0.2.0
-        version: 0.2.0(@date-fns/tz@1.4.1)(@types/react@19.2.10)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        specifier: ^0.3.0
+        version: 0.3.0(@date-fns/tz@1.4.1)(@types/react@19.2.10)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@fortawesome/fontawesome-svg-core':
         specifier: ^7.2.0
         version: 7.2.0
@@ -517,8 +517,8 @@ packages:
       '@types/react':
         optional: true
 
-  '@cdecaire/sable@0.2.0':
-    resolution: {integrity: sha512-/znhKKGPWnoENMQSGPyjUYD7rNWo6bl1eig4sE7dCojdcIGRMCokH1ui1HofLTq/3exFKPLwHwGD4cZg+3fuvg==, tarball: https://npm.pkg.github.com/download/@cdecaire/sable/0.2.0/ab0e9d6a93e43b1254302e15c30aac0a68088944}
+  '@cdecaire/sable@0.3.0':
+    resolution: {integrity: sha512-ECDOB6jkA9joaq9K0hsjv+j/57kxCuW79hHtqZuZF3jDM7WNJHAeAHUcxWRcv9O+vnXHCpEgpAHWalWXdKhDXw==, tarball: https://npm.pkg.github.com/download/@cdecaire/sable/0.3.0/583084ea76b1d80322fdf3db3cf4cf9d24d1627a}
     peerDependencies:
       react: ^19
       react-dom: ^19
@@ -9343,7 +9343,7 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.2.10
 
-  '@cdecaire/sable@0.2.0(@date-fns/tz@1.4.1)(@types/react@19.2.10)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
+  '@cdecaire/sable@0.3.0(@date-fns/tz@1.4.1)(@types/react@19.2.10)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
     dependencies:
       '@base-ui/react': 1.5.0(@date-fns/tz@1.4.1)(@types/react@19.2.10)(date-fns@3.6.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       class-variance-authority: 0.7.1

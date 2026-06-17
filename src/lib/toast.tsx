@@ -1,92 +1,52 @@
-import { toast as sonnerToast } from 'sonner'
-import { Icon } from '@/components/ui/icon'
+import { toast as sableToast } from '@cdecaire/sable'
 
 interface ToastOptions {
+  /**
+   * Auto-dismiss time in ms. Pass `Infinity` (or `0`) to keep the toast until
+   * dismissed. Mapped to Sable's `timeout` under the hood.
+   *
+   * NOTE: The legacy Sonner wrapper used `duration`; we keep that name here so
+   * every existing call site (e.g. `toastSuccess(msg, { duration })`) stays
+   * unchanged. Internally it becomes `timeout`.
+   */
   duration?: number
 }
 
-// Icon component matching current design
-function ToastIcon({ variant }: { variant: 'success' | 'error' | 'info' | 'warning' }) {
-  const config = {
-    success: { icon: 'fa-check', bgColor: 'rgb(34, 197, 94)' },
-    error: { icon: 'fa-exclamation', bgColor: 'rgb(239, 68, 68)' },
-    info: { icon: 'fa-info', bgColor: 'rgb(59, 130, 246)' },
-    warning: { icon: 'fa-exclamation', bgColor: 'rgb(234, 179, 8)' },
-  }[variant]
-
-  return (
-    <div
-      className="flex items-center justify-center rounded-full flex-shrink-0"
-      style={{ backgroundColor: config.bgColor, width: '20px', height: '20px' }}
-    >
-      <Icon name={config.icon} className="text-white text-[10px]" />
-    </div>
-  )
+// Sonner used `Infinity` for "persist forever"; Sable/Base UI uses `0`.
+function toSableTimeout(duration?: number): number | undefined {
+  if (duration === undefined) return undefined
+  if (duration === Number.POSITIVE_INFINITY) return 0
+  return duration
 }
 
-// Close button matching current design
-function CloseButton({ onClick }: { onClick: () => void }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="ml-auto flex-shrink-0 w-6 h-6 flex items-center justify-center opacity-70 transition-opacity hover:opacity-100 focus:outline-none bg-transparent border-0 p-0 cursor-pointer"
-      aria-label="Close"
-    >
-      <Icon name="xmark" className="text-primary-foreground text-sm" />
-    </button>
-  )
-}
-
-// Custom toast renderer
-function CustomToast({
-  message,
-  variant,
-  toastId,
-}: {
-  message: string
-  variant: 'success' | 'error' | 'info' | 'warning'
-  toastId: string | number
-}) {
-  // Detect if message will be multiline (rough heuristic: > 60 chars)
-  const isMultiline = message.length > 60
-  const borderRadius = isMultiline ? 'rounded-lg' : 'rounded-full'
-
-  return (
-    <div
-      className={`flex w-full items-center gap-2.5 px-4 py-2.5 bg-primary text-primary-foreground ${borderRadius} shadow-lg shadow-black/10 dark:shadow-black/30 hover:scale-105 hover:shadow-xl active:scale-95 transform-gpu transition-all min-h-[44px] font-['Figtree',system-ui,-apple-system,BlinkMacSystemFont,'Segoe_UI',sans-serif]`}
-    >
-      <ToastIcon variant={variant} />
-      <span className="text-sm font-semibold flex-1 leading-tight">{message}</span>
-      <CloseButton onClick={() => sonnerToast.dismiss(toastId)} />
-    </div>
-  )
-}
-
-function createToast(message: string, variant: 'success' | 'error' | 'info' | 'warning', options?: ToastOptions) {
-  return sonnerToast.custom(
-    (id) => <CustomToast message={message} variant={variant} toastId={id} />,
-    {
-      duration: options?.duration ?? 5000,
-    }
-  )
+function show(
+  variant: 'success' | 'error' | 'info' | 'warning',
+  message: string,
+  options?: ToastOptions
+): string {
+  const timeout = toSableTimeout(options?.duration)
+  const opts = timeout === undefined ? undefined : { timeout }
+  // Sable maps `type` → accent (success/error/warning/info) and shows the
+  // message as the toast title. Default timeout (5000ms) matches the old wrapper.
+  return sableToast[variant](message, opts)
 }
 
 export function toastSuccess(message: string, options?: ToastOptions) {
-  return createToast(message, 'success', options)
+  return show('success', message, options)
 }
 
 export function toastError(message: string, options?: ToastOptions) {
-  return createToast(message, 'error', options)
+  return show('error', message, options)
 }
 
 export function toastInfo(message: string, options?: ToastOptions) {
-  return createToast(message, 'info', options)
+  return show('info', message, options)
 }
 
 export function toastWarning(message: string, options?: ToastOptions) {
-  return createToast(message, 'warning', options)
+  return show('warning', message, options)
 }
 
-// Re-export dismiss for manual control
-export const dismissToast = sonnerToast.dismiss
+// Re-export dismiss for manual control. Sable's `dismiss(id?)` closes a single
+// toast by id, or all toasts when called with no id — same contract as Sonner's.
+export const dismissToast = sableToast.dismiss

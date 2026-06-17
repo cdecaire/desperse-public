@@ -296,7 +296,13 @@ export function PostMedia({
                 ? 'w-full h-full object-contain relative z-10'
                 : isExtraTall
                   ? 'w-full h-full object-cover relative z-10'
-                  : 'w-full',
+                  : aspectRatio === 'auto'
+                    // Uncapped auto (detail view): bound to the viewport with
+                    // object-contain so a tall image shows in full without
+                    // overtaking the screen (or flashing oversized before the
+                    // layout settles). Short images are unaffected.
+                    ? 'w-full max-h-[80vh] object-contain'
+                    : 'w-full',
               isLoaded ? 'opacity-100' : 'opacity-0'
             )}
             onLoad={handleImageLoad}

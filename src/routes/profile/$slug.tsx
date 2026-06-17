@@ -20,6 +20,7 @@ import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { useOnboardingState } from '@/hooks/useOnboardingState'
 import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/ui/button'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { shouldShowFirstPostCta } from '@/lib/onboarding'
 import {
   useProfileUser,
@@ -658,44 +659,36 @@ function ProfilePage() {
       <div className="mx-4 mt-4 border-t border-border" />
 
       {/* Tabs */}
-      <div className="bg-background pt-2">
-        <div className="flex">
+      <Tabs
+        value={activeTab}
+        onValueChange={(value) => setActiveTab(value as ProfileTab)}
+        className="bg-background pt-2"
+      >
+        <TabsList className="flex w-full">
           {(['posts', 'collected', 'for-sale'] as ProfileTab[]).map((tab) => {
-            const count = 
+            const count =
               tab === 'posts' ? profileStats?.posts ?? 0 :
               tab === 'collected' ? profileStats?.collected ?? 0 :
               profileStats?.forSale ?? 0
-            
-            const label = 
+
+            const label =
               tab === 'posts' ? 'Posts' :
               tab === 'collected' ? 'Collected' :
               'For Sale'
-            
+
             return (
-              <button
+              <TabsTrigger
                 key={tab}
-                type="button"
-                onClick={() => setActiveTab(tab)}
-                className={`flex-1 px-4 py-3 text-label-lg transition-colors relative flex items-center justify-center gap-2 ${
-                  activeTab === tab
-                    ? 'text-foreground'
-                    : 'text-muted-foreground hover:text-foreground/80'
-                }`}
+                value={tab}
+                className="flex flex-1 items-center justify-center gap-1.5"
               >
-                <span className="relative inline-flex items-center gap-2 pb-2">
-                  <span className="font-semibold">
-                    {count}
-                  </span>
-                  <span>{label}</span>
-                  {activeTab === tab && (
-                    <div className="absolute bottom-0 -left-0.5 -right-0.5 h-0.5 bg-foreground rounded-full" />
-                  )}
-                </span>
-              </button>
+                <span className="font-semibold">{count}</span>
+                <span>{label}</span>
+              </TabsTrigger>
             )
           })}
-        </div>
-      </div>
+        </TabsList>
+      </Tabs>
 
       {/* Tab Content */}
       <div className="mt-4">

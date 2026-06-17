@@ -22,6 +22,7 @@ import { DownloadableAssetsSection } from '@/components/feed/DownloadableAssetsS
 import { getPrimaryDisplayMedia, type DownloadableAsset } from '@/components/feed/postAssets'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { Logo } from '@/components/shared/Logo'
 import { getPostDisplayState, getEditionLabel, POST_TYPE_COLORS, formatPrice as formatPriceDisplay } from '@/components/feed/postDisplay'
@@ -755,31 +756,15 @@ function PostDetailPage() {
   const tabLabels: Record<string, string> = { comments: 'Comments', details: 'Details', collectors: 'Collectors' }
 
   const TabBar = ({ activeTab, onTabChange }: { activeTab: string; onTabChange: (tab: any) => void }) => (
-    <div className="flex border-b border-border shrink-0" role="tablist">
-      {tabs.map((tab) => (
-        <button
-          key={tab}
-          type="button"
-          role="tab"
-          aria-selected={activeTab === tab}
-          onClick={() => onTabChange(tab)}
-          className={cn(
-            'flex-1 py-3 text-label-lg transition-colors relative',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset',
-            activeTab === tab
-              ? 'text-foreground'
-              : 'text-muted-foreground hover:text-foreground/80',
-          )}
-        >
-          <span className="relative inline-flex items-center">
+    <Tabs value={activeTab} onValueChange={(value) => onTabChange(value)} className="shrink-0">
+      <TabsList className="flex w-full">
+        {tabs.map((tab) => (
+          <TabsTrigger key={tab} value={tab} className="flex-1 justify-center">
             {tabLabels[tab]}
-          </span>
-          {activeTab === tab && (
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-foreground rounded-full" />
-          )}
-        </button>
-      ))}
-    </div>
+          </TabsTrigger>
+        ))}
+      </TabsList>
+    </Tabs>
   )
 
   // Shared tab content renderer

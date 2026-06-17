@@ -16,8 +16,8 @@ importers:
         specifier: ^1.41.0
         version: 1.41.0(@solana/sysvars@5.5.1(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3))(@tanstack/query-core@5.100.8)(@tanstack/react-query@5.100.8(react@19.2.4))(@types/react@19.2.10)(@vercel/blob@2.0.1)(bufferutil@4.1.0)(db0@0.3.4(drizzle-orm@0.45.1(@neondatabase/serverless@1.0.2)(@opentelemetry/api@1.9.0)(@types/pg@8.16.0)(postgres@3.4.8)))(fastestsmallesttextencoderdecoder@1.0.22)(react@19.2.4)(typescript@5.9.3)(utf-8-validate@5.0.10)
       '@cdecaire/sable':
-        specifier: ^0.3.0
-        version: 0.3.0(@date-fns/tz@1.4.1)(@types/react@19.2.10)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        specifier: ^0.4.0
+        version: 0.4.0(@date-fns/tz@1.4.1)(@types/react@19.2.10)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@fortawesome/fontawesome-svg-core':
         specifier: ^7.2.0
         version: 7.2.0
@@ -517,8 +517,8 @@ packages:
       '@types/react':
         optional: true
 
-  '@cdecaire/sable@0.3.0':
-    resolution: {integrity: sha512-ECDOB6jkA9joaq9K0hsjv+j/57kxCuW79hHtqZuZF3jDM7WNJHAeAHUcxWRcv9O+vnXHCpEgpAHWalWXdKhDXw==, tarball: https://npm.pkg.github.com/download/@cdecaire/sable/0.3.0/583084ea76b1d80322fdf3db3cf4cf9d24d1627a}
+  '@cdecaire/sable@0.4.0':
+    resolution: {integrity: sha512-c+ltAbEsByZ2dKhQcSxnSZwIhyXdBjlxQ9YTM+zj5XeVbrMw2hsVYKJb+Mt2Ot5c5xG+AsiicNBle7/88axsIw==, tarball: https://npm.pkg.github.com/download/@cdecaire/sable/0.4.0/dc12c8cf63e6c5fa55ec75abd76b5094ee0cf817}
     peerDependencies:
       react: ^19
       react-dom: ^19
@@ -1442,9 +1442,6 @@ packages:
 
   '@firebase/webchannel-wrapper@1.0.5':
     resolution: {integrity: sha512-+uGNN7rkfn41HLO0vekTFhTxk61eKa8mTpRGLO0QSqlQdKvIoGAvLp3ppdVIWbTGYJWM6Kp0iN+PjMIOcnVqTw==}
-
-  '@floating-ui/core@1.7.4':
-    resolution: {integrity: sha512-C3HlIdsBxszvm5McXlB8PeOEWfBhcGBTZGkGlWc2U0KFY5IwG5OQEuQ8rq52DZmcHDlPLd+YFBK+cZcytwIFWg==}
 
   '@floating-ui/core@1.7.5':
     resolution: {integrity: sha512-1Ih4WTWyw0+lKyFMcBHGbb5U5FtuHJuujoyyr5zTaWS5EYMeT6Jb2AuDeftsCsEuchO+mM2ij5+q9crhydzLhQ==}
@@ -9343,7 +9340,7 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.2.10
 
-  '@cdecaire/sable@0.3.0(@date-fns/tz@1.4.1)(@types/react@19.2.10)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
+  '@cdecaire/sable@0.4.0(@date-fns/tz@1.4.1)(@types/react@19.2.10)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
     dependencies:
       '@base-ui/react': 1.5.0(@date-fns/tz@1.4.1)(@types/react@19.2.10)(date-fns@3.6.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       class-variance-authority: 0.7.1
@@ -10464,18 +10461,14 @@ snapshots:
 
   '@firebase/webchannel-wrapper@1.0.5': {}
 
-  '@floating-ui/core@1.7.4':
-    dependencies:
-      '@floating-ui/utils': 0.2.10
-
   '@floating-ui/core@1.7.5':
     dependencies:
       '@floating-ui/utils': 0.2.11
 
   '@floating-ui/dom@1.7.5':
     dependencies:
-      '@floating-ui/core': 1.7.4
-      '@floating-ui/utils': 0.2.10
+      '@floating-ui/core': 1.7.5
+      '@floating-ui/utils': 0.2.11
 
   '@floating-ui/dom@1.7.6':
     dependencies:
@@ -11153,7 +11146,7 @@ snapshots:
 
   '@metamask/sdk@0.33.1(bufferutil@4.1.0)(utf-8-validate@5.0.10)':
     dependencies:
-      '@babel/runtime': 7.28.6
+      '@babel/runtime': 7.29.7
       '@metamask/onboarding': 1.0.1
       '@metamask/providers': 16.1.0
       '@metamask/sdk-analytics': 0.0.5
@@ -16045,7 +16038,7 @@ snapshots:
 
   date-fns@2.30.0:
     dependencies:
-      '@babel/runtime': 7.28.6
+      '@babel/runtime': 7.29.7
 
   date-fns@3.6.0: {}
 

@@ -8,6 +8,7 @@ import { useState, useCallback, useMemo, useEffect } from "react";
 import { Icon } from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { MiddleTruncate } from "@cdecaire/sable";
 import {
 	Dialog,
 	DialogContent,
@@ -75,11 +76,6 @@ export function SendDialog({
 		}
 		return "Wallet";
 	}, [activeWallet, activePrivyWallet]);
-
-	const shortenedAddress = useMemo(() => {
-		if (!activeAddress) return "";
-		return `${activeAddress.slice(0, 4)}...${activeAddress.slice(-4)}`;
-	}, [activeAddress]);
 
 	// Validation
 	const isValidAddress = toAddress.length > 0 && isAddress(toAddress);
@@ -208,7 +204,7 @@ export function SendDialog({
 							{walletLabel}
 						</span>
 						<span>
-							{shortenedAddress}
+							<MiddleTruncate text={activeAddress || ""} startChars={4} endChars={4} />
 						</span>
 					</div>
 

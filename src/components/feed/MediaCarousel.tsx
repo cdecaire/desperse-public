@@ -1,12 +1,23 @@
 /**
  * MediaCarousel Component
- * Handles rendering multiple media items as a tap-navigable carousel
- * Phase 1: Multi-asset posts support
+ * Handles rendering multiple media items as a tap-navigable carousel.
  *
- * Uses CSS transforms with cloned slides for smooth infinite cycling
+ * Migration shim (Phase 2 — Sable adoption).
+ *
+ * INTERNALLY this composes @cdecaire/sable's <Carousel> as the slide engine —
+ * Sable owns cloning, the infinite loop, drag-to-swipe, snap, and the
+ * inert/aria-hidden bookkeeping on off-screen slides. We keep Desperse's OWN
+ * overlay chrome (hover-glass arrows, the bottom-center dot pill, the top-left
+ * {n}/{total} counter, the video indicator) and drive it from the controlled
+ * `currentIndex`. Sable's built-in arrows/dots/counter are disabled.
+ *
+ * The PUBLIC API is unchanged: `CarouselAsset`, `MediaCarouselProps`, and the
+ * `MediaCarousel` export are byte-identical in shape to the pre-Sable version,
+ * so no call site changes (PostMedia, PostCard, postAssets, CreatePostForm).
  */
 
 import { useState, useRef, useCallback, useEffect, useMemo } from 'react'
+import { Carousel } from '@cdecaire/sable'
 import { Icon } from '@/components/ui/icon'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -38,6 +49,10 @@ function getMediaType(mimeType: string): 'image' | 'video' {
   return 'image'
 }
 
+// Drag-guard threshold: pointer travel (px) above which a release is treated as
+// a swipe (Sable owns it) rather than a tap-to-open. Below this, fire onClick.
+const TAP_SLOP = 6
+
 export function MediaCarousel({
   assets,
   alt = 'Post media',
@@ -49,14 +64,13 @@ export function MediaCarousel({
   contained = false,
 }: MediaCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
-  const [trackOffset, setTrackOffset] = useState(1) // Start at 1 because of leading clone
-  const [isAnimating, setIsAnimating] = useState(false)
   const [showControls, setShowControls] = useState(false)
   const [hoverSide, setHoverSide] = useState<'left' | 'right' | null>(null)
-  const [videoPlaying, setVideoPlaying] = useState<Map<number, boolean>>(new Map())
+  const [videoPlaying, setVideoPlaying] = useState<Map<string, boolean>>(new Map())
   const [videoMuted, setVideoMuted] = useState(true)
   const containerRef = useRef<HTMLDivElement>(null)
-  const videoRefs = useRef<Map<number, HTMLVideoElement>>(new Map())
+  // pointer-down X per asset id, used to distinguish a tap from a drag/swipe.
+  const pointerDownX = useRef<number | null>(null)
 
   const sortedAssets = useMemo(
     () => [...assets].sort((a, b) => a.sortOrder - b.sortOrder),
@@ -67,171 +81,64 @@ export function MediaCarousel({
   const currentAsset = sortedAssets[currentIndex]
   const hasMultiple = totalCount > 1
 
-  // For infinite loop: [clone of last, ...originals..., clone of first]
-  const extendedAssets = useMemo(() => {
-    if (!hasMultiple) return sortedAssets
-    return [
-      { ...sortedAssets[totalCount - 1], id: `clone-start` },
-      ...sortedAssets,
-      { ...sortedAssets[0], id: `clone-end` },
-    ]
-  }, [sortedAssets, totalCount, hasMultiple])
+  // Apply a shared mute state to every <video> Sable has mounted (including the
+  // clones it creates for the loop seam). Sable's slides live under the section
+  // root, so query the wrapper.
+  const applyMuteToAllVideos = useCallback((muted: boolean) => {
+    const root = containerRef.current
+    if (!root) return
+    root.querySelectorAll('video').forEach((video) => {
+      video.muted = muted
+    })
+  }, [])
 
-  // Navigate to next slide
-  const goNext = useCallback(() => {
-    if (isAnimating || !hasMultiple) return
-
-    setIsAnimating(true)
-    const newOffset = trackOffset + 1
-    setTrackOffset(newOffset)
-
-    // If we moved to the clone at the end, snap back to real first
-    if (newOffset === totalCount + 1) {
-      setCurrentIndex(0)
-      setTimeout(() => {
-        setIsAnimating(false)
-        setTrackOffset(1) // Jump to real first without animation
-      }, 300)
-    } else {
-      setCurrentIndex(currentIndex + 1)
-      setTimeout(() => setIsAnimating(false), 300)
-    }
-  }, [isAnimating, hasMultiple, trackOffset, totalCount, currentIndex])
-
-  // Navigate to previous slide
-  const goPrev = useCallback(() => {
-    if (isAnimating || !hasMultiple) return
-
-    setIsAnimating(true)
-    const newOffset = trackOffset - 1
-    setTrackOffset(newOffset)
-
-    // If we moved to the clone at the start, snap back to real last
-    if (newOffset === 0) {
-      setCurrentIndex(totalCount - 1)
-      setTimeout(() => {
-        setIsAnimating(false)
-        setTrackOffset(totalCount) // Jump to real last without animation
-      }, 300)
-    } else {
-      setCurrentIndex(currentIndex - 1)
-      setTimeout(() => setIsAnimating(false), 300)
-    }
-  }, [isAnimating, hasMultiple, trackOffset, totalCount, currentIndex])
-
-  // Navigate to specific slide (for dots)
-  const goToSlide = useCallback((index: number) => {
-    if (isAnimating || !hasMultiple || index === currentIndex) return
-
-    setIsAnimating(true)
-    setCurrentIndex(index)
-    setTrackOffset(index + 1) // +1 for leading clone
-    setTimeout(() => setIsAnimating(false), 300)
-  }, [isAnimating, hasMultiple, currentIndex])
-
-  // Handle click/tap - zones for prev/next/open
-  // For video slides, middle zone toggles play/pause instead of opening post
-  const handleInteraction = useCallback(
-    (clientX: number) => {
-      if (!containerRef.current) return
-
-      const rect = containerRef.current.getBoundingClientRect()
-      const x = clientX - rect.left
-      const width = rect.width
-      const zone = width / 3
-
-      if (x < zone && hasMultiple) {
-        goPrev()
-      } else if (x > width - zone && hasMultiple) {
-        goNext()
-      } else {
-        const currentMediaType = getMediaType(currentAsset?.mimeType || '')
-        if (currentMediaType === 'video') {
-          // Toggle play/pause for video slides — use trackOffset (array index of visible slide)
-          const video = videoRefs.current.get(trackOffset)
-          if (video) {
-            if (video.paused) {
-              video.play()
-            } else {
-              video.pause()
-            }
-          }
-        } else {
-          onClick?.()
-        }
-      }
-    },
-    [hasMultiple, goPrev, goNext, onClick, currentAsset, trackOffset]
-  )
-
-  const handleClick = useCallback(
-    (e: React.MouseEvent) => {
-      handleInteraction(e.clientX)
-    },
-    [handleInteraction]
-  )
-
-  const handleTouchEnd = useCallback(
-    (e: React.TouchEvent) => {
-      const touch = e.changedTouches[0]
-      handleInteraction(touch.clientX)
-    },
-    [handleInteraction]
-  )
-
-  // Keyboard navigation
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (!containerRef.current?.contains(document.activeElement)) return
-
-      if (e.key === 'ArrowLeft') {
-        e.preventDefault()
-        goPrev()
-      } else if (e.key === 'ArrowRight') {
-        e.preventDefault()
-        goNext()
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [goPrev, goNext])
-
-  // Pause non-visible videos and auto-play the current video slide (muted)
-  useEffect(() => {
-    videoRefs.current.forEach((video, index) => {
-      if (index !== trackOffset && !video.paused) {
-        video.pause()
+  // ---- Video lifecycle (clone-safe) --------------------------------------
+  //
+  // Sable clones slides for the infinite loop, so the SAME logical video can be
+  // mounted as a DUPLICATE <video>. Keying a ref map by logical index would be
+  // last-writer-wins and cause double audio at the loop seam. Instead we operate
+  // directly on the DOM: a slide that is off-screen is marked by Sable with
+  // `inert` and/or `aria-hidden="true"`. Pause every <video> inside such a slide;
+  // play the one in the on-screen (non-inert) slide if it's a muted video.
+  const syncVideoPlayback = useCallback(() => {
+    const root = containerRef.current
+    if (!root) return
+    root.querySelectorAll('video').forEach((video) => {
+      const slide = video.closest('[aria-roledescription="slide"]')
+      const offscreen =
+        slide?.hasAttribute('inert') ||
+        slide?.getAttribute('aria-hidden') === 'true'
+      if (offscreen) {
+        if (!video.paused) video.pause()
+      } else if (video.muted) {
+        // On-screen, muted → autoplay (Instagram-like). Unmuted videos are left
+        // to the user's explicit play/pause control.
+        video.play().catch(() => {})
       }
     })
-    // Auto-play current slide if it's a video and muted
-    const video = videoRefs.current.get(trackOffset)
-    const asset = hasMultiple ? extendedAssets[trackOffset] : sortedAssets[trackOffset]
-    if (video && asset && getMediaType(asset.mimeType) === 'video' && video.muted) {
-      video.play().catch(() => {})
-    }
-  }, [trackOffset, hasMultiple, extendedAssets, sortedAssets])
+  }, [])
 
-  // Auto-play muted videos when carousel is >50% visible (Instagram-like)
+  // Re-sync whenever the active slide changes. A microtask defer lets Sable
+  // settle its inert/aria-hidden attributes for the new position first.
   useEffect(() => {
-    if (!containerRef.current) return
+    const id = requestAnimationFrame(syncVideoPlayback)
+    return () => cancelAnimationFrame(id)
+  }, [currentIndex, syncVideoPlayback])
+
+  // Auto-play muted videos when the carousel is >50% visible (Instagram-like),
+  // pause everything when it scrolls away. Bound to the OUTER wrapper.
+  useEffect(() => {
+    const root = containerRef.current
+    if (!root) return
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
-            // Auto-play the current slide's video if it's a video and muted
-            const video = videoRefs.current.get(trackOffset)
-            const asset = hasMultiple ? extendedAssets[trackOffset] : sortedAssets[trackOffset]
-            if (video && asset && getMediaType(asset.mimeType) === 'video' && video.muted) {
-              video.play().catch(() => {})
-            }
+            syncVideoPlayback()
           } else {
-            // Pause all videos when carousel scrolls out of view
-            videoRefs.current.forEach((video) => {
-              if (!video.paused) {
-                video.pause()
-              }
+            root.querySelectorAll('video').forEach((video) => {
+              if (!video.paused) video.pause()
             })
           }
         })
@@ -239,41 +146,64 @@ export function MediaCarousel({
       { threshold: [0, 0.5, 1] }
     )
 
-    observer.observe(containerRef.current)
+    observer.observe(root)
     return () => observer.disconnect()
-  }, [trackOffset, hasMultiple, extendedAssets, sortedAssets])
+  }, [syncVideoPlayback])
 
-  // Render a single media item
-  const renderMedia = (asset: CarouselAsset, index: number, isContained: boolean = false) => {
+  // ---- Chrome navigation -------------------------------------------------
+  // Dots/arrows drive the controlled index; Sable animates to it.
+  const goToSlide = useCallback(
+    (index: number) => {
+      if (index === currentIndex) return
+      setCurrentIndex(index)
+    },
+    [currentIndex]
+  )
+
+  const goPrev = useCallback(() => {
+    if (!hasMultiple) return
+    setCurrentIndex((i) => (i - 1 + totalCount) % totalCount)
+  }, [hasMultiple, totalCount])
+
+  const goNext = useCallback(() => {
+    if (!hasMultiple) return
+    setCurrentIndex((i) => (i + 1) % totalCount)
+  }, [hasMultiple, totalCount])
+
+  // ---- Per-slide media renderer ------------------------------------------
+  const renderMedia = (asset: CarouselAsset, index: number) => {
     const mediaType = getMediaType(asset.mimeType)
-    // For extended assets, map back to real index for video refs
-    const realIndex = index === 0 ? totalCount - 1 : index === extendedAssets.length - 1 ? 0 : index - 1
-    const isClone = hasMultiple && (index === 0 || index === extendedAssets.length - 1)
-    const isActive = realIndex === currentIndex
-    const shouldLoadEager = Math.abs(realIndex - currentIndex) <= 1 || realIndex === 0
+    const isActive = index === currentIndex
+    const shouldLoadEager = Math.abs(index - currentIndex) <= 1 || index === 0
 
     if (mediaType === 'video') {
-      // Use array index (not realIndex) for video refs to avoid clones overwriting real elements
-      const isCurrentlyPlaying = videoPlaying.get(index) ?? false
+      const isCurrentlyPlaying = videoPlaying.get(asset.id) ?? false
 
       const handlePlayPause = (e: React.MouseEvent) => {
         e.stopPropagation()
-        const video = videoRefs.current.get(index)
+        // Find the on-screen <video> for this asset (the clone is inert/hidden).
+        const root = containerRef.current
+        if (!root) return
+        const videos = root.querySelectorAll<HTMLVideoElement>(
+          `video[data-asset-id="${asset.id}"]`
+        )
+        const video = Array.from(videos).find((v) => {
+          const slide = v.closest('[aria-roledescription="slide"]')
+          return !(
+            slide?.hasAttribute('inert') ||
+            slide?.getAttribute('aria-hidden') === 'true'
+          )
+        })
         if (!video) return
-        if (isCurrentlyPlaying) {
-          video.pause()
-        } else {
-          video.play()
-        }
+        if (video.paused) video.play().catch(() => {})
+        else video.pause()
       }
 
       const handleMuteToggle = (e: React.MouseEvent) => {
         e.stopPropagation()
         const newMuted = !videoMuted
         setVideoMuted(newMuted)
-        videoRefs.current.forEach((video) => {
-          video.muted = newMuted
-        })
+        applyMuteToAllVideos(newMuted)
       }
 
       return (
@@ -281,18 +211,21 @@ export function MediaCarousel({
           <video
             ref={(el) => {
               if (el) {
-                videoRefs.current.set(index, el)
-                el.onplay = () => setVideoPlaying((prev) => new Map(prev).set(index, true))
-                el.onpause = () => setVideoPlaying((prev) => new Map(prev).set(index, false))
+                el.muted = videoMuted
+                el.onplay = () =>
+                  setVideoPlaying((prev) => new Map(prev).set(asset.id, true))
+                el.onpause = () =>
+                  setVideoPlaying((prev) => new Map(prev).set(asset.id, false))
               }
             }}
+            data-asset-id={asset.id}
             src={asset.url}
             className="absolute inset-0 w-full h-full object-contain"
-            preload={isClone ? 'none' : (shouldLoadEager ? 'auto' : 'none')}
+            preload={shouldLoadEager ? 'auto' : 'none'}
             playsInline
             loop
             muted={videoMuted}
-            autoPlay={!isClone && isActive && preview}
+            autoPlay={isActive && preview}
           >
             <track kind="captions" />
           </video>
@@ -343,20 +276,39 @@ export function MediaCarousel({
       )
     }
 
-    // Image with blurred background
-    // For contained (detail view), request larger images since container can be large
-    // For feed view, 640px max is sufficient for aspect-square cards
+    // Image with blurred background.
+    // For contained (detail view), request larger images since container can be large.
+    // For feed view, 640px max is sufficient for aspect-square cards.
     const optimizedProps = getResponsiveImageProps(asset.url, {
-      sizes: isContained
+      sizes: contained
         ? '(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 1200px'
         : '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 640px',
       quality: 75,
       includeRetina: true,
     })
 
-    if (isContained) {
+    // Tap-to-open with a drag-guard: Sable owns pointer events for drag, so we
+    // record the pointerdown X and only fire onClick when the pointer barely
+    // moved (a tap, not a swipe). Video slides handle their own play/pause.
+    const handlePointerDown = (e: React.PointerEvent) => {
+      pointerDownX.current = e.clientX
+    }
+    const handlePointerUp = (e: React.PointerEvent) => {
+      const startX = pointerDownX.current
+      pointerDownX.current = null
+      if (startX == null) return
+      if (Math.abs(e.clientX - startX) < TAP_SLOP) {
+        onClick?.()
+      }
+    }
+
+    if (contained) {
       return (
-        <div className="relative w-full h-full flex items-center justify-center">
+        <div
+          className="relative w-full h-full flex items-center justify-center"
+          onPointerDown={handlePointerDown}
+          onPointerUp={handlePointerUp}
+        >
           <img
             src={optimizedProps.src}
             srcSet={optimizedProps.srcSet || undefined}
@@ -369,7 +321,7 @@ export function MediaCarousel({
             src={optimizedProps.src}
             srcSet={optimizedProps.srcSet || undefined}
             sizes={optimizedProps.sizes || undefined}
-            alt={`${alt} ${realIndex + 1}`}
+            alt={`${alt} ${index + 1}`}
             loading={shouldLoadEager && !lazy ? 'eager' : 'lazy'}
             decoding="async"
             className="relative w-full h-full object-contain z-10"
@@ -379,7 +331,11 @@ export function MediaCarousel({
     }
 
     return (
-      <div className="relative w-full h-full">
+      <div
+        className="relative w-full h-full"
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
+      >
         <img
           src={optimizedProps.src}
           srcSet={optimizedProps.srcSet || undefined}
@@ -392,7 +348,7 @@ export function MediaCarousel({
           src={optimizedProps.src}
           srcSet={optimizedProps.srcSet || undefined}
           sizes={optimizedProps.sizes || undefined}
-          alt={`${alt} ${realIndex + 1}`}
+          alt={`${alt} ${index + 1}`}
           loading={shouldLoadEager && !lazy ? 'eager' : 'lazy'}
           decoding="async"
           className="relative w-full h-full object-cover"
@@ -400,11 +356,6 @@ export function MediaCarousel({
       </div>
     )
   }
-
-  // Calculate transform for the track - use translate3d to force GPU acceleration
-  const trackTransform = hasMultiple
-    ? `translate3d(-${trackOffset * 100}%, 0, 0)`
-    : 'translate3d(0, 0, 0)'
 
   return (
     <div
@@ -429,39 +380,29 @@ export function MediaCarousel({
         const midpoint = rect.width / 2
         setHoverSide(x < midpoint ? 'left' : 'right')
       }}
-      onClick={handleClick}
-      onTouchEnd={handleTouchEnd}
-      tabIndex={0}
       role="region"
-      style={{ touchAction: 'manipulation' }} // Disable double-tap zoom, allow single taps
       aria-label={`Image carousel, showing ${currentIndex + 1} of ${totalCount}`}
       aria-roledescription="carousel"
     >
-      {/* Slides track - transforms for navigation */}
-      <div
-        className="flex h-full"
-        style={{
-          transform: trackTransform,
-          transition: isAnimating ? 'transform 300ms ease-out' : 'none',
-          willChange: 'transform',
-        }}
+      {/* Sable Carousel = the slide engine. Chrome is disabled (we render our
+          own below); the viewport is already rounded-lg by Sable, so the frame
+          (border / conditional rounding / bg) lives on the OUTER wrapper to
+          avoid double-rounding. */}
+      <Carousel
+        arrows={false}
+        dots={false}
+        counter={false}
+        draggable={hasMultiple}
+        loop={hasMultiple}
+        index={currentIndex}
+        onIndexChange={setCurrentIndex}
+        label={`Image carousel, showing ${currentIndex + 1} of ${totalCount}`}
+        slideClassName={
+          contained ? 'h-full flex items-center justify-center' : 'aspect-square'
+        }
       >
-        {(hasMultiple ? extendedAssets : sortedAssets).map((asset, index) => (
-          <div
-            key={asset.id}
-            className={cn(
-              'w-full flex-shrink-0',
-              contained ? 'h-full flex items-center justify-center' : 'aspect-square',
-            )}
-            role="group"
-            aria-roledescription="slide"
-            aria-label={`Slide ${(hasMultiple ? (index === 0 ? totalCount : index === extendedAssets.length - 1 ? 1 : index) : index + 1)} of ${totalCount}`}
-            aria-hidden={hasMultiple ? (index !== trackOffset) : false}
-          >
-            {renderMedia(asset, index, contained)}
-          </div>
-        ))}
-      </div>
+        {sortedAssets.map((asset, index) => renderMedia(asset, index))}
+      </Carousel>
 
       {/* Video indicator for current slide */}
       {getMediaType(currentAsset?.mimeType || '') === 'video' && (

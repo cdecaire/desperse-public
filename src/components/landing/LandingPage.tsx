@@ -4,6 +4,7 @@
  */
 
 import { Link } from '@tanstack/react-router'
+import { Marquee as SableMarquee } from '@cdecaire/sable'
 import { Icon } from '@/components/ui/icon'
 import { useEffect, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
@@ -310,30 +311,27 @@ function Hero() {
   )
 }
 
-// Infinite Marquee — subtle divider between hero and content
+// Infinite Marquee — subtle divider between hero and content.
+// Sable's <Marquee> owns the seamless loop, constant px/s speed, overflow
+// clipping, and prefers-reduced-motion handling, so we just provide one set of
+// items; it duplicates them as needed. pauseOnHover is off to keep the original
+// continuous-divider feel.
 function Marquee() {
   const items = ['PUBLISH', 'MINT', 'COLLECT', 'OWN']
-  // Render two identical halves so translateX(-50%) creates a seamless loop
-  const half = Array.from({ length: 6 }, () => items).flat()
 
   return (
-    <div className="py-6 border-t border-border overflow-hidden">
-      <div className="marquee-track flex whitespace-nowrap w-max">
-        {[half, half].map((group, gi) => (
-          <div key={gi} className="flex shrink-0">
-            {group.map((item, i) => (
-              <span key={i} className="flex items-center">
-                {/* Editorial marquee — mono with wide tracking for decorative effect */}
-                <span className="text-mono-md tracking-widest px-8 text-muted-foreground/60">
-                  {item}
-                </span>
-                <span className="text-muted-foreground/30 text-xs">◆</span>
-              </span>
-            ))}
-          </div>
+    <div className="py-6 border-t border-border">
+      <SableMarquee gap="0" pauseOnHover={false} aria-label="Publish, mint, collect, own">
+        {items.map((item) => (
+          <span key={item} className="flex items-center">
+            {/* Editorial marquee — mono with wide tracking for decorative effect */}
+            <span className="text-mono-md tracking-widest px-8 text-muted-foreground/60">
+              {item}
+            </span>
+            <span className="text-muted-foreground/30 text-xs">◆</span>
+          </span>
         ))}
-      </div>
-
+      </SableMarquee>
     </div>
   )
 }
@@ -1413,15 +1411,6 @@ function LandingAnimationStyles() {
         opacity: 1;
       }
 
-      /* Marquee */
-      .marquee-track {
-        animation: marquee-scroll 30s linear infinite;
-      }
-      @keyframes marquee-scroll {
-        0% { transform: translateX(0); }
-        100% { transform: translateX(-50%); }
-      }
-
       /* Scroll reveal — fade + slide up */
       .scroll-reveal {
         opacity: 0;
@@ -1606,8 +1595,7 @@ function LandingAnimationStyles() {
           transform: scaleY(1);
           transition: none;
         }
-        .mint-pulse,
-        .marquee-track {
+        .mint-pulse {
           animation: none;
         }
       }

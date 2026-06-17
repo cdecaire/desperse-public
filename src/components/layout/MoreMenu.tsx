@@ -5,7 +5,7 @@
  */
 
 import { Link, useNavigate } from '@tanstack/react-router'
-import { useState, useRef, useEffect } from 'react'
+import { useState } from 'react'
 import { useTheme } from '../providers/ThemeProvider'
 import { useAuth } from '../../hooks/useAuth'
 import { Icon } from '@/components/ui/icon'
@@ -16,6 +16,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Switch } from '@/components/ui/switch'
 import { BetaFeedbackModal } from '@/components/forms/BetaFeedbackModal'
 
@@ -27,7 +28,6 @@ interface MoreMenuProps {
 export default function MoreMenu({ variant = 'sidebar' }: MoreMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [showFeedbackModal, setShowFeedbackModal] = useState(false)
-  const menuRef = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
   const { theme, setTheme, resolvedTheme } = useTheme()
   const { logout, login, isAuthenticated } = useAuth()
@@ -36,43 +36,9 @@ export default function MoreMenu({ variant = 'sidebar' }: MoreMenuProps) {
 
   const isMobile = variant === 'bottomnav'
 
-  // Close popover menu when clicking outside (desktop only)
-  useEffect(() => {
-    if (isMobile) return // Sheet handles its own outside clicks
-
-    function handleClickOutside(event: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setIsOpen(false)
-      }
-    }
-
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside)
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [isOpen, isMobile])
-
-  // Close menu on escape
-  useEffect(() => {
-    if (isMobile) return // Sheet handles its own escape key
-
-    function handleEscape(event: KeyboardEvent) {
-      if (event.key === 'Escape') {
-        setIsOpen(false)
-      }
-    }
-
-    if (isOpen) {
-      document.addEventListener('keydown', handleEscape)
-    }
-
-    return () => {
-      document.removeEventListener('keydown', handleEscape)
-    }
-  }, [isOpen, isMobile])
+  // Desktop popover: Sable's <Popover> (Base UI) owns outside-click, Escape,
+  // positioning, and focus — no manual document listeners needed. Mobile uses
+  // the Sheet below, which handles its own dismissal.
 
   const handleThemeToggle = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark')
@@ -259,40 +225,36 @@ export default function MoreMenu({ variant = 'sidebar' }: MoreMenuProps) {
     )
   }
 
-  // Desktop: Popover Menu
+  // Desktop: Popover Menu (Sable Popover — Base UI handles outside-click,
+  // Escape, positioning, focus). Anchored above the trigger since the More
+  // button sits at the bottom of the sidebar.
   return (
     <>
-      <div ref={menuRef} className="relative">
-        {/* Menu Dropdown */}
-        {isOpen && (
-          <div
-            className="absolute bottom-full left-0 right-0 mb-2 mx-3 bg-popover border border-border rounded-xl shadow-lg overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-200"
-            role="menu"
-            aria-orientation="vertical"
-            aria-labelledby="more-button"
+      <Popover open={isOpen} onOpenChange={setIsOpen}>
+        <PopoverTrigger asChild>
+          <button
+            id="more-button"
+            className={`flex items-center gap-3 px-3 py-2.5 mx-3 w-[calc(100%-1.5rem)] text-left rounded-md hover-fade text-foreground hover:bg-accent hover:text-accent-foreground ${
+              isOpen ? 'font-semibold' : 'font-medium'
+            }`}
+            aria-haspopup="menu"
           >
-            <div className="p-2">
-              <MenuContent />
-            </div>
-          </div>
-        )}
-
-        {/* More Button */}
-        <button
-          id="more-button"
-          onClick={() => setIsOpen(!isOpen)}
-          className={`flex items-center gap-3 px-3 py-2.5 mx-3 w-[calc(100%-1.5rem)] text-left rounded-md hover-fade text-foreground hover:bg-accent hover:text-accent-foreground ${
-            isOpen ? 'font-semibold' : 'font-medium'
-          }`}
-          aria-expanded={isOpen}
-          aria-haspopup="menu"
+            <span className="w-6 h-6 grid place-items-center">
+              <Icon name="bars" variant={isOpen ? 'solid' : 'regular'} className="text-xl" />
+            </span>
+            <span className="text-sm leading-none">More</span>
+          </button>
+        </PopoverTrigger>
+        <PopoverContent
+          side="top"
+          align="start"
+          role="menu"
+          aria-orientation="vertical"
+          className="w-64 p-2 rounded-xl"
         >
-          <span className="w-6 h-6 grid place-items-center">
-            <Icon name="bars" variant={isOpen ? 'solid' : 'regular'} className="text-xl" />
-          </span>
-          <span className="text-sm leading-none">More</span>
-        </button>
-      </div>
+          <MenuContent />
+        </PopoverContent>
+      </Popover>
       <BetaFeedbackModal open={showFeedbackModal} onOpenChange={setShowFeedbackModal} />
     </>
   )

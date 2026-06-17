@@ -1,9 +1,19 @@
 /**
  * FeedTabs Component
- * Tab navigation for switching between "For You" and "Following" feeds
+ * Tab navigation for switching between "For You" and "Following" feeds.
+ *
+ * Migration shim (Phase 2 — Sable adoption): renders @cdecaire/sable's Tabs (via
+ * the ui/tabs shim) for the design-system underline + a11y wiring, kept
+ * full-width (flex-1 triggers) and controlled via activeTab.
+ *
+ * New-posts click-intercept: clicking a tab that has new posts should refresh
+ * (onTabClickWithNewPosts) rather than just switch. Base UI's onValueChange only
+ * fires on a CHANGE, so it can't catch a click on the ALREADY-active tab — we
+ * route normal switches through onValueChange and the active-tab refresh through
+ * an onClick guard, avoiding a double-fire.
  */
 
-import { cn } from '@/lib/utils'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { NotificationBadge } from '@/components/ui/notification-badge'
 
 export type FeedTab = 'for-you' | 'following'
@@ -20,81 +30,74 @@ interface FeedTabsProps {
   onTabClickWithNewPosts?: (tab: FeedTab) => void
 }
 
-export function FeedTabs({ 
-  activeTab, 
-  onTabChange, 
-  className, 
+const tabs: { id: FeedTab; label: string }[] = [
+  { id: 'for-you', label: 'For You' },
+  { id: 'following', label: 'Following' },
+]
+
+export function FeedTabs({
+  activeTab,
+  onTabChange,
+  className,
   forYouNewPostsCount = 0,
   followingNewPostsCount = 0,
   onTabClickWithNewPosts,
 }: FeedTabsProps) {
-  const tabs: { id: FeedTab; label: string }[] = [
-    { id: 'for-you', label: 'For You' },
-    { id: 'following', label: 'Following' },
-  ]
+  const tabHasNewPosts = (tab: FeedTab) =>
+    (tab === 'for-you' && forYouNewPostsCount > 0) ||
+    (tab === 'following' && followingNewPostsCount > 0)
 
-  const handleTabClick = (tab: FeedTab) => {
-    // If clicking a tab with new posts, trigger refresh callback
-    if (onTabClickWithNewPosts) {
-      if (tab === 'for-you' && forYouNewPostsCount > 0) {
-        onTabClickWithNewPosts(tab)
-        return
-      }
-      if (tab === 'following' && followingNewPostsCount > 0) {
-        onTabClickWithNewPosts(tab)
-        return
-      }
+  // Refresh when a tab with new posts is clicked; otherwise just switch.
+  const handleTab = (tab: FeedTab) => {
+    if (onTabClickWithNewPosts && tabHasNewPosts(tab)) {
+      onTabClickWithNewPosts(tab)
+      return
     }
-    // Otherwise, just change the tab
     onTabChange(tab)
   }
 
   return (
-    <div className={cn('pt-2', className)}>
-      <div className="flex">
+    <Tabs
+      value={activeTab}
+      // Fires only on a real change (inactive → active) — handles normal switches.
+      onValueChange={(value) => {
+        const tab = value as FeedTab
+        if (tab !== activeTab) handleTab(tab)
+      }}
+      className={className}
+    >
+      <TabsList className="flex w-full pt-2">
         {tabs.map((tab) => {
-          // Show For You badge when count > 0 and Following doesn't have new posts (priority)
-          const showForYouBadge = tab.id === 'for-you' && 
-            forYouNewPostsCount > 0 && 
-            followingNewPostsCount === 0
-          
-          // Show Following badge when count > 0 and user is not currently viewing Following
-          const showFollowingBadge = tab.id === 'following' && 
-            followingNewPostsCount > 0 && 
-            activeTab !== 'following'
-          
+          // For You badge: only when Following has none (priority). Following
+          // badge: only when not already viewing Following.
+          const showForYouBadge =
+            tab.id === 'for-you' && forYouNewPostsCount > 0 && followingNewPostsCount === 0
+          const showFollowingBadge =
+            tab.id === 'following' && followingNewPostsCount > 0 && activeTab !== 'following'
           const showBadge = showForYouBadge || showFollowingBadge
           const badgeCount = tab.id === 'for-you' ? forYouNewPostsCount : followingNewPostsCount
 
           return (
-            <button
+            <TabsTrigger
               key={tab.id}
-              onClick={() => handleTabClick(tab.id)}
-              className={cn(
-                'flex-1 py-3 text-sm font-medium transition-colors relative',
-                activeTab === tab.id
-                  ? 'text-foreground'
-                  : 'text-muted-foreground hover:text-foreground/80'
-              )}
+              value={tab.id}
+              // Catches a click on the ALREADY-active tab (onValueChange won't fire),
+              // so "tap the active tab to load new posts" still refreshes.
+              onClick={() => {
+                if (tab.id === activeTab) handleTab(tab.id)
+              }}
+              className="flex-1 justify-center"
             >
-              <span className="relative inline-flex items-center">
+              <span className="inline-flex items-center">
                 {tab.label}
-                {showBadge && (
-                  <NotificationBadge count={badgeCount} className="ml-2" />
-                )}
+                {showBadge && <NotificationBadge count={badgeCount} className="ml-2" />}
               </span>
-              
-              {/* Active indicator */}
-              {activeTab === tab.id && (
-                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-foreground rounded-full" />
-              )}
-            </button>
+            </TabsTrigger>
           )
         })}
-      </div>
-    </div>
+      </TabsList>
+    </Tabs>
   )
 }
 
 export default FeedTabs
-

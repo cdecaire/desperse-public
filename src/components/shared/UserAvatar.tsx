@@ -1,7 +1,23 @@
 import { cn } from '@/lib/utils'
+import { Avatar } from '@cdecaire/sable'
 import { Icon } from '@/components/ui/icon'
 import { Tooltip } from '@/components/ui/tooltip'
 import type { UserRole } from '@/components/shared/VerifiedBadge'
+
+/**
+ * Migration shim (Phase 2 — Sable adoption).
+ *
+ * The avatar circle (image + muted-disc fallback) is now @cdecaire/sable's
+ * <Avatar> (Base UI tracks load/error and swaps to the fallback automatically —
+ * no manual `src ?` check). We keep Desperse's own concerns on the wrapper:
+ *   - `data-avatar` — the dark-mode hover CSS in styles.css excludes avatars via
+ *     `:not(:has([data-avatar]))`; must stay.
+ *   - the admin/moderator badge overlay (Tooltip + verified.svg / shield glyph).
+ *   - the xs/sm/md/lg size scale (wrapper sizes the box; Sable's Avatar fills it
+ *     with `size-full`, so we don't depend on Sable's own size variant).
+ *
+ * Public API (src/alt/size/className/role) is unchanged.
+ */
 
 const sizeClasses = {
 	xs: 'w-6 h-6',
@@ -39,20 +55,12 @@ export function UserAvatar({ src, alt = '', size = 'md', className, role }: User
 
 	return (
 		<div data-avatar className={cn('relative flex-shrink-0', sizeClasses[size], className)}>
-			<div className="rounded-full bg-muted overflow-hidden w-full h-full">
-				{src ? (
-					<img
-						src={src}
-						alt={alt}
-						className="w-full h-full object-cover"
-						loading="lazy"
-					/>
-				) : (
-					<div className="w-full h-full flex items-center justify-center text-muted-foreground">
-						<Icon name="user" variant="regular" className={iconSizes[size]} />
-					</div>
-				)}
-			</div>
+			<Avatar
+				src={src ?? undefined}
+				alt={alt}
+				fallback={<Icon name="user" variant="regular" className={iconSizes[size]} />}
+				className="size-full"
+			/>
 			{showBadge && (
 				<span className={cn('absolute', badgeSize[size])}>
 					<Tooltip content={badgeLabel}>

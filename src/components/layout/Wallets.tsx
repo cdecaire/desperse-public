@@ -5,7 +5,7 @@
  * Shows Privy wallet details including wallet ID
  */
 
-import { useState, useRef, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Icon } from '@/components/ui/icon'
 import { useWallets, usePrivy } from '@privy-io/react-auth'
 import { useFundWallet } from '@privy-io/react-auth/solana'
@@ -22,6 +22,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { getWalletOverview } from '@/server/functions/wallets'
@@ -43,7 +44,6 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
   const [activeTab, setActiveTab] = useState<'tokens' | 'nfts' | 'activity'>('tokens')
   const [nftLayout, setNftLayout] = useState<'grid' | 'list'>('grid')
   const [sendAsset, setSendAsset] = useState<{ asset: SendableAsset; balance: number; symbol: string; iconUrl: string | null } | null>(null)
-  const menuRef = useRef<HTMLDivElement>(null)
   const { wallets } = useWallets()
   const { user } = usePrivy()
   const { isAuthenticated, isReady, walletAddress, privyId } = useAuth()
@@ -63,43 +63,9 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
     [wallets, user?.linkedAccounts, walletAddress],
   )
 
-  // Close popover menu when clicking outside (desktop only)
-  useEffect(() => {
-    if (isMobile) return // Sheet handles its own outside clicks
-
-    function handleClickOutside(event: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setIsOpen(false)
-      }
-    }
-
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside)
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [isOpen, isMobile])
-
-  // Close menu on escape
-  useEffect(() => {
-    if (isMobile) return // Sheet handles its own escape key
-
-    function handleEscape(event: KeyboardEvent) {
-      if (event.key === 'Escape') {
-        setIsOpen(false)
-      }
-    }
-
-    if (isOpen) {
-      document.addEventListener('keydown', handleEscape)
-    }
-
-    return () => {
-      document.removeEventListener('keydown', handleEscape)
-    }
-  }, [isOpen, isMobile])
+  // Desktop popover: Sable's <Popover> (Base UI) owns outside-click, Escape,
+  // positioning, and focus — no manual document listeners needed. Mobile uses
+  // the Sheet below, which handles its own dismissal.
 
   // Show only the active wallet in the panel
   const walletsForQuery = activeAddress
@@ -1232,37 +1198,33 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
   // Desktop: Popover Menu
   return (
     <>
-      <div ref={menuRef} className="relative">
-        {/* Menu Dropdown */}
-        {isOpen && (
-          <div
-            className="absolute bottom-full left-3 mb-2 w-[340px] max-w-[90vw] bg-popover border border-border rounded-xl shadow-lg overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-200 h-[480px] z-300 flex flex-col"
-            role="menu"
-            aria-orientation="vertical"
-            aria-labelledby="wallets-button"
+      <Popover open={isOpen} onOpenChange={setIsOpen}>
+        <PopoverTrigger asChild>
+          <button
+            id="wallets-button"
+            className={`flex items-center gap-3 px-3 py-2.5 mx-3 w-[calc(100%-1.5rem)] text-left rounded-md hover-fade text-foreground hover:bg-accent hover:text-accent-foreground ${
+              isOpen ? 'font-semibold' : 'font-medium'
+            }`}
+            aria-haspopup="menu"
           >
-            <div className="p-4 flex flex-col flex-1 min-h-0">
-              <MenuContent />
-            </div>
-          </div>
-        )}
-
-        {/* Wallets Button */}
-        <button
-          id="wallets-button"
-          onClick={() => setIsOpen(!isOpen)}
-          className={`flex items-center gap-3 px-3 py-2.5 mx-3 w-[calc(100%-1.5rem)] text-left rounded-md hover-fade text-foreground hover:bg-accent hover:text-accent-foreground ${
-            isOpen ? 'font-semibold' : 'font-medium'
-          }`}
-          aria-expanded={isOpen}
-          aria-haspopup="menu"
+            <span className="w-6 h-6 grid place-items-center">
+              <Icon name="wallet" variant={isOpen ? 'solid' : 'regular'} className="text-xl" />
+            </span>
+            <span className="text-sm leading-none">Wallets</span>
+          </button>
+        </PopoverTrigger>
+        <PopoverContent
+          side="top"
+          align="start"
+          role="menu"
+          aria-orientation="vertical"
+          className="w-[340px] max-w-[90vw] h-[480px] p-0 rounded-xl flex flex-col overflow-hidden"
         >
-          <span className="w-6 h-6 grid place-items-center">
-            <Icon name="wallet" variant={isOpen ? 'solid' : 'regular'} className="text-xl" />
-          </span>
-          <span className="text-sm leading-none">Wallets</span>
-        </button>
-      </div>
+          <div className="p-4 flex flex-col flex-1 min-h-0">
+            <MenuContent />
+          </div>
+        </PopoverContent>
+      </Popover>
       {sendDialog}
     </>
   )

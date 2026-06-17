@@ -23,6 +23,8 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { getWalletOverview } from '@/server/functions/wallets'
@@ -551,32 +553,22 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
             <p className="text-xs text-muted-foreground">
               {nfts.length} {nfts.length === 1 ? 'item' : 'items'}
             </p>
-            <div className="flex items-center gap-1 p-1 bg-muted rounded-lg">
-              <button
-                onClick={() => setNftLayout('grid')}
-                className={cn(
-                  'p-1.5 rounded-md transition-all',
-                  nftLayout === 'grid'
-                    ? 'bg-background text-foreground shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground'
-                )}
-                title="Grid view"
-              >
+            <ToggleGroup
+              value={[nftLayout]}
+              onValueChange={(value) => {
+                // Always-one-selected view toggle: ignore a deselect-to-empty.
+                if (value[0]) setNftLayout(value[0] as 'grid' | 'list')
+              }}
+              size="sm"
+              className="bg-muted p-1 rounded-lg"
+            >
+              <ToggleGroupItem value="grid" aria-label="Grid view">
                 <Icon name="grid-2" variant="regular" className="text-sm" />
-              </button>
-              <button
-                onClick={() => setNftLayout('list')}
-                className={cn(
-                  'p-1.5 rounded-md transition-all',
-                  nftLayout === 'list'
-                    ? 'bg-background text-foreground shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground'
-                )}
-                title="List view"
-              >
+              </ToggleGroupItem>
+              <ToggleGroupItem value="list" aria-label="List view">
                 <Icon name="list" variant="regular" className="text-sm" />
-              </button>
-            </div>
+              </ToggleGroupItem>
+            </ToggleGroup>
           </div>
 
           {nftLayout === 'grid' ? (
@@ -1083,52 +1075,17 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
           </div>
         </div>
 
-        <div className="shrink-0 px-1">
-          <div className="flex gap-6">
-            <button
-              className={cn(
-                'py-3 text-sm font-medium relative no-hover-bg',
-                activeTab === 'tokens'
-                  ? 'text-foreground'
-                  : 'text-muted-foreground'
-              )}
-              onClick={() => setActiveTab('tokens')}
-            >
-              Tokens
-              {activeTab === 'tokens' && (
-                <div className="absolute bottom-0 left-0 w-full h-0.5 bg-foreground rounded-full" />
-              )}
-            </button>
-            <button
-              className={cn(
-                'py-3 text-sm font-medium relative no-hover-bg',
-                activeTab === 'nfts'
-                  ? 'text-foreground'
-                  : 'text-muted-foreground'
-              )}
-              onClick={() => setActiveTab('nfts')}
-            >
-              NFTs
-              {activeTab === 'nfts' && (
-                <div className="absolute bottom-0 left-0 w-full h-0.5 bg-foreground rounded-full" />
-              )}
-            </button>
-            <button
-              className={cn(
-                'py-3 text-sm font-medium relative no-hover-bg',
-                activeTab === 'activity'
-                  ? 'text-foreground'
-                  : 'text-muted-foreground'
-              )}
-              onClick={() => setActiveTab('activity')}
-            >
-              Activity
-              {activeTab === 'activity' && (
-                <div className="absolute bottom-0 left-0 w-full h-0.5 bg-foreground rounded-full" />
-              )}
-            </button>
-          </div>
-        </div>
+        <Tabs
+          value={activeTab}
+          onValueChange={(value) => setActiveTab(value as 'tokens' | 'nfts' | 'activity')}
+          className="shrink-0 px-1"
+        >
+          <TabsList>
+            <TabsTrigger value="tokens">Tokens</TabsTrigger>
+            <TabsTrigger value="nfts">NFTs</TabsTrigger>
+            <TabsTrigger value="activity">Activity</TabsTrigger>
+          </TabsList>
+        </Tabs>
 
         <div className="flex-1 min-h-0 overflow-y-auto pr-1 scrollbar-hide mt-3">
           {activeTab === 'tokens' ? <TokensView /> : activeTab === 'nfts' ? <NFTsView /> : <ActivityView />}

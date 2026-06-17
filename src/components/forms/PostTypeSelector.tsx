@@ -43,7 +43,7 @@ export function PostTypeSelector({ value, onChange, disabled, firstPostMode = fa
     return null
   }
 
-  const renderCard = (type: (typeof POST_TYPE_LIST)[number]) => {
+  const renderCard = (type: (typeof POST_TYPE_LIST)[number], extraClasses?: string) => {
     // Icon + label as the card title. Sable's Choicebox `title` is ReactNode at
     // runtime, but its type collides with the native HTML `title` attr (string)
     // from ComponentProps<Radio.Root> — Sable should Omit "title". Cast until
@@ -62,6 +62,12 @@ export function PostTypeSelector({ value, onChange, disabled, firstPostMode = fa
         disabled={disabled}
         title={titleNode}
         description={type.description}
+        // Restore the original per-type color: Choicebox draws its checked
+        // border AND radio dot from var(--primary), so overriding --primary
+        // locally tints both to the post-type tone (the card surface still uses
+        // --accent). The icon already carries the tone via badgeClass.
+        style={{ '--primary': type.tone } as React.CSSProperties}
+        className={extraClasses}
       />
     )
   }
@@ -102,12 +108,15 @@ export function PostTypeSelector({ value, onChange, disabled, firstPostMode = fa
           if (next) onChange(next as PostType)
         }}
         aria-labelledby={groupLabelId}
-        className="gap-3"
+        className={cn(
+          'grid grid-cols-1 gap-3',
+          firstPostMode ? 'sm:grid-cols-2' : 'sm:grid-cols-3',
+        )}
       >
-        {renderCard(standardType)}
+        {renderCard(standardType, firstPostMode ? 'sm:col-span-2' : undefined)}
         {showAdvancedCards && (
           <div id={advancedOptionsId} className="contents">
-            {advancedTypes.map(renderCard)}
+            {advancedTypes.map((type) => renderCard(type))}
           </div>
         )}
       </ChoiceboxGroup>

@@ -1,11 +1,15 @@
 /**
  * New Posts Banner Component
- * Reusable banner for showing "X new posts" notifications
- * Used for For You feed and can be extended for Following feed
+ * Reusable banner for showing "X new posts" notifications.
+ *
+ * Migration shim (Phase 2 — Sable adoption): @cdecaire/sable <Banner> in its
+ * sticky + action layout (leading message, trailing Refresh button). Default
+ * neutral tone; sticky pins it to the top of the feed scroll.
  */
 
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icon'
+import { Banner } from '@cdecaire/sable'
 import { LoadingSpinner } from './LoadingSpinner'
 
 interface NewPostsBannerProps {
@@ -34,13 +38,11 @@ export function NewPostsBanner({
   const displayMessage = message || `${displayCount} new post${count === 1 ? '' : 's'}`
 
   return (
-    <div
-      className={`sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border py-3 px-4 ${className || ''}`}
-    >
-      <div className="flex items-center justify-between gap-3">
-        <p className="text-sm font-medium text-foreground flex-1">
-          {displayMessage}
-        </p>
+    <Banner
+      sticky
+      live="polite"
+      className={className}
+      action={
         <Button
           onClick={onRefresh}
           disabled={isRefreshing}
@@ -59,10 +61,11 @@ export function NewPostsBanner({
             </>
           )}
         </Button>
-      </div>
-    </div>
+      }
+    >
+      <span className="font-medium">{displayMessage}</span>
+    </Banner>
   )
 }
 
 export default NewPostsBanner
-

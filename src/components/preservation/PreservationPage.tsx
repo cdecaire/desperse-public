@@ -7,6 +7,7 @@ import { useTheme } from '@/components/providers/ThemeProvider'
 import { Logo } from '@/components/shared/Logo'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icon'
+import { Input } from '@/components/ui/input'
 import { toastError, toastSuccess } from '@/lib/toast'
 import {
 	lookupFoundationCatalog,
@@ -360,13 +361,13 @@ export function PreservationPage() {
 								Enter the Ethereum address that minted your work
 							</label>
 							<div className="flex gap-2">
-								<input
+								<Input
 									id="lookup"
 									type="text"
 									value={input}
 									onChange={(e) => setInput(e.target.value)}
 									placeholder="0x… or yourname.eth"
-									className="flex-1 bg-background border border-border/60 rounded-sm px-4 h-12 text-base font-mono focus:outline-none focus:ring-2 focus:ring-ring/30 focus:border-border"
+									className="flex-1 bg-background border-border/60 rounded-sm px-4 h-12 text-base font-mono"
 									autoComplete="off"
 									spellCheck={false}
 								/>
@@ -774,13 +775,13 @@ export function PreservationPage() {
 												Email-only — no account
 											</label>
 											<div className="flex flex-col sm:flex-row gap-2">
-												<input
+												<Input
 													id="waitlist-email"
 													type="email"
 													value={email}
 													onChange={(e) => setEmail(e.target.value)}
 													placeholder="you@example.com"
-													className="flex-1 bg-card border border-border/60 rounded-sm px-4 h-10 text-sm focus:outline-none focus:ring-2 focus:ring-ring/30 focus:border-border"
+													className="flex-1 bg-card border-border/60 rounded-sm px-4 h-10 text-sm"
 													autoComplete="email"
 													required
 												/>

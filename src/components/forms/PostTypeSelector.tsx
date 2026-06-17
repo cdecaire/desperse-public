@@ -2,20 +2,19 @@
  * PostTypeSelector Component
  * Radio-card selector for post types (Standard, Collectible, Edition).
  *
- * Migration shim (Phase 2 — Sable adoption): rebuilt on @cdecaire/sable's
- * <ChoiceboxGroup>/<Choicebox> (Base UI RadioGroup + Radio — roving focus,
- * arrow-key nav, ARIA radiogroup/radio wiring, form integration come for free).
- * The per-type tone is still carried by the icon (type.badgeClass); the checked
- * card uses Sable's standard primary/accent treatment. Layout is now Choicebox's
- * vertical radio-card list (was a 3-col grid of icon cards). The first-post
- * "keep it simple" collapse logic is preserved.
+ * Built on @cdecaire/sable's <ChoiceboxGroup>/<Choicebox> (Base UI RadioGroup +
+ * Radio). As of Sable 0.5.0 the Choicebox natively supports the two things this
+ * selector needs: an `icon` (switches to the icon-top-left / indicator-top-right
+ * card layout) and a `tone` (carries a semantic colour across the selected
+ * border, radio, and icon badge) — so the per-type colour and card shape come
+ * from the design system, no className/--primary overrides needed.
  */
 
 import { useEffect, useId, useState } from 'react'
 import { POST_TYPE_LIST, type PostType } from '@/constants/postTypes'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icon'
-import { Choicebox, ChoiceboxGroup } from '@cdecaire/sable'
+import { Choicebox, ChoiceboxGroup, type ChoiceboxTone } from '@cdecaire/sable'
 import { cn } from '@/lib/utils'
 
 interface PostTypeSelectorProps {
@@ -23,6 +22,13 @@ interface PostTypeSelectorProps {
   onChange: (type: PostType) => void
   disabled?: boolean
   firstPostMode?: boolean
+}
+
+// Post type → Sable Choicebox tone (carries the selected-state colour identity).
+const TONE_BY_TYPE: Record<PostType, ChoiceboxTone> = {
+  post: 'standard',
+  collectible: 'collectible',
+  edition: 'edition',
 }
 
 export function PostTypeSelector({ value, onChange, disabled, firstPostMode = false }: PostTypeSelectorProps) {
@@ -43,34 +49,18 @@ export function PostTypeSelector({ value, onChange, disabled, firstPostMode = fa
     return null
   }
 
-  const renderCard = (type: (typeof POST_TYPE_LIST)[number], extraClasses?: string) => {
-    // Icon + label as the card title. Sable's Choicebox `title` is ReactNode at
-    // runtime, but its type collides with the native HTML `title` attr (string)
-    // from ComponentProps<Radio.Root> — Sable should Omit "title". Cast until
-    // that's fixed upstream; the element renders correctly.
-    const titleNode = (
-      <span className="flex items-center gap-2">
-        <Icon name={type.icon} variant={type.iconStyle} className={cn('text-lg', type.badgeClass)} />
-        {type.label}
-      </span>
-    ) as unknown as string
-
-    return (
-      <Choicebox
-        key={type.id}
-        value={type.id}
-        disabled={disabled}
-        title={titleNode}
-        description={type.description}
-        // Restore the original per-type color: Choicebox draws its checked
-        // border AND radio dot from var(--primary), so overriding --primary
-        // locally tints both to the post-type tone (the card surface still uses
-        // --accent). The icon already carries the tone via badgeClass.
-        style={{ '--primary': type.tone } as React.CSSProperties}
-        className={extraClasses}
-      />
-    )
-  }
+  const renderCard = (type: (typeof POST_TYPE_LIST)[number], extraClasses?: string) => (
+    <Choicebox
+      key={type.id}
+      value={type.id}
+      disabled={disabled}
+      tone={TONE_BY_TYPE[type.id]}
+      icon={<Icon name={type.icon} variant={type.iconStyle} />}
+      title={type.label}
+      description={type.description}
+      className={extraClasses}
+    />
+  )
 
   const canHideAdvanced = value === 'post'
   const showAdvancedCards = !firstPostMode || showAdvanced
@@ -108,10 +98,7 @@ export function PostTypeSelector({ value, onChange, disabled, firstPostMode = fa
           if (next) onChange(next as PostType)
         }}
         aria-labelledby={groupLabelId}
-        className={cn(
-          'grid grid-cols-1 gap-3',
-          firstPostMode ? 'sm:grid-cols-2' : 'sm:grid-cols-3',
-        )}
+        className={cn('gap-3', firstPostMode ? 'sm:grid-cols-2' : 'sm:grid-cols-3')}
       >
         {renderCard(standardType, firstPostMode ? 'sm:col-span-2' : undefined)}
         {showAdvancedCards && (

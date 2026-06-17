@@ -560,12 +560,24 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
                 if (value[0]) setNftLayout(value[0] as 'grid' | 'list')
               }}
               size="sm"
+              spacing={1}
               className="bg-muted p-1 rounded-lg"
             >
-              <ToggleGroupItem value="grid" aria-label="Grid view">
+              {/* Match the original iOS-segmented look: muted track, selected =
+                  subtle white pill (bg-background + shadow), not Sable's loud
+                  bg-accent. spacing>0 keeps the items separately rounded. */}
+              <ToggleGroupItem
+                value="grid"
+                aria-label="Grid view"
+                className="px-2 rounded-md text-muted-foreground hover:bg-transparent hover:text-foreground data-[pressed]:bg-background data-[pressed]:text-foreground data-[pressed]:shadow-sm"
+              >
                 <Icon name="grid-2" variant="regular" className="text-sm" />
               </ToggleGroupItem>
-              <ToggleGroupItem value="list" aria-label="List view">
+              <ToggleGroupItem
+                value="list"
+                aria-label="List view"
+                className="px-2 rounded-md text-muted-foreground hover:bg-transparent hover:text-foreground data-[pressed]:bg-background data-[pressed]:text-foreground data-[pressed]:shadow-sm"
+              >
                 <Icon name="list" variant="regular" className="text-sm" />
               </ToggleGroupItem>
             </ToggleGroup>

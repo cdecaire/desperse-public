@@ -49,9 +49,10 @@ function getMediaType(mimeType: string): 'image' | 'video' {
   return 'image'
 }
 
-// Drag-guard threshold: pointer travel (px) above which a release is treated as
-// a swipe (Sable owns it) rather than a tap-to-open. Below this, fire onClick.
-const TAP_SLOP = 6
+// Tap-vs-swipe threshold: pointer travel (px) at/above which a release is treated
+// as a swipe (Sable owns it) rather than a tap (zone navigation). Generous enough
+// to absorb finger jitter on a real tap, well below Sable's own swipe threshold.
+const TAP_SLOP = 10
 
 export function MediaCarousel({
   assets,
@@ -69,8 +70,10 @@ export function MediaCarousel({
   const [videoPlaying, setVideoPlaying] = useState<Map<string, boolean>>(new Map())
   const [videoMuted, setVideoMuted] = useState(true)
   const containerRef = useRef<HTMLDivElement>(null)
-  // pointer-down X per asset id, used to distinguish a tap from a drag/swipe.
+  // pointer-down coords, used to distinguish a tap (zone navigation) from a
+  // drag/swipe (Sable's to handle).
   const pointerDownX = useRef<number | null>(null)
+  const pointerDownY = useRef<number | null>(null)
 
   const sortedAssets = useMemo(
     () => [...assets].sort((a, b) => a.sortOrder - b.sortOrder),
@@ -170,6 +173,67 @@ export function MediaCarousel({
     setCurrentIndex((i) => (i + 1) % totalCount)
   }, [hasMultiple, totalCount])
 
+  // Find the on-screen (non-inert) <video> and toggle play/pause.
+  const toggleCurrentVideo = useCallback(() => {
+    const root = containerRef.current
+    if (!root) return
+    const video = Array.from(root.querySelectorAll<HTMLVideoElement>('video')).find(
+      (v) => {
+        const slide = v.closest('[aria-roledescription="slide"]')
+        return !(
+          slide?.hasAttribute('inert') ||
+          slide?.getAttribute('aria-hidden') === 'true'
+        )
+      }
+    )
+    if (!video) return
+    if (video.paused) video.play().catch(() => {})
+    else video.pause()
+  }, [])
+
+  // A clean tap on the media itself opens the post (feed onClick) or, for a
+  // video slide, toggles play/pause. Carousel navigation is intentionally NOT
+  // here: prev/next is the arrows, the dots, and drag/swipe only. (Tapping the
+  // image used to flip slides via left/right zones, but that hijacked taps and
+  // the start of a drag, so it's gone.) Mounted on the OUTER wrapper below, not
+  // the slides — Sable pointer-captures its viewport for drag, so a slide's own
+  // pointerup is swallowed, but the captured pointerup still BUBBLES up to the
+  // wrapper (an ancestor), so the tap is detectable there.
+  const handleTap = useCallback(() => {
+    if (getMediaType(currentAsset?.mimeType || '') === 'video') {
+      toggleCurrentVideo()
+    } else {
+      onClick?.()
+    }
+  }, [currentAsset, toggleCurrentVideo, onClick])
+
+  const handlePointerDown = useCallback((e: React.PointerEvent) => {
+    pointerDownX.current = e.clientX
+    pointerDownY.current = e.clientY
+  }, [])
+
+  const handlePointerUp = useCallback(
+    (e: React.PointerEvent) => {
+      const startX = pointerDownX.current
+      const startY = pointerDownY.current
+      pointerDownX.current = null
+      pointerDownY.current = null
+      if (startX == null || startY == null) return
+      // Chrome (arrows/dots) sit OUTSIDE the captured viewport, so their taps
+      // resolve to the real <button> — let those handle themselves.
+      if ((e.target as HTMLElement | null)?.closest('button')) return
+      // Only a near-stationary release is a tap; anything larger was a drag/swipe
+      // and is the carousel's to handle (or ignore), never a tap.
+      if (
+        Math.abs(e.clientX - startX) < TAP_SLOP &&
+        Math.abs(e.clientY - startY) < TAP_SLOP
+      ) {
+        handleTap()
+      }
+    },
+    [handleTap]
+  )
+
   // ---- Per-slide media renderer ------------------------------------------
   const renderMedia = (asset: CarouselAsset, index: number) => {
     const mediaType = getMediaType(asset.mimeType)
@@ -220,7 +284,8 @@ export function MediaCarousel({
             }}
             data-asset-id={asset.id}
             src={asset.url}
-            className="absolute inset-0 w-full h-full object-contain"
+            draggable={false}
+            className="absolute inset-0 w-full h-full object-contain select-none [-webkit-user-drag:none]"
             preload={shouldLoadEager ? 'auto' : 'none'}
             playsInline
             loop
@@ -276,7 +341,6 @@ export function MediaCarousel({
       )
     }
 
-    // Image with blurred background.
     // For contained (detail view), request larger images since container can be large.
     // For feed view, 640px max is sufficient for aspect-square cards.
     const optimizedProps = getResponsiveImageProps(asset.url, {
@@ -287,36 +351,16 @@ export function MediaCarousel({
       includeRetina: true,
     })
 
-    // Tap-to-open with a drag-guard: Sable owns pointer events for drag, so we
-    // record the pointerdown X and only fire onClick when the pointer barely
-    // moved (a tap, not a swipe). Video slides handle their own play/pause.
-    const handlePointerDown = (e: React.PointerEvent) => {
-      pointerDownX.current = e.clientX
-    }
-    const handlePointerUp = (e: React.PointerEvent) => {
-      const startX = pointerDownX.current
-      pointerDownX.current = null
-      if (startX == null) return
-      if (Math.abs(e.clientX - startX) < TAP_SLOP) {
-        onClick?.()
-      }
-    }
+    // Tap handling lives on the OUTER wrapper (see handlePointerUp) so it
+    // survives Sable's pointer capture; slides are presentational here.
 
+    // Detail view: fit the whole image (any aspect) and center it in the column.
+    // object-contain centers within the w-full/h-full box; empty areas show the
+    // column's bg-black. The slide engine (Sable) is forced to h-full below so
+    // this box is the real column height, not collapsed to content height.
     if (contained) {
       return (
-        <div
-          className="relative w-full h-full flex items-center justify-center"
-          onPointerDown={handlePointerDown}
-          onPointerUp={handlePointerUp}
-        >
-          <img
-            src={optimizedProps.src}
-            srcSet={optimizedProps.srcSet || undefined}
-            sizes={optimizedProps.sizes || undefined}
-            alt=""
-            aria-hidden="true"
-            className="absolute inset-0 w-full h-full object-cover blur-2xl scale-110 opacity-60"
-          />
+        <div className="relative w-full h-full">
           <img
             src={optimizedProps.src}
             srcSet={optimizedProps.srcSet || undefined}
@@ -324,26 +368,16 @@ export function MediaCarousel({
             alt={`${alt} ${index + 1}`}
             loading={shouldLoadEager && !lazy ? 'eager' : 'lazy'}
             decoding="async"
-            className="relative w-full h-full object-contain z-10"
+            draggable={false}
+            className="w-full h-full object-contain select-none [-webkit-user-drag:none]"
           />
         </div>
       )
     }
 
+    // Feed / mobile: fixed aspect-square card, image fills via object-cover.
     return (
-      <div
-        className="relative w-full h-full"
-        onPointerDown={handlePointerDown}
-        onPointerUp={handlePointerUp}
-      >
-        <img
-          src={optimizedProps.src}
-          srcSet={optimizedProps.srcSet || undefined}
-          sizes={optimizedProps.sizes || undefined}
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover blur-2xl scale-110 opacity-60"
-        />
+      <div className="relative w-full h-full">
         <img
           src={optimizedProps.src}
           srcSet={optimizedProps.srcSet || undefined}
@@ -351,7 +385,8 @@ export function MediaCarousel({
           alt={`${alt} ${index + 1}`}
           loading={shouldLoadEager && !lazy ? 'eager' : 'lazy'}
           decoding="async"
-          className="relative w-full h-full object-cover"
+          draggable={false}
+          className="w-full h-full object-cover select-none [-webkit-user-drag:none]"
         />
       </div>
     )
@@ -368,6 +403,8 @@ export function MediaCarousel({
         'select-none', // Prevent text selection on tap
         className
       )}
+      onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerUp}
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => {
         setShowControls(false)
@@ -387,7 +424,15 @@ export function MediaCarousel({
       {/* Sable Carousel = the slide engine. Chrome is disabled (we render our
           own below); the viewport is already rounded-lg by Sable, so the frame
           (border / conditional rounding / bg) lives on the OUTER wrapper to
-          avoid double-rounding. */}
+          avoid double-rounding.
+
+          In contained (detail) mode the outer wrapper is `absolute inset-0`
+          (the full media column), but Sable's section → viewport → track chain
+          is auto-height, so a slide's `h-full` would collapse and the image
+          would size to full WIDTH only (top-aligned, portraits overflow). Force
+          the whole chain to h-full so each slide IS the column box and
+          object-contain can fit + center any aspect ratio.
+          [&>[role=group]] = viewport, its child div = the flex track. */}
       <Carousel
         arrows={false}
         dots={false}
@@ -397,6 +442,11 @@ export function MediaCarousel({
         index={currentIndex}
         onIndexChange={setCurrentIndex}
         label={`Image carousel, showing ${currentIndex + 1} of ${totalCount}`}
+        className={
+          contained
+            ? 'h-full [&>[role=group]]:h-full [&>[role=group]>div]:h-full'
+            : undefined
+        }
         slideClassName={
           contained ? 'h-full flex items-center justify-center' : 'aspect-square'
         }

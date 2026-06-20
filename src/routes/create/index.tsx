@@ -11,7 +11,8 @@ import { CreatePostForm } from '@/components/forms/CreatePostForm'
 import { CreatePostFormSkeleton } from '@/components/forms/CreatePostFormSkeleton'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { useOnboardingState } from '@/hooks/useOnboardingState'
-import { PageHeader } from '@/components/shared/PageHeader'
+import { PageHeader } from '@cdecaire/sable'
+import { Center, Stack } from '@cdecaire/sable/layout'
 import { clearCreateIntent, readCreateIntent } from '@/lib/createIntent'
 
 const createSearchSchema = z.object({
@@ -80,19 +81,17 @@ function CreateContent() {
 
   return (
     <div className="pt-4 pb-8 px-4 md:px-6 lg:px-8">
-      <div className="max-w-2xl mx-auto">
-        <PageHeader
-          title={title}
-          description={description}
-          showOnMobile={true}
-        />
+      <Center max="42rem">
+        <Stack gap={3}>
+          <PageHeader title={title} description={description} />
 
-        {isLoading ? (
-          <CreatePostFormSkeleton />
-        ) : (
-          <CreatePostForm firstPostMode={firstPost} />
-        )}
-      </div>
+          {isLoading ? (
+            <CreatePostFormSkeleton />
+          ) : (
+            <CreatePostForm firstPostMode={firstPost} />
+          )}
+        </Stack>
+      </Center>
     </div>
   )
 }

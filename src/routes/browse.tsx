@@ -17,6 +17,7 @@ import { Footer } from '@/components/landing/LandingPage'
 import { useTheme } from '@/components/providers/ThemeProvider'
 import { Switch } from '@/components/ui/switch'
 import { detectMediaType } from '@/lib/media'
+import { Row, Stack } from '@cdecaire/sable/layout'
 
 const BROWSE_LIMIT = 15
 
@@ -124,8 +125,8 @@ function BrowseHeader() {
 				<Logo size={15} className="text-foreground" />
 				<span className="text-xl font-extrabold">Desperse</span>
 			</Link>
-			<div className="flex-1 flex items-center justify-end gap-4">
-				<div className="flex items-center gap-2">
+			<Row gap={2} align="center" justify="end" className="flex-1">
+				<Row gap={1} align="center">
 					<Icon name={activeTheme === 'light' ? 'sun-bright' : 'moon'} variant="regular" className="text-sm" />
 					<Switch
 						checked={activeTheme === 'dark'}
@@ -133,7 +134,7 @@ function BrowseHeader() {
 						aria-label={`Switch to ${activeTheme === 'dark' ? 'light' : 'dark'} theme`}
 						className="scale-75"
 					/>
-				</div>
+				</Row>
 				{authenticated ? (
 					<Link
 						to="/"
@@ -150,7 +151,7 @@ function BrowseHeader() {
 						Log in or Sign up
 					</button>
 				)}
-			</div>
+			</Row>
 		</header>
 	)
 }
@@ -259,12 +260,14 @@ function BrowsePage() {
 			<main className="flex-1 pt-24 pb-10">
 				{/* Title section */}
 				<div className="max-w-7xl mx-auto px-6 mb-10 browse-reveal">
-					<h1 className="text-heading-1">
-						Browse
-					</h1>
-					<p className="text-body-md text-muted-foreground mt-2">
-						Recent work from creators on Desperse
-					</p>
+					<Stack gap={1}>
+						<h1 className="text-heading-1">
+							Browse
+						</h1>
+						<p className="text-body-md text-muted-foreground">
+							Recent work from creators on Desperse
+						</p>
+					</Stack>
 				</div>
 
 				{/* Gallery Grid */}
@@ -304,8 +307,8 @@ function BrowsePage() {
 										<p className="text-title-sm text-white truncate mb-1.5">
 											{post.caption || 'Untitled'}
 										</p>
-										<div className="flex items-center justify-between">
-											<div className="flex items-center gap-2 min-w-0">
+										<Row align="center" justify="between">
+											<Row gap={1} align="center" className="min-w-0">
 												{post.user?.avatarUrl ? (
 													<OptimizedImage
 														src={post.user.avatarUrl}
@@ -329,8 +332,8 @@ function BrowsePage() {
 												<p className="text-body-sm text-zinc-300 truncate">
 													@{post.user?.usernameSlug}
 												</p>
-											</div>
-											<div className="flex items-center gap-3 text-zinc-300 shrink-0 ml-3">
+											</Row>
+											<Row gap={1.5} align="center" className="text-zinc-300 shrink-0 ml-3">
 												{(post.likeCount ?? 0) > 0 && (
 													<span className="flex items-center gap-1 text-xs">
 														<Icon name="heart" variant="solid" className="text-[10px]" />
@@ -343,8 +346,8 @@ function BrowsePage() {
 														{(post.collectCount ?? 0) + (post.purchaseCount ?? 0)}
 													</span>
 												)}
-											</div>
-										</div>
+											</Row>
+										</Row>
 									</div>
 								</Link>
 							))}

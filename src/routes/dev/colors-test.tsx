@@ -4,6 +4,8 @@
  */
 
 import { createFileRoute } from '@tanstack/react-router'
+import { PageHeader } from '@cdecaire/sable'
+import { Grid, Region, Row, Stack } from '@cdecaire/sable/layout'
 import { Card } from '@/components/ui/card'
 import { Icon } from '@/components/ui/icon'
 
@@ -23,7 +25,7 @@ function ColorSwatch({
   textClass?: string
 }) {
   return (
-    <div className="flex items-center gap-3">
+    <Row gap={1.5} align="center">
       <div
         className="w-12 h-12 rounded-md border border-border shrink-0"
         style={{ backgroundColor: value }}
@@ -35,7 +37,7 @@ function ColorSwatch({
           <p className="text-xs text-muted-foreground/70 font-mono">{cssVar}</p>
         )}
       </div>
-    </div>
+    </Row>
   )
 }
 
@@ -51,7 +53,7 @@ function SemanticColorRow({
   description?: string
 }) {
   return (
-    <div className="flex items-center gap-4">
+    <Row gap={2} align="center">
       <div
         className="w-24 h-12 rounded-md border border-border flex items-center justify-center text-sm font-medium"
         style={{
@@ -70,21 +72,18 @@ function SemanticColorRow({
           <p className="text-xs text-muted-foreground/70">{description}</p>
         )}
       </div>
-    </div>
+    </Row>
   )
 }
 
 function ColorsTestPage() {
   return (
-    <div className="py-6 max-w-5xl mx-auto px-4">
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold mb-2">Color Audit</h1>
-          <p className="text-muted-foreground">
-            All colors and design tokens used in the app. Toggle dark mode to
-            see both themes.
-          </p>
-        </div>
+    <Region max="56rem" className="py-6">
+      <Stack gap={3}>
+        <PageHeader
+          title="Color Audit"
+          description="All colors and design tokens used in the app. Toggle dark mode to see both themes."
+        />
 
         {/* Zinc Palette */}
         <Card className="p-6">
@@ -93,7 +92,7 @@ function ColorsTestPage() {
             Base Zinc tokens from Tailwind used to build the entire color
             system. These follow the shadcn/ui theming convention.
           </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <Grid minItemWidth="11rem" gap={2}>
             <ColorSwatch name="Zinc 50" value="#fafafa" cssVar="--zinc-50" />
             <ColorSwatch name="Zinc 100" value="#f4f4f5" cssVar="--zinc-100" />
             <ColorSwatch name="Zinc 200" value="#e4e4e7" cssVar="--zinc-200" />
@@ -130,7 +129,7 @@ function ColorsTestPage() {
               cssVar="--zinc-950"
               textClass="text-zinc-50"
             />
-          </div>
+          </Grid>
         </Card>
 
         {/* Torch Red Palette */}
@@ -139,7 +138,7 @@ function ColorsTestPage() {
           <p className="text-sm text-muted-foreground mb-4">
             Destructive/error color palette. Primary shade is 600.
           </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <Grid minItemWidth="11rem" gap={2}>
             <ColorSwatch name="Torch Red 50" value="#fff0f4" cssVar="--torch-red-50" />
             <ColorSwatch name="Torch Red 100" value="#ffdde5" cssVar="--torch-red-100" />
             <ColorSwatch name="Torch Red 200" value="#ffc0cf" cssVar="--torch-red-200" />
@@ -176,7 +175,7 @@ function ColorsTestPage() {
               cssVar="--torch-red-950"
               textClass="text-zinc-50"
             />
-          </div>
+          </Grid>
         </Card>
 
         {/* Blue Gem Palette */}
@@ -185,7 +184,7 @@ function ColorsTestPage() {
           <p className="text-sm text-muted-foreground mb-4">
             Collectible color palette. Primary shade is 900.
           </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <Grid minItemWidth="11rem" gap={2}>
             <ColorSwatch name="Blue Gem 50" value="#f3f1ff" cssVar="--blue-gem-50" />
             <ColorSwatch name="Blue Gem 100" value="#e9e6ff" cssVar="--blue-gem-100" />
             <ColorSwatch name="Blue Gem 200" value="#d5d0ff" cssVar="--blue-gem-200" />
@@ -222,7 +221,7 @@ function ColorsTestPage() {
               cssVar="--blue-gem-950"
               textClass="text-zinc-50"
             />
-          </div>
+          </Grid>
         </Card>
 
         {/* Purple Heart Palette */}
@@ -231,7 +230,7 @@ function ColorsTestPage() {
           <p className="text-sm text-muted-foreground mb-4">
             Edition/accent color palette. Primary shade is 800.
           </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <Grid minItemWidth="11rem" gap={2}>
             <ColorSwatch name="Purple Heart 50" value="#fbf3ff" cssVar="--purple-heart-50" />
             <ColorSwatch name="Purple Heart 100" value="#f4e4ff" cssVar="--purple-heart-100" />
             <ColorSwatch name="Purple Heart 200" value="#ecceff" cssVar="--purple-heart-200" />
@@ -268,7 +267,7 @@ function ColorsTestPage() {
               cssVar="--purple-heart-950"
               textClass="text-zinc-50"
             />
-          </div>
+          </Grid>
         </Card>
 
         {/* Caribbean Green Palette */}
@@ -277,7 +276,7 @@ function ColorsTestPage() {
           <p className="text-sm text-muted-foreground mb-4">
             Success/positive color palette. Primary shade is 400.
           </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <Grid minItemWidth="11rem" gap={2}>
             <ColorSwatch name="Caribbean Green 50" value="#eafff8" cssVar="--caribbean-green-50" />
             <ColorSwatch name="Caribbean Green 100" value="#cdfeeb" cssVar="--caribbean-green-100" />
             <ColorSwatch name="Caribbean Green 200" value="#9ffbdd" cssVar="--caribbean-green-200" />
@@ -314,7 +313,7 @@ function ColorsTestPage() {
               cssVar="--caribbean-green-950"
               textClass="text-zinc-50"
             />
-          </div>
+          </Grid>
         </Card>
 
         {/* Flush Orange Palette */}
@@ -323,7 +322,7 @@ function ColorsTestPage() {
           <p className="text-sm text-muted-foreground mb-4">
             Warning color palette. Primary shades are 600 (light) and 500 (dark).
           </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <Grid minItemWidth="11rem" gap={2}>
             <ColorSwatch name="Flush Orange 50" value="#fffaec" cssVar="--flush-orange-50" />
             <ColorSwatch name="Flush Orange 100" value="#fff4d3" cssVar="--flush-orange-100" />
             <ColorSwatch name="Flush Orange 200" value="#ffe5a5" cssVar="--flush-orange-200" />
@@ -360,7 +359,7 @@ function ColorsTestPage() {
               cssVar="--flush-orange-950"
               textClass="text-zinc-50"
             />
-          </div>
+          </Grid>
         </Card>
 
         {/* Azure Radiance Palette */}
@@ -369,7 +368,7 @@ function ColorsTestPage() {
           <p className="text-sm text-muted-foreground mb-4">
             Info color palette. Primary shades are 500 (light) and 400 (dark).
           </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <Grid minItemWidth="11rem" gap={2}>
             <ColorSwatch name="Azure Radiance 50" value="#eff7ff" cssVar="--azure-radiance-50" />
             <ColorSwatch name="Azure Radiance 100" value="#daedff" cssVar="--azure-radiance-100" />
             <ColorSwatch name="Azure Radiance 200" value="#bee1ff" cssVar="--azure-radiance-200" />
@@ -406,7 +405,7 @@ function ColorsTestPage() {
               cssVar="--azure-radiance-950"
               textClass="text-zinc-50"
             />
-          </div>
+          </Grid>
         </Card>
 
         {/* Semantic Colors */}
@@ -416,7 +415,7 @@ function ColorsTestPage() {
             These colors adapt between light and dark themes. Background/foreground
             pairs are designed to work together.
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Grid minItemWidth="18rem" gap={2}>
             <SemanticColorRow
               name="Background"
               bgVar="--background"
@@ -465,7 +464,7 @@ function ColorsTestPage() {
               fgVar="--destructive-foreground"
               description="Delete actions, errors"
             />
-          </div>
+          </Grid>
         </Card>
 
         {/* Live Semantic Preview */}
@@ -475,7 +474,7 @@ function ColorsTestPage() {
             These swatches use CSS variables and will automatically update with
             theme changes.
           </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <Grid minItemWidth="9rem" gap={1.5}>
             <div className="p-3 rounded-md bg-background text-foreground border border-border">
               <p className="text-xs font-medium">background</p>
               <p className="text-xs text-muted-foreground">foreground</p>
@@ -508,7 +507,7 @@ function ColorsTestPage() {
               <p className="text-xs font-medium">border</p>
               <p className="text-xs text-muted-foreground">subtle</p>
             </div>
-          </div>
+          </Grid>
         </Card>
 
         {/* Border System */}
@@ -517,47 +516,47 @@ function ColorsTestPage() {
           <p className="text-sm text-muted-foreground mb-4">
             Two-tier border system: subtle borders for general UI, semi-transparent borders for floating elements.
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Grid minItemWidth="18rem" gap={3}>
             <div>
               <h3 className="text-sm font-medium mb-3">General Borders</h3>
-              <div className="space-y-3">
-                <div className="flex items-center gap-3">
+              <Stack gap={1.5}>
+                <Row gap={1.5} align="center">
                   <div className="w-16 h-10 rounded-md border-2 border-border bg-card" />
                   <div>
                     <p className="text-sm font-medium">--border</p>
                     <p className="text-xs text-muted-foreground">Light: zinc-100 / Dark: zinc-900</p>
                     <p className="text-xs text-muted-foreground/70">Cards, dividers, general UI</p>
                   </div>
-                </div>
-                <div className="flex items-center gap-3">
+                </Row>
+                <Row gap={1.5} align="center">
                   <div className="w-16 h-10 rounded-md border-2 border-input bg-white dark:bg-input/30" />
                   <div>
                     <p className="text-sm font-medium">--input</p>
                     <p className="text-xs text-muted-foreground">Light: zinc-100 / Dark: zinc-900</p>
                     <p className="text-xs text-muted-foreground/70">Form inputs (matches --border)</p>
                   </div>
-                </div>
-                <div className="flex items-center gap-3">
+                </Row>
+                <Row gap={1.5} align="center">
                   <div className="w-16 h-10 rounded-md ring-2 ring-ring bg-card" />
                   <div>
                     <p className="text-sm font-medium">--ring</p>
                     <p className="text-xs text-muted-foreground">Light: zinc-600 / Dark: zinc-400</p>
                     <p className="text-xs text-muted-foreground/70">Focus states, outlines</p>
                   </div>
-                </div>
-              </div>
+                </Row>
+              </Stack>
             </div>
             <div>
               <h3 className="text-sm font-medium mb-3">Floating Element Borders</h3>
               <div className="space-y-3">
-                <div className="flex items-center gap-3">
+                <Row gap={1.5} align="center">
                   <div className="w-16 h-10 rounded-md border-2 border-border-floating bg-popover shadow-md" />
                   <div>
                     <p className="text-sm font-medium">--border-floating</p>
                     <p className="text-xs text-muted-foreground">Semi-transparent (50% opacity)</p>
                     <p className="text-xs text-muted-foreground/70">Tooltips, selects, popovers</p>
                   </div>
-                </div>
+                </Row>
                 <div className="mt-4 p-3 rounded-md border border-border-floating bg-popover shadow-md">
                   <p className="text-xs font-medium">Floating preview</p>
                   <p className="text-xs text-muted-foreground">Border allows color bleed-through</p>
@@ -571,7 +570,7 @@ function ColorsTestPage() {
                 </div>
               </div>
             </div>
-          </div>
+          </Grid>
         </Card>
 
         {/* Highlight/Accent Color */}
@@ -581,8 +580,8 @@ function ColorsTestPage() {
             Theme-aware highlight for text selection, Privy integration, and special accents.
             Uses purple-heart-700 in light mode, purple-heart-600 in dark mode.
           </p>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="flex items-center gap-3">
+          <Grid minItemWidth="14rem" gap={2}>
+            <Row gap={1.5} align="center">
               <div
                 className="w-12 h-12 rounded-md border border-border shrink-0"
                 style={{ backgroundColor: 'var(--highlight)' }}
@@ -592,7 +591,7 @@ function ColorsTestPage() {
                 <p className="text-xs text-muted-foreground font-mono">var(--highlight)</p>
                 <p className="text-xs text-muted-foreground/70 font-mono">Theme-aware</p>
               </div>
-            </div>
+            </Row>
             <div className="col-span-1 md:col-span-2">
               <p className="text-sm font-medium mb-2">Usage Examples</p>
               <div className="space-y-2">
@@ -606,7 +605,7 @@ function ColorsTestPage() {
                 </p>
               </div>
             </div>
-          </div>
+          </Grid>
         </Card>
 
         {/* Post Type Tone Colors */}
@@ -616,35 +615,35 @@ function ColorsTestPage() {
             Theme-aware tone colors for each post type. Adapts for optimal visibility:
             darker shades in light mode, lighter shades in dark mode.
           </p>
-          <div className="space-y-4">
-            <div className="flex items-center gap-4">
+          <Stack gap={2}>
+            <Row gap={2} align="center">
               <div
                 className="w-12 h-12 rounded-md shrink-0"
                 style={{ backgroundColor: 'var(--tone-standard)' }}
               />
               <div className="flex-1">
-                <div className="flex items-center gap-2">
+                <Row gap={1} align="center">
                   <span style={{ color: 'var(--tone-standard)' }}><Icon name="circle-plus" /></span>
                   <span className="font-medium">Standard Post</span>
                   <span className="text-sm font-mono" style={{ color: 'var(--tone-standard)' }}>--tone-standard</span>
-                </div>
+                </Row>
                 <p className="text-xs text-muted-foreground">
                   Light: caribbean-green-500 / Dark: caribbean-green-400
                 </p>
               </div>
-            </div>
+            </Row>
 
-            <div className="flex items-center gap-4">
+            <Row gap={2} align="center">
               <div
                 className="w-12 h-12 rounded-md shrink-0"
                 style={{ backgroundColor: 'var(--tone-collectible)' }}
               />
               <div className="flex-1">
-                <div className="flex items-center gap-2">
+                <Row gap={1} align="center">
                   <span style={{ color: 'var(--tone-collectible)' }}><Icon name="gem" /></span>
                   <span className="font-medium">Collectible</span>
                   <span className="text-sm font-mono" style={{ color: 'var(--tone-collectible)' }}>--tone-collectible</span>
-                </div>
+                </Row>
                 <p className="text-xs text-muted-foreground">
                   Light: blue-gem-600 / Dark: blue-gem-500
                 </p>
@@ -658,19 +657,19 @@ function ColorsTestPage() {
                   Accent bg example
                 </div>
               </div>
-            </div>
+            </Row>
 
-            <div className="flex items-center gap-4">
+            <Row gap={2} align="center">
               <div
                 className="w-12 h-12 rounded-md shrink-0"
                 style={{ backgroundColor: 'var(--tone-edition)' }}
               />
               <div className="flex-1">
-                <div className="flex items-center gap-2">
+                <Row gap={1} align="center">
                   <span style={{ color: 'var(--tone-edition)' }}><Icon name="image-stack" /></span>
                   <span className="font-medium">Edition</span>
                   <span className="text-sm font-mono" style={{ color: 'var(--tone-edition)' }}>--tone-edition</span>
-                </div>
+                </Row>
                 <p className="text-xs text-muted-foreground">
                   Light: purple-heart-700 / Dark: purple-heart-600
                 </p>
@@ -684,8 +683,8 @@ function ColorsTestPage() {
                   Accent bg example
                 </div>
               </div>
-            </div>
-          </div>
+            </Row>
+          </Stack>
         </Card>
 
         {/* Sidebar Colors */}
@@ -694,7 +693,7 @@ function ColorsTestPage() {
           <p className="text-sm text-muted-foreground mb-4">
             Dedicated sidebar palette for navigation components.
           </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <Grid minItemWidth="9rem" gap={1.5}>
             <div className="p-3 rounded-md bg-sidebar text-sidebar-foreground border border-sidebar-border">
               <p className="text-xs font-medium">sidebar</p>
               <p className="text-xs opacity-70">foreground</p>
@@ -711,7 +710,7 @@ function ColorsTestPage() {
               <p className="text-xs font-medium text-sidebar-foreground">border</p>
               <p className="text-xs text-sidebar-foreground/70">ring</p>
             </div>
-          </div>
+          </Grid>
         </Card>
 
         {/* Utility Colors */}
@@ -720,7 +719,7 @@ function ColorsTestPage() {
           <p className="text-sm text-muted-foreground mb-4">
             Common utility colors from Tailwind used throughout the app.
           </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <Grid minItemWidth="11rem" gap={2}>
             <div>
               <p className="text-sm font-medium mb-2">Success/Positive</p>
               <div className="flex gap-2">
@@ -753,7 +752,7 @@ function ColorsTestPage() {
               </div>
               <p className="text-xs text-muted-foreground mt-1">--tone-info</p>
             </div>
-          </div>
+          </Grid>
         </Card>
 
         {/* Color Audit Summary */}
@@ -813,7 +812,7 @@ function ColorsTestPage() {
             or for components with fixed color schemes.
           </p>
         </Card>
-      </div>
-    </div>
+      </Stack>
+    </Region>
   )
 }

@@ -15,6 +15,7 @@ import { NotificationItem } from '@/components/notifications/NotificationItem'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icon'
 import { useQueryClient } from '@tanstack/react-query'
+import { Region, Stack } from '@cdecaire/sable/layout'
 
 export const Route = createFileRoute('/notifications')({
   component: NotificationsPage,
@@ -94,14 +95,16 @@ function NotificationsContent() {
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4 px-4">
-        <p className="text-body-md text-destructive">Failed to load notifications</p>
-        <Button
-          variant="outline"
-          onClick={() => window.location.reload()}
-        >
-          Retry
-        </Button>
+      <div className="flex items-center justify-center min-h-[50vh] px-4">
+        <Stack gap={2} align="center">
+          <p className="text-body-md text-destructive">Failed to load notifications</p>
+          <Button
+            variant="outline"
+            onClick={() => window.location.reload()}
+          >
+            Retry
+          </Button>
+        </Stack>
       </div>
     )
   }
@@ -122,7 +125,7 @@ function NotificationsContent() {
   return (
     <PullToRefresh onRefresh={handleRefresh}>
       <div className="pt-4 px-4 md:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto">
+        <Region max="56rem">
           {/* Header */}
           <PageHeader
             title="Notifications"
@@ -130,7 +133,7 @@ function NotificationsContent() {
           />
 
           {/* Notifications list */}
-          <div className="space-y-2">
+          <Stack gap={1}>
             {allNotifications.map((notification) => (
               <NotificationItem
                 key={notification.id}
@@ -160,8 +163,8 @@ function NotificationsContent() {
                 {clearAll.isPending ? 'Clearing...' : 'Clear all notifications'}
               </Button>
             </div>
-          </div>
-        </div>
+          </Stack>
+        </Region>
       </div>
     </PullToRefresh>
   )

@@ -1,4 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { PageHeader } from '@cdecaire/sable'
+import { Region, Stack } from '@cdecaire/sable/layout'
 import { StaticPageLayout } from '@/components/layout/StaticPageLayout'
 
 export const Route = createFileRoute('/privacy')({
@@ -8,11 +10,14 @@ export const Route = createFileRoute('/privacy')({
 function PrivacyPage() {
   return (
     <StaticPageLayout>
-      <article className="max-w-none [&>p]:text-body-lg [&>p]:mb-4 [&>ul]:mb-4 [&>ul]:pl-6 [&>ul]:list-disc [&>ul]:space-y-1 [&_li]:text-body-lg">
-        <h1 className="text-heading-1 mb-2">Privacy Policy</h1>
-        <p className="text-body-sm! text-muted-foreground mb-8">Last updated: January 3, 2026</p>
-
-        <p>
+      <Region max="prose" inset={false}>
+        <Stack gap={4}>
+          <PageHeader
+            title="Privacy Policy"
+            description="Last updated: January 3, 2026"
+          />
+          <article className="max-w-none [&>p]:text-body-lg [&>p]:mb-4 [&>ul]:mb-4 [&>ul]:pl-6 [&>ul]:list-disc [&>ul]:space-y-1 [&_li]:text-body-lg">
+            <p>
           This Privacy Policy explains how we collect, use, and protect information when you use
           Desperse ("the App").
         </p>
@@ -95,7 +100,9 @@ function PrivacyPage() {
             support@desperse.app
           </a>
         </p>
-      </article>
+          </article>
+        </Stack>
+      </Region>
     </StaticPageLayout>
   )
 }

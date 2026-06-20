@@ -1,4 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { Row, Stack } from '@cdecaire/sable/layout'
 import { usePreferences } from '@/hooks/usePreferences'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { Switch } from '@/components/ui/switch'
@@ -28,7 +29,7 @@ function NotificationsSettingsPage() {
   const isLoading = isUserLoading || isPrefsLoading
 
   return (
-    <div className="space-y-4 pt-4">
+    <Stack gap={2} className="pt-4">
       <PageHeader
         title="Notifications"
         description="Choose which notifications you want to receive."
@@ -36,15 +37,15 @@ function NotificationsSettingsPage() {
 
       <div className="rounded-[var(--radius-lg)] bg-white dark:bg-input/30 border border-input px-5 md:px-6 lg:px-8 py-4 md:py-5">
         {isLoading ? (
-          <div className="flex justify-center py-4">
+          <Row justify="center" className="py-4">
             <LoadingSpinner />
-          </div>
+          </Row>
         ) : !user ? (
           <p className="text-sm text-muted-foreground py-2">
             Sign in to manage notification preferences
           </p>
         ) : (
-          <div className="space-y-4">
+          <Stack gap={2}>
             <NotificationToggle
               id="notify-messages"
               label="Messages"
@@ -101,10 +102,10 @@ function NotificationsSettingsPage() {
               checked={preferences.notifications?.mentions ?? true}
               onCheckedChange={setNotifyMentions}
             />
-          </div>
+          </Stack>
         )}
       </div>
-    </div>
+    </Stack>
   )
 }
 
@@ -126,22 +127,22 @@ function NotificationToggle({
   onCheckedChange,
 }: NotificationToggleProps) {
   return (
-    <div className="flex items-center justify-between py-1">
-      <div className="flex items-center gap-3">
+    <Row align="center" justify="between" className="py-1">
+      <Row gap={1.5} align="center">
         <Icon name={icon} variant="regular" className="w-4 text-center text-muted-foreground/70" />
-        <div className="flex flex-col">
+        <Stack gap={0}>
           <Label htmlFor={id} className="text-label-lg cursor-pointer">
             {label}
           </Label>
           <span className="text-caption text-muted-foreground">{description}</span>
-        </div>
-      </div>
+        </Stack>
+      </Row>
       <Switch
         id={id}
         checked={checked}
         onCheckedChange={onCheckedChange}
         aria-label={`Toggle ${label.toLowerCase()} notifications`}
       />
-    </div>
+    </Row>
   )
 }

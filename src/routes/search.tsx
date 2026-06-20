@@ -16,6 +16,7 @@ import { FeedSkeleton } from '@/components/feed/PostCardSkeleton'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { Input } from '@/components/ui/input'
 import { Icon } from '@/components/ui/icon'
+import { Row, Stack } from '@cdecaire/sable/layout'
 import { addRecentSearch } from '@/lib/recentSearches'
 
 // Search params schema
@@ -144,7 +145,7 @@ function SearchPage() {
         className="sticky top-0 bg-background/95 backdrop-blur-sm z-40 md:pt-0"
         style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
       >
-        <div className="flex items-center gap-2 px-2 py-2">
+        <Row gap={1} align="center" className="px-2 py-2">
           {/* Back button */}
           <button
             onClick={handleBack}
@@ -182,7 +183,7 @@ function SearchPage() {
               </button>
             )}
           </form>
-        </div>
+        </Row>
 
         {/* Tabs */}
         <SearchResultsTabs activeTab={activeTab} onTabChange={handleTabChange} />
@@ -249,7 +250,7 @@ function SearchPage() {
                     <h3 className="text-label-lg text-muted-foreground px-4 md:px-2 py-3">
                       Posts
                     </h3>
-                    <div className="space-y-6 -mx-4 md:mx-0">
+                    <Stack gap={3} className="-mx-4 md:mx-0">
                       {searchResults.posts.slice(0, 5).map((post) => (
                         <PostCard
                           key={post.id}
@@ -276,7 +277,7 @@ function SearchPage() {
                           isAuthenticated={isAuthenticated}
                         />
                       ))}
-                    </div>
+                    </Stack>
                     {searchResults.posts.length > 5 && (
                       <button
                         onClick={() => handleTabChange('posts')}
@@ -322,7 +323,7 @@ function SearchPage() {
             {activeTab === 'posts' && (
               <div>
                 {searchResults.posts.length > 0 ? (
-                  <div className="space-y-6 pt-4 -mx-4 md:mx-0">
+                  <Stack gap={3} className="pt-4 -mx-4 md:mx-0">
                     {searchResults.posts.map((post) => (
                       <PostCard
                         key={post.id}
@@ -349,7 +350,7 @@ function SearchPage() {
                         isAuthenticated={isAuthenticated}
                       />
                     ))}
-                  </div>
+                  </Stack>
                 ) : (
                   <EmptyState
                     icon={<Icon name="images" variant="regular" className="text-4xl" />}
@@ -364,7 +365,7 @@ function SearchPage() {
             {activeTab === 'collectibles' && (
               <div>
                 {filteredPosts.length > 0 ? (
-                  <div className="space-y-6 pt-4 -mx-4 md:mx-0">
+                  <Stack gap={3} className="pt-4 -mx-4 md:mx-0">
                     {filteredPosts.map((post) => (
                       <PostCard
                         key={post.id}
@@ -391,7 +392,7 @@ function SearchPage() {
                         isAuthenticated={isAuthenticated}
                       />
                     ))}
-                  </div>
+                  </Stack>
                 ) : (
                   <EmptyState
                     icon={<Icon name="gem" variant="regular" className="text-4xl" />}

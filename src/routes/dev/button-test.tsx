@@ -4,6 +4,8 @@
  */
 
 import { createFileRoute } from '@tanstack/react-router'
+import { PageHeader } from '@cdecaire/sable'
+import { Region, Stack, Row } from '@cdecaire/sable/layout'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icon'
@@ -29,14 +31,12 @@ export const Route = createFileRoute('/dev/button-test')({
 
 function ButtonTestPage() {
   return (
-    <div className="py-6 max-w-5xl mx-auto px-4">
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold mb-2">Button Style Audit</h1>
-          <p className="text-muted-foreground">
-            All button variants, sizes, and custom patterns used in the app.
-          </p>
-        </div>
+    <Region max="wide" inset className="py-6">
+      <Stack gap={3}>
+        <PageHeader
+          title="Button Style Audit"
+          description="All button variants, sizes, and custom patterns used in the app."
+        />
 
         {/* Standard Variants */}
         <Card className="p-6">
@@ -44,14 +44,14 @@ function ButtonTestPage() {
           <p className="text-sm text-muted-foreground mb-4">
             These are the base variants defined in the Button component.
           </p>
-          <div className="flex flex-wrap gap-4">
+          <Row gap={2} wrap>
             <Button variant="default">Default</Button>
             <Button variant="destructive">Destructive</Button>
             <Button variant="outline">Outline</Button>
             <Button variant="secondary">Secondary</Button>
             <Button variant="ghost">Ghost</Button>
             <Button variant="link">Link</Button>
-          </div>
+          </Row>
         </Card>
 
         {/* Standard Sizes */}
@@ -60,14 +60,12 @@ function ButtonTestPage() {
           <p className="text-sm text-muted-foreground mb-4">
             Responsive sizing: default, cta, icon, and icon-lg. Larger on mobile for touch targets.
           </p>
-          <div className="space-y-4">
-            <div className="flex flex-wrap items-center gap-4">
-              <Button>Default (40/32px)</Button>
-              <Button size="cta">CTA (44/32px)</Button>
-              <Button size="icon"><Settings className="h-4 w-4" /></Button>
-              <Button size="icon-lg" className="rounded-full"><Icon name="play" className="text-xl ml-1" /></Button>
-            </div>
-          </div>
+          <Row gap={2} align="center" wrap>
+            <Button>Default (40/32px)</Button>
+            <Button size="cta">CTA (44/32px)</Button>
+            <Button size="icon"><Settings className="h-4 w-4" /></Button>
+            <Button size="icon-lg" className="rounded-full"><Icon name="play" className="text-xl ml-1" /></Button>
+          </Row>
           <div className="mt-4 p-3 bg-muted/50 border rounded-md">
             <p className="text-xs text-muted-foreground">
               <strong>Responsive:</strong> Mobile (&lt;768px) uses larger heights for touch targets.
@@ -79,7 +77,7 @@ function ButtonTestPage() {
         {/* Disabled States */}
         <Card className="p-6">
           <h2 className="text-xl font-semibold mb-4">Disabled States</h2>
-          <div className="flex flex-wrap gap-4">
+          <Row gap={2} wrap>
             <Button disabled>Default Disabled</Button>
             <Button variant="destructive" disabled>
               Destructive Disabled
@@ -93,18 +91,18 @@ function ButtonTestPage() {
             <Button variant="ghost" disabled>
               Ghost Disabled
             </Button>
-          </div>
+          </Row>
         </Card>
 
         {/* Buttons with Icons */}
         <Card className="p-6">
           <h2 className="text-xl font-semibold mb-4">Buttons with Icons</h2>
-          <div className="space-y-4">
+          <Stack gap={2}>
             <div>
               <h3 className="text-sm font-medium text-muted-foreground mb-2">
                 Icon Left
               </h3>
-              <div className="flex flex-wrap gap-4">
+              <Row gap={2} wrap>
                 <Button>
                   <Plus className="h-4 w-4 mr-2" />
                   Create
@@ -117,13 +115,13 @@ function ButtonTestPage() {
                   <Trash2 className="h-4 w-4 mr-2" />
                   Delete
                 </Button>
-              </div>
+              </Row>
             </div>
             <div>
               <h3 className="text-sm font-medium text-muted-foreground mb-2">
                 Icon Right
               </h3>
-              <div className="flex flex-wrap gap-4">
+              <Row gap={2} wrap>
                 <Button>
                   Continue
                   <ChevronRight className="h-4 w-4 ml-2" />
@@ -132,9 +130,9 @@ function ButtonTestPage() {
                   Open
                   <ExternalLink className="h-4 w-4 ml-2" />
                 </Button>
-              </div>
+              </Row>
             </div>
-          </div>
+          </Stack>
         </Card>
 
         {/* Social Action Buttons Pattern */}
@@ -146,7 +144,7 @@ function ButtonTestPage() {
             Used in LikeButton, CommentButton. Pattern: <code>gap-1 px-2</code>{' '}
             with ghost variant.
           </p>
-          <div className="flex flex-wrap gap-2">
+          <Row gap={1} wrap>
             <Button variant="ghost" className="gap-1 px-2">
               <Heart className="h-4 w-4" />
               <span>24</span>
@@ -158,7 +156,7 @@ function ButtonTestPage() {
             <Button variant="ghost" className="gap-1 px-2">
               <Share2 className="h-4 w-4" />
             </Button>
-          </div>
+          </Row>
           <div className="mt-4 p-3 bg-muted/50 rounded-md">
             <p className="text-xs text-muted-foreground">
               <strong>Pattern:</strong> These use custom <code>gap-1 px-2</code> classes
@@ -242,18 +240,18 @@ function ButtonTestPage() {
             Status label shown outside button during loading. Text/spinner uses toneColor.
           </p>
 
-          <div className="space-y-3">
-            <div className="flex items-center gap-3">
+          <Stack gap={2}>
+            <Row gap={2} align="center">
               <span className="text-xs text-muted-foreground w-20">Idle:</span>
               <Button variant="ghost" className="gap-1 px-2">
                 <span className="text-sm font-medium">0/5</span>
                 <Icon name="image-stack" variant="regular" className="text-base" />
               </Button>
-            </div>
+            </Row>
 
-            <div className="flex items-center gap-3">
+            <Row gap={2} align="center">
               <span className="text-xs text-muted-foreground w-20">Confirming:</span>
-              <div className="flex items-center gap-2">
+              <Row gap={1} align="center">
                 <span className="text-[10px] text-muted-foreground animate-pulse">Confirming payment...</span>
                 <Button
                   variant="ghost"
@@ -263,12 +261,12 @@ function ButtonTestPage() {
                 >
                   <Loader2 className="h-4 w-4 animate-spin" />
                 </Button>
-              </div>
-            </div>
+              </Row>
+            </Row>
 
-            <div className="flex items-center gap-3">
+            <Row gap={2} align="center">
               <span className="text-xs text-muted-foreground w-20">Minting:</span>
-              <div className="flex items-center gap-2">
+              <Row gap={1} align="center">
                 <span className="text-[10px] text-muted-foreground animate-pulse">Minting edition...</span>
                 <Button
                   variant="ghost"
@@ -278,10 +276,10 @@ function ButtonTestPage() {
                 >
                   <Loader2 className="h-4 w-4 animate-spin" />
                 </Button>
-              </div>
-            </div>
+              </Row>
+            </Row>
 
-            <div className="flex items-center gap-3">
+            <Row gap={2} align="center">
               <span className="text-xs text-muted-foreground w-20">Claiming:</span>
               <Button
                 variant="ghost"
@@ -291,16 +289,16 @@ function ButtonTestPage() {
                 <span className="text-sm font-semibold">Claim NFT</span>
                 <Icon name="image-stack" variant="regular" className="text-base" />
               </Button>
-            </div>
+            </Row>
 
-            <div className="flex items-center gap-3">
+            <Row gap={2} align="center">
               <span className="text-xs text-muted-foreground w-20">Purchased:</span>
               <Button variant="ghost" className="gap-1 px-2 disabled:opacity-100" disabled>
                 <span className="text-sm font-medium">1/5</span>
                 <span style={{ color: 'var(--tone-edition)' }}><Icon name="image-stack" className="text-base" /></span>
               </Button>
-            </div>
-          </div>
+            </Row>
+          </Stack>
 
           <div className="mt-4 p-3 bg-muted/50 border rounded-md">
             <p className="text-xs text-muted-foreground">
@@ -317,7 +315,7 @@ function ButtonTestPage() {
           <p className="text-sm text-muted-foreground mb-4">
             Used in forms and dialogs.
           </p>
-          <div className="space-y-2 max-w-md">
+          <Stack gap={1} className="max-w-md">
             <Button className="w-full">Submit</Button>
             <Button variant="outline" className="w-full">
               Cancel
@@ -325,13 +323,13 @@ function ButtonTestPage() {
             <Button variant="destructive" className="w-full">
               Delete Account
             </Button>
-          </div>
+          </Stack>
         </Card>
 
         {/* Loading States */}
         <Card className="p-6">
           <h2 className="text-xl font-semibold mb-4">Loading States</h2>
-          <div className="flex flex-wrap gap-4">
+          <Row gap={2} wrap>
             <Button disabled>
               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
               Loading...
@@ -344,7 +342,7 @@ function ButtonTestPage() {
               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
               Processing...
             </Button>
-          </div>
+          </Row>
         </Card>
 
         {/* Icon-Only Buttons */}
@@ -353,32 +351,30 @@ function ButtonTestPage() {
           <p className="text-sm text-muted-foreground mb-4">
             Various icon button patterns found in the app.
           </p>
-          <div className="space-y-4">
-            <div>
-              <h3 className="text-sm font-medium text-muted-foreground mb-2">
-                Standard Icon Size (size="icon")
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                <Button variant="ghost" size="icon">
-                  <X className="h-4 w-4" />
-                </Button>
-                <Button variant="ghost" size="icon">
-                  <Settings className="h-4 w-4" />
-                </Button>
-                <Button variant="ghost" size="icon">
-                  <Edit className="h-4 w-4" />
-                </Button>
-                <Button variant="ghost" size="icon">
-                  <Copy className="h-4 w-4" />
-                </Button>
-                <Button variant="outline" size="icon">
-                  <Plus className="h-4 w-4" />
-                </Button>
-                <Button variant="destructive" size="icon">
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
+          <div>
+            <h3 className="text-sm font-medium text-muted-foreground mb-2">
+              Standard Icon Size (size="icon")
+            </h3>
+            <Row gap={1} wrap>
+              <Button variant="ghost" size="icon">
+                <X className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="icon">
+                <Settings className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="icon">
+                <Edit className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="icon">
+                <Copy className="h-4 w-4" />
+              </Button>
+              <Button variant="outline" size="icon">
+                <Plus className="h-4 w-4" />
+              </Button>
+              <Button variant="destructive" size="icon">
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </Row>
           </div>
         </Card>
 
@@ -418,24 +414,24 @@ function ButtonTestPage() {
           <p className="text-sm text-muted-foreground mb-4">
             Buttons with <code>rounded-full</code> for pill-shaped styling.
           </p>
-          <div className="space-y-4">
+          <Stack gap={2}>
             <div>
               <h3 className="text-sm font-medium text-muted-foreground mb-2">
                 Standard Variants (rounded-full)
               </h3>
-              <div className="flex flex-wrap gap-4">
+              <Row gap={2} wrap>
                 <Button className="rounded-full">Default</Button>
                 <Button variant="destructive" className="rounded-full">Destructive</Button>
                 <Button variant="outline" className="rounded-full">Outline</Button>
                 <Button variant="secondary" className="rounded-full">Secondary</Button>
                 <Button variant="ghost" className="rounded-full">Ghost</Button>
-              </div>
+              </Row>
             </div>
             <div>
               <h3 className="text-sm font-medium text-muted-foreground mb-2">
                 With Icons (rounded-full)
               </h3>
-              <div className="flex flex-wrap gap-4">
+              <Row gap={2} wrap>
                 <Button className="rounded-full">
                   <Plus className="h-4 w-4 mr-2" />
                   Create
@@ -448,13 +444,13 @@ function ButtonTestPage() {
                   Continue
                   <ChevronRight className="h-4 w-4 ml-2" />
                 </Button>
-              </div>
+              </Row>
             </div>
             <div>
               <h3 className="text-sm font-medium text-muted-foreground mb-2">
                 Icon-Only (rounded-full)
               </h3>
-              <div className="flex flex-wrap items-center gap-2">
+              <Row gap={1} align="center" wrap>
                 <Button size="icon" className="rounded-full">
                   <Plus className="h-4 w-4" />
                 </Button>
@@ -470,22 +466,22 @@ function ButtonTestPage() {
                 <Button variant="secondary" size="icon" className="rounded-full">
                   <Heart className="h-4 w-4" />
                 </Button>
-              </div>
+              </Row>
             </div>
             <div>
               <h3 className="text-sm font-medium text-muted-foreground mb-2">
                 CTA Size (rounded-full)
               </h3>
-              <div className="flex flex-wrap gap-4">
+              <Row gap={2} wrap>
                 <Button size="cta" className="rounded-full">Get Started</Button>
                 <Button size="cta" variant="outline" className="rounded-full">Learn More</Button>
                 <Button size="cta" variant="secondary" className="rounded-full">
                   <Plus className="h-4 w-4 mr-2" />
                   New Post
                 </Button>
-              </div>
+              </Row>
             </div>
-          </div>
+          </Stack>
         </Card>
 
         {/* Current Variants Reference */}
@@ -510,7 +506,7 @@ function ButtonTestPage() {
             Use <code>size="cta"</code> for primary call-to-action buttons.
           </p>
         </Card>
-      </div>
-    </div>
+      </Stack>
+    </Region>
   )
 }

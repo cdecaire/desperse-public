@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from "react"
 import { createFileRoute } from "@tanstack/react-router"
 import { Progress, Note, Description, DescriptionItem } from "@cdecaire/sable"
+import { Stack, Row, Grid } from "@cdecaire/sable/layout"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Icon } from "@/components/ui/icon"
@@ -167,7 +168,7 @@ function StorageCreditsPage() {
 	// No wallet connected
 	if (walletsReady && !hasWallet) {
 		return (
-			<div className="space-y-4 pt-4">
+			<Stack gap={2} className="pt-4">
 				<PageHeader
 					title="Storage Credits"
 					description="Manage Turbo credits for permanent Arweave storage."
@@ -184,12 +185,12 @@ function StorageCreditsPage() {
 						Connect Wallet
 					</Button>
 				</div>
-			</div>
+			</Stack>
 		)
 	}
 
 	return (
-		<div className="space-y-4 pt-4 pb-12">
+		<Stack gap={2} className="pt-4 pb-12">
 			{/* Header */}
 			<PageHeader
 				title="Storage Credits"
@@ -199,18 +200,18 @@ function StorageCreditsPage() {
 			{/* === Card 1: Authorization Status + Balances === */}
 			<div className="rounded-[var(--radius-lg)] bg-white dark:bg-input/30 border border-input px-5 md:px-6 lg:px-8 py-6 md:py-8">
 				{isLoading || isSharedLoading ? (
-					<div className="flex flex-col items-center gap-2 py-4">
+					<Stack gap={1} align="center" className="py-4">
 						<LoadingSpinner size="sm" />
 						<span className="text-sm text-muted-foreground">Loading storage status...</span>
-					</div>
+					</Stack>
 				) : error ? (
-					<div className="flex flex-col items-center gap-2 py-4">
+					<Stack gap={1} align="center" className="py-4">
 						<Icon name="circle-exclamation" variant="regular" className="text-2xl text-destructive" />
 						<span className="text-sm text-destructive">Failed to load storage status</span>
 						<Button variant="ghost" size="default" onClick={() => refetch()}>
 							Retry
 						</Button>
-					</div>
+					</Stack>
 				) : (
 					<>
 						{/* Centered status */}
@@ -241,7 +242,7 @@ function StorageCreditsPage() {
 						</div>
 
 						{/* Action buttons */}
-						<div className="flex items-center justify-center gap-3 mb-6">
+						<Row gap={1.5} align="center" justify="center" className="mb-6">
 							{isAuthorized ? (
 								<Button
 									variant="outline"
@@ -280,7 +281,7 @@ function StorageCreditsPage() {
 									)}
 								</Button>
 							)}
-						</div>
+						</Row>
 
 						{/* Side-by-side balances */}
 						<Description cols="2">
@@ -313,12 +314,12 @@ function StorageCreditsPage() {
 
 			{/* === Card 2: Add More Credits === */}
 			<div className="rounded-[var(--radius-lg)] bg-white dark:bg-input/30 border border-input px-5 md:px-6 lg:px-8 py-5 md:py-6">
-				<div className="flex items-center gap-3 mb-4">
+				<Row gap={1.5} align="center" className="mb-4">
 					<Icon name="circle-plus" variant="regular" className="w-5 text-center text-muted-foreground" />
 					<span className="text-label-lg">Add More Credits</span>
-				</div>
+				</Row>
 
-				<div className="space-y-4">
+				<Stack gap={2}>
 					{/* Preset amount chips */}
 					<ToggleGroup
 						value={[topUpAmount]}
@@ -379,7 +380,7 @@ function StorageCreditsPage() {
 							"Purchase Storage Credits"
 						)}
 					</Button>
-				</div>
+				</Stack>
 
 			</div>
 
@@ -394,10 +395,10 @@ function StorageCreditsPage() {
 			{/* === Activity === */}
 			{givenApprovals.length > 0 && (
 				<div className="rounded-[var(--radius-lg)] bg-white dark:bg-input/30 border border-input px-5 md:px-6 lg:px-8 py-5 md:py-6">
-					<div className="flex items-center gap-3 mb-3">
+					<Row gap={1.5} align="center" className="mb-3">
 						<Icon name="clock-rotate-left" variant="regular" className="w-5 text-center text-muted-foreground" />
 						<span className="text-label-lg">Activity</span>
-					</div>
+					</Row>
 
 					<div>
 						{givenApprovals.map((approval) => (
@@ -406,7 +407,7 @@ function StorageCreditsPage() {
 					</div>
 				</div>
 			)}
-		</div>
+		</Stack>
 	)
 }
 
@@ -418,8 +419,8 @@ function ApprovalRow({ approval }: { approval: CreditApproval }) {
 	const isDesperse = DESPERSE_TURBO_WALLET && approval.approvedAddress.toLowerCase() === DESPERSE_TURBO_WALLET.toLowerCase()
 
 	return (
-		<div className="py-3 border-b border-border/50 last:border-b-0 space-y-2">
-			<div className="flex items-center justify-between">
+		<Stack gap={1} className="py-3 border-b border-border/50 last:border-b-0">
+			<Row align="center" justify="between">
 				<span className="text-label-md">
 					{isDesperse ? "Desperse" : truncateAddress(approval.approvedAddress)}
 				</span>
@@ -428,8 +429,8 @@ function ApprovalRow({ approval }: { approval: CreditApproval }) {
 						Expires {new Date(approval.expirationDate).toLocaleDateString()}
 					</span>
 				)}
-			</div>
-			<div className="grid grid-cols-3 gap-2 text-xs">
+			</Row>
+			<Grid cols={3} gap={1} className="text-xs">
 				<div>
 					<span className="text-muted-foreground block">Approved</span>
 					<span className="font-medium">{formatCredits(approval.approvedWincAmount)}</span>
@@ -444,9 +445,9 @@ function ApprovalRow({ approval }: { approval: CreditApproval }) {
 						{formatCredits(remaining.toString())}
 					</span>
 				</div>
-			</div>
+			</Grid>
 			{/* Usage bar */}
 			<Progress value={Math.min(usagePercent, 100)} aria-label="Storage usage" />
-		</div>
+		</Stack>
 	)
 }

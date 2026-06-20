@@ -15,6 +15,8 @@ import { DeletePostDialog } from '@/components/feed/DeletePostDialog'
 import { useDeletePost } from '@/hooks/usePostMutations'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icon'
+import { Center, Stack } from '@cdecaire/sable/layout'
+import { PageHeader } from '@cdecaire/sable'
 
 export const Route = createFileRoute('/post/$postId/edit')({
   component: EditPostPage,
@@ -36,10 +38,12 @@ function EditPostPage() {
   if (isLoading || isUserLoading) {
     return (
       <div className="pb-20 md:pb-10 pt-4 md:pt-6">
-        <div className="max-w-2xl mx-auto px-4">
-          <Skeleton className="h-10 w-32 mb-6" />
-          <Skeleton className="h-96 w-full" />
-        </div>
+        <Center max="42rem" className="px-4">
+          <Stack gap={3}>
+            <Skeleton className="h-10 w-32" />
+            <Skeleton className="h-96 w-full" />
+          </Stack>
+        </Center>
       </div>
     )
   }
@@ -104,30 +108,30 @@ function EditPostPage() {
   return (
     <AuthGuard>
       <div className="pb-20 md:pb-10 pt-4 md:pt-6">
-        <div className="max-w-2xl mx-auto px-4">
-          <h1 className="text-heading-2 mb-6">Edit Post</h1>
-          <CreatePostForm
-            mode="edit"
-            initialPost={{
-              id: data.post.id,
-              type: data.post.type,
-              mediaUrl: data.post.mediaUrl,
-              coverUrl: data.post.coverUrl || null,
-              caption: data.post.caption || null,
-              categories: data.post.categories || null,
-              price: data.post.price || null,
-              currency: data.post.currency || null,
-              maxSupply: data.post.maxSupply || null,
-              nftName: data.post.nftName || null,
-              nftSymbol: data.post.nftSymbol || null,
-              nftDescription: data.post.nftDescription || null,
-              sellerFeeBasisPoints: data.post.sellerFeeBasisPoints || null,
-              isMutable: data.post.isMutable ?? true,
-              creatorWallet: data.post.creatorWallet || null,
-              assets: data.post.assets || undefined,
-            }}
-          />
-          <div className="mt-6">
+        <Center max="42rem" className="px-4">
+          <Stack gap={3}>
+            <PageHeader title="Edit Post" />
+            <CreatePostForm
+              mode="edit"
+              initialPost={{
+                id: data.post.id,
+                type: data.post.type,
+                mediaUrl: data.post.mediaUrl,
+                coverUrl: data.post.coverUrl || null,
+                caption: data.post.caption || null,
+                categories: data.post.categories || null,
+                price: data.post.price || null,
+                currency: data.post.currency || null,
+                maxSupply: data.post.maxSupply || null,
+                nftName: data.post.nftName || null,
+                nftSymbol: data.post.nftSymbol || null,
+                nftDescription: data.post.nftDescription || null,
+                sellerFeeBasisPoints: data.post.sellerFeeBasisPoints || null,
+                isMutable: data.post.isMutable ?? true,
+                creatorWallet: data.post.creatorWallet || null,
+                assets: data.post.assets || undefined,
+              }}
+            />
             <Button
               variant="destructive"
               onClick={() => setShowDeleteDialog(true)}
@@ -135,8 +139,8 @@ function EditPostPage() {
             >
               Delete
             </Button>
-          </div>
-        </div>
+          </Stack>
+        </Center>
       </div>
 
       <DeletePostDialog

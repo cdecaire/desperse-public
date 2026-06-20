@@ -4,6 +4,7 @@
  */
 
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { Region, Row, Stack } from '@cdecaire/sable/layout'
 import { useBetaFeedbackById, useMarkBetaFeedbackReviewed } from '@/hooks/useFeedback'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { EmptyState } from '@/components/shared/EmptyState'
@@ -21,7 +22,7 @@ function StarDisplay({ rating, size = 'md' }: { rating: number | null; size?: 's
   const starSize = size === 'sm' ? 'text-sm' : 'text-xl'
 
   return (
-    <div className="flex items-center gap-1">
+    <Row align="center" gap={0.5}>
       {[1, 2, 3, 4, 5].map((star) => (
         <Icon
           key={star}
@@ -36,7 +37,7 @@ function StarDisplay({ rating, size = 'md' }: { rating: number | null; size?: 's
         />
       ))}
       <span className="ml-2 text-body-sm text-muted-foreground">({rating}/5)</span>
-    </div>
+    </Row>
   )
 }
 
@@ -58,7 +59,7 @@ function FeedbackDetailPage() {
   }
 
   return (
-    <div className="max-w-4xl py-4">
+    <Region max="56rem" inset={false} className="py-4">
       <Button
         variant="ghost"
         onClick={() => navigate({ to: '/admin/feedback' })}
@@ -69,12 +70,12 @@ function FeedbackDetailPage() {
       </Button>
 
       {(isLoading || isPending) && (
-        <div className="flex items-center justify-center py-12">
+        <Row align="center" justify="center" className="py-12">
           <LoadingSpinner size="lg" />
           <div className="ml-4 text-body-sm text-muted-foreground">
             Loading feedback...
           </div>
-        </div>
+        </Row>
       )}
 
       {error && (
@@ -94,11 +95,11 @@ function FeedbackDetailPage() {
       )}
 
       {!isLoading && !isPending && feedback && (
-        <div className="space-y-4">
+        <Stack gap={2}>
           {/* User & Status Header */}
           <div className="bg-card border rounded-lg p-4">
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex items-center gap-3">
+            <Row align="start" justify="between" gap={2}>
+              <Row align="center" gap={1.5}>
                 <div className="w-12 h-12 rounded-full overflow-hidden bg-muted shrink-0">
                   {feedback.user?.avatarUrl ? (
                     <img
@@ -120,9 +121,9 @@ function FeedbackDetailPage() {
                     <p className="text-body-sm text-muted-foreground">@{feedback.user.usernameSlug}</p>
                   )}
                 </div>
-              </div>
+              </Row>
 
-              <div className="flex items-center gap-2">
+              <Row align="center" gap={1}>
                 <span
                   className={cn(
                     'inline-flex items-center gap-1 px-2 py-1 rounded text-label-md',
@@ -133,8 +134,8 @@ function FeedbackDetailPage() {
                 >
                   {feedback.status === 'new' ? 'New' : 'Reviewed'}
                 </span>
-              </div>
-            </div>
+              </Row>
+            </Row>
 
             <div className="mt-3 text-body-sm text-muted-foreground">
               Submitted {formatRelativeTime(feedback.createdAt)}
@@ -190,9 +191,9 @@ function FeedbackDetailPage() {
             <h2 className="text-label-lg text-muted-foreground uppercase tracking-wide mb-3">
               Context
             </h2>
-            <div className="space-y-2 text-sm">
+            <Stack gap={1} className="text-sm">
               {feedback.pageUrl && (
-                <div className="flex items-start gap-2">
+                <Row align="start" gap={1}>
                   <span className="text-muted-foreground shrink-0 w-20">Page:</span>
                   <a
                     href={feedback.pageUrl}
@@ -202,28 +203,28 @@ function FeedbackDetailPage() {
                   >
                     {feedback.pageUrl}
                   </a>
-                </div>
+                </Row>
               )}
               {feedback.appVersion && (
-                <div className="flex items-start gap-2">
+                <Row align="start" gap={1}>
                   <span className="text-muted-foreground shrink-0 w-20">Version:</span>
                   <span className="font-mono text-xs bg-muted px-2 py-0.5 rounded">
                     {feedback.appVersion}
                   </span>
-                </div>
+                </Row>
               )}
               {feedback.userAgent && (
-                <div className="flex items-start gap-2">
+                <Row align="start" gap={1}>
                   <span className="text-muted-foreground shrink-0 w-20">Browser:</span>
                   <span className="text-caption text-muted-foreground break-all">
                     {feedback.userAgent}
                   </span>
-                </div>
+                </Row>
               )}
               {!feedback.pageUrl && !feedback.appVersion && !feedback.userAgent && (
                 <p className="text-muted-foreground italic">No context available</p>
               )}
-            </div>
+            </Stack>
           </div>
 
           {/* Actions */}
@@ -231,7 +232,7 @@ function FeedbackDetailPage() {
             <h2 className="text-label-lg text-muted-foreground uppercase tracking-wide mb-3">
               Actions
             </h2>
-            <div className="flex flex-wrap gap-2">
+            <Row gap={1} wrap>
               {feedback.status === 'new' ? (
                 <Button
                   onClick={handleMarkReviewed}
@@ -246,10 +247,10 @@ function FeedbackDetailPage() {
                   Already reviewed
                 </span>
               )}
-            </div>
+            </Row>
           </div>
-        </div>
+        </Stack>
       )}
-    </div>
+    </Region>
   )
 }

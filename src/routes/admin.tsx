@@ -3,6 +3,7 @@ import { AuthGuard } from '@/components/shared/AuthGuard'
 import { RoleGuard } from '@/components/shared/RoleGuard'
 import AdminNav from '@/components/admin/AdminNav'
 import { Icon } from '@/components/ui/icon'
+import { Stack } from '@cdecaire/sable/layout'
 
 export const Route = createFileRoute('/admin')({
   component: AdminLayout,
@@ -121,9 +122,9 @@ function AdminLayout() {
               </header>
             )}
 
-            <section className="space-y-6 px-4 md:px-6 lg:px-8">
+            <Stack gap={3} className="px-4 md:px-6 lg:px-8">
               <Outlet />
-            </section>
+            </Stack>
           </div>
         </div>
       </RoleGuard>

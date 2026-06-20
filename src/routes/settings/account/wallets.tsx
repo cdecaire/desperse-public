@@ -12,6 +12,7 @@ import { Tooltip } from '@/components/ui/tooltip'
 import { Icon } from '@/components/ui/icon'
 import { toastSuccess, toastError } from '@/lib/toast'
 import { PageHeader } from '@/components/shared/PageHeader'
+import { Stack, Row } from '@cdecaire/sable/layout'
 
 export const Route = createFileRoute('/settings/account/wallets')({
   component: WalletsPage,
@@ -235,26 +236,26 @@ function WalletsPage() {
   const canSelectWallet = solanaWallets.length > 1
 
   return (
-    <div className="space-y-6 pt-4">
+    <Stack gap={3} className="pt-4">
         <PageHeader
           title="Wallets & Linked"
           description="Your Solana wallet signs all Desperse transactions. Ethereum and social accounts can be linked for verification and login."
         />
 
-      <div className="space-y-6">
+      <Stack gap={3}>
         {/* Wallets Section */}
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
+        <Stack gap={1.5}>
+          <Row align="center" justify="between">
             <p className="text-title-lg">Wallets</p>
             <Button variant="default" onClick={() => linkWallet()}>
               <Icon name="plus" variant="regular" className="mr-2" />
               Link Wallet
             </Button>
-          </div>
+          </Row>
           {solanaWallets.length === 0 ? (
             <p className="text-body-sm text-muted-foreground">No Solana wallets connected yet.</p>
           ) : (
-            <div className="space-y-3">
+            <Stack gap={1.5}>
               {solanaWallets.map((wallet) => {
                 const isActive = isActiveAddress(wallet.address)
                 const dbWallet = getDbWallet(wallet.address)
@@ -273,7 +274,7 @@ function WalletsPage() {
                     } ${canSelectWallet && dbWalletId ? 'cursor-pointer hover:border-primary/30' : ''}`}
                     onClick={canSelectWallet && dbWalletId && !isActive ? () => handleSetActive(wallet.address) : undefined}
                   >
-                    <div className="flex items-center gap-3">
+                    <Row align="center" gap={1.5}>
                       {/* Checkbox indicator - only show when multiple wallets in DB */}
                       {canSelectWallet && (
                         <div className="shrink-0" onClick={(e) => e.stopPropagation()}>
@@ -294,8 +295,8 @@ function WalletsPage() {
                       <div className="w-10 h-10 rounded-full bg-muted grid place-items-center">
                         <Icon name="wallet" variant="regular" className="text-lg text-muted-foreground" />
                       </div>
-                      <div className="space-y-0.5">
-                        <div className="flex items-center gap-2">
+                      <Stack gap={0.25}>
+                        <Row align="center" gap={1}>
                           <p className="font-medium">{walletLabel}</p>
                           <span className={`text-[11px] px-1.5 py-0.5 rounded-full ${
                             wallet.walletClientType === 'privy'
@@ -304,11 +305,11 @@ function WalletsPage() {
                           }`}>
                             {typeTag}
                           </span>
-                        </div>
+                        </Row>
                         <p className="text-caption text-muted-foreground break-all">{wallet.address}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                      </Stack>
+                    </Row>
+                    <Row align="center" gap={1} onClick={(e) => e.stopPropagation()}>
                       {wallet.walletClientType === 'privy' && (
                         <Tooltip content="Export private key" position="top">
                           <Button
@@ -341,25 +342,25 @@ function WalletsPage() {
                           </Button>
                         </Tooltip>
                       )}
-                    </div>
+                    </Row>
                   </div>
                 )
               })}
-            </div>
+            </Stack>
           )}
-        </div>
+        </Stack>
 
         {/* Ethereum Wallets Section — verification/provenance only */}
         {ethereumWallets.length > 0 && (
-          <div className="space-y-3">
-            <div className="space-y-1">
+          <Stack gap={1.5}>
+            <Stack gap={0.5}>
               <p className="text-title-lg">Ethereum wallets</p>
               <p className="text-body-sm text-muted-foreground">
                 Linked for verification only. Desperse signs all transactions on Solana —
                 Ethereum wallets cannot be set as your active wallet.
               </p>
-            </div>
-            <div className="space-y-3">
+            </Stack>
+            <Stack gap={1.5}>
               {ethereumWallets.map((wallet) => {
                 const shortAddress = `${wallet.address.slice(0, 6)}…${wallet.address.slice(-4)}`
                 const walletLabel = wallet.walletClientType
@@ -371,20 +372,20 @@ function WalletsPage() {
                     key={wallet.address}
                     className="flex items-center justify-between gap-3 rounded-xl border border-border/60 bg-card px-4 py-3"
                   >
-                    <div className="flex items-center gap-3 min-w-0">
+                    <Row align="center" gap={1.5} className="min-w-0">
                       <div className="w-10 h-10 rounded-full bg-muted grid place-items-center shrink-0">
                         <Icon name="ethereum" variant="brands" className="text-lg text-muted-foreground" />
                       </div>
-                      <div className="space-y-0.5 min-w-0">
-                        <div className="flex items-center gap-2">
+                      <Stack gap={0.25} className="min-w-0">
+                        <Row align="center" gap={1}>
                           <p className="font-medium truncate">{walletLabel}</p>
                           <span className="text-[11px] px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground">
                             Verification
                           </span>
-                        </div>
+                        </Row>
                         <p className="text-caption text-muted-foreground font-mono">{shortAddress}</p>
-                      </div>
-                    </div>
+                      </Stack>
+                    </Row>
                     <Tooltip content={canUnlinkLoginMethod ? 'Unlink wallet' : 'You need at least one login method'}>
                       <Button
                         variant="ghost"
@@ -403,16 +404,16 @@ function WalletsPage() {
                   </div>
                 )
               })}
-            </div>
-          </div>
+            </Stack>
+          </Stack>
         )}
 
         {/* Linked Social Accounts Section */}
-        <div className="space-y-3">
+        <Stack gap={1.5}>
           <p className="text-title-lg">Linked social accounts</p>
 
           {/* Link buttons for unlinked socials */}
-          <div className="flex flex-wrap gap-2">
+          <Row gap={1} wrap>
             {!hasGoogle && (
               <Button variant="default" onClick={() => linkGoogle()}>
                 <Icon name="google" variant="brands" className="mr-2" />
@@ -425,18 +426,18 @@ function WalletsPage() {
                 Link Twitter
               </Button>
             )}
-          </div>
+          </Row>
 
           {linkedSocials.length === 0 ? (
             <p className="text-body-sm text-muted-foreground">No linked social accounts yet.</p>
           ) : (
-            <div className="space-y-2">
+            <Stack gap={1}>
               {linkedSocials.map((account) => (
                 <div
                   key={`${account.type}-${'address' in account ? account.address : account.type}`}
                   className="flex items-center justify-between gap-3 rounded-xl border border-border/60 bg-card px-4 py-3"
                 >
-                  <div className="flex items-center gap-3">
+                  <Row align="center" gap={1.5}>
                     <div className="w-10 h-10 rounded-full bg-muted grid place-items-center">
                       <Icon
                         name={account.type.startsWith('google') ? 'google' : account.type.startsWith('twitter') ? 'x-twitter' : 'at'}
@@ -444,16 +445,16 @@ function WalletsPage() {
                         className="text-lg text-muted-foreground"
                       />
                     </div>
-                    <div className="space-y-0.5">
+                    <Stack gap={0.25}>
                       <p className="font-medium capitalize">{account.type.replace('_oauth', '')}</p>
                       {'email' in account && account.email ? (
                         <p className="text-caption text-muted-foreground break-all">{account.email}</p>
                       ) : 'username' in account && account.username ? (
                         <p className="text-caption text-muted-foreground break-all">@{account.username}</p>
                       ) : null}
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
+                    </Stack>
+                  </Row>
+                  <Row align="center" gap={1}>
                     {'subject' in account && account.subject && (
                       <Tooltip
                         content={!canUnlinkLoginMethod ? 'Cannot unlink your only login method' : `Unlink ${account.type.replace('_oauth', '')}`}
@@ -476,13 +477,13 @@ function WalletsPage() {
                     <span className="text-xs px-2 py-1 rounded-full bg-accent text-accent-foreground">
                       Connected
                     </span>
-                  </div>
+                  </Row>
                 </div>
               ))}
-            </div>
+            </Stack>
           )}
-        </div>
-      </div>
-    </div>
+        </Stack>
+      </Stack>
+    </Stack>
   )
 }

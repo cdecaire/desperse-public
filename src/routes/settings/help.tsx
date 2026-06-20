@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
+import { Grid, Row, Stack } from '@cdecaire/sable/layout'
 import { AuthGuard } from '@/components/shared/AuthGuard'
 import SettingsNav from '@/components/settings/SettingsNav'
 import { Icon } from '@/components/ui/icon'
@@ -40,26 +41,26 @@ function HelpPage() {
             </div>
           </header>
 
-          <section className="max-w-4xl space-y-6 px-4 md:px-6 lg:px-8 pt-settings-header">
-            <div className="pt-4">
-              <div className="space-y-2 mb-6">
+          <section className="max-w-4xl px-4 md:px-6 lg:px-8 pt-settings-header">
+            <Stack gap={3} className="pt-4">
+              <Stack gap={1}>
                 <h1 className="hidden md:block text-heading-3">Help</h1>
                 <p className="text-body-sm text-muted-foreground">
                   Find answers, support, and important information.
                 </p>
-              </div>
+              </Stack>
 
-              <div className="grid gap-4 md:grid-cols-2">
+              <Grid cols={1} gap={2} className="md:grid-cols-2">
                 {/* Support */}
-                <div className="rounded-xl border border-border/60 bg-card p-5 flex flex-col">
-                  <div className="flex items-center justify-between mb-2">
+                <Stack gap={0} className="rounded-xl border border-border/60 bg-card p-5">
+                  <Row align="center" justify="between" className="mb-2">
                     <p className="text-title-lg">Support</p>
                     <Icon name="life-ring" variant="regular" className="text-muted-foreground" />
-                  </div>
+                  </Row>
                   <p className="text-body-sm text-muted-foreground mb-4">
                     Get help with bugs, account issues, or general questions.
                   </p>
-                  <div className="mt-auto space-y-2">
+                  <Stack gap={1} className="mt-auto">
                     <a
                       href="mailto:support@desperse.app"
                       className="flex items-center gap-2 text-sm hover:text-foreground transition-colors"
@@ -76,15 +77,15 @@ function HelpPage() {
                       <span>@DesperseApp</span>
                       <Icon name="x-twitter" variant="brands" className="text-xs" />
                     </a>
-                  </div>
-                </div>
+                  </Stack>
+                </Stack>
 
                 {/* Fees & Pricing */}
-                <div className="rounded-xl border border-border/60 bg-card p-5 flex flex-col">
-                  <div className="flex items-center justify-between mb-2">
+                <Stack gap={0} className="rounded-xl border border-border/60 bg-card p-5">
+                  <Row align="center" justify="between" className="mb-2">
                     <p className="text-title-lg">Fees & Pricing</p>
                     <Icon name="tag" variant="regular" className="text-muted-foreground" />
-                  </div>
+                  </Row>
                   <p className="text-body-sm text-muted-foreground mb-4">
                     Understand platform fees, minting costs, and how pricing works for Collectibles and Editions.
                   </p>
@@ -97,14 +98,14 @@ function HelpPage() {
                       <Icon name="arrow-right" variant="regular" className="text-xs" />
                     </Link>
                   </div>
-                </div>
+                </Stack>
 
                 {/* About Desperse */}
-                <div className="rounded-xl border border-border/60 bg-card p-5 flex flex-col">
-                  <div className="flex items-center justify-between mb-2">
+                <Stack gap={0} className="rounded-xl border border-border/60 bg-card p-5">
+                  <Row align="center" justify="between" className="mb-2">
                     <p className="text-title-lg">About Desperse</p>
                     <Icon name="circle-info" variant="regular" className="text-muted-foreground" />
-                  </div>
+                  </Row>
                   <p className="text-body-sm text-muted-foreground mb-4">
                     Learn what Desperse is, who it's for, and how it works.
                   </p>
@@ -117,14 +118,14 @@ function HelpPage() {
                       <Icon name="arrow-right" variant="regular" className="text-xs" />
                     </Link>
                   </div>
-                </div>
+                </Stack>
 
                 {/* Changelog */}
-                <div className="rounded-xl border border-border/60 bg-card p-5 flex flex-col">
-                  <div className="flex items-center justify-between mb-2">
+                <Stack gap={0} className="rounded-xl border border-border/60 bg-card p-5">
+                  <Row align="center" justify="between" className="mb-2">
                     <p className="text-title-lg">Changelog</p>
                     <Icon name="list-ul" variant="regular" className="text-muted-foreground" />
-                  </div>
+                  </Row>
                   <p className="text-body-sm text-muted-foreground mb-4">
                     See what's new and what we've been working on.
                   </p>
@@ -137,18 +138,18 @@ function HelpPage() {
                       <Icon name="arrow-right" variant="regular" className="text-xs" />
                     </Link>
                   </div>
-                </div>
+                </Stack>
 
                 {/* Legal */}
-                <div className="rounded-xl border border-border/60 bg-card p-5 flex flex-col">
-                  <div className="flex items-center justify-between mb-2">
+                <Stack gap={0} className="rounded-xl border border-border/60 bg-card p-5">
+                  <Row align="center" justify="between" className="mb-2">
                     <p className="text-title-lg">Legal</p>
                     <Icon name="shield" variant="regular" className="text-muted-foreground" />
-                  </div>
+                  </Row>
                   <p className="text-body-sm text-muted-foreground mb-4">
                     Review our terms and privacy policy.
                   </p>
-                  <div className="mt-auto space-y-2">
+                  <Stack gap={1} className="mt-auto">
                     <Link
                       to="/terms"
                       className="flex items-center gap-2 text-sm hover:text-foreground transition-colors"
@@ -163,10 +164,10 @@ function HelpPage() {
                       <span>Privacy Policy</span>
                       <Icon name="arrow-right" variant="regular" className="text-xs" />
                     </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
+                  </Stack>
+                </Stack>
+              </Grid>
+            </Stack>
           </section>
         </div>
       </div>

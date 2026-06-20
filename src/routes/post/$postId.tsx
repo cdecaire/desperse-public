@@ -42,6 +42,7 @@ import { usePostCollectors, useFollowMutation } from '@/hooks/useProfileQuery'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { toast } from '@/hooks/use-toast'
 import { Description, DescriptionItem, Entity, Note } from '@cdecaire/sable'
+import { Row, Stack } from '@cdecaire/sable/layout'
 
 const BASE_URL = "https://desperse.com"
 
@@ -404,9 +405,9 @@ function CollectorsList({
 }) {
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-8">
+      <Row align="center" justify="center" className="py-8">
         <LoadingSpinner />
-      </div>
+      </Row>
     )
   }
 
@@ -616,8 +617,8 @@ function PostDetailPage() {
   // skipBuy: when true, BuyButton is rendered elsewhere (e.g., timed edition dark bar)
   // onCommentClick: when provided, comment button opens sheet instead of linking
   const ActionButtons = ({ className, skipBuy = false, onCommentClick }: { className?: string; skipBuy?: boolean; onCommentClick?: () => void }) => (
-    <div className={cn('flex items-center justify-between gap-1', className)}>
-      <div className="flex items-center gap-1">
+    <Row gap={0.5} align="center" justify="between" className={className}>
+      <Row gap={0.5} align="center">
         <LikeButton
           postId={post.id}
           userId={currentUser?.id || undefined}
@@ -639,20 +640,20 @@ function PostDetailPage() {
           variant="ghost"
           showCount={true}
         />
-      </div>
+      </Row>
 
       {/* Collect/Buy stats indicator + edition buy shortcut */}
       {post.type !== 'post' && (
-        <div className="flex items-center gap-2 flex-shrink-0">
+        <Row gap={1} align="center" className="flex-shrink-0">
           {post.type === 'collectible' && (
-            <div className="flex items-center gap-1.5 px-2 py-1.5 text-muted-foreground">
+            <Row gap={0.75} align="center" className="px-2 py-1.5 text-muted-foreground">
               {collectCount > 0 && (
                 <span className="text-label-lg">{collectCount}</span>
               )}
               <span style={isCollected && postTypeColor ? { color: postTypeColor } : undefined}>
                 <Icon name="gem" variant={isCollected ? "solid" : "regular"} className="text-base" />
               </span>
-            </div>
+            </Row>
           )}
 
           {post.type === 'edition' && post.price && post.currency && !skipBuy && isUserReady && isAuthenticated && currentUser?.id && (
@@ -688,7 +689,7 @@ function PostDetailPage() {
 
           {/* Static supply count when BuyButton is rendered elsewhere */}
           {post.type === 'edition' && skipBuy && (
-            <div className="flex items-center gap-1 px-2">
+            <Row gap={0.5} align="center" className="px-2">
               <span className="text-label-lg">
                 {post.maxSupply ? `${editionSupply}/${post.maxSupply}` : `${editionSupply}`}
               </span>
@@ -698,11 +699,11 @@ function PostDetailPage() {
                   className="text-base"
                 />
               </span>
-            </div>
+            </Row>
           )}
-        </div>
+        </Row>
       )}
-    </div>
+    </Row>
   )
 
   // Shared caption component (with avatar — used in mobile standard posts)
@@ -954,7 +955,7 @@ function PostDetailPage() {
             {isCollectibleOrEdition ? (
               <>
                 {/* Edition/Collectible: Header + action */}
-                <div className="px-4 pb-3 pt-3 border-b border-border shrink-0 flex flex-col gap-3">
+                <Stack gap={1.5} className="px-4 pb-3 pt-3 border-b border-border shrink-0">
                   <UserHeader showTypeBadge={false} />
 
                   {/* Arweave storage issue banner */}
@@ -1029,7 +1030,7 @@ function PostDetailPage() {
                     isCollected={isCollected}
                   />
 
-                </div>
+                </Stack>
 
                 {/* Post info: title, description, action buttons */}
                 <div className="px-4 py-3 border-b border-border min-h-0">
@@ -1107,7 +1108,7 @@ function PostDetailPage() {
             {isCollectibleOrEdition ? (
               <>
                 {/* Action buttons + collect — single section */}
-                <div className="pb-4 border-b border-border flex flex-col gap-3">
+                <Stack gap={1.5} className="pb-4 border-b border-border">
                   <ActionButtons skipBuy onCommentClick={() => setMobileTab('comments')} />
 
                   {isMintingPaused && (
@@ -1181,7 +1182,7 @@ function PostDetailPage() {
                     postType={post.type}
                     isCollected={isCollected}
                   />
-                </div>
+                </Stack>
 
                 {/* Title + description */}
                 <div className="py-4 border-b border-border space-y-2">

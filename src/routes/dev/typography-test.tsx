@@ -22,6 +22,7 @@
  */
 
 import { createFileRoute } from '@tanstack/react-router'
+import { Grid, Row, Stack } from '@cdecaire/sable/layout'
 import { Card } from '@/components/ui/card'
 import { Icon } from '@/components/ui/icon'
 import { useTheme } from '@/components/providers/ThemeProvider'
@@ -169,7 +170,7 @@ function BrandSection() {
 			title="Brand"
 			subtitle="Desperse is a content-first platform for crypto-native creators. The product is the artwork — our job is to disappear behind it."
 		>
-			<div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+			<Grid minItemWidth="16rem" gap={3}>
 				<Card className="p-5 md:p-6">
 					<p className="text-label-xs text-muted-foreground mb-3">Personality</p>
 					<p className="text-heading-3">Minimal. Focused. Sharp.</p>
@@ -191,7 +192,7 @@ function BrandSection() {
 						Zinc-950 base, purple-heart accent. Subtle shadows. Tight radius. No glow.
 					</p>
 				</Card>
-			</div>
+			</Grid>
 
 			<Subsection
 				title="Principles"
@@ -215,7 +216,7 @@ function BrandSection() {
 			</Subsection>
 
 			<Subsection title="References & Anti-patterns">
-				<div className="grid md:grid-cols-2 gap-4 md:gap-6">
+				<Grid minItemWidth="20rem" gap={3}>
 					<Card className="p-6">
 						<p className="text-label-xs text-muted-foreground mb-4">In the family</p>
 						<ul className="space-y-3">
@@ -237,7 +238,7 @@ function BrandSection() {
 							))}
 						</ul>
 					</Card>
-				</div>
+				</Grid>
 			</Subsection>
 		</Section>
 	)
@@ -307,19 +308,19 @@ function VoiceSection() {
 			subtitle="Voice is who we are. Tone is how we sound in a moment. Voice is constant; tone shifts to match the user's situation."
 		>
 			<Subsection title="Voice traits">
-				<div className="grid sm:grid-cols-2 gap-4">
+				<Grid minItemWidth="20rem" gap={2}>
 					{voiceTraits.map((t) => (
 						<Card key={t.we} className="p-5">
-							<div className="flex items-baseline gap-2 mb-2">
+							<Row gap={1} align="baseline" className="mb-2">
 								<span className="text-title-lg">We are {t.we.toLowerCase()}.</span>
 								<span className="text-body-sm text-muted-foreground">
 									Not {t.not.toLowerCase()}.
 								</span>
-							</div>
+							</Row>
 							<p className="text-body-md text-muted-foreground">{t.body}</p>
 						</Card>
 					))}
-				</div>
+				</Grid>
 			</Subsection>
 
 			<Subsection
@@ -360,7 +361,7 @@ function VoiceSection() {
 			</Subsection>
 
 			<Subsection title="Mechanics">
-				<div className="grid md:grid-cols-2 gap-4 md:gap-6">
+				<Grid minItemWidth="20rem" gap={3}>
 					<Card className="p-6">
 						<p className="text-label-xs text-muted-foreground mb-4">Do</p>
 						<ul className="space-y-3">
@@ -381,7 +382,7 @@ function VoiceSection() {
 							<Anti>Wallet/blockchain jargon when a plain word works ("collect" not "mint" in feed).</Anti>
 						</ul>
 					</Card>
-				</div>
+				</Grid>
 			</Subsection>
 		</Section>
 	)
@@ -444,7 +445,7 @@ function SemanticSwatch({ name, desc }: { name: string; desc: string }) {
 	const isText = name.endsWith('foreground')
 	const isBorder = name === 'border' || name === 'input' || name === 'ring'
 	return (
-		<div className="flex items-center gap-4 py-3 border-b border-border last:border-b-0">
+		<Row gap={2} align="center" className="py-3 border-b border-border last:border-b-0">
 			{isText ? (
 				<div className="w-20 h-12 rounded-md bg-card border border-border flex items-center justify-center">
 					<span className="text-title-sm" style={{ color: bg }}>
@@ -467,7 +468,7 @@ function SemanticSwatch({ name, desc }: { name: string; desc: string }) {
 				<p className="text-body-sm text-muted-foreground">{desc}</p>
 			</div>
 			<Code>--{name}</Code>
-		</div>
+		</Row>
 	)
 }
 
@@ -519,7 +520,7 @@ function ColorSection() {
 				title="Palette ramps"
 				subtitle="11 stops per color. Use 50–100 for fills, 200–400 for hover/disabled, 500–700 for the brand-grade hue, 800–950 for emphasis on light backgrounds."
 			>
-				<div className="space-y-8">
+				<Stack gap={4}>
 					{palettes.map((p) => (
 						<div key={p.name}>
 							<div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-2 sm:gap-4 mb-3">
@@ -532,7 +533,7 @@ function ColorSection() {
 							<PaletteRamp name={p.name} />
 						</div>
 					))}
-				</div>
+				</Stack>
 			</Subsection>
 
 			<Subsection
@@ -1037,7 +1038,7 @@ function MotionSection() {
 			title="Motion"
 			subtitle="Motion confirms cause and effect. It should be quick, deliberate, and skippable. Always respect prefers-reduced-motion."
 		>
-			<div className="grid md:grid-cols-2 gap-4 md:gap-6">
+			<Grid minItemWidth="20rem" gap={3}>
 				<Card className="p-6">
 					<h3 className="text-heading-4 mb-4">Durations</h3>
 					<ul className="divide-y divide-border">
@@ -1064,7 +1065,7 @@ function MotionSection() {
 						))}
 					</ul>
 				</Card>
-			</div>
+			</Grid>
 
 			<Subsection title="Rules">
 				<Card className="p-6">
@@ -1108,7 +1109,7 @@ function IconographySection() {
 			title="Iconography"
 			subtitle="Font Awesome Pro. Default to the Regular weight. Use Solid only for filled/active states. Never mix weights in the same row."
 		>
-			<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+			<Grid minItemWidth="9rem" gap={1.5}>
 				{iconSamples.map((i) => (
 					<Card key={i.name} className="p-4 flex flex-col items-center text-center gap-3">
 						<Icon name={i.name} variant="regular" className="text-2xl" />
@@ -1118,7 +1119,7 @@ function IconographySection() {
 						</div>
 					</Card>
 				))}
-			</div>
+			</Grid>
 
 			<Subsection title="Sizing">
 				<Card className="p-6">
@@ -1210,7 +1211,7 @@ function PatternsSection() {
 			subtitle="Recurring solutions. Reach for these before inventing — they encode tone, accessibility, and rhythm decisions already made."
 		>
 			<Subsection title="Loading states">
-				<div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
+				<Grid minItemWidth="15rem" gap={2}>
 					<Card className="p-5">
 						<p className="text-label-xs text-muted-foreground mb-3">Default</p>
 						<div className="space-y-2">
@@ -1224,24 +1225,24 @@ function PatternsSection() {
 					</Card>
 					<Card className="p-5">
 						<p className="text-label-xs text-muted-foreground mb-3">In-flight action</p>
-						<div className="flex items-center justify-center h-16">
+						<Row align="center" justify="center" className="h-16">
 							<Icon name="spinner-third" spin className="text-2xl text-muted-foreground" />
-						</div>
+						</Row>
 						<p className="text-body-sm text-muted-foreground mt-4">
 							Spinner only when the user is actively waiting on a single action.
 						</p>
 					</Card>
 					<Card className="p-5">
 						<p className="text-label-xs text-muted-foreground mb-3">Background work</p>
-						<div className="flex items-center gap-2 h-16">
+						<Row gap={1} align="center" className="h-16">
 							<div className="size-2 rounded-full bg-(--caribbean-green-500)" />
 							<span className="text-body-sm">Syncing…</span>
-						</div>
+						</Row>
 						<p className="text-body-sm text-muted-foreground mt-4">
 							Status pill, never a modal. Don't block the user.
 						</p>
 					</Card>
-				</div>
+				</Grid>
 			</Subsection>
 
 			<Subsection title="Empty states">
@@ -1272,7 +1273,7 @@ function PatternsSection() {
 
 			<Subsection title="Error states">
 				<Card className="p-6 border-(--torch-red-500)/30">
-					<div className="flex gap-3">
+					<Row gap={1.5} align="stretch">
 						<Icon
 							name="circle-exclamation"
 							variant="regular"
@@ -1290,7 +1291,7 @@ function PatternsSection() {
 								Try again
 							</button>
 						</div>
-					</div>
+					</Row>
 				</Card>
 				<Card className="p-6 mt-4">
 					<ul className="space-y-3">
@@ -1435,13 +1436,13 @@ function MobileSection() {
 				title="Platforms at a glance"
 				subtitle="Two foundations, one design language. iOS leans on HIG for system primitives; Android adopts Material structure but overrides Material 3 chrome to match the Desperse tonal system."
 			>
-				<div className="grid md:grid-cols-2 gap-4 md:gap-6">
+				<Grid minItemWidth="20rem" gap={3}>
 					{platforms.map((p) => (
 						<Card key={p.name} className="p-5 md:p-6">
-							<div className="flex items-baseline gap-3 mb-2">
+							<Row gap={1.5} align="baseline" className="mb-2">
 								<p className="text-heading-3">{p.name}</p>
 								<PlatformBadge platform={p.name as 'iOS' | 'Android'} />
-							</div>
+							</Row>
 							<p className="text-body-sm text-muted-foreground mb-4">{p.minor}</p>
 							<ul className="space-y-2.5">
 								{p.points.map((pt) => (
@@ -1457,7 +1458,7 @@ function MobileSection() {
 							</ul>
 						</Card>
 					))}
-				</div>
+				</Grid>
 			</Subsection>
 
 			<Subsection
@@ -1465,7 +1466,7 @@ function MobileSection() {
 				subtitle="Three minimums. Apply the platform's value, not the lowest common denominator. Desktop density (32px icon buttons) is reserved for power-user surfaces — never feeds, never primary actions."
 			>
 				<Card className="p-6">
-					<div className="flex flex-wrap items-end gap-8 mb-6">
+					<Row gap={4} align="end" wrap className="mb-6">
 						{touchTargets.map((t) => (
 							<div key={t.platform} className="flex flex-col items-center gap-3">
 								<div
@@ -1480,7 +1481,7 @@ function MobileSection() {
 								<PlatformBadge platform={t.platform as 'iOS' | 'Android' | 'Web'} />
 							</div>
 						))}
-					</div>
+					</Row>
 					<ul className="space-y-2 pt-4 border-t border-border">
 						{touchTargets.map((t) => (
 							<li key={t.platform} className="flex items-baseline gap-3 text-body-sm">
@@ -1690,18 +1691,18 @@ function MobileSection() {
 				title="Gestures"
 				subtitle="Honor the OS's gesture language. Disabling system gestures is the fastest way to make a native shell feel like a wrapped webview."
 			>
-				<div className="grid sm:grid-cols-2 gap-4">
+				<Grid minItemWidth="20rem" gap={2}>
 					{gestures.map((g) => (
 						<Card key={g.name} className="p-5">
-							<div className="flex items-baseline gap-3 mb-2">
+							<Row gap={1.5} align="baseline" className="mb-2">
 								<p className="text-title-lg">{g.name}</p>
 								<PlatformBadge platform={g.platform === 'Both' ? 'Web' : g.platform as 'iOS' | 'Android'} />
 								{g.platform === 'Both' && <span className="text-mono-sm text-muted-foreground">+ iOS / Android</span>}
-							</div>
+							</Row>
 							<p className="text-body-sm text-muted-foreground">{g.rule}</p>
 						</Card>
 					))}
-				</div>
+				</Grid>
 			</Subsection>
 
 			<Subsection
@@ -1746,7 +1747,7 @@ function MobileSection() {
 			</Subsection>
 
 			<Subsection title="Rules">
-				<div className="grid md:grid-cols-2 gap-4 md:gap-6">
+				<Grid minItemWidth="20rem" gap={3}>
 					<Card className="p-6">
 						<p className="text-label-xs text-muted-foreground mb-4">Do</p>
 						<ul className="space-y-3">
@@ -1769,7 +1770,7 @@ function MobileSection() {
 							<Anti>Implement features that only work on desktop. Every capability needs a mobile path.</Anti>
 						</ul>
 					</Card>
-				</div>
+				</Grid>
 			</Subsection>
 		</Section>
 	)
@@ -1842,10 +1843,10 @@ function DesignSystemPage() {
 	return (
 		<div className="px-4 sm:px-6 lg:px-10 xl:px-14 2xl:px-20 py-6 md:py-10 lg:py-14 mx-auto 2xl:max-w-[1800px]">
 			<header className="mb-10 md:mb-14 lg:mb-16">
-				<div className="flex items-start justify-between gap-4 mb-3">
+				<Row align="start" justify="between" className="mb-3">
 					<p className="text-label-xs text-muted-foreground">Reference · v1</p>
 					<ThemeSwitcher />
-				</div>
+				</Row>
 				<div>
 					<h1 className="text-display-lg max-w-3xl">Desperse Design System</h1>
 					<p className="text-body-lg text-muted-foreground mt-4 max-w-2xl">

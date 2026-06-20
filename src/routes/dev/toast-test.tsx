@@ -3,6 +3,8 @@
  * Route: /dev/toast-test
  */
 
+import { PageHeader } from '@cdecaire/sable'
+import { Grid, Region, Row, Stack } from '@cdecaire/sable/layout'
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 import { Card } from '@/components/ui/card'
@@ -20,18 +22,16 @@ function ToastTestPage() {
   const getToastOpts = () => (persistentMode ? { duration: Infinity } : {})
 
   return (
-    <div className="py-6 max-w-4xl mx-auto px-4">
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold mb-2">Toast Notification Test</h1>
-          <p className="text-muted-foreground">
-            Test all toast types and variations to inspect styling and behavior.
-          </p>
-        </div>
+    <Region max="56rem" inset className="py-6">
+      <Stack gap={3}>
+        <PageHeader
+          title="Toast Notification Test"
+          description="Test all toast types and variations to inspect styling and behavior."
+        />
 
         {/* Persistent Mode Toggle */}
         <Card className="p-4">
-          <div className="flex items-center justify-between">
+          <Row align="center" justify="between">
             <div>
               <h3 className="font-semibold mb-1">Persistent Mode</h3>
               <p className="text-sm text-muted-foreground">
@@ -49,16 +49,16 @@ function ToastTestPage() {
                 {persistentMode ? 'Enabled' : 'Disabled'}
               </span>
             </label>
-          </div>
+          </Row>
         </Card>
 
         {/* Custom Toast Functions */}
         <Card className="p-6">
           <h2 className="text-xl font-semibold mb-4">Custom Toast Functions</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
+          <Grid minItemWidth="20rem" gap={2}>
+            <Stack gap={1}>
               <h3 className="font-medium text-sm text-muted-foreground">Success Toasts</h3>
-              <div className="flex flex-wrap gap-2">
+              <Row gap={1} wrap>
                 <Button
                   onClick={() =>
                     toastSuccess('Operation completed successfully', getToastOpts())
@@ -78,12 +78,12 @@ function ToastTestPage() {
                 >
                   Long Success
                 </Button>
-              </div>
-            </div>
+              </Row>
+            </Stack>
 
-            <div className="space-y-2">
+            <Stack gap={1}>
               <h3 className="font-medium text-sm text-muted-foreground">Error Toasts</h3>
-              <div className="flex flex-wrap gap-2">
+              <Row gap={1} wrap>
                 <Button
                   onClick={() => toastError('Something went wrong', getToastOpts())}
                   variant="destructive"
@@ -101,12 +101,12 @@ function ToastTestPage() {
                 >
                   Long Error
                 </Button>
-              </div>
-            </div>
+              </Row>
+            </Stack>
 
-            <div className="space-y-2">
+            <Stack gap={1}>
               <h3 className="font-medium text-sm text-muted-foreground">Info Toasts</h3>
-              <div className="flex flex-wrap gap-2">
+              <Row gap={1} wrap>
                 <Button
                   onClick={() => toastInfo('New features available', getToastOpts())}
                   variant="outline"
@@ -124,12 +124,12 @@ function ToastTestPage() {
                 >
                   Long Info
                 </Button>
-              </div>
-            </div>
+              </Row>
+            </Stack>
 
-            <div className="space-y-2">
+            <Stack gap={1}>
               <h3 className="font-medium text-sm text-muted-foreground">Warning Toasts</h3>
-              <div className="flex flex-wrap gap-2">
+              <Row gap={1} wrap>
                 <Button
                   onClick={() => toastWarning('Please review this action', getToastOpts())}
                   variant="outline"
@@ -147,18 +147,18 @@ function ToastTestPage() {
                 >
                   Long Warning
                 </Button>
-              </div>
-            </div>
-          </div>
+              </Row>
+            </Stack>
+          </Grid>
         </Card>
 
         {/* Real-world Examples */}
         <Card className="p-6">
           <h2 className="text-xl font-semibold mb-4">Real-world Examples</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
+          <Grid minItemWidth="20rem" gap={2}>
+            <Stack gap={1}>
               <h3 className="font-medium text-sm text-muted-foreground">User Actions</h3>
-              <div className="flex flex-col gap-2">
+              <Stack gap={1}>
                 <Button
                   onClick={() => toastSuccess('Profile updated', getToastOpts())}
                   variant="default"
@@ -187,12 +187,12 @@ function ToastTestPage() {
                 >
                   Transaction ID Copied
                 </Button>
-              </div>
-            </div>
+              </Stack>
+            </Stack>
 
-            <div className="space-y-2">
+            <Stack gap={1}>
               <h3 className="font-medium text-sm text-muted-foreground">Error Scenarios</h3>
-              <div className="flex flex-col gap-2">
+              <Stack gap={1}>
                 <Button
                   onClick={() =>
                     toastError(
@@ -235,9 +235,9 @@ function ToastTestPage() {
                 >
                   Transaction Failed
                 </Button>
-              </div>
-            </div>
-          </div>
+              </Stack>
+            </Stack>
+          </Grid>
         </Card>
 
         {/* Multi-line Test */}
@@ -246,7 +246,7 @@ function ToastTestPage() {
           <p className="text-sm text-muted-foreground mb-4">
             These toasts should use rounded-lg instead of rounded-full due to multiple lines.
           </p>
-          <div className="flex flex-wrap gap-2">
+          <Row gap={1} wrap>
             <Button
               onClick={() =>
                 toastSuccess(
@@ -280,7 +280,7 @@ function ToastTestPage() {
             >
               Multi-line Info
             </Button>
-          </div>
+          </Row>
         </Card>
 
         {/* Info Section */}
@@ -297,7 +297,7 @@ function ToastTestPage() {
             <li>Toast positioning and spacing</li>
           </ul>
         </Card>
-      </div>
-    </div>
+      </Stack>
+    </Region>
   )
 }

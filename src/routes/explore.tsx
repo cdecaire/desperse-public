@@ -5,6 +5,7 @@
  */
 
 import { createFileRoute } from '@tanstack/react-router'
+import { Stack } from '@cdecaire/sable/layout'
 import { SearchBar, SuggestedCreators, TrendingPosts } from '@/components/explore'
 import { MobileHeader, MobileHeaderSpacer } from '@/components/layout/MobileHeader'
 
@@ -17,21 +18,21 @@ function ExplorePage() {
     <>
       <MobileHeader title="Explore" showBackButton={false} />
       <MobileHeaderSpacer />
-      <div className="pt-4 pb-8">
+      <Stack gap={2} className="pt-4 pb-8">
         {/* Search bar */}
-        <div className="px-4 md:px-2 mb-4">
+        <div className="px-4 md:px-2">
           <SearchBar />
         </div>
 
-      {/* Suggested creators section */}
-      <SuggestedCreators />
+        {/* Suggested creators section */}
+        <SuggestedCreators />
 
-      {/* Divider */}
-      <div className="border-t border-border/50 my-4 mx-4 md:mx-2" />
+        {/* Divider */}
+        <div className="border-t border-border/50 mx-4 md:mx-2" />
 
-      {/* Trending/Recent posts section */}
-      <TrendingPosts />
-    </div>
+        {/* Trending/Recent posts section */}
+        <TrendingPosts />
+      </Stack>
     </>
   )
 }

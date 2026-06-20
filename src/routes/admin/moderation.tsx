@@ -29,6 +29,7 @@ import {
 import { ModerationRowMenu } from '@/components/admin/ModerationRowMenu'
 import { Badge } from '@/components/ui/badge'
 import { Entity, StatusBadge } from '@cdecaire/sable'
+import { Row, Stack } from '@cdecaire/sable/layout'
 import { UserAvatar } from '@/components/shared/UserAvatar'
 import { Icon } from '@/components/ui/icon'
 import { detectMediaType } from '@/lib/media'
@@ -153,16 +154,16 @@ function ModerationListPage() {
   return (
     <div className="pt-4">
       <div>
-        <div className="space-y-2 mb-6">
+        <Stack gap={1} className="mb-6">
           <h1 className="hidden md:block text-heading-3">Content Moderation</h1>
           <p className="text-body-sm text-muted-foreground">
             Review and moderate reported posts.
           </p>
-        </div>
+        </Stack>
 
         {/* Filters */}
-        <div className="flex flex-wrap gap-3 mb-4">
-          <div className="flex items-center gap-2">
+        <Row wrap className="gap-3 mb-4">
+          <Row align="center" gap={1}>
             <span className="text-body-sm text-muted-foreground">Status:</span>
             <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value as StatusFilter)}>
               <SelectTrigger className="w-[120px] h-9">
@@ -174,8 +175,8 @@ function ModerationListPage() {
                 <SelectItem value="all">All</SelectItem>
               </SelectContent>
             </Select>
-          </div>
-          <div className="flex items-center gap-2">
+          </Row>
+          <Row align="center" gap={1}>
             <span className="text-body-sm text-muted-foreground">Type:</span>
             <Select value={typeFilter} onValueChange={(value) => setTypeFilter(value as TypeFilter)}>
               <SelectTrigger className="w-[140px] h-9">
@@ -188,25 +189,25 @@ function ModerationListPage() {
                 <SelectItem value="dm_thread">DMs only</SelectItem>
               </SelectContent>
             </Select>
-          </div>
-        </div>
+          </Row>
+        </Row>
 
         {isLoadingUser && (
-          <div className="flex items-center justify-center py-12">
+          <Row align="center" justify="center" className="py-12">
             <LoadingSpinner size="lg" />
             <div className="ml-4 text-body-sm text-muted-foreground">
               Loading user...
             </div>
-          </div>
+          </Row>
         )}
 
         {!isLoadingUser && (isLoading || isPending) && (
-          <div className="flex items-center justify-center py-12">
+          <Row align="center" justify="center" className="py-12">
             <LoadingSpinner size="lg" />
             <div className="ml-4 text-body-sm text-muted-foreground">
               Loading reports...
             </div>
-          </div>
+          </Row>
         )}
 
         {error && (

@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { PageHeader } from '@/components/shared/PageHeader'
 import { CopyrightFields, SUGGESTED_STATEMENTS } from '@/components/forms/CopyrightFields'
+import { Row } from '@cdecaire/sable/layout'
 
 export const Route = createFileRoute('/settings/account/copyright')({
 	component: CopyrightSettingsPage,
@@ -34,9 +35,9 @@ function CopyrightSettingsPage() {
 			/>
 
 			{isLoading ? (
-				<div className="flex justify-center py-4">
+				<Row justify="center" className="py-4">
 					<LoadingSpinner />
-				</div>
+				</Row>
 			) : !user ? (
 				<p className="text-body-sm text-muted-foreground py-2">
 					Sign in to manage copyright settings
@@ -127,12 +128,12 @@ function CopyrightForm({
 			/>
 
 			{isDirty && (
-				<div className="flex justify-end">
+				<Row justify="end">
 					<Button type="submit" disabled={isUpdating}>
 						{isUpdating ? <LoadingSpinner size="sm" className="mr-2" /> : null}
 						Save changes
 					</Button>
-				</div>
+				</Row>
 			)}
 		</form>
 	)

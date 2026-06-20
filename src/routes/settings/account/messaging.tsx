@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Icon } from '@/components/ui/icon'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { PageHeader } from '@/components/shared/PageHeader'
+import { Stack, Row } from '@cdecaire/sable/layout'
 
 export const Route = createFileRoute('/settings/account/messaging')({
   component: MessagingSettingsPage,
@@ -29,7 +30,7 @@ function MessagingSettingsPage() {
   const isLoading = isUserLoading || isPrefsLoading
 
   return (
-    <div className="space-y-4 pt-4">
+    <Stack gap={2} className="pt-4">
       <PageHeader
         title="Messaging"
         description="Manage who can reach out to you directly."
@@ -38,8 +39,8 @@ function MessagingSettingsPage() {
       {/* DM Settings Card */}
       <div className="rounded-lg bg-white dark:bg-input/30 border border-input px-5 md:px-6 lg:px-8 py-4 md:py-5">
         {/* Master Toggle */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
+        <Row align="center" justify="between">
+          <Row gap={1.5} align="center">
             <Icon name="message" variant="regular" className="w-5 text-center text-muted-foreground" />
             <div className="flex flex-col">
               <span className="text-label-lg">Direct Messages</span>
@@ -47,7 +48,7 @@ function MessagingSettingsPage() {
                 Allow eligible users to start new chats
               </span>
             </div>
-          </div>
+          </Row>
           {isLoading ? (
             <LoadingSpinner className="w-5 h-5" />
           ) : !user ? (
@@ -59,7 +60,7 @@ function MessagingSettingsPage() {
               aria-label="Toggle direct messages"
             />
           )}
-        </div>
+        </Row>
 
         {/* Eligibility Requirements - visible only when DMs are enabled */}
         {preferences.dmEnabled && user && !isLoading && (
@@ -68,7 +69,7 @@ function MessagingSettingsPage() {
               Eligibility Requirements
             </p>
 
-            <div className="space-y-4">
+            <Stack gap={2}>
               <MessagingToggle
                 id="allow-buyers"
                 label="Edition Buyers"
@@ -120,22 +121,22 @@ function MessagingSettingsPage() {
                   SKR tipped
                 </span>
               </MessagingToggle>
-            </div>
+            </Stack>
           </div>
         )}
       </div>
 
       {/* Info Note */}
       <div className="rounded-lg bg-muted/50 border border-input px-5 md:px-6 lg:px-8 py-4">
-        <div className="flex gap-3">
+        <Row gap={1.5} align="start">
           <Icon name="circle-info" variant="regular" className="w-5 text-center text-muted-foreground mt-0.5 shrink-0" />
           <span className="text-caption text-muted-foreground">
             To prevent spam, only your supporters can message you. Once someone starts a conversation,
             they can continue messaging even if they no longer meet the criteria.
           </span>
-        </div>
+        </Row>
       </div>
-    </div>
+    </Stack>
   )
 }
 
@@ -157,23 +158,23 @@ function MessagingToggle({
   children,
 }: MessagingToggleProps) {
   return (
-    <div className="flex items-center justify-between py-1">
-      <div className="flex items-center gap-3">
+    <Row align="center" justify="between" className="py-1">
+      <Row gap={1.5} align="center">
         <Icon name={icon} variant="regular" className="w-5 text-center text-muted-foreground/70" />
-        <div className="flex flex-col gap-0.5">
+        <Stack gap={0.25}>
           <Label htmlFor={id} className="text-label-lg cursor-pointer">
             {label}
           </Label>
           {children}
-        </div>
-      </div>
+        </Stack>
+      </Row>
       <Switch
         id={id}
         checked={checked}
         onCheckedChange={onCheckedChange}
         aria-label={`Allow ${label.toLowerCase()} to message you`}
       />
-    </div>
+    </Row>
   )
 }
 

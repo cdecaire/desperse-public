@@ -1,5 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
+import { PageHeader } from '@cdecaire/sable'
+import { Region, Row, Stack } from '@cdecaire/sable/layout'
 import { whoami } from '@/server/functions/whoami'
 import { useAuth } from '@/hooks/useAuth'
 
@@ -28,29 +30,27 @@ function AuthTestPage() {
   }
 
   return (
-    <div className="py-6 max-w-4xl mx-auto px-4">
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold mb-2">Server-Side Authentication Test</h1>
-          <p className="text-muted-foreground">
-            This page tests whether the server can identify you via Privy token.
-          </p>
-        </div>
+    <Region max="56rem" inset className="py-6">
+      <Stack gap={3}>
+        <PageHeader
+          title="Server-Side Authentication Test"
+          description="This page tests whether the server can identify you via Privy token."
+        />
 
         <div className="border rounded-lg p-6 bg-card">
-          <div className="mb-4 space-y-2">
-            <div className="flex items-center gap-2">
+          <Stack gap={1} className="mb-4">
+            <Row gap={1} align="center">
               <span className="font-medium">Client Auth Status:</span>
               <span className={isAuthenticated ? 'text-green-600' : 'text-red-600'}>
                 {isAuthenticated ? '✓ Authenticated' : '✗ Not authenticated'}
               </span>
-            </div>
+            </Row>
             {privyId && (
               <div className="text-sm text-muted-foreground">
                 Privy ID: <code className="bg-muted px-1 rounded">{privyId}</code>
               </div>
             )}
-          </div>
+          </Stack>
 
           <button
             onClick={runTest}
@@ -97,7 +97,7 @@ function AuthTestPage() {
             <li>Server finds user in database by Privy ID</li>
           </ul>
         </div>
-      </div>
-    </div>
+      </Stack>
+    </Region>
   )
 }

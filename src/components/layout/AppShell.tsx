@@ -1,7 +1,7 @@
 import { useRouterState } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import { AppShell as SableAppShell } from '@cdecaire/sable'
-import { Region } from '@cdecaire/sable/layout'
+import { GridOverlay, Region } from '@cdecaire/sable/layout'
 import TopNav from './TopNav'
 import BottomNav from './BottomNav'
 import Sidebar from './Sidebar'
@@ -39,6 +39,20 @@ export default function AppShell({ children }: AppShellProps) {
     checkBreakpoint()
     window.addEventListener('resize', checkBreakpoint)
     return () => window.removeEventListener('resize', checkBreakpoint)
+  }, [])
+
+  // Dev affordance: toggle the column-grid overlay with ⌘/Ctrl+Shift+G to verify
+  // that recomposed page layouts align to the column system + page inset.
+  const [showGrid, setShowGrid] = useState(false)
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && (e.key === 'g' || e.key === 'G')) {
+        e.preventDefault()
+        setShowGrid((v) => !v)
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
   }, [])
 
   const isStandalone = STANDALONE_ROUTES.some(
@@ -86,7 +100,8 @@ export default function AppShell({ children }: AppShellProps) {
   // `feed` width. Pages may wrap a section in their own Region for a finer cap.
   const region = isPostDetailPage
     ? { bleed: true as const }
-    : { max: 'feed' as const, inset: false, className: 'lg:px-4' }
+    : { max: 'feed' as const, inset: false }
+  const regionClass = isPostDetailPage ? undefined : 'lg:px-4'
 
   return (
     <MessagingProvider>
@@ -111,7 +126,12 @@ export default function AppShell({ children }: AppShellProps) {
           </>
         }
       >
-        <Region {...region}>{children}</Region>
+        <div className="relative w-full">
+          {showGrid && <GridOverlay />}
+          <Region {...region} className={regionClass}>
+            {children}
+          </Region>
+        </div>
       </SableAppShell>
     </MessagingProvider>
   )

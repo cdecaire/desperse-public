@@ -27,6 +27,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Separator } from '@cdecaire/sable'
 import { getWalletOverview } from '@/server/functions/wallets'
 import { getResponsiveImageProps, resolveDecentralizedUri } from '@/lib/imageUrl'
 import { usePreferences } from '@/hooks/usePreferences'
@@ -489,11 +490,7 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
           {otherTokens.length > 0 && (
             <div className="space-y-2">
               {/* Separator */}
-              <div className="flex items-center gap-3 py-1">
-                <div className="flex-1 h-px bg-border" />
-                <p className="text-xs text-muted-foreground">Other Holdings</p>
-                <div className="flex-1 h-px bg-border" />
-              </div>
+              <Separator label="Other Holdings" />
               <p className="text-xs text-muted-foreground text-center -mt-1 mb-2">
                 Not usable in Desperse
               </p>

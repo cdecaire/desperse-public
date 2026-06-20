@@ -17,7 +17,13 @@ import {
  * `text-sm font-medium leading-none peer-disabled:*` classes.
  */
 
-const Label = React.forwardRef<HTMLLabelElement, React.ComponentProps<"label">>(
+// Widened (Sable 0.6.0) to forward Sable's paired `size` (xs | sm | md | lg) and
+// `hint` (dotted-underline tooltip affordance) on top of the native `<label>` API.
+// Backward-compatible: both are optional, so existing call sites are unaffected.
+type LabelProps = React.ComponentProps<"label"> &
+  Pick<SableLabelProps, "size" | "hint">
+
+const Label = React.forwardRef<HTMLLabelElement, LabelProps>(
   ({ className, ...props }, ref) => (
     <SableLabel
       ref={ref as SableLabelProps["ref"]}

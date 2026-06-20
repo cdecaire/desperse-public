@@ -41,6 +41,7 @@ import { usePreferences } from '@/hooks/usePreferences'
 import { usePostCollectors, useFollowMutation } from '@/hooks/useProfileQuery'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { toast } from '@/hooks/use-toast'
+import { Description, DescriptionItem, Entity, Note } from '@cdecaire/sable'
 
 const BASE_URL = "https://desperse.com"
 
@@ -222,20 +223,11 @@ function PostDetails({ post, editionSupply, collectCount, showHeading = true, ge
           <span className="text-label-lg text-foreground">Details</span>
         </div>
       )}
-      <div>
-        {rows.map((row, i) => (
-          <div
-            key={row.label}
-            className={cn(
-              'flex justify-between py-2.5',
-              i < rows.length - 1 && 'border-b border-border',
-            )}
-          >
-            <span className="text-body-sm text-muted-foreground">{row.label}</span>
-            <span className="text-label-lg text-foreground">{row.value}</span>
-          </div>
+      <Description cols="1">
+        {rows.map((row) => (
+          <DescriptionItem key={row.label} term={row.label} detail={row.value} />
         ))}
-      </div>
+      </Description>
     </div>
   )
 }
@@ -318,8 +310,9 @@ function CollectorItem({
       : null
 
   return (
-    <div className="flex items-center justify-between gap-3 px-4 py-2.5">
-      <div className="flex items-center gap-3 flex-1 min-w-0">
+    <Entity
+      className="px-4"
+      leading={
         <Link
           to="/profile/$slug"
           params={{ slug: collector.usernameSlug }}
@@ -335,52 +328,56 @@ function CollectorItem({
             <Icon name="user" variant="regular" className="text-sm text-muted-foreground" />
           )}
         </Link>
-        <div className="flex-1 min-w-0 leading-tight">
-          <Link
-            to="/profile/$slug"
-            params={{ slug: collector.usernameSlug }}
-            className="text-label-lg truncate block hover:underline"
-          >
-            {collector.displayName || collector.usernameSlug}
-          </Link>
-          {collector.collectedAt && txUrl ? (
-            <a
-              href={txUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs text-muted-foreground hover:text-foreground truncate inline-flex items-center gap-1"
-            >
-              Collected {formatCollectedDate(collector.collectedAt)} · View Tx
-              <Icon name="arrow-up-right-from-square" variant="regular" className="text-[9px]" />
-            </a>
-          ) : collector.collectedAt ? (
-            <p className="text-xs text-muted-foreground truncate">
-              Collected {formatCollectedDate(collector.collectedAt)}
-            </p>
-          ) : (
-            <p className="text-xs text-muted-foreground truncate">
-              @{collector.usernameSlug}
-            </p>
-          )}
-        </div>
-      </div>
-      {isAuthenticated && currentUserId && !isOwnProfile && (
-        <Button
-          variant={isFollowing ? 'outline' : 'default'}
-          className="h-8 w-[76px] px-3 text-xs"
-          onClick={handleFollowToggle}
-          disabled={followMutation.isPending}
+      }
+      title={
+        <Link
+          to="/profile/$slug"
+          params={{ slug: collector.usernameSlug }}
+          className="truncate block hover:underline"
         >
-          {followMutation.isPending ? (
-            <LoadingSpinner size="sm" />
-          ) : isFollowing ? (
-            'Unfollow'
-          ) : (
-            'Follow'
-          )}
-        </Button>
-      )}
-    </div>
+          {collector.displayName || collector.usernameSlug}
+        </Link>
+      }
+      subtitle={
+        collector.collectedAt && txUrl ? (
+          <a
+            href={txUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-muted-foreground hover:text-foreground truncate inline-flex items-center gap-1"
+          >
+            Collected {formatCollectedDate(collector.collectedAt)} · View Tx
+            <Icon name="arrow-up-right-from-square" variant="regular" className="text-[9px]" />
+          </a>
+        ) : collector.collectedAt ? (
+          <span className="text-xs text-muted-foreground truncate">
+            Collected {formatCollectedDate(collector.collectedAt)}
+          </span>
+        ) : (
+          <span className="text-xs text-muted-foreground truncate">
+            @{collector.usernameSlug}
+          </span>
+        )
+      }
+      action={
+        isAuthenticated && currentUserId && !isOwnProfile ? (
+          <Button
+            variant={isFollowing ? 'outline' : 'default'}
+            className="h-8 w-[76px] px-3 text-xs"
+            onClick={handleFollowToggle}
+            disabled={followMutation.isPending}
+          >
+            {followMutation.isPending ? (
+              <LoadingSpinner size="sm" />
+            ) : isFollowing ? (
+              'Unfollow'
+            ) : (
+              'Follow'
+            )}
+          </Button>
+        ) : undefined
+      }
+    />
   )
 }
 
@@ -682,11 +679,11 @@ function PostDetailPage() {
 
           {/* Arweave minting-paused banner */}
           {isMintingPaused && (
-            <div className="px-3 py-2 rounded-lg text-xs bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-300">
+            <Note variant="warning">
               {arweaveStatus === 'unfunded'
                 ? "This edition's permanent storage needs to be re-funded by the creator."
                 : "This edition is experiencing a temporary storage issue. Please try again later."}
-            </div>
+            </Note>
           )}
 
           {/* Static supply count when BuyButton is rendered elsewhere */}
@@ -962,12 +959,11 @@ function PostDetailPage() {
 
                   {/* Arweave storage issue banner */}
                   {isMintingPaused && (
-                    <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-800 dark:bg-amber-950/50 dark:text-amber-200">
-                      <Icon name="circle-info" variant="regular" className="mr-1.5 inline-block" />
+                    <Note variant="warning">
                       {arweaveStatus === 'unfunded'
                         ? "This edition's permanent storage needs to be re-funded by the creator. Minting is temporarily paused."
                         : "This edition is experiencing a temporary storage issue. Please try again later."}
-                    </div>
+                    </Note>
                   )}
 
                   {/* Action area: download if owned + has downloads, collect/buy if not owned */}
@@ -1115,12 +1111,11 @@ function PostDetailPage() {
                   <ActionButtons skipBuy onCommentClick={() => setMobileTab('comments')} />
 
                   {isMintingPaused && (
-                    <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-800 dark:bg-amber-950/50 dark:text-amber-200">
-                      <Icon name="circle-info" variant="regular" className="mr-1.5 inline-block" />
+                    <Note variant="warning">
                       {arweaveStatus === 'unfunded'
                         ? "This edition's permanent storage needs to be re-funded by the creator. Minting is temporarily paused."
                         : "This edition is experiencing a temporary storage issue. Please try again later."}
-                    </div>
+                    </Note>
                   )}
 
                   {/* Download if owned + has downloads, collect/buy if not owned */}

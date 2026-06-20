@@ -5,7 +5,7 @@
  */
 
 import { Link } from '@tanstack/react-router'
-import { Icon } from '@/components/ui/icon'
+import { UserAvatar } from '@/components/shared/UserAvatar'
 
 interface GradientAvatarProps {
   src?: string | null
@@ -65,19 +65,8 @@ export function GradientAvatar({
           padding: showGradient ? '1.5px' : '0',
         }}
       >
-        {/* Avatar image */}
-        <div className={`w-full h-full rounded-full overflow-hidden bg-muted flex items-center justify-center`}>
-          {src ? (
-            <img
-              src={src}
-              alt={alt}
-              className="w-full h-full object-cover"
-              loading="lazy"
-            />
-          ) : (
-            <Icon name="user" className="text-muted-foreground text-lg" />
-          )}
-        </div>
+        {/* Avatar image (Sable Avatar via shared UserAvatar) */}
+        <UserAvatar src={src} alt={alt} size="lg" className="w-full h-full" />
       </div>
     </div>
   )

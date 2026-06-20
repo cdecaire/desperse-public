@@ -7,6 +7,7 @@
  */
 
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Tooltip } from '@/components/ui/tooltip'
 import { Icon } from '@/components/ui/icon'
@@ -75,9 +76,9 @@ export function NftMetadataOptions({
 
             {/* NFT Symbol */}
             <div>
-              <label htmlFor="nft-symbol" className="text-sm text-foreground mb-2 block">
+              <Label htmlFor="nft-symbol" size="sm" className="mb-2 block">
                 Symbol
-              </label>
+              </Label>
               <div className="relative">
                 <Input
                   id="nft-symbol"
@@ -97,9 +98,9 @@ export function NftMetadataOptions({
             {/* Royalties */}
             <div className="space-y-2">
               <Tooltip content="Royalties for secondary sales (0-10%).">
-                <label className="text-sm text-foreground cursor-help border-b border-dotted border-muted-foreground/40">
+                <Label size="sm" className="cursor-help border-b border-dotted border-muted-foreground/40">
                   Royalties
-                </label>
+                </Label>
               </Tooltip>
               <div className="flex items-center gap-3">
                 <Input
@@ -139,9 +140,9 @@ export function NftMetadataOptions({
                     ? 'Metadata can be updated after creation'
                     : 'Metadata will be locked and cannot be changed after creation'
               }>
-                <label className="text-sm text-foreground cursor-help border-b border-dotted border-muted-foreground/40">
+                <Label size="sm" className="cursor-help border-b border-dotted border-muted-foreground/40">
                   Metadata Mutable
-                </label>
+                </Label>
               </Tooltip>
 
               {/* Locked message when minted */}

@@ -7,8 +7,10 @@
  * handled by the shared NftMetadataOptions component.
  */
 
+import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icon'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
@@ -18,7 +20,7 @@ import {
 } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { Tooltip } from '@/components/ui/tooltip'
-import { DateTimePicker } from '@/components/ui/date-time-picker'
+import { Badge, DateTimePicker, Description, DescriptionItem, Note } from '@cdecaire/sable'
 import { useState, useEffect, useMemo } from 'react'
 import { cn } from '@/lib/utils'
 
@@ -107,14 +109,21 @@ function formatLocalDateTime(date: Date): string {
 }
 
 /**
- * Get the minimum datetime-local value (now + 5 minutes, rounded to the minute).
+ * Earliest selectable start (now + 5 minutes, rounded to the minute).
  */
-function getMinDateTimeLocal(): string {
+function getMinDate(): Date {
 	const d = new Date(Date.now() + 5 * 60_000)
 	d.setSeconds(0, 0)
-	// datetime-local uses "YYYY-MM-DDTHH:mm"
+	return d
+}
+
+/**
+ * Serialize a Date back to the datetime-local contract string "YYYY-MM-DDTHH:mm"
+ * (local time) stored in MintWindowState.startTime.
+ */
+function toDateTimeLocal(date: Date): string {
 	const pad = (n: number) => String(n).padStart(2, '0')
-	return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
+	return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`
 }
 
 export function EditionOptions({
@@ -164,19 +173,16 @@ export function EditionOptions({
     <div className="space-y-4 p-4 bg-card border border-border rounded-xl shadow-md">
       {/* Pricing locked warning */}
       {isPricingDisabled && (
-        <div className="p-3 bg-muted rounded-lg">
-          <p className="text-sm text-muted-foreground">
-            <Icon name="lock" variant="regular" className="mr-2" />
-            Pricing and supply cannot be changed after an edition has been purchased.
-          </p>
-        </div>
+        <Note variant="neutral" icon="lock">
+          Pricing and supply cannot be changed after an edition has been purchased.
+        </Note>
       )}
       
       {/* Price & Currency */}
       <div>
-        <label htmlFor="edition-price" className="text-sm text-foreground mb-2 block">
+        <Label htmlFor="edition-price" className="mb-2 block">
           Price per edition <span className="text-destructive">*</span>
-        </label>
+        </Label>
         <div className="flex gap-2">
           <div className="relative flex-1 max-w-[200px]">
             <Input
@@ -229,9 +235,9 @@ export function EditionOptions({
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <Tooltip content="Maximum number of editions that can be sold. Leave open edition for unlimited.">
-            <label className="text-sm text-foreground cursor-help border-b border-dotted border-muted-foreground/40">
+            <Label className="cursor-help border-b border-dotted border-muted-foreground/40">
               {isUnlimited ? 'Open Edition' : 'Limited Supply'}
-            </label>
+            </Label>
           </Tooltip>
           <Switch
             checked={isUnlimited}
@@ -273,9 +279,9 @@ export function EditionOptions({
       {onProtectDownloadChange && (
         <div className="flex items-center justify-between">
           <Tooltip content="Require NFT ownership to download the original file">
-            <label className="text-sm text-foreground cursor-help border-b border-dotted border-muted-foreground/40">
+            <Label className="cursor-help border-b border-dotted border-muted-foreground/40">
               {protectDownload ? 'Protected Download' : 'Protect Download'}
-            </label>
+            </Label>
           </Tooltip>
           <Switch
             checked={protectDownload}
@@ -391,31 +397,33 @@ function MintWindowSection({
 			<div className="space-y-3">
 				<div className="flex items-center gap-2">
 					<Tooltip content="Mint window settings are locked after the first edition purchase.">
-						<label className="text-sm text-foreground cursor-help border-b border-dotted border-muted-foreground/40">
+						<Label className="cursor-help border-b border-dotted border-muted-foreground/40">
 							Timed Edition
-						</label>
+						</Label>
 					</Tooltip>
-					<span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
-						<Icon name="lock" variant="regular" className="mr-1" />
+					<Badge variant="muted" icon={<Icon name="lock" variant="regular" />}>
 						Locked
-					</span>
+					</Badge>
 				</div>
-				<div className="p-3 bg-muted rounded-lg text-sm space-y-1">
-					<div className="flex justify-between">
-						<span className="text-muted-foreground">Start:</span>
-						<span className="font-medium">{formatLocalDateTime(start)}</span>
-					</div>
-					<div className="flex justify-between">
-						<span className="text-muted-foreground">End:</span>
-						<span className="font-medium">{formatLocalDateTime(end)}</span>
-					</div>
-					<div className="flex justify-between">
-						<span className="text-muted-foreground">Status:</span>
-						<span className={cn("font-medium", isEnded ? "text-muted-foreground" : "text-green-600 dark:text-green-400")}>
-							{isEnded ? "Ended" : now >= start ? "Active" : "Scheduled"}
-						</span>
-					</div>
-				</div>
+				<Description cols="1">
+					<DescriptionItem
+						term="Start"
+						detail={<span className="font-medium">{formatLocalDateTime(start)}</span>}
+					/>
+					<DescriptionItem
+						term="End"
+						detail={<span className="font-medium">{formatLocalDateTime(end)}</span>}
+					/>
+					<DescriptionItem
+						term="Status"
+						tone={isEnded ? "muted" : "success"}
+						detail={
+							<span className="font-medium">
+								{isEnded ? "Ended" : now >= start ? "Active" : "Scheduled"}
+							</span>
+						}
+					/>
+				</Description>
 			</div>
 		)
 	}
@@ -425,9 +433,9 @@ function MintWindowSection({
 			{/* Toggle */}
 			<div className="flex items-center justify-between">
 				<Tooltip content="Set a time window during which collectors can purchase this edition.">
-					<label className="text-sm text-foreground cursor-help border-b border-dotted border-muted-foreground/40">
+					<Label className="cursor-help border-b border-dotted border-muted-foreground/40">
 						Timed Edition
-					</label>
+					</Label>
 				</Tooltip>
 				<Switch
 					checked={mintWindow.enabled}
@@ -445,9 +453,9 @@ function MintWindowSection({
 					<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
 						{/* Launch Type */}
 						<div className="space-y-1.5">
-							<label className="text-sm text-foreground">
+							<Label>
 								Launch type
-							</label>
+							</Label>
 							<Select
 								value={mintWindow.startMode}
 								onValueChange={(value) =>
@@ -472,9 +480,9 @@ function MintWindowSection({
 
 						{/* Set Duration */}
 						<div className="space-y-1.5">
-							<label className="text-sm text-foreground">
+							<Label>
 								Set duration
-							</label>
+							</Label>
 							{isCustomMode ? (
 								<div className="flex items-center gap-1.5">
 									<Input
@@ -508,8 +516,10 @@ function MintWindowSection({
 									<span className="text-xs text-muted-foreground shrink-0">
 										hrs
 									</span>
-									<button
+									<Button
 										type="button"
+										variant="ghost"
+										size="icon"
 										onClick={() => {
 											setIsCustomMode(false)
 											setCustomDuration("")
@@ -518,11 +528,11 @@ function MintWindowSection({
 												durationHours: null,
 											})
 										}}
-										className="shrink-0 size-8 inline-flex items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+										className="shrink-0 size-8 text-muted-foreground hover:text-foreground"
 										aria-label="Back to presets"
 									>
 										<Icon name="xmark" variant="regular" className="text-sm" />
-									</button>
+									</Button>
 								</div>
 							) : (
 								<Select
@@ -570,19 +580,19 @@ function MintWindowSection({
 					<div className="border rounded-xl p-4">
 						<div className="flex flex-col gap-3 sm:grid sm:grid-cols-[1fr_auto_1fr] sm:gap-x-4 sm:gap-y-1.5">
 							{/* Labels — hidden on mobile, shown in grid row on sm+ */}
-							<label className="hidden sm:block text-sm text-foreground">
+							<Label className="hidden sm:block">
 								Start schedule
-							</label>
+							</Label>
 							<div className="hidden sm:block" />
-							<label className="hidden sm:block text-sm text-foreground">
+							<Label className="hidden sm:block">
 								Calculated end result
-							</label>
+							</Label>
 
 							{/* Start */}
 							<div>
-								<label className="sm:hidden text-sm text-foreground mb-1.5 block">
+								<Label className="sm:hidden mb-1.5 block">
 									Start schedule
-								</label>
+								</Label>
 								{mintWindow.startMode === "now" ? (
 									<div className="bg-muted rounded-xl px-4 py-3">
 										<p className="text-sm font-medium">On publish</p>
@@ -594,12 +604,12 @@ function MintWindowSection({
 									</div>
 								) : (
 									<DateTimePicker
-										value={mintWindow.startTime}
-										min={getMinDateTimeLocal()}
-										onChange={(value) =>
+										value={mintWindow.startTime ? new Date(mintWindow.startTime) : undefined}
+										minDate={getMinDate()}
+										onChange={(date) =>
 											onChange({
 												...mintWindow,
-												startTime: value,
+												startTime: date ? toDateTimeLocal(date) : '',
 											})
 										}
 										disabled={isDisabled}
@@ -614,9 +624,9 @@ function MintWindowSection({
 
 							{/* End */}
 							<div>
-								<label className="sm:hidden text-sm text-foreground mb-1.5 block">
+								<Label className="sm:hidden mb-1.5 block">
 									Calculated end result
-								</label>
+								</Label>
 								{preview ? (
 									<div className={cn(
 										"rounded-xl px-4 py-3 text-center",

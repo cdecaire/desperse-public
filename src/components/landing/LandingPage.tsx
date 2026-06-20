@@ -790,8 +790,8 @@ function StickyCards() {
                 <div className="px-6 pt-6 pb-4 border-b border-border/50">
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-xs font-mono text-muted-foreground">MINT CONFIRMED</span>
-                    <span className="text-xs font-mono text-emerald-500 flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block mint-pulse" />
+                    <span className="text-xs font-mono text-success flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-success inline-block mint-pulse" />
                       Success
                     </span>
                   </div>
@@ -955,7 +955,7 @@ function StickyCards() {
               ].map((row, i, arr) => (
                 <div key={i} className={`grid grid-cols-2 ${i < arr.length - 1 ? 'border-b border-border' : ''}`}>
                   <div className="px-4 py-4 border-r border-border flex items-center gap-2">
-                    <span className="text-red-500 text-lg">&times;</span>
+                    <span className="text-destructive text-lg">&times;</span>
                     <span className="text-sm text-zinc-600 dark:text-zinc-400">{row.bad}</span>
                   </div>
                   <div className="px-4 py-4">

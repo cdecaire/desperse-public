@@ -5,15 +5,16 @@
 
 import { useState, useCallback, useEffect } from 'react'
 import { Link } from '@tanstack/react-router'
+import { Entity } from '@cdecaire/sable'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
+import { EmptyState } from '@/components/shared/EmptyState'
 import { useGetOrCreateThread, type Thread } from '@/hooks/useMessages'
 import { useDmEligibility } from '@/hooks/useDmEligibility'
 import { useMentionSearch, type MentionUser } from '@/hooks/useMentionSearch'
 import { UnlockMessagingCard } from './UnlockMessagingCard'
 import { useDebounce } from '@/hooks/useDebounce'
-import { cn } from '@/lib/utils'
 import { Icon } from '@/components/ui/icon'
 import { UserAvatar } from '@/components/shared/UserAvatar'
 import type { PendingMessageUser } from './MessagingContext'
@@ -200,41 +201,32 @@ export function NewMessageView({ onBack, onClose, onThreadCreated, initialUser }
             {searchResults && searchResults.length > 0 && (
               <div className="px-2">
                 {searchResults.map((user) => (
-                  <button
+                  <Entity
                     key={user.id}
-                    type="button"
-                    onClick={() => handleSelectUser(user)}
-                    className={cn(
-                      'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg',
-                      'hover:bg-muted/50 transition-colors text-left'
-                    )}
-                  >
-                    <UserAvatar src={user.avatarUrl} alt={user.displayName || user.usernameSlug} size="sm" className="w-9 h-9" />
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium truncate text-sm">
-                        {user.displayName || user.usernameSlug}
-                      </p>
-                      <p className="text-xs text-muted-foreground truncate">
-                        @{user.usernameSlug}
-                      </p>
-                    </div>
-                  </button>
+                    interactive
+                    onSelect={() => handleSelectUser(user)}
+                    leading={
+                      <UserAvatar src={user.avatarUrl} alt={user.displayName || user.usernameSlug} size="sm" className="w-9 h-9" />
+                    }
+                    title={user.displayName || user.usernameSlug}
+                    subtitle={`@${user.usernameSlug}`}
+                  />
                 ))}
               </div>
             )}
 
             {debouncedQuery.length >= 2 && !isSearching && searchResults?.length === 0 && (
-              <div className="text-center py-8 text-muted-foreground">
-                <Icon name="user-slash" variant="regular" className="text-xl mb-2" />
-                <p className="text-sm">No users found</p>
-              </div>
+              <EmptyState
+                icon={<Icon name="user-slash" variant="regular" />}
+                title="No users found"
+              />
             )}
 
             {debouncedQuery.length < 2 && (
-              <div className="text-center py-8 text-muted-foreground">
-                <Icon name="search" variant="regular" className="text-xl mb-2" />
-                <p className="text-sm">Search for a user to message</p>
-              </div>
+              <EmptyState
+                icon={<Icon name="search" variant="regular" />}
+                title="Search for a user to message"
+              />
             )}
           </div>
         </div>

@@ -1,5 +1,6 @@
 import { Link, useLocation } from '@tanstack/react-router'
 import { Icon } from '@/components/ui/icon'
+import { NotificationBadge } from '@/components/ui/notification-badge'
 import { useNotificationCounters } from '@/hooks/useNotificationCounters'
 
 type AdminNavVariant = 'desktop' | 'mobile'
@@ -97,9 +98,7 @@ export function AdminNav({ variant = 'desktop' }: AdminNavProps) {
                   </div>
                 </div>
                 {badgeCount > 0 && (
-                  <span className="flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-xs font-semibold bg-destructive text-destructive-foreground">
-                    {badgeCount > 99 ? '99+' : badgeCount}
-                  </span>
+                  <NotificationBadge variant="destructive" count={badgeCount} />
                 )}
                 <Icon name="chevron-right" variant="regular" className="text-muted-foreground text-sm" />
               </Link>

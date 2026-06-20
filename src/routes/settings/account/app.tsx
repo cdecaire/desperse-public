@@ -6,6 +6,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { Icon } from '@/components/ui/icon'
+import { Choicebox, ChoiceboxGroup } from '@cdecaire/sable'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { PageHeader } from '@/components/shared/PageHeader'
 
@@ -125,22 +126,20 @@ function AppSettingsPage() {
             Sign in to set explorer preference
           </p>
         ) : (
-          <div className="grid grid-cols-2 gap-2">
+          <ChoiceboxGroup
+            value={preferences.explorer}
+            onValueChange={(value) => setExplorer(value as ExplorerOption)}
+            className="grid-cols-2"
+          >
             {(Object.keys(explorerLabels) as ExplorerOption[]).map((key) => (
-              <button
+              <Choicebox
                 key={key}
-                onClick={() => setExplorer(key)}
-                className={`flex flex-col items-start p-3 rounded-lg border transition-colors ${
-                  preferences.explorer === key
-                    ? 'border-primary bg-primary/5'
-                    : 'border-input hover:border-primary/50'
-                }`}
-              >
-                <span className="text-label-lg">{explorerLabels[key].name}</span>
-                <span className="text-caption text-muted-foreground">{explorerLabels[key].description}</span>
-              </button>
+                value={key}
+                title={explorerLabels[key].name}
+                description={explorerLabels[key].description}
+              />
             ))}
-          </div>
+          </ChoiceboxGroup>
         )}
       </div>
 

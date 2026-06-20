@@ -8,6 +8,7 @@ import { useBetaFeedbackList } from '@/hooks/useFeedback'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { Icon } from '@/components/ui/icon'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
 import { formatRelativeTime } from '@/lib/dates'
@@ -66,36 +67,16 @@ function FeedbackListPage() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-6 mb-4 border-b border-border">
-          <button
-            onClick={() => setActiveTab('new')}
-            className={cn(
-              'py-3 text-label-lg transition-colors relative',
-              activeTab === 'new'
-                ? 'text-foreground'
-                : 'text-muted-foreground hover:text-foreground/80'
-            )}
-          >
-            New
-            {activeTab === 'new' && (
-              <div className="absolute bottom-0 left-0 w-full h-0.5 bg-foreground rounded-full" />
-            )}
-          </button>
-          <button
-            onClick={() => setActiveTab('reviewed')}
-            className={cn(
-              'py-3 text-label-lg transition-colors relative',
-              activeTab === 'reviewed'
-                ? 'text-foreground'
-                : 'text-muted-foreground hover:text-foreground/80'
-            )}
-          >
-            Reviewed
-            {activeTab === 'reviewed' && (
-              <div className="absolute bottom-0 left-0 w-full h-0.5 bg-foreground rounded-full" />
-            )}
-          </button>
-        </div>
+        <Tabs
+          value={activeTab}
+          onValueChange={(value) => setActiveTab(value as 'new' | 'reviewed')}
+          className="mb-4"
+        >
+          <TabsList>
+            <TabsTrigger value="new">New</TabsTrigger>
+            <TabsTrigger value="reviewed">Reviewed</TabsTrigger>
+          </TabsList>
+        </Tabs>
 
         {(isLoading || isPending) && (
           <div className="flex items-center justify-center py-12">

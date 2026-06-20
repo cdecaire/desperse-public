@@ -1,8 +1,10 @@
 import { useState, useCallback, useRef, useEffect } from "react"
 import { createFileRoute } from "@tanstack/react-router"
+import { Progress, Note, Description, DescriptionItem } from "@cdecaire/sable"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Icon } from "@/components/ui/icon"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner"
 import { PageHeader } from "@/components/shared/PageHeader"
 import { useArweaveBalance } from "@/hooks/useArweaveBalance"
@@ -215,7 +217,7 @@ function StorageCreditsPage() {
 						<div className="flex flex-col items-center text-center mb-5">
 							<div className={`w-12 h-12 rounded-full flex items-center justify-center mb-3 ${
 								isAuthorized
-									? "bg-green-100 dark:bg-green-900/30"
+									? "bg-success/10"
 									: "bg-muted"
 							}`}>
 								<Icon
@@ -223,7 +225,7 @@ function StorageCreditsPage() {
 									variant="solid"
 									className={`text-xl ${
 										isAuthorized
-											? "text-green-600 dark:text-green-400"
+											? "text-success"
 											: "text-muted-foreground"
 									}`}
 								/>
@@ -281,24 +283,24 @@ function StorageCreditsPage() {
 						</div>
 
 						{/* Side-by-side balances */}
-						<div className="grid grid-cols-2 divide-x divide-border rounded-lg border border-border overflow-hidden">
-							<div className="px-4 py-3 text-center">
-								<span className="text-label-xs text-muted-foreground block mb-1">
-									Service Allowance
-								</span>
-								<span className="text-title-lg">
-									{formatCredits(sharedCredits?.sharedWinc ?? "0")}
-								</span>
-							</div>
-							<div className="px-4 py-3 text-center">
-								<span className="text-label-xs text-muted-foreground block mb-1">
-									Wallet Balance
-								</span>
-								<span className="text-title-lg">
-									{formatCredits(balance?.winc ?? "0")}
-								</span>
-							</div>
-						</div>
+						<Description cols="2">
+							<DescriptionItem
+								term="Service Allowance"
+								detail={
+									<span className="text-title-lg">
+										{formatCredits(sharedCredits?.sharedWinc ?? "0")}
+									</span>
+								}
+							/>
+							<DescriptionItem
+								term="Wallet Balance"
+								detail={
+									<span className="text-title-lg">
+										{formatCredits(balance?.winc ?? "0")}
+									</span>
+								}
+							/>
+						</Description>
 
 						{!isAuthorized && BigInt(balance?.winc ?? "0") === BigInt(0) && (
 							<p className="text-xs text-muted-foreground text-center mt-3">
@@ -318,23 +320,26 @@ function StorageCreditsPage() {
 
 				<div className="space-y-4">
 					{/* Preset amount chips */}
-					<div className="grid grid-cols-4 gap-2">
+					<ToggleGroup
+						value={[topUpAmount]}
+						onValueChange={(value) => {
+							// Always-one-selected presets: ignore a deselect-to-empty.
+							if (value[0]) setTopUpAmount(value[0])
+						}}
+						spacing={1}
+						className="grid grid-cols-4 gap-2"
+					>
 						{TOP_UP_PRESETS.map((amount) => (
-							<button
+							<ToggleGroupItem
 								key={amount}
-								type="button"
-								onClick={() => setTopUpAmount(String(amount))}
+								value={String(amount)}
 								disabled={isAnyPending}
-								className={`py-2 px-3 rounded-lg border text-label-lg transition-colors ${
-									topUpAmount === String(amount)
-										? "border-primary bg-primary text-primary-foreground"
-										: "border-input hover:border-primary/50 text-foreground"
-								} disabled:opacity-50 disabled:cursor-not-allowed`}
+								className="w-full py-2 px-3 rounded-lg border text-label-lg transition-colors border-input hover:border-primary/50 text-foreground data-[pressed]:border-primary data-[pressed]:bg-primary data-[pressed]:text-primary-foreground disabled:opacity-50 disabled:cursor-not-allowed"
 							>
 								{amount}
-							</button>
+							</ToggleGroupItem>
 						))}
-					</div>
+					</ToggleGroup>
 
 					{/* Custom amount input */}
 					<div className="relative">
@@ -355,12 +360,9 @@ function StorageCreditsPage() {
 					</div>
 
 					{/* Non-refundable warning */}
-					<div className="flex items-start gap-1.5 p-3 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50">
-						<Icon name="circle-info" variant="solid" className="text-amber-600 dark:text-amber-400 mt-0.5 shrink-0" />
-						<p className="text-xs text-amber-800 dark:text-amber-300">
-							Credits are non-refundable and cannot be converted back to SOL.
-						</p>
-					</div>
+					<Note variant="warning">
+						Credits are non-refundable and cannot be converted back to SOL.
+					</Note>
 
 					{/* Purchase button */}
 					<Button
@@ -383,16 +385,10 @@ function StorageCreditsPage() {
 
 			{/* Success / error messages */}
 			{actionSuccess && (
-				<div className="flex items-start gap-1.5 p-3 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800/50">
-					<Icon name="circle-check" variant="solid" className="text-green-600 dark:text-green-400 mt-0.5 shrink-0" />
-					<p className="text-xs text-green-800 dark:text-green-300">{actionSuccess}</p>
-				</div>
+				<Note variant="success">{actionSuccess}</Note>
 			)}
 			{actionError && (
-				<div className="flex items-start gap-1.5 p-3 rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/50">
-					<Icon name="circle-exclamation" variant="solid" className="text-red-600 dark:text-red-400 mt-0.5 shrink-0" />
-					<p className="text-xs text-red-800 dark:text-red-300">{actionError}</p>
-				</div>
+				<Note variant="error">{actionError}</Note>
 			)}
 
 			{/* === Activity === */}
@@ -444,18 +440,13 @@ function ApprovalRow({ approval }: { approval: CreditApproval }) {
 				</div>
 				<div>
 					<span className="text-muted-foreground block">Remaining</span>
-					<span className={`font-medium ${remaining > BigInt(0) ? "text-green-600 dark:text-green-400" : "text-muted-foreground"}`}>
+					<span className={`font-medium ${remaining > BigInt(0) ? "text-success" : "text-muted-foreground"}`}>
 						{formatCredits(remaining.toString())}
 					</span>
 				</div>
 			</div>
 			{/* Usage bar */}
-			<div className="h-1.5 bg-muted rounded-full overflow-hidden">
-				<div
-					className="h-full bg-primary rounded-full transition-all"
-					style={{ width: `${Math.min(usagePercent, 100)}%` }}
-				/>
-			</div>
+			<Progress value={Math.min(usagePercent, 100)} aria-label="Storage usage" />
 		</div>
 	)
 }

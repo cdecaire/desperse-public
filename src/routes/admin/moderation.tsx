@@ -28,6 +28,8 @@ import {
 } from '@/components/ui/select'
 import { ModerationRowMenu } from '@/components/admin/ModerationRowMenu'
 import { Badge } from '@/components/ui/badge'
+import { Entity, StatusBadge } from '@cdecaire/sable'
+import { UserAvatar } from '@/components/shared/UserAvatar'
 import { Icon } from '@/components/ui/icon'
 import { detectMediaType } from '@/lib/media'
 import { formatRelativeTime } from '@/lib/dates'
@@ -327,29 +329,11 @@ function ModerationListPage() {
 
                       {/* User */}
                       <TableCell className="whitespace-nowrap">
-                        <div className="flex items-center gap-2">
-                          <div className="w-6 h-6 rounded-full overflow-hidden bg-muted shrink-0">
-                            {report.creator.avatarUrl ? (
-                              <img
-                                src={report.creator.avatarUrl}
-                                alt=""
-                                className="w-full h-full object-cover"
-                              />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center bg-muted">
-                                <Icon name="user" variant="regular" className="text-[10px] text-muted-foreground" />
-                              </div>
-                            )}
-                          </div>
-                          <div>
-                            <div className="text-label-lg">
-                              {report.creator.displayName || `@${report.creator.usernameSlug}`}
-                            </div>
-                            <div className="text-caption text-muted-foreground">
-                              @{report.creator.usernameSlug}
-                            </div>
-                          </div>
-                        </div>
+                        <Entity
+                          leading={<UserAvatar src={report.creator.avatarUrl} size="xs" />}
+                          title={report.creator.displayName || `@${report.creator.usernameSlug}`}
+                          subtitle={`@${report.creator.usernameSlug}`}
+                        />
                       </TableCell>
 
                       {/* Content */}
@@ -392,15 +376,15 @@ function ModerationListPage() {
                         <div className="flex flex-col gap-1">
                           <div className="flex gap-1">
                             {report.hasOpenReports ? (
-                              <Badge variant="warning" size="sm">Open</Badge>
+                              <StatusBadge status="warning">Open</StatusBadge>
                             ) : (
-                              <Badge variant="success" size="sm">Resolved</Badge>
+                              <StatusBadge status="success">Resolved</StatusBadge>
                             )}
                             {report.isHidden && (
-                              <Badge variant="destructive" size="sm">Hidden</Badge>
+                              <StatusBadge status="hidden">Hidden</StatusBadge>
                             )}
                             {report.isDeleted && (
-                              <Badge variant="destructive" size="sm">Deleted</Badge>
+                              <StatusBadge status="deleted">Deleted</StatusBadge>
                             )}
                           </div>
                           {/* Mint status for posts */}

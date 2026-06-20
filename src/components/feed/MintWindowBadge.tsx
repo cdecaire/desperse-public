@@ -81,8 +81,8 @@ export function MintWindowBadge({
 	// --- Compact variant (PostCard header) ---
 	const badgeStyles: Record<string, string> = {
 		scheduled: "text-muted-foreground",
-		active: "text-emerald-500",
-		ending_soon: "text-amber-500",
+		active: "text-success",
+		ending_soon: "text-tone-warning",
 		ended: "text-muted-foreground/70",
 	}
 
@@ -131,9 +131,9 @@ function ProminentBadge({
 		scheduled:
 			"bg-muted/50 border-border text-muted-foreground",
 		active:
-			"bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400",
+			"bg-success/10 border-success/20 text-success",
 		ending_soon:
-			"bg-amber-500/10 border-amber-500/20 text-amber-600 dark:text-amber-400",
+			"bg-tone-warning/10 border-tone-warning/20 text-tone-warning",
 		ended:
 			"bg-muted/30 border-border text-muted-foreground",
 	}

@@ -5,6 +5,7 @@
 
 import { Link } from '@tanstack/react-router'
 import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icon'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import {
@@ -45,15 +46,14 @@ export function ConversationMenu({
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
-        <button
-          className={cn(
-            "flex items-center justify-center w-8 h-8 rounded-md transition-colors text-muted-foreground hover:text-foreground hover:bg-accent",
-            className
-          )}
+        <Button
+          variant="ghost"
+          size="icon"
+          className={cn("text-muted-foreground hover:text-foreground", className)}
           aria-label="Conversation options"
         >
           <Icon name="ellipsis-vertical" className="text-sm" />
-        </button>
+        </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
         {/* Go to profile */}

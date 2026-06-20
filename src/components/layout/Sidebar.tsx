@@ -1,4 +1,11 @@
 import { Link, useLocation } from '@tanstack/react-router'
+import {
+  Sidebar as SableSidebar,
+  SidebarHeader,
+  SidebarNav,
+  SidebarFooter,
+  SidebarItem,
+} from '@cdecaire/sable'
 import MoreMenu from './MoreMenu'
 import Wallets from './Wallets'
 import { Logo } from '../shared/Logo'
@@ -12,7 +19,7 @@ import { NotificationBadge } from '../ui/notification-badge'
 // Skeleton for auth button while Privy initializes
 function AuthButtonSkeleton() {
   return (
-    <div className="flex items-center gap-3 px-3 py-2.5 mx-3 w-[calc(100%-1.5rem)]">
+    <div className="flex items-center gap-3 px-3 py-2.5 w-full">
       <div className="w-6 h-6 rounded-full bg-muted animate-pulse" />
       <div className="h-4 w-24 rounded bg-muted animate-pulse" />
     </div>
@@ -29,221 +36,137 @@ function NavItemSkeleton() {
   )
 }
 
-type NavItem = {
-  path: string
-  label: string
-  icon: string
-  disabled: boolean
-}
+type NavItem = { path: string; label: string; icon: string }
 
 export default function Sidebar() {
   const location = useLocation()
   const { avatarUrl: authAvatarUrl, isAuthenticated, isReady, login } = useAuth()
   const { user: currentUser } = useCurrentUser()
   const profileAvatar = currentUser?.avatarUrl || authAvatarUrl
-
-  // Check if user is moderator/admin
   const canModerate = currentUser?.role === 'moderator' || currentUser?.role === 'admin'
-  
-  // Get notification counters (includes unreviewed reports count, new feedback, and unread notifications)
+
   const { data: notificationCounters } = useNotificationCounters()
   const adminBadgeCount = (notificationCounters?.unreviewedReportsCount ?? 0) + (notificationCounters?.newFeedbackCount ?? 0)
   const unreadNotificationsCount = notificationCounters?.unreadNotificationsCount
 
-  // Icon names without style prefix - style is applied based on active state
   const profilePath = currentUser?.usernameSlug ? `/profile/${currentUser.usernameSlug}` : '/profile'
 
-  // Base nav items (always shown)
   const baseNavItems: NavItem[] = [
-    {
-      path: '/',
-      label: 'Home',
-      icon: 'fa-house',
-      disabled: false,
-    },
-    {
-      path: '/explore',
-      label: 'Explore',
-      icon: 'fa-magnifying-glass',
-      disabled: false,
-    },
-    {
-      path: '/create',
-      label: 'Create',
-      icon: 'fa-plus',
-      disabled: false,
-    },
+    { path: '/', label: 'Home', icon: 'fa-house' },
+    { path: '/explore', label: 'Explore', icon: 'fa-magnifying-glass' },
+    { path: '/create', label: 'Create', icon: 'fa-plus' },
   ]
-
-  // Auth-dependent nav items (only shown when authenticated)
   const authNavItems: NavItem[] = isAuthenticated
     ? [
-        {
-          path: '/notifications',
-          label: 'Notifications',
-          icon: 'fa-bell',
-          disabled: false,
-        },
-        {
-          path: profilePath,
-          label: 'Profile',
-          icon: 'fa-user',
-          disabled: false,
-        },
-        ...(canModerate
-          ? [
-              {
-                path: '/admin',
-                label: 'Admin',
-                icon: 'fa-shield-halved',
-                disabled: false,
-              },
-            ]
-          : []),
+        { path: '/notifications', label: 'Notifications', icon: 'fa-bell' },
+        { path: profilePath, label: 'Profile', icon: 'fa-user' },
+        ...(canModerate ? [{ path: '/admin', label: 'Admin', icon: 'fa-shield-halved' }] : []),
       ]
     : []
-
   const navItems = [...baseNavItems, ...authNavItems]
-
-  // Show skeleton for Profile when auth is loading
-  const showProfileSkeleton = !isReady
 
   const renderIcon = (item: NavItem, isActive: boolean) => {
     const isProfile = item.path.startsWith('/profile')
-    const sizeClasses = 'w-6 h-6'
-
     if (isProfile && profileAvatar) {
       return (
-        <span
-          className={`${sizeClasses} rounded-full overflow-hidden bg-muted/60 flex items-center justify-center`}
-        >
-          <img src={profileAvatar} alt={currentUser?.displayName ?? "Your profile"} className="w-full h-full object-cover" loading="lazy" />
+        <span className="w-6 h-6 rounded-full overflow-hidden bg-muted/60 flex items-center justify-center">
+          <img src={profileAvatar} alt={currentUser?.displayName ?? 'Your profile'} className="w-full h-full object-cover" loading="lazy" />
         </span>
       )
     }
-
-    return (
-      <span className={`${sizeClasses} grid place-items-center`}>
-        <Icon name={item.icon} variant={isActive ? "solid" : "regular"} className="text-xl" />
-      </span>
-    )
+    // Notifications carries a corner dot directly on the icon (distinct from the
+    // admin row-end count badge).
+    if (item.path === '/notifications') {
+      return (
+        <span className="relative grid place-items-center">
+          <Icon name={item.icon} variant={isActive ? 'solid' : 'regular'} className="text-xl" />
+          {unreadNotificationsCount !== undefined && unreadNotificationsCount > 0 && (
+            <NotificationBadge variant="destructive" size="dot" className="absolute -top-0.5 -right-0.5" />
+          )}
+        </span>
+      )
+    }
+    return <Icon name={item.icon} variant={isActive ? 'solid' : 'regular'} className="text-xl" />
   }
 
   return (
-    <aside className="hidden lg:flex lg:flex-col lg:fixed lg:inset-y-0 lg:left-0 lg:w-64 lg:border-r lg:bg-background lg:z-30">
-      <div className="flex flex-col h-full">
-        {/* Logo */}
-        <div className="flex items-center h-16 px-3">
-          <Link
-            to="/"
-            className="flex items-center gap-3 px-3 hover:bg-transparent!"
-            onClick={(e) => {
-              // If already on home page, scroll to top and refresh
-              if (location.pathname === '/') {
-                e.preventDefault()
-                triggerFeedRefresh()
-              }
-            }}
-          >
-            <span className="w-6 h-6 grid place-items-center ml-0.5">
-              <Logo
-                size={15}
-                className="text-foreground"
-              />
-            </span>
-            <span className="text-xl font-extrabold -ml-0.5">Desperse</span>
-          </Link>
-        </div>
-
-        {/* Navigation */}
-        <nav className="flex-1 px-3 py-4 space-y-1">
-          {navItems.map((item) => {
-            const isActive =
-              item.path === '/'
-                ? location.pathname === item.path
-                : location.pathname === item.path || location.pathname.startsWith(`${item.path}/`)
-            const isDisabled = item.disabled
-
-            if (isDisabled) {
-              return (
-                <button
-                  key={item.path}
-                  disabled
-                  className="flex items-center gap-3 px-3 py-2.5 w-full text-left rounded-lg text-foreground opacity-50 cursor-not-allowed transition-colors"
-                  aria-label={`${item.label} (coming soon)`}
-                >
-                  {renderIcon(item, false)}
-                  <span className="text-sm font-medium leading-none pt-1">{item.label}</span>
-                </button>
-              )
+    <SableSidebar>
+      <SidebarHeader>
+        <Link
+          to="/"
+          className="flex items-center gap-3 px-3"
+          onClick={(e) => {
+            if (location.pathname === '/') {
+              e.preventDefault()
+              triggerFeedRefresh()
             }
+          }}
+        >
+          <span className="w-6 h-6 grid place-items-center ml-0.5">
+            <Logo size={15} className="text-foreground" />
+          </span>
+          <span className="text-xl font-extrabold -ml-0.5">Desperse</span>
+        </Link>
+      </SidebarHeader>
 
-            return (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={`flex items-center gap-3 px-3 py-2.5 w-full text-left rounded-lg hover-fade text-foreground hover:bg-accent hover:text-accent-foreground ${
-                  isActive ? 'font-semibold' : 'font-medium'
-                }`}
-                aria-label={item.label}
-                onClick={(e) => {
-                  // If clicking Home while already on home page, scroll to top and refresh
-                  if (item.path === '/' && location.pathname === '/') {
-                    e.preventDefault()
-                    triggerFeedRefresh()
-                    return
-                  }
-                  // If clicking Explore while already on explore page, scroll to top
-                  if (item.path === '/explore' && location.pathname === '/explore') {
-                    e.preventDefault()
-                    smoothScrollTo()
-                    return
-                  }
-                  if (!isAuthenticated && item.path === '/create') {
-                    e.preventDefault()
-                    login()
-                  }
-                }}
-              >
-                <span className="relative">
-                  {renderIcon(item, isActive)}
-                  {item.path === '/notifications' && unreadNotificationsCount !== undefined && unreadNotificationsCount > 0 && (
-                    <NotificationBadge variant="destructive" size="dot" className="absolute -top-0.5 -right-0.5" />
-                  )}
-                </span>
-                <span className="text-sm leading-none">{item.label}</span>
-                {item.path === '/admin' && adminBadgeCount > 0 && (
-                  <NotificationBadge variant="destructive" count={adminBadgeCount} className="ml-auto" />
-                )}
-              </Link>
-            )
-          })}
-          {/* Show skeleton for Profile link while auth is loading */}
-          {showProfileSkeleton && <NavItemSkeleton />}
-        </nav>
+      <SidebarNav>
+        {navItems.map((item) => {
+          const isActive =
+            item.path === '/'
+              ? location.pathname === item.path
+              : location.pathname === item.path || location.pathname.startsWith(`${item.path}/`)
+          return (
+            <SidebarItem
+              key={item.path}
+              label={item.label}
+              active={isActive}
+              icon={renderIcon(item, isActive)}
+              badge={
+                item.path === '/admin' && adminBadgeCount > 0 ? (
+                  <NotificationBadge variant="destructive" count={adminBadgeCount} />
+                ) : undefined
+              }
+              render={
+                <Link
+                  to={item.path}
+                  onClick={(e) => {
+                    if (item.path === '/' && location.pathname === '/') {
+                      e.preventDefault()
+                      triggerFeedRefresh()
+                      return
+                    }
+                    if (item.path === '/explore' && location.pathname === '/explore') {
+                      e.preventDefault()
+                      smoothScrollTo()
+                      return
+                    }
+                    if (!isAuthenticated && item.path === '/create') {
+                      e.preventDefault()
+                      login()
+                    }
+                  }}
+                />
+              }
+            />
+          )
+        })}
+        {!isReady && <NavItemSkeleton />}
+      </SidebarNav>
 
-        {/* Wallets, Settings and Login - anchored to bottom */}
-        <div className="py-4 border-t border-border/50 space-y-1">
-          {!isReady ? (
-            <AuthButtonSkeleton />
-          ) : isAuthenticated ? (
-            <Wallets />
-          ) : (
-            <button
-              onClick={() => login()}
-              className="flex items-center gap-3 px-3 py-2.5 mx-3 w-[calc(100%-1.5rem)] text-left rounded-lg hover-fade text-foreground hover:bg-accent hover:text-accent-foreground"
-              aria-label="Log in or Sign up"
-            >
-              <span className="w-6 h-6 grid place-items-center">
-                <Icon name="right-to-bracket" variant="regular" className="text-xl" />
-              </span>
-              <span className="text-sm font-medium leading-none">Log in or Sign up</span>
-            </button>
-          )}
-          <MoreMenu />
-        </div>
-      </div>
-    </aside>
+      <SidebarFooter>
+        {!isReady ? (
+          <AuthButtonSkeleton />
+        ) : isAuthenticated ? (
+          <Wallets />
+        ) : (
+          <SidebarItem
+            label="Log in or Sign up"
+            icon={<Icon name="right-to-bracket" variant="regular" className="text-xl" />}
+            onClick={() => login()}
+          />
+        )}
+        <MoreMenu />
+      </SidebarFooter>
+    </SableSidebar>
   )
 }
-

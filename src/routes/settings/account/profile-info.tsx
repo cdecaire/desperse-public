@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { Row, Stack } from '@cdecaire/sable/layout'
+import { Col, Columns, Row, Stack } from '@cdecaire/sable/layout'
 import { useEffect, useRef, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { toast } from '@/hooks/use-toast'
@@ -523,39 +523,45 @@ function ProfileInfoPage() {
             </p>
           </Stack>
 
-          <Stack gap={1}>
-            <Label>X (Twitter)</Label>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm pointer-events-none">@</span>
-              <Input
-                value={twitterUsername}
-                onChange={(e) => setTwitterUsername(e.target.value.replace(/^@/, ''))}
-                placeholder="username"
-                maxLength={15}
-                className="pl-7"
-              />
-            </div>
-            <p className="text-caption text-muted-foreground">
-              Your X username (without the @)
-            </p>
-          </Stack>
+          <Columns count={12} gap={2.5}>
+            <Col span={{ base: 12, md: 6 }}>
+              <Stack gap={1}>
+                <Label>X (Twitter)</Label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm pointer-events-none">@</span>
+                  <Input
+                    value={twitterUsername}
+                    onChange={(e) => setTwitterUsername(e.target.value.replace(/^@/, ''))}
+                    placeholder="username"
+                    maxLength={15}
+                    className="pl-7"
+                  />
+                </div>
+                <p className="text-caption text-muted-foreground">
+                  Your X username (without the @)
+                </p>
+              </Stack>
+            </Col>
 
-          <Stack gap={1}>
-            <Label>Instagram</Label>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm pointer-events-none">@</span>
-              <Input
-                value={instagramUsername}
-                onChange={(e) => setInstagramUsername(e.target.value.replace(/^@/, ''))}
-                placeholder="username"
-                maxLength={30}
-                className="pl-7"
-              />
-            </div>
-            <p className="text-caption text-muted-foreground">
-              Your Instagram username (without the @)
-            </p>
-          </Stack>
+            <Col span={{ base: 12, md: 6 }}>
+              <Stack gap={1}>
+                <Label>Instagram</Label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm pointer-events-none">@</span>
+                  <Input
+                    value={instagramUsername}
+                    onChange={(e) => setInstagramUsername(e.target.value.replace(/^@/, ''))}
+                    placeholder="username"
+                    maxLength={30}
+                    className="pl-7"
+                  />
+                </div>
+                <p className="text-caption text-muted-foreground">
+                  Your Instagram username (without the @)
+                </p>
+              </Stack>
+            </Col>
+          </Columns>
 
           <Stack gap={1}>
             <Row align="center" gap={1}>

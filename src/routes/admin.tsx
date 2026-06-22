@@ -55,13 +55,17 @@ function AdminLayout() {
         {/* Two sections of the page grid (placed by AppShell): the admin sub-nav
             in columns 3–4, the content pane in columns 5–10. The grid gutter
             separates them — no divider rule. */}
-        <Col span={{ base: 12, md: 2 }} start={{ md: 3 }} className="hidden md:block">
-          <div className="sticky top-16">
+        <Col
+          span={{ base: 12, md: 4, xl: 3, '2xl': 2 }}
+          start={{ md: 1, xl: 2, '2xl': 3 }}
+          className="hidden md:block"
+        >
+          <div className="sticky top-4">
             <AdminNav variant="desktop" />
           </div>
         </Col>
 
-        <Col span={{ base: 12, md: 6 }} start={{ md: 5 }} className="min-w-0">
+        <Col span={{ base: 12, md: 8, xl: 7, '2xl': 6 }} start={{ md: 5 }} className="min-w-0">
             {/* Mobile: Show appropriate header based on page type */}
             {isDetailPage ? (
               <header className="md:hidden fixed top-0 left-0 right-0 z-40 w-full border-b bg-background">

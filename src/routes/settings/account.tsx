@@ -17,24 +17,26 @@ function AccountLayout() {
   const pageTitle = settingsRouteTitles[location.pathname] || 'Account Settings'
 
   // Two sections of the page grid (placed by AppShell's <Columns>): the settings
-  // sub-nav in columns 3–4, the content pane in columns 5–10. No divider rule —
-  // the grid gutter separates them. AuthGuard is transparent when authed, so
-  // these Cols are direct grid items.
+  // sub-nav + the content pane. Responsive so the nav has enough room for its
+  // labels at every width: full-width split at md/lg (nav 1–4, content 5–12),
+  // narrowing into centered margins as the viewport grows (xl: nav 2–4, content
+  // 5–11; 2xl: nav 3–4, content 5–10). Content always starts at column 5.
+  // AuthGuard is transparent when authed, so these Cols are direct grid items.
   return (
     <AuthGuard>
-      {/* Sidebar section — columns 3–4, desktop only */}
+      {/* Sidebar section — desktop only */}
       <Col
-        span={{ base: 12, md: 2 }}
-        start={{ md: 3 }}
+        span={{ base: 12, md: 4, xl: 3, '2xl': 2 }}
+        start={{ md: 1, xl: 2, '2xl': 3 }}
         className="hidden md:block"
       >
-        <div className="sticky top-16">
+        <div className="sticky top-4">
           <SettingsNav variant="desktop" />
         </div>
       </Col>
 
-      {/* Content section — columns 5–10 */}
-      <Col span={{ base: 12, md: 6 }} start={{ md: 5 }} className="min-w-0">
+      {/* Content section */}
+      <Col span={{ base: 12, md: 8, xl: 7, '2xl': 6 }} start={{ md: 5 }} className="min-w-0">
         {/* Mobile: back button on detail pages, the nav on the index */}
         {isDetailPage ? (
           <header

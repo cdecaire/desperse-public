@@ -36,7 +36,7 @@ export function AdminNav({ variant = 'desktop' }: AdminNavProps) {
   if (variant === 'desktop') {
     return (
       <div className="flex flex-col">
-        <div className="flex items-center h-16 px-6">
+        <div className="px-3 pb-4">
           <span className="text-xl font-bold">Admin</span>
         </div>
         <nav className="flex flex-col px-3 py-4 space-y-1">

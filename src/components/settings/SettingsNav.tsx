@@ -149,7 +149,7 @@ export function SettingsNav({ variant = 'desktop' }: SettingsNavProps) {
   return (
     <div className="flex flex-col">
       {variant === 'desktop' ? (
-        <div className="flex items-center h-16 px-6">
+        <div className="px-3 pb-4">
           <span className="text-heading-3">Account</span>
         </div>
       ) : (

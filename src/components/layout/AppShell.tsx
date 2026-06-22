@@ -99,13 +99,10 @@ export default function AppShell({ children }: AppShellProps) {
   // Content sits on the SAME 12-column grid the GridOverlay visualizes, so it
   // aligns to the columns instead of a separate centered max-width block. Most
   // pages occupy the middle 8 columns (3–10) — 2 empty margin columns each side,
-  // centered. Settings/admin carry their OWN sub-nav, so they get the wider
-  // centered 2–11 (1 margin column each side) and split that into a sidebar +
-  // content grid internally. Post detail manages its own layout → full-bleed.
+  // centered. Settings/admin place their OWN sidebar + content Cols directly on
+  // this grid (sidebar 3–4, content 5–10). Post detail → full-bleed.
   const isWideLayout =
     currentPath.startsWith('/settings') || currentPath.startsWith('/admin')
-  const contentSpan = isWideLayout ? { base: 12, lg: 10 } : { base: 12, lg: 8 }
-  const contentStart = isWideLayout ? { lg: 2 } : { lg: 3 }
 
   return (
     <MessagingProvider>
@@ -134,14 +131,18 @@ export default function AppShell({ children }: AppShellProps) {
           {showGrid && <GridOverlay />}
           {isPostDetailPage ? (
             <Region bleed>{children}</Region>
+          ) : isWideLayout ? (
+            // Settings/admin own their layout: they place a sidebar Col and a
+            // content Col directly on this page grid (the guards are transparent
+            // when authed, so those Cols are direct grid items).
+            <Columns count={12} style={{ paddingInline: 'var(--page-inset)' }}>
+              {children}
+            </Columns>
           ) : (
             // Matches the GridOverlay exactly (12 cols, --grid-gutter gap,
             // --page-inset) so content lines up with the visualized columns.
-            <Columns
-              count={12}
-              style={{ paddingInline: 'var(--page-inset)' }}
-            >
-              <Col span={contentSpan} start={contentStart}>
+            <Columns count={12} style={{ paddingInline: 'var(--page-inset)' }}>
+              <Col span={{ base: 12, lg: 8 }} start={{ lg: 3 }}>
                 {children}
               </Col>
             </Columns>

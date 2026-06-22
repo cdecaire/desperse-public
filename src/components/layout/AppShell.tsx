@@ -99,8 +99,9 @@ export default function AppShell({ children }: AppShellProps) {
   // Content sits on the SAME 12-column grid the GridOverlay visualizes, so it
   // aligns to the columns instead of a separate centered max-width block. Most
   // pages occupy the middle 8 columns (3–10) — 2 empty margin columns each side,
-  // centered. Settings/admin (their own sub-nav + tables) get the wider 10 (2–11).
-  // Post detail manages its own internal layout, so it stays full-bleed.
+  // centered. Settings/admin carry their OWN sub-nav, so they get the wider
+  // centered 2–11 (1 margin column each side) and split that into a sidebar +
+  // content grid internally. Post detail manages its own layout → full-bleed.
   const isWideLayout =
     currentPath.startsWith('/settings') || currentPath.startsWith('/admin')
   const contentSpan = isWideLayout ? { base: 12, lg: 10 } : { base: 12, lg: 8 }

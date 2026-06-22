@@ -3,7 +3,7 @@ import { AuthGuard } from '@/components/shared/AuthGuard'
 import { RoleGuard } from '@/components/shared/RoleGuard'
 import AdminNav from '@/components/admin/AdminNav'
 import { Icon } from '@/components/ui/icon'
-import { Stack } from '@cdecaire/sable/layout'
+import { Col, Columns, Stack } from '@cdecaire/sable/layout'
 
 export const Route = createFileRoute('/admin')({
   component: AdminLayout,
@@ -52,14 +52,17 @@ function AdminLayout() {
   return (
     <AuthGuard>
       <RoleGuard requiredRole="moderator">
-        <div className="flex flex-col md:flex-row items-start flex-1 min-h-screen">
-          <aside className="hidden md:flex md:w-64 border-r border-border/80 bg-background self-stretch">
-            <div className="sticky top-16 w-full">
+        {/* Two grid sections: the admin sub-nav + the content pane. No divider
+            rule — the grid gutter separates them. Centered on the page grid by
+            AppShell (cols 2–11). */}
+        <Columns count={12} className="min-h-screen">
+          <Col span={{ base: 12, md: 3 }} className="hidden md:block">
+            <div className="sticky top-16">
               <AdminNav variant="desktop" />
             </div>
-          </aside>
+          </Col>
 
-          <div className="flex-1 w-full">
+          <Col span={{ base: 12, md: 9 }} className="min-w-0">
             {/* Mobile: Show appropriate header based on page type */}
             {isDetailPage ? (
               <header className="md:hidden fixed top-0 left-0 right-0 z-40 w-full border-b bg-background">
@@ -122,11 +125,11 @@ function AdminLayout() {
               </header>
             )}
 
-            <Stack gap={3} className="px-4 md:px-6 lg:px-8">
+            <Stack gap={3}>
               <Outlet />
             </Stack>
-          </div>
-        </div>
+          </Col>
+        </Columns>
       </RoleGuard>
     </AuthGuard>
   )

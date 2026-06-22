@@ -1,4 +1,5 @@
 import { createFileRoute, Outlet, Link, useLocation } from '@tanstack/react-router'
+import { Col, Columns } from '@cdecaire/sable/layout'
 import { AuthGuard } from '@/components/shared/AuthGuard'
 import SettingsNav, { settingsRouteTitles } from '@/components/settings/SettingsNav'
 import { Icon } from '@/components/ui/icon'
@@ -9,23 +10,28 @@ export const Route = createFileRoute('/settings/account')({
 
 function AccountLayout() {
   const location = useLocation()
-  const isDetailPage = location.pathname !== '/settings/account' && 
+  const isDetailPage = location.pathname !== '/settings/account' &&
                        location.pathname !== '/settings/account/'
-  
+
   // Get the page title based on current route
   const pageTitle = settingsRouteTitles[location.pathname] || 'Account Settings'
 
   return (
     <AuthGuard>
-      <div className="flex flex-col md:flex-row items-start flex-1 min-h-screen">
-        <aside className="hidden md:flex md:w-64 border-r border-border/80 bg-background self-stretch">
-          <div className="sticky top-16 w-full">
+      {/* Two grid sections: the settings sub-nav + the content pane. No divider
+          rule — the grid gutter separates them. Centered on the page grid by
+          AppShell (cols 2–11). */}
+      <Columns count={12} className="min-h-screen">
+        {/* Sidebar section — desktop only */}
+        <Col span={{ base: 12, md: 3 }} className="hidden md:block">
+          <div className="sticky top-16">
             <SettingsNav variant="desktop" />
           </div>
-        </aside>
+        </Col>
 
-        <div className="flex-1 w-full">
-          {/* Mobile: Show back button on detail pages, menu on index */}
+        {/* Content section */}
+        <Col span={{ base: 12, md: 9 }} className="min-w-0">
+          {/* Mobile: back button on detail pages, the nav on the index */}
           {isDetailPage ? (
             <header
               className="md:hidden fixed top-0 left-0 right-0 z-40 w-full border-b bg-background"
@@ -48,17 +54,16 @@ function AccountLayout() {
               </div>
             </header>
           ) : (
-            <div className="md:hidden mb-6 px-4 md:px-6 lg:px-8">
+            <div className="md:hidden mb-6">
               <SettingsNav variant="mobile" />
             </div>
           )}
 
-          <section className={`max-w-4xl space-y-6 px-4 md:px-6 lg:px-8 ${isDetailPage ? 'pt-settings-header' : ''}`}>
+          <section className={`space-y-6 ${isDetailPage ? 'pt-settings-header md:pt-0' : ''}`}>
             <Outlet />
           </section>
-        </div>
-      </div>
+        </Col>
+      </Columns>
     </AuthGuard>
   )
 }
-

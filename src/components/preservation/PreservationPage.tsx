@@ -14,6 +14,7 @@ import {
 	joinPreservationWaitlist,
 } from '@/server/functions/preservation'
 import { checkHandleAvailability } from '@/server/functions/auth'
+import { Center, Row, Stack } from '@cdecaire/sable/layout'
 
 type CatalogSuccess = Extract<
 	Awaited<ReturnType<typeof lookupFoundationCatalog>>,
@@ -265,8 +266,8 @@ export function PreservationPage() {
 				    page. Brand mark, volume/issue, live countdown, theme toggle, exit
 				    affordance. The page is its own self-contained marketing surface. */}
 				<header className="border-b border-border/60 sticky top-0 z-30 bg-background/85 backdrop-blur-md">
-					<div className="mx-auto max-w-6xl px-6 md:px-10 lg:px-12 py-3 flex items-center justify-between gap-4 text-[11px] uppercase tracking-[0.08em] font-semibold">
-						<div className="flex items-center gap-3 min-w-0">
+					<Row justify="between" align="center" gap={2} className="mx-auto max-w-6xl px-6 md:px-10 lg:px-12 py-3 text-[11px] uppercase tracking-[0.08em] font-semibold">
+						<Row align="center" gap={1.5} className="min-w-0">
 							<Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity shrink-0" aria-label="Desperse home">
 								<Logo size={14} className="text-foreground" ariaHidden />
 								<span className="text-foreground font-semibold">
@@ -278,9 +279,9 @@ export function PreservationPage() {
 							<span className="hidden md:inline text-muted-foreground truncate">
 								{todayLong ?? 'Vol. 01 · Foundation Archive'}
 							</span>
-						</div>
+						</Row>
 
-						<div className="flex items-center gap-3 shrink-0">
+						<Row align="center" gap={1.5} className="shrink-0">
 							<div
 								className="hidden sm:flex items-center gap-2 text-muted-foreground"
 								suppressHydrationWarning
@@ -296,12 +297,15 @@ export function PreservationPage() {
 							</div>
 							<MastheadThemeToggle />
 							<MastheadAuthAction />
-						</div>
-					</div>
+						</Row>
+					</Row>
 					{/* Mobile-only countdown row — the masthead is too tight for it on
 					    small viewports, so it gets its own line. */}
-					<div
-						className="sm:hidden border-t border-border/60 px-6 py-2 flex items-center justify-between gap-3 text-[11px] uppercase tracking-[0.08em] font-semibold text-muted-foreground"
+					<Row
+						justify="between"
+						align="center"
+						gap={1.5}
+						className="sm:hidden border-t border-border/60 px-6 py-2 text-[11px] uppercase tracking-[0.08em] font-semibold text-muted-foreground"
 						suppressHydrationWarning
 					>
 						<div className="flex items-center gap-2">
@@ -314,10 +318,10 @@ export function PreservationPage() {
 							</span>
 						</div>
 						{todayLong && <span className="truncate">{todayLong}</span>}
-					</div>
+					</Row>
 				</header>
 
-				<div className="mx-auto max-w-6xl px-6 md:px-10 lg:px-12">
+				<Center max="72rem" className="px-6 md:px-10 lg:px-12">
 
 					{/* Hero — bigger, editorial weight. Italic-style emphasis via muted
 					    foreground on the second line. */}
@@ -348,11 +352,12 @@ export function PreservationPage() {
 							Solana-native home for it on Desperse.
 						</p>
 					</section>
-				</div>
+				</Center>
 
 				{/* Lookup — sunken band so it reads as the input zone */}
 				<div className="bg-card/40 border-y border-border/60 py-12 md:py-16">
-					<div className="mx-auto max-w-3xl px-6 md:px-10 lg:px-12 space-y-4">
+					<Center max="48rem" className="px-6 md:px-10 lg:px-12">
+						<Stack gap={2}>
 						<form onSubmit={handleSubmit} className="space-y-3">
 							<label
 								htmlFor="lookup"
@@ -380,14 +385,16 @@ export function PreservationPage() {
 								</Button>
 							</div>
 						</form>
-					</div>
+						</Stack>
+					</Center>
 				</div>
 
-				<div className="mx-auto max-w-6xl px-6 md:px-10 lg:px-12 pt-12 space-y-12">
+				<Center max="72rem" className="px-6 md:px-10 lg:px-12 pt-12">
+					<Stack gap={6}>
 					{/* Result region — aria-live so SR users hear lookup outcomes */}
 					<div role="status" aria-live="polite" aria-atomic="false" aria-busy={lookup.isPending}>
 						{lookup.isPending && !catalog && (
-							<div className="space-y-6">
+							<Stack gap={3}>
 								<div className="grid grid-cols-2 md:grid-cols-4 border border-border/60">
 									{Array.from({ length: 4 }).map((_, i) => (
 										<div
@@ -406,7 +413,7 @@ export function PreservationPage() {
 								<p className="text-xs text-muted-foreground text-center font-semibold uppercase tracking-[0.08em]">
 									Querying Ethereum · scanning mint events…
 								</p>
-							</div>
+							</Stack>
 						)}
 
 						{lookupError && (
@@ -431,7 +438,7 @@ export function PreservationPage() {
 						)}
 
 						{catalog && catalog.pieces.length > 0 && (
-							<div className="space-y-12">
+							<Stack gap={6}>
 								{isShowcase && (
 									<p className="text-xs text-muted-foreground flex items-center gap-2">
 										<span
@@ -474,8 +481,8 @@ export function PreservationPage() {
 								</div>
 
 								{/* Catalog grid */}
-								<div className="space-y-4">
-									<div className="flex items-baseline justify-between pb-3 border-b border-border/60">
+								<Stack gap={2}>
+									<Row justify="between" align="baseline" className="pb-3 border-b border-border/60">
 										<h2 className="text-2xl md:text-3xl font-semibold tracking-tight">
 											The catalog
 										</h2>
@@ -484,7 +491,7 @@ export function PreservationPage() {
 												? `Showing ${CATALOG_CAP} of ${catalog.pieces.length}`
 												: 'Hover for details'}
 										</span>
-									</div>
+									</Row>
 									<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-px bg-border/60 border border-border/60">
 										{(showAllPieces ? catalog.pieces : catalog.pieces.slice(0, CATALOG_CAP)).map((p) => (
 											<a
@@ -506,7 +513,7 @@ export function PreservationPage() {
 										))}
 									</div>
 									{catalog.pieces.length > CATALOG_CAP && (
-										<div className="flex justify-center pt-2">
+										<Row justify="center" className="pt-2">
 											<button
 												type="button"
 												onClick={() => setShowAllPieces((v) => !v)}
@@ -524,12 +531,12 @@ export function PreservationPage() {
 													</>
 												)}
 											</button>
-										</div>
+										</Row>
 									)}
 									<p className="text-xs text-muted-foreground leading-relaxed pt-2">
 										{catalog.limits.message}
 									</p>
-								</div>
+								</Stack>
 
 								{/* ENS handle preview */}
 								{ensHandleSeed && (
@@ -539,10 +546,11 @@ export function PreservationPage() {
 										isLoading={handlePreview.isFetching}
 									/>
 								)}
-							</div>
+							</Stack>
 						)}
 					</div>
-				</div>
+					</Stack>
+				</Center>
 
 				{/* Trust section — comes BEFORE pricing because creators leaving a
 				    platform that just shut down need to feel safe before they care
@@ -550,8 +558,9 @@ export function PreservationPage() {
 				    their question. */}
 				{hasResult && catalog && catalog.pieces.length > 0 && (
 					<div className="bg-card/40 border-y border-border/60 mt-16 py-16">
-						<div className="mx-auto max-w-6xl px-6 md:px-10 lg:px-12 space-y-12">
-							<div className="space-y-3 max-w-2xl">
+						<Center max="72rem" className="px-6 md:px-10 lg:px-12">
+							<Stack gap={6}>
+							<Stack gap={1.5} className="max-w-2xl">
 								<p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
 									Why this is different
 								</p>
@@ -564,7 +573,7 @@ export function PreservationPage() {
 									how this is designed so the same thing can’t happen if Desperse
 									ever goes away.
 								</p>
-							</div>
+							</Stack>
 
 							<div className="grid md:grid-cols-3 gap-px bg-border/60 border border-border/60">
 								<Pillar
@@ -585,15 +594,15 @@ export function PreservationPage() {
 							</div>
 
 							{/* Storage comparison */}
-							<div className="space-y-5 pt-4">
-								<div className="space-y-2 max-w-2xl">
+							<Stack gap={2.5} className="pt-4">
+								<Stack gap={1} className="max-w-2xl">
 									<p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
 										Storage compared
 									</p>
 									<h3 className="text-xl md:text-2xl font-semibold tracking-tight">
 										Different cost models, different reliability stories.
 									</h3>
-								</div>
+								</Stack>
 								<div className="grid md:grid-cols-2 gap-px bg-border/60 border border-border/60">
 									<StorageCard
 										label="What Foundation used"
@@ -623,8 +632,9 @@ export function PreservationPage() {
 									protocol projection, not a legal guarantee. But it’s one-time, not
 									recurring, and your files don’t depend on any single company.
 								</p>
-							</div>
-						</div>
+							</Stack>
+							</Stack>
+						</Center>
 					</div>
 				)}
 
@@ -633,8 +643,9 @@ export function PreservationPage() {
 				    and "what happens next" (which sets expectations). */}
 				{hasResult && catalog && catalog.pieces.length > 0 && (
 					<div className="bg-background py-16">
-						<div className="mx-auto max-w-6xl px-6 md:px-10 lg:px-12 space-y-10">
-							<div className="space-y-3 max-w-2xl">
+						<Center max="72rem" className="px-6 md:px-10 lg:px-12">
+							<Stack gap={5}>
+							<Stack gap={1.5} className="max-w-2xl">
 								<p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
 									If we build it
 								</p>
@@ -645,7 +656,7 @@ export function PreservationPage() {
 									Nothing here is built yet. These are the two directions we’d explore
 									if enough creators sign up below.
 								</p>
-							</div>
+							</Stack>
 
 							<div className="grid md:grid-cols-2 gap-px bg-border/60 border border-border/60">
 								<TierCard
@@ -675,7 +686,7 @@ export function PreservationPage() {
 							</div>
 
 							{/* Worked example using the user's actual catalog */}
-							<div className="rounded-lg border border-border/60 bg-card p-6 space-y-3">
+							<Stack gap={1.5} className="rounded-lg border border-border/60 bg-card p-6">
 								<p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
 									Hypothetical · your catalog above
 								</p>
@@ -707,14 +718,16 @@ export function PreservationPage() {
 									depend on file sizes, SOL price, Arweave storage rates, and which
 									shape we land on (if any).
 								</p>
-							</div>
-						</div>
+							</Stack>
+							</Stack>
+						</Center>
 					</div>
 				)}
 
 				{/* Signup / waitlist */}
 				<div className="bg-background pt-20 pb-12">
-					<div className="mx-auto max-w-3xl px-6 md:px-10 lg:px-12 text-center space-y-6">
+					<Center max="48rem" className="px-6 md:px-10 lg:px-12 text-center">
+						<Stack gap={3}>
 						<p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
 							Show interest
 						</p>
@@ -813,16 +826,17 @@ export function PreservationPage() {
 								</div>
 							</div>
 						)}
-					</div>
+						</Stack>
+					</Center>
 				</div>
 
 				{/* Footnote — single line. Trust section already covers custody. */}
-				<div className="mx-auto max-w-3xl px-6 md:px-10 lg:px-12 pt-12 pb-16 text-center">
+				<Center max="48rem" className="px-6 md:px-10 lg:px-12 pt-12 pb-16 text-center">
 					<p className="text-xs text-muted-foreground leading-relaxed max-w-[65ch] mx-auto">
 						An interest check, not a product. If we build the migration tool, your
 						Ethereum originals stay on Ethereum and Desperse never holds them.
 					</p>
-				</div>
+				</Center>
 
 				{/* Colophon — standalone footer for this page. Editorial signoff
 				    + minimal nav back to the rest of Desperse. */}

@@ -5,6 +5,7 @@
 
 import { Link } from '@tanstack/react-router'
 import { Marquee as SableMarquee } from '@cdecaire/sable'
+import { Center } from '@cdecaire/sable/layout'
 import { Icon } from '@/components/ui/icon'
 import { useEffect, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
@@ -468,7 +469,7 @@ function PhoneProfilePreview() {
 function ForCollectorsCard() {
   return (
     <div className="md:sticky md:top-16 min-h-[80vh] md:min-h-screen md:h-screen flex items-center justify-center overflow-hidden border-t border-border bg-background z-30 transition-all duration-500 ease-out">
-      <div className="max-w-7xl w-full mx-auto px-6 grid md:grid-cols-2 gap-12 items-center h-full py-20">
+      <Center max="80rem" className="px-6 grid md:grid-cols-2 gap-12 items-center h-full py-20">
         <div className="order-2 md:order-1 scroll-reveal">
           <span className="text-mono-md text-zinc-600 dark:text-zinc-400 mb-4 block">03 / FOR COLLECTORS</span>
           <h2 className="text-display-3xl mb-6">
@@ -485,7 +486,7 @@ function ForCollectorsCard() {
         <div className="order-1 md:order-2 flex justify-center items-center">
           <PhoneProfilePreview />
         </div>
-      </div>
+      </Center>
     </div>
   )
 }
@@ -530,7 +531,7 @@ function StickyCards() {
     <div id="features" className="relative">
       {/* Card 1 - What Desperse Is */}
       <div className="md:sticky md:top-16 min-h-[80vh] md:min-h-screen md:h-screen flex items-center justify-center overflow-hidden border-t border-border bg-background z-10 transition-all duration-500 ease-out">
-        <div className="max-w-7xl w-full mx-auto px-6 grid md:grid-cols-2 gap-12 items-center h-full py-20">
+        <Center max="80rem" className="px-6 grid md:grid-cols-2 gap-12 items-center h-full py-20">
           <div className="order-2 md:order-1 scroll-reveal">
             <span className="text-mono-md text-zinc-600 dark:text-zinc-400 mb-4 block">01 / WHAT DESPERSE IS</span>
             <h2 className="text-display-3xl mb-6">
@@ -598,12 +599,12 @@ function StickyCards() {
               <div className="w-64 h-80 md:w-80 md:h-96 bg-muted rounded-2xl animate-pulse" />
             )}
           </div>
-        </div>
+        </Center>
       </div>
 
       {/* Card 2 - For Creators */}
       <div className="md:sticky md:top-16 min-h-[80vh] md:min-h-screen md:h-screen flex items-center justify-center overflow-hidden border-t border-border bg-card z-20 transition-all duration-500 ease-out">
-        <div className="max-w-7xl w-full mx-auto px-6 grid md:grid-cols-2 gap-12 items-center h-full py-20">
+        <Center max="80rem" className="px-6 grid md:grid-cols-2 gap-12 items-center h-full py-20">
           <div className="order-2 md:order-1 scroll-reveal">
             <span className="text-mono-md text-zinc-600 dark:text-zinc-400 mb-4 block">02 / FOR CREATORS</span>
             <h2 className="text-display-3xl mb-6">
@@ -760,7 +761,7 @@ function StickyCards() {
               </>
             )}
           </div>
-        </div>
+        </Center>
       </div>
 
       {/* Card 3 - For Collectors */}
@@ -768,7 +769,7 @@ function StickyCards() {
 
       {/* Card 4 - How Minting Works */}
       <div className="md:sticky md:top-16 min-h-[80vh] md:min-h-screen md:h-screen flex items-center justify-center overflow-hidden border-t border-border bg-card z-40 transition-all duration-500 ease-out">
-        <div className="max-w-7xl w-full mx-auto px-6 grid md:grid-cols-2 gap-12 items-center h-full py-20">
+        <Center max="80rem" className="px-6 grid md:grid-cols-2 gap-12 items-center h-full py-20">
           <div className="order-2 md:order-1 scroll-reveal">
             <span className="text-mono-md text-zinc-600 dark:text-zinc-400 mb-4 block">04 / HOW MINTING WORKS</span>
             <h2 className="text-display-3xl mb-6">
@@ -824,12 +825,12 @@ function StickyCards() {
               </div>
             </div>
           </div>
-        </div>
+        </Center>
       </div>
 
       {/* Card 5 - Easy to Get Started */}
       <div className="md:sticky md:top-16 min-h-[80vh] md:min-h-screen md:h-screen flex items-center justify-center overflow-hidden border-t border-border bg-background z-50 transition-all duration-500 ease-out">
-        <div className="max-w-7xl w-full mx-auto px-6 grid md:grid-cols-2 gap-12 items-center h-full py-20">
+        <Center max="80rem" className="px-6 grid md:grid-cols-2 gap-12 items-center h-full py-20">
           <div className="order-2 md:order-1 scroll-reveal">
             <span className="text-mono-md text-zinc-600 dark:text-zinc-400 mb-4 block">05 / GET STARTED IN SECONDS</span>
             <h2 className="text-display-3xl mb-6">
@@ -913,12 +914,12 @@ function StickyCards() {
               </div>
             </div>
           </div>
-        </div>
+        </Center>
       </div>
 
       {/* Card 6 - Why Desperse (merged: value prop + comparison table + CTA) */}
       <div id="why" className="md:sticky md:top-16 min-h-[80vh] md:min-h-screen md:h-screen flex items-center justify-center overflow-hidden border-t border-border bg-card z-60 transition-all duration-500 ease-out">
-        <div className="max-w-7xl w-full mx-auto px-6 grid md:grid-cols-2 gap-12 items-center h-full py-20">
+        <Center max="80rem" className="px-6 grid md:grid-cols-2 gap-12 items-center h-full py-20">
           <div className="order-2 md:order-1 scroll-reveal">
             <span className="text-mono-md text-zinc-600 dark:text-zinc-400 mb-4 block">06 / WHY DESPERSE</span>
             <h2 className="text-display-3xl mb-6">
@@ -965,7 +966,7 @@ function StickyCards() {
               ))}
             </div>
           </div>
-        </div>
+        </Center>
       </div>
     </div>
   )
@@ -988,7 +989,7 @@ function Gallery() {
 
   return (
     <section id="creators" className="py-32 px-6 bg-card/30">
-      <div className="max-w-7xl mx-auto scroll-reveal-stagger">
+      <Center max="80rem" className="scroll-reveal-stagger">
         <div className="flex flex-col md:flex-row justify-between items-end mb-16">
           <h3 className="text-display-lg stagger-item">Discover <br />Creators</h3>
           <Link
@@ -1055,7 +1056,7 @@ function Gallery() {
             ))
           )}
         </div>
-      </div>
+      </Center>
     </section>
   )
 }
@@ -1093,7 +1094,7 @@ function PrivyLogo({ className, style }: { className?: string; style?: React.CSS
 function GetTheApp() {
   return (
     <section id="download" className="py-32 px-6 bg-background border-t border-border">
-      <div className="max-w-7xl mx-auto">
+      <Center max="80rem">
         <div className="max-w-2xl mb-16 scroll-reveal">
           <span className="text-mono-md text-zinc-600 dark:text-zinc-400 mb-4 block">GET THE APP</span>
           <h2 className="text-display-3xl mb-6">
@@ -1136,7 +1137,7 @@ function GetTheApp() {
             <span aria-hidden="true">&rarr;</span>
           </Link>
         </div>
-      </div>
+      </Center>
     </section>
   )
 }
@@ -1195,7 +1196,7 @@ function PlatformAndroidMark({ className }: { className?: string }) {
 function TechSpecs() {
   return (
     <section id="tech" className="py-24 border-y border-border bg-background">
-      <div className="max-w-7xl mx-auto px-6 scroll-reveal-stagger">
+      <Center max="80rem" className="px-6 scroll-reveal-stagger">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="border border-border rounded-xl p-6 bg-card/50 stagger-item">
             <div
@@ -1233,7 +1234,7 @@ function TechSpecs() {
             <p className="text-body-sm text-zinc-600 dark:text-zinc-400">You own your keys. Embedded wallets powered by Privy.</p>
           </div>
         </div>
-      </div>
+      </Center>
     </section>
   )
 }
@@ -1243,7 +1244,7 @@ export function Footer({ showCta = true }: { showCta?: boolean }) {
   const { login, ready } = usePrivy()
   return (
     <footer className={`${showCta ? 'py-20' : 'py-12'} px-6 bg-background relative overflow-hidden`}>
-      <div className="max-w-7xl mx-auto relative z-10">
+      <Center max="80rem" className="relative z-10">
         {showCta && (
           <>
             <div className="text-center mb-16">
@@ -1304,7 +1305,7 @@ export function Footer({ showCta = true }: { showCta?: boolean }) {
             <p className="text-body-sm text-zinc-500 dark:text-zinc-500">© {new Date().getFullYear()} Desperse. All rights reserved.</p>
           </div>
         </div>
-      </div>
+      </Center>
     </footer>
   )
 }

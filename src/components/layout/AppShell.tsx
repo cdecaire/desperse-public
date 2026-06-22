@@ -1,7 +1,7 @@
 import { useRouterState } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import { AppShell as SableAppShell } from '@cdecaire/sable'
-import { GridOverlay, Region } from '@cdecaire/sable/layout'
+import { Col, Columns, GridOverlay, Region } from '@cdecaire/sable/layout'
 import TopNav from './TopNav'
 import BottomNav from './BottomNav'
 import Sidebar from './Sidebar'
@@ -96,12 +96,15 @@ export default function AppShell({ children }: AppShellProps) {
     !shouldHideBottomNavOnMobile && !shouldHideBottomNavForOtherRoutes && !isViewingOtherProfile
 
   // Content width — unified on Sable's named Region widths. Post detail goes
-  // full-bleed (it manages its own internal layout); everything else caps at the
-  // `feed` width. Pages may wrap a section in their own Region for a finer cap.
-  const region = isPostDetailPage
-    ? { bleed: true as const }
-    : { max: 'feed' as const, inset: false }
-  const regionClass = isPostDetailPage ? undefined : 'lg:px-4'
+  // Content sits on the SAME 12-column grid the GridOverlay visualizes, so it
+  // aligns to the columns instead of a separate centered max-width block. Most
+  // pages occupy the middle 8 columns (3–10) — 2 empty margin columns each side,
+  // centered. Settings/admin (their own sub-nav + tables) get the wider 10 (2–11).
+  // Post detail manages its own internal layout, so it stays full-bleed.
+  const isWideLayout =
+    currentPath.startsWith('/settings') || currentPath.startsWith('/admin')
+  const contentSpan = isWideLayout ? { base: 12, lg: 10 } : { base: 12, lg: 8 }
+  const contentStart = isWideLayout ? { lg: 2 } : { lg: 3 }
 
   return (
     <MessagingProvider>
@@ -128,9 +131,20 @@ export default function AppShell({ children }: AppShellProps) {
       >
         <div className="relative w-full">
           {showGrid && <GridOverlay />}
-          <Region {...region} className={regionClass}>
-            {children}
-          </Region>
+          {isPostDetailPage ? (
+            <Region bleed>{children}</Region>
+          ) : (
+            // Matches the GridOverlay exactly (12 cols, --grid-gutter gap,
+            // --page-inset) so content lines up with the visualized columns.
+            <Columns
+              count={12}
+              style={{ paddingInline: 'var(--page-inset)' }}
+            >
+              <Col span={contentSpan} start={contentStart}>
+                {children}
+              </Col>
+            </Columns>
+          )}
         </div>
       </SableAppShell>
     </MessagingProvider>

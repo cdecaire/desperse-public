@@ -10,6 +10,8 @@
  *   # or set DISCORD_VERIFY_CHANNEL_ID in .env.local and omit the arg
  */
 
+export {} // standalone script — make it a module so top-level names don't collide
+
 const API_BASE = 'https://discord.com/api/v10'
 const VERIFY_CUSTOM_ID = 'verify_wallet'
 

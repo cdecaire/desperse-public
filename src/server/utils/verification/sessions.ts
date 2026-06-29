@@ -11,7 +11,7 @@ import {
 	discordVerificationSessions,
 	type DiscordVerificationSession,
 } from '@/server/db/schema'
-import { eq, and } from 'drizzle-orm'
+import { eq, and, gt, count } from 'drizzle-orm'
 import { randomBytes } from 'node:crypto'
 import { discordEnv } from '@/config/discord-env'
 
@@ -70,4 +70,19 @@ export function buildVerificationMessage(nonce: string): string {
 
 export function isSessionUsable(session: DiscordVerificationSession): boolean {
 	return session.status === 'pending' && session.expiresAt.getTime() > Date.now()
+}
+
+/** How many sessions this Discord user created within the last `sinceMs`. */
+export async function countRecentSessions(discordUserId: string, sinceMs: number): Promise<number> {
+	const since = new Date(Date.now() - sinceMs)
+	const [row] = await db
+		.select({ n: count() })
+		.from(discordVerificationSessions)
+		.where(
+			and(
+				eq(discordVerificationSessions.discordUserId, discordUserId),
+				gt(discordVerificationSessions.createdAt, since),
+			),
+		)
+	return Number(row?.n ?? 0)
 }

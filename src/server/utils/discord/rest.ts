@@ -69,3 +69,33 @@ export async function postAuditMessage(content: string): Promise<void> {
 		console.warn('[discordRest] postAuditMessage failed:', err instanceof Error ? err.message : err)
 	}
 }
+
+/**
+ * DM a guild member. Best-effort — never throws. Returns false if the user has
+ * DMs closed or we otherwise can't deliver. Used for re-verify nudges.
+ */
+export async function sendDirectMessage(discordUserId: string, content: string): Promise<boolean> {
+	if (!discordEnv.BOT_TOKEN) return false
+	try {
+		const dm = await fetch(`${API_BASE}/users/@me/channels`, {
+			method: 'POST',
+			headers: botHeaders(),
+			body: JSON.stringify({ recipient_id: discordUserId }),
+		})
+		if (!dm.ok) {
+			console.warn(`[discordRest] open DM -> ${dm.status} for user ${discordUserId}`)
+			return false
+		}
+		const channel = (await dm.json()) as { id?: string }
+		if (!channel.id) return false
+		const res = await fetch(`${API_BASE}/channels/${channel.id}/messages`, {
+			method: 'POST',
+			headers: botHeaders(),
+			body: JSON.stringify({ content }),
+		})
+		return res.ok
+	} catch (err) {
+		console.warn('[discordRest] sendDirectMessage failed:', err instanceof Error ? err.message : err)
+		return false
+	}
+}

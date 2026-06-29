@@ -945,3 +945,115 @@ export const preservationSignups = pgTable(
   }),
 )
 
+// ────────────────────────────────────────────────────────────────────────────
+// Echoes Discord holder verification
+//
+// Lets a Discord member prove ownership of an Echoes NFT (Solana) via a signed
+// message and receive the Echoes Holder role + their on-chain Faction role.
+// Roles are gated ONLY on wallets proven by signature in the verify flow
+// (discord_verified_wallets) — never on unproven userWallets links.
+// ────────────────────────────────────────────────────────────────────────────
+
+export const discordVerificationStatusEnum = pgEnum('discord_verification_status_enum', [
+  'pending',
+  'consumed',
+  'expired',
+])
+
+// One-time verification sessions. Created when a member clicks "Verify Wallet"
+// in Discord; the nonce is embedded in the message the wallet signs.
+export const discordVerificationSessions = pgTable(
+  'discord_verification_sessions',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    discordUserId: text('discord_user_id').notNull(),
+    nonce: text('nonce').notNull(),
+    status: discordVerificationStatusEnum('status').notNull().default('pending'),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    expiresAt: timestamp('expires_at').notNull(),
+  },
+  (table) => ({
+    nonceUnique: unique('discord_verification_sessions_nonce_unique').on(table.nonce),
+    discordUserIdIdx: index('discord_verification_sessions_discord_user_id_idx').on(table.discordUserId),
+    statusExpiresIdx: index('discord_verification_sessions_status_expires_idx').on(
+      table.status,
+      table.expiresAt,
+    ),
+  }),
+)
+
+// Links a Discord user to a Desperse account. One Discord user <-> one account.
+export const discordLinks = pgTable(
+  'discord_links',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    discordUserId: text('discord_user_id').notNull().unique(),
+    desperseUserId: uuid('desperse_user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    discordUsername: text('discord_username'),
+    linkedAt: timestamp('linked_at').notNull().defaultNow(),
+    lastVerifiedAt: timestamp('last_verified_at'),
+  },
+  (table) => ({
+    desperseUserIdUnique: unique('discord_links_desperse_user_id_unique').on(table.desperseUserId),
+    desperseUserIdIdx: index('discord_links_desperse_user_id_idx').on(table.desperseUserId),
+  }),
+)
+
+// Signature-proven wallets — the ONLY source of truth for role gating. Each row
+// is a wallet a Discord user proved control of via signMessage. A wallet binds
+// to one Discord user at a time (anti shared-wallet farming).
+export const discordVerifiedWallets = pgTable(
+  'discord_verified_wallets',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    discordUserId: text('discord_user_id')
+      .notNull()
+      .references(() => discordLinks.discordUserId, { onDelete: 'cascade' }),
+    walletPubkey: text('wallet_pubkey').notNull(),
+    provedAt: timestamp('proved_at').notNull().defaultNow(),
+    lastVerifiedAt: timestamp('last_verified_at'),
+  },
+  (table) => ({
+    walletUnique: unique('discord_verified_wallets_wallet_unique').on(table.walletPubkey),
+    discordUserIdIdx: index('discord_verified_wallets_discord_user_id_idx').on(table.discordUserId),
+  }),
+)
+
+// Snapshot of roles the bot has granted, so the re-verify worker knows what to
+// reconcile/revoke. emptyCycles tracks the grace window before revocation.
+export const discordMemberRoles = pgTable('discord_member_roles', {
+  discordUserId: text('discord_user_id')
+    .primaryKey()
+    .references(() => discordLinks.discordUserId, { onDelete: 'cascade' }),
+  hasHolderRole: boolean('has_holder_role').notNull().default(false),
+  factions: jsonb('factions').$type<string[]>().notNull().default(sql`'[]'::jsonb`),
+  emptyCycles: integer('empty_cycles').notNull().default(0),
+  lastCheckedAt: timestamp('last_checked_at'),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+})
+
+// Append-only audit trail of grants/revokes/links, mirrored to the staff channel.
+export const discordAuditLog = pgTable(
+  'discord_audit_log',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    discordUserId: text('discord_user_id').notNull(),
+    action: text('action').notNull(),
+    detail: jsonb('detail'),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  },
+  (table) => ({
+    discordUserIdIdx: index('discord_audit_log_discord_user_id_idx').on(table.discordUserId),
+    createdAtIdx: index('discord_audit_log_created_at_idx').on(table.createdAt),
+  }),
+)
+
+// Inferred row types
+export type DiscordVerificationSession = typeof discordVerificationSessions.$inferSelect
+export type DiscordLink = typeof discordLinks.$inferSelect
+export type DiscordVerifiedWallet = typeof discordVerifiedWallets.$inferSelect
+export type DiscordMemberRoles = typeof discordMemberRoles.$inferSelect
+export type DiscordAuditLogEntry = typeof discordAuditLog.$inferSelect
+

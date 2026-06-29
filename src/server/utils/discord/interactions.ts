@@ -71,3 +71,20 @@ export function ephemeralResponse(content: string) {
 
 /** The PING -> PONG handshake response. */
 export const pongResponse = { type: InteractionResponseType.PONG }
+
+const ADMINISTRATOR = 1n << 3n
+const MANAGE_ROLES = 1n << 28n
+
+/**
+ * True if the interaction member has Manage Roles or Administrator. Defense in
+ * depth on top of the command's default_member_permissions.
+ */
+export function hasStaffPermission(permissions?: string): boolean {
+	if (!permissions) return false
+	try {
+		const p = BigInt(permissions)
+		return (p & ADMINISTRATOR) !== 0n || (p & MANAGE_ROLES) !== 0n
+	} catch {
+		return false
+	}
+}

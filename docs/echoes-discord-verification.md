@@ -39,6 +39,10 @@ control of via `signMessage` (table `discord_verified_wallets`), never on unprov
 | Server fns | `src/server/functions/verification.ts` |
 | Verify page | `src/routes/verify/$sessionId.tsx` |
 | Button poster (ops) | `scripts/discord-post-verify-button.ts` (`pnpm discord:post-button <channelId>`) |
+| Re-verify job (P3) | `src/server/jobs/discord-reverify.ts` |
+| Re-verify cron route | `server/routes/api/v1/discord/recheck.get.ts` |
+| Admin commands (P4) | `src/server/utils/discord/admin.ts` |
+| Command register (ops) | `scripts/discord-register-commands.ts` (`pnpm discord:register`) |
 
 ## Environment variables
 
@@ -61,6 +65,7 @@ the bot token / signing key must never reach the client.
 | `DISCORD_VERIFY_ENABLED` | `true` to enable the Verify button |
 | `DISCORD_VERIFY_SESSION_TTL_MINUTES` | Link lifetime (default 10) |
 | `DISCORD_VERIFY_REVERIFY_GRACE_CYCLES` | Empty re-checks before revoke (default 1; P3) |
+| `DISCORD_VERIFY_MAX_SESSIONS_PER_MIN` | Per-user verify-link spam cap (default 5; P5) |
 | `DISCORD_VERIFY_BASE_URL` | Verify link origin (default: request origin) |
 | `DISCORD_VERIFY_COLLECTION_ADDRESS` | Override Echoes collection mint (else `PFP_COLLECTION_ADDRESS`) |
 | `DISCORD_VERIFY_CHANNEL_ID` | (optional) default channel for `discord:post-button` |
@@ -99,16 +104,52 @@ Pre-launch, Echoes lives on devnet; the bot reads it via `ECHOES_HELIUS_API_KEY`
    reports "no Echo found"; a wallet already linked to another Discord user is
    rejected.
 
+## Re-verification cron (P3)
+
+Wire `GET /api/v1/discord/recheck` to a **Vercel Cron Job** (daily is plenty),
+authenticated with the `CRON_SECRET` bearer token — same pattern as
+`/api/v1/arweave-monitor`. Each run re-checks every linked member's holdings
+across their proven wallets and:
+
+- **restores** roles if they're holding again,
+- **revokes** Holder + faction roles once `DISCORD_VERIFY_REVERIFY_GRACE_CYCLES`
+  consecutive empty checks pass (default 1 = next run), and DMs the member,
+- posts a summary to the audit channel.
+
+Add the cron in the Vercel dashboard (Project → Settings → Cron Jobs) pointing at
+`/api/v1/discord/recheck` with header `Authorization: Bearer <CRON_SECRET>`, e.g.
+`0 9 * * *` (daily 09:00 UTC).
+
+## Admin slash commands (P4)
+
+Staff-only (gated by `default_member_permissions` = Manage Roles + a runtime
+check). Register/update them for the guild with `pnpm discord:register` (guild
+commands apply instantly):
+
+- `/verify-status <user>` — link, proven wallets, holder/faction roles, cycles
+- `/force-recheck <user>` — re-run holdings + reconcile for one member now
+- `/unlink <user> [wallet]` — remove a wallet (or all) and strip roles
+- `/stats` — linked members, proven wallets, holders, per-faction counts
+
+## Escrow & staking note (P5)
+
+Holdings come from DAS `getAssetsByOwner`, so **ownership** is what counts:
+
+- **Delegated / staked** Echoes that remain *owned* by the wallet still verify
+  (delegation doesn't change the owner) — no special handling needed.
+- **Listed on a marketplace** usually moves the Echo into an escrow account, so
+  DAS no longer reports the wallet as owner and the holder can lose roles while
+  listed. Detecting "listed-but-owned" needs marketplace-specific escrow
+  allow-lists and is **not** handled yet; for now members re-verify after
+  delisting (the grace window softens this).
+
 ## Status
 
-- **Done (P1+P2):** interactions endpoint, one-time sessions, verify page, signature
-  verification, account/wallet linking, DAS holdings, Echoes Holder + faction role
-  assignment, audit log, button poster.
-- **Next (P3):** scheduled re-verification + revocation (Vercel cron → re-check
-  proven wallets, `emptyCycles` grace, DM nudge).
-- **Then (P4):** admin slash commands (`/verify-status`, `/force-recheck`,
-  `/unlink`, `/stats`).
-- **Hardening (P5):** rate limits on the endpoints, escrow/staking edge handling.
-- **Mainnet cutover (P6):** point `DISCORD_VERIFY_COLLECTION_ADDRESS` + RPC at the
-  mainnet collection at mint.
-```
+- **Done (P1–P5):** interactions endpoint, one-time sessions, verify page,
+  signature verification, account/wallet linking, DAS holdings, Echoes Holder +
+  faction roles, audit log + staff channel, **scheduled re-verify + revocation
+  (cron)**, **admin slash commands**, **session-creation rate limit**, DM nudges.
+- **Remaining (P6) — mainnet cutover:** at mint, point
+  `DISCORD_VERIFY_COLLECTION_ADDRESS` (+ a mainnet RPC) at the mainnet collection.
+- **Known limitation:** marketplace-listed (escrowed) Echoes aren't counted — see
+  the Escrow & staking note.

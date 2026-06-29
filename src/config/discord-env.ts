@@ -62,6 +62,8 @@ export const discordEnv = {
   SESSION_TTL_MINUTES: Number(getEnvVar('DISCORD_VERIFY_SESSION_TTL_MINUTES', '10')),
   /** Consecutive empty re-checks tolerated before roles are revoked (grace window). */
   REVERIFY_GRACE_CYCLES: Number(getEnvVar('DISCORD_VERIFY_REVERIFY_GRACE_CYCLES', '1')),
+  /** Max verification links one Discord user can create per minute (spam guard). */
+  SESSION_RATE_PER_MIN: Number(getEnvVar('DISCORD_VERIFY_MAX_SESSIONS_PER_MIN', '5')),
   /** Master on/off switch for the verification feature. */
   ENABLED: getEnvVar('DISCORD_VERIFY_ENABLED', 'false') === 'true',
   /**

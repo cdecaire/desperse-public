@@ -28,7 +28,8 @@
     "backfill:legacy-attachments": "tsx scripts/backfill-legacy-attachment-posts.ts",
     "echoes:sync-metadata": "tsx scripts/echoes-sync-metadata.ts",
     "echoes:upload-blob": "tsx --env-file=.env.local scripts/echoes-upload-blob.ts",
-    "discord:post-button": "tsx --env-file=.env.local scripts/discord-post-verify-button.ts"
+    "discord:post-button": "tsx --env-file=.env.local scripts/discord-post-verify-button.ts",
+    "discord:register": "tsx --env-file=.env.local scripts/discord-register-commands.ts"
   },
   "dependencies": {
     "@ardrive/turbo-sdk": "^1.41.0",

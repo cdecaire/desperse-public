@@ -13,10 +13,10 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Checkbox } from '@/components/ui/checkbox'
 import { Icon } from '@/components/ui/icon'
-import { cn } from '@/lib/utils'
+import { CheckboxCard, CheckboxGroup } from '@cdecaire/sable'
 import { PostCardUser } from '@/components/feed/PostCard'
 
 export const REPORT_REASONS = [
@@ -185,39 +185,30 @@ export function ReportModal({
 
         {/* Report Reasons */}
         <div className="space-y-2">
-          <label className="text-label-lg">Why are you reporting this?</label>
+          <Label>Why are you reporting this?</Label>
           <p className="text-caption text-muted-foreground mb-3">Select all that apply</p>
-          <div className="space-y-2">
+          <CheckboxGroup>
             {REPORT_REASONS.map((reason) => {
               const isChecked = selectedReasons.includes(reason)
               return (
-                <label
+                <CheckboxCard
                   key={reason}
-                  className={cn(
-                    'flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors',
-                    isChecked
-                      ? 'bg-accent border-accent-foreground/20'
-                      : 'bg-background border-border hover:bg-accent/50',
-                  )}
-                >
-                  <Checkbox
-                    checked={isChecked}
-                    onCheckedChange={() => handleReasonToggle(reason)}
-                  />
-                  <span className="text-sm flex-1">{reason}</span>
-                </label>
+                  title={reason}
+                  checked={isChecked}
+                  onCheckedChange={() => handleReasonToggle(reason)}
+                />
               )
             })}
-          </div>
+          </CheckboxGroup>
         </div>
 
         {/* Details Input (always shown when reasons selected, required if "Other") */}
         {showDetails && (
           <div>
-            <label htmlFor="report-details" className="text-label-lg mb-2 block">
+            <Label htmlFor="report-details" className="mb-2 block">
               Additional details {hasOther && <span className="text-destructive">*</span>}
               {!hasOther && <span className="text-muted-foreground font-normal"> (optional)</span>}
-            </label>
+            </Label>
             <div className="relative">
               <Textarea
                 id="report-details"

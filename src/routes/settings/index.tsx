@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useLocation, useNavigate } from '@tanstack/react-router'
 import { useEffect } from 'react'
+import { Col, Stack } from '@cdecaire/sable/layout'
 import { AuthGuard } from '@/components/shared/AuthGuard'
 import { Icon } from '@/components/ui/icon'
 import { MobileHeader, MobileHeaderSpacer } from '@/components/layout/MobileHeader'
@@ -23,7 +24,9 @@ function SettingsIndexPage() {
 
   return (
     <AuthGuard>
-      <div className="min-h-screen">
+      {/* Full-width on AppShell's 12-col grid — a bare div would auto-place into
+          a single column and squish (mobile menu / pre-redirect desktop view). */}
+      <Col span={12} className="min-h-screen">
         {/* Mobile View - Settings Menu */}
         <div className="md:hidden">
           {/* Mobile Header - replaces TopNav with PWA safe-area support */}
@@ -82,16 +85,16 @@ function SettingsIndexPage() {
 
         {/* Desktop View - Redirect to account settings via account layout */}
         <div className="hidden md:block">
-          <div className="py-8 space-y-6 px-4 md:px-6 lg:px-8">
-            <div className="space-y-2">
+          <Stack gap={3} className="py-8 px-4 md:px-6 lg:px-8">
+            <Stack gap={1}>
               <h1 className="text-heading-2">Settings</h1>
               <p className="text-body-sm text-muted-foreground">
                 Select a category from the sidebar to get started.
               </p>
-            </div>
-          </div>
+            </Stack>
+          </Stack>
         </div>
-      </div>
+      </Col>
     </AuthGuard>
   )
 }

@@ -22,6 +22,7 @@ import { DownloadableAssetsSection } from '@/components/feed/DownloadableAssetsS
 import { getPrimaryDisplayMedia, type DownloadableAsset } from '@/components/feed/postAssets'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { Logo } from '@/components/shared/Logo'
 import { getPostDisplayState, getEditionLabel, POST_TYPE_COLORS, formatPrice as formatPriceDisplay } from '@/components/feed/postDisplay'
@@ -40,6 +41,8 @@ import { usePreferences } from '@/hooks/usePreferences'
 import { usePostCollectors, useFollowMutation } from '@/hooks/useProfileQuery'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { toast } from '@/hooks/use-toast'
+import { Description, DescriptionItem, Entity, Note } from '@cdecaire/sable'
+import { Row, Stack } from '@cdecaire/sable/layout'
 
 const BASE_URL = "https://desperse.com"
 
@@ -221,20 +224,11 @@ function PostDetails({ post, editionSupply, collectCount, showHeading = true, ge
           <span className="text-label-lg text-foreground">Details</span>
         </div>
       )}
-      <div>
-        {rows.map((row, i) => (
-          <div
-            key={row.label}
-            className={cn(
-              'flex justify-between py-2.5',
-              i < rows.length - 1 && 'border-b border-border',
-            )}
-          >
-            <span className="text-body-sm text-muted-foreground">{row.label}</span>
-            <span className="text-label-lg text-foreground">{row.value}</span>
-          </div>
+      <Description cols="1">
+        {rows.map((row) => (
+          <DescriptionItem key={row.label} term={row.label} detail={row.value} />
         ))}
-      </div>
+      </Description>
     </div>
   )
 }
@@ -317,8 +311,9 @@ function CollectorItem({
       : null
 
   return (
-    <div className="flex items-center justify-between gap-3 px-4 py-2.5">
-      <div className="flex items-center gap-3 flex-1 min-w-0">
+    <Entity
+      className="px-4"
+      leading={
         <Link
           to="/profile/$slug"
           params={{ slug: collector.usernameSlug }}
@@ -334,52 +329,56 @@ function CollectorItem({
             <Icon name="user" variant="regular" className="text-sm text-muted-foreground" />
           )}
         </Link>
-        <div className="flex-1 min-w-0 leading-tight">
-          <Link
-            to="/profile/$slug"
-            params={{ slug: collector.usernameSlug }}
-            className="text-label-lg truncate block hover:underline"
-          >
-            {collector.displayName || collector.usernameSlug}
-          </Link>
-          {collector.collectedAt && txUrl ? (
-            <a
-              href={txUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs text-muted-foreground hover:text-foreground truncate inline-flex items-center gap-1"
-            >
-              Collected {formatCollectedDate(collector.collectedAt)} · View Tx
-              <Icon name="arrow-up-right-from-square" variant="regular" className="text-[9px]" />
-            </a>
-          ) : collector.collectedAt ? (
-            <p className="text-xs text-muted-foreground truncate">
-              Collected {formatCollectedDate(collector.collectedAt)}
-            </p>
-          ) : (
-            <p className="text-xs text-muted-foreground truncate">
-              @{collector.usernameSlug}
-            </p>
-          )}
-        </div>
-      </div>
-      {isAuthenticated && currentUserId && !isOwnProfile && (
-        <Button
-          variant={isFollowing ? 'outline' : 'default'}
-          className="h-8 w-[76px] px-3 text-xs"
-          onClick={handleFollowToggle}
-          disabled={followMutation.isPending}
+      }
+      title={
+        <Link
+          to="/profile/$slug"
+          params={{ slug: collector.usernameSlug }}
+          className="truncate block hover:underline"
         >
-          {followMutation.isPending ? (
-            <LoadingSpinner size="sm" />
-          ) : isFollowing ? (
-            'Unfollow'
-          ) : (
-            'Follow'
-          )}
-        </Button>
-      )}
-    </div>
+          {collector.displayName || collector.usernameSlug}
+        </Link>
+      }
+      subtitle={
+        collector.collectedAt && txUrl ? (
+          <a
+            href={txUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-muted-foreground hover:text-foreground truncate inline-flex items-center gap-1"
+          >
+            Collected {formatCollectedDate(collector.collectedAt)} · View Tx
+            <Icon name="arrow-up-right-from-square" variant="regular" className="text-[9px]" />
+          </a>
+        ) : collector.collectedAt ? (
+          <span className="text-xs text-muted-foreground truncate">
+            Collected {formatCollectedDate(collector.collectedAt)}
+          </span>
+        ) : (
+          <span className="text-xs text-muted-foreground truncate">
+            @{collector.usernameSlug}
+          </span>
+        )
+      }
+      action={
+        isAuthenticated && currentUserId && !isOwnProfile ? (
+          <Button
+            variant={isFollowing ? 'outline' : 'default'}
+            className="h-8 w-[76px] px-3 text-xs"
+            onClick={handleFollowToggle}
+            disabled={followMutation.isPending}
+          >
+            {followMutation.isPending ? (
+              <LoadingSpinner size="sm" />
+            ) : isFollowing ? (
+              'Unfollow'
+            ) : (
+              'Follow'
+            )}
+          </Button>
+        ) : undefined
+      }
+    />
   )
 }
 
@@ -406,9 +405,9 @@ function CollectorsList({
 }) {
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-8">
+      <Row align="center" justify="center" className="py-8">
         <LoadingSpinner />
-      </div>
+      </Row>
     )
   }
 
@@ -618,8 +617,8 @@ function PostDetailPage() {
   // skipBuy: when true, BuyButton is rendered elsewhere (e.g., timed edition dark bar)
   // onCommentClick: when provided, comment button opens sheet instead of linking
   const ActionButtons = ({ className, skipBuy = false, onCommentClick }: { className?: string; skipBuy?: boolean; onCommentClick?: () => void }) => (
-    <div className={cn('flex items-center justify-between gap-1', className)}>
-      <div className="flex items-center gap-1">
+    <Row gap={0.5} align="center" justify="between" className={className}>
+      <Row gap={0.5} align="center">
         <LikeButton
           postId={post.id}
           userId={currentUser?.id || undefined}
@@ -641,20 +640,20 @@ function PostDetailPage() {
           variant="ghost"
           showCount={true}
         />
-      </div>
+      </Row>
 
       {/* Collect/Buy stats indicator + edition buy shortcut */}
       {post.type !== 'post' && (
-        <div className="flex items-center gap-2 flex-shrink-0">
+        <Row gap={1} align="center" className="flex-shrink-0">
           {post.type === 'collectible' && (
-            <div className="flex items-center gap-1.5 px-2 py-1.5 text-muted-foreground">
+            <Row gap={0.75} align="center" className="px-2 py-1.5 text-muted-foreground">
               {collectCount > 0 && (
                 <span className="text-label-lg">{collectCount}</span>
               )}
               <span style={isCollected && postTypeColor ? { color: postTypeColor } : undefined}>
                 <Icon name="gem" variant={isCollected ? "solid" : "regular"} className="text-base" />
               </span>
-            </div>
+            </Row>
           )}
 
           {post.type === 'edition' && post.price && post.currency && !skipBuy && isUserReady && isAuthenticated && currentUser?.id && (
@@ -681,16 +680,16 @@ function PostDetailPage() {
 
           {/* Arweave minting-paused banner */}
           {isMintingPaused && (
-            <div className="px-3 py-2 rounded-lg text-xs bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-300">
+            <Note variant="warning">
               {arweaveStatus === 'unfunded'
                 ? "This edition's permanent storage needs to be re-funded by the creator."
                 : "This edition is experiencing a temporary storage issue. Please try again later."}
-            </div>
+            </Note>
           )}
 
           {/* Static supply count when BuyButton is rendered elsewhere */}
           {post.type === 'edition' && skipBuy && (
-            <div className="flex items-center gap-1 px-2">
+            <Row gap={0.5} align="center" className="px-2">
               <span className="text-label-lg">
                 {post.maxSupply ? `${editionSupply}/${post.maxSupply}` : `${editionSupply}`}
               </span>
@@ -700,11 +699,11 @@ function PostDetailPage() {
                   className="text-base"
                 />
               </span>
-            </div>
+            </Row>
           )}
-        </div>
+        </Row>
       )}
-    </div>
+    </Row>
   )
 
   // Shared caption component (with avatar — used in mobile standard posts)
@@ -755,31 +754,15 @@ function PostDetailPage() {
   const tabLabels: Record<string, string> = { comments: 'Comments', details: 'Details', collectors: 'Collectors' }
 
   const TabBar = ({ activeTab, onTabChange }: { activeTab: string; onTabChange: (tab: any) => void }) => (
-    <div className="flex border-b border-border shrink-0" role="tablist">
-      {tabs.map((tab) => (
-        <button
-          key={tab}
-          type="button"
-          role="tab"
-          aria-selected={activeTab === tab}
-          onClick={() => onTabChange(tab)}
-          className={cn(
-            'flex-1 py-3 text-label-lg transition-colors relative',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset',
-            activeTab === tab
-              ? 'text-foreground'
-              : 'text-muted-foreground hover:text-foreground/80',
-          )}
-        >
-          <span className="relative inline-flex items-center">
+    <Tabs value={activeTab} onValueChange={(value) => onTabChange(value)} className="shrink-0">
+      <TabsList className="flex w-full">
+        {tabs.map((tab) => (
+          <TabsTrigger key={tab} value={tab} className="flex-1 justify-center">
             {tabLabels[tab]}
-          </span>
-          {activeTab === tab && (
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-foreground rounded-full" />
-          )}
-        </button>
-      ))}
-    </div>
+          </TabsTrigger>
+        ))}
+      </TabsList>
+    </Tabs>
   )
 
   // Shared tab content renderer
@@ -933,8 +916,13 @@ function PostDetailPage() {
 
   return (
     <div className="pb-20 lg:pb-0">
-      {/* Desktop 2-column layout (lg+) */}
-      <div className="hidden lg:flex flex-col p-4 h-screen">
+      {/* Desktop 2-column media viewer (lg+) — capped + centered (region-full,
+          1536) so it doesn't sprawl into a huge black letterbox on ultra-wide
+          monitors; media stays prominent. */}
+      <div
+        className="hidden lg:flex flex-col p-4 h-screen mx-auto w-full"
+        style={{ maxWidth: 'var(--region-full)' }}
+      >
         {/* Back button */}
         <Link to="/" className="w-fit">
           <Button variant="ghost" className="mb-4">
@@ -972,17 +960,16 @@ function PostDetailPage() {
             {isCollectibleOrEdition ? (
               <>
                 {/* Edition/Collectible: Header + action */}
-                <div className="px-4 pb-3 pt-3 border-b border-border shrink-0 flex flex-col gap-3">
+                <Stack gap={1.5} className="px-4 pb-3 pt-3 border-b border-border shrink-0">
                   <UserHeader showTypeBadge={false} />
 
                   {/* Arweave storage issue banner */}
                   {isMintingPaused && (
-                    <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-800 dark:bg-amber-950/50 dark:text-amber-200">
-                      <Icon name="circle-info" variant="regular" className="mr-1.5 inline-block" />
+                    <Note variant="warning">
                       {arweaveStatus === 'unfunded'
                         ? "This edition's permanent storage needs to be re-funded by the creator. Minting is temporarily paused."
                         : "This edition is experiencing a temporary storage issue. Please try again later."}
-                    </div>
+                    </Note>
                   )}
 
                   {/* Action area: download if owned + has downloads, collect/buy if not owned */}
@@ -1048,7 +1035,7 @@ function PostDetailPage() {
                     isCollected={isCollected}
                   />
 
-                </div>
+                </Stack>
 
                 {/* Post info: title, description, action buttons */}
                 <div className="px-4 py-3 border-b border-border min-h-0">
@@ -1093,7 +1080,7 @@ function PostDetailPage() {
 
       {/* Mobile/Tablet single-column layout (<lg) */}
       <div className="lg:hidden flex justify-center px-0 md:px-3 sm:px-4">
-        <article className="w-full max-w-2xl">
+        <article className="w-full" style={{ maxWidth: 'var(--region-feed)' }}>
           {/* Header */}
           <div className="px-4 py-3 md:px-2">
             <UserHeader />
@@ -1126,16 +1113,15 @@ function PostDetailPage() {
             {isCollectibleOrEdition ? (
               <>
                 {/* Action buttons + collect — single section */}
-                <div className="pb-4 border-b border-border flex flex-col gap-3">
+                <Stack gap={1.5} className="pb-4 border-b border-border">
                   <ActionButtons skipBuy onCommentClick={() => setMobileTab('comments')} />
 
                   {isMintingPaused && (
-                    <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-800 dark:bg-amber-950/50 dark:text-amber-200">
-                      <Icon name="circle-info" variant="regular" className="mr-1.5 inline-block" />
+                    <Note variant="warning">
                       {arweaveStatus === 'unfunded'
                         ? "This edition's permanent storage needs to be re-funded by the creator. Minting is temporarily paused."
                         : "This edition is experiencing a temporary storage issue. Please try again later."}
-                    </div>
+                    </Note>
                   )}
 
                   {/* Download if owned + has downloads, collect/buy if not owned */}
@@ -1201,7 +1187,7 @@ function PostDetailPage() {
                     postType={post.type}
                     isCollected={isCollected}
                   />
-                </div>
+                </Stack>
 
                 {/* Title + description */}
                 <div className="py-4 border-b border-border space-y-2">
@@ -1241,7 +1227,10 @@ function PostDetailPage() {
 
       {/* Login CTA banner for unauthenticated users (mobile only) */}
       {isReady && !isAuthenticated && (
-        <div className="lg:hidden max-w-2xl mx-auto px-4 mt-8">
+        <div
+        className="lg:hidden mx-auto px-4 mt-8"
+        style={{ maxWidth: 'var(--region-feed)' }}
+      >
           <div className="p-6 bg-card/60 backdrop-blur-sm border border-border rounded-2xl shadow-sm">
             <div className="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
               <div className="shrink-0">
@@ -1270,8 +1259,11 @@ function PostDetailPage() {
 function PostDetailSkeleton() {
   return (
     <div className="pb-20 lg:pb-0" aria-hidden="true">
-      {/* Desktop 2-column skeleton (lg+) */}
-      <div className="hidden lg:flex p-4 h-screen">
+      {/* Desktop 2-column skeleton (lg+) — matches the real viewer's cap. */}
+      <div
+        className="hidden lg:flex p-4 h-screen mx-auto w-full"
+        style={{ maxWidth: 'var(--region-full)' }}
+      >
         <div className="flex gap-0 w-full bg-card border border-border rounded-lg overflow-hidden">
           {/* Left column: Media skeleton */}
           <div className="flex-1 bg-black min-w-0 flex items-center justify-center">
@@ -1322,7 +1314,10 @@ function PostDetailSkeleton() {
 
       {/* Mobile/Tablet single-column skeleton (<lg) */}
       <div className="lg:hidden flex justify-center px-0 md:px-3 sm:px-4">
-        <div className="w-full max-w-2xl overflow-hidden">
+        <div
+          className="w-full overflow-hidden"
+          style={{ maxWidth: 'var(--region-feed)' }}
+        >
           <div className="flex items-center gap-3 px-4 py-3 md:px-2">
             <Skeleton className="w-10 h-10 rounded-full" />
             <div className="flex-1 space-y-2">

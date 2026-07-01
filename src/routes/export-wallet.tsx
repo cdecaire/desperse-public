@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { z } from 'zod'
 import { usePrivy } from '@privy-io/react-auth'
 import { useExportWallet } from '@privy-io/react-auth/solana'
+import { Row, Stack } from '@cdecaire/sable/layout'
 import { Icon } from '@/components/ui/icon'
 import { Logo } from '@/components/shared/Logo'
 
@@ -70,7 +71,7 @@ function ExportWalletPage() {
   if (isEmbedIos && exportStatus === 'success') {
     return (
       <div className="min-h-screen bg-background text-foreground flex items-center justify-center px-4">
-        <div className="flex flex-col items-center text-center max-w-md">
+        <Stack gap={0} align="center" className="text-center max-w-md">
           <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-6">
             <Icon name="check" variant="regular" className="text-2xl text-muted-foreground" />
           </div>
@@ -78,7 +79,7 @@ function ExportWalletPage() {
           <p className="text-muted-foreground">
             You can close this window now.
           </p>
-        </div>
+        </Stack>
       </div>
     )
   }
@@ -86,8 +87,10 @@ function ExportWalletPage() {
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col items-center">
       {!isEmbedIos && (
-        <header className="absolute top-8 left-0 right-0 flex justify-center">
-          <Logo size={20} className="text-foreground" />
+        <header className="absolute top-8 left-0 right-0">
+          <Row justify="center">
+            <Logo size={20} className="text-foreground" />
+          </Row>
         </header>
       )}
 
@@ -95,7 +98,7 @@ function ExportWalletPage() {
         {!ready ? (
           <Icon name="spinner-third" spin className="text-2xl text-muted-foreground" />
         ) : authenticated ? (
-          <div className="flex flex-col items-center text-center max-w-md">
+          <Stack gap={0} align="center" className="text-center max-w-md">
             <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-6">
               <Icon name="key" variant="regular" className="text-2xl text-muted-foreground" />
             </div>
@@ -112,9 +115,9 @@ function ExportWalletPage() {
             >
               Export private key
             </button>
-          </div>
+          </Stack>
         ) : (
-          <div className="flex flex-col items-center text-center max-w-md">
+          <Stack gap={0} align="center" className="text-center max-w-md">
             <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-6">
               <Icon name="key" variant="regular" className="text-2xl text-muted-foreground" />
             </div>
@@ -131,7 +134,7 @@ function ExportWalletPage() {
             >
               Sign in to continue
             </button>
-          </div>
+          </Stack>
         )}
       </main>
     </div>

@@ -27,6 +27,8 @@ import { PostMedia } from '@/components/feed/PostMedia'
 import { MediaCarousel } from '@/components/feed/MediaCarousel'
 import { buildCreatePostMediaPayload } from './createPostPayload'
 import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
+import { Collapsible, CollapsibleTrigger, CollapsiblePanel, CollapsibleIndicator } from '@cdecaire/sable'
 import { TokenAutocomplete } from '@/components/shared/TokenAutocomplete'
 import { Input } from '@/components/ui/input'
 import { Tooltip } from '@/components/ui/tooltip'
@@ -34,15 +36,13 @@ import { Switch } from '@/components/ui/switch'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icon'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
-import { cn } from '@/lib/utils'
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import * as DialogPrimitive from '@radix-ui/react-dialog'
-import { XIcon } from 'lucide-react'
 import { ArweaveFundingSection } from './ArweaveFundingSection'
 import { useArweaveFunding } from '@/hooks/useArweaveFunding'
 import { createPost, getPostEditState } from '@/server/functions/posts'
@@ -756,7 +756,7 @@ export function CreatePostForm({ mode = 'create', firstPostMode = false, initial
             (multiAssetEditionEnabled && formState.type === 'edition')
           )) && (
             <div className="flex items-center gap-2 mb-2">
-              <label className="text-sm font-medium">Media</label>
+              <Label>Media</Label>
               {isEditMode && (
                 <span className="text-xs text-muted-foreground">
                   (cannot be changed)
@@ -849,9 +849,9 @@ export function CreatePostForm({ mode = 'create', firstPostMode = false, initial
         <div className="space-y-4 p-4 bg-card border border-border rounded-xl shadow-md">
           {/* Caption */}
           <div>
-            <label htmlFor="caption" className="text-sm font-medium mb-2 block">
+            <Label htmlFor="caption" className="mb-2 block">
               Caption
-            </label>
+            </Label>
             <div className="relative">
               <TokenAutocomplete
                 value={formState.caption}
@@ -882,9 +882,9 @@ export function CreatePostForm({ mode = 'create', firstPostMode = false, initial
           {/* NFT Name - only shown for edition/collectible types, hidden after minting */}
           {(formState.type === 'collectible' || formState.type === 'edition') && !(isEditMode && areNftFieldsLocked) && (
             <div>
-              <label className="text-sm font-medium mb-2 block">
+              <Label className="mb-2 block">
                 NFT Name {formState.type === 'edition' && <span className="text-destructive">*</span>}
-              </label>
+              </Label>
               <div className="relative">
                 <Input
                   type="text"
@@ -951,23 +951,20 @@ export function CreatePostForm({ mode = 'create', firstPostMode = false, initial
 
         {/* Minted Details (read-only snapshot of on-chain data) */}
         {isEditMode && isMinted && mintedMetadataJson && (
-          <div className="p-4 bg-card border border-border rounded-xl shadow-md">
-            <button
-              type="button"
-              onClick={() => setIsMintedDetailsOpen(!isMintedDetailsOpen)}
-              className="flex items-center justify-between w-full text-sm text-foreground transition-colors hover:text-foreground/80"
-            >
-              <span>Minted on-chain details</span>
-              <Icon name="chevron-down" variant="regular" className={cn('transition-transform duration-200', isMintedDetailsOpen && 'rotate-180')} />
-            </button>
+          <Collapsible open={isMintedDetailsOpen} onOpenChange={setIsMintedDetailsOpen} className="p-4 bg-card border border-border rounded-xl shadow-md">
+            <CollapsibleTrigger
+              render={
+                <button
+                  type="button"
+                  className="group/collapsible flex items-center justify-between w-full text-sm text-foreground transition-colors hover:text-foreground/80"
+                >
+                  <span>Minted on-chain details</span>
+                  <CollapsibleIndicator />
+                </button>
+              }
+            />
 
-            <div
-              className={cn(
-                'grid transition-[grid-template-rows] duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] motion-reduce:transition-none',
-                isMintedDetailsOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
-              )}
-            >
-              <div className="overflow-hidden">
+            <CollapsiblePanel>
               <div className="grid gap-3 text-sm mt-3 pt-3 border-t border-border">
                 {typeof mintedMetadataJson.name === 'string' && mintedMetadataJson.name && (
                   <div className="flex justify-between">
@@ -1065,9 +1062,8 @@ export function CreatePostForm({ mode = 'create', firstPostMode = false, initial
                   </div>
                 )}
               </div>
-              </div>
-            </div>
-          </div>
+            </CollapsiblePanel>
+          </Collapsible>
         )}
 
         {/* Edition-only: Commerce & Supply Options (includes protected download) - hidden after minting */}
@@ -1202,10 +1198,10 @@ export function CreatePostForm({ mode = 'create', firstPostMode = false, initial
         <DialogContent className="max-w-md p-0 gap-0 overflow-hidden border-0 dark:border" showCloseButton={false}>
           <DialogHeader className="px-4 py-4 flex items-center justify-center relative min-h-12">
             <DialogTitle className="text-center">Post Preview</DialogTitle>
-            <DialogPrimitive.Close className="absolute top-1/2 -translate-y-1/2 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 ring-offset-background focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
-              <XIcon />
+            <DialogClose className="absolute top-1/2 -translate-y-1/2 right-4 rounded-xs opacity-70 motion-interactive hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none ring-offset-background focus:ring-ring">
+              <Icon name="xmark" />
               <span className="sr-only">Close</span>
-            </DialogPrimitive.Close>
+            </DialogClose>
           </DialogHeader>
           
           {formState.mediaUrl && user && (
@@ -1258,27 +1254,21 @@ function CopyrightSection({
 	onChange: (field: 'copyrightLicense' | 'copyrightHolder' | 'copyrightStatement', value: string | null) => void
 	disabled?: boolean
 }) {
-	const [isOpen, setIsOpen] = useState(false)
-
 	return (
-		<div className="p-4 bg-card border border-border rounded-xl shadow-md">
-			<button
-				type="button"
-				onClick={() => setIsOpen(!isOpen)}
-				className="flex items-center justify-between w-full text-sm text-foreground transition-colors hover:text-foreground/80"
-				aria-expanded={isOpen}
-			>
-				<span className="font-medium">Copyright & Licensing</span>
-				<Icon name="chevron-down" variant="regular" className={cn('transition-transform duration-200', isOpen && 'rotate-180')} />
-			</button>
+		<Collapsible defaultOpen={false} className="p-4 bg-card border border-border rounded-xl shadow-md">
+			<CollapsibleTrigger
+				render={
+					<button
+						type="button"
+						className="group/collapsible flex items-center justify-between w-full text-sm text-foreground transition-colors hover:text-foreground/80"
+					>
+						<span className="font-medium">Copyright & Licensing</span>
+						<CollapsibleIndicator />
+					</button>
+				}
+			/>
 
-			<div
-				className={cn(
-					'grid transition-[grid-template-rows] duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] motion-reduce:transition-none',
-					isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
-				)}
-			>
-				<div className="overflow-hidden">
+			<CollapsiblePanel>
 				<div className="space-y-4 mt-3 pt-3 border-t border-border">
 					<p className="text-xs text-muted-foreground">
 						Set rights metadata for this post's NFT. Pre-populated from your{' '}
@@ -1300,9 +1290,8 @@ function CopyrightSection({
 						idPrefix="post"
 					/>
 				</div>
-				</div>
-			</div>
-		</div>
+			</CollapsiblePanel>
+		</Collapsible>
 	)
 }
 

@@ -5,15 +5,7 @@
  * consistent across platforms.
  */
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
+import { DestructiveActionModal } from '@cdecaire/sable'
 
 interface BlockConfirmDialogProps {
   open: boolean
@@ -36,32 +28,23 @@ export function BlockConfirmDialog({
     onConfirm()
   }
 
-  const handleCancel = () => {
-    onCancel?.()
-    onOpenChange(false)
+  const handleOpenChange = (next: boolean) => {
+    if (!next) {
+      onCancel?.()
+    }
+    onOpenChange(next)
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>Block @{username}?</DialogTitle>
-          <DialogDescription>
-            They won't see your posts or profile, and you won't see theirs.
-            Neither of you will be notified. You can unblock them anytime from
-            Settings.
-          </DialogDescription>
-        </DialogHeader>
-
-        <DialogFooter className="gap-2 sm:gap-0">
-          <Button variant="outline" onClick={handleCancel} disabled={isPending}>
-            Cancel
-          </Button>
-          <Button variant="destructive" onClick={handleConfirm} disabled={isPending}>
-            {isPending ? 'Blocking…' : `Block @${username}`}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    <DestructiveActionModal
+      open={open}
+      onOpenChange={handleOpenChange}
+      title={`Block @${username}?`}
+      description="They won't see your posts or profile, and you won't see theirs. Neither of you will be notified. You can unblock them anytime from Settings."
+      confirmLabel={`Block @${username}`}
+      confirmingLabel="Blocking…"
+      pending={isPending}
+      onConfirm={handleConfirm}
+    />
   )
 }

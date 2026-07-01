@@ -8,9 +8,11 @@ import { useBetaFeedbackList } from '@/hooks/useFeedback'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { Icon } from '@/components/ui/icon'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
 import { formatRelativeTime } from '@/lib/dates'
+import { Stack, Row } from '@cdecaire/sable/layout'
 
 // Star display component
 function StarDisplay({ rating }: { rating: number | null }) {
@@ -19,7 +21,7 @@ function StarDisplay({ rating }: { rating: number | null }) {
   }
 
   return (
-    <div className="flex items-center gap-0.5">
+    <Row align="center" gap={0.25}>
       {[1, 2, 3, 4, 5].map((star) => (
         <Icon
           key={star}
@@ -33,7 +35,7 @@ function StarDisplay({ rating }: { rating: number | null }) {
           )}
         />
       ))}
-    </div>
+    </Row>
   )
 }
 
@@ -57,53 +59,32 @@ function FeedbackListPage() {
 
   return (
     <div className="pt-4">
-      <div className="max-w-4xl">
-        <div className="space-y-2 mb-6">
+        <Stack gap={1} className="mb-6">
           <h1 className="hidden md:block text-heading-3">Beta Feedback</h1>
           <p className="text-body-sm text-muted-foreground">
             Review user feedback, bugs, and ideas.
           </p>
-        </div>
+        </Stack>
 
         {/* Tabs */}
-        <div className="flex gap-6 mb-4 border-b border-border">
-          <button
-            onClick={() => setActiveTab('new')}
-            className={cn(
-              'py-3 text-label-lg transition-colors relative',
-              activeTab === 'new'
-                ? 'text-foreground'
-                : 'text-muted-foreground hover:text-foreground/80'
-            )}
-          >
-            New
-            {activeTab === 'new' && (
-              <div className="absolute bottom-0 left-0 w-full h-0.5 bg-foreground rounded-full" />
-            )}
-          </button>
-          <button
-            onClick={() => setActiveTab('reviewed')}
-            className={cn(
-              'py-3 text-label-lg transition-colors relative',
-              activeTab === 'reviewed'
-                ? 'text-foreground'
-                : 'text-muted-foreground hover:text-foreground/80'
-            )}
-          >
-            Reviewed
-            {activeTab === 'reviewed' && (
-              <div className="absolute bottom-0 left-0 w-full h-0.5 bg-foreground rounded-full" />
-            )}
-          </button>
-        </div>
+        <Tabs
+          value={activeTab}
+          onValueChange={(value) => setActiveTab(value as 'new' | 'reviewed')}
+          className="mb-4"
+        >
+          <TabsList>
+            <TabsTrigger value="new">New</TabsTrigger>
+            <TabsTrigger value="reviewed">Reviewed</TabsTrigger>
+          </TabsList>
+        </Tabs>
 
         {(isLoading || isPending) && (
-          <div className="flex items-center justify-center py-12">
+          <Row align="center" justify="center" className="py-12">
             <LoadingSpinner size="lg" />
             <div className="ml-4 text-body-sm text-muted-foreground">
               Loading feedback...
             </div>
-          </div>
+          </Row>
         )}
 
         {error && (
@@ -125,7 +106,7 @@ function FeedbackListPage() {
         )}
 
         {data && data.length > 0 && (
-          <div className="space-y-3">
+          <Stack gap={1.5}>
             {data.map((feedback) => (
               <Link
                 key={feedback.id}
@@ -134,7 +115,7 @@ function FeedbackListPage() {
                 className="block"
               >
                 <div className="p-4 rounded-lg border bg-card hover:bg-accent/50 transition-colors cursor-pointer">
-                  <div className="flex items-start gap-4">
+                  <Row align="start" gap={2}>
                     {/* User avatar */}
                     <div className="w-10 h-10 rounded-full overflow-hidden bg-muted shrink-0">
                       {feedback.user?.avatarUrl ? (
@@ -152,17 +133,17 @@ function FeedbackListPage() {
 
                     {/* Content */}
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-2 mb-1">
-                        <div className="flex items-center gap-2 min-w-0">
+                      <Row align="center" justify="between" gap={1} className="mb-1">
+                        <Row align="center" gap={1} className="min-w-0">
                           <span className="font-semibold text-sm truncate">
                             {feedback.displayName || feedback.user?.displayName || `@${feedback.user?.usernameSlug}` || 'Unknown'}
                           </span>
                           <span className="text-caption text-muted-foreground">
                             {formatRelativeTime(feedback.createdAt)}
                           </span>
-                        </div>
+                        </Row>
 
-                        <div className="flex items-center gap-2 shrink-0">
+                        <Row align="center" gap={1} className="shrink-0">
                           {/* Screenshot indicator */}
                           {feedback.imageUrl && (
                             <span className="text-muted-foreground">
@@ -171,8 +152,8 @@ function FeedbackListPage() {
                           )}
                           {/* Rating */}
                           <StarDisplay rating={feedback.rating} />
-                        </div>
-                      </div>
+                        </Row>
+                      </Row>
 
                       {/* Message preview */}
                       {feedback.message ? (
@@ -189,13 +170,12 @@ function FeedbackListPage() {
                         </p>
                       ) : null}
                     </div>
-                  </div>
+                  </Row>
                 </div>
               </Link>
             ))}
-          </div>
+          </Stack>
         )}
-      </div>
     </div>
   )
 }

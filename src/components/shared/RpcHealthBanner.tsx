@@ -1,11 +1,16 @@
 /**
  * RPC health status banner
- * Shows when RPC/blockchain is unavailable and disables blockchain actions
+ * Shows when RPC/blockchain is unavailable and disables blockchain actions.
+ *
+ * Migration shim (Phase 2 — Sable adoption): @cdecaire/sable <Banner>,
+ * variant="destructive" + fill="solid" for a loud error alert (replaces the
+ * previous raw bg-red-500).
  */
 
 import { useRpcHealthContext } from '@/components/providers/RpcHealthProvider'
 import { Icon } from '@/components/ui/icon'
 import { useAuth } from '@/hooks/useAuth'
+import { Banner } from '@cdecaire/sable'
 
 export function RpcHealthBanner() {
   const { isAuthenticated } = useAuth()
@@ -16,14 +21,11 @@ export function RpcHealthBanner() {
   }
 
   return (
-    <div className="w-full bg-red-500/90 dark:bg-red-600/90 text-red-900 dark:text-red-100 px-4 py-2 text-sm font-medium text-center border-b border-red-600 dark:border-red-700">
-      <span className="flex items-center justify-center gap-2">
-        <Icon name="triangle-exclamation" variant="regular" />
-        Blockchain is currently unavailable. Collect and buy actions are temporarily disabled.
-      </span>
-    </div>
+    <Banner variant="destructive" fill="solid" live="polite">
+      <Icon name="triangle-exclamation" variant="regular" />
+      Blockchain is currently unavailable. Collect and buy actions are temporarily disabled.
+    </Banner>
   )
 }
 
 export default RpcHealthBanner
-

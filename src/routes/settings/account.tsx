@@ -1,6 +1,7 @@
 import { createFileRoute, Outlet, Link, useLocation } from '@tanstack/react-router'
 import { AuthGuard } from '@/components/shared/AuthGuard'
 import SettingsNav, { settingsRouteTitles } from '@/components/settings/SettingsNav'
+import { SettingsLayout } from '@/components/layout/SettingsLayout'
 import { Icon } from '@/components/ui/icon'
 
 export const Route = createFileRoute('/settings/account')({
@@ -9,56 +10,51 @@ export const Route = createFileRoute('/settings/account')({
 
 function AccountLayout() {
   const location = useLocation()
-  const isDetailPage = location.pathname !== '/settings/account' && 
+  const isDetailPage = location.pathname !== '/settings/account' &&
                        location.pathname !== '/settings/account/'
-  
+
   // Get the page title based on current route
   const pageTitle = settingsRouteTitles[location.pathname] || 'Account Settings'
 
+  // SettingsLayout supplies the two-rail chrome shell: a sticky sub-nav rail
+  // (the desktop SettingsNav) flush against the app Sidebar + a capped content
+  // pane. AppShell renders this route bare (outside the 12-col grid) so the rail
+  // sits flush to <main>. AuthGuard is transparent when authed.
   return (
     <AuthGuard>
-      <div className="flex flex-col md:flex-row items-start flex-1 min-h-screen">
-        <aside className="hidden md:flex md:w-64 border-r border-border/80 bg-background self-stretch">
-          <div className="sticky top-16 w-full">
-            <SettingsNav variant="desktop" />
-          </div>
-        </aside>
-
-        <div className="flex-1 w-full">
-          {/* Mobile: Show back button on detail pages, menu on index */}
-          {isDetailPage ? (
-            <header
-              className="md:hidden fixed top-0 left-0 right-0 z-40 w-full border-b bg-background"
-              style={{ paddingTop: 'env(safe-area-inset-top)' }}
-            >
-              <div className="grid grid-cols-3 items-center h-14 px-4">
-                <div className="flex items-center">
-                  <Link
-                    to="/settings"
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-md text-foreground"
-                    aria-label="Back to settings"
-                  >
-                    <Icon name="arrow-left" />
-                  </Link>
-                </div>
-                <div className="flex justify-center min-w-0 flex-1">
-                  <h1 className="text-title-lg whitespace-nowrap truncate">{pageTitle}</h1>
-                </div>
-                <div aria-hidden="true" />
+      <SettingsLayout nav={<SettingsNav variant="desktop" />}>
+        {/* Mobile: back button on detail pages, the nav on the index */}
+        {isDetailPage ? (
+          <header
+            className="md:hidden fixed top-0 left-0 right-0 z-(--z-nav) w-full border-b bg-background"
+            style={{ paddingTop: 'env(safe-area-inset-top)' }}
+          >
+            <div className="grid grid-cols-3 items-center h-14 px-4">
+              <div className="flex items-center">
+                <Link
+                  to="/settings"
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-md text-foreground"
+                  aria-label="Back to settings"
+                >
+                  <Icon name="arrow-left" />
+                </Link>
               </div>
-            </header>
-          ) : (
-            <div className="md:hidden mb-6 px-4 md:px-6 lg:px-8">
-              <SettingsNav variant="mobile" />
+              <div className="flex justify-center min-w-0 flex-1">
+                <h1 className="text-title-lg whitespace-nowrap truncate">{pageTitle}</h1>
+              </div>
+              <div aria-hidden="true" />
             </div>
-          )}
+          </header>
+        ) : (
+          <div className="md:hidden mb-6">
+            <SettingsNav variant="mobile" />
+          </div>
+        )}
 
-          <section className={`max-w-4xl space-y-6 px-4 md:px-6 lg:px-8 ${isDetailPage ? 'pt-settings-header' : ''}`}>
-            <Outlet />
-          </section>
-        </div>
-      </div>
+        <section className={`space-y-6 ${isDetailPage ? 'pt-settings-header md:pt-0' : ''}`}>
+          <Outlet />
+        </section>
+      </SettingsLayout>
     </AuthGuard>
   )
 }
-

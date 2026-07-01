@@ -5,7 +5,7 @@
  * Shows Privy wallet details including wallet ID
  */
 
-import { useState, useRef, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Icon } from '@/components/ui/icon'
 import { useWallets, usePrivy } from '@privy-io/react-auth'
 import { useFundWallet } from '@privy-io/react-auth/solana'
@@ -22,8 +22,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Separator } from '@cdecaire/sable'
 import { getWalletOverview } from '@/server/functions/wallets'
 import { getResponsiveImageProps, resolveDecentralizedUri } from '@/lib/imageUrl'
 import { usePreferences } from '@/hooks/usePreferences'
@@ -43,7 +47,6 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
   const [activeTab, setActiveTab] = useState<'tokens' | 'nfts' | 'activity'>('tokens')
   const [nftLayout, setNftLayout] = useState<'grid' | 'list'>('grid')
   const [sendAsset, setSendAsset] = useState<{ asset: SendableAsset; balance: number; symbol: string; iconUrl: string | null } | null>(null)
-  const menuRef = useRef<HTMLDivElement>(null)
   const { wallets } = useWallets()
   const { user } = usePrivy()
   const { isAuthenticated, isReady, walletAddress, privyId } = useAuth()
@@ -63,43 +66,9 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
     [wallets, user?.linkedAccounts, walletAddress],
   )
 
-  // Close popover menu when clicking outside (desktop only)
-  useEffect(() => {
-    if (isMobile) return // Sheet handles its own outside clicks
-
-    function handleClickOutside(event: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setIsOpen(false)
-      }
-    }
-
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside)
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [isOpen, isMobile])
-
-  // Close menu on escape
-  useEffect(() => {
-    if (isMobile) return // Sheet handles its own escape key
-
-    function handleEscape(event: KeyboardEvent) {
-      if (event.key === 'Escape') {
-        setIsOpen(false)
-      }
-    }
-
-    if (isOpen) {
-      document.addEventListener('keydown', handleEscape)
-    }
-
-    return () => {
-      document.removeEventListener('keydown', handleEscape)
-    }
-  }, [isOpen, isMobile])
+  // Desktop popover: Sable's <Popover> (Base UI) owns outside-click, Escape,
+  // positioning, and focus — no manual document listeners needed. Mobile uses
+  // the Sheet below, which handles its own dismissal.
 
   // Show only the active wallet in the panel
   const walletsForQuery = activeAddress
@@ -231,9 +200,9 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
     if (isLoading || !data) {
       return (
         <div className="space-y-3 px-3 py-2">
-          <div className="h-10 bg-muted rounded-lg animate-pulse" />
-          <div className="h-8 bg-muted rounded-lg animate-pulse" />
-          <div className="h-8 bg-muted rounded-lg animate-pulse" />
+          <div className="h-10 bg-muted rounded-lg motion-pulse" />
+          <div className="h-8 bg-muted rounded-lg motion-pulse" />
+          <div className="h-8 bg-muted rounded-lg motion-pulse" />
         </div>
       )
     }
@@ -349,7 +318,7 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
           <div
             className={cn(
               "flex items-center justify-between rounded-md border border-border bg-card dark:bg-transparent px-3 py-2",
-              isClickable && "cursor-pointer hover:border-foreground/20 transition-colors"
+              isClickable && "cursor-pointer hover:border-foreground/20 motion-interactive"
             )}
             onClick={isClickable ? () => handleTokenClick(sendableAsset, balance, token.symbol, token.iconUrl) : undefined}
             role={isClickable ? "button" : undefined}
@@ -396,8 +365,8 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
                     <span
                       className={
                         token.changePct24h >= 0
-                          ? 'text-green-600 dark:text-green-400'
-                          : 'text-red-600 dark:text-red-400'
+                          ? 'text-success'
+                          : 'text-destructive'
                       }
                     >
                       {token.changePct24h >= 0 ? '+' : ''}
@@ -433,7 +402,7 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
         <div
           className={cn(
             "flex items-center justify-between rounded-md border border-border bg-card dark:bg-transparent px-3 py-2",
-            isClickable && "cursor-pointer hover:border-foreground/20 transition-colors"
+            isClickable && "cursor-pointer hover:border-foreground/20 motion-interactive"
           )}
           onClick={isClickable ? () => handleTokenClick(asset, balance, symbol, iconUrl) : undefined}
           role={isClickable ? "button" : undefined}
@@ -462,8 +431,8 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
                   <span
                     className={
                       showPriceChange.value >= 0
-                        ? 'text-green-600 dark:text-green-400'
-                        : 'text-red-600 dark:text-red-400'
+                        ? 'text-success'
+                        : 'text-destructive'
                     }
                   >
                     {showPriceChange.value >= 0 ? '+' : ''}
@@ -521,11 +490,7 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
           {otherTokens.length > 0 && (
             <div className="space-y-2">
               {/* Separator */}
-              <div className="flex items-center gap-3 py-1">
-                <div className="flex-1 h-px bg-border" />
-                <p className="text-xs text-muted-foreground">Other Holdings</p>
-                <div className="flex-1 h-px bg-border" />
-              </div>
+              <Separator label="Other Holdings" />
               <p className="text-xs text-muted-foreground text-center -mt-1 mb-2">
                 Not usable in Desperse
               </p>
@@ -585,32 +550,34 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
             <p className="text-xs text-muted-foreground">
               {nfts.length} {nfts.length === 1 ? 'item' : 'items'}
             </p>
-            <div className="flex items-center gap-1 p-1 bg-muted rounded-lg">
-              <button
-                onClick={() => setNftLayout('grid')}
-                className={cn(
-                  'p-1.5 rounded-md transition-all',
-                  nftLayout === 'grid'
-                    ? 'bg-background text-foreground shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground'
-                )}
-                title="Grid view"
+            <ToggleGroup
+              value={[nftLayout]}
+              onValueChange={(value) => {
+                // Always-one-selected view toggle: ignore a deselect-to-empty.
+                if (value[0]) setNftLayout(value[0] as 'grid' | 'list')
+              }}
+              size="sm"
+              spacing={1}
+              className="bg-muted p-1 rounded-lg"
+            >
+              {/* Match the original iOS-segmented look: muted track, selected =
+                  subtle white pill (bg-background + shadow), not Sable's loud
+                  bg-accent. spacing>0 keeps the items separately rounded. */}
+              <ToggleGroupItem
+                value="grid"
+                aria-label="Grid view"
+                className="px-2 rounded-md text-muted-foreground hover:bg-transparent hover:text-foreground data-[pressed]:bg-background data-[pressed]:text-foreground data-[pressed]:shadow-sm"
               >
                 <Icon name="grid-2" variant="regular" className="text-sm" />
-              </button>
-              <button
-                onClick={() => setNftLayout('list')}
-                className={cn(
-                  'p-1.5 rounded-md transition-all',
-                  nftLayout === 'list'
-                    ? 'bg-background text-foreground shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground'
-                )}
-                title="List view"
+              </ToggleGroupItem>
+              <ToggleGroupItem
+                value="list"
+                aria-label="List view"
+                className="px-2 rounded-md text-muted-foreground hover:bg-transparent hover:text-foreground data-[pressed]:bg-background data-[pressed]:text-foreground data-[pressed]:shadow-sm"
               >
                 <Icon name="list" variant="regular" className="text-sm" />
-              </button>
-            </div>
+              </ToggleGroupItem>
+            </ToggleGroup>
           </div>
 
           {nftLayout === 'grid' ? (
@@ -635,7 +602,7 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
                     href={explorerUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="group rounded-lg overflow-hidden border border-border bg-card hover:border-foreground/20 transition-colors"
+                    className="group rounded-lg overflow-hidden border border-border bg-card hover:border-foreground/20 motion-interactive"
                     aria-label={`View ${nftName} on explorer`}
                   >
                     <div className="relative aspect-square">
@@ -701,7 +668,7 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
                     href={explorerUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center gap-3 rounded-md border border-border bg-card dark:bg-transparent px-3 py-2 hover:border-foreground/20 transition-colors"
+                    className="flex items-center gap-3 rounded-md border border-border bg-card dark:bg-transparent px-3 py-2 hover:border-foreground/20 motion-interactive"
                     aria-label={`View ${nftName} on explorer`}
                   >
                     <div className="w-10 h-10 rounded-sm overflow-hidden shrink-0">
@@ -939,7 +906,7 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
                         <div className="shrink-0 text-right">
                           <p className={cn(
                             'text-sm font-medium',
-                            amount.isPositive ? 'text-green-600 dark:text-green-400' : 'text-foreground'
+                            amount.isPositive ? 'text-success' : 'text-foreground'
                           )}>
                             {amount.text}
                             <span className="text-xs font-normal text-muted-foreground ml-1">{amount.token}</span>
@@ -974,7 +941,7 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
                         {thumbnail ? (
                           <a
                             href={postId ? `/post/${postId}` : undefined}
-                            className="shrink-0 h-12 w-12 rounded-lg overflow-hidden border border-border bg-muted hover:border-foreground/30 transition-colors"
+                            className="shrink-0 h-12 w-12 rounded-lg overflow-hidden border border-border bg-muted hover:border-foreground/30 motion-interactive"
                           >
                             {isVideo ? (
                               <video
@@ -1017,7 +984,7 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
                         <div className="shrink-0 text-right">
                           <p className={cn(
                             'text-sm font-semibold',
-                            amount.isPositive ? 'text-green-600 dark:text-green-400' : 'text-foreground'
+                            amount.isPositive ? 'text-success' : 'text-foreground'
                           )}>
                             {amount.text}
                             {amount.token && (
@@ -1105,8 +1072,8 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
               <p
                 className={
                   changePositive
-                    ? 'text-xs font-medium text-green-600 dark:text-green-400'
-                    : 'text-xs font-medium text-red-600 dark:text-red-400'
+                    ? 'text-xs font-medium text-success'
+                    : 'text-xs font-medium text-destructive'
                 }
               >
                 {changePositive ? '+ ' : '- '}$
@@ -1117,52 +1084,17 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
           </div>
         </div>
 
-        <div className="shrink-0 px-1">
-          <div className="flex gap-6">
-            <button
-              className={cn(
-                'py-3 text-sm font-medium relative no-hover-bg',
-                activeTab === 'tokens'
-                  ? 'text-foreground'
-                  : 'text-muted-foreground'
-              )}
-              onClick={() => setActiveTab('tokens')}
-            >
-              Tokens
-              {activeTab === 'tokens' && (
-                <div className="absolute bottom-0 left-0 w-full h-0.5 bg-foreground rounded-full" />
-              )}
-            </button>
-            <button
-              className={cn(
-                'py-3 text-sm font-medium relative no-hover-bg',
-                activeTab === 'nfts'
-                  ? 'text-foreground'
-                  : 'text-muted-foreground'
-              )}
-              onClick={() => setActiveTab('nfts')}
-            >
-              NFTs
-              {activeTab === 'nfts' && (
-                <div className="absolute bottom-0 left-0 w-full h-0.5 bg-foreground rounded-full" />
-              )}
-            </button>
-            <button
-              className={cn(
-                'py-3 text-sm font-medium relative no-hover-bg',
-                activeTab === 'activity'
-                  ? 'text-foreground'
-                  : 'text-muted-foreground'
-              )}
-              onClick={() => setActiveTab('activity')}
-            >
-              Activity
-              {activeTab === 'activity' && (
-                <div className="absolute bottom-0 left-0 w-full h-0.5 bg-foreground rounded-full" />
-              )}
-            </button>
-          </div>
-        </div>
+        <Tabs
+          value={activeTab}
+          onValueChange={(value) => setActiveTab(value as 'tokens' | 'nfts' | 'activity')}
+          className="shrink-0 px-1"
+        >
+          <TabsList>
+            <TabsTrigger value="tokens">Tokens</TabsTrigger>
+            <TabsTrigger value="nfts">NFTs</TabsTrigger>
+            <TabsTrigger value="activity">Activity</TabsTrigger>
+          </TabsList>
+        </Tabs>
 
         <div className="flex-1 min-h-0 overflow-y-auto pr-1 scrollbar-hide mt-3">
           {activeTab === 'tokens' ? <TokensView /> : activeTab === 'nfts' ? <NFTsView /> : <ActivityView />}
@@ -1203,7 +1135,7 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
             <button
-              className="flex items-center justify-center rounded-lg transition-colors min-w-[44px] min-h-[44px] text-foreground"
+              className="flex items-center justify-center rounded-lg motion-interactive min-w-[44px] min-h-[44px] text-foreground"
               aria-label="Wallets"
             >
               <span className="w-6 h-6 grid place-items-center">
@@ -1232,37 +1164,33 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
   // Desktop: Popover Menu
   return (
     <>
-      <div ref={menuRef} className="relative">
-        {/* Menu Dropdown */}
-        {isOpen && (
-          <div
-            className="absolute bottom-full left-3 mb-2 w-[340px] max-w-[90vw] bg-popover border border-border rounded-xl shadow-lg overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-200 h-[480px] z-300 flex flex-col"
-            role="menu"
-            aria-orientation="vertical"
-            aria-labelledby="wallets-button"
+      <Popover open={isOpen} onOpenChange={setIsOpen}>
+        <PopoverTrigger asChild>
+          <button
+            id="wallets-button"
+            className={`flex items-center gap-3 px-3 py-2.5 mx-3 w-[calc(100%-1.5rem)] text-left rounded-md hover-fade text-foreground hover:bg-accent hover:text-accent-foreground ${
+              isOpen ? 'font-semibold' : 'font-medium'
+            }`}
+            aria-haspopup="menu"
           >
-            <div className="p-4 flex flex-col flex-1 min-h-0">
-              <MenuContent />
-            </div>
-          </div>
-        )}
-
-        {/* Wallets Button */}
-        <button
-          id="wallets-button"
-          onClick={() => setIsOpen(!isOpen)}
-          className={`flex items-center gap-3 px-3 py-2.5 mx-3 w-[calc(100%-1.5rem)] text-left rounded-md hover-fade text-foreground hover:bg-accent hover:text-accent-foreground ${
-            isOpen ? 'font-semibold' : 'font-medium'
-          }`}
-          aria-expanded={isOpen}
-          aria-haspopup="menu"
+            <span className="w-6 h-6 grid place-items-center">
+              <Icon name="wallet" variant={isOpen ? 'solid' : 'regular'} className="text-xl" />
+            </span>
+            <span className="text-sm leading-none">Wallets</span>
+          </button>
+        </PopoverTrigger>
+        <PopoverContent
+          side="top"
+          align="start"
+          role="menu"
+          aria-orientation="vertical"
+          className="w-[340px] max-w-[90vw] h-[480px] p-0 rounded-xl flex flex-col overflow-hidden"
         >
-          <span className="w-6 h-6 grid place-items-center">
-            <Icon name="wallet" variant={isOpen ? 'solid' : 'regular'} className="text-xl" />
-          </span>
-          <span className="text-sm leading-none">Wallets</span>
-        </button>
-      </div>
+          <div className="p-4 flex flex-col flex-1 min-h-0">
+            <MenuContent />
+          </div>
+        </PopoverContent>
+      </Popover>
       {sendDialog}
     </>
   )

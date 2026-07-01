@@ -285,14 +285,14 @@ export function FloatingMessageButton({ className, hideTrigger = false }: Floati
           {/* Backdrop - mobile only */}
           <div
             data-messaging-backdrop
-            className="fixed inset-0 z-50 bg-black/50 lg:hidden"
+            className="fixed inset-0 z-(--z-overlay) bg-black/50 lg:hidden"
             onClick={handleClose}
           />
 
           {/* Mobile full-screen sheet */}
           <div
             ref={mobileSheetRef}
-            className="fixed inset-x-0 bottom-0 z-50 lg:hidden flex flex-col bg-background rounded-t-xl shadow-lg animate-in slide-in-from-bottom duration-200"
+            className="fixed inset-x-0 bottom-0 z-(--z-overlay) lg:hidden flex flex-col bg-background rounded-t-xl shadow-lg animate-in slide-in-from-bottom duration-200"
             style={{
               height: viewportHeight ? `${viewportHeight}px` : '100dvh',
               maxHeight: '100dvh',
@@ -309,7 +309,7 @@ export function FloatingMessageButton({ className, hideTrigger = false }: Floati
           <div
             ref={desktopPopoverRef}
             className={cn(
-              'fixed z-40 right-6 bottom-6 hidden lg:block',
+              'fixed z-(--z-overlay) right-6 bottom-6 hidden lg:block',
               className
             )}
           >
@@ -328,7 +328,7 @@ export function FloatingMessageButton({ className, hideTrigger = false }: Floati
       {!isOpen && !hideTrigger && (
         <div
           className={cn(
-            'fixed z-40 right-4 lg:right-6 transition-transform duration-200',
+            'fixed z-(--z-nav) right-4 lg:right-6 transition-transform duration-200',
             'bottom-[calc(4.5rem+env(safe-area-inset-bottom,0px))] lg:bottom-6',
             isScrollHidden && 'translate-y-[calc(100%+1rem)] lg:translate-y-0',
             className

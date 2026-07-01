@@ -4,6 +4,8 @@
  */
 
 import { Link } from '@tanstack/react-router'
+import { Marquee as SableMarquee } from '@cdecaire/sable'
+import { Center } from '@cdecaire/sable/layout'
 import { Icon } from '@/components/ui/icon'
 import { useEffect, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
@@ -190,22 +192,22 @@ function Header() {
   }
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 px-6 py-4 flex items-center bg-background/80 backdrop-blur-md border-b border-border/50" style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 1rem)' }}>
+    <header className="fixed top-0 left-0 right-0 z-(--z-nav) px-6 py-4 flex items-center bg-background/80 backdrop-blur-md border-b border-border/50" style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 1rem)' }}>
       <Link to="/" className="flex-1 flex items-center space-x-2 hover:opacity-80 transition-opacity">
         <Logo size={15} className="text-foreground" />
         <span className="text-heading-3">Desperse</span>
       </Link>
       <nav className="hidden md:flex gap-8 text-label-lg">
-        <Link to="/browse" className="hover:text-zinc-500 dark:hover:text-zinc-400 transition-colors">
+        <Link to="/browse" className="hover:text-zinc-500 dark:hover:text-zinc-400 motion-interactive">
           Browse
         </Link>
-        <a href="#features" className="hover:text-zinc-500 dark:hover:text-zinc-400 transition-colors">
+        <a href="#features" className="hover:text-zinc-500 dark:hover:text-zinc-400 motion-interactive">
           Features
         </a>
-        <a href="#creators" className="hover:text-zinc-500 dark:hover:text-zinc-400 transition-colors">
+        <a href="#creators" className="hover:text-zinc-500 dark:hover:text-zinc-400 motion-interactive">
           Creators
         </a>
-        <a href="#why" className="hover:text-zinc-500 dark:hover:text-zinc-400 transition-colors">
+        <a href="#why" className="hover:text-zinc-500 dark:hover:text-zinc-400 motion-interactive">
           Why Desperse
         </a>
       </nav>
@@ -227,7 +229,7 @@ function Header() {
         {authenticated ? (
           <Link
             to="/"
-            className="border border-zinc-300 dark:border-zinc-700 px-5 py-2 rounded-full text-label-lg hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 transition-colors duration-200"
+            className="border border-zinc-300 dark:border-zinc-700 px-5 py-2 rounded-full text-label-lg hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 motion-interactive"
           >
             Go to Feed
           </Link>
@@ -235,7 +237,7 @@ function Header() {
           <button
             onClick={() => login()}
             disabled={!ready}
-            className="border border-zinc-300 dark:border-zinc-700 px-5 py-2 rounded-full text-label-lg hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 transition-colors duration-200 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-950 dark:focus-visible:ring-white"
+            className="border border-zinc-300 dark:border-zinc-700 px-5 py-2 rounded-full text-label-lg hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 motion-interactive disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-950 dark:focus-visible:ring-white"
           >
             {recoveryMessage ? 'Retry sign in' : 'Log in'}
           </button>
@@ -261,7 +263,7 @@ function Hero() {
         }}
       />
 
-      <div ref={revealRef} className="z-10 max-w-7xl mx-auto w-full">
+      <div ref={revealRef} className="z-10 max-w-[var(--region-wide)] mx-auto w-full">
         <h1 className="text-display-4xl overflow-hidden">
           <span className="block reveal-text">CREATE.</span>
           <span className="block reveal-text" style={{ transitionDelay: '0.1s' }}>COLLECT.</span>
@@ -290,7 +292,7 @@ function Hero() {
             </div>
             <a
               href="#features"
-              className="group flex items-center gap-2 text-label-lg text-zinc-500 hover:text-zinc-950 dark:hover:text-white transition-colors"
+              className="group flex items-center gap-2 text-label-lg text-zinc-500 hover:text-zinc-950 dark:hover:text-white motion-interactive"
             >
               See how it works
               <span className="group-hover:translate-x-1 transition-transform">&darr;</span>
@@ -310,30 +312,27 @@ function Hero() {
   )
 }
 
-// Infinite Marquee — subtle divider between hero and content
+// Infinite Marquee — subtle divider between hero and content.
+// Sable's <Marquee> owns the seamless loop, constant px/s speed, overflow
+// clipping, and prefers-reduced-motion handling, so we just provide one set of
+// items; it duplicates them as needed. pauseOnHover is off to keep the original
+// continuous-divider feel.
 function Marquee() {
   const items = ['PUBLISH', 'MINT', 'COLLECT', 'OWN']
-  // Render two identical halves so translateX(-50%) creates a seamless loop
-  const half = Array.from({ length: 6 }, () => items).flat()
 
   return (
-    <div className="py-6 border-t border-border overflow-hidden">
-      <div className="marquee-track flex whitespace-nowrap w-max">
-        {[half, half].map((group, gi) => (
-          <div key={gi} className="flex shrink-0">
-            {group.map((item, i) => (
-              <span key={i} className="flex items-center">
-                {/* Editorial marquee — mono with wide tracking for decorative effect */}
-                <span className="text-mono-md tracking-widest px-8 text-muted-foreground/60">
-                  {item}
-                </span>
-                <span className="text-muted-foreground/30 text-xs">◆</span>
-              </span>
-            ))}
-          </div>
+    <div className="py-6 border-t border-border">
+      <SableMarquee gap="0" pauseOnHover={false} aria-label="Publish, mint, collect, own">
+        {items.map((item) => (
+          <span key={item} className="flex items-center">
+            {/* Editorial marquee — mono with wide tracking for decorative effect */}
+            <span className="text-mono-md tracking-widest px-8 text-muted-foreground/60">
+              {item}
+            </span>
+            <span className="text-muted-foreground/30 text-xs">◆</span>
+          </span>
         ))}
-      </div>
-
+      </SableMarquee>
     </div>
   )
 }
@@ -444,17 +443,17 @@ function PhoneProfilePreview() {
             ) : (
               // Skeleton
               <div>
-                <div className="h-[22%] bg-muted animate-pulse" />
+                <div className="h-[22%] bg-muted motion-pulse" />
                 <div className="px-[5%] -mt-[10%]">
-                  <div className="w-[20%] aspect-square rounded-full bg-muted border-2 border-background animate-pulse" />
+                  <div className="w-[20%] aspect-square rounded-full bg-muted border-2 border-background motion-pulse" />
                   <div className="mt-1.5 space-y-1.5">
-                    <div className="h-3 w-24 bg-muted rounded animate-pulse" />
-                    <div className="h-2 w-16 bg-muted rounded animate-pulse" />
+                    <div className="h-3 w-24 bg-muted rounded motion-pulse" />
+                    <div className="h-2 w-16 bg-muted rounded motion-pulse" />
                   </div>
                 </div>
                 <div className="mt-3 px-[1%] grid grid-cols-3 gap-px">
                   {[...Array(9)].map((_, i) => (
-                    <div key={i} className="aspect-square bg-muted animate-pulse" />
+                    <div key={i} className="aspect-square bg-muted motion-pulse" />
                   ))}
                 </div>
               </div>
@@ -470,7 +469,7 @@ function PhoneProfilePreview() {
 function ForCollectorsCard() {
   return (
     <div className="md:sticky md:top-16 min-h-[80vh] md:min-h-screen md:h-screen flex items-center justify-center overflow-hidden border-t border-border bg-background z-30 transition-all duration-500 ease-out">
-      <div className="max-w-7xl w-full mx-auto px-6 grid md:grid-cols-2 gap-12 items-center h-full py-20">
+      <Center max="80rem" className="px-6 grid md:grid-cols-2 gap-12 items-center h-full py-20">
         <div className="order-2 md:order-1 scroll-reveal">
           <span className="text-mono-md text-zinc-600 dark:text-zinc-400 mb-4 block">03 / FOR COLLECTORS</span>
           <h2 className="text-display-3xl mb-6">
@@ -487,7 +486,7 @@ function ForCollectorsCard() {
         <div className="order-1 md:order-2 flex justify-center items-center">
           <PhoneProfilePreview />
         </div>
-      </div>
+      </Center>
     </div>
   )
 }
@@ -532,7 +531,7 @@ function StickyCards() {
     <div id="features" className="relative">
       {/* Card 1 - What Desperse Is */}
       <div className="md:sticky md:top-16 min-h-[80vh] md:min-h-screen md:h-screen flex items-center justify-center overflow-hidden border-t border-border bg-background z-10 transition-all duration-500 ease-out">
-        <div className="max-w-7xl w-full mx-auto px-6 grid md:grid-cols-2 gap-12 items-center h-full py-20">
+        <Center max="80rem" className="px-6 grid md:grid-cols-2 gap-12 items-center h-full py-20">
           <div className="order-2 md:order-1 scroll-reveal">
             <span className="text-mono-md text-zinc-600 dark:text-zinc-400 mb-4 block">01 / WHAT DESPERSE IS</span>
             <h2 className="text-display-3xl mb-6">
@@ -597,15 +596,15 @@ function StickyCards() {
                 </div>
               </div>
             ) : (
-              <div className="w-64 h-80 md:w-80 md:h-96 bg-muted rounded-2xl animate-pulse" />
+              <div className="w-64 h-80 md:w-80 md:h-96 bg-muted rounded-2xl motion-pulse" />
             )}
           </div>
-        </div>
+        </Center>
       </div>
 
       {/* Card 2 - For Creators */}
       <div className="md:sticky md:top-16 min-h-[80vh] md:min-h-screen md:h-screen flex items-center justify-center overflow-hidden border-t border-border bg-card z-20 transition-all duration-500 ease-out">
-        <div className="max-w-7xl w-full mx-auto px-6 grid md:grid-cols-2 gap-12 items-center h-full py-20">
+        <Center max="80rem" className="px-6 grid md:grid-cols-2 gap-12 items-center h-full py-20">
           <div className="order-2 md:order-1 scroll-reveal">
             <span className="text-mono-md text-zinc-600 dark:text-zinc-400 mb-4 block">02 / FOR CREATORS</span>
             <h2 className="text-display-3xl mb-6">
@@ -742,27 +741,27 @@ function StickyCards() {
                 <div className="w-64 h-80 bg-muted rounded-xl absolute top-0 right-4 rotate-6 border border-border opacity-60" />
                 <div className="w-64 h-80 bg-card rounded-xl relative z-10 -rotate-3 border border-border p-5 flex flex-col justify-between shadow-2xl">
                   <div className="flex justify-between items-start">
-                    <div className="w-12 h-12 rounded-full bg-muted animate-pulse" />
+                    <div className="w-12 h-12 rounded-full bg-muted motion-pulse" />
                     <div className="text-[10px] font-mono text-(--caribbean-green-500)">
                       Creator
                     </div>
                   </div>
                   <div className="space-y-3">
                     <div className="space-y-2">
-                      <div className="h-5 w-32 bg-muted rounded animate-pulse" />
-                      <div className="h-3 w-24 bg-muted rounded animate-pulse" />
+                      <div className="h-5 w-32 bg-muted rounded motion-pulse" />
+                      <div className="h-3 w-24 bg-muted rounded motion-pulse" />
                     </div>
                     <div className="flex gap-4 pt-2 border-t border-border">
-                      <div className="h-8 w-12 bg-muted rounded animate-pulse" />
-                      <div className="h-8 w-12 bg-muted rounded animate-pulse" />
-                      <div className="h-8 w-12 bg-muted rounded animate-pulse" />
+                      <div className="h-8 w-12 bg-muted rounded motion-pulse" />
+                      <div className="h-8 w-12 bg-muted rounded motion-pulse" />
+                      <div className="h-8 w-12 bg-muted rounded motion-pulse" />
                     </div>
                   </div>
                 </div>
               </>
             )}
           </div>
-        </div>
+        </Center>
       </div>
 
       {/* Card 3 - For Collectors */}
@@ -770,7 +769,7 @@ function StickyCards() {
 
       {/* Card 4 - How Minting Works */}
       <div className="md:sticky md:top-16 min-h-[80vh] md:min-h-screen md:h-screen flex items-center justify-center overflow-hidden border-t border-border bg-card z-40 transition-all duration-500 ease-out">
-        <div className="max-w-7xl w-full mx-auto px-6 grid md:grid-cols-2 gap-12 items-center h-full py-20">
+        <Center max="80rem" className="px-6 grid md:grid-cols-2 gap-12 items-center h-full py-20">
           <div className="order-2 md:order-1 scroll-reveal">
             <span className="text-mono-md text-zinc-600 dark:text-zinc-400 mb-4 block">04 / HOW MINTING WORKS</span>
             <h2 className="text-display-3xl mb-6">
@@ -792,8 +791,8 @@ function StickyCards() {
                 <div className="px-6 pt-6 pb-4 border-b border-border/50">
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-xs font-mono text-muted-foreground">MINT CONFIRMED</span>
-                    <span className="text-xs font-mono text-emerald-500 flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block mint-pulse" />
+                    <span className="text-xs font-mono text-success flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-success inline-block mint-pulse" />
                       Success
                     </span>
                   </div>
@@ -826,12 +825,12 @@ function StickyCards() {
               </div>
             </div>
           </div>
-        </div>
+        </Center>
       </div>
 
       {/* Card 5 - Easy to Get Started */}
       <div className="md:sticky md:top-16 min-h-[80vh] md:min-h-screen md:h-screen flex items-center justify-center overflow-hidden border-t border-border bg-background z-50 transition-all duration-500 ease-out">
-        <div className="max-w-7xl w-full mx-auto px-6 grid md:grid-cols-2 gap-12 items-center h-full py-20">
+        <Center max="80rem" className="px-6 grid md:grid-cols-2 gap-12 items-center h-full py-20">
           <div className="order-2 md:order-1 scroll-reveal">
             <span className="text-mono-md text-zinc-600 dark:text-zinc-400 mb-4 block">05 / GET STARTED IN SECONDS</span>
             <h2 className="text-display-3xl mb-6">
@@ -915,12 +914,12 @@ function StickyCards() {
               </div>
             </div>
           </div>
-        </div>
+        </Center>
       </div>
 
       {/* Card 6 - Why Desperse (merged: value prop + comparison table + CTA) */}
       <div id="why" className="md:sticky md:top-16 min-h-[80vh] md:min-h-screen md:h-screen flex items-center justify-center overflow-hidden border-t border-border bg-card z-60 transition-all duration-500 ease-out">
-        <div className="max-w-7xl w-full mx-auto px-6 grid md:grid-cols-2 gap-12 items-center h-full py-20">
+        <Center max="80rem" className="px-6 grid md:grid-cols-2 gap-12 items-center h-full py-20">
           <div className="order-2 md:order-1 scroll-reveal">
             <span className="text-mono-md text-zinc-600 dark:text-zinc-400 mb-4 block">06 / WHY DESPERSE</span>
             <h2 className="text-display-3xl mb-6">
@@ -957,7 +956,7 @@ function StickyCards() {
               ].map((row, i, arr) => (
                 <div key={i} className={`grid grid-cols-2 ${i < arr.length - 1 ? 'border-b border-border' : ''}`}>
                   <div className="px-4 py-4 border-r border-border flex items-center gap-2">
-                    <span className="text-red-500 text-lg">&times;</span>
+                    <span className="text-destructive text-lg">&times;</span>
                     <span className="text-sm text-zinc-600 dark:text-zinc-400">{row.bad}</span>
                   </div>
                   <div className="px-4 py-4">
@@ -967,7 +966,7 @@ function StickyCards() {
               ))}
             </div>
           </div>
-        </div>
+        </Center>
       </div>
     </div>
   )
@@ -990,7 +989,7 @@ function Gallery() {
 
   return (
     <section id="creators" className="py-32 px-6 bg-card/30">
-      <div className="max-w-7xl mx-auto scroll-reveal-stagger">
+      <Center max="80rem" className="scroll-reveal-stagger">
         <div className="flex flex-col md:flex-row justify-between items-end mb-16">
           <h3 className="text-display-lg stagger-item">Discover <br />Creators</h3>
           <Link
@@ -1004,7 +1003,7 @@ function Gallery() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {isLoading ? (
             [0, 1, 2].map((i) => (
-              <div key={i} className={`relative aspect-4/5 bg-muted rounded-xl overflow-hidden animate-pulse ${i === 1 ? 'lg:mt-12' : ''}`} />
+              <div key={i} className={`relative aspect-4/5 bg-muted rounded-xl overflow-hidden motion-pulse ${i === 1 ? 'lg:mt-12' : ''}`} />
             ))
           ) : posts.length > 0 ? (
             posts.map((post, i) => (
@@ -1057,7 +1056,7 @@ function Gallery() {
             ))
           )}
         </div>
-      </div>
+      </Center>
     </section>
   )
 }
@@ -1095,8 +1094,8 @@ function PrivyLogo({ className, style }: { className?: string; style?: React.CSS
 function GetTheApp() {
   return (
     <section id="download" className="py-32 px-6 bg-background border-t border-border">
-      <div className="max-w-7xl mx-auto">
-        <div className="max-w-2xl mb-16 scroll-reveal">
+      <Center max="80rem">
+        <div className="max-w-[var(--region-feed)] mb-16 scroll-reveal">
           <span className="text-mono-md text-zinc-600 dark:text-zinc-400 mb-4 block">GET THE APP</span>
           <h2 className="text-display-3xl mb-6">
             Made for <br />
@@ -1132,13 +1131,13 @@ function GetTheApp() {
         <div className="mt-12 text-center scroll-reveal">
           <Link
             to="/download"
-            className="inline-flex items-center gap-2 text-label-lg text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition-colors"
+            className="inline-flex items-center gap-2 text-label-lg text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white motion-interactive"
           >
             Install instructions and details
             <span aria-hidden="true">&rarr;</span>
           </Link>
         </div>
-      </div>
+      </Center>
     </section>
   )
 }
@@ -1197,7 +1196,7 @@ function PlatformAndroidMark({ className }: { className?: string }) {
 function TechSpecs() {
   return (
     <section id="tech" className="py-24 border-y border-border bg-background">
-      <div className="max-w-7xl mx-auto px-6 scroll-reveal-stagger">
+      <Center max="80rem" className="px-6 scroll-reveal-stagger">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="border border-border rounded-xl p-6 bg-card/50 stagger-item">
             <div
@@ -1235,7 +1234,7 @@ function TechSpecs() {
             <p className="text-body-sm text-zinc-600 dark:text-zinc-400">You own your keys. Embedded wallets powered by Privy.</p>
           </div>
         </div>
-      </div>
+      </Center>
     </section>
   )
 }
@@ -1245,7 +1244,7 @@ export function Footer({ showCta = true }: { showCta?: boolean }) {
   const { login, ready } = usePrivy()
   return (
     <footer className={`${showCta ? 'py-20' : 'py-12'} px-6 bg-background relative overflow-hidden`}>
-      <div className="max-w-7xl mx-auto relative z-10">
+      <Center max="80rem" className="relative z-10">
         {showCta && (
           <>
             <div className="text-center mb-16">
@@ -1272,28 +1271,28 @@ export function Footer({ showCta = true }: { showCta?: boolean }) {
           <div className="flex flex-col sm:flex-row gap-12">
             <nav aria-label="Footer" className="space-y-4">
               <p className="text-label-xs text-zinc-500 dark:text-zinc-500">Legal</p>
-              <Link to="/privacy" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors">
+              <Link to="/privacy" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 motion-interactive">
                 Privacy Policy
               </Link>
-              <Link to="/terms" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors">
+              <Link to="/terms" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 motion-interactive">
                 Terms of Service
               </Link>
-              <Link to="/fees" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors">
+              <Link to="/fees" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 motion-interactive">
                 Fees
               </Link>
             </nav>
             <nav aria-label="Download" className="space-y-4">
               <p className="text-label-xs text-zinc-500 dark:text-zinc-500">Download</p>
-              <Link to="/download" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors">
+              <Link to="/download" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 motion-interactive">
                 All platforms
               </Link>
-              <a href="https://testflight.apple.com/join/27uRZQ45" target="_blank" rel="noopener noreferrer" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors">
+              <a href="https://testflight.apple.com/join/27uRZQ45" target="_blank" rel="noopener noreferrer" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 motion-interactive">
                 iOS · TestFlight
               </a>
-              <Link to="/download" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors">
+              <Link to="/download" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 motion-interactive">
                 Solana dApp Store
               </Link>
-              <Link to="/download" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors">
+              <Link to="/download" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 motion-interactive">
                 Android APK
               </Link>
             </nav>
@@ -1306,7 +1305,7 @@ export function Footer({ showCta = true }: { showCta?: boolean }) {
             <p className="text-body-sm text-zinc-500 dark:text-zinc-500">© {new Date().getFullYear()} Desperse. All rights reserved.</p>
           </div>
         </div>
-      </div>
+      </Center>
     </footer>
   )
 }
@@ -1338,7 +1337,7 @@ function FloatingCta({ lenisRef }: { lenisRef: React.RefObject<Lenis | null> }) 
 
   return (
     <div
-      className={`fixed bottom-6 right-6 z-40 transition-all duration-300 ${
+      className={`fixed bottom-6 right-6 z-(--z-nav) transition-all duration-300 ${
         visible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0 pointer-events-none'
       }`}
     >
@@ -1411,15 +1410,6 @@ function LandingAnimationStyles() {
       .reveal-text.active {
         transform: translateY(0);
         opacity: 1;
-      }
-
-      /* Marquee */
-      .marquee-track {
-        animation: marquee-scroll 30s linear infinite;
-      }
-      @keyframes marquee-scroll {
-        0% { transform: translateX(0); }
-        100% { transform: translateX(-50%); }
       }
 
       /* Scroll reveal — fade + slide up */
@@ -1606,8 +1596,7 @@ function LandingAnimationStyles() {
           transform: scaleY(1);
           transition: none;
         }
-        .mint-pulse,
-        .marquee-track {
+        .mint-pulse {
           animation: none;
         }
       }

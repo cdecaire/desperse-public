@@ -10,6 +10,7 @@ import { Icon } from '@/components/ui/icon'
 import { cn } from '@/lib/utils'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
 import { Tooltip } from '@/components/ui/tooltip'
 import { deleteMedia } from '@/server/functions/upload'
 import { useAuth } from '@/hooks/useAuth'
@@ -819,12 +820,12 @@ export function MultiMediaUpload({
         <div className="flex items-center gap-1.5">
           {showReorderHint ? (
             <Tooltip content="Drag images to reorder. First image is the cover.">
-              <label className="text-sm font-medium cursor-help border-b border-dotted border-muted-foreground/50">
+              <Label size="sm" className="cursor-help border-b border-dotted border-muted-foreground/50">
                 {label}
-              </label>
+              </Label>
             </Tooltip>
           ) : (
-            <label className="text-sm font-medium">{label}</label>
+            <Label size="sm">{label}</Label>
           )}
           {items.length > 0 && (
             <span className="text-xs text-muted-foreground">
@@ -952,9 +953,9 @@ export function MultiMediaUpload({
       {/* Downloadable File Section - separate from carousel */}
       {downloadableItems.length > 0 && (
         <div className="space-y-2 pt-2">
-          <label className="text-sm font-medium text-muted-foreground">
+          <Label size="sm" className="text-muted-foreground">
             Downloadable File
-          </label>
+          </Label>
           {downloadableItems.map((item) => (
             <DownloadableFileCard
               key={item.id}

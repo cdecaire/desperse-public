@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
+import { Row, Stack } from '@cdecaire/sable/layout'
 import { Icon } from '@/components/ui/icon'
 import { Button } from '@/components/ui/button'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
@@ -14,16 +15,16 @@ function BlockedUsersPage() {
   const unblockMutation = useUnblockUser()
 
   return (
-    <div className="space-y-4 pt-4">
+    <Stack gap={2} className="pt-4">
       <PageHeader
         title="Blocked Accounts"
         description="People you've blocked. They can't see your profile or posts, and you can't see theirs."
       />
 
       {isLoading ? (
-        <div className="flex justify-center py-12">
+        <Row justify="center" className="py-12">
           <LoadingSpinner />
-        </div>
+        </Row>
       ) : error ? (
         <p className="text-body-sm text-muted-foreground py-4">
           Couldn't load your blocked accounts. Try again in a moment.
@@ -84,6 +85,6 @@ function BlockedUsersPage() {
           ))}
         </div>
       )}
-    </div>
+    </Stack>
   )
 }

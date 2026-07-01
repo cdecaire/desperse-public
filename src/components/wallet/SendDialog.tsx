@@ -8,6 +8,7 @@ import { useState, useCallback, useMemo, useEffect } from "react";
 import { Icon } from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Field, MiddleTruncate, Note } from "@cdecaire/sable";
 import {
 	Dialog,
 	DialogContent,
@@ -75,11 +76,6 @@ export function SendDialog({
 		}
 		return "Wallet";
 	}, [activeWallet, activePrivyWallet]);
-
-	const shortenedAddress = useMemo(() => {
-		if (!activeAddress) return "";
-		return `${activeAddress.slice(0, 4)}...${activeAddress.slice(-4)}`;
-	}, [activeAddress]);
 
 	// Validation
 	const isValidAddress = toAddress.length > 0 && isAddress(toAddress);
@@ -208,40 +204,34 @@ export function SendDialog({
 							{walletLabel}
 						</span>
 						<span>
-							{shortenedAddress}
+							<MiddleTruncate text={activeAddress || ""} startChars={4} endChars={4} />
 						</span>
 					</div>
 
 					{/* Recipient address */}
 					<div className="space-y-1.5">
-						<label
-							htmlFor="send-recipient"
-							className="text-sm font-medium"
+						<Field
+							label="Recipient"
+							error={showAddressError ? "Invalid Solana address" : undefined}
 						>
-							Recipient
-						</label>
-						<Input
-							id="send-recipient"
-							type="text"
-							placeholder="Enter recipient public key"
-							value={toAddress}
-							onChange={(e) => setToAddress(e.target.value.trim())}
-							onBlur={() => setAddressTouched(true)}
-							disabled={isPending || state === "success"}
-							autoComplete="off"
-							autoCorrect="off"
-							spellCheck={false}
-							data-1p-ignore
-							data-lpignore="true"
-							data-form-type="other"
-						/>
-						{showAddressError && (
-							<p className="text-xs text-destructive">
-								Invalid Solana address
-							</p>
-						)}
+							<Input
+								id="send-recipient"
+								type="text"
+								placeholder="Enter recipient public key"
+								value={toAddress}
+								onChange={(e) => setToAddress(e.target.value.trim())}
+								onBlur={() => setAddressTouched(true)}
+								disabled={isPending || state === "success"}
+								autoComplete="off"
+								autoCorrect="off"
+								spellCheck={false}
+								data-1p-ignore
+								data-lpignore="true"
+								data-form-type="other"
+							/>
+						</Field>
 						{isSelfSend && (
-							<p className="text-xs text-amber-500">
+							<p className="text-xs text-tone-warning">
 								This is your own wallet address
 							</p>
 						)}
@@ -318,17 +308,10 @@ export function SendDialog({
 						isValidAmount &&
 						!hasInsufficientFunds &&
 						!isSelfSend && (
-							<div className="flex items-start gap-2 rounded-md bg-amber-500/10 border border-amber-500/20 px-3 py-2 text-xs text-amber-600 dark:text-amber-400">
-								<Icon
-									name="triangle-exclamation"
-									variant="regular"
-									className="mt-0.5 shrink-0"
-								/>
-								<span>
-									Transfers cannot be reversed. Double-check
-									the wallet address.
-								</span>
-							</div>
+							<Note variant="warning">
+								Transfers cannot be reversed. Double-check the
+								wallet address.
+							</Note>
 						)}
 
 					{/* Status Messages */}
@@ -355,7 +338,7 @@ export function SendDialog({
 							icon={
 								<Icon
 									name="circle-check"
-									className="text-green-500"
+									className="text-success"
 								/>
 							}
 							message={`Sent ${amount} ${symbol}!`}

@@ -86,7 +86,7 @@ export function NewPostsToast({
       onClick={handleClick}
       className={cn(
         // Base styles
-        'fixed z-50',
+        'fixed z-(--z-toast)',
         // Center to viewport on mobile, center to main content area on desktop (accounting for 256px sidebar)
         'left-1/2 lg:left-[calc(50%+128px)] -translate-x-1/2',
         'flex items-center gap-2.5 px-4 py-2.5 rounded-full',

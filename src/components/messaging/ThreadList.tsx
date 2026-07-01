@@ -7,6 +7,7 @@ import { useEffect, useRef, useCallback } from 'react'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import { ThreadItem } from './ThreadItem'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
+import { EmptyState } from '@/components/shared/EmptyState'
 import { Icon } from '@/components/ui/icon'
 import type { Thread } from '@/hooks/useMessages'
 
@@ -72,15 +73,11 @@ export function ThreadList({
 
   if (threads.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-        <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center mb-4">
-          <Icon name="message" variant="regular" className="text-2xl text-muted-foreground" />
-        </div>
-        <p className="text-sm text-muted-foreground">No conversations yet</p>
-        <p className="text-xs text-muted-foreground mt-1">
-          Start a conversation from someone's profile
-        </p>
-      </div>
+      <EmptyState
+        icon={<Icon name="message" variant="regular" />}
+        title="No conversations yet"
+        description="Start a conversation from someone's profile"
+      />
     )
   }
 

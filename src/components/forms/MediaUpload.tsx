@@ -5,10 +5,12 @@
 
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { upload } from '@vercel/blob/client'
+import { Progress } from '@cdecaire/sable'
 import { Icon } from '@/components/ui/icon'
 import { cn } from '@/lib/utils'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
 import { deleteMedia } from '@/server/functions/upload'
 import { FILE_TOO_LARGE_MESSAGE, MAX_UPLOAD_BYTES, MAX_UPLOAD_MB } from '@/lib/uploadParity'
 import { useAuth } from '@/hooks/useAuth'
@@ -533,12 +535,7 @@ export function MediaUpload({
               <p className="text-sm text-muted-foreground">
                 Uploading... {uploadState.progress}%
               </p>
-              <div className="w-48 h-1.5 bg-muted rounded-full overflow-hidden" role="progressbar" aria-valuenow={uploadState.progress} aria-valuemin={0} aria-valuemax={100} aria-label="Upload progress">
-                <div
-                  className="h-full bg-primary transition-all duration-300"
-                  style={{ width: `${uploadState.progress}%` }}
-                />
-              </div>
+              <Progress value={uploadState.progress} className="w-48" aria-label="Upload progress" />
             </div>
           ) : (
             <>
@@ -604,9 +601,9 @@ export function MediaUpload({
       {/* Cover Image Section (for audio files) */}
       {showCoverSection && (
         <div className="space-y-2">
-          <label className="text-sm font-medium">
+          <Label>
             Cover Image {requireCoverForAudio && <span className="text-destructive">*</span>}
-          </label>
+          </Label>
           
           {!coverUrl && !coverPreviewUrl ? (
             <div

@@ -30,6 +30,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import { Icon } from '@/components/ui/icon'
 import { formatRelativeTime } from '@/lib/dates'
+import { Stack, Row } from '@cdecaire/sable/layout'
 
 export const Route = createFileRoute('/admin/moderation/$reportId')({
   component: ReportDetailPage,
@@ -344,7 +345,7 @@ function ReportDetailPage() {
   }
 
   return (
-    <div className="max-w-4xl py-4">
+    <div className="py-4">
       <Button
         variant="ghost"
         onClick={() => navigate({ to: '/admin/moderation' })}
@@ -355,21 +356,21 @@ function ReportDetailPage() {
       </Button>
 
       {isLoadingUser && (
-        <div className="flex items-center justify-center py-12">
+        <Row align="center" justify="center" className="py-12">
           <LoadingSpinner size="lg" />
           <div className="ml-4 text-body-sm text-muted-foreground">
             Loading user...
           </div>
-        </div>
+        </Row>
       )}
 
       {!isLoadingUser && isLoading && (
-        <div className="flex items-center justify-center py-12">
+        <Row align="center" justify="center" className="py-12">
           <LoadingSpinner size="lg" />
           <div className="ml-4 text-body-sm text-muted-foreground">
             Loading report details...
           </div>
-        </div>
+        </Row>
       )}
 
       {!isLoading && error && (
@@ -389,13 +390,13 @@ function ReportDetailPage() {
       )}
 
       {!isLoading && !error && postDataResult && reportsData && (
-        <div className="space-y-3">
+        <Stack gap={1.5}>
           {/* Reported Comment - Show prominently when viewing comment report */}
           {isCommentReport && commentDataResult && (
             <div className="bg-card border-2 border-destructive/20 rounded-lg p-4">
-              <div className="flex items-center gap-2 mb-3">
+              <Row align="center" gap={1} className="mb-3">
                 <span className="text-label-md text-destructive uppercase tracking-wide">Reported Comment</span>
-              </div>
+              </Row>
               <div className="flex items-start gap-3">
                 {/* Commenter avatar */}
                 <div className="w-10 h-10 rounded-full overflow-hidden bg-muted shrink-0">
@@ -414,7 +415,7 @@ function ReportDetailPage() {
 
                 {/* Comment content */}
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
+                  <Row align="center" gap={1} className="mb-1">
                     <span className="font-semibold text-sm">
                       {commentDataResult.commenter.displayName || `@${commentDataResult.commenter.usernameSlug}`}
                     </span>
@@ -443,7 +444,7 @@ function ReportDetailPage() {
                         </span>
                       </>
                     )}
-                  </div>
+                  </Row>
                   <p className="text-sm text-foreground whitespace-pre-wrap break-words">
                     {commentDataResult.comment.content}
                   </p>
@@ -454,11 +455,11 @@ function ReportDetailPage() {
 
           {/* Parent Post Preview (context for comment reports) */}
           <div className="bg-card border rounded-lg p-3">
-            <div className="flex items-center gap-2 mb-3">
+            <Row align="center" gap={1} className="mb-3">
               <span className="text-label-md text-muted-foreground uppercase tracking-wide">
                 {isCommentReport ? 'Parent Post' : 'Reported Post'}
               </span>
-            </div>
+            </Row>
             <div className="flex items-start gap-3">
               {/* Small thumbnail */}
               <div className="w-32 h-32 rounded-[var(--radius-sm)] overflow-hidden bg-muted shrink-0">
@@ -471,7 +472,7 @@ function ReportDetailPage() {
 
               {/* Post info */}
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-3">
+                <Row align="center" gap={1.5}>
                   {/* Avatar */}
                   <div className="w-10 h-10 rounded-full overflow-hidden bg-muted shrink-0">
                     {postDataResult.user.avatarUrl ? (
@@ -522,7 +523,7 @@ function ReportDetailPage() {
                       )}
                     </div>
                   </div>
-                </div>
+                </Row>
 
                 {postDataResult.post.caption && (
                   <p className="text-sm text-foreground/90 line-clamp-2 mt-2">
@@ -536,7 +537,7 @@ function ReportDetailPage() {
           {/* Actions and Notes */}
           <div className="bg-card border rounded-lg p-4">
             <h2 className="text-title-lg mb-3">Moderation Actions</h2>
-            <div className="flex flex-wrap gap-2">
+            <Row gap={1} wrap>
               {isModerator && (
                 <>
                   {((isCommentReport && commentDataResult?.comment.isHidden) || (!isCommentReport && postDataResult.post.isHidden)) ? (
@@ -578,14 +579,14 @@ function ReportDetailPage() {
                   Delete {isCommentReport ? 'Comment' : 'Post'}
                 </Button>
               )}
-            </div>
+            </Row>
 
             {/* Moderator Notes */}
             {((isCommentReport && commentDataResult && (commentDataResult.comment.hiddenReason || commentDataResult.comment.deleteReason)) || (!isCommentReport && (postDataResult.post.hiddenReason || postDataResult.post.deleteReason))) && (
               <>
                 <div className="mt-4 pt-4 border-t">
                   <h3 className="text-label-lg mb-3">Moderator notes</h3>
-                  <div className="space-y-2">
+                  <Stack gap={1}>
                     {isCommentReport && commentDataResult?.comment.hiddenReason && (
                       <p className="text-sm text-foreground">
                         <span className="font-semibold">Moderator</span>{' '}
@@ -618,7 +619,7 @@ function ReportDetailPage() {
                         {postDataResult.post.deleteReason}
                       </p>
                     )}
-                  </div>
+                  </Stack>
                 </div>
               </>
             )}
@@ -629,14 +630,14 @@ function ReportDetailPage() {
             <h2 className="text-title-lg mb-3">
               All Reports ({reportsData.allReports?.length || 0})
             </h2>
-            <div className="space-y-3 max-h-96 overflow-y-auto">
+            <Stack gap={1.5} className="max-h-96 overflow-y-auto">
               {reportsData.allReports?.map((report) => (
                 <div
                   key={report.id}
                   className="p-3 rounded-[var(--radius-sm)] border bg-muted/50"
                 >
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex items-center gap-2">
+                  <Row align="start" justify="between" className="mb-2">
+                    <Row align="center" gap={1}>
                       <div className="w-8 h-8 rounded-full overflow-hidden bg-muted">
                         {report.reporter.avatarUrl ? (
                           <img
@@ -656,7 +657,7 @@ function ReportDetailPage() {
                       <span className="text-caption text-muted-foreground">
                         {new Date(report.createdAt).toLocaleDateString()}
                       </span>
-                    </div>
+                    </Row>
                     <Badge
                       variant={
                         report.status === 'resolved' ? 'success' :
@@ -665,38 +666,38 @@ function ReportDetailPage() {
                     >
                       {report.status}
                     </Badge>
-                  </div>
+                  </Row>
                   <div className="mb-2">
-                    <div className="flex flex-wrap gap-2">
+                    <Row gap={1} wrap>
                       {report.reasons.map((reason) => (
                         <Badge key={reason} variant="destructive">
                           {reason}
                         </Badge>
                       ))}
-                    </div>
+                    </Row>
                   </div>
                   {report.details && (
                     <p className="text-sm text-foreground/90 mt-2">{report.details}</p>
                   )}
                 </div>
               ))}
-            </div>
+            </Stack>
           </div>
-        </div>
+        </Stack>
       )}
 
       {/* DM Thread Report View */}
       {!isLoading && !error && isDmThreadReport && dmThreadDataResult && reportsData && (
-        <div className="space-y-3">
+        <Stack gap={1.5}>
           {/* Reported Conversation */}
           <div className="bg-card border-2 border-destructive/20 rounded-lg p-4">
-            <div className="flex items-center gap-2 mb-3">
+            <Row align="center" gap={1} className="mb-3">
               <span className="text-label-md text-destructive uppercase tracking-wide">Reported Conversation</span>
-            </div>
+            </Row>
 
-            <div className="space-y-4">
+            <Stack gap={2}>
               {/* User A */}
-              <div className="flex items-center gap-3">
+              <Row align="center" gap={1.5}>
                 <div className="w-10 h-10 rounded-full overflow-hidden bg-muted shrink-0">
                   {dmThreadDataResult.userA?.avatarUrl ? (
                     <img
@@ -718,16 +719,16 @@ function ReportDetailPage() {
                     @{dmThreadDataResult.userA?.usernameSlug}
                   </span>
                 </div>
-              </div>
+              </Row>
 
               {/* Separator */}
-              <div className="flex items-center gap-2 text-muted-foreground">
+              <Row align="center" gap={1} className="text-muted-foreground">
                 <Icon name="arrows-up-down" className="text-xs" />
                 <span className="text-xs">Conversation between</span>
-              </div>
+              </Row>
 
               {/* User B */}
-              <div className="flex items-center gap-3">
+              <Row align="center" gap={1.5}>
                 <div className="w-10 h-10 rounded-full overflow-hidden bg-muted shrink-0">
                   {dmThreadDataResult.userB?.avatarUrl ? (
                     <img
@@ -749,7 +750,7 @@ function ReportDetailPage() {
                     @{dmThreadDataResult.userB?.usernameSlug}
                   </span>
                 </div>
-              </div>
+              </Row>
 
               {/* Thread metadata */}
               <div className="text-caption text-muted-foreground pt-2 border-t">
@@ -758,13 +759,13 @@ function ReportDetailPage() {
                   <span> · Last message: {formatRelativeTime(dmThreadDataResult.thread.lastMessageAt)}</span>
                 )}
               </div>
-            </div>
+            </Stack>
           </div>
 
           {/* Actions */}
           <div className="bg-card border rounded-lg p-4">
             <h2 className="text-title-lg mb-3">Moderation Actions</h2>
-            <div className="flex flex-wrap gap-2">
+            <Row gap={1} wrap>
               {isModerator && (
                 <Button
                   variant="outline"
@@ -775,7 +776,7 @@ function ReportDetailPage() {
                   Mark Resolved (No Action)
                 </Button>
               )}
-            </div>
+            </Row>
             <p className="text-caption text-muted-foreground mt-3">
               Note: DM threads cannot be hidden or deleted. Users can block each other within the conversation.
             </p>
@@ -786,14 +787,14 @@ function ReportDetailPage() {
             <h2 className="text-title-lg mb-3">
               All Reports ({reportsData.allReports?.length || 0})
             </h2>
-            <div className="space-y-3 max-h-96 overflow-y-auto">
+            <Stack gap={1.5} className="max-h-96 overflow-y-auto">
               {reportsData.allReports?.map((report) => (
                 <div
                   key={report.id}
                   className="p-3 rounded-[var(--radius-sm)] border bg-muted/50"
                 >
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex items-center gap-2">
+                  <Row align="start" justify="between" className="mb-2">
+                    <Row align="center" gap={1}>
                       <div className="w-8 h-8 rounded-full overflow-hidden bg-muted">
                         {report.reporter.avatarUrl ? (
                           <img
@@ -813,7 +814,7 @@ function ReportDetailPage() {
                       <span className="text-caption text-muted-foreground">
                         {new Date(report.createdAt).toLocaleDateString()}
                       </span>
-                    </div>
+                    </Row>
                     <Badge
                       variant={
                         report.status === 'resolved' ? 'success' :
@@ -822,24 +823,24 @@ function ReportDetailPage() {
                     >
                       {report.status}
                     </Badge>
-                  </div>
+                  </Row>
                   <div className="mb-2">
-                    <div className="flex flex-wrap gap-2">
+                    <Row gap={1} wrap>
                       {report.reasons.map((reason) => (
                         <Badge key={reason} variant="destructive">
                           {reason}
                         </Badge>
                       ))}
-                    </div>
+                    </Row>
                   </div>
                   {report.details && (
                     <p className="text-sm text-foreground/90 mt-2">{report.details}</p>
                   )}
                 </div>
               ))}
-            </div>
+            </Stack>
           </div>
-        </div>
+        </Stack>
       )}
 
       {/* Hide Post Dialog */}

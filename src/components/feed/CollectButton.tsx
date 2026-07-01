@@ -564,7 +564,7 @@ export function CollectButton({
       <div className="flex flex-row items-center gap-2">
         {/* Status label for processing states */}
         {statusLabel && (
-          <span className="text-[10px] text-muted-foreground animate-pulse whitespace-nowrap">
+          <span className="text-[10px] text-muted-foreground motion-pulse whitespace-nowrap">
             {statusLabel}
           </span>
         )}
@@ -605,7 +605,7 @@ export function CollectButton({
           href={getExplorerUrl('tx', txSignature, preferences.explorer)}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+          className="text-xs text-muted-foreground hover:text-foreground motion-interactive flex items-center gap-1"
         >
           <Icon name="external-link" variant="regular" className="text-[10px]" />
           View on explorer
@@ -620,7 +620,7 @@ export function CollectButton({
 function Spinner() {
   return (
     <svg
-      className="animate-spin h-4 w-4"
+      className="motion-spin h-4 w-4"
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"

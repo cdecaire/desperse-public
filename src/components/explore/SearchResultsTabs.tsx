@@ -1,10 +1,13 @@
 /**
  * SearchResultsTabs Component
- * Tab navigation for search results (Top, Posts, People, Collectibles)
- * Follows the same pattern as FeedTabs
+ * Tab navigation for search results (Top, Posts, People, Collectibles).
+ *
+ * Migration shim (Phase 2 — Sable adoption): renders @cdecaire/sable's Tabs
+ * (via the ui/tabs shim) for the design-system underline + a11y wiring, kept
+ * full-width (flex-1 triggers) and controlled via activeTab/onTabChange.
  */
 
-import { cn } from '@/lib/utils'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 export type SearchTab = 'top' | 'posts' | 'people' | 'collectibles'
 
@@ -23,30 +26,19 @@ const tabs: { id: SearchTab; label: string }[] = [
 
 export function SearchResultsTabs({ activeTab, onTabChange, className }: SearchResultsTabsProps) {
   return (
-    <div className={cn('', className)}>
-      <div className="flex">
+    <Tabs
+      value={activeTab}
+      onValueChange={(value) => onTabChange(value as SearchTab)}
+      className={className}
+    >
+      <TabsList className="flex w-full">
         {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => onTabChange(tab.id)}
-            className={cn(
-              'flex-1 py-3 text-sm font-medium transition-colors relative',
-              activeTab === tab.id
-                ? 'text-foreground'
-                : 'text-muted-foreground hover:text-foreground/80'
-            )}
-            aria-current={activeTab === tab.id ? 'page' : undefined}
-          >
+          <TabsTrigger key={tab.id} value={tab.id} className="flex-1 justify-center">
             {tab.label}
-
-            {/* Active indicator */}
-            {activeTab === tab.id && (
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-foreground rounded-full" />
-            )}
-          </button>
+          </TabsTrigger>
         ))}
-      </div>
-    </div>
+      </TabsList>
+    </Tabs>
   )
 }
 

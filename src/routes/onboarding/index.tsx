@@ -1,3 +1,4 @@
+import { Stack } from '@cdecaire/sable/layout'
 import { createFileRoute } from '@tanstack/react-router'
 
 import { OnboardingShell } from '@/components/onboarding/OnboardingShell'
@@ -29,12 +30,12 @@ function OnboardingContent() {
   if (error) {
     return (
       <main className="flex min-h-[60vh] items-center justify-center px-4">
-        <div className="max-w-md rounded-2xl border bg-card p-6 text-center shadow-sm">
+        <Stack gap={1} className="max-w-md rounded-2xl border bg-card p-6 text-center shadow-sm">
           <h1 className="text-heading-3">We could not load onboarding yet</h1>
-          <p className="mt-2 text-body-sm text-muted-foreground">
+          <p className="text-body-sm text-muted-foreground">
             Refresh and try again. If this keeps happening, continue from profile settings.
           </p>
-        </div>
+        </Stack>
       </main>
     )
   }
@@ -42,10 +43,10 @@ function OnboardingContent() {
   if (isResolving) {
     return (
       <main className="flex min-h-[60vh] items-center justify-center px-4">
-        <div className="flex flex-col items-center gap-3 text-muted-foreground">
+        <Stack align="center" className="gap-3 text-muted-foreground">
           <LoadingSpinner size="lg" />
           <p className="text-body-sm">Checking your onboarding state...</p>
-        </div>
+        </Stack>
       </main>
     )
   }

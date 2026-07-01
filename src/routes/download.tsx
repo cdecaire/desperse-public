@@ -1,4 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { Grid, Row, Stack } from '@cdecaire/sable/layout'
 import { StaticPageLayout } from '@/components/layout/StaticPageLayout'
 import { DownloadBadge } from '@/components/shared/DownloadBadges'
 import { Icon } from '@/components/ui/icon'
@@ -10,70 +11,80 @@ export const Route = createFileRoute('/download')({
 function DownloadPage() {
 	return (
 		<StaticPageLayout>
-			<div className="space-y-12">
-				<header className="space-y-4">
-					<p className="text-label-xs text-muted-foreground">
-						Get the app
-					</p>
-					<h1 className="text-display-lg">
-						Desperse, everywhere you create.
-					</h1>
-					<p className="text-body-lg text-muted-foreground max-w-xl">
-						Native mobile apps for iOS and Android, plus a Solana dApp Store
-						build for Saga and Seeker. Same wallet, same posts, same collection.
-					</p>
+			<Stack gap={6}>
+				<header>
+					<Stack gap={2}>
+						<p className="text-label-xs text-muted-foreground">
+							Get the app
+						</p>
+						<h1 className="text-display-lg">
+							Desperse, everywhere you create.
+						</h1>
+						<p className="text-body-lg text-muted-foreground max-w-xl">
+							Native mobile apps for iOS and Android, plus a Solana dApp
+							Store build for Saga and Seeker. Same wallet, same posts, same
+							collection.
+						</p>
+					</Stack>
 				</header>
 
-				<section className="grid gap-6 md:grid-cols-2">
-					<PlatformCard
-						platform="ios"
-						title="iOS"
-						status="Public Beta · TestFlight"
-						description="Join the public TestFlight to get the latest iOS build with new features as they ship."
-					/>
-					<PlatformCard
-						platform="solanaDappStore"
-						title="Solana Mobile"
-						status="Live · Saga & Seeker"
-						description="Native build for Saga and Seeker, distributed through the on-chain Solana dApp Store. Open this page on your device to install."
-					/>
-					<PlatformCard
-						platform="androidApk"
-						title="Android"
-						status="Direct download · APK"
-						description="Sideload the APK directly. Google Play release coming after public beta."
-						footnote={<AndroidInstallNotes />}
-					/>
-					<div className="border border-border rounded-xl p-6 bg-card/30">
-						<div className="flex items-center gap-3 mb-3">
-							<div className="w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center">
-								<Icon name="globe" variant="regular" className="text-base" />
-							</div>
-							<div>
-								<p className="text-title-lg">Web</p>
-								<p className="text-caption text-muted-foreground">desperse.com</p>
-							</div>
+				<section>
+					<Grid cols={{ base: 1, md: 2 }} gap={3}>
+						<PlatformCard
+							platform="ios"
+							title="iOS"
+							status="Public Beta · TestFlight"
+							description="Join the public TestFlight to get the latest iOS build with new features as they ship."
+						/>
+						<PlatformCard
+							platform="solanaDappStore"
+							title="Solana Mobile"
+							status="Live · Saga & Seeker"
+							description="Native build for Saga and Seeker, distributed through the on-chain Solana dApp Store. Open this page on your device to install."
+						/>
+						<PlatformCard
+							platform="androidApk"
+							title="Android"
+							status="Direct download · APK"
+							description="Sideload the APK directly. Google Play release coming after public beta."
+							footnote={<AndroidInstallNotes />}
+						/>
+						<div className="border border-border rounded-xl p-6 bg-card/30">
+							<Row gap={2} align="center" className="mb-3">
+								<div className="w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center">
+									<Icon name="globe" variant="regular" className="text-base" />
+								</div>
+								<div>
+									<p className="text-title-lg">Web</p>
+									<p className="text-caption text-muted-foreground">
+										desperse.com
+									</p>
+								</div>
+							</Row>
+							<p className="text-body-sm text-muted-foreground">
+								No install required. Works in any modern browser, on any
+								device.
+							</p>
 						</div>
-						<p className="text-body-sm text-muted-foreground">
-							No install required. Works in any modern browser, on any device.
-						</p>
-					</div>
+					</Grid>
 				</section>
 
-				<section className="border-t border-border pt-8 space-y-3">
-					<h2 className="text-label-xs text-muted-foreground">Help</h2>
-					<p className="text-body-sm text-muted-foreground">
-						Trouble installing? Email{' '}
-						<a
-							href="mailto:support@desperse.com"
-							className="underline hover:text-foreground"
-						>
-							support@desperse.com
-						</a>
-						.
-					</p>
+				<section className="border-t border-border pt-8">
+					<Stack gap={2}>
+						<h2 className="text-label-xs text-muted-foreground">Help</h2>
+						<p className="text-body-sm text-muted-foreground">
+							Trouble installing? Email{' '}
+							<a
+								href="mailto:support@desperse.com"
+								className="underline hover:text-foreground"
+							>
+								support@desperse.com
+							</a>
+							.
+						</p>
+					</Stack>
 				</section>
-			</div>
+			</Stack>
 		</StaticPageLayout>
 	)
 }
@@ -88,19 +99,22 @@ interface PlatformCardProps {
 
 function PlatformCard({ platform, title, status, description, footnote }: PlatformCardProps) {
 	return (
-		<div className="border border-border rounded-xl p-6 bg-card/30 flex flex-col gap-5">
-			<div className="flex items-start justify-between gap-4">
+		<Stack
+			gap={2.5}
+			className="border border-border rounded-xl p-6 bg-card/30"
+		>
+			<Row align="start" justify="between" gap={2}>
 				<div>
 					<p className="text-title-lg">{title}</p>
 					<p className="text-caption text-muted-foreground mt-1">{status}</p>
 				</div>
-			</div>
+			</Row>
 			<p className="text-body-sm text-muted-foreground">{description}</p>
 			<div>
 				<DownloadBadge platform={platform} size="md" />
 			</div>
 			{footnote}
-		</div>
+		</Stack>
 	)
 }
 

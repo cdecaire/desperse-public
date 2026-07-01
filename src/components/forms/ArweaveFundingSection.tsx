@@ -7,9 +7,9 @@
  */
 
 import { useState, useCallback, useEffect, useRef } from "react"
+import { Description, DescriptionItem, InlineStatus, Note, NumberField } from "@cdecaire/sable"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Icon } from "@/components/ui/icon"
+import { Label } from "@/components/ui/label"
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner"
 import { useArweaveFunding } from "@/hooks/useArweaveFunding"
 import { formatCredits } from "@/lib/arweave/turbo-client"
@@ -185,12 +185,12 @@ export function ArweaveFundingSection({
 	if (fundingError) {
 		return (
 			<div className="space-y-2 pt-3 ">
-				<p className="text-xs text-destructive">
+				<Note variant="error">
 					Failed to load storage status.{" "}
 					{fundingError instanceof Error
 						? fundingError.message
 						: "Unknown error"}
-				</p>
+				</Note>
 				<Button
 					type="button"
 					variant="outline"
@@ -207,50 +207,51 @@ export function ArweaveFundingSection({
 	return (
 		<div className="space-y-3 pt-3">
 			{/* Status overview */}
-			<div className="space-y-2">
-				<div className="flex justify-between text-xs">
-					<span className="text-muted-foreground">
-						Estimated cost
-					</span>
-					<span className="font-medium">
-						{formatCredits(estimatedCostWinc)}
-					</span>
-				</div>
-				<div className="flex justify-between text-xs">
-					<span className="text-muted-foreground">Available credits</span>
-					<span
-						className={`font-medium ${fundedOk ? "text-green-600 dark:text-green-400" : "text-destructive"}`}
-					>
-						{formatCredits(displayBalance)}
-					</span>
-				</div>
-				<div className="flex justify-between text-xs">
-					<span className="text-muted-foreground">
-						Upload permission
-					</span>
-					<span
-						className={`font-medium ${hasSharedEnough ? "text-green-600 dark:text-green-400" : "text-destructive"}`}
-					>
-						{hasSharedEnough ? "Granted" : "Required"}
-					</span>
-				</div>
-			</div>
+			<Description cols="1">
+				<DescriptionItem
+					term="Estimated cost"
+					detail={
+						<span className="font-medium">
+							{formatCredits(estimatedCostWinc)}
+						</span>
+					}
+				/>
+				<DescriptionItem
+					term="Available credits"
+					tone={fundedOk ? "success" : "destructive"}
+					detail={
+						<span className="font-medium">
+							{formatCredits(displayBalance)}
+						</span>
+					}
+				/>
+				<DescriptionItem
+					term="Upload permission"
+					tone={hasSharedEnough ? "success" : "destructive"}
+					detail={
+						<span className="font-medium">
+							{hasSharedEnough ? "Granted" : "Required"}
+						</span>
+					}
+				/>
+			</Description>
 
 			{/* Action: Top up (only if neither wallet nor shared credits cover cost) */}
 			{!fundedOk && (
 				<div className="space-y-2">
-					<label className="text-xs font-medium block">
+					<Label size="sm" className="block">
 						Top up (SOL)
-					</label>
+					</Label>
 					<div className="flex gap-2">
-						<Input
-							type="number"
-							step="0.01"
-							min="0.001"
-							max="0.5"
-							value={topUpAmount}
-							onChange={(e) => setTopUpAmount(e.target.value)}
+						<NumberField
+							min={0.001}
+							max={0.5}
+							step={0.05}
+							smallStep={0.01}
+							value={topUpAmount ? Number(topUpAmount) : null}
+							onValueChange={(v) => setTopUpAmount(v == null ? "" : String(v))}
 							disabled={disabled || isAnyPending}
+							format={{ maximumFractionDigits: 3 }}
 							className="max-w-[120px] h-8 text-sm"
 						/>
 						<Button
@@ -312,19 +313,14 @@ export function ArweaveFundingSection({
 
 			{/* Success / error messages */}
 			{actionSuccess && (
-				<p className="text-xs text-green-600 dark:text-green-400">
+				<InlineStatus tone="success" size="sm">
 					{actionSuccess}
-				</p>
+				</InlineStatus>
 			)}
 			{actionError && (
-				<div className="flex items-start gap-1.5 text-xs text-destructive">
-					<Icon
-						name="circle-exclamation"
-						variant="regular"
-						className="mt-0.5 shrink-0"
-					/>
-					<span>{actionError}</span>
-				</div>
+				<InlineStatus tone="error" size="sm">
+					{actionError}
+				</InlineStatus>
 			)}
 
 			{/* Link to settings */}

@@ -5,6 +5,7 @@
  */
 
 import { createFileRoute, Link } from '@tanstack/react-router'
+import { Row, Stack } from '@cdecaire/sable/layout'
 import { useRef, useCallback, useMemo } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
@@ -160,7 +161,7 @@ function CategoryPage() {
             description={`No posts have been added to ${categoryName}`}
           />
         ) : (
-          <div className="flex flex-col gap-4">
+          <Stack gap={2}>
             {posts.map((post) => (
               <PostCard
                 key={post.id}
@@ -180,9 +181,9 @@ function CategoryPage() {
 
             {/* Loading more indicator */}
             {isFetchingNextPage && (
-              <div className="flex justify-center py-4">
+              <Row justify="center" className="py-4">
                 <LoadingSpinner size="sm" />
-              </div>
+              </Row>
             )}
 
             {/* End of feed */}
@@ -191,7 +192,7 @@ function CategoryPage() {
                 You've reached the end
               </div>
             )}
-          </div>
+          </Stack>
         )}
       </div>
     </PullToRefresh>
@@ -220,19 +221,19 @@ function CategoryPageHeader({
 
   return (
     <div className="py-6 mb-4 border-b border-border">
-      <div className="flex items-center gap-3">
+      <Row gap={1.5} align="center">
         <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center">
           <Icon name="folder" className="text-xl text-muted-foreground" />
         </div>
-        <div>
+        <Stack gap={0}>
           <h1 className="text-heading-2">{categoryName}</h1>
           {postCount !== undefined && postCount > 0 && (
             <p className="text-body-sm text-muted-foreground">
               {postCount === 1 ? '1 post' : `${postCount.toLocaleString()} posts`}
             </p>
           )}
-        </div>
-      </div>
+        </Stack>
+      </Row>
     </div>
   )
 }

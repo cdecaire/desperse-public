@@ -1,4 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { PageHeader } from '@cdecaire/sable'
 import { StaticPageLayout } from '@/components/layout/StaticPageLayout'
 
 export const Route = createFileRoute('/fees')({
@@ -8,10 +9,12 @@ export const Route = createFileRoute('/fees')({
 function FeesPage() {
   return (
     <StaticPageLayout>
+      <PageHeader
+        title="Fees & Pricing"
+        description="Last updated: December 31, 2024"
+        className="mb-8"
+      />
       <article className="max-w-none [&>p]:text-body-lg [&>p]:mb-4 [&>ul]:mb-4 [&>ul]:pl-6 [&>ul]:list-disc [&>ul]:space-y-1 [&_li]:text-body-lg">
-        <h1 className="text-heading-1 mb-2">Fees & Pricing</h1>
-        <p className="text-body-sm! text-muted-foreground mb-8">Last updated: December 31, 2024</p>
-
         <p>
           This page explains how pricing and fees work on Desperse, including the difference between
           Collectibles and Editions.

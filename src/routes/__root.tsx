@@ -7,7 +7,12 @@ import { createServerFn } from '@tanstack/react-start'
 import { useEffect, useState, useRef } from 'react'
 import { Analytics } from '@vercel/analytics/react'
 
+import { IconProvider, ToastProvider } from '@cdecaire/sable'
+
 import AppShell from '../components/layout/AppShell'
+import { Toaster } from '@/components/ui/toaster'
+import { Icon } from '@/components/ui/icon'
+import { sableIconSet } from '@/lib/sable-icon-adapter'
 
 // Routes that should not be wrapped in the AppShell (standalone pages)
 // Note: '/' is conditionally standalone based on auth state (see RpcHealthProviderWrapper)
@@ -281,15 +286,24 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <ErrorBoundary>
-          <ThemeProvider>
-            <QueryProvider>
-              <PrivyProvider heliusWsUrl={heliusWsUrl}>
-                <RpcHealthProviderWrapper>
-                  {children}
-                </RpcHealthProviderWrapper>
-              </PrivyProvider>
-            </QueryProvider>
-          </ThemeProvider>
+          <IconProvider set={sableIconSet} defaultVariant="regular">
+            {/* Toast provider + viewport — bound once near the app root so the
+                imperative toast() API works on every route (including standalone
+                routes that bypass AppShell). Toaster injects the top-center /
+                sidebar-offset / PWA safe-area positioning for Sable's viewport. */}
+            <ToastProvider timeout={5000} closeIcon={<Icon name="xmark" />}>
+              <Toaster />
+              <ThemeProvider>
+                <QueryProvider>
+                  <PrivyProvider heliusWsUrl={heliusWsUrl}>
+                    <RpcHealthProviderWrapper>
+                      {children}
+                    </RpcHealthProviderWrapper>
+                  </PrivyProvider>
+                </QueryProvider>
+              </ThemeProvider>
+            </ToastProvider>
+          </IconProvider>
         </ErrorBoundary>
         <Analytics />
         <Scripts />

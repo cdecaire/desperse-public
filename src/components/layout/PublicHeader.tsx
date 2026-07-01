@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import { usePrivy } from '@privy-io/react-auth'
+import { Row } from '@cdecaire/sable/layout'
 import { useTheme } from '@/components/providers/ThemeProvider'
 import { Switch } from '@/components/ui/switch'
 import { Logo } from '@/components/shared/Logo'
@@ -35,9 +36,10 @@ export function PublicHeader({ navItems }: PublicHeaderProps) {
 
   return (
     <header
-      className="fixed top-0 left-0 right-0 z-50 px-6 py-4 flex items-center bg-background/80 backdrop-blur-md border-b border-border/50"
+      className="fixed top-0 left-0 right-0 z-(--z-nav) px-6 py-4 bg-background/80 backdrop-blur-md border-b border-border/50"
       style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 1rem)' }}
     >
+      <Row align="center">
       <Link to="/" className="flex-1 flex items-center space-x-2 hover:opacity-80 transition-opacity">
         <Logo size={15} className="text-foreground" />
         <span className="text-xl font-extrabold">Desperse</span>
@@ -50,7 +52,7 @@ export function PublicHeader({ navItems }: PublicHeaderProps) {
               <a
                 key={item.href}
                 href={item.href}
-                className="hover:text-zinc-500 dark:hover:text-zinc-400 transition-colors"
+                className="hover:text-zinc-500 dark:hover:text-zinc-400 motion-interactive"
               >
                 {item.label}
               </a>
@@ -58,7 +60,7 @@ export function PublicHeader({ navItems }: PublicHeaderProps) {
               <Link
                 key={item.href}
                 to={item.href}
-                className="hover:text-zinc-500 dark:hover:text-zinc-400 transition-colors"
+                className="hover:text-zinc-500 dark:hover:text-zinc-400 motion-interactive"
               >
                 {item.label}
               </Link>
@@ -84,7 +86,7 @@ export function PublicHeader({ navItems }: PublicHeaderProps) {
         {authenticated ? (
           <Link
             to="/"
-            className="border border-zinc-300 dark:border-zinc-700 px-5 py-2 rounded-full text-sm font-medium hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 transition-colors duration-200"
+            className="border border-zinc-300 dark:border-zinc-700 px-5 py-2 rounded-full text-sm font-medium hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 motion-interactive"
           >
             Go to Feed
           </Link>
@@ -92,12 +94,13 @@ export function PublicHeader({ navItems }: PublicHeaderProps) {
           <button
             onClick={() => login()}
             disabled={!ready}
-            className="border border-zinc-300 dark:border-zinc-700 px-5 py-2 rounded-full text-sm font-medium hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 transition-colors duration-200 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-950 dark:focus-visible:ring-white"
+            className="border border-zinc-300 dark:border-zinc-700 px-5 py-2 rounded-full text-sm font-medium hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 motion-interactive disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-950 dark:focus-visible:ring-white"
           >
             {recoveryMessage ? 'Retry sign in' : 'Log in'}
           </button>
         )}
       </div>
+      </Row>
     </header>
   )
 }

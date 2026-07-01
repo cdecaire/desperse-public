@@ -1,10 +1,12 @@
 import { useCallback, useMemo, useRef, useState, type ChangeEvent } from "react"
+import { Note, Progress } from "@cdecaire/sable"
 import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
 import { Icon } from "@/components/ui/icon"
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner"
 import { deleteMedia } from "@/server/functions/upload"
 import { useAuth } from "@/hooks/useAuth"
-import { FILE_TOO_LARGE_MESSAGE, MAX_UPLOAD_BYTES } from "@/lib/uploadParity"
+import { FILE_TOO_LARGE_MESSAGE, MAX_UPLOAD_BYTES, MAX_UPLOAD_MB } from "@/lib/uploadParity"
 
 const SUPPORTED_ATTACHMENT_TYPES = [
 	"application/pdf",
@@ -227,9 +229,9 @@ export function AttachmentUpload({
 		<div className="space-y-3 rounded-xl border bg-card p-4 shadow-md">
 			<div className="flex items-start justify-between gap-3">
 				<div>
-					<label className="text-sm font-medium">Attachment</label>
+					<Label>Attachment</Label>
 					<p className="mt-1 text-xs text-muted-foreground">
-						Optional PDF, ZIP, or EPUB. Uploads immediately and publishes only after it finishes.
+						Optional PDF, ZIP, or EPUB • Max {MAX_UPLOAD_MB} MB. Uploads immediately and publishes only after it finishes.
 					</p>
 				</div>
 				{attachment && (
@@ -262,9 +264,7 @@ export function AttachmentUpload({
 					</div>
 					{status === "uploading" && (
 						<div className="mt-3 space-y-1">
-							<div className="h-1.5 overflow-hidden rounded-full bg-muted">
-								<div className="h-full bg-primary transition-all duration-300" style={{ width: `${progress}%` }} />
-							</div>
+							<Progress value={progress} aria-label="Upload progress" />
 							<p className="text-xs text-muted-foreground">Uploading... {progress}%</p>
 						</div>
 					)}
@@ -277,13 +277,8 @@ export function AttachmentUpload({
 			)}
 
 			{status === "error" && error && (
-				<div className="flex items-center gap-2 rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
-					<Icon name="circle-exclamation" variant="regular" />
-					<span>{error}</span>
-				</div>
+				<Note variant="error">{error}</Note>
 			)}
-
-			<p className="text-xs text-muted-foreground">{FILE_TOO_LARGE_MESSAGE}</p>
 		</div>
 	)
 }

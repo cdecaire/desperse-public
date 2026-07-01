@@ -1,8 +1,11 @@
 import { useRouterState } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
+import { AppShell as SableAppShell } from '@cdecaire/sable'
+import { Col, Columns, GridOverlay, Region } from '@cdecaire/sable/layout'
 import TopNav from './TopNav'
 import BottomNav from './BottomNav'
 import Sidebar from './Sidebar'
+import { GridOverlayContext } from './GridOverlayContext'
 import { Toaster } from '@/components/ui/toaster'
 import { RouteProgressBar } from '@/components/shared/RouteProgressBar'
 import { NetworkBanner } from '@/components/shared/NetworkBanner'
@@ -16,12 +19,9 @@ interface AppShellProps {
   children: React.ReactNode
 }
 
-// Routes that should not show the navigation shell
+// Routes that render without the navigation shell.
 const STANDALONE_ROUTES = ['/login']
-// Routes that need wider layout aligned with the sidebar (e.g. settings, admin, post detail)
-const WIDE_LAYOUT_PREFIXES = ['/settings', '/admin', '/post']
-// Routes where mobile bottom nav should be hidden (e.g. post detail)
-// Note: Settings pages always show bottom nav until lg breakpoint (sidebar takes over)
+// Routes where the mobile bottom nav is hidden.
 const HIDE_BOTTOM_NAV_PREFIXES = ['/post']
 
 export default function AppShell({ children }: AppShellProps) {
@@ -31,10 +31,8 @@ export default function AppShell({ children }: AppShellProps) {
   const { isAuthenticated } = useAuth()
   const { user: currentUser } = useCurrentUser()
 
-  // Check if we're at tablet/desktop breakpoint (md = 768px)
-  // IMPORTANT: All hooks must be called before any conditional returns
+  // Tablet breakpoint (md=768) — used only for the bottom-nav exception below.
   const [isTabletOrAbove, setIsTabletOrAbove] = useState(false)
-  
   useEffect(() => {
     const checkBreakpoint = () => {
       setIsTabletOrAbove(window.matchMedia('(min-width: 768px)').matches)
@@ -43,13 +41,26 @@ export default function AppShell({ children }: AppShellProps) {
     window.addEventListener('resize', checkBreakpoint)
     return () => window.removeEventListener('resize', checkBreakpoint)
   }, [])
-  
-  // Check if current route should be standalone (no navigation)
-  const isStandalone = STANDALONE_ROUTES.some(route => 
-    currentPath === route || currentPath.startsWith(`${route}/`)
+
+  // Dev affordance: toggle the column-grid overlay with ⌘/Ctrl+Shift+G to verify
+  // that recomposed page layouts align to the column system + page inset.
+  const [showGrid, setShowGrid] = useState(false)
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && (e.key === 'g' || e.key === 'G')) {
+        e.preventDefault()
+        setShowGrid((v) => !v)
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
+
+  const isStandalone = STANDALONE_ROUTES.some(
+    (route) => currentPath === route || currentPath.startsWith(`${route}/`),
   )
 
-  // Render standalone pages without navigation
+  // Standalone pages render bare (login).
   if (isStandalone) {
     return (
       <>
@@ -59,101 +70,107 @@ export default function AppShell({ children }: AppShellProps) {
     )
   }
 
-  const isWideLayout = WIDE_LAYOUT_PREFIXES.some((route) =>
-    currentPath === route || currentPath.startsWith(`${route}/`)
-  )
-
   const isPostDetailPage = currentPath.startsWith('/post/')
 
-  const mainContainerClass = isPostDetailPage
-    ? 'w-full px-0' // Post detail: full width
-    : isWideLayout
-      ? 'w-full max-w-6xl lg:mx-0'
-      : 'w-full max-w-full lg:max-w-4xl lg:mx-auto px-0 lg:px-4'
-
-  // Hide TopNav on mobile for pages that have their own headers
-  // TopNav is already lg:hidden, so this only affects mobile
+  // Pages that render their own MobileHeader hide the global AppHeader on mobile.
   const isSettingsIndexPage = currentPath === '/settings' || currentPath === '/settings/'
-  const isAccountDetailPage = currentPath.startsWith('/settings/account/') &&
-                               currentPath !== '/settings/account' &&
-                               currentPath !== '/settings/account/'
+  const isAccountDetailPage =
+    currentPath.startsWith('/settings/account/') &&
+    currentPath !== '/settings/account' &&
+    currentPath !== '/settings/account/'
   const isExplorePage = currentPath === '/explore' || currentPath === '/explore/'
   const isSearchPage = currentPath === '/search' || currentPath === '/search/'
   const showTopNav = !isSettingsIndexPage && !isAccountDetailPage && !isExplorePage && !isSearchPage
 
-  // Bottom nav logic:
-  // - Mobile: Hide for settings pages (they have their own header navigation)
-  // - Tablet: Show for all settings pages (no sidebar yet, need navigation)
-  // - Desktop: Hidden via CSS (lg:hidden) when sidebar is visible
+  // Bottom-nav visibility: hidden on settings-index/account-detail on phones (own
+  // header), shown at tablet (no sidebar yet); hidden on post detail and other
+  // users' profiles.
   const isSettingsPage = currentPath === '/settings' || currentPath.startsWith('/settings/')
-  
-  // On mobile, hide bottom nav for settings pages (index and account detail pages)
-  // On tablet/desktop, show bottom nav for settings pages (it will hide at lg via CSS)
   const shouldHideBottomNavOnMobile = (isSettingsIndexPage || isAccountDetailPage) && !isTabletOrAbove
-  
-  // Hide bottom nav for non-settings routes (profile detail, post detail, etc.)
-  const shouldHideBottomNavForOtherRoutes = !isSettingsPage && HIDE_BOTTOM_NAV_PREFIXES.some(
-    (route) => currentPath === route || currentPath.startsWith(`${route}/`)
-  )
-
-  // Hide bottom nav when viewing other users' profiles (not your own)
+  const shouldHideBottomNavForOtherRoutes =
+    !isSettingsPage &&
+    HIDE_BOTTOM_NAV_PREFIXES.some((route) => currentPath === route || currentPath.startsWith(`${route}/`))
   const isProfilePage = currentPath.startsWith('/profile/')
   const profileSlug = isProfilePage ? currentPath.split('/')[2] : undefined
   const isViewingOtherProfile = isProfilePage && profileSlug && currentUser?.usernameSlug !== profileSlug
+  const showBottomNav =
+    !shouldHideBottomNavOnMobile && !shouldHideBottomNavForOtherRoutes && !isViewingOtherProfile
 
-  const showBottomNav = !shouldHideBottomNavOnMobile && !shouldHideBottomNavForOtherRoutes && !isViewingOtherProfile
-
-  // On mobile pages with custom headers (settings, explore, search), don't add pt-14 to main
-  // These pages handle their own safe-area padding via MobileHeader + MobileHeaderSpacer
-  // Desktop always uses lg:pt-0 anyway.
-  const hasCustomMobileHeader = isSettingsIndexPage || isAccountDetailPage || isExplorePage || isSearchPage
+  // Content sits on the SAME 12-column grid the GridOverlay visualizes, so it
+  // aligns to the columns instead of a separate centered max-width block. Most
+  // pages occupy the middle 6 columns (4–9) — 3 empty margin columns each side,
+  // centered. Post detail → full-bleed.
+  //
+  // Settings/account and admin render their OWN two-rail chrome layout
+  // (SettingsLayout — a sticky sub-nav rail flush against the app Sidebar + a
+  // capped content pane) OUTSIDE this grid, so the rail reads as chrome like the
+  // Sidebar rather than as a sub-nav floating in the centered content grid. They
+  // get the bare branch below. The settings index/help still place their content
+  // directly on the 12-col grid via isWideLayout.
+  const isSettingsAccountRoute = currentPath.startsWith('/settings/account')
+  const isAdminRoute = currentPath.startsWith('/admin')
+  const ownsRailLayout = isSettingsAccountRoute || isAdminRoute
+  const isWideLayout = currentPath.startsWith('/settings') && !isSettingsAccountRoute
 
   return (
     <MessagingProvider>
-      <div className="flex flex-col min-h-screen overflow-x-hidden">
-        {/* Global route transition progress bar */}
-        <RouteProgressBar />
-
-        {/* Skip to content link for keyboard/screen reader users */}
-        <a
-          href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md focus:text-sm focus:font-medium"
-        >
-          Skip to content
-        </a>
-
-        {/* Network and RPC status banners */}
-        <NetworkBanner />
-        <RpcHealthBanner />
-
-        {/* Mobile TopNav */}
-        {showTopNav && <TopNav />}
-
-        <div className="flex flex-1 min-w-0 overflow-hidden">
-          {/* Desktop Sidebar */}
-          <Sidebar />
-
-          {/* Main Content Area */}
-          {/* PWA safe-area: TopNav has paddingTop for safe-area, so main content needs to account for both header height (3.5rem/56px) AND safe-area */}
-          <main id="main-content" className={`flex-1 min-w-0 lg:ml-64 pb-16 lg:pb-0 px-0 overflow-x-hidden ${hasCustomMobileHeader ? '' : 'pt-topnav-safe'}`}>
-            <div className={mainContainerClass}>{children}</div>
-          </main>
-        </div>
-
-        {/* Mobile Bottom Navigation */}
-        {showBottomNav && <BottomNav />}
-
-        {/* Floating Message Button - Auth gated, hidden on settings and admin pages */}
-        {/* On post detail and other user profiles, render with hideTrigger so the popover still works when opened via MessageButton */}
-        {isAuthenticated && !isSettingsPage && !currentPath.startsWith('/admin') && (
-          <FloatingMessageButton hideTrigger={isPostDetailPage || !!isViewingOtherProfile} />
-        )}
-
-        <Toaster />
-
-        {/* Login Modal - Shows on initial load for unauthenticated users */}
-        <LoginModal open={showModal} onOpenChange={setShowModal} />
-      </div>
+      <SableAppShell
+        banners={
+          <>
+            <RouteProgressBar />
+            <NetworkBanner />
+            <RpcHealthBanner />
+          </>
+        }
+        header={showTopNav ? <TopNav /> : undefined}
+        sidebar={<Sidebar />}
+        bottomNav={showBottomNav ? <BottomNav /> : undefined}
+        overlays={
+          <>
+            {isAuthenticated && !isSettingsPage && !currentPath.startsWith('/admin') && (
+              <FloatingMessageButton hideTrigger={isPostDetailPage || !!isViewingOtherProfile} />
+            )}
+            <Toaster />
+            <LoginModal open={showModal} onOpenChange={setShowModal} />
+          </>
+        }
+      >
+        <GridOverlayContext.Provider value={showGrid}>
+          <div className="relative w-full">
+            {isPostDetailPage ? (
+              <Region bleed>{children}</Region>
+            ) : ownsRailLayout ? (
+              // Settings/account + admin own a two-rail chrome layout (SettingsLayout):
+              // a sticky sub-nav rail flush against the app Sidebar + a capped content
+              // pane, OUTSIDE this grid. They render their own pane GridOverlay.
+              children
+            ) : (
+              // The page IS the 12-col grid, but CAPPED + centered so it stops
+              // stretching at --region-wide (1280) on large displays. Content places
+              // ON the columns (it visibly aligns to the grid), not as a floating
+              // centered block. The GridOverlay lives INSIDE this capped container, so
+              // ⌘/Ctrl+Shift+G matches the real grid exactly.
+              <div className="relative mx-auto w-full max-w-[var(--region-wide)]">
+                {showGrid && <GridOverlay />}
+                <Columns count={12} style={{ paddingInline: 'var(--page-inset)' }}>
+                  {isWideLayout ? (
+                    // Settings index/help place their own Cols directly on the grid.
+                    children
+                  ) : (
+                    // Default routes (feed, explore, search, notifications, create):
+                    // the middle 8 of 12 (cols 3–10) — wide enough for forms/media
+                    // without sprawling. (Long-form text within still caps its own
+                    // measure at ~65ch, so reading lines never run too long.)
+                    <Col span={{ base: 12, lg: 8 }} start={{ lg: 3 }}>
+                      {children}
+                    </Col>
+                  )}
+                </Columns>
+              </div>
+            )}
+          </div>
+        </GridOverlayContext.Provider>
+      </SableAppShell>
     </MessagingProvider>
   )
 }

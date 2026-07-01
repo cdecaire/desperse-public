@@ -27,6 +27,7 @@ import { LandingPage } from '@/components/landing/LandingPage'
 import { useNavigate } from '@tanstack/react-router'
 import { useOnboardingState } from '@/hooks/useOnboardingState'
 import { isOnboardingV1Enabled } from '@/config/env'
+import { Stack } from '@cdecaire/sable/layout'
 
 export const Route = createFileRoute('/')({
   component: FeedPage,
@@ -291,10 +292,10 @@ function FeedContent() {
   // For unauthenticated users, isUserLoading is always false so we load faster
   if (!isReady || isLoading) {
     return (
-      <div>
+      <Stack gap={0}>
         {isAuthenticated && (
-          <FeedTabs 
-            activeTab={effectiveTab} 
+          <FeedTabs
+            activeTab={effectiveTab}
             onTabChange={handleTabChange}
             forYouNewPostsCount={forYouNewPostsCount}
             followingNewPostsCount={followingNewPostsCount}
@@ -302,17 +303,17 @@ function FeedContent() {
           />
         )}
         <FeedSkeleton count={3} />
-      </div>
+      </Stack>
     )
   }
   
   // Error state
   if (isError) {
     return (
-      <div>
+      <Stack gap={0}>
         {isAuthenticated && (
-          <FeedTabs 
-            activeTab={effectiveTab} 
+          <FeedTabs
+            activeTab={effectiveTab}
             onTabChange={handleTabChange}
             forYouNewPostsCount={forYouNewPostsCount}
             followingNewPostsCount={followingNewPostsCount}
@@ -330,17 +331,17 @@ function FeedContent() {
             </Button>
           }
         />
-      </div>
+      </Stack>
     )
   }
-  
+
   // Empty states
   if (posts.length === 0) {
     if (effectiveTab === 'following') {
       return (
-        <div>
-          <FeedTabs 
-            activeTab={effectiveTab} 
+        <Stack gap={0}>
+          <FeedTabs
+            activeTab={effectiveTab}
             onTabChange={handleTabChange}
             followingNewPostsCount={followingNewPostsCount}
           />
@@ -354,15 +355,15 @@ function FeedContent() {
               </Button>
             }
           />
-        </div>
+        </Stack>
       )
     }
     
     return (
-      <div>
+      <Stack gap={0}>
         {isAuthenticated && (
-          <FeedTabs 
-            activeTab={effectiveTab} 
+          <FeedTabs
+            activeTab={effectiveTab}
             onTabChange={handleTabChange}
             forYouNewPostsCount={forYouNewPostsCount}
             followingNewPostsCount={followingNewPostsCount}
@@ -375,13 +376,13 @@ function FeedContent() {
           description="Be the first to create something amazing!"
           action={isAuthenticated ? { label: 'Create Post', to: '/create' } : undefined}
         />
-      </div>
+      </Stack>
     )
   }
   
   return (
     <PullToRefresh onRefresh={handleToastRefresh}>
-      <div>
+      <Stack gap={0}>
         {/* Feed tabs - Only show when authenticated */}
         {isAuthenticated && (
           <FeedTabs
@@ -401,7 +402,7 @@ function FeedContent() {
         />
 
         {/* Posts list */}
-        <div className="space-y-6 pt-4 -mx-4 md:mx-0">
+        <Stack gap={3} className="pt-4 -mx-4 md:mx-0">
           {posts.map((post) => {
             // Use polled counts if available, otherwise fall back to initial data
             const polled = polledCounts[post.id]
@@ -441,9 +442,9 @@ function FeedContent() {
               />
             )
           })}
-        </div>
+        </Stack>
 
-        {/* Load more trigger */}
+        {/* Load more trigger — keep raw div: ref must attach to the observed DOM node */}
         <div ref={loadMoreRef} className="py-8 flex justify-center">
           {isFetchingNextPage && (
             <LoadingSpinner size="md" />
@@ -452,7 +453,7 @@ function FeedContent() {
             <p className="text-sm text-muted-foreground">You've reached the end</p>
           )}
         </div>
-      </div>
+      </Stack>
     </PullToRefresh>
   )
 }

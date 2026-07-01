@@ -70,7 +70,7 @@ export function SearchDropdown({
   let optionIndex = 0
 
   return (
-    <div id="search-results" role="listbox" className="absolute top-full left-0 right-0 mt-1 bg-background border border-border rounded-xl shadow-lg overflow-hidden z-50">
+    <div id="search-results" role="listbox" className="absolute top-full left-0 right-0 mt-1 bg-background border border-border rounded-xl shadow-lg overflow-hidden z-(--z-overlay)">
       {/* Recent searches section - only show when no query */}
       {!hasQuery && hasRecentSearches && (
         <div>
@@ -78,7 +78,7 @@ export function SearchDropdown({
             <span className="text-sm font-semibold text-foreground">Recent</span>
             <button
               onClick={onClearAllRecent}
-              className="text-xs text-primary hover:text-primary/80 focus-visible:outline-none focus-visible:underline transition-colors"
+              className="text-xs text-primary hover:text-primary/80 focus-visible:outline-none focus-visible:underline motion-interactive"
               aria-label="Clear all recent searches"
             >
               Clear all
@@ -94,14 +94,14 @@ export function SearchDropdown({
                 role="option"
                 aria-selected={idx === activeIndex}
                 onClick={() => onSelectRecent(search)}
-                className={`w-full flex items-center gap-3 px-4 py-2.5 mx-1 rounded-lg hover:bg-accent focus-visible:bg-accent focus-visible:outline-none transition-colors text-left ${idx === activeIndex ? 'bg-accent' : ''}`}
+                className={`w-full flex items-center gap-3 px-4 py-2.5 mx-1 rounded-lg hover:bg-accent focus-visible:bg-accent focus-visible:outline-none motion-interactive text-left ${idx === activeIndex ? 'bg-accent' : ''}`}
                 style={{ width: 'calc(100% - 8px)' }}
               >
                 <Icon name="clock" variant="regular" className="text-muted-foreground w-5 text-center" />
                 <span className="flex-1 text-sm text-foreground truncate">{search}</span>
                 <button
                   onClick={(e) => onRemoveRecent(search, e)}
-                  className="p-1 text-muted-foreground hover:text-foreground transition-colors"
+                  className="p-1 text-muted-foreground hover:text-foreground motion-interactive"
                   aria-label="Remove from recent"
                 >
                   <Icon name="xmark" className="text-xs" />
@@ -122,7 +122,7 @@ export function SearchDropdown({
             role="option"
             aria-selected={idx === activeIndex}
             onClick={() => onSelectRecent(query)}
-            className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-accent focus-visible:bg-accent focus-visible:outline-none transition-colors text-left border-b border-border/50 ${idx === activeIndex ? 'bg-accent' : ''}`}
+            className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-accent focus-visible:bg-accent focus-visible:outline-none motion-interactive text-left border-b border-border/50 ${idx === activeIndex ? 'bg-accent' : ''}`}
           >
             <Icon name="magnifying-glass" variant="regular" className="text-muted-foreground w-5 text-center" />
             <span className="text-sm text-foreground">
@@ -150,7 +150,7 @@ export function SearchDropdown({
                   role="option"
                   aria-selected={idx === activeIndex}
                   onClick={() => onSelectCategory(category)}
-                  className={`w-full flex items-center gap-3 px-4 py-2.5 mx-1 rounded-lg hover:bg-accent transition-colors text-left ${idx === activeIndex ? 'bg-accent' : ''}`}
+                  className={`w-full flex items-center gap-3 px-4 py-2.5 mx-1 rounded-lg hover:bg-accent motion-interactive text-left ${idx === activeIndex ? 'bg-accent' : ''}`}
                   style={{ width: 'calc(100% - 8px)' }}
                 >
                   {/* Category icon */}
@@ -184,7 +184,7 @@ export function SearchDropdown({
                   role="option"
                   aria-selected={idx === activeIndex}
                   onClick={() => onSelectHashtag(tag.slug)}
-                  className={`w-full flex items-center gap-3 px-4 py-2.5 mx-1 rounded-lg hover:bg-accent transition-colors text-left ${idx === activeIndex ? 'bg-accent' : ''}`}
+                  className={`w-full flex items-center gap-3 px-4 py-2.5 mx-1 rounded-lg hover:bg-accent motion-interactive text-left ${idx === activeIndex ? 'bg-accent' : ''}`}
                   style={{ width: 'calc(100% - 8px)' }}
                 >
                   {/* Hashtag icon */}
@@ -220,7 +220,7 @@ export function SearchDropdown({
                   role="option"
                   aria-selected={idx === activeIndex}
                   onClick={() => onSelectUser(user.usernameSlug)}
-                  className={`w-full flex items-center gap-3 px-4 py-2.5 mx-1 rounded-lg hover:bg-accent transition-colors text-left ${idx === activeIndex ? 'bg-accent' : ''}`}
+                  className={`w-full flex items-center gap-3 px-4 py-2.5 mx-1 rounded-lg hover:bg-accent motion-interactive text-left ${idx === activeIndex ? 'bg-accent' : ''}`}
                   style={{ width: 'calc(100% - 8px)' }}
                 >
                   {/* Avatar */}
@@ -266,7 +266,7 @@ export function SearchDropdown({
               role="option"
               aria-selected={idx === activeIndex}
               onClick={onGoToHashtag}
-              className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-accent focus-visible:bg-accent focus-visible:outline-none transition-colors text-left border-t border-border/50 ${idx === activeIndex ? 'bg-accent' : ''}`}
+              className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-accent focus-visible:bg-accent focus-visible:outline-none motion-interactive text-left border-t border-border/50 ${idx === activeIndex ? 'bg-accent' : ''}`}
             >
               <Icon name="hashtag" className="text-muted-foreground w-5 text-center" />
               <span className="text-sm text-primary">
@@ -282,7 +282,7 @@ export function SearchDropdown({
               role="option"
               aria-selected={idx === activeIndex}
               onClick={onGoToQuery}
-              className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-accent focus-visible:bg-accent focus-visible:outline-none transition-colors text-left border-t border-border/50 ${idx === activeIndex ? 'bg-accent' : ''}`}
+              className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-accent focus-visible:bg-accent focus-visible:outline-none motion-interactive text-left border-t border-border/50 ${idx === activeIndex ? 'bg-accent' : ''}`}
             >
               <Icon name="at" variant="regular" className="text-muted-foreground w-5 text-center" />
               <span className="text-sm text-primary">

@@ -116,7 +116,7 @@ export const MentionAutocomplete = forwardRef<MentionAutocompleteRef, MentionAut
         {isOpen && (
           <div
             className={cn(
-              'absolute left-0 right-0 bottom-full mb-1 z-50',
+              'absolute left-0 right-0 bottom-full mb-1 z-(--z-overlay)',
               'bg-popover border border-border rounded-lg shadow-lg',
               'max-h-[200px] overflow-y-auto'
             )}

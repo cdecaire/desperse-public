@@ -3,6 +3,7 @@
  * Shared license/rights fields used by both the create post form and copyright settings page.
  */
 
+import { Field } from '@cdecaire/sable'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -113,8 +114,7 @@ export function CopyrightFields({
 
 			{/* Custom license input */}
 			{selectValue === 'CUSTOM' && (
-				<div className="space-y-2">
-					<Label htmlFor={`${idPrefix}-custom-license`}>Custom License</Label>
+				<Field label="Custom License">
 					<Input
 						id={`${idPrefix}-custom-license`}
 						value={customLicense}
@@ -123,12 +123,18 @@ export function CopyrightFields({
 						maxLength={100}
 						disabled={disabled}
 					/>
-				</div>
+				</Field>
 			)}
 
 			{/* Rights Holder */}
-			<div className="space-y-2">
-				<Label htmlFor={`${idPrefix}-holder`}>Rights Holder</Label>
+			<Field
+				label="Rights Holder"
+				description={
+					showDescription
+						? 'Optional. Included in NFT metadata as rights attribution.'
+						: undefined
+				}
+			>
 				<Input
 					id={`${idPrefix}-holder`}
 					value={holder || ''}
@@ -137,12 +143,7 @@ export function CopyrightFields({
 					maxLength={200}
 					disabled={disabled}
 				/>
-				{showDescription && (
-					<p className="text-xs text-muted-foreground">
-						Optional. Included in NFT metadata as rights attribution.
-					</p>
-				)}
-			</div>
+			</Field>
 
 			{/* Rights Statement */}
 			<div className="space-y-2">

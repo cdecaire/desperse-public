@@ -6,13 +6,13 @@
 import { useState, useMemo, useEffect } from 'react'
 import { Icon } from '@/components/ui/icon'
 import { Link } from '@tanstack/react-router'
-import { SearchIcon } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { useFollowersList, useFollowingList, useCollectorsList, useFollowMutation } from '@/hooks/useProfileQuery'
 import { useAuth } from '@/hooks/useAuth'
@@ -92,54 +92,23 @@ export function FollowersModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md max-h-[80vh] flex flex-col">
         {/* Tabs */}
-        <div className="flex border-b border-border">
-          <button
-            type="button"
-            onClick={() => handleTabChange('followers')}
-            className={`flex-1 px-4 py-3 text-label-lg transition-colors relative ${
-              activeTab === 'followers'
-                ? 'text-foreground'
-                : 'text-muted-foreground hover:text-foreground/80'
-            }`}
-          >
-            Followers
-            {activeTab === 'followers' && (
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-foreground rounded-full" />
-            )}
-          </button>
-          <button
-            type="button"
-            onClick={() => handleTabChange('following')}
-            className={`flex-1 px-4 py-3 text-label-lg transition-colors relative ${
-              activeTab === 'following'
-                ? 'text-foreground'
-                : 'text-muted-foreground hover:text-foreground/80'
-            }`}
-          >
-            Following
-            {activeTab === 'following' && (
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-foreground rounded-full" />
-            )}
-          </button>
-          <button
-            type="button"
-            onClick={() => handleTabChange('collectors')}
-            className={`flex-1 px-4 py-3 text-label-lg transition-colors relative ${
-              activeTab === 'collectors'
-                ? 'text-foreground'
-                : 'text-muted-foreground hover:text-foreground/80'
-            }`}
-          >
-            Collectors
-            {activeTab === 'collectors' && (
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-0.5 bg-foreground rounded-full" />
-            )}
-          </button>
-        </div>
+        <Tabs value={activeTab} onValueChange={(value) => handleTabChange(value as TabType)}>
+          <TabsList className="flex w-full">
+            <TabsTrigger value="followers" className="flex-1 justify-center">
+              Followers
+            </TabsTrigger>
+            <TabsTrigger value="following" className="flex-1 justify-center">
+              Following
+            </TabsTrigger>
+            <TabsTrigger value="collectors" className="flex-1 justify-center">
+              Collectors
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
 
         {/* Search */}
         <div className="relative mt-4">
-          <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+          <Icon name="search" variant="regular" className="absolute left-3 top-1/2 -translate-y-1/2 text-base text-muted-foreground" />
           <Input
             type="search"
             placeholder="Search"

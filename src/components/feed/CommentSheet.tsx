@@ -11,7 +11,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { createPortal } from 'react-dom'
-import { XIcon } from 'lucide-react'
+import { Icon } from '@/components/ui/icon'
 import { cn } from '@/lib/utils'
 import { CommentSection } from './CommentSection'
 
@@ -141,7 +141,7 @@ export function CommentSheet({
 			{/* Backdrop */}
 			<div
 				className={cn(
-					'fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm transition-opacity duration-200',
+					'fixed inset-0 z-(--z-overlay) bg-black/50 backdrop-blur-sm transition-opacity duration-200',
 					isClosing ? 'opacity-0' : 'opacity-100'
 				)}
 				onClick={handleClose}
@@ -150,7 +150,7 @@ export function CommentSheet({
 			{/* Full-screen sheet — anchored to top so it shrinks above keyboard */}
 			<div
 				className={cn(
-					'fixed inset-x-0 top-0 z-[60] flex flex-col bg-background shadow-lg',
+					'fixed inset-x-0 top-0 z-(--z-overlay) flex flex-col bg-background shadow-lg',
 					isClosing
 						? 'animate-out slide-out-to-bottom duration-200'
 						: 'animate-in slide-in-from-bottom duration-200'
@@ -169,9 +169,9 @@ export function CommentSheet({
 					<span className="text-title-lg text-foreground">Comments</span>
 					<button
 						onClick={handleClose}
-						className="rounded-full p-1.5 hover:bg-muted active:bg-muted transition-colors -mr-1"
+						className="rounded-full p-1.5 hover:bg-muted active:bg-muted motion-interactive -mr-1"
 					>
-						<XIcon className="size-4 text-muted-foreground" />
+						<Icon name="xmark" className="text-base text-muted-foreground" />
 						<span className="sr-only">Close</span>
 					</button>
 				</div>

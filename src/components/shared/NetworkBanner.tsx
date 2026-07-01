@@ -1,10 +1,14 @@
 /**
  * Network status banner
- * Shows when user is offline and disables network-required actions
+ * Shows when user is offline and disables network-required actions.
+ *
+ * Migration shim (Phase 2 — Sable adoption): @cdecaire/sable <Banner>,
+ * variant="warning" + fill="solid" for a loud, can't-miss offline alert.
  */
 
 import { useNetworkStatus } from '@/hooks/useNetworkStatus'
 import { Icon } from '@/components/ui/icon'
+import { Banner } from '@cdecaire/sable'
 
 export function NetworkBanner() {
   const { isOffline } = useNetworkStatus()
@@ -14,14 +18,11 @@ export function NetworkBanner() {
   }
 
   return (
-    <div className="w-full bg-(--flush-orange-500)/90 dark:bg-(--flush-orange-600)/90 text-(--flush-orange-950) dark:text-(--flush-orange-50) px-4 py-2 text-sm font-medium text-center border-b border-(--flush-orange-600) dark:border-(--flush-orange-700)">
-      <span className="flex items-center justify-center gap-2">
-        <Icon name="wifi-slash" variant="regular" />
-        You're offline. Some actions are disabled until you're back online.
-      </span>
-    </div>
+    <Banner variant="warning" fill="solid" live="polite">
+      <Icon name="wifi-slash" variant="regular" />
+      You're offline. Some actions are disabled until you're back online.
+    </Banner>
   )
 }
 
 export default NetworkBanner
-

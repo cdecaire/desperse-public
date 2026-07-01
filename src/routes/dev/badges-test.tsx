@@ -7,6 +7,8 @@
 
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState } from 'react'
+import { PageHeader } from '@cdecaire/sable'
+import { Grid, Region, Row, Stack } from '@cdecaire/sable/layout'
 import { Card } from '@/components/ui/card'
 import { Icon } from '@/components/ui/icon'
 import { Badge } from '@/components/ui/badge'
@@ -38,18 +40,18 @@ function CategoryPillDemo() {
       <p className="text-xs text-muted-foreground mb-4">
         Used in: PostCard categories, Post detail categories, CategorySelector form
       </p>
-      <div className="space-y-4">
+      <Stack gap={2}>
         <div>
           <p className="text-xs text-muted-foreground mb-2">Display variant (read-only)</p>
-          <div className="flex flex-wrap gap-1.5">
+          <Row gap={1} wrap>
             <CategoryPill>Photography</CategoryPill>
             <CategoryPill>Digital Art</CategoryPill>
             <CategoryPill>Music</CategoryPill>
-          </div>
+          </Row>
         </div>
         <div>
           <p className="text-xs text-muted-foreground mb-2">Link variant (with asChild + Link)</p>
-          <div className="flex flex-wrap gap-1.5">
+          <Row gap={1} wrap>
             <CategoryPill variant="link" asChild>
               <Link to={"/tag/photography" as string}>Photography</Link>
             </CategoryPill>
@@ -59,11 +61,11 @@ function CategoryPillDemo() {
             <CategoryPill variant="link" asChild>
               <Link to={"/tag/music" as string}>Music</Link>
             </CategoryPill>
-          </div>
+          </Row>
         </div>
         <div>
           <p className="text-xs text-muted-foreground mb-2">Interactive variant (selectable, size=lg)</p>
-          <div className="flex flex-wrap gap-2">
+          <Row gap={1} wrap>
             {categories.map((cat) => (
               <CategoryPill
                 key={cat}
@@ -78,26 +80,24 @@ function CategoryPillDemo() {
             <CategoryPill variant="interactive" size="lg" disabled>
               Disabled
             </CategoryPill>
-          </div>
+          </Row>
           <p className="text-xs text-muted-foreground mt-2">
             Selected: {selected.length > 0 ? selected.join(', ') : 'none'}
           </p>
         </div>
-      </div>
+      </Stack>
     </div>
   )
 }
 
 function BadgesTestPage() {
   return (
-    <div className="py-6 max-w-5xl mx-auto px-4">
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold mb-2">Badge & Pill Components</h1>
-          <p className="text-muted-foreground">
-            Consolidated badge and pill components used throughout the application.
-          </p>
-        </div>
+    <Region max="feed" inset className="py-6">
+      <Stack gap={3}>
+        <PageHeader
+          title="Badge & Pill Components"
+          description="Consolidated badge and pill components used throughout the application."
+        />
 
         {/* ═══════════════════════════════════════════════════════════════════════
             BADGE COMPONENT
@@ -110,46 +110,46 @@ function BadgesTestPage() {
             Used in: Admin report status, report reason tags.
           </p>
 
-          <div className="space-y-4">
+          <Stack gap={2}>
             <div>
               <p className="text-xs text-muted-foreground mb-2">Default size</p>
-              <div className="flex flex-wrap gap-2">
+              <Row gap={1} wrap>
                 <Badge>Default</Badge>
                 <Badge variant="secondary">Secondary</Badge>
                 <Badge variant="destructive">Destructive</Badge>
                 <Badge variant="success">Success</Badge>
                 <Badge variant="warning">Warning</Badge>
                 <Badge variant="outline">Outline</Badge>
-              </div>
+              </Row>
             </div>
             <div>
               <p className="text-xs text-muted-foreground mb-2">Small size</p>
-              <div className="flex flex-wrap gap-2">
+              <Row gap={1} wrap>
                 <Badge size="sm">Default</Badge>
                 <Badge size="sm" variant="secondary">Secondary</Badge>
                 <Badge size="sm" variant="destructive">Destructive</Badge>
                 <Badge size="sm" variant="success">Success</Badge>
                 <Badge size="sm" variant="warning">Warning</Badge>
                 <Badge size="sm" variant="outline">Outline</Badge>
-              </div>
+              </Row>
             </div>
             <div>
               <p className="text-xs text-muted-foreground mb-2">Use case: Report status</p>
-              <div className="flex flex-wrap gap-2 p-3 bg-muted/30 rounded-lg">
+              <Row gap={1} wrap className="p-3 bg-muted/30 rounded-lg">
                 <Badge variant="warning">open</Badge>
                 <Badge variant="success">resolved</Badge>
                 <Badge variant="secondary">rejected</Badge>
-              </div>
+              </Row>
             </div>
             <div>
               <p className="text-xs text-muted-foreground mb-2">Use case: Report reasons</p>
-              <div className="flex flex-wrap gap-2 p-3 bg-muted/30 rounded-lg">
+              <Row gap={1} wrap className="p-3 bg-muted/30 rounded-lg">
                 <Badge variant="destructive">spam</Badge>
                 <Badge variant="destructive">harassment</Badge>
                 <Badge variant="destructive">copyright</Badge>
-              </div>
+              </Row>
             </div>
-          </div>
+          </Stack>
         </Card>
 
         {/* ═══════════════════════════════════════════════════════════════════════
@@ -163,10 +163,10 @@ function BadgesTestPage() {
             Used in: FeedTabs, Sidebar nav, BottomNav.
           </p>
 
-          <div className="space-y-4">
+          <Stack gap={2}>
             <div>
               <p className="text-xs text-muted-foreground mb-2">Default variant (sizes)</p>
-              <div className="flex items-center gap-6">
+              <Row gap={3} align="center">
                 <span className="flex items-center gap-2">
                   <span className="text-sm">Default:</span>
                   <NotificationBadge count={5} />
@@ -182,11 +182,11 @@ function BadgesTestPage() {
                   <span className="text-sm">Dot:</span>
                   <NotificationBadge size="dot" />
                 </span>
-              </div>
+              </Row>
             </div>
             <div>
               <p className="text-xs text-muted-foreground mb-2">Destructive variant</p>
-              <div className="flex items-center gap-6">
+              <Row gap={3} align="center">
                 <span className="flex items-center gap-2">
                   <span className="text-sm">Default:</span>
                   <NotificationBadge variant="destructive" count={5} />
@@ -200,11 +200,11 @@ function BadgesTestPage() {
                   <span className="text-sm">Dot:</span>
                   <NotificationBadge variant="destructive" size="dot" />
                 </span>
-              </div>
+              </Row>
             </div>
             <div>
               <p className="text-xs text-muted-foreground mb-2">Use case: Navigation items</p>
-              <div className="flex items-center gap-6 p-3 bg-muted/30 rounded-lg">
+              <Row gap={3} align="center" className="p-3 bg-muted/30 rounded-lg">
                 <span className="relative inline-flex items-center gap-2">
                   <Icon name="bell" variant="regular" className="text-xl" />
                   Notifications
@@ -218,9 +218,9 @@ function BadgesTestPage() {
                   <Icon name="shield-halved" variant="regular" className="text-xl" />
                   <NotificationBadge variant="destructive" size="sm" count={12} className="absolute -top-1 -right-2" />
                 </span>
-              </div>
+              </Row>
             </div>
-          </div>
+          </Stack>
         </Card>
 
         {/* ═══════════════════════════════════════════════════════════════════════
@@ -234,10 +234,10 @@ function BadgesTestPage() {
             Used in: PostCard media overlay, Post detail media overlay.
           </p>
 
-          <div className="space-y-4">
+          <Stack gap={2}>
             <div>
               <p className="text-xs text-muted-foreground mb-2">Variants</p>
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+              <Grid minItemWidth="12rem" gap={1}>
                 <div className="relative bg-zinc-800 rounded-lg p-6">
                   <div className="absolute right-3 top-3">
                     <MediaPill variant="dark">0.5 SOL</MediaPill>
@@ -266,7 +266,7 @@ function BadgesTestPage() {
                   <div className="h-8" />
                   <span className="text-xs text-zinc-400">tone (edition)</span>
                 </div>
-              </div>
+              </Grid>
             </div>
             <div>
               <p className="text-xs text-muted-foreground mb-2">Use case: Combined status + price</p>
@@ -278,7 +278,7 @@ function BadgesTestPage() {
                 <div className="h-16" />
               </div>
             </div>
-          </div>
+          </Stack>
         </Card>
 
         {/* ═══════════════════════════════════════════════════════════════════════
@@ -297,14 +297,14 @@ function BadgesTestPage() {
             Additional pill/badge-like elements that use inline styles.
           </p>
 
-          <div className="space-y-6">
+          <Stack gap={3}>
             {/* Post Type Inline */}
             <div>
               <h3 className="text-sm font-medium mb-2">Post Type Indicators (inline)</h3>
               <p className="text-xs text-muted-foreground mb-3">
                 Inline text indicators for post types in PostCard header. Uses tone CSS variables.
               </p>
-              <div className="flex flex-wrap gap-6 p-4 bg-muted/30 rounded-lg">
+              <Row gap={3} wrap className="p-4 bg-muted/30 rounded-lg">
                 <div className="flex items-center gap-1 text-xs text-muted-foreground">
                   <span>@artist</span>
                   <span>·</span>
@@ -325,7 +325,7 @@ function BadgesTestPage() {
                     Edition of 10
                   </span>
                 </div>
-              </div>
+              </Row>
             </div>
 
             {/* Hidden Badge */}
@@ -334,7 +334,7 @@ function BadgesTestPage() {
               <p className="text-xs text-muted-foreground mb-3">
                 Inline indicator for hidden/moderated content in PostCard header.
               </p>
-              <div className="flex items-center gap-4 p-4 bg-muted/30 rounded-lg">
+              <Row gap={2} align="center" className="p-4 bg-muted/30 rounded-lg">
                 <div className="flex items-center gap-1 text-xs text-muted-foreground">
                   <span>@username</span>
                   <span>·</span>
@@ -345,7 +345,7 @@ function BadgesTestPage() {
                     Hidden
                   </span>
                 </div>
-              </div>
+              </Row>
             </div>
 
             {/* New Posts Toast */}
@@ -354,7 +354,7 @@ function BadgesTestPage() {
               <p className="text-xs text-muted-foreground mb-3">
                 Floating button that appears when new posts are available.
               </p>
-              <div className="flex justify-center p-8 bg-muted/30 rounded-lg">
+              <Row justify="center" className="p-8 bg-muted/30 rounded-lg">
                 <button className="flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-primary text-primary-foreground shadow-lg shadow-black/10 hover:scale-105 transition-transform">
                   <Icon name="arrow-up" className="text-sm" />
                   <div className="flex -space-x-2">
@@ -364,9 +364,9 @@ function BadgesTestPage() {
                   </div>
                   <span className="text-sm font-semibold pr-2">Posted</span>
                 </button>
-              </div>
+              </Row>
             </div>
-          </div>
+          </Stack>
         </Card>
 
         {/* ═══════════════════════════════════════════════════════════════════════
@@ -375,8 +375,8 @@ function BadgesTestPage() {
         <Card className="p-6 bg-muted/30">
           <h2 className="text-lg font-semibold mb-4">Component Summary</h2>
 
-          <div className="grid md:grid-cols-2 gap-4 text-sm">
-            <div className="space-y-3">
+          <Grid minItemWidth="16rem" gap={2} className="text-sm">
+            <Stack gap={2}>
               <div>
                 <h3 className="font-medium">Badge</h3>
                 <p className="text-muted-foreground text-xs">
@@ -389,8 +389,8 @@ function BadgesTestPage() {
                   2 variants (default, destructive) × 3 sizes (default, sm, dot)
                 </p>
               </div>
-            </div>
-            <div className="space-y-3">
+            </Stack>
+            <Stack gap={2}>
               <div>
                 <h3 className="font-medium">MediaPill</h3>
                 <p className="text-muted-foreground text-xs">
@@ -403,8 +403,8 @@ function BadgesTestPage() {
                   3 variants (display, link, interactive) × 2 sizes + selected state
                 </p>
               </div>
-            </div>
-          </div>
+            </Stack>
+          </Grid>
 
           <div className="mt-4 pt-4 border-t border-border/50">
             <h3 className="font-medium mb-2">Design Standards</h3>
@@ -416,7 +416,7 @@ function BadgesTestPage() {
             </ul>
           </div>
         </Card>
-      </div>
-    </div>
+      </Stack>
+    </Region>
   )
 }

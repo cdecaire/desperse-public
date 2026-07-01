@@ -1,64 +1,32 @@
-import * as React from "react"
-import * as TabsPrimitive from "@radix-ui/react-tabs"
+import {
+	Tabs as SableTabs,
+	TabsList as SableTabsList,
+	TabsPanel as SableTabsPanel,
+	TabsTrigger as SableTabsTrigger,
+} from "@cdecaire/sable"
 
-import { cn } from "@/lib/utils"
+/**
+ * Migration shim (Phase 2 — Sable adoption).
+ *
+ * <Tabs> and friends now render @cdecaire/sable's Tabs (Base UI Tabs: roving
+ * focus, arrow-key nav, ARIA tablist/tab/tabpanel wiring) while keeping the
+ * LEGACY shadcn export surface so existing call sites don't change.
+ *
+ * Name/state adaptations (Radix → Base UI):
+ *   - Radix `TabsPrimitive.Content` → Sable `TabsPanel`. Sable does NOT export
+ *     `TabsContent`, so it's aliased below to preserve the legacy name.
+ *   - Active-tab selector `data-[state=active]` is no longer needed here: Sable
+ *     owns the active styling internally via Base UI's `data-active` attribute.
+ *
+ * Styling is adopted wholesale from Sable (the legacy shadcn classes are
+ * intentionally dropped). Zero external call sites today — effectively dead —
+ * but shimmed for consistency with the rest of the migration.
+ */
 
-function Tabs({
-  className,
-  ...props
-}: React.ComponentProps<typeof TabsPrimitive.Root>) {
-  return (
-    <TabsPrimitive.Root
-      data-slot="tabs"
-      className={cn("flex flex-col gap-2", className)}
-      {...props}
-    />
-  )
-}
-
-function TabsList({
-  className,
-  ...props
-}: React.ComponentProps<typeof TabsPrimitive.List>) {
-  return (
-    <TabsPrimitive.List
-      data-slot="tabs-list"
-      className={cn(
-        "bg-muted text-muted-foreground inline-flex h-9 w-fit items-center justify-center rounded-lg p-[3px]",
-        className
-      )}
-      {...props}
-    />
-  )
-}
-
-function TabsTrigger({
-  className,
-  ...props
-}: React.ComponentProps<typeof TabsPrimitive.Trigger>) {
-  return (
-    <TabsPrimitive.Trigger
-      data-slot="tabs-trigger"
-      className={cn(
-        "data-[state=active]:bg-background dark:data-[state=active]:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 text-foreground dark:text-muted-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium leading-[1.2] tracking-[-0.01em] whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:shadow-sm [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-        className
-      )}
-      {...props}
-    />
-  )
-}
-
-function TabsContent({
-  className,
-  ...props
-}: React.ComponentProps<typeof TabsPrimitive.Content>) {
-  return (
-    <TabsPrimitive.Content
-      data-slot="tabs-content"
-      className={cn("flex-1 outline-none", className)}
-      {...props}
-    />
-  )
-}
+const Tabs = SableTabs
+const TabsList = SableTabsList
+const TabsTrigger = SableTabsTrigger
+// Legacy name preserved: Radix `TabsContent` → Sable `TabsPanel`.
+const TabsContent = SableTabsPanel
 
 export { Tabs, TabsList, TabsTrigger, TabsContent }

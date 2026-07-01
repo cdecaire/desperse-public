@@ -1,3 +1,4 @@
+import { Field } from '@cdecaire/sable'
 import { useEffect, useRef, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { toast } from '@/hooks/use-toast'
@@ -270,8 +271,7 @@ export function ProfileSetupStep({ onSuccess }: ProfileSetupStepProps) {
           </div>
 
           {/* Link */}
-          <div className="space-y-2">
-            <Label htmlFor="link">Website or social link</Label>
+          <Field label="Website or social link" error={errors.link}>
             <Input
               id="link"
               type="text"
@@ -284,12 +284,8 @@ export function ProfileSetupStep({ onSuccess }: ProfileSetupStepProps) {
               }}
               placeholder="https://example.com"
               maxLength={2048}
-              aria-invalid={errors.link ? 'true' : 'false'}
             />
-            {errors.link && (
-              <p className="text-xs text-destructive">{errors.link}</p>
-            )}
-          </div>
+          </Field>
 
           <div className="flex justify-end">
             <Button type="submit" disabled={isSaving}>

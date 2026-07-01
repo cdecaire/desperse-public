@@ -6,6 +6,8 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { Icon } from '@/components/ui/icon'
+import { Choicebox, ChoiceboxGroup } from '@cdecaire/sable'
+import { Row, Stack } from '@cdecaire/sable/layout'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { PageHeader } from '@/components/shared/PageHeader'
 
@@ -49,7 +51,7 @@ function AppSettingsPage() {
   const isLoading = isUserLoading || isPrefsLoading
 
   return (
-    <div className="space-y-4 pt-4">
+    <Stack gap={2} className="pt-4">
         <PageHeader
           title="App Settings"
           description="Configure your theme and blockchain explorer preferences."
@@ -57,14 +59,14 @@ function AppSettingsPage() {
 
       {/* Theme Setting */}
       <div className="rounded-[var(--radius-lg)] bg-white dark:bg-input/30 border border-input px-5 md:px-6 lg:px-8 py-4 md:py-5">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
+        <Row align="center" justify="between">
+          <Row align="center" gap={1.5}>
             <Icon
               name={activeTheme === 'light' ? 'sun-bright' : 'moon'}
               variant="regular"
               className="w-5 text-center text-muted-foreground"
             />
-            <div className="flex flex-col">
+            <Stack gap={0}>
               <span className="text-label-lg">Theme</span>
               <span className="text-caption text-muted-foreground">
                 {isSystemTheme
@@ -73,10 +75,10 @@ function AppSettingsPage() {
                     ? 'Light mode'
                     : 'Dark mode'}
               </span>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-3">
+            </Stack>
+          </Row>
+          <Row align="center" gap={1.5}>
+            <Row align="center" gap={1.5}>
               <Label
                 htmlFor="system-theme"
                 className="text-label-lg cursor-pointer leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -89,7 +91,7 @@ function AppSettingsPage() {
                 onCheckedChange={handleSystemThemeChange}
                 aria-label="Use system theme"
               />
-            </div>
+            </Row>
             <Switch
               checked={activeTheme === 'dark'}
               onCheckedChange={handleThemeToggle}
@@ -100,50 +102,48 @@ function AppSettingsPage() {
                   : `Switch to ${activeTheme === 'dark' ? 'light' : 'dark'} theme`
               }
             />
-          </div>
-        </div>
+          </Row>
+        </Row>
       </div>
 
       {/* Explorer Preference */}
       <div className="rounded-[var(--radius-lg)] bg-white dark:bg-input/30 border border-input px-5 md:px-6 lg:px-8 py-4 md:py-5">
-        <div className="flex items-center gap-3 mb-4">
+        <Row align="center" gap={1.5} className="mb-4">
           <Icon name="arrow-up-right-from-square" variant="regular" className="w-5 text-center text-muted-foreground" />
-          <div className="flex flex-col">
+          <Stack gap={0}>
             <span className="text-label-lg">Blockchain Explorer</span>
             <span className="text-caption text-muted-foreground">
               Choose which explorer to use for transaction links
             </span>
-          </div>
-        </div>
+          </Stack>
+        </Row>
 
         {isLoading ? (
-          <div className="flex justify-center py-4">
+          <Row justify="center" className="py-4">
             <LoadingSpinner />
-          </div>
+          </Row>
         ) : !user ? (
           <p className="text-body-sm text-muted-foreground py-2">
             Sign in to set explorer preference
           </p>
         ) : (
-          <div className="grid grid-cols-2 gap-2">
+          <ChoiceboxGroup
+            value={preferences.explorer}
+            onValueChange={(value) => setExplorer(value as ExplorerOption)}
+            className="grid-cols-2"
+          >
             {(Object.keys(explorerLabels) as ExplorerOption[]).map((key) => (
-              <button
+              <Choicebox
                 key={key}
-                onClick={() => setExplorer(key)}
-                className={`flex flex-col items-start p-3 rounded-lg border transition-colors ${
-                  preferences.explorer === key
-                    ? 'border-primary bg-primary/5'
-                    : 'border-input hover:border-primary/50'
-                }`}
-              >
-                <span className="text-label-lg">{explorerLabels[key].name}</span>
-                <span className="text-caption text-muted-foreground">{explorerLabels[key].description}</span>
-              </button>
+                value={key}
+                title={explorerLabels[key].name}
+                description={explorerLabels[key].description}
+              />
             ))}
-          </div>
+          </ChoiceboxGroup>
         )}
       </div>
 
-    </div>
+    </Stack>
   )
 }

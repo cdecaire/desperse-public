@@ -5,6 +5,7 @@
  */
 
 import { useRouter } from "@tanstack/react-router"
+import { Row } from "@cdecaire/sable/layout"
 import { Icon } from "@/components/ui/icon"
 
 interface MobileHeaderProps {
@@ -41,12 +42,12 @@ export function MobileHeader({
 
 	return (
 		<header
-			className={`md:hidden fixed top-0 left-0 right-0 z-40 w-full border-b bg-background ${className}`}
+			className={`md:hidden fixed top-0 left-0 right-0 z-(--z-nav) w-full border-b bg-background ${className}`}
 			style={{ paddingTop: "env(safe-area-inset-top)" }}
 		>
 			<div className="grid grid-cols-3 items-center min-h-14 px-4">
 				{/* Left: Back button or spacer */}
-				<div className="flex items-center">
+				<Row align="center">
 					{showBackButton && (
 						<button
 							type="button"
@@ -57,7 +58,7 @@ export function MobileHeader({
 							<Icon name="arrow-left" />
 						</button>
 					)}
-				</div>
+				</Row>
 
 				{/* Center: Title */}
 				<div className="flex justify-center min-w-0 flex-1">
@@ -67,7 +68,7 @@ export function MobileHeader({
 				</div>
 
 				{/* Right: Custom content or spacer */}
-				<div className="flex justify-end">{rightContent}</div>
+				<Row justify="end">{rightContent}</Row>
 			</div>
 		</header>
 	)

@@ -14,8 +14,9 @@ import { SearchResultsTabs, type SearchTab } from '@/components/explore/SearchRe
 import { PostCard } from '@/components/feed/PostCard'
 import { FeedSkeleton } from '@/components/feed/PostCardSkeleton'
 import { EmptyState } from '@/components/shared/EmptyState'
-import { Input } from '@/components/ui/input'
 import { Icon } from '@/components/ui/icon'
+import { SearchInput } from '@cdecaire/sable'
+import { Row, Stack } from '@cdecaire/sable/layout'
 import { addRecentSearch } from '@/lib/recentSearches'
 
 // Search params schema
@@ -126,14 +127,8 @@ function SearchPage() {
     navigate({ to: '/explore' })
   }, [navigate])
 
-  // Handle input change
-  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value)
-  }, [])
-
-  // Handle clear
+  // Handle clear (SearchInput resets the value via onValueChange(''); refocus here)
   const handleClear = useCallback(() => {
-    setQuery('')
     inputRef.current?.focus()
   }, [])
 
@@ -141,10 +136,10 @@ function SearchPage() {
     <div className="min-h-screen">
       {/* Header with search input - PWA safe-area support */}
       <div
-        className="sticky top-0 bg-background/95 backdrop-blur-sm z-40 md:pt-0"
+        className="sticky top-0 bg-background/95 backdrop-blur-sm z-(--z-nav) md:pt-0"
         style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
       >
-        <div className="flex items-center gap-2 px-2 py-2">
+        <Row gap={1} align="center" className="px-2 py-2">
           {/* Back button */}
           <button
             onClick={handleBack}
@@ -155,34 +150,20 @@ function SearchPage() {
           </button>
 
           {/* Search input */}
-          <form onSubmit={handleSubmit} className="flex-1 relative">
-            <Icon
-              name="magnifying-glass"
-              variant="regular"
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
-            />
-            <Input
+          <form onSubmit={handleSubmit} className="flex-1">
+            <SearchInput
               ref={inputRef}
               type="text"
               value={query}
-              onChange={handleChange}
+              onValueChange={setQuery}
+              onClear={handleClear}
               placeholder="Search"
-              className="pl-10 pr-10 h-10 bg-muted/50 border-0 focus-visible:ring-1 focus-visible:ring-ring rounded-full"
+              className="bg-muted/50 border-0 focus-visible:ring-1 focus-visible:ring-ring rounded-full"
               aria-label="Search"
               autoComplete="off"
             />
-            {query && (
-              <button
-                type="button"
-                onClick={handleClear}
-                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground transition-colors"
-                aria-label="Clear search"
-              >
-                <Icon name="circle-xmark" />
-              </button>
-            )}
           </form>
-        </div>
+        </Row>
 
         {/* Tabs */}
         <SearchResultsTabs activeTab={activeTab} onTabChange={handleTabChange} />
@@ -249,7 +230,7 @@ function SearchPage() {
                     <h3 className="text-label-lg text-muted-foreground px-4 md:px-2 py-3">
                       Posts
                     </h3>
-                    <div className="space-y-6 -mx-4 md:mx-0">
+                    <Stack gap={3} className="-mx-4 md:mx-0">
                       {searchResults.posts.slice(0, 5).map((post) => (
                         <PostCard
                           key={post.id}
@@ -276,7 +257,7 @@ function SearchPage() {
                           isAuthenticated={isAuthenticated}
                         />
                       ))}
-                    </div>
+                    </Stack>
                     {searchResults.posts.length > 5 && (
                       <button
                         onClick={() => handleTabChange('posts')}
@@ -322,7 +303,7 @@ function SearchPage() {
             {activeTab === 'posts' && (
               <div>
                 {searchResults.posts.length > 0 ? (
-                  <div className="space-y-6 pt-4 -mx-4 md:mx-0">
+                  <Stack gap={3} className="pt-4 -mx-4 md:mx-0">
                     {searchResults.posts.map((post) => (
                       <PostCard
                         key={post.id}
@@ -349,7 +330,7 @@ function SearchPage() {
                         isAuthenticated={isAuthenticated}
                       />
                     ))}
-                  </div>
+                  </Stack>
                 ) : (
                   <EmptyState
                     icon={<Icon name="images" variant="regular" className="text-4xl" />}
@@ -364,7 +345,7 @@ function SearchPage() {
             {activeTab === 'collectibles' && (
               <div>
                 {filteredPosts.length > 0 ? (
-                  <div className="space-y-6 pt-4 -mx-4 md:mx-0">
+                  <Stack gap={3} className="pt-4 -mx-4 md:mx-0">
                     {filteredPosts.map((post) => (
                       <PostCard
                         key={post.id}
@@ -391,7 +372,7 @@ function SearchPage() {
                         isAuthenticated={isAuthenticated}
                       />
                     ))}
-                  </div>
+                  </Stack>
                 ) : (
                   <EmptyState
                     icon={<Icon name="gem" variant="regular" className="text-4xl" />}

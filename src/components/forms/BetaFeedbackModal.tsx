@@ -13,6 +13,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Icon } from '@/components/ui/icon'
 import { cn } from '@/lib/utils'
@@ -254,7 +255,7 @@ export function BetaFeedbackModal({ open, onOpenChange }: BetaFeedbackModalProps
         <div className="space-y-6">
           {/* Star Rating */}
           <div className="space-y-2">
-            <label className="text-label-lg">How's it going?</label>
+            <Label>How's it going?</Label>
             <StarRating
               value={rating}
               onChange={setRating}
@@ -264,9 +265,9 @@ export function BetaFeedbackModal({ open, onOpenChange }: BetaFeedbackModalProps
 
           {/* Message */}
           <div className="space-y-2">
-            <label htmlFor="feedback-message" className="text-label-lg">
+            <Label htmlFor="feedback-message">
               Message
-            </label>
+            </Label>
             <div className="relative">
               <Textarea
                 id="feedback-message"
@@ -286,7 +287,7 @@ export function BetaFeedbackModal({ open, onOpenChange }: BetaFeedbackModalProps
 
           {/* Screenshot Upload */}
           <div className="space-y-2">
-            <label className="text-label-lg">Screenshot</label>
+            <Label>Screenshot</Label>
 
             {!imagePreview && !imageUrl ? (
               <div

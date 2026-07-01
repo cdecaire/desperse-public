@@ -1,32 +1,69 @@
-import * as React from "react"
-import * as CheckboxPrimitive from "@radix-ui/react-checkbox"
+import { Checkbox as SableCheckbox } from "@cdecaire/sable"
 
-import { cn } from "@/lib/utils"
-import { Icon } from "@/components/ui/icon"
+/**
+ * Migration shim (Phase 2 — Sable adoption).
+ *
+ * The app's <Checkbox> now renders @cdecaire/sable's Checkbox (Base UI
+ * `Checkbox.Root` + `Checkbox.Indicator`, with the motion-interactive recipe)
+ * while keeping the LEGACY (Radix-era) API so existing call sites don't change.
+ *
+ * API preserved:
+ *   - checked?: boolean
+ *   - defaultChecked?: boolean
+ *   - onCheckedChange?: (checked: boolean) => void   ← single-arg (see adapter)
+ *   - disabled?: boolean
+ *   - id?: string
+ *   - name?: string
+ *   - className?: string
+ *   - aria-label?: string
+ *
+ * Callback adaptation: Radix's onCheckedChange was
+ * `(checked: boolean | "indeterminate") => void`; Base UI / Sable is
+ * `(checked: boolean, eventDetails) => void`. Every Desperse call site already
+ * treats the argument as a plain boolean (the one that wrote
+ * `onCheckedChange={(checked) => set(checked === true)}` still type-checks and
+ * behaves correctly against a boolean). We narrow the public type to
+ * `(checked: boolean) => void` and drop the extra Base UI event arg internally.
+ *
+ * VISUAL / BEHAVIOR DELTAS (flagged — see report):
+ *   - Indicator: the legacy checkbox drew a custom FA `circle` (unchecked) +
+ *     `circle-check` (checked) using Desperse's own <Icon>. Sable instead draws a
+ *     soft-square box surface (border-input/bg-card → primary when checked) and a
+ *     `check` glyph rendered via Sable's INJECTED icon set. This is a deliberate
+ *     adoption of Sable's surface — the round look is gone.
+ *   - Sable's checkmark renders through Sable's <Icon name="check">, which needs a
+ *     Sable <IconProvider> mounted in the app tree. Until that provider is wired,
+ *     the box state colors still show but the check glyph will be blank.
+ *   - `indeterminate` is now genuinely supported by Sable (renders a dash); the
+ *     legacy component had no indeterminate state. Forwarded through `...props`.
+ */
 
-const Checkbox = React.forwardRef<
-  React.ElementRef<typeof CheckboxPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>
->(({ className, ...props }, ref) => (
-  <CheckboxPrimitive.Root
-    ref={ref}
-    className={cn(
-      "peer h-4 w-4 shrink-0 rounded-sm border-0 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 relative",
-      className
-    )}
-    {...props}
-  >
-    {/* Unchecked state - always visible */}
-    <Icon name="circle" variant="regular" className="text-base leading-none absolute inset-0 flex items-center justify-center text-current" />
-    {/* Checked state - only visible when checked */}
-    <CheckboxPrimitive.Indicator
-      className={cn("flex items-center justify-center text-current absolute inset-0")}
-    >
-      <Icon name="circle-check" className="text-base leading-none absolute inset-0 flex items-center justify-center text-current" />
-    </CheckboxPrimitive.Indicator>
-  </CheckboxPrimitive.Root>
-))
-Checkbox.displayName = CheckboxPrimitive.Root.displayName
+interface CheckboxProps {
+	id?: string
+	name?: string
+	checked?: boolean
+	defaultChecked?: boolean
+	onCheckedChange?: (checked: boolean) => void
+	disabled?: boolean
+	indeterminate?: boolean
+	className?: string
+	"aria-label"?: string
+}
+
+function Checkbox({ checked, onCheckedChange, ...props }: CheckboxProps) {
+	return (
+		<SableCheckbox
+			checked={checked}
+			// Adapt Base UI's (checked, eventDetails) → legacy (checked) signature.
+			onCheckedChange={
+				onCheckedChange
+					? (next: boolean) => onCheckedChange(next)
+					: undefined
+			}
+			{...props}
+		/>
+	)
+}
+Checkbox.displayName = "Checkbox"
 
 export { Checkbox }
-

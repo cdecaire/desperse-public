@@ -32,6 +32,8 @@ import { LoadingSpinner } from '@/components/shared/LoadingSpinner';
 import { AuthGuard } from '@/components/shared/AuthGuard';
 import { getWalletBalance } from '@/server/functions/dev';
 import { getClientRpcUrl } from '@/lib/rpc';
+import { PageHeader } from '@cdecaire/sable';
+import { Region, Stack, Row, Grid } from '@cdecaire/sable/layout';
 
 export const Route = createFileRoute('/dev/wallet-test')({
   component: WalletTestPage,
@@ -552,145 +554,146 @@ function WalletTestContent() {
 
   if (!solanaWalletsReady) {
     return (
-      <div className="container mx-auto py-8 px-4 max-w-4xl">
-        <div className="flex items-center justify-center min-h-[50vh]">
+      <Region max="56rem" inset className="py-8">
+        <Row align="center" justify="center" gap={2} className="min-h-[50vh]">
           <LoadingSpinner size="lg" />
-          <p className="ml-4 text-muted-foreground">Loading wallets...</p>
-        </div>
-      </div>
+          <p className="text-muted-foreground">Loading wallets...</p>
+        </Row>
+      </Region>
     );
   }
 
   return (
-    <div className="container mx-auto py-8 px-4 max-w-4xl">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold mb-2">Wallet Test Page</h1>
-        <p className="text-muted-foreground">Connected Solana wallets from useSolanaWallets()</p>
-      </div>
+    <Region max="56rem" inset className="py-8">
+      <Stack gap={3}>
+        <PageHeader
+          title="Wallet Test Page"
+          description="Connected Solana wallets from useSolanaWallets()"
+        />
 
-      {/* Summary */}
-      <Card className="p-6 mb-6">
-        <div className="grid grid-cols-3 gap-4">
-          <div className="text-center">
-            <div className="text-3xl font-bold text-primary">{embeddedWallets.length}</div>
-            <div className="text-sm text-muted-foreground mt-1">Embedded</div>
-          </div>
-          <div className="text-center">
-            <div className="text-3xl font-bold">{externalWallets.length}</div>
-            <div className="text-sm text-muted-foreground mt-1">External</div>
-          </div>
-          <div className="text-center">
-            <div className="text-3xl font-bold">{solanaWallets.length}</div>
-            <div className="text-sm text-muted-foreground mt-1">Total</div>
-          </div>
-        </div>
-        {solanaWallets.length > 0 && (
-          <div className="mt-4 flex justify-center">
-            <Button onClick={fetchAllBalances} variant="outline">
-              Refresh All Balances
-            </Button>
-          </div>
-        )}
-      </Card>
-
-      {/* Embedded Wallets */}
-      <Card className="p-6 mb-6">
-        <h2 className="text-xl font-semibold mb-4">
-          Embedded Wallets {embeddedWallets.length > 0 && `(${embeddedWallets.length})`}
-        </h2>
-        {embeddedWallets.length === 0 ? (
-          <p className="text-muted-foreground text-center py-8">
-            No embedded wallets connected
-          </p>
-        ) : (
-          <div className="space-y-4">
-            {embeddedWallets.map((wallet) => {
-              const balance = getBalance(wallet.address);
-              return (
-                <div
-                  key={wallet.address}
-                  className="p-4 rounded-lg border-2 border-green-500/50 bg-green-50 dark:bg-green-950"
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="font-semibold text-green-900 dark:text-green-100">Embedded</span>
-                  </div>
-                  <p className="text-sm font-mono break-all mb-3">{wallet.address}</p>
-                  <div>
-                    <span className="text-sm text-muted-foreground">Balance: </span>
-                    {balance?.loading ? (
-                      <LoadingSpinner size="sm" className="inline" />
-                    ) : balance?.error ? (
-                      <span className="text-sm text-destructive">{balance.error}</span>
-                    ) : balance?.balance !== undefined ? (
-                      <span className="font-semibold">{formatSol(balance.balance)} SOL</span>
-                    ) : (
-                      <Button
-                        variant="ghost"
-                        onClick={() => fetchBalance(wallet.address)}
-                        className="h-auto py-0 px-2 text-xs"
-                      >
-                        Check Balance
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </Card>
-
-      {/* External Wallets */}
-      {externalWallets.length > 0 && (
-        <Card className="p-6 mb-6">
-          <h2 className="text-xl font-semibold mb-4">
-            External Wallets ({externalWallets.length})
-          </h2>
-          <div className="space-y-4">
-            {externalWallets.map((wallet) => {
-              const balance = getBalance(wallet.address);
-              return (
-                <div
-                  key={wallet.address}
-                  className="p-4 rounded-lg border border-border/50 bg-card"
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="font-semibold">External</span>
-                    <span className="text-xs px-2 py-1 rounded bg-secondary text-secondary-foreground">
-                      {walletClientLabel(wallet)}
-                    </span>
-                  </div>
-                  <p className="text-sm font-mono break-all mb-3">{wallet.address}</p>
-                  <div>
-                    <span className="text-sm text-muted-foreground">Balance: </span>
-                    {balance?.loading ? (
-                      <LoadingSpinner size="sm" className="inline" />
-                    ) : balance?.error ? (
-                      <span className="text-sm text-destructive">{balance.error}</span>
-                    ) : balance?.balance !== undefined ? (
-                      <span className="font-semibold">{formatSol(balance.balance)} SOL</span>
-                    ) : (
-                      <Button
-                        variant="ghost"
-                        onClick={() => fetchBalance(wallet.address)}
-                        className="h-auto py-0 px-2 text-xs"
-                      >
-                        Check Balance
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </Card>
-      )}
-
-      {/* Wallet Actions - Message Signing */}
-      {solanaWallets.length > 0 && (
+        {/* Summary */}
         <Card className="p-6">
-          <h2 className="text-xl font-semibold mb-4">Wallet Actions</h2>
-          <div className="space-y-4">
+          <Grid cols={3} gap={2}>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-primary">{embeddedWallets.length}</div>
+              <div className="text-sm text-muted-foreground mt-1">Embedded</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold">{externalWallets.length}</div>
+              <div className="text-sm text-muted-foreground mt-1">External</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold">{solanaWallets.length}</div>
+              <div className="text-sm text-muted-foreground mt-1">Total</div>
+            </div>
+          </Grid>
+          {solanaWallets.length > 0 && (
+            <Row justify="center" className="mt-4">
+              <Button onClick={fetchAllBalances} variant="outline">
+                Refresh All Balances
+              </Button>
+            </Row>
+          )}
+        </Card>
+
+        {/* Embedded Wallets */}
+        <Card className="p-6">
+          <h2 className="text-xl font-semibold mb-4">
+            Embedded Wallets {embeddedWallets.length > 0 && `(${embeddedWallets.length})`}
+          </h2>
+          {embeddedWallets.length === 0 ? (
+            <p className="text-muted-foreground text-center py-8">
+              No embedded wallets connected
+            </p>
+          ) : (
+            <Stack gap={2}>
+              {embeddedWallets.map((wallet) => {
+                const balance = getBalance(wallet.address);
+                return (
+                  <div
+                    key={wallet.address}
+                    className="p-4 rounded-lg border-2 border-green-500/50 bg-green-50 dark:bg-green-950"
+                  >
+                    <Row align="center" justify="between" className="mb-2">
+                      <span className="font-semibold text-green-900 dark:text-green-100">Embedded</span>
+                    </Row>
+                    <p className="text-sm font-mono break-all mb-3">{wallet.address}</p>
+                    <div>
+                      <span className="text-sm text-muted-foreground">Balance: </span>
+                      {balance?.loading ? (
+                        <LoadingSpinner size="sm" className="inline" />
+                      ) : balance?.error ? (
+                        <span className="text-sm text-destructive">{balance.error}</span>
+                      ) : balance?.balance !== undefined ? (
+                        <span className="font-semibold">{formatSol(balance.balance)} SOL</span>
+                      ) : (
+                        <Button
+                          variant="ghost"
+                          onClick={() => fetchBalance(wallet.address)}
+                          className="h-auto py-0 px-2 text-xs"
+                        >
+                          Check Balance
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </Stack>
+          )}
+        </Card>
+
+        {/* External Wallets */}
+        {externalWallets.length > 0 && (
+          <Card className="p-6">
+            <h2 className="text-xl font-semibold mb-4">
+              External Wallets ({externalWallets.length})
+            </h2>
+            <Stack gap={2}>
+              {externalWallets.map((wallet) => {
+                const balance = getBalance(wallet.address);
+                return (
+                  <div
+                    key={wallet.address}
+                    className="p-4 rounded-lg border border-border/50 bg-card"
+                  >
+                    <Row align="center" justify="between" className="mb-2">
+                      <span className="font-semibold">External</span>
+                      <span className="text-xs px-2 py-1 rounded bg-secondary text-secondary-foreground">
+                        {walletClientLabel(wallet)}
+                      </span>
+                    </Row>
+                    <p className="text-sm font-mono break-all mb-3">{wallet.address}</p>
+                    <div>
+                      <span className="text-sm text-muted-foreground">Balance: </span>
+                      {balance?.loading ? (
+                        <LoadingSpinner size="sm" className="inline" />
+                      ) : balance?.error ? (
+                        <span className="text-sm text-destructive">{balance.error}</span>
+                      ) : balance?.balance !== undefined ? (
+                        <span className="font-semibold">{formatSol(balance.balance)} SOL</span>
+                      ) : (
+                        <Button
+                          variant="ghost"
+                          onClick={() => fetchBalance(wallet.address)}
+                          className="h-auto py-0 px-2 text-xs"
+                        >
+                          Check Balance
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </Stack>
+          </Card>
+        )}
+
+        {/* Wallet Actions - Message Signing */}
+        {solanaWallets.length > 0 && (
+          <Card className="p-6">
+            <h2 className="text-xl font-semibold mb-4">Wallet Actions</h2>
+            <Stack gap={2}>
             <div>
               <label htmlFor="wallet-select" className="block text-sm font-medium mb-2">
                 Select Wallet
@@ -741,7 +744,7 @@ function WalletTestContent() {
               />
             </div>
 
-            <div className="space-y-2">
+            <Stack gap={1}>
               <Button
                 onClick={handleSignMessage}
                 disabled={isSigning || !signingMessage.trim() || !selectedWalletAddress}
@@ -773,7 +776,7 @@ function WalletTestContent() {
                   </ul>
                 </div>
               )}
-            </div>
+            </Stack>
 
             {signResult && (
               <div
@@ -807,11 +810,11 @@ function WalletTestContent() {
             )}
 
             {/* Sign Transaction (1 lamport self-transfer) */}
-            <div className="space-y-2 pt-4 border-t border-border/50">
-              <div className="flex items-center justify-between">
+            <Stack gap={1} className="pt-4 border-t border-border/50">
+              <Row align="center" justify="between">
                 <h3 className="text-sm font-semibold">Sign Transaction (1 lamport self-transfer)</h3>
                 <span className="text-xs text-muted-foreground">uses @solana/kit</span>
-              </div>
+              </Row>
               <Button
                 onClick={handleSignTransaction}
                 disabled={isSigningTx || !selectedWalletAddress}
@@ -858,14 +861,14 @@ function WalletTestContent() {
                   )}
                 </div>
               )}
-            </div>
+            </Stack>
 
             {/* Send Transaction (1 lamport self-transfer) */}
-            <div className="space-y-2 pt-4 border-t border-border/50">
-              <div className="flex items-center justify-between">
+            <Stack gap={1} className="pt-4 border-t border-border/50">
+              <Row align="center" justify="between">
                 <h3 className="text-sm font-semibold">Send Transaction (1 lamport self-transfer)</h3>
                 <span className="text-xs text-muted-foreground">uses @solana/kit + Privy send</span>
-              </div>
+              </Row>
               <Button
                 onClick={handleSendTransaction}
                 disabled={isSendingTx || !selectedWalletAddress}
@@ -912,10 +915,11 @@ function WalletTestContent() {
                   )}
                 </div>
               )}
-            </div>
-          </div>
-        </Card>
-      )}
-    </div>
+            </Stack>
+            </Stack>
+          </Card>
+        )}
+      </Stack>
+    </Region>
   );
 }

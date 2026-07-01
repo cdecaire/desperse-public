@@ -360,7 +360,7 @@ export function TipDialog({
 					{state === "success" && (
 						<StatusMessage
 							icon={
-								<Icon name="circle-check" className="text-green-500" />
+								<Icon name="circle-check" className="text-success" />
 							}
 							message={`Successfully sent ${amount} SKR!`}
 						/>

@@ -5,6 +5,8 @@
 
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
+import { PageHeader } from '@cdecaire/sable'
+import { Grid, Region, Row, Stack } from '@cdecaire/sable/layout'
 import { Card } from '@/components/ui/card'
 import { Icon } from '@/components/ui/icon'
 import { Input } from '@/components/ui/input'
@@ -36,19 +38,17 @@ function InputsTestPage() {
   const [postType, setPostType] = useState<PostType>('post')
 
   return (
-    <div className="py-6 max-w-5xl mx-auto px-4">
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold mb-2">Inputs & Toggles</h1>
-          <p className="text-muted-foreground">
-            Standard input components, textarea patterns, switches, and checkboxes.
-          </p>
-        </div>
+    <Region max="wide" inset className="py-6">
+      <Stack gap={3}>
+        <PageHeader
+          title="Inputs & Toggles"
+          description="Standard input components, textarea patterns, switches, and checkboxes."
+        />
 
         {/* Input Types */}
         <Card className="p-6">
           <h2 className="text-xl font-semibold mb-4">Input Types</h2>
-          <div className="grid md:grid-cols-2 gap-4">
+          <Grid minItemWidth="16rem" gap={2}>
             <div>
               <label className="text-sm font-medium mb-2 block">Text</label>
               <Input placeholder="Enter text..." />
@@ -73,13 +73,13 @@ function InputsTestPage() {
               <label className="text-sm font-medium mb-2 block">File</label>
               <Input type="file" accept="image/*" />
             </div>
-          </div>
+          </Grid>
         </Card>
 
         {/* Input States */}
         <Card className="p-6">
           <h2 className="text-xl font-semibold mb-4">Input States</h2>
-          <div className="grid md:grid-cols-2 gap-4">
+          <Grid minItemWidth="16rem" gap={2}>
             <div>
               <label className="text-sm font-medium mb-2 block">Default</label>
               <Input placeholder="Default state" />
@@ -97,7 +97,7 @@ function InputsTestPage() {
               <label className="text-sm font-medium mb-2 block">Read Only</label>
               <Input value="Read only value" readOnly />
             </div>
-          </div>
+          </Grid>
         </Card>
 
         {/* Post Type Selector (Radio Cards) */}
@@ -117,7 +117,7 @@ function InputsTestPage() {
             <code>absolute right-3 top-1/2 -translate-y-1/2</code> for inputs,{' '}
             <code>absolute bottom-2 right-3</code> for textareas.
           </p>
-          <div className="space-y-4 max-w-md">
+          <Stack gap={2} className="max-w-md">
             {/* Input with inline counter */}
             <div>
               <label className="text-sm font-medium mb-2 block">NFT Name (32 max)</label>
@@ -151,7 +151,7 @@ function InputsTestPage() {
                 </div>
               </div>
             </div>
-          </div>
+          </Stack>
         </Card>
 
         {/* Label with Tooltip */}
@@ -160,7 +160,7 @@ function InputsTestPage() {
           <p className="text-sm text-muted-foreground mb-4">
             Labels with dotted underline indicate additional info on hover.
           </p>
-          <div className="space-y-4 max-w-md">
+          <Stack gap={2} className="max-w-md">
             <div>
               <Tooltip content="Maximum number of editions that can be sold. Leave open edition for unlimited.">
                 <label className="text-sm font-medium mb-2 block cursor-help border-b border-dotted border-muted-foreground/40 w-fit">
@@ -177,7 +177,7 @@ function InputsTestPage() {
               </Tooltip>
               <Input type="number" placeholder="5.00" />
             </div>
-          </div>
+          </Stack>
         </Card>
 
         {/* Input with Inline Select */}
@@ -186,7 +186,7 @@ function InputsTestPage() {
           <p className="text-sm text-muted-foreground mb-4">
             Number input with currency selector positioned inside. Used for price fields.
           </p>
-          <div className="space-y-4 max-w-md">
+          <Stack gap={2} className="max-w-md">
             <div>
               <label className="text-sm font-medium mb-2 block">Price per edition</label>
               <div className="relative max-w-[200px]">
@@ -212,7 +212,7 @@ function InputsTestPage() {
                 </div>
               </div>
             </div>
-          </div>
+          </Stack>
         </Card>
 
         {/* Input with Suffix */}
@@ -221,10 +221,10 @@ function InputsTestPage() {
           <p className="text-sm text-muted-foreground mb-4">
             Number input with unit suffix. Used for royalties percentage.
           </p>
-          <div className="space-y-4 max-w-md">
+          <Stack gap={2} className="max-w-md">
             <div>
               <label className="text-sm font-medium mb-2 block">Royalties</label>
-              <div className="flex items-center gap-3">
+              <Row gap={1.5} align="center">
                 <Input
                   type="number"
                   min={0}
@@ -236,16 +236,16 @@ function InputsTestPage() {
                   className="max-w-[120px]"
                 />
                 <span className="text-sm text-muted-foreground">%</span>
-              </div>
+              </Row>
               <p className="text-xs text-muted-foreground mt-1">0-10% for secondary sales</p>
             </div>
-          </div>
+          </Stack>
         </Card>
 
         {/* Textarea */}
         <Card className="p-6">
           <h2 className="text-xl font-semibold mb-4">Textarea</h2>
-          <div className="space-y-4 max-w-md">
+          <Stack gap={2} className="max-w-md">
             <div>
               <label className="text-sm font-medium mb-2 block">Default</label>
               <Textarea placeholder="Write something..." />
@@ -262,7 +262,7 @@ function InputsTestPage() {
               <label className="text-sm font-medium mb-2 block">Error State</label>
               <Textarea placeholder="Error state" aria-invalid="true" />
             </div>
-          </div>
+          </Stack>
         </Card>
 
         {/* Switch/Toggle */}
@@ -271,32 +271,32 @@ function InputsTestPage() {
           <p className="text-sm text-muted-foreground mb-4">
             Binary on/off control for settings and preferences.
           </p>
-          <div className="space-y-6 max-w-md">
+          <Stack gap={3} className="max-w-md">
             {/* States */}
-            <div className="space-y-4">
+            <Stack gap={2}>
               <h3 className="text-sm font-medium text-muted-foreground">States</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="flex items-center justify-between">
+              <Grid cols={2} gap={2}>
+                <Row justify="between" align="center">
                   <Label>Off</Label>
                   <Switch checked={false} />
-                </div>
-                <div className="flex items-center justify-between">
+                </Row>
+                <Row justify="between" align="center">
                   <Label>On</Label>
                   <Switch checked={true} />
-                </div>
-                <div className="flex items-center justify-between">
+                </Row>
+                <Row justify="between" align="center">
                   <Label className="text-muted-foreground">Disabled (off)</Label>
                   <Switch checked={false} disabled />
-                </div>
-                <div className="flex items-center justify-between">
+                </Row>
+                <Row justify="between" align="center">
                   <Label className="text-muted-foreground">Disabled (on)</Label>
                   <Switch checked={true} disabled />
-                </div>
-              </div>
-            </div>
+                </Row>
+              </Grid>
+            </Stack>
 
             {/* Settings Pattern */}
-            <div className="space-y-4">
+            <Stack gap={2}>
               <h3 className="text-sm font-medium text-muted-foreground">Settings Pattern</h3>
               <SettingsToggle
                 icon="fa-bell"
@@ -309,8 +309,8 @@ function InputsTestPage() {
                 description="Use dark theme"
                 defaultChecked={false}
               />
-            </div>
-          </div>
+            </Stack>
+          </Stack>
         </Card>
 
         {/* Checkbox */}
@@ -319,8 +319,8 @@ function InputsTestPage() {
           <p className="text-sm text-muted-foreground mb-4">
             Used for multi-select options like report reasons or system theme preference.
           </p>
-          <div className="space-y-4 max-w-md">
-            <div className="flex items-center gap-3">
+          <Stack gap={2} className="max-w-md">
+            <Row gap={1.5} align="center">
               <Checkbox
                 id="checkbox-demo"
                 checked={checkboxChecked}
@@ -329,24 +329,24 @@ function InputsTestPage() {
               <Label htmlFor="checkbox-demo" className="cursor-pointer">
                 Use system theme
               </Label>
-            </div>
-            <div className="flex items-center gap-3">
+            </Row>
+            <Row gap={1.5} align="center">
               <Checkbox id="checkbox-checked" checked={true} disabled />
               <Label htmlFor="checkbox-checked" className="cursor-not-allowed opacity-50">
                 Disabled (checked)
               </Label>
-            </div>
-            <div className="flex items-center gap-3">
+            </Row>
+            <Row gap={1.5} align="center">
               <Checkbox id="checkbox-unchecked" checked={false} disabled />
               <Label htmlFor="checkbox-unchecked" className="cursor-not-allowed opacity-50">
                 Disabled (unchecked)
               </Label>
-            </div>
-          </div>
+            </Row>
+          </Stack>
         </Card>
 
-      </div>
-    </div>
+      </Stack>
+    </Region>
   )
 }
 
@@ -363,15 +363,15 @@ function SettingsToggle({
 }) {
   const [checked, setChecked] = useState(defaultChecked)
   return (
-    <div className="flex items-center justify-between py-1">
-      <div className="flex items-center gap-3">
+    <Row justify="between" align="center" className="py-1">
+      <Row gap={1.5} align="center">
         <Icon name={icon.replace('fa-', '')} variant="regular" className="w-4 text-center text-muted-foreground/70" />
         <div className="flex flex-col">
           <span className="text-sm font-medium">{label}</span>
           <span className="text-xs text-muted-foreground">{description}</span>
         </div>
-      </div>
+      </Row>
       <Switch checked={checked} onCheckedChange={setChecked} />
-    </div>
+    </Row>
   )
 }

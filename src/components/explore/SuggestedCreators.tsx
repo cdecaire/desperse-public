@@ -3,6 +3,7 @@
  * Horizontal scrollable list of suggested creators with gradient avatars
  */
 
+import { Scroller } from '@cdecaire/sable'
 import { useSuggestedCreators } from '@/hooks/useExploreQuery'
 import { GradientAvatar } from './GradientAvatar'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
@@ -12,8 +13,8 @@ import { useAuth } from '@/hooks/useAuth'
 function CreatorSkeleton() {
   return (
     <div className="flex flex-col items-center gap-2 w-[72px] shrink-0">
-      <div className="w-[72px] h-[72px] rounded-full bg-muted animate-pulse" />
-      <div className="w-14 h-3 rounded bg-muted animate-pulse" />
+      <div className="w-[72px] h-[72px] rounded-full bg-muted motion-pulse" />
+      <div className="w-14 h-3 rounded bg-muted motion-pulse" />
     </div>
   )
 }
@@ -45,7 +46,7 @@ export function SuggestedCreators() {
       </h2>
 
       {/* Horizontal scroll container */}
-      <div className="overflow-x-auto scrollbar-hide">
+      <Scroller orientation="horizontal">
         <div className="flex gap-4 px-4 md:px-2 pb-2">
           {isLoading ? (
             // Loading skeletons
@@ -73,7 +74,7 @@ export function SuggestedCreators() {
             ))
           )}
         </div>
-      </div>
+      </Scroller>
     </section>
   )
 }

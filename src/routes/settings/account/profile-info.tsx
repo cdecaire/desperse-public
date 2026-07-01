@@ -1,4 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
+import { Field } from '@cdecaire/sable'
+import { Col, Columns, Row, Stack } from '@cdecaire/sable/layout'
 import { useEffect, useRef, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { toast } from '@/hooks/use-toast'
@@ -325,15 +327,13 @@ function ProfileInfoPage() {
   if (error || !profileData?.user || !currentUser) {
     return (
       <div className="py-10">
-        <div className="max-w-5xl mx-auto px-4">
-          <div className="text-center space-y-3">
-            <p className="text-title-lg">Unable to load profile</p>
-            <p className="text-muted-foreground">Please try again later.</p>
-            <Link to="/">
-              <Button variant="outline">Go to feed</Button>
-            </Link>
-          </div>
-        </div>
+        <Stack gap={1.5} className="text-center">
+          <p className="text-title-lg">Unable to load profile</p>
+          <p className="text-muted-foreground">Please try again later.</p>
+          <Link to="/">
+            <Button variant="outline">Go to feed</Button>
+          </Link>
+        </Stack>
       </div>
     )
   }
@@ -345,10 +345,10 @@ function ProfileInfoPage() {
           description={<>Update your public profile and username. Changes apply to your public profile at /profile/{profileData.user.slug}.</>}
         />
 
-      <div className="space-y-6">
+      <Stack gap={3}>
         {/* Header Background Image */}
-        <div className="flex flex-col gap-4">
-          <div className="space-y-2">
+        <Stack gap={2}>
+          <Stack gap={1}>
             <Label>Header Background Image</Label>
             <div className="relative h-48 md:h-64 rounded-[var(--radius-md)] overflow-hidden bg-gradient-to-br from-muted via-muted/80 to-muted/60 border border-border">
               {headerBgUrl ? (
@@ -363,7 +363,7 @@ function ProfileInfoPage() {
                 </div>
               )}
               {/* Mobile: always visible buttons at top right */}
-              <div className="absolute top-3 right-3 flex items-center gap-2 md:hidden">
+              <Row gap={1} align="center" className="absolute top-3 right-3 md:hidden">
                 <Button
                   type="button"
                   variant="default"
@@ -377,7 +377,7 @@ function ProfileInfoPage() {
                   <Button
                     type="button"
                     variant="destructive"
-                    className="h-9 w-9 p-0"
+                    size="icon"
                     disabled={headerBgUpload.isPending || isRemovingHeaderBg}
                     onClick={handleRemoveHeaderBg}
                     aria-label="Remove header image"
@@ -385,10 +385,10 @@ function ProfileInfoPage() {
                     {isRemovingHeaderBg ? <LoadingSpinner size="sm" /> : <Icon name="xmark" />}
                   </Button>
                 )}
-              </div>
+              </Row>
               {/* Desktop: hover overlay */}
               <div className="absolute inset-0 bg-black/0 hover:bg-black/20 transition-colors hidden md:flex items-center justify-center opacity-0 hover:opacity-100">
-                <div className="flex items-center gap-2">
+                <Row gap={1} align="center">
                   <Button
                     type="button"
                     variant="default"
@@ -402,7 +402,7 @@ function ProfileInfoPage() {
                     <Button
                       type="button"
                       variant="destructive"
-                      className="h-9 w-9 p-0"
+                      size="icon"
                       disabled={headerBgUpload.isPending || isRemovingHeaderBg}
                       onClick={handleRemoveHeaderBg}
                       aria-label="Remove header image"
@@ -410,7 +410,7 @@ function ProfileInfoPage() {
                       {isRemovingHeaderBg ? <LoadingSpinner size="sm" /> : <Icon name="xmark" />}
                     </Button>
                   )}
-                </div>
+                </Row>
               </div>
               <input
                 ref={headerBgInputRef}
@@ -421,13 +421,13 @@ function ProfileInfoPage() {
               />
             </div>
             <p className="text-caption text-muted-foreground">Recommended: 1200x400px. Max 5MB.</p>
-          </div>
-        </div>
+          </Stack>
+        </Stack>
 
         {/* Avatar */}
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-row items-center justify-between gap-4 rounded-[var(--radius-lg)] bg-white dark:bg-input/30 border border-input px-5 md:px-6 lg:px-8 py-4 md:py-5">
-            <div className="flex items-center gap-4 md:gap-5 min-w-0">
+        <Stack gap={2}>
+          <Row align="center" justify="between" gap={2} className="rounded-[var(--radius-lg)] bg-white dark:bg-input/30 border border-input px-5 md:px-6 lg:px-8 py-4 md:py-5">
+            <Row align="center" gap={2} className="md:gap-5 min-w-0">
               <div className="w-16 h-16 md:w-18 md:h-18 rounded-full overflow-hidden bg-background flex items-center justify-center shrink-0">
                 {avatarUrl ? (
                   <img src={avatarUrl} alt="Avatar preview" className="w-full h-full object-cover" />
@@ -435,14 +435,14 @@ function ProfileInfoPage() {
                   <Icon name="circle-user-circle-plus" variant="regular" className="text-2xl text-muted-foreground" />
                 )}
               </div>
-              <div className="space-y-0.5 min-w-0">
+              <Stack gap={0.25} className="min-w-0">
                 <p className="text-title-lg leading-tight truncate">
                   {profileData.user.displayName || profileData.user.slug}
                 </p>
                 <p className="text-body-sm text-muted-foreground leading-tight truncate">@{profileData.user.slug}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 shrink-0">
+              </Stack>
+            </Row>
+            <Row align="center" gap={1} className="shrink-0">
               <Button
                 type="button"
                 variant="default"
@@ -455,7 +455,7 @@ function ProfileInfoPage() {
               <Button
                 type="button"
                 variant="destructive"
-                className="h-9 w-9 p-0"
+                size="icon"
                 disabled={avatarUpload.isPending || isRemovingAvatar || !avatarUrl}
                 onClick={handleRemoveAvatar}
                 aria-label="Remove photo"
@@ -469,12 +469,13 @@ function ProfileInfoPage() {
                 className="hidden"
                 onChange={(e) => handleAvatarFileSelect(e.target.files?.[0])}
               />
-            </div>
-          </div>
-        </div>
+            </Row>
+          </Row>
+        </Stack>
 
-        <form className="space-y-5" onSubmit={handleProfileSubmit}>
-          <div className="space-y-2">
+        <form onSubmit={handleProfileSubmit}>
+          <Stack gap={2.5}>
+          <Stack gap={1}>
             <Label>Display name</Label>
             <div className="relative">
               <Input
@@ -488,7 +489,7 @@ function ProfileInfoPage() {
                 {displayName.length} / 50
               </div>
             </div>
-          </div>
+          </Stack>
 
           <div>
             <Label className="mb-2 block">Bio</Label>
@@ -507,8 +508,7 @@ function ProfileInfoPage() {
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label>Website</Label>
+          <Field label="Website" description="Your portfolio or personal website">
             <Input
               type="url"
               value={link}
@@ -516,54 +516,57 @@ function ProfileInfoPage() {
               placeholder="https://example.com"
               maxLength={2048}
             />
-            <p className="text-caption text-muted-foreground">
-              Your portfolio or personal website
-            </p>
-          </div>
+          </Field>
 
-          <div className="space-y-2">
-            <Label>X (Twitter)</Label>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm pointer-events-none">@</span>
-              <Input
-                value={twitterUsername}
-                onChange={(e) => setTwitterUsername(e.target.value.replace(/^@/, ''))}
-                placeholder="username"
-                maxLength={15}
-                className="pl-7"
-              />
-            </div>
-            <p className="text-caption text-muted-foreground">
-              Your X username (without the @)
-            </p>
-          </div>
+          <Columns count={12} gap={2.5}>
+            <Col span={{ base: 12, md: 6 }}>
+              <Stack gap={1}>
+                <Label>X (Twitter)</Label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm pointer-events-none">@</span>
+                  <Input
+                    value={twitterUsername}
+                    onChange={(e) => setTwitterUsername(e.target.value.replace(/^@/, ''))}
+                    placeholder="username"
+                    maxLength={15}
+                    className="pl-7"
+                  />
+                </div>
+                <p className="text-caption text-muted-foreground">
+                  Your X username (without the @)
+                </p>
+              </Stack>
+            </Col>
 
-          <div className="space-y-2">
-            <Label>Instagram</Label>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm pointer-events-none">@</span>
-              <Input
-                value={instagramUsername}
-                onChange={(e) => setInstagramUsername(e.target.value.replace(/^@/, ''))}
-                placeholder="username"
-                maxLength={30}
-                className="pl-7"
-              />
-            </div>
-            <p className="text-caption text-muted-foreground">
-              Your Instagram username (without the @)
-            </p>
-          </div>
+            <Col span={{ base: 12, md: 6 }}>
+              <Stack gap={1}>
+                <Label>Instagram</Label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm pointer-events-none">@</span>
+                  <Input
+                    value={instagramUsername}
+                    onChange={(e) => setInstagramUsername(e.target.value.replace(/^@/, ''))}
+                    placeholder="username"
+                    maxLength={30}
+                    className="pl-7"
+                  />
+                </div>
+                <p className="text-caption text-muted-foreground">
+                  Your Instagram username (without the @)
+                </p>
+              </Stack>
+            </Col>
+          </Columns>
 
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
+          <Stack gap={1}>
+            <Row align="center" gap={1}>
               <Label>Username</Label>
               {isUsernameLocked && nextChangeLabel ? (
                 <span className="text-xs text-[var(--tone-warning)]">
                   Next change available: {nextChangeLabel}
                 </span>
               ) : null}
-            </div>
+            </Row>
             <div className="relative">
               <Input
                 value={username}
@@ -584,39 +587,40 @@ function ProfileInfoPage() {
             {statusMessage ? (
               <p className="text-xs text-[var(--tone-warning)]">{statusMessage}</p>
             ) : null}
-          </div>
+          </Stack>
 
           {isDirty && (
-            <div className="flex justify-end">
+            <Row justify="end">
               <Button type="submit" disabled={isSavingProfile}>
                 {isSavingProfile ? <LoadingSpinner size="sm" className="mr-2" /> : null}
                 Save changes
               </Button>
-            </div>
+            </Row>
           )}
+          </Stack>
         </form>
-      </div>
+      </Stack>
     </div>
   )
 }
 
 function ProfileInfoSkeleton() {
   return (
-    <div className="space-y-6">
-      <div className="space-y-3">
+    <Stack gap={3}>
+      <Stack gap={1.5}>
         <Skeleton className="h-6 w-40" />
         <Skeleton className="h-4 w-72" />
-      </div>
-      <div className="flex flex-col gap-4">
+      </Stack>
+      <Stack gap={2}>
         <Skeleton className="h-24 w-full rounded-[var(--radius-lg)]" />
-      </div>
-      <div className="space-y-3">
+      </Stack>
+      <Stack gap={1.5}>
         <Skeleton className="h-10 w-full" />
         <Skeleton className="h-32 w-full" />
         <Skeleton className="h-10 w-32 ml-auto" />
-      </div>
+      </Stack>
       <Skeleton className="h-48 w-full rounded-[var(--radius-md)]" />
-    </div>
+    </Stack>
   )
 }
 

@@ -20,6 +20,7 @@ import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { useOnboardingState } from '@/hooks/useOnboardingState'
 import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/ui/button'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { shouldShowFirstPostCta } from '@/lib/onboarding'
 import {
   useProfileUser,
@@ -41,6 +42,7 @@ import { Icon } from '@/components/ui/icon'
 import { getResponsiveImageProps } from '@/lib/imageUrl'
 import { useBlockUser, useUnblockUser } from '@/hooks/useBlocks'
 import { BlockConfirmDialog } from '@/components/forms/BlockConfirmDialog'
+import { Stack, Row, Grid } from '@cdecaire/sable/layout'
 
 type ProfileTab = 'posts' | 'collected' | 'for-sale'
 
@@ -176,7 +178,7 @@ function ProfileGridItem({
       {showHoverStats && (
         <div className="absolute inset-0 bg-black/65 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
           {hasAnyStats && (
-            <div className="flex items-center gap-4 text-white text-label-lg">
+            <Row gap={2} align="center" className="text-white text-label-lg">
               {likeCount > 0 && (
                 <span className="flex items-center gap-1.5">
                   <Icon name="heart" />
@@ -202,7 +204,7 @@ function ProfileGridItem({
                   {post.maxSupply && ` / ${post.maxSupply}`}
                 </span>
               )}
-            </div>
+            </Row>
           )}
         </div>
       )}
@@ -338,7 +340,7 @@ function ProfilePage() {
   if (isBlocked && profileUser) {
     return (
       <div className="pb-24 md:pb-8">
-        <div className="px-4 pt-12 max-w-md mx-auto flex flex-col items-center text-center gap-4">
+        <Stack gap={2} align="center" className="pt-12 max-w-md mx-auto text-center">
           <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center overflow-hidden">
             {profileUser.avatarUrl ? (
               <img
@@ -350,10 +352,10 @@ function ProfilePage() {
               <Icon name="user" variant="regular" className="text-2xl text-muted-foreground" />
             )}
           </div>
-          <div className="space-y-1">
+          <Stack gap={0.5} align="center">
             <h1 className="text-heading-3">{profileUser.displayName || profileUser.slug}</h1>
             <p className="text-body-sm text-muted-foreground">@{profileUser.slug}</p>
-          </div>
+          </Stack>
           <div className="rounded-lg border border-border bg-card px-4 py-3 text-body-sm text-muted-foreground">
             You blocked @{profileUser.slug}. They can't see your profile or
             posts, and you can't see theirs.
@@ -370,7 +372,7 @@ function ProfilePage() {
           >
             {unblockMutation.isPending ? 'Unblocking…' : `Unblock @${profileUser.slug}`}
           </Button>
-        </div>
+        </Stack>
       </div>
     )
   }
@@ -409,8 +411,8 @@ function ProfilePage() {
       </div>
 
       {/* Profile Content */}
-      <div className="px-4 -mt-12 md:-mt-16 md:px-4 relative">
-        <div className="flex flex-col gap-4">
+      <div className="-mt-12 md:-mt-16 relative">
+        <Stack gap={2}>
           {/* Avatar and Profile Controls */}
           <div className="shrink-0 relative pt-2">
             <div className="relative w-20 h-20 md:w-24 md:h-24">
@@ -465,13 +467,13 @@ function ProfilePage() {
 
             {/* Profile Controls - Own profile */}
             {isOwnProfile && (
-              <div className="absolute bottom-0 right-0 flex items-center gap-1">
+              <Row gap={0.5} align="center" className="absolute bottom-0 right-0">
                 {/* Activity Button */}
                 <Button
                   type="button"
                   onClick={() => setActivityModalOpen(true)}
                   variant="ghost"
-                  className="gap-1 px-2"
+                  size="icon"
                   aria-label="View activity"
                 >
                   <Icon name="clock" variant="regular" className="text-base" />
@@ -481,18 +483,18 @@ function ProfilePage() {
                 <Link to="/settings/profile">
                   <Button
                     variant="ghost"
-                    className="gap-1 px-2"
+                    size="icon"
                     aria-label="Edit profile"
                   >
                     <Icon name="user-pen" variant="regular" className="text-base" />
                   </Button>
                 </Link>
-              </div>
+              </Row>
             )}
 
             {/* Profile Actions - Other user's profile */}
             {!isAuthInitializing && !isCurrentUserLoading && !isOwnProfile && isAuthenticated && (
-              <div className="absolute bottom-0 right-0 flex items-center gap-1">
+              <Row gap={0.5} align="center" className="absolute bottom-0 right-0">
                 <TipButton
                   creatorId={profileUser.id}
                   creatorName={profileUser.displayName || profileUser.slug}
@@ -536,19 +538,19 @@ function ProfilePage() {
                 >
                   <Icon name="ban" variant="regular" className="text-base" />
                 </Button>
-              </div>
+              </Row>
             )}
           </div>
 
           {/* Profile Info */}
           <div className="space-y-1.5">
             {/* Display Name + Stats on same line */}
-            <div className="flex items-baseline gap-5 flex-wrap">
+            <Row gap={2.5} align="baseline" wrap>
               <h1 className="text-heading-2 truncate flex items-center gap-2">
                 <span className="truncate">{profileUser.displayName || profileUser.slug}</span>
                 <RoleBadge role={profileUser.role ?? null} />
               </h1>
-              <div className="flex gap-4 shrink-0">
+              <Row gap={2} className="shrink-0">
                 <button
                   type="button"
                   onClick={() => {
@@ -592,8 +594,8 @@ function ProfilePage() {
                     {profileData?.collectorsCount === 1 ? 'collector' : 'collectors'}
                   </span>
                 </button>
-              </div>
-            </div>
+              </Row>
+            </Row>
 
             {/* Username + Join date */}
             <p className="text-muted-foreground">
@@ -615,7 +617,7 @@ function ProfilePage() {
 
             {/* Social Links */}
             {(profileUser.twitterUsername || profileUser.instagramUsername || profileUser.link) && (
-              <div className={`flex items-center gap-4 flex-wrap text-sm ${profileUser.bio ? 'pt-1' : 'pt-0'}`}>
+              <Row gap={2} align="center" wrap className={`text-sm ${profileUser.bio ? 'pt-1' : 'pt-0'}`}>
                 {profileUser.twitterUsername && (
                   <a
                     href={`https://x.com/${profileUser.twitterUsername}`}
@@ -648,54 +650,46 @@ function ProfilePage() {
                     <span>{profileUser.link.replace(/^https?:\/\//, '').replace(/\/$/, '')}</span>
                   </button>
                 )}
-              </div>
+              </Row>
             )}
           </div>
-        </div>
+        </Stack>
       </div>
 
       {/* Divider */}
       <div className="mx-4 mt-4 border-t border-border" />
 
       {/* Tabs */}
-      <div className="bg-background pt-2">
-        <div className="flex">
+      <Tabs
+        value={activeTab}
+        onValueChange={(value) => setActiveTab(value as ProfileTab)}
+        className="bg-background pt-2"
+      >
+        <TabsList className="flex w-full">
           {(['posts', 'collected', 'for-sale'] as ProfileTab[]).map((tab) => {
-            const count = 
+            const count =
               tab === 'posts' ? profileStats?.posts ?? 0 :
               tab === 'collected' ? profileStats?.collected ?? 0 :
               profileStats?.forSale ?? 0
-            
-            const label = 
+
+            const label =
               tab === 'posts' ? 'Posts' :
               tab === 'collected' ? 'Collected' :
               'For Sale'
-            
+
             return (
-              <button
+              <TabsTrigger
                 key={tab}
-                type="button"
-                onClick={() => setActiveTab(tab)}
-                className={`flex-1 px-4 py-3 text-label-lg transition-colors relative flex items-center justify-center gap-2 ${
-                  activeTab === tab
-                    ? 'text-foreground'
-                    : 'text-muted-foreground hover:text-foreground/80'
-                }`}
+                value={tab}
+                className="flex flex-1 items-center justify-center gap-1.5"
               >
-                <span className="relative inline-flex items-center gap-2 pb-2">
-                  <span className="font-semibold">
-                    {count}
-                  </span>
-                  <span>{label}</span>
-                  {activeTab === tab && (
-                    <div className="absolute bottom-0 -left-0.5 -right-0.5 h-0.5 bg-foreground rounded-full" />
-                  )}
-                </span>
-              </button>
+                <span className="font-semibold">{count}</span>
+                <span>{label}</span>
+              </TabsTrigger>
             )
           })}
-        </div>
-      </div>
+        </TabsList>
+      </Tabs>
 
       {/* Tab Content */}
       <div className="mt-4">
@@ -859,11 +853,11 @@ function PostsTab({
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-3 gap-0.5 pt-0.5 px-1 lg:px-0">
+      <Grid cols={3} gap={0.25} className="pt-0.5 px-1 lg:px-0">
         {Array.from({ length: 6 }).map((_, i) => (
           <Skeleton key={i} className="aspect-square" />
         ))}
-      </div>
+      </Grid>
     )
   }
 
@@ -895,11 +889,11 @@ function PostsTab({
 
   return (
     <>
-      <div className="grid grid-cols-3 gap-0.5 pt-0.5 px-1 lg:px-0">
+      <Grid cols={3} gap={0.25} className="pt-0.5 px-1 lg:px-0">
         {posts.map((post) => (
           <ProfileGridItem key={post.id} post={post} showHoverStats />
         ))}
-      </div>
+      </Grid>
       {/* Sentinel for infinite scroll */}
       <div ref={sentinelRef} className="h-4" />
       {isFetchingNextPage && (
@@ -934,11 +928,11 @@ function CollectedTab({
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-3 gap-0.5 pt-0.5 px-1 lg:px-0">
+      <Grid cols={3} gap={0.25} className="pt-0.5 px-1 lg:px-0">
         {Array.from({ length: 6 }).map((_, i) => (
           <Skeleton key={i} className="aspect-square" />
         ))}
-      </div>
+      </Grid>
     )
   }
 
@@ -958,11 +952,11 @@ function CollectedTab({
 
   return (
     <>
-      <div className="grid grid-cols-3 gap-0.5 pt-0.5 px-1 lg:px-0">
+      <Grid cols={3} gap={0.25} className="pt-0.5 px-1 lg:px-0">
         {posts.map((post) => (
           <ProfileGridItem key={post.id} post={post} showAvatar showHoverStats />
         ))}
-      </div>
+      </Grid>
       <div ref={sentinelRef} className="h-4" />
       {isFetchingNextPage && (
         <div className="flex justify-center py-4">
@@ -985,11 +979,11 @@ function ForSaleTab({
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-3 gap-0.5 pt-0.5 px-1 lg:px-0">
+      <Grid cols={3} gap={0.25} className="pt-0.5 px-1 lg:px-0">
         {Array.from({ length: 6 }).map((_, i) => (
           <Skeleton key={i} className="aspect-square" />
         ))}
-      </div>
+      </Grid>
     )
   }
 
@@ -1019,11 +1013,11 @@ function ForSaleTab({
 
   return (
     <>
-      <div className="grid grid-cols-3 gap-0.5 pt-0.5 px-1 lg:px-0">
+      <Grid cols={3} gap={0.25} className="pt-0.5 px-1 lg:px-0">
         {posts.map((post) => (
           <ProfileGridItem key={post.id} post={post} showHoverStats />
         ))}
-      </div>
+      </Grid>
       <div ref={sentinelRef} className="h-4" />
       {isFetchingNextPage && (
         <div className="flex justify-center py-4">
@@ -1053,8 +1047,8 @@ function ProfileSkeleton() {
 
 
       {/* Profile content skeleton */}
-      <div className="px-4 -mt-12 md:-mt-16 md:px-4 relative">
-        <div className="flex flex-col gap-4">
+      <div className="-mt-12 md:-mt-16 relative">
+        <Stack gap={2}>
           <Skeleton className="w-20 h-20 md:w-24 md:h-24 rounded-full shrink-0 border-4 border-background" />
           <div className="space-y-2">
             <div>
@@ -1064,28 +1058,28 @@ function ProfileSkeleton() {
             <Skeleton className="h-4 w-full max-w-md" />
             <Skeleton className="h-4 w-32" />
           </div>
-        </div>
+        </Stack>
       </div>
-      
+
       {/* Stats skeleton */}
-      <div className="flex gap-6 py-4 px-4">
+      <Row gap={3} className="py-4 px-4">
         {Array.from({ length: 2 }).map((_, i) => (
           <div key={i}>
             <Skeleton className="h-6 w-8 mb-1" />
             <Skeleton className="h-4 w-16" />
           </div>
         ))}
-      </div>
-      
+      </Row>
+
       {/* Tabs skeleton */}
       <Skeleton className="h-12 w-full" />
-      
+
       {/* Grid skeleton */}
-      <div className="grid grid-cols-3 gap-0.5 pt-0.5 mt-4">
+      <Grid cols={3} gap={0.25} className="pt-0.5 mt-4">
         {Array.from({ length: 6 }).map((_, i) => (
           <Skeleton key={i} className="aspect-square" />
         ))}
-      </div>
+      </Grid>
     </div>
   )
 }

@@ -4,6 +4,7 @@
  */
 
 import { createFileRoute } from '@tanstack/react-router'
+import { Row, Stack } from '@cdecaire/sable/layout'
 import { useRef, useCallback, useMemo } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
@@ -140,7 +141,7 @@ function TagPage() {
             description={`No posts have been tagged with #${tagSlug}`}
           />
         ) : (
-          <div className="flex flex-col gap-4">
+          <Stack gap={2}>
             {posts.map((post) => (
               <PostCard
                 key={post.id}
@@ -160,9 +161,9 @@ function TagPage() {
 
             {/* Loading more indicator */}
             {isFetchingNextPage && (
-              <div className="flex justify-center py-4">
+              <Row justify="center" className="py-4">
                 <LoadingSpinner size="sm" />
-              </div>
+              </Row>
             )}
 
             {/* End of feed */}
@@ -171,7 +172,7 @@ function TagPage() {
                 You've reached the end
               </div>
             )}
-          </div>
+          </Stack>
         )}
       </div>
     </PullToRefresh>

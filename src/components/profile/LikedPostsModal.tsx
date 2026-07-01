@@ -6,7 +6,6 @@
 import { useState, useMemo } from 'react'
 import { Icon } from '@/components/ui/icon'
 import { Link } from '@tanstack/react-router'
-import { SearchIcon } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -56,7 +55,7 @@ export function LikedPostsModal({
 
         {/* Search */}
         <div className="relative mt-4">
-          <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+          <Icon name="search" variant="regular" className="absolute left-3 top-1/2 -translate-y-1/2 text-base text-muted-foreground" />
           <Input
             type="search"
             placeholder="Search posts..."

@@ -9,21 +9,6 @@ import { Region, Stack, Row } from '@cdecaire/sable/layout'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icon'
-import {
-  Heart,
-  MessageCircle,
-  Share2,
-  Download,
-  Loader2,
-  X,
-  ChevronRight,
-  Plus,
-  Settings,
-  Trash2,
-  Edit,
-  Copy,
-  ExternalLink,
-} from 'lucide-react'
 
 export const Route = createFileRoute('/dev/button-test')({
   component: ButtonTestPage,
@@ -63,7 +48,7 @@ function ButtonTestPage() {
           <Row gap={2} align="center" wrap>
             <Button>Default (40/32px)</Button>
             <Button size="cta">CTA (44/32px)</Button>
-            <Button size="icon"><Settings className="h-4 w-4" /></Button>
+            <Button size="icon"><Icon name="gear" className="text-sm" /></Button>
             <Button size="icon-lg" className="rounded-full"><Icon name="play" className="text-xl ml-1" /></Button>
           </Row>
           <div className="mt-4 p-3 bg-muted/50 border rounded-md">
@@ -104,15 +89,15 @@ function ButtonTestPage() {
               </h3>
               <Row gap={2} wrap>
                 <Button>
-                  <Plus className="h-4 w-4 mr-2" />
+                  <Icon name="plus" className="text-sm mr-2" />
                   Create
                 </Button>
                 <Button variant="outline">
-                  <Download className="h-4 w-4 mr-2" />
+                  <Icon name="download" className="text-sm mr-2" />
                   Download
                 </Button>
                 <Button variant="destructive">
-                  <Trash2 className="h-4 w-4 mr-2" />
+                  <Icon name="trash-xmark" className="text-sm mr-2" />
                   Delete
                 </Button>
               </Row>
@@ -124,11 +109,11 @@ function ButtonTestPage() {
               <Row gap={2} wrap>
                 <Button>
                   Continue
-                  <ChevronRight className="h-4 w-4 ml-2" />
+                  <Icon name="chevron-right" className="text-sm ml-2" />
                 </Button>
                 <Button variant="outline">
                   Open
-                  <ExternalLink className="h-4 w-4 ml-2" />
+                  <Icon name="external-link" className="text-sm ml-2" />
                 </Button>
               </Row>
             </div>
@@ -146,15 +131,15 @@ function ButtonTestPage() {
           </p>
           <Row gap={1} wrap>
             <Button variant="ghost" className="gap-1 px-2">
-              <Heart className="h-4 w-4" />
+              <Icon name="heart" className="text-sm" />
               <span>24</span>
             </Button>
             <Button variant="ghost" className="gap-1 px-2">
-              <MessageCircle className="h-4 w-4" />
+              <Icon name="comment" className="text-sm" />
               <span>12</span>
             </Button>
             <Button variant="ghost" className="gap-1 px-2">
-              <Share2 className="h-4 w-4" />
+              <Icon name="share-nodes" className="text-sm" />
             </Button>
           </Row>
           <div className="mt-4 p-3 bg-muted/50 rounded-md">
@@ -259,7 +244,7 @@ function ButtonTestPage() {
                   disabled
                   style={{ color: 'var(--tone-edition)' }}
                 >
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Icon name="spinner-third" className="text-sm animate-spin" />
                 </Button>
               </Row>
             </Row>
@@ -274,7 +259,7 @@ function ButtonTestPage() {
                   disabled
                   style={{ color: 'var(--tone-edition)' }}
                 >
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Icon name="spinner-third" className="text-sm animate-spin" />
                 </Button>
               </Row>
             </Row>
@@ -331,15 +316,15 @@ function ButtonTestPage() {
           <h2 className="text-xl font-semibold mb-4">Loading States</h2>
           <Row gap={2} wrap>
             <Button disabled>
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              <Icon name="spinner-third" className="text-sm mr-2 animate-spin" />
               Loading...
             </Button>
             <Button variant="outline" disabled>
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              <Icon name="spinner-third" className="text-sm mr-2 animate-spin" />
               Saving...
             </Button>
             <Button variant="secondary" disabled>
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              <Icon name="spinner-third" className="text-sm mr-2 animate-spin" />
               Processing...
             </Button>
           </Row>
@@ -357,22 +342,22 @@ function ButtonTestPage() {
             </h3>
             <Row gap={1} wrap>
               <Button variant="ghost" size="icon">
-                <X className="h-4 w-4" />
+                <Icon name="xmark" className="text-sm" />
               </Button>
               <Button variant="ghost" size="icon">
-                <Settings className="h-4 w-4" />
+                <Icon name="gear" className="text-sm" />
               </Button>
               <Button variant="ghost" size="icon">
-                <Edit className="h-4 w-4" />
+                <Icon name="pencil" className="text-sm" />
               </Button>
               <Button variant="ghost" size="icon">
-                <Copy className="h-4 w-4" />
+                <Icon name="images" className="text-sm" />
               </Button>
               <Button variant="outline" size="icon">
-                <Plus className="h-4 w-4" />
+                <Icon name="plus" className="text-sm" />
               </Button>
               <Button variant="destructive" size="icon">
-                <Trash2 className="h-4 w-4" />
+                <Icon name="trash-xmark" className="text-sm" />
               </Button>
             </Row>
           </div>
@@ -433,16 +418,16 @@ function ButtonTestPage() {
               </h3>
               <Row gap={2} wrap>
                 <Button className="rounded-full">
-                  <Plus className="h-4 w-4 mr-2" />
+                  <Icon name="plus" className="text-sm mr-2" />
                   Create
                 </Button>
                 <Button variant="outline" className="rounded-full">
-                  <Download className="h-4 w-4 mr-2" />
+                  <Icon name="download" className="text-sm mr-2" />
                   Download
                 </Button>
                 <Button variant="secondary" className="rounded-full">
                   Continue
-                  <ChevronRight className="h-4 w-4 ml-2" />
+                  <Icon name="chevron-right" className="text-sm ml-2" />
                 </Button>
               </Row>
             </div>
@@ -452,19 +437,19 @@ function ButtonTestPage() {
               </h3>
               <Row gap={1} align="center" wrap>
                 <Button size="icon" className="rounded-full">
-                  <Plus className="h-4 w-4" />
+                  <Icon name="plus" className="text-sm" />
                 </Button>
                 <Button variant="outline" size="icon" className="rounded-full">
-                  <Settings className="h-4 w-4" />
+                  <Icon name="gear" className="text-sm" />
                 </Button>
                 <Button variant="ghost" size="icon" className="rounded-full">
-                  <Edit className="h-4 w-4" />
+                  <Icon name="pencil" className="text-sm" />
                 </Button>
                 <Button variant="destructive" size="icon" className="rounded-full">
-                  <Trash2 className="h-4 w-4" />
+                  <Icon name="trash-xmark" className="text-sm" />
                 </Button>
                 <Button variant="secondary" size="icon" className="rounded-full">
-                  <Heart className="h-4 w-4" />
+                  <Icon name="heart" className="text-sm" />
                 </Button>
               </Row>
             </div>
@@ -476,7 +461,7 @@ function ButtonTestPage() {
                 <Button size="cta" className="rounded-full">Get Started</Button>
                 <Button size="cta" variant="outline" className="rounded-full">Learn More</Button>
                 <Button size="cta" variant="secondary" className="rounded-full">
-                  <Plus className="h-4 w-4 mr-2" />
+                  <Icon name="plus" className="text-sm mr-2" />
                   New Post
                 </Button>
               </Row>

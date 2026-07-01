@@ -11,7 +11,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { createPortal } from 'react-dom'
-import { XIcon } from 'lucide-react'
+import { Icon } from '@/components/ui/icon'
 import { cn } from '@/lib/utils'
 import { CommentSection } from './CommentSection'
 
@@ -171,7 +171,7 @@ export function CommentSheet({
 						onClick={handleClose}
 						className="rounded-full p-1.5 hover:bg-muted active:bg-muted transition-colors -mr-1"
 					>
-						<XIcon className="size-4 text-muted-foreground" />
+						<Icon name="xmark" className="text-base text-muted-foreground" />
 						<span className="sr-only">Close</span>
 					</button>
 				</div>

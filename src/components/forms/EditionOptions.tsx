@@ -342,11 +342,16 @@ function MintWindowSection({
 	// Focus the custom-duration input when it's revealed. Sable's NumberField
 	// spreads props onto Base UI's Root (not the inner <input>), so autoFocus
 	// can't be passed through — reach the input via a container ref instead.
+	// Deferred a tick: "Custom" is chosen from a Base UI Select, whose close
+	// handler restores focus to its trigger AFTER this effect runs and would
+	// silently steal an immediate focus() back.
 	const customDurationRef = useRef<HTMLDivElement>(null)
 	useEffect(() => {
-		if (isCustomMode) {
+		if (!isCustomMode) return
+		const id = window.setTimeout(() => {
 			customDurationRef.current?.querySelector("input")?.focus()
-		}
+		}, 0)
+		return () => window.clearTimeout(id)
 	}, [isCustomMode])
 
 	// Compute Select value for the duration dropdown

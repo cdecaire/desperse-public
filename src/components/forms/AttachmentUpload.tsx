@@ -6,7 +6,7 @@ import { Icon } from "@/components/ui/icon"
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner"
 import { deleteMedia } from "@/server/functions/upload"
 import { useAuth } from "@/hooks/useAuth"
-import { FILE_TOO_LARGE_MESSAGE, MAX_UPLOAD_BYTES } from "@/lib/uploadParity"
+import { FILE_TOO_LARGE_MESSAGE, MAX_UPLOAD_BYTES, MAX_UPLOAD_MB } from "@/lib/uploadParity"
 
 const SUPPORTED_ATTACHMENT_TYPES = [
 	"application/pdf",
@@ -231,7 +231,7 @@ export function AttachmentUpload({
 				<div>
 					<Label>Attachment</Label>
 					<p className="mt-1 text-xs text-muted-foreground">
-						Optional PDF, ZIP, or EPUB. Uploads immediately and publishes only after it finishes.
+						Optional PDF, ZIP, or EPUB • Max {MAX_UPLOAD_MB} MB. Uploads immediately and publishes only after it finishes.
 					</p>
 				</div>
 				{attachment && (
@@ -279,8 +279,6 @@ export function AttachmentUpload({
 			{status === "error" && error && (
 				<Note variant="error">{error}</Note>
 			)}
-
-			<p className="text-xs text-muted-foreground">{FILE_TOO_LARGE_MESSAGE}</p>
 		</div>
 	)
 }

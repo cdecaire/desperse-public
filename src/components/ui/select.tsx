@@ -47,9 +47,48 @@ import { cn } from "@/lib/utils"
  *
  * Positioning: Sable's SelectContent accepts `side`/`align`/`sideOffset` (Base UI
  * positioner props). No call site passes them, so defaults apply.
+ *
+ * KEY ADAPTATION — closed-trigger label (`items` map):
+ *   Base UI's `Select.Value` renders the RAW value string unless the Root is
+ *   given an `items` value→label mapping (or Value gets a render-fn child) —
+ *   the popup items aren't mounted while closed, so Base UI can't discover
+ *   labels on its own. Radix resolved the label from the selected ItemText, so
+ *   legacy call sites never pass `items` and the closed trigger showed e.g.
+ *   "now" instead of "Start Now". The shim's `Select` root walks its element
+ *   tree for `<SelectItem>`s (through Content/Group/fragments/arrays) and
+ *   passes the derived `{ value: label }` record to Base UI's Root `items`
+ *   prop. An explicitly passed `items` prop wins; when nothing is found we
+ *   pass `undefined`, preserving the raw-value fallback. Placeholder behavior
+ *   is unaffected (Base UI only consults `items` once a value is selected).
  */
 
 type SableSelectProps = React.ComponentProps<typeof SableSelect>
+
+/** Recursively collect `SelectItem` value→label pairs from an element tree. */
+function collectItemLabels(
+	node: React.ReactNode,
+	labels: Record<string, React.ReactNode>,
+) {
+	React.Children.forEach(node, (child) => {
+		if (!React.isValidElement(child)) return
+		const props = child.props as {
+			value?: unknown
+			children?: React.ReactNode
+		}
+		if (
+			child.type === SelectItem ||
+			(child.type as { displayName?: string })?.displayName === "SelectItem"
+		) {
+			if (typeof props.value === "string") {
+				labels[props.value] = props.children
+			}
+			return
+		}
+		if (props.children != null) {
+			collectItemLabels(props.children, labels)
+		}
+	})
+}
 
 /**
  * Legacy callers pass `onValueChange: (value: string) => void`; Base UI's Select
@@ -58,16 +97,28 @@ type SableSelectProps = React.ComponentProps<typeof SableSelect>
 type SelectProps = Omit<SableSelectProps, "onValueChange"> & {
 	onValueChange?: (value: string) => void
 }
-function Select({ onValueChange, ...props }: SelectProps) {
+function Select({ onValueChange, items, children, ...props }: SelectProps) {
+	// Derive the value→label map from <SelectItem> children so the closed
+	// trigger renders the item LABEL (Radix behavior), not the raw value.
+	const resolvedItems = React.useMemo(() => {
+		if (items !== undefined) return items
+		const labels: Record<string, React.ReactNode> = {}
+		collectItemLabels(children, labels)
+		return Object.keys(labels).length > 0 ? labels : undefined
+	}, [items, children])
+
 	return (
 		<SableSelect
+			items={resolvedItems}
 			onValueChange={
 				onValueChange
 					? (value) => onValueChange((value ?? "") as string)
 					: undefined
 			}
 			{...props}
-		/>
+		>
+			{children}
+		</SableSelect>
 	)
 }
 Select.displayName = "Select"

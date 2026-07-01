@@ -114,7 +114,7 @@ export function PriceTooltip({
       <div className="border-t border-border/50 pt-2">
         <div className="flex justify-between gap-4">
           <span className="text-muted-foreground">Creator receives</span>
-          <span className="font-medium text-green-600 dark:text-green-400">
+          <span className="font-medium text-success">
             {formatUsd(creatorReceivesUsd)}
           </span>
         </div>

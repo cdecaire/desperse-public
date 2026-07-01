@@ -365,8 +365,8 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
                     <span
                       className={
                         token.changePct24h >= 0
-                          ? 'text-green-600 dark:text-green-400'
-                          : 'text-red-600 dark:text-red-400'
+                          ? 'text-success'
+                          : 'text-destructive'
                       }
                     >
                       {token.changePct24h >= 0 ? '+' : ''}
@@ -431,8 +431,8 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
                   <span
                     className={
                       showPriceChange.value >= 0
-                        ? 'text-green-600 dark:text-green-400'
-                        : 'text-red-600 dark:text-red-400'
+                        ? 'text-success'
+                        : 'text-destructive'
                     }
                   >
                     {showPriceChange.value >= 0 ? '+' : ''}
@@ -906,7 +906,7 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
                         <div className="shrink-0 text-right">
                           <p className={cn(
                             'text-sm font-medium',
-                            amount.isPositive ? 'text-green-600 dark:text-green-400' : 'text-foreground'
+                            amount.isPositive ? 'text-success' : 'text-foreground'
                           )}>
                             {amount.text}
                             <span className="text-xs font-normal text-muted-foreground ml-1">{amount.token}</span>
@@ -984,7 +984,7 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
                         <div className="shrink-0 text-right">
                           <p className={cn(
                             'text-sm font-semibold',
-                            amount.isPositive ? 'text-green-600 dark:text-green-400' : 'text-foreground'
+                            amount.isPositive ? 'text-success' : 'text-foreground'
                           )}>
                             {amount.text}
                             {amount.token && (
@@ -1072,8 +1072,8 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
               <p
                 className={
                   changePositive
-                    ? 'text-xs font-medium text-green-600 dark:text-green-400'
-                    : 'text-xs font-medium text-red-600 dark:text-red-400'
+                    ? 'text-xs font-medium text-success'
+                    : 'text-xs font-medium text-destructive'
                 }
               >
                 {changePositive ? '+ ' : '- '}$

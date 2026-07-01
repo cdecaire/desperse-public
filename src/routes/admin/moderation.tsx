@@ -361,7 +361,7 @@ function ModerationListPage() {
                       )}
                       {/* Repeat offender indicator */}
                       {((report as any).userReportsCount || 0) > 1 && (
-                        <span className="text-[10px] text-amber-500">
+                        <span className="text-[10px] text-tone-warning">
                           {(report as any).userReportsCount} reported items
                         </span>
                       )}

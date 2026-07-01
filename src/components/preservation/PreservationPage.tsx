@@ -266,7 +266,7 @@ export function PreservationPage() {
 				    page. Brand mark, volume/issue, live countdown, theme toggle, exit
 				    affordance. The page is its own self-contained marketing surface. */}
 				<header className="border-b border-border/60 sticky top-0 z-(--z-nav) bg-background/85 backdrop-blur-md">
-					<Row justify="between" align="center" gap={2} className="mx-auto max-w-6xl px-6 md:px-10 lg:px-12 py-3 text-[11px] uppercase tracking-[0.08em] font-semibold">
+					<Row justify="between" align="center" gap={2} className="mx-auto max-w-6xl py-3 text-[11px] uppercase tracking-[0.08em] font-semibold" style={{ paddingInline: 'var(--page-inset)' }}>
 						<Row align="center" gap={1.5} className="min-w-0">
 							<Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity shrink-0" aria-label="Desperse home">
 								<Logo size={14} className="text-foreground" ariaHidden />
@@ -321,7 +321,7 @@ export function PreservationPage() {
 					</Row>
 				</header>
 
-				<Center max="72rem" className="px-6 md:px-10 lg:px-12">
+				<Center max="wide" style={{ paddingInline: 'var(--page-inset)' }}>
 
 					{/* Hero — bigger, editorial weight. Italic-style emphasis via muted
 					    foreground on the second line. */}
@@ -356,7 +356,7 @@ export function PreservationPage() {
 
 				{/* Lookup — sunken band so it reads as the input zone */}
 				<div className="bg-card/40 border-y border-border/60 py-12 md:py-16">
-					<Center max="48rem" className="px-6 md:px-10 lg:px-12">
+					<Center max="var(--region-content)" style={{ paddingInline: 'var(--page-inset)' }}>
 						<Stack gap={2}>
 						<form onSubmit={handleSubmit} className="space-y-3">
 							<label
@@ -389,7 +389,7 @@ export function PreservationPage() {
 					</Center>
 				</div>
 
-				<Center max="72rem" className="px-6 md:px-10 lg:px-12 pt-12">
+				<Center max="wide" className="pt-12" style={{ paddingInline: 'var(--page-inset)' }}>
 					<Stack gap={6}>
 					{/* Result region — aria-live so SR users hear lookup outcomes */}
 					<div role="status" aria-live="polite" aria-atomic="false" aria-busy={lookup.isPending}>
@@ -558,7 +558,7 @@ export function PreservationPage() {
 				    their question. */}
 				{hasResult && catalog && catalog.pieces.length > 0 && (
 					<div className="bg-card/40 border-y border-border/60 mt-16 py-16">
-						<Center max="72rem" className="px-6 md:px-10 lg:px-12">
+						<Center max="wide" style={{ paddingInline: 'var(--page-inset)' }}>
 							<Stack gap={6}>
 							<Stack gap={1.5} className="max-w-2xl">
 								<p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
@@ -643,7 +643,7 @@ export function PreservationPage() {
 				    and "what happens next" (which sets expectations). */}
 				{hasResult && catalog && catalog.pieces.length > 0 && (
 					<div className="bg-background py-16">
-						<Center max="72rem" className="px-6 md:px-10 lg:px-12">
+						<Center max="wide" style={{ paddingInline: 'var(--page-inset)' }}>
 							<Stack gap={5}>
 							<Stack gap={1.5} className="max-w-2xl">
 								<p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
@@ -726,7 +726,7 @@ export function PreservationPage() {
 
 				{/* Signup / waitlist */}
 				<div className="bg-background pt-20 pb-12">
-					<Center max="48rem" className="px-6 md:px-10 lg:px-12 text-center">
+					<Center max="var(--region-content)" className="text-center" style={{ paddingInline: 'var(--page-inset)' }}>
 						<Stack gap={3}>
 						<p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
 							Show interest
@@ -831,7 +831,7 @@ export function PreservationPage() {
 				</div>
 
 				{/* Footnote — single line. Trust section already covers custody. */}
-				<Center max="48rem" className="px-6 md:px-10 lg:px-12 pt-12 pb-16 text-center">
+				<Center max="var(--region-content)" className="pt-12 pb-16 text-center" style={{ paddingInline: 'var(--page-inset)' }}>
 					<p className="text-xs text-muted-foreground leading-relaxed max-w-[65ch] mx-auto">
 						An interest check, not a product. If we build the migration tool, your
 						Ethereum originals stay on Ethereum and Desperse never holds them.
@@ -841,7 +841,7 @@ export function PreservationPage() {
 				{/* Colophon — standalone footer for this page. Editorial signoff
 				    + minimal nav back to the rest of Desperse. */}
 				<footer className="border-t border-border/60 mt-8">
-					<div className="mx-auto max-w-6xl px-6 md:px-10 lg:px-12 py-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+					<div className="mx-auto max-w-6xl py-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground" style={{ paddingInline: 'var(--page-inset)' }}>
 						<div className="flex items-center gap-2">
 							<Logo size={11} className="text-muted-foreground" ariaHidden />
 							<span>Desperse · Creator-first preservation · Interest check</span>

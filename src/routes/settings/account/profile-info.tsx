@@ -327,15 +327,13 @@ function ProfileInfoPage() {
   if (error || !profileData?.user || !currentUser) {
     return (
       <div className="py-10">
-        <div className="max-w-5xl mx-auto px-4">
-          <Stack gap={1.5} className="text-center">
-            <p className="text-title-lg">Unable to load profile</p>
-            <p className="text-muted-foreground">Please try again later.</p>
-            <Link to="/">
-              <Button variant="outline">Go to feed</Button>
-            </Link>
-          </Stack>
-        </div>
+        <Stack gap={1.5} className="text-center">
+          <p className="text-title-lg">Unable to load profile</p>
+          <p className="text-muted-foreground">Please try again later.</p>
+          <Link to="/">
+            <Button variant="outline">Go to feed</Button>
+          </Link>
+        </Stack>
       </div>
     )
   }

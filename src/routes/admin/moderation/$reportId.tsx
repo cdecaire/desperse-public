@@ -345,7 +345,7 @@ function ReportDetailPage() {
   }
 
   return (
-    <div className="max-w-4xl py-4">
+    <div className="py-4">
       <Button
         variant="ghost"
         onClick={() => navigate({ to: '/admin/moderation' })}

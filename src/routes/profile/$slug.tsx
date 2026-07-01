@@ -340,7 +340,7 @@ function ProfilePage() {
   if (isBlocked && profileUser) {
     return (
       <div className="pb-24 md:pb-8">
-        <Stack gap={2} align="center" className="px-4 pt-12 max-w-md mx-auto text-center">
+        <Stack gap={2} align="center" className="pt-12 max-w-md mx-auto text-center">
           <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center overflow-hidden">
             {profileUser.avatarUrl ? (
               <img
@@ -411,7 +411,7 @@ function ProfilePage() {
       </div>
 
       {/* Profile Content */}
-      <div className="px-4 -mt-12 md:-mt-16 md:px-4 relative">
+      <div className="-mt-12 md:-mt-16 relative">
         <Stack gap={2}>
           {/* Avatar and Profile Controls */}
           <div className="shrink-0 relative pt-2">
@@ -1047,7 +1047,7 @@ function ProfileSkeleton() {
 
 
       {/* Profile content skeleton */}
-      <div className="px-4 -mt-12 md:-mt-16 md:px-4 relative">
+      <div className="-mt-12 md:-mt-16 relative">
         <Stack gap={2}>
           <Skeleton className="w-20 h-20 md:w-24 md:h-24 rounded-full shrink-0 border-4 border-background" />
           <div className="space-y-2">

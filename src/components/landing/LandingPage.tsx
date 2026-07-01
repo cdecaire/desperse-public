@@ -263,7 +263,7 @@ function Hero() {
         }}
       />
 
-      <div ref={revealRef} className="z-10 max-w-7xl mx-auto w-full">
+      <div ref={revealRef} className="z-10 max-w-[var(--region-wide)] mx-auto w-full">
         <h1 className="text-display-4xl overflow-hidden">
           <span className="block reveal-text">CREATE.</span>
           <span className="block reveal-text" style={{ transitionDelay: '0.1s' }}>COLLECT.</span>
@@ -1095,7 +1095,7 @@ function GetTheApp() {
   return (
     <section id="download" className="py-32 px-6 bg-background border-t border-border">
       <Center max="80rem">
-        <div className="max-w-2xl mb-16 scroll-reveal">
+        <div className="max-w-[var(--region-feed)] mb-16 scroll-reveal">
           <span className="text-mono-md text-zinc-600 dark:text-zinc-400 mb-4 block">GET THE APP</span>
           <h2 className="text-display-3xl mb-6">
             Made for <br />

@@ -259,7 +259,10 @@ function BrowsePage() {
 			{/* Page content */}
 			<main className="flex-1 pt-24 pb-10">
 				{/* Title section */}
-				<div className="max-w-7xl mx-auto px-6 mb-10 browse-reveal">
+				<div
+					className="max-w-[var(--region-wide)] mx-auto mb-10 browse-reveal"
+					style={{ paddingInline: 'var(--page-inset)' }}
+				>
 					<Stack gap={1}>
 						<h1 className="text-heading-1">
 							Browse
@@ -271,9 +274,12 @@ function BrowsePage() {
 				</div>
 
 				{/* Gallery Grid */}
-				<div className="max-w-7xl mx-auto px-6">
+				<div
+					className="max-w-[var(--region-wide)] mx-auto"
+					style={{ paddingInline: 'var(--page-inset)' }}
+				>
 					{isLoading ? (
-						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[var(--grid-gutter)]">
 							{Array.from({ length: 6 }).map((_, i) => (
 								<div
 									key={i}
@@ -285,7 +291,7 @@ function BrowsePage() {
 					) : posts.length > 0 ? (
 						<div
 							ref={gridRef}
-							className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+							className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[var(--grid-gutter)]"
 						>
 							{posts.map((post) => (
 								<Link
@@ -370,7 +376,10 @@ function BrowsePage() {
 			{/* CTA Section — only for unauthenticated users */}
 			{!authenticated && posts.length > 0 && (
 				<section className="border-t border-border/50 bg-card/30 browse-reveal">
-					<div className="max-w-2xl mx-auto px-6 py-20 text-center">
+					<div
+						className="max-w-[var(--region-feed)] mx-auto py-20 text-center"
+						style={{ paddingInline: 'var(--page-inset)' }}
+					>
 						<h2 className="text-heading-2 mb-3">
 							See more on Desperse
 						</h2>

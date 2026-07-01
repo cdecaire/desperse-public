@@ -14,8 +14,8 @@ import { SearchResultsTabs, type SearchTab } from '@/components/explore/SearchRe
 import { PostCard } from '@/components/feed/PostCard'
 import { FeedSkeleton } from '@/components/feed/PostCardSkeleton'
 import { EmptyState } from '@/components/shared/EmptyState'
-import { Input } from '@/components/ui/input'
 import { Icon } from '@/components/ui/icon'
+import { SearchInput } from '@cdecaire/sable'
 import { Row, Stack } from '@cdecaire/sable/layout'
 import { addRecentSearch } from '@/lib/recentSearches'
 
@@ -127,14 +127,8 @@ function SearchPage() {
     navigate({ to: '/explore' })
   }, [navigate])
 
-  // Handle input change
-  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value)
-  }, [])
-
-  // Handle clear
+  // Handle clear (SearchInput resets the value via onValueChange(''); refocus here)
   const handleClear = useCallback(() => {
-    setQuery('')
     inputRef.current?.focus()
   }, [])
 
@@ -156,32 +150,18 @@ function SearchPage() {
           </button>
 
           {/* Search input */}
-          <form onSubmit={handleSubmit} className="flex-1 relative">
-            <Icon
-              name="magnifying-glass"
-              variant="regular"
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
-            />
-            <Input
+          <form onSubmit={handleSubmit} className="flex-1">
+            <SearchInput
               ref={inputRef}
               type="text"
               value={query}
-              onChange={handleChange}
+              onValueChange={setQuery}
+              onClear={handleClear}
               placeholder="Search"
-              className="pl-10 pr-10 h-10 bg-muted/50 border-0 focus-visible:ring-1 focus-visible:ring-ring rounded-full"
+              className="bg-muted/50 border-0 focus-visible:ring-1 focus-visible:ring-ring rounded-full"
               aria-label="Search"
               autoComplete="off"
             />
-            {query && (
-              <button
-                type="button"
-                onClick={handleClear}
-                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground transition-colors"
-                aria-label="Clear search"
-              >
-                <Icon name="circle-xmark" />
-              </button>
-            )}
           </form>
         </Row>
 

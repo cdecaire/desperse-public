@@ -8,7 +8,7 @@
 
 import { useEffect, useState, useRef } from 'react'
 import { useRouterState } from '@tanstack/react-router'
-import { cn } from '@/lib/utils'
+import { Progress, ProgressTrack, ProgressIndicator } from '@cdecaire/sable'
 
 const SHOW_DELAY_MS = 250 // Show progress bar after 250ms
 const COMPLETE_DELAY_MS = 150 // Delay before completing (allows route to render)
@@ -113,22 +113,15 @@ export function RouteProgressBar() {
   if (!isVisible) return null
 
   return (
-    <div
-      className="fixed top-0 left-0 right-0 z-(--z-toast) h-0.5 bg-foreground/20"
-      role="progressbar"
-      aria-valuenow={progress}
-      aria-valuemin={0}
-      aria-valuemax={100}
+    <Progress
+      value={progress}
       aria-label="Loading page"
+      className="fixed top-0 left-0 right-0 z-(--z-toast)"
     >
-      <div
-        className={cn(
-          'h-full bg-foreground transition-all duration-300 ease-out',
-          'shadow-[0_0_10px_rgba(0,0,0,0.3)]'
-        )}
-        style={{ width: `${progress}%` }}
-      />
-    </div>
+      <ProgressTrack className="h-0.5 rounded-none bg-foreground/20">
+        <ProgressIndicator className="rounded-none bg-foreground transition-all duration-300 ease-out shadow-[0_0_10px_rgba(0,0,0,0.3)]" />
+      </ProgressTrack>
+    </Progress>
   )
 }
 

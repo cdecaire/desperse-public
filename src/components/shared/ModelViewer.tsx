@@ -146,7 +146,7 @@ export function ModelViewer({
         className={cn(`w-full h-full flex items-center justify-center ${bgClass}`, className)}
         {...props}
       >
-        <div className="w-8 h-8 rounded-full border-2 border-muted-foreground/20 border-t-muted-foreground animate-spin" />
+        <div className="w-8 h-8 rounded-full border-2 border-muted-foreground/20 border-t-muted-foreground motion-spin" />
       </div>
     )
   }

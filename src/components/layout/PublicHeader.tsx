@@ -52,7 +52,7 @@ export function PublicHeader({ navItems }: PublicHeaderProps) {
               <a
                 key={item.href}
                 href={item.href}
-                className="hover:text-zinc-500 dark:hover:text-zinc-400 transition-colors"
+                className="hover:text-zinc-500 dark:hover:text-zinc-400 motion-interactive"
               >
                 {item.label}
               </a>
@@ -60,7 +60,7 @@ export function PublicHeader({ navItems }: PublicHeaderProps) {
               <Link
                 key={item.href}
                 to={item.href}
-                className="hover:text-zinc-500 dark:hover:text-zinc-400 transition-colors"
+                className="hover:text-zinc-500 dark:hover:text-zinc-400 motion-interactive"
               >
                 {item.label}
               </Link>
@@ -86,7 +86,7 @@ export function PublicHeader({ navItems }: PublicHeaderProps) {
         {authenticated ? (
           <Link
             to="/"
-            className="border border-zinc-300 dark:border-zinc-700 px-5 py-2 rounded-full text-sm font-medium hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 transition-colors duration-200"
+            className="border border-zinc-300 dark:border-zinc-700 px-5 py-2 rounded-full text-sm font-medium hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 motion-interactive"
           >
             Go to Feed
           </Link>
@@ -94,7 +94,7 @@ export function PublicHeader({ navItems }: PublicHeaderProps) {
           <button
             onClick={() => login()}
             disabled={!ready}
-            className="border border-zinc-300 dark:border-zinc-700 px-5 py-2 rounded-full text-sm font-medium hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 transition-colors duration-200 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-950 dark:focus-visible:ring-white"
+            className="border border-zinc-300 dark:border-zinc-700 px-5 py-2 rounded-full text-sm font-medium hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 motion-interactive disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-950 dark:focus-visible:ring-white"
           >
             {recoveryMessage ? 'Retry sign in' : 'Log in'}
           </button>

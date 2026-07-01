@@ -200,9 +200,9 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
     if (isLoading || !data) {
       return (
         <div className="space-y-3 px-3 py-2">
-          <div className="h-10 bg-muted rounded-lg animate-pulse" />
-          <div className="h-8 bg-muted rounded-lg animate-pulse" />
-          <div className="h-8 bg-muted rounded-lg animate-pulse" />
+          <div className="h-10 bg-muted rounded-lg motion-pulse" />
+          <div className="h-8 bg-muted rounded-lg motion-pulse" />
+          <div className="h-8 bg-muted rounded-lg motion-pulse" />
         </div>
       )
     }
@@ -318,7 +318,7 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
           <div
             className={cn(
               "flex items-center justify-between rounded-md border border-border bg-card dark:bg-transparent px-3 py-2",
-              isClickable && "cursor-pointer hover:border-foreground/20 transition-colors"
+              isClickable && "cursor-pointer hover:border-foreground/20 motion-interactive"
             )}
             onClick={isClickable ? () => handleTokenClick(sendableAsset, balance, token.symbol, token.iconUrl) : undefined}
             role={isClickable ? "button" : undefined}
@@ -402,7 +402,7 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
         <div
           className={cn(
             "flex items-center justify-between rounded-md border border-border bg-card dark:bg-transparent px-3 py-2",
-            isClickable && "cursor-pointer hover:border-foreground/20 transition-colors"
+            isClickable && "cursor-pointer hover:border-foreground/20 motion-interactive"
           )}
           onClick={isClickable ? () => handleTokenClick(asset, balance, symbol, iconUrl) : undefined}
           role={isClickable ? "button" : undefined}
@@ -602,7 +602,7 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
                     href={explorerUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="group rounded-lg overflow-hidden border border-border bg-card hover:border-foreground/20 transition-colors"
+                    className="group rounded-lg overflow-hidden border border-border bg-card hover:border-foreground/20 motion-interactive"
                     aria-label={`View ${nftName} on explorer`}
                   >
                     <div className="relative aspect-square">
@@ -668,7 +668,7 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
                     href={explorerUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center gap-3 rounded-md border border-border bg-card dark:bg-transparent px-3 py-2 hover:border-foreground/20 transition-colors"
+                    className="flex items-center gap-3 rounded-md border border-border bg-card dark:bg-transparent px-3 py-2 hover:border-foreground/20 motion-interactive"
                     aria-label={`View ${nftName} on explorer`}
                   >
                     <div className="w-10 h-10 rounded-sm overflow-hidden shrink-0">
@@ -941,7 +941,7 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
                         {thumbnail ? (
                           <a
                             href={postId ? `/post/${postId}` : undefined}
-                            className="shrink-0 h-12 w-12 rounded-lg overflow-hidden border border-border bg-muted hover:border-foreground/30 transition-colors"
+                            className="shrink-0 h-12 w-12 rounded-lg overflow-hidden border border-border bg-muted hover:border-foreground/30 motion-interactive"
                           >
                             {isVideo ? (
                               <video
@@ -1135,7 +1135,7 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
             <button
-              className="flex items-center justify-center rounded-lg transition-colors min-w-[44px] min-h-[44px] text-foreground"
+              className="flex items-center justify-center rounded-lg motion-interactive min-w-[44px] min-h-[44px] text-foreground"
               aria-label="Wallets"
             >
               <span className="w-6 h-6 grid place-items-center">

@@ -169,7 +169,7 @@ export function CommentSheet({
 					<span className="text-title-lg text-foreground">Comments</span>
 					<button
 						onClick={handleClose}
-						className="rounded-full p-1.5 hover:bg-muted active:bg-muted transition-colors -mr-1"
+						className="rounded-full p-1.5 hover:bg-muted active:bg-muted motion-interactive -mr-1"
 					>
 						<Icon name="xmark" className="text-base text-muted-foreground" />
 						<span className="sr-only">Close</span>

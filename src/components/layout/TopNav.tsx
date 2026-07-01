@@ -12,7 +12,7 @@ import { useProfileUser } from '@/hooks/useProfileQuery'
 
 // Skeleton for wallet button while auth initializes
 function WalletSkeleton() {
-  return <div className="w-8 h-8 rounded-full bg-muted animate-pulse" />
+  return <div className="w-8 h-8 rounded-full bg-muted motion-pulse" />
 }
 
 // Determine if a path is a top-level page (shows create icon + wallet).

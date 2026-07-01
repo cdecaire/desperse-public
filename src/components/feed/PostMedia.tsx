@@ -296,7 +296,7 @@ export function PostMedia({
 
         {!isLoaded && !hasError && (
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-8 h-8 rounded-full border-2 border-muted-foreground/20 border-t-muted-foreground animate-spin" />
+            <div className="w-8 h-8 rounded-full border-2 border-muted-foreground/20 border-t-muted-foreground motion-spin" />
           </div>
         )}
         {hasError ? (

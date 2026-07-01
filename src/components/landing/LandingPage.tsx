@@ -198,16 +198,16 @@ function Header() {
         <span className="text-heading-3">Desperse</span>
       </Link>
       <nav className="hidden md:flex gap-8 text-label-lg">
-        <Link to="/browse" className="hover:text-zinc-500 dark:hover:text-zinc-400 transition-colors">
+        <Link to="/browse" className="hover:text-zinc-500 dark:hover:text-zinc-400 motion-interactive">
           Browse
         </Link>
-        <a href="#features" className="hover:text-zinc-500 dark:hover:text-zinc-400 transition-colors">
+        <a href="#features" className="hover:text-zinc-500 dark:hover:text-zinc-400 motion-interactive">
           Features
         </a>
-        <a href="#creators" className="hover:text-zinc-500 dark:hover:text-zinc-400 transition-colors">
+        <a href="#creators" className="hover:text-zinc-500 dark:hover:text-zinc-400 motion-interactive">
           Creators
         </a>
-        <a href="#why" className="hover:text-zinc-500 dark:hover:text-zinc-400 transition-colors">
+        <a href="#why" className="hover:text-zinc-500 dark:hover:text-zinc-400 motion-interactive">
           Why Desperse
         </a>
       </nav>
@@ -229,7 +229,7 @@ function Header() {
         {authenticated ? (
           <Link
             to="/"
-            className="border border-zinc-300 dark:border-zinc-700 px-5 py-2 rounded-full text-label-lg hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 transition-colors duration-200"
+            className="border border-zinc-300 dark:border-zinc-700 px-5 py-2 rounded-full text-label-lg hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 motion-interactive"
           >
             Go to Feed
           </Link>
@@ -237,7 +237,7 @@ function Header() {
           <button
             onClick={() => login()}
             disabled={!ready}
-            className="border border-zinc-300 dark:border-zinc-700 px-5 py-2 rounded-full text-label-lg hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 transition-colors duration-200 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-950 dark:focus-visible:ring-white"
+            className="border border-zinc-300 dark:border-zinc-700 px-5 py-2 rounded-full text-label-lg hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 motion-interactive disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-950 dark:focus-visible:ring-white"
           >
             {recoveryMessage ? 'Retry sign in' : 'Log in'}
           </button>
@@ -292,7 +292,7 @@ function Hero() {
             </div>
             <a
               href="#features"
-              className="group flex items-center gap-2 text-label-lg text-zinc-500 hover:text-zinc-950 dark:hover:text-white transition-colors"
+              className="group flex items-center gap-2 text-label-lg text-zinc-500 hover:text-zinc-950 dark:hover:text-white motion-interactive"
             >
               See how it works
               <span className="group-hover:translate-x-1 transition-transform">&darr;</span>
@@ -443,17 +443,17 @@ function PhoneProfilePreview() {
             ) : (
               // Skeleton
               <div>
-                <div className="h-[22%] bg-muted animate-pulse" />
+                <div className="h-[22%] bg-muted motion-pulse" />
                 <div className="px-[5%] -mt-[10%]">
-                  <div className="w-[20%] aspect-square rounded-full bg-muted border-2 border-background animate-pulse" />
+                  <div className="w-[20%] aspect-square rounded-full bg-muted border-2 border-background motion-pulse" />
                   <div className="mt-1.5 space-y-1.5">
-                    <div className="h-3 w-24 bg-muted rounded animate-pulse" />
-                    <div className="h-2 w-16 bg-muted rounded animate-pulse" />
+                    <div className="h-3 w-24 bg-muted rounded motion-pulse" />
+                    <div className="h-2 w-16 bg-muted rounded motion-pulse" />
                   </div>
                 </div>
                 <div className="mt-3 px-[1%] grid grid-cols-3 gap-px">
                   {[...Array(9)].map((_, i) => (
-                    <div key={i} className="aspect-square bg-muted animate-pulse" />
+                    <div key={i} className="aspect-square bg-muted motion-pulse" />
                   ))}
                 </div>
               </div>
@@ -596,7 +596,7 @@ function StickyCards() {
                 </div>
               </div>
             ) : (
-              <div className="w-64 h-80 md:w-80 md:h-96 bg-muted rounded-2xl animate-pulse" />
+              <div className="w-64 h-80 md:w-80 md:h-96 bg-muted rounded-2xl motion-pulse" />
             )}
           </div>
         </Center>
@@ -741,20 +741,20 @@ function StickyCards() {
                 <div className="w-64 h-80 bg-muted rounded-xl absolute top-0 right-4 rotate-6 border border-border opacity-60" />
                 <div className="w-64 h-80 bg-card rounded-xl relative z-10 -rotate-3 border border-border p-5 flex flex-col justify-between shadow-2xl">
                   <div className="flex justify-between items-start">
-                    <div className="w-12 h-12 rounded-full bg-muted animate-pulse" />
+                    <div className="w-12 h-12 rounded-full bg-muted motion-pulse" />
                     <div className="text-[10px] font-mono text-(--caribbean-green-500)">
                       Creator
                     </div>
                   </div>
                   <div className="space-y-3">
                     <div className="space-y-2">
-                      <div className="h-5 w-32 bg-muted rounded animate-pulse" />
-                      <div className="h-3 w-24 bg-muted rounded animate-pulse" />
+                      <div className="h-5 w-32 bg-muted rounded motion-pulse" />
+                      <div className="h-3 w-24 bg-muted rounded motion-pulse" />
                     </div>
                     <div className="flex gap-4 pt-2 border-t border-border">
-                      <div className="h-8 w-12 bg-muted rounded animate-pulse" />
-                      <div className="h-8 w-12 bg-muted rounded animate-pulse" />
-                      <div className="h-8 w-12 bg-muted rounded animate-pulse" />
+                      <div className="h-8 w-12 bg-muted rounded motion-pulse" />
+                      <div className="h-8 w-12 bg-muted rounded motion-pulse" />
+                      <div className="h-8 w-12 bg-muted rounded motion-pulse" />
                     </div>
                   </div>
                 </div>
@@ -1003,7 +1003,7 @@ function Gallery() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {isLoading ? (
             [0, 1, 2].map((i) => (
-              <div key={i} className={`relative aspect-4/5 bg-muted rounded-xl overflow-hidden animate-pulse ${i === 1 ? 'lg:mt-12' : ''}`} />
+              <div key={i} className={`relative aspect-4/5 bg-muted rounded-xl overflow-hidden motion-pulse ${i === 1 ? 'lg:mt-12' : ''}`} />
             ))
           ) : posts.length > 0 ? (
             posts.map((post, i) => (
@@ -1131,7 +1131,7 @@ function GetTheApp() {
         <div className="mt-12 text-center scroll-reveal">
           <Link
             to="/download"
-            className="inline-flex items-center gap-2 text-label-lg text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white transition-colors"
+            className="inline-flex items-center gap-2 text-label-lg text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-white motion-interactive"
           >
             Install instructions and details
             <span aria-hidden="true">&rarr;</span>
@@ -1271,28 +1271,28 @@ export function Footer({ showCta = true }: { showCta?: boolean }) {
           <div className="flex flex-col sm:flex-row gap-12">
             <nav aria-label="Footer" className="space-y-4">
               <p className="text-label-xs text-zinc-500 dark:text-zinc-500">Legal</p>
-              <Link to="/privacy" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors">
+              <Link to="/privacy" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 motion-interactive">
                 Privacy Policy
               </Link>
-              <Link to="/terms" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors">
+              <Link to="/terms" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 motion-interactive">
                 Terms of Service
               </Link>
-              <Link to="/fees" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors">
+              <Link to="/fees" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 motion-interactive">
                 Fees
               </Link>
             </nav>
             <nav aria-label="Download" className="space-y-4">
               <p className="text-label-xs text-zinc-500 dark:text-zinc-500">Download</p>
-              <Link to="/download" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors">
+              <Link to="/download" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 motion-interactive">
                 All platforms
               </Link>
-              <a href="https://testflight.apple.com/join/27uRZQ45" target="_blank" rel="noopener noreferrer" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors">
+              <a href="https://testflight.apple.com/join/27uRZQ45" target="_blank" rel="noopener noreferrer" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 motion-interactive">
                 iOS · TestFlight
               </a>
-              <Link to="/download" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors">
+              <Link to="/download" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 motion-interactive">
                 Solana dApp Store
               </Link>
-              <Link to="/download" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors">
+              <Link to="/download" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 motion-interactive">
                 Android APK
               </Link>
             </nav>

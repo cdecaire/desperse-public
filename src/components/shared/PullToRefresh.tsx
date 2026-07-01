@@ -56,12 +56,12 @@ export function PullToRefresh({
           className={cn(
             'flex items-center justify-center w-10 h-10 rounded-full',
             'bg-background border border-border shadow-lg',
-            isRefreshing && 'animate-pulse'
+            isRefreshing && 'motion-pulse'
           )}
         >
           {isRefreshing ? (
             <div
-              className="h-5 w-5 animate-spin rounded-full border-2 border-muted border-t-foreground"
+              className="h-5 w-5 motion-spin rounded-full border-2 border-muted border-t-foreground"
               role="status"
               aria-label="Refreshing"
             />

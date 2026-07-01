@@ -20,8 +20,8 @@ import { NotificationBadge } from '../ui/notification-badge'
 function AuthButtonSkeleton() {
   return (
     <div className="flex items-center gap-3 px-3 py-2.5 w-full">
-      <div className="w-6 h-6 rounded-full bg-muted animate-pulse" />
-      <div className="h-4 w-24 rounded bg-muted animate-pulse" />
+      <div className="w-6 h-6 rounded-full bg-muted motion-pulse" />
+      <div className="h-4 w-24 rounded bg-muted motion-pulse" />
     </div>
   )
 }
@@ -30,8 +30,8 @@ function AuthButtonSkeleton() {
 function NavItemSkeleton() {
   return (
     <div className="flex items-center gap-3 px-3 py-2.5 w-full">
-      <div className="w-6 h-6 rounded-full bg-muted animate-pulse" />
-      <div className="h-4 w-16 rounded bg-muted animate-pulse" />
+      <div className="w-6 h-6 rounded-full bg-muted motion-pulse" />
+      <div className="h-4 w-16 rounded bg-muted motion-pulse" />
     </div>
   )
 }

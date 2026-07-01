@@ -799,7 +799,7 @@ export function BuyButton({
       }
       // Show "Claim NFT" text when in claiming state (payment confirmed but NFT not minted)
       if (state === 'claiming') {
-        return <span className="text-sm font-semibold">Claim NFT</span>;
+        return <span className="text-label-lg">Claim NFT</span>;
       }
 
       // Use fa-hexagon-image for 1/1 editions, fa-image-stack for others
@@ -925,51 +925,51 @@ export function BuyButton({
 
     // Minting paused due to Arweave storage issues
     if (isMintingPaused) {
-      return <span className="text-sm font-semibold leading-5">Minting Paused</span>;
+      return <span className="text-label-lg">Minting Paused</span>;
     }
 
     // Timed edition states take priority when idle (not in active buy flow)
     if (state === 'idle' || state === 'failed' || state === 'insufficient_funds') {
       if (effectiveTimeStatus === 'not_started') {
         return (
-          <span className="text-sm font-semibold leading-5">
+          <span className="text-label-lg">
             {countdown ? `Starts in ${countdown}` : 'Checking availability...'}
           </span>
         );
       }
       if (effectiveTimeStatus === 'ended') {
-        return <span className="text-sm font-semibold leading-5">Mint Ended</span>;
+        return <span className="text-label-lg">Mint Ended</span>;
       }
     }
 
     // External wallet disconnected — show "Connect" (clicking triggers reconnection)
     if (!hasWallet && state === 'idle') {
-      return <span className="text-sm font-semibold leading-5">Connect</span>;
+      return <span className="text-label-lg">Connect</span>;
     }
 
     switch (state) {
       case 'idle': {
-        return <span className="text-sm font-semibold leading-5">{label || `Buy ${formatPrice()}`}</span>;
+        return <span className="text-label-lg">{label || `Buy ${formatPrice()}`}</span>;
       }
       case 'preparing':
         return (
           <>
             <Spinner />
-            <span className="text-sm font-semibold leading-5">Preparing...</span>
+            <span className="text-label-lg">Preparing...</span>
           </>
         );
       case 'signing':
         return (
           <>
             <Spinner />
-            <span className="text-sm font-semibold leading-5">Sign in wallet...</span>
+            <span className="text-label-lg">Sign in wallet...</span>
           </>
         );
       case 'confirming':
         return (
           <>
             <Spinner />
-            <span className="text-sm font-semibold leading-5">
+            <span className="text-label-lg">
               {showExtendedMessage ? 'Still confirming...' : 'Confirming payment...'}
             </span>
           </>
@@ -978,29 +978,29 @@ export function BuyButton({
         return (
           <>
             <Spinner />
-            <span className="text-sm font-semibold leading-5">
+            <span className="text-label-lg">
               {showExtendedMessage ? 'Still minting...' : 'Minting edition...'}
             </span>
           </>
         );
       case 'success':
-        return <span className="text-sm font-semibold leading-5">Collected</span>;
+        return <span className="text-label-lg">Collected</span>;
       case 'claiming':
         // Show "Claim NFT" button text (not "Claiming..." unless actively processing)
-        return <span className="text-sm font-semibold leading-5">Claim NFT</span>;
+        return <span className="text-label-lg">Claim NFT</span>;
       case 'failed':
         // Show "Buy" for retry — button is disabled when no wallet
         return (
-          <span className="text-sm font-semibold leading-5">
+          <span className="text-label-lg">
             Buy {formatPrice()}
           </span>
         );
       case 'sold_out':
-        return <span className="text-sm font-semibold leading-5">Sold Out</span>;
+        return <span className="text-label-lg">Sold Out</span>;
       case 'insufficient_funds':
-        return <span className="text-sm font-semibold leading-5">Insufficient</span>;
+        return <span className="text-label-lg">Insufficient</span>;
       default:
-        return <span className="text-sm font-semibold leading-5">Buy</span>;
+        return <span className="text-label-lg">Buy</span>;
     }
   };
 
@@ -1076,7 +1076,7 @@ export function BuyButton({
       <div className="flex flex-row items-center gap-2">
         {/* Status label for processing states */}
         {statusLabel && (
-          <span className="text-[10px] text-muted-foreground animate-pulse whitespace-nowrap">
+          <span className="text-[10px] text-muted-foreground motion-pulse whitespace-nowrap">
             {statusLabel}
           </span>
         )}
@@ -1105,13 +1105,13 @@ export function BuyButton({
         aria-busy={isLoadingState}
         variant={getButtonVariant()}
         className={cn(
-          'transition-all duration-200 text-sm font-semibold leading-5 px-4',
+          'transition-all duration-200 text-label-lg px-4',
           className,
         )}
         style={isLoadingState && toneColor ? { color: toneColor } : undefined}
       >
         {state === 'claiming' && !pollIntervalRef.current ? (
-          <span className="text-sm font-semibold leading-5">Claim NFT</span>
+          <span className="text-label-lg">Claim NFT</span>
         ) : (
           renderContent()
         )}
@@ -1122,7 +1122,7 @@ export function BuyButton({
           href={getExplorerUrl('tx', txSignature, preferences.explorer)}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+          className="text-xs text-muted-foreground hover:text-foreground motion-interactive flex items-center gap-1"
         >
           <Icon name="external-link" variant="regular" className="text-[10px]" />
           View on explorer
@@ -1135,7 +1135,7 @@ export function BuyButton({
 
 function Spinner() {
   return (
-    <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+    <svg className="motion-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
       <path
         className="opacity-75"

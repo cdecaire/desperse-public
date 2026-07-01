@@ -13,8 +13,8 @@ import { useAuth } from '@/hooks/useAuth'
 function CreatorSkeleton() {
   return (
     <div className="flex flex-col items-center gap-2 w-[72px] shrink-0">
-      <div className="w-[72px] h-[72px] rounded-full bg-muted animate-pulse" />
-      <div className="w-14 h-3 rounded bg-muted animate-pulse" />
+      <div className="w-[72px] h-[72px] rounded-full bg-muted motion-pulse" />
+      <div className="w-14 h-3 rounded bg-muted motion-pulse" />
     </div>
   )
 }

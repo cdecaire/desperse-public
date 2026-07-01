@@ -21,7 +21,7 @@ import {
 import { Switch } from '@/components/ui/switch'
 import { Tooltip } from '@/components/ui/tooltip'
 import { Badge, DateTimePicker, Description, DescriptionItem, NumberField, Note } from '@cdecaire/sable'
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { cn } from '@/lib/utils'
 
 export type Currency = 'SOL' | 'USDC'
@@ -339,6 +339,16 @@ function MintWindowSection({
 		mintWindow.durationHours !== null && !isPreset
 	)
 
+	// Focus the custom-duration input when it's revealed. Sable's NumberField
+	// spreads props onto Base UI's Root (not the inner <input>), so autoFocus
+	// can't be passed through — reach the input via a container ref instead.
+	const customDurationRef = useRef<HTMLDivElement>(null)
+	useEffect(() => {
+		if (isCustomMode) {
+			customDurationRef.current?.querySelector("input")?.focus()
+		}
+	}, [isCustomMode])
+
 	// Compute Select value for the duration dropdown
 	const durationSelectValue = useMemo(() => {
 		if (mintWindow.durationHours !== null && isPreset) {
@@ -474,7 +484,7 @@ function MintWindowSection({
 								Set duration
 							</Label>
 							{isCustomMode ? (
-								<div className="flex items-center gap-1.5">
+								<div ref={customDurationRef} className="flex items-center gap-1.5">
 									<NumberField
 										min={1}
 										step={1}
@@ -582,6 +592,7 @@ function MintWindowSection({
 								) : (
 									<DateTimePicker
 										value={mintWindow.startTime ? new Date(mintWindow.startTime) : undefined}
+										defaultTime="12:00"
 										minDate={getMinDate()}
 										onChange={(date) =>
 											onChange({

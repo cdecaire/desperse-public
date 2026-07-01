@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
+import { Field } from '@cdecaire/sable'
 import { Col, Columns, Row, Stack } from '@cdecaire/sable/layout'
 import { useEffect, useRef, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
@@ -509,8 +510,7 @@ function ProfileInfoPage() {
             </div>
           </div>
 
-          <Stack gap={1}>
-            <Label>Website</Label>
+          <Field label="Website" description="Your portfolio or personal website">
             <Input
               type="url"
               value={link}
@@ -518,10 +518,7 @@ function ProfileInfoPage() {
               placeholder="https://example.com"
               maxLength={2048}
             />
-            <p className="text-caption text-muted-foreground">
-              Your portfolio or personal website
-            </p>
-          </Stack>
+          </Field>
 
           <Columns count={12} gap={2.5}>
             <Col span={{ base: 12, md: 6 }}>

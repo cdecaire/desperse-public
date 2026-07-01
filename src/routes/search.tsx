@@ -142,7 +142,7 @@ function SearchPage() {
     <div className="min-h-screen">
       {/* Header with search input - PWA safe-area support */}
       <div
-        className="sticky top-0 bg-background/95 backdrop-blur-sm z-40 md:pt-0"
+        className="sticky top-0 bg-background/95 backdrop-blur-sm z-(--z-nav) md:pt-0"
         style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
       >
         <Row gap={1} align="center" className="px-2 py-2">

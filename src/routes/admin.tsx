@@ -2,8 +2,9 @@ import { createFileRoute, Outlet, Link, useLocation } from '@tanstack/react-rout
 import { AuthGuard } from '@/components/shared/AuthGuard'
 import { RoleGuard } from '@/components/shared/RoleGuard'
 import AdminNav from '@/components/admin/AdminNav'
+import { SettingsLayout } from '@/components/layout/SettingsLayout'
 import { Icon } from '@/components/ui/icon'
-import { Col, Stack } from '@cdecaire/sable/layout'
+import { Stack } from '@cdecaire/sable/layout'
 
 export const Route = createFileRoute('/admin')({
   component: AdminLayout,
@@ -52,23 +53,14 @@ function AdminLayout() {
   return (
     <AuthGuard>
       <RoleGuard requiredRole="moderator">
-        {/* Two sections of the page grid (placed by AppShell): the admin sub-nav
-            in columns 3–4, the content pane in columns 5–10. The grid gutter
-            separates them — no divider rule. */}
-        <Col
-          span={{ base: 12, md: 4, xl: 3, '2xl': 2 }}
-          start={{ md: 1, xl: 2, '2xl': 3 }}
-          className="hidden md:block"
-        >
-          <div className="sticky top-4">
-            <AdminNav variant="desktop" />
-          </div>
-        </Col>
-
-        <Col span={{ base: 12, md: 8, xl: 7, '2xl': 6 }} start={{ md: 5 }} className="min-w-0">
+        {/* Admin owns the same two-rail chrome layout as settings (SettingsLayout).
+            LIST pages are data tables → `wide` (pane caps at 1280, content fills all
+            12 cols). DETAIL pages are reading views → default (content/896, 8 cols),
+            so wide is conditional on isDetailPage. */}
+        <SettingsLayout wide={!isDetailPage} nav={<AdminNav variant="desktop" />}>
             {/* Mobile: Show appropriate header based on page type */}
             {isDetailPage ? (
-              <header className="md:hidden fixed top-0 left-0 right-0 z-40 w-full border-b bg-background">
+              <header className="md:hidden fixed top-0 left-0 right-0 z-(--z-nav) w-full border-b bg-background">
                 <div className="grid grid-cols-3 items-center h-14 px-4">
                   <div className="flex items-center">
                     <Link
@@ -87,7 +79,7 @@ function AdminLayout() {
               </header>
             ) : isIndexPage ? (
               <>
-                <header className="md:hidden fixed top-0 left-0 right-0 z-40 w-full border-b bg-background">
+                <header className="md:hidden fixed top-0 left-0 right-0 z-(--z-nav) w-full border-b bg-background">
                   <div className="grid grid-cols-3 items-center h-14 px-4">
                     <div className="flex items-center">
                       <Link
@@ -109,7 +101,7 @@ function AdminLayout() {
                 </div>
               </>
             ) : (
-              <header className="md:hidden fixed top-0 left-0 right-0 z-40 w-full border-b bg-background">
+              <header className="md:hidden fixed top-0 left-0 right-0 z-(--z-nav) w-full border-b bg-background">
                 <div className="grid grid-cols-3 items-center h-14 px-4">
                   <div className="flex items-center">
                     <Link
@@ -131,7 +123,7 @@ function AdminLayout() {
             <Stack gap={3}>
               <Outlet />
             </Stack>
-          </Col>
+        </SettingsLayout>
       </RoleGuard>
     </AuthGuard>
   )

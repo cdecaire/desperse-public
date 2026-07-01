@@ -58,6 +58,13 @@ interface PostMediaProps {
   assets?: CarouselAsset[]
 }
 
+/**
+ * Widest a feed image is allowed before it cover-crops. h/w = 0.5 → 2:1. Normal
+ * landscapes (16:9, 3:2) sit above this floor, so they show at their natural
+ * ratio (filling width); only true panoramas crop.
+ */
+const FEED_MIN_ASPECT_RATIO = 0.5
+
 export function PostMedia({
   mediaUrl,
   coverUrl,
@@ -108,6 +115,9 @@ export function PostMedia({
   const [isLoaded, setIsLoaded] = useState(false)
   // Track if media is taller than maxAspectRatio (e.g., taller than 4:5)
   const [isExtraTall, setIsExtraTall] = useState(false)
+  // Clamped display ratio (h/w) for feed images — the image's own ratio capped
+  // to [FEED_MIN_ASPECT_RATIO, maxAspectRatio]; drives the frame's aspect-ratio.
+  const [displayRatio, setDisplayRatio] = useState<number | null>(null)
   const [hasError, setHasError] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
   const [isMuted, setIsMuted] = useState(true)
@@ -244,20 +254,32 @@ export function PostMedia({
     if (maxAspectRatio) {
       const heightToWidth = img.naturalHeight / img.naturalWidth
       setIsExtraTall(heightToWidth > maxAspectRatio)
+      // Frame to the image's own ratio, clamped so super-tall caps at 4:5 and
+      // super-wide caps at the wide floor; everything between fills with no bars.
+      setDisplayRatio(
+        Math.min(Math.max(heightToWidth, FEED_MIN_ASPECT_RATIO), maxAspectRatio)
+      )
     }
     setIsLoaded(true)
   }
 
   // Image media
   if (mediaType === 'image') {
-    // Extra-tall images get capped at maxAspectRatio with object-cover
+    // Feed: frame to the image's own ratio (clamped) and cover-fill — never
+    // letterbox; only super-tall (>4:5) / super-wide images crop. Detail
+    // (contained) keeps object-contain + a blurred backdrop.
+    const isFeedFramed = !contained && maxAspectRatio != null
     const content = (
       <div
         className={cn(
           containerClass,
           contained && 'flex items-center justify-center'
         )}
-        style={isExtraTall && maxAspectRatio ? { aspectRatio: `1 / ${maxAspectRatio}` } : undefined}
+        style={
+          isFeedFramed
+            ? { aspectRatio: `1 / ${displayRatio ?? maxAspectRatio}` }
+            : undefined
+        }
         onClick={onClick}
       >
         {/* Blurred background for contained mode (detail view) */}
@@ -294,7 +316,7 @@ export function PostMedia({
               'transition-opacity duration-300',
               contained
                 ? 'w-full h-full object-contain relative z-10'
-                : isExtraTall
+                : isFeedFramed
                   ? 'w-full h-full object-cover relative z-10'
                   : aspectRatio === 'auto'
                     // Uncapped auto (detail view): bound to the viewport with

@@ -5,6 +5,7 @@ import { Col, Columns, GridOverlay, Region } from '@cdecaire/sable/layout'
 import TopNav from './TopNav'
 import BottomNav from './BottomNav'
 import Sidebar from './Sidebar'
+import { GridOverlayContext } from './GridOverlayContext'
 import { Toaster } from '@/components/ui/toaster'
 import { RouteProgressBar } from '@/components/shared/RouteProgressBar'
 import { NetworkBanner } from '@/components/shared/NetworkBanner'
@@ -95,14 +96,21 @@ export default function AppShell({ children }: AppShellProps) {
   const showBottomNav =
     !shouldHideBottomNavOnMobile && !shouldHideBottomNavForOtherRoutes && !isViewingOtherProfile
 
-  // Content width — unified on Sable's named Region widths. Post detail goes
   // Content sits on the SAME 12-column grid the GridOverlay visualizes, so it
   // aligns to the columns instead of a separate centered max-width block. Most
-  // pages occupy the middle 8 columns (3–10) — 2 empty margin columns each side,
-  // centered. Settings/admin place their OWN sidebar + content Cols directly on
-  // this grid (sidebar 3–4, content 5–10). Post detail → full-bleed.
-  const isWideLayout =
-    currentPath.startsWith('/settings') || currentPath.startsWith('/admin')
+  // pages occupy the middle 6 columns (4–9) — 3 empty margin columns each side,
+  // centered. Post detail → full-bleed.
+  //
+  // Settings/account and admin render their OWN two-rail chrome layout
+  // (SettingsLayout — a sticky sub-nav rail flush against the app Sidebar + a
+  // capped content pane) OUTSIDE this grid, so the rail reads as chrome like the
+  // Sidebar rather than as a sub-nav floating in the centered content grid. They
+  // get the bare branch below. The settings index/help still place their content
+  // directly on the 12-col grid via isWideLayout.
+  const isSettingsAccountRoute = currentPath.startsWith('/settings/account')
+  const isAdminRoute = currentPath.startsWith('/admin')
+  const ownsRailLayout = isSettingsAccountRoute || isAdminRoute
+  const isWideLayout = currentPath.startsWith('/settings') && !isSettingsAccountRoute
 
   return (
     <MessagingProvider>
@@ -127,27 +135,41 @@ export default function AppShell({ children }: AppShellProps) {
           </>
         }
       >
-        <div className="relative w-full">
-          {showGrid && <GridOverlay />}
-          {isPostDetailPage ? (
-            <Region bleed>{children}</Region>
-          ) : isWideLayout ? (
-            // Settings/admin own their layout: they place a sidebar Col and a
-            // content Col directly on this page grid (the guards are transparent
-            // when authed, so those Cols are direct grid items).
-            <Columns count={12} style={{ paddingInline: 'var(--page-inset)' }}>
-              {children}
-            </Columns>
-          ) : (
-            // Matches the GridOverlay exactly (12 cols, --grid-gutter gap,
-            // --page-inset) so content lines up with the visualized columns.
-            <Columns count={12} style={{ paddingInline: 'var(--page-inset)' }}>
-              <Col span={{ base: 12, lg: 8 }} start={{ lg: 3 }}>
-                {children}
-              </Col>
-            </Columns>
-          )}
-        </div>
+        <GridOverlayContext.Provider value={showGrid}>
+          <div className="relative w-full">
+            {isPostDetailPage ? (
+              <Region bleed>{children}</Region>
+            ) : ownsRailLayout ? (
+              // Settings/account + admin own a two-rail chrome layout (SettingsLayout):
+              // a sticky sub-nav rail flush against the app Sidebar + a capped content
+              // pane, OUTSIDE this grid. They render their own pane GridOverlay.
+              children
+            ) : (
+              // The page IS the 12-col grid, but CAPPED + centered so it stops
+              // stretching at --region-wide (1280) on large displays. Content places
+              // ON the columns (it visibly aligns to the grid), not as a floating
+              // centered block. The GridOverlay lives INSIDE this capped container, so
+              // ⌘/Ctrl+Shift+G matches the real grid exactly.
+              <div className="relative mx-auto w-full max-w-[var(--region-wide)]">
+                {showGrid && <GridOverlay />}
+                <Columns count={12} style={{ paddingInline: 'var(--page-inset)' }}>
+                  {isWideLayout ? (
+                    // Settings index/help place their own Cols directly on the grid.
+                    children
+                  ) : (
+                    // Default routes (feed, explore, search, notifications, create):
+                    // the middle 8 of 12 (cols 3–10) — wide enough for forms/media
+                    // without sprawling. (Long-form text within still caps its own
+                    // measure at ~65ch, so reading lines never run too long.)
+                    <Col span={{ base: 12, lg: 8 }} start={{ lg: 3 }}>
+                      {children}
+                    </Col>
+                  )}
+                </Columns>
+              </div>
+            )}
+          </div>
+        </GridOverlayContext.Provider>
       </SableAppShell>
     </MessagingProvider>
   )

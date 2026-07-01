@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet, Link, useLocation } from '@tanstack/react-router'
-import { Col } from '@cdecaire/sable/layout'
 import { AuthGuard } from '@/components/shared/AuthGuard'
 import SettingsNav, { settingsRouteTitles } from '@/components/settings/SettingsNav'
+import { SettingsLayout } from '@/components/layout/SettingsLayout'
 import { Icon } from '@/components/ui/icon'
 
 export const Route = createFileRoute('/settings/account')({
@@ -16,31 +16,17 @@ function AccountLayout() {
   // Get the page title based on current route
   const pageTitle = settingsRouteTitles[location.pathname] || 'Account Settings'
 
-  // Two sections of the page grid (placed by AppShell's <Columns>): the settings
-  // sub-nav + the content pane. Responsive so the nav has enough room for its
-  // labels at every width: full-width split at md/lg (nav 1–4, content 5–12),
-  // narrowing into centered margins as the viewport grows (xl: nav 2–4, content
-  // 5–11; 2xl: nav 3–4, content 5–10). Content always starts at column 5.
-  // AuthGuard is transparent when authed, so these Cols are direct grid items.
+  // SettingsLayout supplies the two-rail chrome shell: a sticky sub-nav rail
+  // (the desktop SettingsNav) flush against the app Sidebar + a capped content
+  // pane. AppShell renders this route bare (outside the 12-col grid) so the rail
+  // sits flush to <main>. AuthGuard is transparent when authed.
   return (
     <AuthGuard>
-      {/* Sidebar section — desktop only */}
-      <Col
-        span={{ base: 12, md: 4, xl: 3, '2xl': 2 }}
-        start={{ md: 1, xl: 2, '2xl': 3 }}
-        className="hidden md:block"
-      >
-        <div className="sticky top-4">
-          <SettingsNav variant="desktop" />
-        </div>
-      </Col>
-
-      {/* Content section */}
-      <Col span={{ base: 12, md: 8, xl: 7, '2xl': 6 }} start={{ md: 5 }} className="min-w-0">
+      <SettingsLayout nav={<SettingsNav variant="desktop" />}>
         {/* Mobile: back button on detail pages, the nav on the index */}
         {isDetailPage ? (
           <header
-            className="md:hidden fixed top-0 left-0 right-0 z-40 w-full border-b bg-background"
+            className="md:hidden fixed top-0 left-0 right-0 z-(--z-nav) w-full border-b bg-background"
             style={{ paddingTop: 'env(safe-area-inset-top)' }}
           >
             <div className="grid grid-cols-3 items-center h-14 px-4">
@@ -68,7 +54,7 @@ function AccountLayout() {
         <section className={`space-y-6 ${isDetailPage ? 'pt-settings-header md:pt-0' : ''}`}>
           <Outlet />
         </section>
-      </Col>
+      </SettingsLayout>
     </AuthGuard>
   )
 }

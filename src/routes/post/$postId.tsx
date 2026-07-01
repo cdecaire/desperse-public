@@ -916,8 +916,13 @@ function PostDetailPage() {
 
   return (
     <div className="pb-20 lg:pb-0">
-      {/* Desktop 2-column layout (lg+) */}
-      <div className="hidden lg:flex flex-col p-4 h-screen">
+      {/* Desktop 2-column media viewer (lg+) — capped + centered (region-full,
+          1536) so it doesn't sprawl into a huge black letterbox on ultra-wide
+          monitors; media stays prominent. */}
+      <div
+        className="hidden lg:flex flex-col p-4 h-screen mx-auto w-full"
+        style={{ maxWidth: 'var(--region-full)' }}
+      >
         {/* Back button */}
         <Link to="/" className="w-fit">
           <Button variant="ghost" className="mb-4">
@@ -1075,7 +1080,7 @@ function PostDetailPage() {
 
       {/* Mobile/Tablet single-column layout (<lg) */}
       <div className="lg:hidden flex justify-center px-0 md:px-3 sm:px-4">
-        <article className="w-full max-w-2xl">
+        <article className="w-full" style={{ maxWidth: 'var(--region-feed)' }}>
           {/* Header */}
           <div className="px-4 py-3 md:px-2">
             <UserHeader />
@@ -1222,7 +1227,10 @@ function PostDetailPage() {
 
       {/* Login CTA banner for unauthenticated users (mobile only) */}
       {isReady && !isAuthenticated && (
-        <div className="lg:hidden max-w-2xl mx-auto px-4 mt-8">
+        <div
+        className="lg:hidden mx-auto px-4 mt-8"
+        style={{ maxWidth: 'var(--region-feed)' }}
+      >
           <div className="p-6 bg-card/60 backdrop-blur-sm border border-border rounded-2xl shadow-sm">
             <div className="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
               <div className="shrink-0">
@@ -1251,8 +1259,11 @@ function PostDetailPage() {
 function PostDetailSkeleton() {
   return (
     <div className="pb-20 lg:pb-0" aria-hidden="true">
-      {/* Desktop 2-column skeleton (lg+) */}
-      <div className="hidden lg:flex p-4 h-screen">
+      {/* Desktop 2-column skeleton (lg+) — matches the real viewer's cap. */}
+      <div
+        className="hidden lg:flex p-4 h-screen mx-auto w-full"
+        style={{ maxWidth: 'var(--region-full)' }}
+      >
         <div className="flex gap-0 w-full bg-card border border-border rounded-lg overflow-hidden">
           {/* Left column: Media skeleton */}
           <div className="flex-1 bg-black min-w-0 flex items-center justify-center">
@@ -1303,7 +1314,10 @@ function PostDetailSkeleton() {
 
       {/* Mobile/Tablet single-column skeleton (<lg) */}
       <div className="lg:hidden flex justify-center px-0 md:px-3 sm:px-4">
-        <div className="w-full max-w-2xl overflow-hidden">
+        <div
+          className="w-full overflow-hidden"
+          style={{ maxWidth: 'var(--region-feed)' }}
+        >
           <div className="flex items-center gap-3 px-4 py-3 md:px-2">
             <Skeleton className="w-10 h-10 rounded-full" />
             <div className="flex-1 space-y-2">

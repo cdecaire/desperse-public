@@ -285,7 +285,11 @@ export function MediaCarousel({
             data-asset-id={asset.id}
             src={asset.url}
             draggable={false}
-            className="absolute inset-0 w-full h-full object-contain select-none [-webkit-user-drag:none]"
+            className={cn(
+              'absolute inset-0 w-full h-full select-none [-webkit-user-drag:none]',
+              // Detail fits the whole video; feed cover-fills the 4:5 slide.
+              contained ? 'object-contain' : 'object-cover',
+            )}
             preload={shouldLoadEager ? 'auto' : 'none'}
             playsInline
             loop
@@ -448,7 +452,7 @@ export function MediaCarousel({
             : undefined
         }
         slideClassName={
-          contained ? 'h-full flex items-center justify-center' : 'aspect-square'
+          contained ? 'h-full flex items-center justify-center' : 'aspect-[4/5]'
         }
       >
         {sortedAssets.map((asset, index) => renderMedia(asset, index))}

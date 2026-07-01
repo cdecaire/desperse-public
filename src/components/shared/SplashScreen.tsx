@@ -41,7 +41,7 @@ export function SplashScreen({ isReady }: SplashScreenProps) {
 
   return (
     <div
-      className="dark fixed inset-0 z-[9999] flex items-center justify-center bg-background"
+      className="dark fixed inset-0 z-(--z-overlay) flex items-center justify-center bg-background"
       style={{
         opacity: isVisible ? 1 : 0,
         transition: `opacity ${FADE_DURATION_MS}ms ease-out`,

@@ -355,7 +355,7 @@ export function CommentSection({
 
       {/* Fixed Comment Form at Bottom of Viewport - Matches article max-width */}
       <div
-        className="fixed bottom-0 left-0 right-0 border-t border-border bg-background/95 backdrop-blur-sm z-50 shadow-lg lg:left-64"
+        className="fixed bottom-0 left-0 right-0 border-t border-border bg-background/95 backdrop-blur-sm z-(--z-nav) shadow-lg lg:left-64"
         style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
       >
         <div className="p-3 max-w-2xl mx-auto">

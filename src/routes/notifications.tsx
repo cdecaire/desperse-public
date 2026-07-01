@@ -15,7 +15,7 @@ import { NotificationItem } from '@/components/notifications/NotificationItem'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icon'
 import { useQueryClient } from '@tanstack/react-query'
-import { Region, Stack } from '@cdecaire/sable/layout'
+import { Stack } from '@cdecaire/sable/layout'
 
 export const Route = createFileRoute('/notifications')({
   component: NotificationsPage,
@@ -124,47 +124,47 @@ function NotificationsContent() {
 
   return (
     <PullToRefresh onRefresh={handleRefresh}>
-      <div className="pt-4 px-4 md:px-6 lg:px-8">
-        <Region max="56rem">
-          {/* Header */}
-          <PageHeader
-            title="Notifications"
-            description="Stay updated on follows, likes, comments, and more."
-          />
+      {/* Fills the standard content column (AppShell places it at cols 4–9); the
+          page-inset is supplied by the AppShell grid, so no inner Region/px. */}
+      <div className="pt-4">
+        {/* Header */}
+        <PageHeader
+          title="Notifications"
+          description="Stay updated on follows, likes, comments, and more."
+        />
 
-          {/* Notifications list */}
-          <Stack gap={1}>
-            {allNotifications.map((notification) => (
-              <NotificationItem
-                key={notification.id}
-                notification={notification}
-              />
-            ))}
+        {/* Notifications list */}
+        <Stack gap={1}>
+          {allNotifications.map((notification) => (
+            <NotificationItem
+              key={notification.id}
+              notification={notification}
+            />
+          ))}
 
-            {/* Load more trigger */}
-            {(isFetchingNextPage || hasNextPage) && (
-              <div ref={loadMoreRef} className="py-4 flex justify-center">
-                {isFetchingNextPage ? (
-                  <LoadingSpinner size="sm" />
-                ) : (
-                  <span className="text-body-sm text-muted-foreground">Scroll for more...</span>
-                )}
-              </div>
-            )}
-
-            {/* Clear all button */}
-            <div className="pt-4">
-              <Button
-                variant="outline"
-                className="w-full"
-                onClick={() => clearAll.mutate()}
-                disabled={clearAll.isPending}
-              >
-                {clearAll.isPending ? 'Clearing...' : 'Clear all notifications'}
-              </Button>
+          {/* Load more trigger */}
+          {(isFetchingNextPage || hasNextPage) && (
+            <div ref={loadMoreRef} className="py-4 flex justify-center">
+              {isFetchingNextPage ? (
+                <LoadingSpinner size="sm" />
+              ) : (
+                <span className="text-body-sm text-muted-foreground">Scroll for more...</span>
+              )}
             </div>
-          </Stack>
-        </Region>
+          )}
+
+          {/* Clear all button */}
+          <div className="pt-4">
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => clearAll.mutate()}
+              disabled={clearAll.isPending}
+            >
+              {clearAll.isPending ? 'Clearing...' : 'Clear all notifications'}
+            </Button>
+          </div>
+        </Stack>
       </div>
     </PullToRefresh>
   )

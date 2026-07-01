@@ -8,7 +8,7 @@ import { useState, useCallback, useMemo, useEffect } from "react";
 import { Icon } from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { MiddleTruncate, Note } from "@cdecaire/sable";
+import { Field, MiddleTruncate, Note } from "@cdecaire/sable";
 import {
 	Dialog,
 	DialogContent,
@@ -210,32 +210,26 @@ export function SendDialog({
 
 					{/* Recipient address */}
 					<div className="space-y-1.5">
-						<label
-							htmlFor="send-recipient"
-							className="text-sm font-medium"
+						<Field
+							label="Recipient"
+							error={showAddressError ? "Invalid Solana address" : undefined}
 						>
-							Recipient
-						</label>
-						<Input
-							id="send-recipient"
-							type="text"
-							placeholder="Enter recipient public key"
-							value={toAddress}
-							onChange={(e) => setToAddress(e.target.value.trim())}
-							onBlur={() => setAddressTouched(true)}
-							disabled={isPending || state === "success"}
-							autoComplete="off"
-							autoCorrect="off"
-							spellCheck={false}
-							data-1p-ignore
-							data-lpignore="true"
-							data-form-type="other"
-						/>
-						{showAddressError && (
-							<p className="text-xs text-destructive">
-								Invalid Solana address
-							</p>
-						)}
+							<Input
+								id="send-recipient"
+								type="text"
+								placeholder="Enter recipient public key"
+								value={toAddress}
+								onChange={(e) => setToAddress(e.target.value.trim())}
+								onBlur={() => setAddressTouched(true)}
+								disabled={isPending || state === "success"}
+								autoComplete="off"
+								autoCorrect="off"
+								spellCheck={false}
+								data-1p-ignore
+								data-lpignore="true"
+								data-form-type="other"
+							/>
+						</Field>
 						{isSelfSend && (
 							<p className="text-xs text-tone-warning">
 								This is your own wallet address

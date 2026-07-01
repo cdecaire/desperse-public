@@ -20,7 +20,7 @@ import {
 } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { Tooltip } from '@/components/ui/tooltip'
-import { Badge, DateTimePicker, Description, DescriptionItem, Note } from '@cdecaire/sable'
+import { Badge, DateTimePicker, Description, DescriptionItem, NumberField, Note } from '@cdecaire/sable'
 import { useState, useEffect, useMemo } from 'react'
 import { cn } from '@/lib/utils'
 
@@ -250,23 +250,13 @@ export function EditionOptions({
         {/* Supply input (when limited) */}
         {!isUnlimited && (
           <div className="space-y-1.5">
-            <Input
+            <NumberField
               id="edition-max-supply"
-              type="number"
               min={1}
-              value={maxSupply || ''}
-              onChange={(e) => {
-                const val = e.target.value
-                if (val === '') {
-                  onMaxSupplyChange(1)
-                } else {
-                  const num = parseInt(val, 10)
-                  if (!isNaN(num) && num > 0) {
-                    onMaxSupplyChange(num)
-                  }
-                }
-              }}
-              placeholder="Enter max supply"
+              step={1}
+              largeStep={10}
+              value={maxSupply ?? 1}
+              onValueChange={(v) => onMaxSupplyChange(v && v > 0 ? v : 1)}
               disabled={isPricingDisabled}
               aria-label="Maximum supply"
               className="max-w-[200px]"
@@ -485,33 +475,20 @@ function MintWindowSection({
 							</Label>
 							{isCustomMode ? (
 								<div className="flex items-center gap-1.5">
-									<Input
-										type="number"
+									<NumberField
 										min={1}
 										step={1}
-										value={customDuration}
-										onChange={(e) => {
-											const val = e.target.value
-											setCustomDuration(val)
-											if (val === "") {
-												onChange({
-													...mintWindow,
-													durationHours: null,
-												})
-											} else {
-												const num = parseFloat(val)
-												if (!isNaN(num) && num >= 1) {
-													onChange({
-														...mintWindow,
-														durationHours: num,
-													})
-												}
-											}
+										largeStep={24}
+										value={customDuration ? Number(customDuration) : null}
+										onValueChange={(v) => {
+											setCustomDuration(String(v ?? ""))
+											onChange({
+												...mintWindow,
+												durationHours: v,
+											})
 										}}
-										placeholder="Hours"
 										disabled={isDisabled}
 										className="flex-1"
-										autoFocus
 									/>
 									<span className="text-xs text-muted-foreground shrink-0">
 										hrs

@@ -70,7 +70,7 @@ export function SearchDropdown({
   let optionIndex = 0
 
   return (
-    <div id="search-results" role="listbox" className="absolute top-full left-0 right-0 mt-1 bg-background border border-border rounded-xl shadow-lg overflow-hidden z-50">
+    <div id="search-results" role="listbox" className="absolute top-full left-0 right-0 mt-1 bg-background border border-border rounded-xl shadow-lg overflow-hidden z-(--z-overlay)">
       {/* Recent searches section - only show when no query */}
       {!hasQuery && hasRecentSearches && (
         <div>

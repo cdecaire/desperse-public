@@ -12,7 +12,7 @@ import { CreatePostFormSkeleton } from '@/components/forms/CreatePostFormSkeleto
 import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { useOnboardingState } from '@/hooks/useOnboardingState'
 import { PageHeader } from '@cdecaire/sable'
-import { Center, Stack } from '@cdecaire/sable/layout'
+import { Stack } from '@cdecaire/sable/layout'
 import { clearCreateIntent, readCreateIntent } from '@/lib/createIntent'
 
 const createSearchSchema = z.object({
@@ -79,19 +79,20 @@ function CreateContent() {
     ? 'Start with one simple Standard post. You can come back for collectibles or editions later.'
     : 'Share your work with the world.'
 
+  // Fills the standard content column (AppShell places it at cols 4–9); no inner
+  // Center/max-width — that floated it off the column lines. Page-inset comes from
+  // the AppShell grid.
   return (
-    <div className="pt-4 pb-8 px-4 md:px-6 lg:px-8">
-      <Center max="42rem">
-        <Stack gap={3}>
-          <PageHeader title={title} description={description} />
+    <div className="pt-4 pb-8">
+      <Stack gap={3}>
+        <PageHeader title={title} description={description} />
 
-          {isLoading ? (
-            <CreatePostFormSkeleton />
-          ) : (
-            <CreatePostForm firstPostMode={firstPost} />
-          )}
-        </Stack>
-      </Center>
+        {isLoading ? (
+          <CreatePostFormSkeleton />
+        ) : (
+          <CreatePostForm firstPostMode={firstPost} />
+        )}
+      </Stack>
     </div>
   )
 }

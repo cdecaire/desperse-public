@@ -1,4 +1,5 @@
 import { Link, useLocation } from '@tanstack/react-router'
+import { SideNav, SideNavItem } from '@cdecaire/sable'
 import { Icon } from '@/components/ui/icon'
 import { NotificationBadge } from '@/components/ui/notification-badge'
 import { useNotificationCounters } from '@/hooks/useNotificationCounters'
@@ -35,34 +36,34 @@ export function AdminNav({ variant = 'desktop' }: AdminNavProps) {
   // Desktop variant
   if (variant === 'desktop') {
     return (
-      <div className="flex flex-col">
-        <div className="px-3 pb-4">
-          <span className="text-xl font-bold">Admin</span>
-        </div>
-        <nav className="flex flex-col px-3 py-4 space-y-1">
+      <SideNav aria-label="Admin" size="lg">
+        {/* Primary section title — matches SettingsNav (text-heading-3, top-aligned
+            pt-4 in an h-16 zone + mb-4) so the rail aligns with the app Sidebar's
+            logo, the page title, and the Sidebar's first item ("Home"). */}
+        <h2 className="h-16 px-3 pt-4 text-heading-3 mb-4">Admin</h2>
+        <div className="flex flex-col gap-1">
           {adminNavItems.map((item) => {
             const isActive =
               location.pathname === item.path || location.pathname.startsWith(`${item.path}/`)
+            const badgeCount = notificationCounters?.[item.badgeKey] ?? 0
 
             return (
-              <Link
+              <SideNavItem
                 key={item.path}
-                to={item.path}
-                className={`flex items-center gap-3 px-3 py-2.5 w-full text-left rounded-lg hover-fade ${
-                  isActive
-                    ? 'text-foreground font-medium hover:bg-accent hover:text-accent-foreground'
-                    : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
-                }`}
-              >
-                <span className="w-6 h-6 grid place-items-center">
-                  <Icon name={item.icon} variant={isActive ? "solid" : "regular"} className="text-xl" />
-                </span>
-                <span className="text-sm font-medium leading-none">{item.label}</span>
-              </Link>
+                label={item.label}
+                icon={<Icon name={item.icon} variant={isActive ? "solid" : "regular"} />}
+                active={isActive}
+                badge={
+                  badgeCount > 0 ? (
+                    <NotificationBadge variant="destructive" count={badgeCount} />
+                  ) : undefined
+                }
+                render={<Link to={item.path} />}
+              />
             )
           })}
-        </nav>
-      </div>
+        </div>
+      </SideNav>
     )
   }
 

@@ -265,7 +265,7 @@ export function PreservationPage() {
 				{/* Standalone masthead — replaces the global Desperse chrome on this
 				    page. Brand mark, volume/issue, live countdown, theme toggle, exit
 				    affordance. The page is its own self-contained marketing surface. */}
-				<header className="border-b border-border/60 sticky top-0 z-30 bg-background/85 backdrop-blur-md">
+				<header className="border-b border-border/60 sticky top-0 z-(--z-nav) bg-background/85 backdrop-blur-md">
 					<Row justify="between" align="center" gap={2} className="mx-auto max-w-6xl px-6 md:px-10 lg:px-12 py-3 text-[11px] uppercase tracking-[0.08em] font-semibold">
 						<Row align="center" gap={1.5} className="min-w-0">
 							<Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity shrink-0" aria-label="Desperse home">

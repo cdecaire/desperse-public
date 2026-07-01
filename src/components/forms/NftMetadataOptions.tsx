@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Tooltip } from '@/components/ui/tooltip'
 import { Icon } from '@/components/ui/icon'
+import { NumberField } from '@cdecaire/sable'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
 
@@ -42,9 +43,6 @@ export function NftMetadataOptions({
   const isMetadataDisabled = disabled || metadataDisabled
   const isMutabilityDisabled = disabled || mutabilityDisabled
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false)
-
-  // Convert seller fee basis points to percentage for display
-  const sellerFeePercent = sellerFeeBasisPoints ? (sellerFeeBasisPoints / 100).toFixed(2) : '0.00'
 
   return (
     <div className="p-4 bg-card border border-border rounded-xl shadow-md">
@@ -103,23 +101,15 @@ export function NftMetadataOptions({
                 </Label>
               </Tooltip>
               <div className="flex items-center gap-3">
-                <Input
+                <NumberField
                   id="nft-royalties"
-                  type="number"
                   min={0}
                   max={10}
                   step={0.1}
-                  value={sellerFeePercent}
-                  onChange={(e) => {
-                    const percent = parseFloat(e.target.value)
-                    if (!isNaN(percent) && percent >= 0 && percent <= 10) {
-                      onSellerFeeBasisPointsChange(Math.round(percent * 100))
-                    } else if (e.target.value === '') {
-                      onSellerFeeBasisPointsChange(0)
-                    }
-                  }}
-                  placeholder="0.00"
+                  value={sellerFeeBasisPoints ? sellerFeeBasisPoints / 100 : 0}
+                  onValueChange={(v) => onSellerFeeBasisPointsChange(Math.round((v ?? 0) * 100))}
                   disabled={isMetadataDisabled}
+                  format={{ minimumFractionDigits: 2 }}
                   className="max-w-[120px]"
                 />
                 <span className="text-sm text-muted-foreground">%</span>

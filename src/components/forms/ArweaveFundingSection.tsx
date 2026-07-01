@@ -7,9 +7,8 @@
  */
 
 import { useState, useCallback, useEffect, useRef } from "react"
-import { Description, DescriptionItem, InlineStatus, Note } from "@cdecaire/sable"
+import { Description, DescriptionItem, InlineStatus, Note, NumberField } from "@cdecaire/sable"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner"
 import { useArweaveFunding } from "@/hooks/useArweaveFunding"
@@ -244,14 +243,15 @@ export function ArweaveFundingSection({
 						Top up (SOL)
 					</Label>
 					<div className="flex gap-2">
-						<Input
-							type="number"
-							step="0.01"
-							min="0.001"
-							max="0.5"
-							value={topUpAmount}
-							onChange={(e) => setTopUpAmount(e.target.value)}
+						<NumberField
+							min={0.001}
+							max={0.5}
+							step={0.05}
+							smallStep={0.01}
+							value={topUpAmount ? Number(topUpAmount) : null}
+							onValueChange={(v) => setTopUpAmount(v == null ? "" : String(v))}
 							disabled={disabled || isAnyPending}
+							format={{ maximumFractionDigits: 3 }}
 							className="max-w-[120px] h-8 text-sm"
 						/>
 						<Button

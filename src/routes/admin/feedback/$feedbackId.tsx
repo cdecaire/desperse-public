@@ -4,7 +4,7 @@
  */
 
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { Region, Row, Stack } from '@cdecaire/sable/layout'
+import { Row, Stack } from '@cdecaire/sable/layout'
 import { useBetaFeedbackById, useMarkBetaFeedbackReviewed } from '@/hooks/useFeedback'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { EmptyState } from '@/components/shared/EmptyState'
@@ -59,7 +59,7 @@ function FeedbackDetailPage() {
   }
 
   return (
-    <Region max="56rem" inset={false} className="py-4">
+    <div className="py-4">
       <Button
         variant="ghost"
         onClick={() => navigate({ to: '/admin/feedback' })}
@@ -251,6 +251,6 @@ function FeedbackDetailPage() {
           </div>
         </Stack>
       )}
-    </Region>
+    </div>
   )
 }

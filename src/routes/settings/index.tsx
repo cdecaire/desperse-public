@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useLocation, useNavigate } from '@tanstack/react-router'
 import { useEffect } from 'react'
-import { Stack } from '@cdecaire/sable/layout'
+import { Col, Stack } from '@cdecaire/sable/layout'
 import { AuthGuard } from '@/components/shared/AuthGuard'
 import { Icon } from '@/components/ui/icon'
 import { MobileHeader, MobileHeaderSpacer } from '@/components/layout/MobileHeader'
@@ -24,7 +24,9 @@ function SettingsIndexPage() {
 
   return (
     <AuthGuard>
-      <div className="min-h-screen">
+      {/* Full-width on AppShell's 12-col grid — a bare div would auto-place into
+          a single column and squish (mobile menu / pre-redirect desktop view). */}
+      <Col span={12} className="min-h-screen">
         {/* Mobile View - Settings Menu */}
         <div className="md:hidden">
           {/* Mobile Header - replaces TopNav with PWA safe-area support */}
@@ -92,7 +94,7 @@ function SettingsIndexPage() {
             </Stack>
           </Stack>
         </div>
-      </div>
+      </Col>
     </AuthGuard>
   )
 }

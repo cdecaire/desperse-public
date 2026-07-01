@@ -192,7 +192,7 @@ function Header() {
   }
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 px-6 py-4 flex items-center bg-background/80 backdrop-blur-md border-b border-border/50" style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 1rem)' }}>
+    <header className="fixed top-0 left-0 right-0 z-(--z-nav) px-6 py-4 flex items-center bg-background/80 backdrop-blur-md border-b border-border/50" style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 1rem)' }}>
       <Link to="/" className="flex-1 flex items-center space-x-2 hover:opacity-80 transition-opacity">
         <Logo size={15} className="text-foreground" />
         <span className="text-heading-3">Desperse</span>
@@ -1337,7 +1337,7 @@ function FloatingCta({ lenisRef }: { lenisRef: React.RefObject<Lenis | null> }) 
 
   return (
     <div
-      className={`fixed bottom-6 right-6 z-40 transition-all duration-300 ${
+      className={`fixed bottom-6 right-6 z-(--z-nav) transition-all duration-300 ${
         visible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0 pointer-events-none'
       }`}
     >

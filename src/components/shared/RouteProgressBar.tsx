@@ -114,7 +114,7 @@ export function RouteProgressBar() {
 
   return (
     <div
-      className="fixed top-0 left-0 right-0 z-[9999] h-0.5 bg-foreground/20"
+      className="fixed top-0 left-0 right-0 z-(--z-toast) h-0.5 bg-foreground/20"
       role="progressbar"
       aria-valuenow={progress}
       aria-valuemin={0}

@@ -1,4 +1,5 @@
 import { Link, useLocation } from '@tanstack/react-router'
+import { SideNav, SideNavItem } from '@cdecaire/sable'
 import { Icon } from '@/components/ui/icon'
 
 type SettingsNavVariant = 'desktop' | 'mobile'
@@ -102,77 +103,43 @@ export const settingsRouteTitles: Record<string, string> = Object.fromEntries(
   settingsCategories.flatMap((cat) => cat.items.map((item) => [item.path, item.label]))
 )
 
-export function SettingsNav({ variant = 'desktop' }: SettingsNavProps) {
+export function SettingsNav(_props: SettingsNavProps) {
   const location = useLocation()
 
-  const renderNavItem = (item: SettingsNavItem) => {
-    const isActive =
-      location.pathname === item.path || location.pathname.startsWith(`${item.path}/`)
-
-    if (item.disabled) {
-      return (
-        <button
-          key={item.path}
-          disabled
-          className="flex items-center gap-3 px-3 py-2.5 w-full text-left rounded-lg text-muted-foreground opacity-50 cursor-not-allowed transition-colors"
-          aria-label={`${item.label} (coming soon)`}
-        >
-          <span className="w-6 h-6 grid place-items-center">
-            <Icon name={item.icon} variant="regular" className="text-xl" />
-          </span>
-          <span className="text-title-sm leading-none">{item.label}</span>
-        </button>
-      )
-    }
-
-    return (
-      <Link
-        key={item.path}
-        to={item.path}
-        className={`flex items-center gap-3 px-3 py-2.5 w-full text-left rounded-lg transition-colors ${
-          isActive
-            ? 'text-foreground font-medium hover:bg-accent hover:text-accent-foreground'
-            : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
-        }`}
-      >
-        <span className="w-6 h-6 grid place-items-center">
-          <Icon name={item.icon} variant={isActive ? "solid" : "regular"} className="text-xl" />
-        </span>
-        <span className="text-title-sm leading-none">{item.label}</span>
-      </Link>
-    )
-  }
-
-  const navPadding =
-    variant === 'desktop' ? 'px-3 py-4 space-y-1' : 'px-1 py-2 space-y-1'
-
   return (
-    <div className="flex flex-col">
-      {variant === 'desktop' ? (
-        <div className="px-3 pb-4">
-          <span className="text-heading-3">Account</span>
+    <SideNav aria-label="Settings" size="lg">
+      {settingsCategories.map((category, index) => (
+        <div key={category.title} className="flex flex-col gap-1">
+          {index === 0 ? (
+            // Primary section title — matches the Desperse PageHeader exactly:
+            // text-heading-3 (the page's "Profile Info" title size — NOT Sable's
+            // heading-2), top-aligned at pt-4 below the same row top, so the two
+            // share an EXACT size + baseline across the divider. The h-16 zone
+            // height mirrors the Sidebar's logo header and mb-4 reproduces
+            // SidebarNav's py-4, so the first nav item lines up with "Home".
+            <h2 className="h-16 px-3 pt-4 text-heading-3 mb-4">{category.title}</h2>
+          ) : (
+            <h2 className="px-3 pt-4 pb-1 text-label-xs text-muted-foreground">
+              {category.title}
+            </h2>
+          )}
+          {category.items.map((item) => {
+            const isActive =
+              location.pathname === item.path || location.pathname.startsWith(`${item.path}/`)
+
+            return (
+              <SideNavItem
+                key={item.path}
+                label={item.label}
+                icon={<Icon name={item.icon} variant={isActive ? "solid" : "regular"} />}
+                active={isActive}
+                render={<Link to={item.path} />}
+              />
+            )
+          })}
         </div>
-      ) : (
-        <div className="px-1 pb-2">
-          <div className="text-title-sm text-foreground">Account</div>
-        </div>
-      )}
-      <nav className={`flex flex-col ${navPadding}`}>
-        {settingsCategories[0].items.map(renderNavItem)}
-
-        <div className="border-t border-border/50 my-2" />
-
-        {variant === 'desktop' && (
-          <div className="px-3 py-2">
-            <span className="text-label-xs text-muted-foreground">
-              General
-            </span>
-          </div>
-        )}
-
-        {settingsCategories.slice(1).flatMap((cat) => cat.items).map(renderNavItem)}
-      </nav>
-    </div>
+      ))}
+    </SideNav>
   )
 }
 

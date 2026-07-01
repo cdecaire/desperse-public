@@ -59,7 +59,7 @@ function EchoesLayout() {
 					{/* Skip to content */}
 					<a
 						href="#echoes-content"
-						className="sr-only focus:not-sr-only focus:fixed focus:top-16 focus:left-2 focus:z-[70] focus:px-4 focus:py-2 focus:nx-bg-primary-container focus:nx-text-on-primary-fixed focus:font-label focus:text-sm focus:uppercase"
+						className="sr-only focus:not-sr-only focus:fixed focus:top-16 focus:left-2 focus:z-(--z-skip-link) focus:px-4 focus:py-2 focus:nx-bg-primary-container focus:nx-text-on-primary-fixed focus:font-label focus:text-sm focus:uppercase"
 					>
 						Skip to content
 					</a>

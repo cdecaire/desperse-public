@@ -12,7 +12,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
 import { formatRelativeTime } from '@/lib/dates'
-import { Region, Stack, Row } from '@cdecaire/sable/layout'
+import { Stack, Row } from '@cdecaire/sable/layout'
 
 // Star display component
 function StarDisplay({ rating }: { rating: number | null }) {
@@ -58,7 +58,7 @@ function FeedbackListPage() {
   }
 
   return (
-    <Region max="56rem" inset={false} className="pt-4">
+    <div className="pt-4">
         <Stack gap={1} className="mb-6">
           <h1 className="hidden md:block text-heading-3">Beta Feedback</h1>
           <p className="text-body-sm text-muted-foreground">
@@ -176,6 +176,6 @@ function FeedbackListPage() {
             ))}
           </Stack>
         )}
-    </Region>
+    </div>
   )
 }

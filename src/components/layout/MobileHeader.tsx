@@ -42,7 +42,7 @@ export function MobileHeader({
 
 	return (
 		<header
-			className={`md:hidden fixed top-0 left-0 right-0 z-40 w-full border-b bg-background ${className}`}
+			className={`md:hidden fixed top-0 left-0 right-0 z-(--z-nav) w-full border-b bg-background ${className}`}
 			style={{ paddingTop: "env(safe-area-inset-top)" }}
 		>
 			<div className="grid grid-cols-3 items-center min-h-14 px-4">

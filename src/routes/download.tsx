@@ -29,7 +29,7 @@ function DownloadPage() {
 				</header>
 
 				<section>
-					<Grid cols={1} gap={3} className="md:grid-cols-2">
+					<Grid cols={{ base: 1, md: 2 }} gap={3}>
 						<PlatformCard
 							platform="ios"
 							title="iOS"

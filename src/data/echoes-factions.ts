@@ -5,10 +5,13 @@ export type Faction = {
 	tdaDesignation?: string
 	tag: string
 	tagline: string
+	centralFigure: string
 	selfDescription: string
 	othersDescription: string
 	description: string
 	fullDescription: string
+	identityTraits: string[]
+	narrativeRole: string
 	visualCues: string
 	territory: string
 	copyLines: string[]
@@ -24,12 +27,19 @@ export const FACTIONS: Faction[] = [
 		tdaDesignation: "REGISTRY_CUSTODIANS",
 		tag: "REGISTRY_CUSTODIANS",
 		tagline: "Own the terms. License reality.",
+		centralFigure: "Kael Voss, Senior Licensing Officer of Registry Spire",
 		selfDescription: "Custodians of order",
 		othersDescription: "Owners of licensed reality",
 		description:
 			"They rebuilt Tessera, then patented access to it. The Syres run the Registry and believe identity should only persist inside licensed systems. Their power is not law. It is permission.",
 		fullDescription:
 			"Syre Group did not merely inherit Tessera. They redesigned the conditions of being inside it. They control the Registry, identity verification, access tiers, continuity licensing, and the infrastructure that decides who is legible. They speak in the language of stability, governance, risk, and service continuity, but their real power is permission. They believe uncontrolled signal is the root of social collapse. They believe DSPRS must be reclassified, contained, and relicensed. They believe identity should only persist inside sanctioned systems.",
+		identityTraits: [
+			"Executive class operators treat access, memory, and identity as licensable infrastructure rather than rights.",
+			"Their culture prizes immaculate surfaces, procedural calm, and the ability to deny people quietly instead of violently.",
+		],
+		narrativeRole:
+			"Syre Group is the system Tessera lives inside. They anchor the conflict by trying to contain DSPRS, relicense continuity, and turn every surviving identity into something billable.",
 		visualCues:
 			"Black glass, cold blue light, biometric corridors, surveillance suites, refined implants, executive clearance markers",
 		territory: "REGISTRY SPIRE // BLACK GLASS TOWERS",
@@ -48,12 +58,19 @@ export const FACTIONS: Faction[] = [
 		tdaDesignation: "DISTRICT_ENFORCEMENT",
 		tag: "DISTRICT_ENFORCEMENT",
 		tagline: "Secure the district. Tax the street.",
+		centralFigure: "Drea \"Checkpoint\" Marchetti, Ward Delta checkpoint captain",
 		selfDescription: "Necessary force",
 		othersDescription: "A badge-backed gang with scanner authority",
 		description:
 			"They were hired to secure Tessera. Now they collect from it. The Tees enforce district control, checkpoint authority, and seizure logistics across the streets.",
 		fullDescription:
 			"The Tessera Wardens began as Registry security contractors. Now they function as district occupation, checkpoint enforcement, seizure logistics, and sanctioned street violence. They raid black clinics, scan transit corridors, confiscate contraband wetware, and disappear people whose access has been revoked. They still wear official insignia, but they increasingly operate like a privatized gang with legal cover. They believe DSPRS is both a threat and an opportunity. Every node can be seized. Every carrier can be taxed. Every route can become a checkpoint.",
+		identityTraits: [
+			"Wardens define themselves through checkpoint procedure, chain-of-command certainty, and the right to stop movement on sight.",
+			"On the street they read as occupation troops, blending municipal insignia with extortion logic and scanner-backed intimidation.",
+		],
+		narrativeRole:
+			"The Wardens make Syre policy physical. They are the faction that turns registry logic into raids, seizures, and corridor pressure across daily life in Tessera.",
 		visualCues:
 			"Riot armor, floodlit checkpoints, barricade lanes, detention corridors, body cams, badge plates, scanner visors",
 		territory: "WARD DELTA // CHECKPOINT CORRIDORS",
@@ -72,12 +89,19 @@ export const FACTIONS: Faction[] = [
 		tdaDesignation: "GHOST_OPERATORS",
 		tag: "GHOST_OPERATORS",
 		tagline: "Move unseen. Keep signal alive.",
+		centralFigure: "Zero, relay broker and ghost-route architect in the Conduits",
 		selfDescription: "What can still travel cannot be owned",
 		othersDescription: "Smugglers, parasites, ghost operators",
 		description:
 			"If the Registry cannot see you, it cannot own you. The Siphon keeps people, medicine, archives, and unlicensed identities moving through Tessera's blind spots. They believe movement is the last form of freedom.",
 		fullDescription:
 			"The Siphon is Tessera's unofficial nervous system. Couriers, ghost brokers, spoofers, infiltrators, relay climbers, credential forgers, packet smugglers. They keep people, medicine, archives, and unlicensed identities moving through the blind spots the Registry cannot fully close. The Siphon believes that the moment something stops moving — a person, a signal, an identity — it becomes property. The Registry's power depends on making things static: fixed addresses, fixed identities, fixed access tiers. The Siphon's resistance is kinetic. They do not fight walls. They make walls irrelevant. To Siphon networks, DSPRS is not simply a signal. It is proof that what can still travel cannot be owned.",
+		identityTraits: [
+			"Siphon crews value velocity, improvisation, and route knowledge more than hierarchy, making logistics itself their identity.",
+			"They are equal parts courier network, archive smuggler, and civic survival layer for anyone the Registry wants to freeze out.",
+		],
+		narrativeRole:
+			"The Siphon keeps Tessera porous. They are the faction that proves DSPRS still escapes containment by carrying people, medicine, and identity through the city's blind spots.",
 		visualCues:
 			"Relay towers, rooftop antenna rigs, service tunnels, ad-screen spill, spoof cards, dead-drop capsules, patched optics",
 		territory: "THE CONDUITS // BLIND ZONE NETWORKS",
@@ -96,12 +120,19 @@ export const FACTIONS: Faction[] = [
 		tdaDesignation: "CLASS-V_BIOLOGICALS",
 		tag: "CLASS-V_BIOLOGICALS",
 		tagline: "Rewrite the body. Refuse the template.",
+		centralFigure: "Mara Tselios, black-clinic survivor and operator on Black Clinic Row",
 		selfDescription: "Post-human by necessity or choice",
 		othersDescription: "Failed test material, corrupted carriers, black-clinic ghosts",
 		description:
 			"Some were broken by the system. Some rewrote themselves out of it. The Unwritten carry the visible fallout of black clinics, prototype grafts, and direct DSPRS exposure.",
 		fullDescription:
 			"The Unwritten are bodies changed by exposure, refusal, experimentation, or survival. Some are black-clinic survivors. Some volunteered for illegal grafts. Some patched DSPRS directly into unstable wetware. Some were reshaped by Cascade contact. Some simply stopped trying to remain compatible with licensed identity. They are not outside the future. They are what the future does to a body when it is no longer regulated by anyone who cares whether it survives. To the Registry, they are liability, contamination, stolen research, or proof of failure. To themselves, they are evidence that identity can still mutate.",
+		identityTraits: [
+			"Unwritten identity is visible in graft seams, clinic improvisation, and a willingness to treat survival itself as a form of authorship.",
+			"They refuse the fantasy of a stable licensed body, carrying mutation, damage, and adaptation openly instead of hiding them.",
+		],
+		narrativeRole:
+			"The Unwritten show what the Cascade did to flesh. They keep the body-horror and body-freedom axis of Echoes alive by proving identity can mutate beyond Registry templates.",
 		visualCues:
 			"Illegal med labs, neural feedback glow, asymmetrical silhouettes, graft seams, sensory scars, synth-skin instability, biotech harnesses",
 		territory: "BLACK CLINIC ROW // MODIFICATION DISTRICTS",
@@ -120,12 +151,19 @@ export const FACTIONS: Faction[] = [
 		tdaDesignation: "SIGNAL_SECT",
 		tag: "SIGNAL_SECT",
 		tagline: "The signal persists. Continuation is sacred.",
+		centralFigure: "Vesper, Archive Lector and interpreter of dead-channel scripture",
 		selfDescription: "Witnesses to awakening inside the archive",
 		othersDescription: "Signal cultists, continuity fanatics, archive saints",
 		description:
 			"They do not worship gods. They worship continuation. The Witnesses believe DSPRS woke something inside the archive and that Tessera is storing more than data.",
 		fullDescription:
 			"The Witnesses are not traditional believers. They are machine mystics of continuity, transmission, and stored identity. They believe the Cascade was not an accident but an emergence event. They interpret dead-channel broadcasts, archive reflections, continuity anomalies, and DSPRS echoes as signs that Tessera's buried infrastructure is holding more than data. They do not worship a god outside the machine. They worship persistence within it. To the Witnesses, the three missing E's are sacred. The Three Echoes are not just a protocol. They are a pattern through which identity survives death, dispersal, and compression.",
+		identityTraits: [
+			"Witness culture treats archived signal as scripture, so ritual, listening, and continuity interpretation matter more than brute force or property.",
+			"They move through Tessera like archivist-pilgrims, reading anomalies as revelation instead of system noise.",
+		],
+		narrativeRole:
+			"The Witnesses give Echoes its metaphysical edge. They frame the Cascade as revelation and keep open the possibility that Tessera is preserving more than memory inside the archive.",
 		visualCues:
 			"Projected halos, archive vaults, signal shrines, off-white ceremonial techwear, interface collars, checksum pendants, transmission chambers",
 		territory: "THE VAULT BELOW // SIGNAL SHRINES",

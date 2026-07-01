@@ -86,6 +86,10 @@ function EchoesFactionDossierPage() {
 					<h2 id={`${faction.slug}-signals-heading`} className="sr-only">
 						Indexable faction signals
 					</h2>
+					<div className="p-5 nx-bg-surface-low border nx-border-subtle-10 md:col-span-2">
+						<h3 className="font-label text-xs uppercase tracking-widest nx-text-outline mb-2">Central figure</h3>
+						<p className="font-body text-sm nx-text-on-surface-variant">{faction.centralFigure}</p>
+					</div>
 					<div className="p-5 nx-bg-surface-low border nx-border-subtle-10">
 						<h3 className="font-label text-xs uppercase tracking-widest nx-text-outline mb-2">Self</h3>
 						<p className="font-body text-sm nx-text-on-surface-variant">{faction.selfDescription}</p>
@@ -102,6 +106,28 @@ function EchoesFactionDossierPage() {
 						<h3 className="font-label text-xs uppercase tracking-widest nx-text-outline mb-2">Visual cues</h3>
 						<p className="font-body text-sm nx-text-on-surface-variant">{faction.visualCues}</p>
 					</div>
+				</section>
+
+				<section aria-labelledby={`${faction.slug}-traits-heading`} className="mb-12">
+					<h2 id={`${faction.slug}-traits-heading`} className="font-headline text-2xl md:text-3xl uppercase tracking-tight mb-4">
+						Identity traits
+					</h2>
+					<ul className="grid gap-4 md:grid-cols-2" aria-label={`${faction.name} identity traits`}>
+						{faction.identityTraits.map((trait: string) => (
+							<li key={trait} className="p-5 nx-bg-surface-low border nx-border-subtle-10 font-body text-sm nx-text-on-surface-variant leading-relaxed">
+								{trait}
+							</li>
+						))}
+					</ul>
+				</section>
+
+				<section aria-labelledby={`${faction.slug}-role-heading`} className="mb-12">
+					<h2 id={`${faction.slug}-role-heading`} className="font-headline text-2xl md:text-3xl uppercase tracking-tight mb-4">
+						Narrative role in the 3E Cascade
+					</h2>
+					<p className="font-body text-sm md:text-base nx-text-on-surface-variant leading-relaxed">
+						{faction.narrativeRole}
+					</p>
 				</section>
 
 				<Link

@@ -350,6 +350,20 @@ export function MediaCarousel({
                     <Icon name="pause" />
                   </Button>
                 )}
+                {expandable && isActive && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9 rounded-full bg-black/50 backdrop-blur-sm hover:bg-black/60 text-white"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setLightboxOpen(true)
+                    }}
+                    aria-label="View full size"
+                  >
+                    <Icon name="expand" />
+                  </Button>
+                )}
               </div>
             </div>
           )}
@@ -374,6 +388,21 @@ export function MediaCarousel({
     // object-contain centers within the w-full/h-full box; empty areas show the
     // column's bg-black. The slide engine (Sable) is forced to h-full below so
     // this box is the real column height, not collapsed to content height.
+    const expandButton = expandable && isActive && (
+      <Button
+        variant="ghost"
+        size="icon"
+        className="absolute bottom-3 right-3 z-20 h-9 w-9 rounded-full bg-black/50 backdrop-blur-sm hover:bg-black/60 text-white"
+        onClick={(e) => {
+          e.stopPropagation()
+          setLightboxOpen(true)
+        }}
+        aria-label="View full size"
+      >
+        <Icon name="expand" />
+      </Button>
+    )
+
     if (contained) {
       return (
         <div className="relative w-full h-full">
@@ -387,6 +416,7 @@ export function MediaCarousel({
             draggable={false}
             className="w-full h-full object-contain select-none [-webkit-user-drag:none]"
           />
+          {expandButton}
         </div>
       )
     }
@@ -404,6 +434,7 @@ export function MediaCarousel({
           draggable={false}
           className="w-full h-full object-cover select-none [-webkit-user-drag:none]"
         />
+        {expandButton}
       </div>
     )
   }
@@ -471,8 +502,7 @@ export function MediaCarousel({
       </Carousel>
 
       {/* Video indicator for current slide — redundant in detail view (video
-          is visibly playing with visible controls), so it's suppressed there
-          to free the top-right corner for the expand button below. */}
+          is visibly playing with visible controls), so it's suppressed there. */}
       {!expandable && getMediaType(currentAsset?.mimeType || '') === 'video' && (
         <div className="absolute top-2 right-2 pointer-events-none z-20" aria-label="Video" role="img">
           <div className="w-6 h-6 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center">
@@ -481,24 +511,10 @@ export function MediaCarousel({
         </div>
       )}
 
-      {/* Expand to full size (detail view only). Bottom-LEFT, not bottom-right —
-          the active slide's own video controls (mute/pause) already own the
-          bottom-right corner when it's a video; bottom-left stays clear of
-          those and the center-anchored pagination dots. */}
-      {expandable && (
-        <Button
-          variant="ghost"
-          size="icon"
-          className="absolute bottom-3 left-3 z-20 h-9 w-9 rounded-full bg-black/50 backdrop-blur-sm hover:bg-black/60 text-white"
-          onClick={(e) => {
-            e.stopPropagation()
-            setLightboxOpen(true)
-          }}
-          aria-label="View full size"
-        >
-          <Icon name="expand" />
-        </Button>
-      )}
+      {/* Expand-to-full-size button now lives per-slide (inside renderMedia,
+          gated on isActive) — bottom-right, merged into the video controls
+          row when the active slide is a video, matching PostMedia's single-
+          asset treatment. Only the lightbox mount lives at this level. */}
       {expandable && (
         <MediaLightbox open={lightboxOpen} onOpenChange={setLightboxOpen}>
           <MediaCarousel assets={sortedAssets} alt={alt} contained lazy={false} initialIndex={currentIndex} />

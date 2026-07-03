@@ -20,6 +20,7 @@ import {
 import type { ExploreTab } from '@/components/explore/ExploreSections'
 import type { ExplorePostTypeFilter } from '@/components/explore'
 import { MobileHeader, MobileHeaderSpacer } from '@/components/layout/MobileHeader'
+import { useAuth } from '@/hooks/useAuth'
 import { Icon } from '@/components/ui/icon'
 import { isPresetCategory } from '@/constants/categories'
 
@@ -46,11 +47,18 @@ function ExplorePage() {
   const [filtersCollapsed, setFiltersCollapsed] = useState(false)
   const { q } = Route.useSearch()
   const isSearching = Boolean(q && q.trim())
+  const { isAuthenticated } = useAuth()
 
   return (
     <>
-      <MobileHeader title="Explore" showBackButton={false} />
-      <MobileHeaderSpacer />
+      {/* Logged-out visitors get the AppShell's PublicHeader at every width —
+          the mobile title bar would double up with it. */}
+      {isAuthenticated && (
+        <>
+          <MobileHeader title="Explore" showBackButton={false} />
+          <MobileHeaderSpacer />
+        </>
+      )}
       <div className="px-4 md:px-6 lg:px-8 pt-4 pb-10">
         <Columns count={12} className="mt-5 items-start">
           {/* Desktop filter rail (views + categories) */}

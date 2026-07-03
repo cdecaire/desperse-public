@@ -5,6 +5,7 @@ import { Col, Columns, GridOverlay, Region } from '@cdecaire/sable/layout'
 import TopNav from './TopNav'
 import BottomNav from './BottomNav'
 import Sidebar from './Sidebar'
+import { PublicHeader, PUBLIC_NAV_ITEMS } from './PublicHeader'
 import { GridOverlayContext } from './GridOverlayContext'
 import { Toaster } from '@/components/ui/toaster'
 import { RouteProgressBar } from '@/components/shared/RouteProgressBar'
@@ -135,9 +136,18 @@ export default function AppShell({ children }: AppShellProps) {
             <RpcHealthBanner />
           </>
         }
-        header={showTopNav ? <TopNav /> : undefined}
-        sidebar={<Sidebar />}
-        bottomNav={showBottomNav ? <BottomNav /> : undefined}
+        // Logged-out visitors get one seamless public chrome: the same
+        // PublicHeader the home gallery and static pages use (sticky, all
+        // breakpoints) and no app sidebar/bottom nav. The app shell chrome is
+        // a logged-in affordance. (__root only mounts AppShell once auth is
+        // ready, so isAuthenticated is settled here.)
+        header={
+          isAuthenticated
+            ? (showTopNav ? <TopNav /> : undefined)
+            : <PublicHeader navItems={PUBLIC_NAV_ITEMS} position="sticky" />
+        }
+        sidebar={isAuthenticated ? <Sidebar /> : undefined}
+        bottomNav={isAuthenticated && showBottomNav ? <BottomNav /> : undefined}
         overlays={
           <>
             {isAuthenticated && !isSettingsPage && !currentPath.startsWith('/admin') && (

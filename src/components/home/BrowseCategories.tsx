@@ -1,7 +1,7 @@
 /**
  * BrowseCategories Component
- * Discover section — an icon tile per preset category, linking into the
- * existing /category/$slug pages. Static navigation, never empty.
+ * Discover section — an icon tile per preset category, linking straight into
+ * /explore?category=. Static navigation, never empty.
  */
 
 import { Link } from '@tanstack/react-router'
@@ -32,8 +32,8 @@ export function BrowseCategories() {
         {PRESET_CATEGORIES.map((category) => (
           <Link
             key={category}
-            to="/category/$categorySlug"
-            params={{ categorySlug: categoryToSlug(category) }}
+            to="/explore"
+            search={{ category: categoryToSlug(category) }}
             className="group flex flex-col items-start gap-3 p-5 rounded-lg border border-border bg-card hover:bg-accent transition-colors"
           >
             <span className="w-10 h-10 grid place-items-center rounded-full bg-muted text-foreground group-hover:bg-background transition-colors">

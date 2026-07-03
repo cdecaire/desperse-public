@@ -30,7 +30,11 @@ const eligibilitySchema = z.object({
 export const canUserMessage = createServerFn({
   method: 'GET',
 }).handler(async (input: unknown): Promise<{ success: boolean; data?: DmEligibilityResult; error?: string }> => {
-  const result = await withAuth(eligibilitySchema, input)
+  // { optional: true } is required here — withAuth() throws on unauthenticated
+  // callers by default, it does not return null. Without this flag the
+  // graceful-degradation branch below is unreachable dead code and an
+  // unauthenticated caller gets an unhandled throw instead of "not eligible".
+  const result = await withAuth(eligibilitySchema, input, { optional: true })
   if (!result) {
     return {
       success: true,

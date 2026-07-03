@@ -47,8 +47,8 @@ export function CategorySpotlight({ category, limit = 4 }: CategorySpotlightProp
           <h2 className="text-heading-2">{category}</h2>
         </div>
         <Link
-          to="/category/$categorySlug"
-          params={{ categorySlug: slug }}
+          to="/explore"
+          search={{ category: slug }}
           className="text-label-lg text-muted-foreground hover:text-foreground motion-interactive shrink-0"
         >
           View all <span aria-hidden="true">&rarr;</span>

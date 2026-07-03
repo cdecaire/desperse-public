@@ -10,7 +10,24 @@ import { useAuthRecoveryMessage } from '@/hooks/useAuthRecoveryMessage'
 interface PublicHeaderProps {
   /** Optional nav links rendered between the logo and the right-side controls. */
   navItems?: Array<{ label: string; href: string; external?: boolean }>
+  /**
+   * `fixed` overlays the viewport (standalone pages that pad their own top).
+   * `sticky` sits in normal flow — for the AppShell header slot, where content
+   * flows below it without a spacer.
+   */
+  position?: 'fixed' | 'sticky'
 }
+
+/**
+ * Canonical nav for public/standalone pages (home gallery, about, static
+ * pages). One shared list so the header doesn't jump between pages — the
+ * current page renders in the active style.
+ */
+export const PUBLIC_NAV_ITEMS = [
+  { label: 'Home', href: '/' },
+  { label: 'Explore', href: '/explore' },
+  { label: 'About', href: '/about' },
+]
 
 /**
  * Header for standalone public pages (/preservation, etc.).
@@ -19,7 +36,7 @@ interface PublicHeaderProps {
  * "Go to Feed" link instead of the login button. Distinct from the landing
  * page Header which carries marketing-specific anchor nav.
  */
-export function PublicHeader({ navItems }: PublicHeaderProps) {
+export function PublicHeader({ navItems, position = 'fixed' }: PublicHeaderProps) {
   const { theme, setTheme, resolvedTheme } = useTheme()
   const { login, ready, authenticated } = usePrivy()
   const recoveryMessage = useAuthRecoveryMessage(authenticated)
@@ -36,23 +53,26 @@ export function PublicHeader({ navItems }: PublicHeaderProps) {
 
   return (
     <header
-      className="fixed top-0 left-0 right-0 z-(--z-nav) px-6 py-4 bg-background/80 backdrop-blur-md border-b border-border/50"
+      className={`${
+        position === 'fixed' ? 'fixed left-0 right-0' : 'sticky'
+      } top-0 z-(--z-nav) px-6 py-4 bg-background/80 backdrop-blur-md border-b border-border/50`}
       style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 1rem)' }}
     >
       <Row align="center">
       <Link to="/" className="flex-1 flex items-center space-x-2 hover:opacity-80 transition-opacity">
         <Logo size={15} className="text-foreground" />
-        <span className="text-xl font-extrabold">Desperse</span>
+        {/* Wordmark yields below md so the nav links fit beside the controls. */}
+        <span className="hidden md:inline text-xl font-extrabold">Desperse</span>
       </Link>
 
       {navItems && navItems.length > 0 && (
-        <nav className="hidden md:flex gap-8 text-sm font-medium">
+        <nav className="flex gap-4 md:gap-8 text-sm font-medium">
           {navItems.map((item) =>
             item.external ? (
               <a
                 key={item.href}
                 href={item.href}
-                className="hover:text-zinc-500 dark:hover:text-zinc-400 motion-interactive"
+                className="text-muted-foreground hover:text-foreground motion-interactive"
               >
                 {item.label}
               </a>
@@ -60,7 +80,9 @@ export function PublicHeader({ navItems }: PublicHeaderProps) {
               <Link
                 key={item.href}
                 to={item.href}
-                className="hover:text-zinc-500 dark:hover:text-zinc-400 motion-interactive"
+                className="text-muted-foreground hover:text-foreground motion-interactive"
+                activeOptions={{ exact: item.href === '/' }}
+                activeProps={{ className: 'text-foreground font-semibold' }}
               >
                 {item.label}
               </Link>
@@ -69,7 +91,7 @@ export function PublicHeader({ navItems }: PublicHeaderProps) {
         </nav>
       )}
 
-      <div className="flex-1 flex items-center justify-end gap-4">
+      <div className="flex-1 flex items-center justify-end gap-2 md:gap-4">
         {recoveryMessage && !authenticated && (
           <p className="hidden max-w-xs text-right text-body-sm text-(--tone-warning) md:block">
             {recoveryMessage}

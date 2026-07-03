@@ -16,7 +16,7 @@ import { ArtistShowcase } from './ArtistShowcase'
 import { CategorySpotlight } from './CategorySpotlight'
 import { TrendingCreatorsRow } from './TrendingCreatorsRow'
 import { BrowseCategories } from './BrowseCategories'
-import { PublicHeader } from '@/components/layout/PublicHeader'
+import { PublicHeader, PUBLIC_NAV_ITEMS } from '@/components/layout/PublicHeader'
 import { Footer } from '@/components/layout/Footer'
 
 const PREVIEW_LIMIT = 8
@@ -74,12 +74,7 @@ export function HomeGallery() {
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
-      <PublicHeader
-        navItems={[
-          { label: 'Explore', href: '/explore' },
-          { label: 'About', href: '/about' },
-        ]}
-      />
+      <PublicHeader navItems={PUBLIC_NAV_ITEMS} />
 
       {/* Fluid page — max-width is opt-in per region on Desperse, and a gallery
           earns the full canvas. Every section is a direct child so self-hiding

@@ -70,24 +70,26 @@ function AboutPage() {
 
   return (
     <StaticPageLayout>
-      <Stack gap={16}>
-        <PageHeader
-          title="What Desperse is"
-          description="A platform where creative work becomes collectible."
-        />
+      <Stack gap={12}>
+        <Stack gap={6}>
+          <PageHeader
+            title="What Desperse is"
+            description="A platform where creative work becomes collectible."
+          />
 
-        <Stack gap={4}>
-          <p className="text-body-lg text-muted-foreground max-w-[65ch]">
-            Desperse is a place for artists to publish work directly and for
-            collectors to own it. Creators post photos, videos, and art; anyone
-            can mint a piece onchain and hold it in their own wallet, tied
-            directly back to the creator who made it.
-          </p>
-          <p className="text-body-lg text-muted-foreground max-w-[65ch]">
-            No algorithm decides who sees your work, and nothing is optimized
-            for engagement. You see what you follow. Creators keep 95% of
-            every sale.
-          </p>
+          <Stack gap={4}>
+            <p className="text-body-lg text-muted-foreground max-w-[65ch]">
+              Desperse is a place for artists to publish work directly and for
+              collectors to own it. Creators post photos, videos, and art; anyone
+              can mint a piece onchain and hold it in their own wallet, tied
+              directly back to the creator who made it.
+            </p>
+            <p className="text-body-lg text-muted-foreground max-w-[65ch]">
+              No algorithm decides who sees your work, and nothing is optimized
+              for engagement. You see what you follow. Creators keep 95% of
+              every sale.
+            </p>
+          </Stack>
         </Stack>
 
         <Stack gap={6}>

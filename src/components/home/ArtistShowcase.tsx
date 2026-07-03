@@ -38,7 +38,7 @@ export function ArtistShowcase() {
   return (
     <section className="px-6 md:px-10">
       <div>
-        <p className="text-label-lg text-muted-foreground mb-6">Featured Artist</p>
+        <h2 className="text-heading-2 mb-6">Featured Artist</h2>
         <div className="grid gap-8 lg:gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] items-center">
           {/* Identity */}
           <div>
@@ -50,9 +50,9 @@ export function ArtistShowcase() {
                 className="w-16 h-16"
               />
               <div className="min-w-0">
-                <h2 className="text-heading-2 truncate">
+                <h3 className="text-heading-3 truncate">
                   {creator.displayName || `@${creator.usernameSlug}`}
-                </h2>
+                </h3>
                 <p className="text-body-md text-muted-foreground truncate">
                   @{creator.usernameSlug}
                 </p>
@@ -74,7 +74,7 @@ export function ArtistShowcase() {
             <Link
               to="/profile/$slug"
               params={{ slug: creator.usernameSlug }}
-              className="mt-8 inline-flex px-6 py-3 border border-border rounded-full text-label-lg hover:bg-accent transition-colors"
+              className="mt-8 inline-flex px-6 py-3 bg-primary text-primary-foreground text-label-lg rounded-full hover:scale-105 active:scale-[0.98] transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-ring"
             >
               View profile
             </Link>

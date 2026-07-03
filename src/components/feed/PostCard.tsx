@@ -597,7 +597,7 @@ export function PostCard({
                 // Preset category - render as link
                 return (
                   <CategoryPill key={key} variant="link" asChild>
-                    <Link to="/category/$categorySlug" params={{ categorySlug: slug }}>
+                    <Link to="/explore" search={{ category: slug }}>
                       {displayText}
                     </Link>
                   </CategoryPill>

@@ -6,17 +6,12 @@
  */
 
 import { Stack, Center } from '@cdecaire/sable/layout'
-import { PublicHeader } from '@/components/layout/PublicHeader'
+import { PublicHeader, PUBLIC_NAV_ITEMS } from '@/components/layout/PublicHeader'
 import { Footer } from '@/components/layout/Footer'
 
 interface StaticPageLayoutProps {
   children: React.ReactNode
 }
-
-const PUBLIC_NAV_ITEMS = [
-  { label: 'Explore', href: '/explore' },
-  { label: 'About', href: '/about' },
-]
 
 export function StaticPageLayout({ children }: StaticPageLayoutProps) {
   return (

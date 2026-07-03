@@ -13,6 +13,7 @@ import { ModelViewer } from '@/components/shared/ModelViewer'
 import { getResponsiveImageProps } from '@/lib/imageUrl'
 import { detectMediaType, type MediaType } from '@/lib/media'
 import { MediaCarousel, type CarouselAsset } from './MediaCarousel'
+import { MediaLightbox } from './MediaLightbox'
 import { Icon } from '@/components/ui/icon'
 
 export type { MediaType } from '@/lib/media'
@@ -56,6 +57,12 @@ interface PostMediaProps {
   statusPillColor?: string
   /** Multi-asset support: array of carousel assets. When provided with >1 item, renders carousel */
   assets?: CarouselAsset[]
+  /**
+   * Renders an expand-to-full-size button (image/video/carousel) that opens
+   * the media in a MediaLightbox. Intended for detail views — never set on
+   * feed/grid call sites.
+   */
+  expandable?: boolean
 }
 
 /**
@@ -90,7 +97,9 @@ export function PostMedia({
   statusPillText,
   statusPillColor,
   assets,
+  expandable = false,
 }: PostMediaProps) {
+  const [lightboxOpen, setLightboxOpen] = useState(false)
 
   // Multi-asset carousel: if assets array has >1 item, render carousel
   // This takes precedence over single-asset rendering
@@ -105,6 +114,7 @@ export function PostMedia({
         onClick={onClick}
         preview={preview}
         contained={contained}
+        expandable={expandable}
       />
     )
   }
@@ -319,10 +329,43 @@ export function PostMedia({
             onError={() => setHasError(true)}
           />
         )}
+
+        {expandable && !hasError && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute bottom-3 right-3 z-20 h-9 w-9 rounded-full bg-black/50 backdrop-blur-sm hover:bg-black/60 text-white"
+            onClick={(e) => {
+              e.stopPropagation()
+              setLightboxOpen(true)
+            }}
+            aria-label="View full size"
+          >
+            <Icon name="expand" />
+          </Button>
+        )}
       </div>
     )
 
-    return content
+    return (
+      <>
+        {content}
+        {expandable && (
+          <MediaLightbox open={lightboxOpen} onOpenChange={setLightboxOpen}>
+            <PostMedia
+              mediaUrl={mediaUrl}
+              coverUrl={coverUrl}
+              mediaType={mediaType}
+              alt={alt}
+              aspectRatio="auto"
+              lazy={false}
+              noBorder
+              contained
+            />
+          </MediaLightbox>
+        )}
+      </>
+    )
   }
 
   // Handler to check if video is extra tall on metadata load
@@ -563,13 +606,45 @@ export function PostMedia({
                   <Icon name="pause" />
                 </Button>
               )}
+              {expandable && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-9 w-9 rounded-full bg-black/50 backdrop-blur-sm hover:bg-black/60 text-white"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setLightboxOpen(true)
+                  }}
+                  aria-label="View full size"
+                >
+                  <Icon name="expand" />
+                </Button>
+              )}
             </div>
           </div>
         )}
       </div>
     )
 
-    return videoContent
+    return (
+      <>
+        {videoContent}
+        {expandable && (
+          <MediaLightbox open={lightboxOpen} onOpenChange={setLightboxOpen}>
+            <PostMedia
+              mediaUrl={mediaUrl}
+              coverUrl={coverUrl}
+              mediaType={mediaType}
+              alt={alt}
+              aspectRatio="auto"
+              lazy={false}
+              noBorder
+              contained
+            />
+          </MediaLightbox>
+        )}
+      </>
+    )
   }
 
   // Audio media

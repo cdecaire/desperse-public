@@ -22,6 +22,7 @@ import { Icon } from '@/components/ui/icon'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { getResponsiveImageProps } from '@/lib/imageUrl'
+import { MediaLightbox } from './MediaLightbox'
 
 export interface CarouselAsset {
   id: string
@@ -42,6 +43,14 @@ interface MediaCarouselProps {
   preview?: boolean
   /** If true, carousel fills its container and images use object-contain (for detail views) */
   contained?: boolean
+  /** Slide to start on. Used when reopening at the slide the user was viewing (e.g. inside a lightbox). */
+  initialIndex?: number
+  /**
+   * Renders an expand-to-full-size button that opens this carousel, seeded
+   * at the current slide, inside a MediaLightbox. Intended for detail
+   * views — never set on feed/grid call sites.
+   */
+  expandable?: boolean
 }
 
 function getMediaType(mimeType: string): 'image' | 'video' {
@@ -63,12 +72,15 @@ export function MediaCarousel({
   onClick,
   preview = false,
   contained = false,
+  initialIndex = 0,
+  expandable = false,
 }: MediaCarouselProps) {
-  const [currentIndex, setCurrentIndex] = useState(0)
+  const [currentIndex, setCurrentIndex] = useState(initialIndex)
   const [showControls, setShowControls] = useState(false)
   const [hoverSide, setHoverSide] = useState<'left' | 'right' | null>(null)
   const [videoPlaying, setVideoPlaying] = useState<Map<string, boolean>>(new Map())
   const [videoMuted, setVideoMuted] = useState(true)
+  const [lightboxOpen, setLightboxOpen] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
   // pointer-down coords, used to distinguish a tap (zone navigation) from a
   // drag/swipe (Sable's to handle).
@@ -458,13 +470,39 @@ export function MediaCarousel({
         {sortedAssets.map((asset, index) => renderMedia(asset, index))}
       </Carousel>
 
-      {/* Video indicator for current slide */}
-      {getMediaType(currentAsset?.mimeType || '') === 'video' && (
+      {/* Video indicator for current slide — redundant in detail view (video
+          is visibly playing with visible controls), so it's suppressed there
+          to free the top-right corner for the expand button below. */}
+      {!expandable && getMediaType(currentAsset?.mimeType || '') === 'video' && (
         <div className="absolute top-2 right-2 pointer-events-none z-20" aria-label="Video" role="img">
           <div className="w-6 h-6 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center">
             <Icon name="play" className="text-[10px] text-white" aria-hidden="true" />
           </div>
         </div>
+      )}
+
+      {/* Expand to full size (detail view only). Bottom-LEFT, not bottom-right —
+          the active slide's own video controls (mute/pause) already own the
+          bottom-right corner when it's a video; bottom-left stays clear of
+          those and the center-anchored pagination dots. */}
+      {expandable && (
+        <Button
+          variant="ghost"
+          size="icon"
+          className="absolute bottom-3 left-3 z-20 h-9 w-9 rounded-full bg-black/50 backdrop-blur-sm hover:bg-black/60 text-white"
+          onClick={(e) => {
+            e.stopPropagation()
+            setLightboxOpen(true)
+          }}
+          aria-label="View full size"
+        >
+          <Icon name="expand" />
+        </Button>
+      )}
+      {expandable && (
+        <MediaLightbox open={lightboxOpen} onOpenChange={setLightboxOpen}>
+          <MediaCarousel assets={sortedAssets} alt={alt} contained lazy={false} initialIndex={currentIndex} />
+        </MediaLightbox>
       )}
 
       {/* Navigation arrows (desktop hover) */}

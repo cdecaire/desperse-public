@@ -977,6 +977,7 @@ function PostDetailPage() {
                     statusPillText={(mediaType === 'document' || mediaType === '3d') ? display.statusPillText : undefined}
                     statusPillColor={postTypeColor}
                     assets={displayMedia.displayAssets}
+                    expandable
                   />
                   <MediaOverlay />
                 </div>
@@ -1138,6 +1139,7 @@ function PostDetailPage() {
               statusPillText={(mediaType === 'document' || mediaType === '3d') ? display.statusPillText : undefined}
               statusPillColor={postTypeColor}
               assets={displayMedia.displayAssets}
+              expandable
             />
             <MediaOverlay />
           </div>

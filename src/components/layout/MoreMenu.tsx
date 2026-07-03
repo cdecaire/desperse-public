@@ -17,6 +17,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { useSidebar } from '@cdecaire/sable'
 import { Switch } from '@/components/ui/switch'
 import { BetaFeedbackModal } from '@/components/forms/BetaFeedbackModal'
 
@@ -29,6 +30,7 @@ export default function MoreMenu({ variant = 'sidebar' }: MoreMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [showFeedbackModal, setShowFeedbackModal] = useState(false)
   const navigate = useNavigate()
+  const { collapsed } = useSidebar()
   const { theme, setTheme, resolvedTheme } = useTheme()
   const { logout, login, isAuthenticated } = useAuth()
   const isSystemTheme = theme === 'system' || theme === undefined
@@ -118,11 +120,8 @@ export default function MoreMenu({ variant = 'sidebar' }: MoreMenuProps) {
         className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-accent dark:hover:bg-zinc-800 rounded-md hover-fade"
         role="menuitem"
       >
-        <Icon name="mobile" variant="regular" className="w-5 text-center" />
-        <div className="flex flex-col">
-          <span className="text-sm font-medium leading-none">Get the app</span>
-          <span className="text-xs text-muted-foreground leading-none">iOS, Android, Solana Mobile</span>
-        </div>
+        <Icon name="mobile-screen-button" variant="regular" className="w-5 text-center" />
+        <span className="text-sm font-medium">Download the app</span>
       </Link>
 
       {isAuthenticated ? (
@@ -232,17 +231,19 @@ export default function MoreMenu({ variant = 'sidebar' }: MoreMenuProps) {
     <>
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
+          {/* Mirror Sable's SidebarItem classes so this aligns with the nav /
+              "Log in" rows (the footer already supplies px-3 — no extra margin). */}
           <button
             id="more-button"
-            className={`flex items-center gap-3 px-3 py-2.5 mx-3 w-[calc(100%-1.5rem)] text-left rounded-md hover-fade text-foreground hover:bg-accent hover:text-accent-foreground ${
-              isOpen ? 'font-semibold' : 'font-medium'
+            className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-label-lg text-sidebar-foreground motion-interactive hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring ${
+              isOpen ? 'bg-sidebar-accent text-sidebar-accent-foreground font-semibold' : ''
             }`}
             aria-haspopup="menu"
           >
-            <span className="w-6 h-6 grid place-items-center">
+            <span className="grid size-6 shrink-0 place-items-center">
               <Icon name="bars" variant={isOpen ? 'solid' : 'regular'} className="text-xl" />
             </span>
-            <span className="text-sm leading-none">More</span>
+            {!collapsed && <span className="min-w-0 flex-1 truncate">More</span>}
           </button>
         </PopoverTrigger>
         <PopoverContent

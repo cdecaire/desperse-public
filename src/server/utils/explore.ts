@@ -8,6 +8,7 @@ import { posts, users, follows, collections, purchases, likes, comments, postAss
 import { eq, and, desc, sql, count, gte, notInArray, isNotNull, or, ilike, inArray } from 'drizzle-orm'
 import { authenticateWithToken } from '@/server/auth'
 import { excludeDevPostsForUser } from '@/server/utils/dev-posts'
+import { getBlockedUserIdSet } from '@/server/utils/blocks'
 
 // Types
 export interface SuggestedCreator {
@@ -117,9 +118,13 @@ export async function getSuggestedCreatorsDirect(
       followedUserIds = followedUsers.map(f => f.followingId)
     }
 
-    // Build exclusion list (followed users + self)
+    // Build exclusion list (followed users + self + pairwise-blocked).
+    // getBlockedUserIdSet is a no-op for anonymous viewers and already
+    // applies the mod/admin exemption, so this stays consistent with the
+    // createServerFn twin in src/server/functions/explore.ts.
+    const blocked = await getBlockedUserIdSet(currentUserId)
     const excludeUserIds = currentUserId
-      ? [...followedUserIds, currentUserId]
+      ? Array.from(new Set([...followedUserIds, currentUserId, ...blocked]))
       : []
 
     // Get follower counts per user (subquery)
@@ -268,12 +273,18 @@ export async function getTrendingPostsDirect(
       .groupBy(purchases.postId)
       .as('purchase_counts')
 
+    // Drop posts by pairwise-blocked authors before scoring/pagination —
+    // filtering must happen in the WHERE clause, not post-query, so offsets
+    // and hasMore stay correct. No-op for anonymous viewers.
+    const blocked = await getBlockedUserIdSet(currentUserId)
+
     // Build base conditions — hidden posts are always excluded from explore feeds
     const baseConditions = [
       await excludeDevPostsForUser(currentUserId),
       eq(posts.isDeleted, false),
       eq(posts.isHidden, false),
       gte(posts.createdAt, sevenDaysAgo),
+      ...(blocked.size > 0 ? [notInArray(posts.userId, Array.from(blocked))] : []),
     ]
 
     // Query trending posts with scoring
@@ -343,7 +354,8 @@ export async function getTrendingPostsDirect(
           and(
             await excludeDevPostsForUser(currentUserId),
             eq(posts.isDeleted, false),
-            eq(posts.isHidden, false)
+            eq(posts.isHidden, false),
+            ...(blocked.size > 0 ? [notInArray(posts.userId, Array.from(blocked))] : [])
           )
         )
         .orderBy(desc(posts.createdAt))

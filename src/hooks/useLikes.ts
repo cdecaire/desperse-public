@@ -12,18 +12,20 @@ import { toast } from '@/hooks/use-toast'
  * Works for both authenticated and unauthenticated users
  */
 export function usePostLikes(postId: string | undefined, userId: string | undefined) {
+  const { getAuthHeaders, isAuthenticated } = useAuth()
   return useQuery({
     queryKey: ['postLikes', postId, userId],
     queryFn: async () => {
       if (!postId) throw new Error('Post ID required')
-      
+      const authHeaders = isAuthenticated ? await getAuthHeaders().catch(() => null) : null
+
       const result = await getPostLikes({
         data: {
           postId,
-          userId: userId || undefined,
+          ...(authHeaders ? { _authorization: authHeaders.Authorization } : {}),
         },
       } as any)
-      
+
       if (!result.success) {
         throw new Error(result.error || 'Failed to fetch post likes')
       }

@@ -77,9 +77,11 @@ const cancelCollectSchema = z.object({
 });
 
 // Schema for getting user's collection status for a post
+// NOTE: userId is intentionally NOT part of this schema — it must come from the
+// server-verified auth session (see withAuth below), never from client input,
+// otherwise any caller could query another user's private collection status (IDOR).
 const getUserCollectionSchema = z.object({
   postId: z.string().uuid(),
-  userId: z.string().uuid(),
 });
 
 /**
@@ -631,11 +633,25 @@ export const getUserCollectionStatus = createServerFn({
   error?: string;
 }> => {
   try {
-    const rawData = input && typeof input === 'object' && 'data' in input
-      ? (input as { data: unknown }).data
-      : input;
+    // Authenticate user — collection status is private per-user data, so the
+    // userId MUST come from the verified auth session, never from client input.
+    let authResult;
+    try {
+      authResult = await withAuth(getUserCollectionSchema, input);
+    } catch (authError) {
+      // withAuth throws when auth fails - catch and return proper response
+      const message = authError instanceof Error ? authError.message : 'Authentication failed';
+      console.warn('[getUserCollectionStatus] Auth error:', message);
+      return { success: false, hasCollected: false, error: message };
+    }
 
-    const { postId, userId } = getUserCollectionSchema.parse(rawData);
+    if (!authResult) {
+      return { success: false, hasCollected: false, error: 'Authentication required. Please log in.' };
+    }
+
+    const { auth, input: data } = authResult;
+    const { postId } = data;
+    const userId = auth.userId;
 
     const collection = await db
       .select()

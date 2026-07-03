@@ -8,11 +8,12 @@
 
 import { createServerFn } from '@tanstack/react-start'
 import { db } from '@/server/db'
-import { posts, users } from '@/server/db/schema'
-import { eq, and, sql, lt, desc } from 'drizzle-orm'
+import { posts, users, collections } from '@/server/db/schema'
+import { eq, and, sql, lt, desc, count, notInArray } from 'drizzle-orm'
 import { z } from 'zod'
 import { withOptionalAuth } from '@/server/auth'
 import { excludeDevPostsForUser } from '@/server/utils/dev-posts'
+import { getBlockedUserIdSet } from '@/server/utils/blocks'
 import { PRESET_CATEGORIES, normalizeCategoryKey, categoryToSlug } from '@/constants/categories'
 
 // =============================================================================
@@ -23,6 +24,9 @@ const getPostsByCategorySchema = z.object({
   categorySlug: z.string().min(1).max(32),
   cursor: z.string().optional(), // ISO datetime string for pagination
   limit: z.number().int().min(1).max(50).optional().default(20),
+  // Optional post-type narrowing (Explore Type filter). Applied server-side so
+  // cursor pagination stays correct rather than filtering pages client-side.
+  type: z.enum(['post', 'collectible', 'edition']).optional(),
 })
 
 /**
@@ -40,7 +44,7 @@ export const getPostsByCategory = createServerFn({
     }
 
     const { input: data } = result
-    const { categorySlug, cursor, limit } = data
+    const { categorySlug, cursor, limit, type } = data
 
     // Find the canonical category name from presets
     // Match by both normalized key ("3d / cg") and URL slug ("3d-cg")
@@ -52,6 +56,19 @@ export const getPostsByCategory = createServerFn({
 
     // Use the canonical name if found, otherwise use the slug as-is
     const categoryToMatch = matchingCategory || categorySlug
+
+    const blocked = await getBlockedUserIdSet(result.auth?.userId)
+
+    // Confirmed-collect count per post (gem count for collectibles)
+    const collectCounts = db
+      .select({
+        postId: collections.postId,
+        count: count().as('collect_count'),
+      })
+      .from(collections)
+      .where(eq(collections.status, 'confirmed'))
+      .groupBy(collections.postId)
+      .as('collect_counts')
 
     // Query posts that have this category in their categories array
     // PostgreSQL array contains check
@@ -69,6 +86,12 @@ export const getPostsByCategory = createServerFn({
         maxSupply: posts.maxSupply,
         currentSupply: posts.currentSupply,
         nftName: posts.nftName,
+        // Fields needed so gallery/feed cards render pills identically to the
+        // explore feeds (mint-window countdown, scheduled state, royalty tooltip)
+        mintWindowStart: posts.mintWindowStart,
+        mintWindowEnd: posts.mintWindowEnd,
+        sellerFeeBasisPoints: posts.sellerFeeBasisPoints,
+        collectCount: sql<number>`COALESCE(${collectCounts.count}, 0)`.as('collect_count'),
         createdAt: posts.createdAt,
         user: {
           id: users.id,
@@ -79,6 +102,7 @@ export const getPostsByCategory = createServerFn({
       })
       .from(posts)
       .innerJoin(users, eq(posts.userId, users.id))
+      .leftJoin(collectCounts, eq(posts.id, collectCounts.postId))
       .where(
         and(
           await excludeDevPostsForUser(result.auth?.userId),
@@ -86,7 +110,9 @@ export const getPostsByCategory = createServerFn({
           sql`${posts.categories} @> ARRAY[${categoryToMatch}]::text[]`,
           eq(posts.isDeleted, false),
           eq(posts.isHidden, false),
-          cursor ? lt(posts.createdAt, new Date(cursor)) : undefined
+          type ? eq(posts.type, type) : undefined,
+          cursor ? lt(posts.createdAt, new Date(cursor)) : undefined,
+          blocked.size > 0 ? notInArray(posts.userId, Array.from(blocked)) : undefined
         )
       )
       .orderBy(desc(posts.createdAt))
@@ -101,7 +127,7 @@ export const getPostsByCategory = createServerFn({
 
     return {
       success: true,
-      posts: postsToReturn,
+      posts: postsToReturn.map((p) => ({ ...p, collectCount: Number(p.collectCount) || 0 })),
       nextCursor,
       categoryName: matchingCategory || categorySlug,
     }

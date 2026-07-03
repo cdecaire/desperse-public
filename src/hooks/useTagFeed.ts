@@ -5,6 +5,8 @@
 
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import { getTag, getPostsByTag } from '@/server/functions/hashtag-api'
+import { useAuth } from './useAuth'
+import { useCurrentUser } from './useCurrentUser'
 
 interface UseTagFeedOptions {
   tagSlug: string
@@ -38,14 +40,19 @@ export function useTag(tagSlug: string, enabled: boolean = true) {
  * Hook for fetching posts by tag with infinite scroll
  */
 export function useTagFeed({ tagSlug, enabled = true }: UseTagFeedOptions) {
+  const { getAuthHeaders, isAuthenticated } = useAuth()
+  const { user: currentUser } = useCurrentUser()
   return useInfiniteQuery({
-    queryKey: ['tagFeed', tagSlug],
+    // Viewer included so a blocked-state result never leaks across viewers within staleTime.
+    queryKey: ['tagFeed', tagSlug, currentUser?.id ?? 'anon'],
     queryFn: async ({ pageParam }) => {
+      const authHeaders = isAuthenticated ? await getAuthHeaders().catch(() => null) : null
       const result = await getPostsByTag({
         data: {
           tagSlug,
           cursor: pageParam || undefined,
           limit: 20,
+          ...(authHeaders ? { _authorization: authHeaders.Authorization } : {}),
         },
       } as never)
 

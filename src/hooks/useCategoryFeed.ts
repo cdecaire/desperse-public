@@ -5,24 +5,34 @@
 
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { getPostsByCategory } from '@/server/functions/categories'
+import { useAuth } from './useAuth'
+import { useCurrentUser } from './useCurrentUser'
 
 interface UseCategoryFeedOptions {
   categorySlug: string
   enabled?: boolean
+  /** Optional post-type narrowing (Explore Type filter). */
+  type?: 'post' | 'collectible' | 'edition'
 }
 
 /**
  * Hook for fetching posts by category with infinite scroll
  */
-export function useCategoryFeed({ categorySlug, enabled = true }: UseCategoryFeedOptions) {
+export function useCategoryFeed({ categorySlug, enabled = true, type }: UseCategoryFeedOptions) {
+  const { getAuthHeaders, isAuthenticated } = useAuth()
+  const { user: currentUser } = useCurrentUser()
   return useInfiniteQuery({
-    queryKey: ['categoryFeed', categorySlug],
+    // Viewer included so a blocked-state result never leaks across viewers within staleTime.
+    queryKey: ['categoryFeed', categorySlug, type ?? 'all', currentUser?.id ?? 'anon'],
     queryFn: async ({ pageParam }) => {
+      const authHeaders = isAuthenticated ? await getAuthHeaders().catch(() => null) : null
       const result = await getPostsByCategory({
         data: {
           categorySlug,
           cursor: pageParam || undefined,
           limit: 20,
+          type,
+          ...(authHeaders ? { _authorization: authHeaders.Authorization } : {}),
         },
       } as never)
 

@@ -5,9 +5,9 @@
 
 import { db } from '@/server/db'
 import { posts, purchases, collections, users } from '@/server/db/schema'
-import { eq, and, count, desc } from 'drizzle-orm'
+import { eq, and, count, desc, notInArray } from 'drizzle-orm'
 
-export async function getPostTransferHistoryDirect(postId: string) {
+export async function getPostTransferHistoryDirect(postId: string, blockedUserIds: Set<string> = new Set()) {
 	// Fetch post to determine asset type
 	const [post] = await db
 		.select({
@@ -42,6 +42,8 @@ export async function getPostTransferHistoryDirect(postId: string) {
 		txSignature: string | null
 	}> = []
 
+	const excludeBlocked = blockedUserIds.size > 0
+
 	if (isEdition) {
 		const [countResult] = await db
 			.select({ count: count() })
@@ -50,6 +52,7 @@ export async function getPostTransferHistoryDirect(postId: string) {
 				and(
 					eq(purchases.postId, postId),
 					eq(purchases.status, 'confirmed'),
+					excludeBlocked ? notInArray(purchases.userId, Array.from(blockedUserIds)) : undefined,
 				),
 			)
 		collectorCount = countResult?.count || 0
@@ -67,6 +70,7 @@ export async function getPostTransferHistoryDirect(postId: string) {
 				and(
 					eq(purchases.postId, postId),
 					eq(purchases.status, 'confirmed'),
+					excludeBlocked ? notInArray(purchases.userId, Array.from(blockedUserIds)) : undefined,
 				),
 			)
 			.orderBy(desc(purchases.createdAt))
@@ -79,6 +83,7 @@ export async function getPostTransferHistoryDirect(postId: string) {
 				and(
 					eq(collections.postId, postId),
 					eq(collections.status, 'confirmed'),
+					excludeBlocked ? notInArray(collections.userId, Array.from(blockedUserIds)) : undefined,
 				),
 			)
 		collectorCount = countResult?.count || 0
@@ -96,6 +101,7 @@ export async function getPostTransferHistoryDirect(postId: string) {
 				and(
 					eq(collections.postId, postId),
 					eq(collections.status, 'confirmed'),
+					excludeBlocked ? notInArray(collections.userId, Array.from(blockedUserIds)) : undefined,
 				),
 			)
 			.orderBy(desc(collections.createdAt))

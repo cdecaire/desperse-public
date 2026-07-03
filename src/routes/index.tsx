@@ -23,7 +23,7 @@ import { PullToRefresh } from '@/components/shared/PullToRefresh'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icon'
 import { setLastSeen, getLastSeen } from '@/lib/utils'
-import { LandingPage } from '@/components/landing/LandingPage'
+import { HomeGallery } from '@/components/home/HomeGallery'
 import { useNavigate } from '@tanstack/react-router'
 import { useOnboardingState } from '@/hooks/useOnboardingState'
 import { isOnboardingV1Enabled } from '@/config/env'
@@ -52,9 +52,9 @@ function FeedPage() {
     return <FeedSkeleton count={3} />
   }
 
-  // Show landing page for unauthenticated users
+  // Show the public gallery homepage for unauthenticated users
   if (!isAuthenticated) {
-    return <LandingPage />
+    return <HomeGallery />
   }
 
   // Show feed for authenticated users

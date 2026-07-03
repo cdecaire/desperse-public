@@ -6,6 +6,7 @@
 import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
 import { withOptionalAuth } from '@/server/auth'
+import { getBlockedUserIdSet } from '@/server/utils/blocks'
 
 const getPostTransferHistorySchema = z.object({
 	postId: z.string().uuid(),
@@ -22,12 +23,13 @@ export const getPostTransferHistory = createServerFn({
 
 		const { input: data } = result
 		const { postId } = data
+		const blocked = await getBlockedUserIdSet(result.auth?.userId)
 
 		// Dynamic import to avoid leaking DB into client bundle
 		const { getPostTransferHistoryDirect } = await import(
 			'@/server/utils/post-transfer-history'
 		)
-		const historyResult = await getPostTransferHistoryDirect(postId)
+		const historyResult = await getPostTransferHistoryDirect(postId, blocked)
 
 		if (!historyResult.found) {
 			return { success: false as const, error: 'Post not found' }

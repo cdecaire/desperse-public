@@ -180,7 +180,8 @@ export function CollectButton({
     
     async function checkInitialStatus() {
       try {
-        const result = await getUserCollectionStatus(wrapInput({ postId, userId }) as never);
+        const authHeaders = await getAuthHeaders();
+        const result = await getUserCollectionStatus(wrapInput({ postId, _authorization: authHeaders.Authorization }) as never);
         
         if (result.success) {
           // Only 'confirmed' status means collected - server now auto-marks stale pending as failed

@@ -7,12 +7,19 @@
  * Block semantics: if EITHER party has blocked the other, content is hidden
  * symmetrically. Storing a single directed row simplifies create/delete UI
  * but the read-side filter must always check both directions.
+ *
+ * Moderator/admin exemption: a user CAN block a mod/admin, but that block does
+ * not hide the blocker's content FROM the mod (moderation needs full
+ * visibility). Mods are only ever filtered by their OWN blocks, never by the
+ * "someone blocked me" direction. This is enforced centrally here so every
+ * surface (detail, search, feeds, comments, DMs) behaves consistently.
  */
 
 import { db } from '@/server/db'
 import { userBlocks, users } from '@/server/db/schema'
 import { and, desc, eq, or } from 'drizzle-orm'
 import { isUniqueViolation } from './db-errors'
+import { isModeratorOrAdmin } from './auth-helpers'
 
 /**
  * Returns the set of user IDs the viewer should NOT see content from —
@@ -34,11 +41,20 @@ export async function getBlockedUserIdSet(viewerId: string | null | undefined): 
     .from(userBlocks)
     .where(or(eq(userBlocks.blockerId, viewerId), eq(userBlocks.blockedId, viewerId)))
 
-  const out = new Set<string>()
+  const iBlocked = new Set<string>()
+  const blockedMe = new Set<string>()
   for (const row of rows) {
-    out.add(row.blockerId === viewerId ? row.blockedId : row.blockerId)
+    if (row.blockerId === viewerId) iBlocked.add(row.blockedId)
+    else blockedMe.add(row.blockerId)
   }
-  return out
+
+  // Mod/admin exemption: users who blocked a mod can't hide their content from
+  // the mod. Only check the role when the viewer is actually blocked by someone
+  // (rare), so the common path stays a single query.
+  if (blockedMe.size > 0 && (await isModeratorOrAdmin(viewerId))) {
+    return iBlocked
+  }
+  return new Set([...iBlocked, ...blockedMe])
 }
 
 /**
@@ -90,6 +106,13 @@ export async function getDirectedBlockState(
   for (const row of rows) {
     if (row.blockerId === viewerId) iBlocked.add(row.blockedId)
     else blockedMe.add(row.blockerId)
+  }
+
+  // Mod/admin exemption: a user blocking a mod can't hide content from them, so
+  // the mod is never treated as "blocked by" anyone (they still keep their own
+  // blocks). Role is only checked when the viewer is actually blocked.
+  if (blockedMe.size > 0 && (await isModeratorOrAdmin(viewerId))) {
+    return { iBlocked, blockedMe: new Set() }
   }
   return { iBlocked, blockedMe }
 }

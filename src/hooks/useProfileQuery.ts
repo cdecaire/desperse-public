@@ -53,15 +53,17 @@ export function useProfileUser(slug: string | undefined) {
  * Fetch follow stats for a user
  */
 export function useFollowStats(userId: string | undefined, currentUserId: string | undefined) {
+  const { getAuthHeaders, isAuthenticated } = useAuth()
   return useQuery({
     queryKey: ['followStats', userId, currentUserId],
     queryFn: async () => {
       if (!userId) throw new Error('User ID required')
-      
+      const authHeaders = isAuthenticated ? await getAuthHeaders().catch(() => null) : null
+
       const result = await getFollowStats({
         data: {
           userId,
-          currentUserId: currentUserId || undefined,
+          ...(authHeaders ? { _authorization: authHeaders.Authorization } : {}),
         },
       } as never)
       
@@ -85,18 +87,20 @@ export function useFollowStats(userId: string | undefined, currentUserId: string
  */
 export function useUserPosts(userId: string | undefined) {
   const { user: currentUser } = useCurrentUser()
+  const { getAuthHeaders, isAuthenticated } = useAuth()
 
   return useInfiniteQuery({
     queryKey: ['userPosts', userId, currentUser?.id],
     queryFn: async ({ pageParam }) => {
       if (!userId) throw new Error('User ID required')
+      const authHeaders = isAuthenticated ? await getAuthHeaders().catch(() => null) : null
 
       const result = await getUserPosts({
         data: {
           userId,
           limit: 20,
           cursor: pageParam,
-          currentUserId: currentUser?.id,
+          ...(authHeaders ? { _authorization: authHeaders.Authorization } : {}),
         },
       } as never)
 
@@ -121,16 +125,21 @@ export function useUserPosts(userId: string | undefined) {
  * Fetch collected items for a user's profile with infinite scroll
  */
 export function useUserCollections(userId: string | undefined) {
+  const { user: currentUser } = useCurrentUser()
+  const { getAuthHeaders, isAuthenticated } = useAuth()
   return useInfiniteQuery({
-    queryKey: ['userCollections', userId],
+    // Viewer included so a blocked-state result never leaks across viewers within staleTime.
+    queryKey: ['userCollections', userId, currentUser?.id ?? 'anon'],
     queryFn: async ({ pageParam }) => {
       if (!userId) throw new Error('User ID required')
+      const authHeaders = isAuthenticated ? await getAuthHeaders().catch(() => null) : null
 
       const result = await getUserCollections({
         data: {
           userId,
           limit: 20,
           cursor: pageParam,
+          ...(authHeaders ? { _authorization: authHeaders.Authorization } : {}),
         },
       } as never)
 
@@ -240,16 +249,21 @@ export function useFollowMutation(targetUserId: string, currentUserId: string) {
  * Fetch for-sale editions for a user's profile with infinite scroll
  */
 export function useUserForSale(userId: string | undefined) {
+  const { user: currentUser } = useCurrentUser()
+  const { getAuthHeaders, isAuthenticated } = useAuth()
   return useInfiniteQuery({
-    queryKey: ['userForSale', userId],
+    // Viewer included so a blocked-state result never leaks across viewers within staleTime.
+    queryKey: ['userForSale', userId, currentUser?.id ?? 'anon'],
     queryFn: async ({ pageParam }) => {
       if (!userId) throw new Error('User ID required')
+      const authHeaders = isAuthenticated ? await getAuthHeaders().catch(() => null) : null
 
       const result = await getUserForSale({
         data: {
           userId,
           limit: 20,
           cursor: pageParam,
+          ...(authHeaders ? { _authorization: authHeaders.Authorization } : {}),
         },
       } as never)
 
@@ -274,15 +288,20 @@ export function useUserForSale(userId: string | undefined) {
  * Fetch liked posts for a user's profile
  */
 export function useUserLikes(userId: string | undefined) {
+  const { getAuthHeaders, isAuthenticated } = useAuth()
+  const { user: currentUser } = useCurrentUser()
   return useQuery({
-    queryKey: ['userLikes', userId],
+    // Viewer included so a blocked-state result never leaks across viewers within staleTime.
+    queryKey: ['userLikes', userId, currentUser?.id ?? 'anon'],
     queryFn: async () => {
       if (!userId) throw new Error('User ID required')
-      
+      const authHeaders = isAuthenticated ? await getAuthHeaders().catch(() => null) : null
+
       const result = await getUserLikes({
         data: {
           userId,
           limit: 50,
+          ...(authHeaders ? { _authorization: authHeaders.Authorization } : {}),
         },
       } as never)
       
@@ -301,15 +320,20 @@ export function useUserLikes(userId: string | undefined) {
  * Get all posts a user has commented on
  */
 export function useUserComments(userId: string | undefined) {
+  const { user: currentUser } = useCurrentUser()
+  const { getAuthHeaders, isAuthenticated } = useAuth()
   return useQuery({
-    queryKey: ['userComments', userId],
+    // Viewer included so a blocked-state result never leaks across viewers within staleTime.
+    queryKey: ['userComments', userId, currentUser?.id ?? 'anon'],
     queryFn: async () => {
       if (!userId) throw new Error('User ID required')
-      
+      const authHeaders = isAuthenticated ? await getAuthHeaders().catch(() => null) : null
+
       const result = await getUserComments({
         data: {
           userId,
           limit: 50,
+          ...(authHeaders ? { _authorization: authHeaders.Authorization } : {}),
         },
       } as never)
       
@@ -369,6 +393,7 @@ export function useProfileUpdate() {
  */
 export function useAvatarUpload(userId: string | undefined) {
   const queryClient = useQueryClient()
+  const { getAuthHeaders } = useAuth()
   return useMutation({
     mutationFn: async (
       payload:
@@ -376,7 +401,10 @@ export function useAvatarUpload(userId: string | undefined) {
         | { url: string }
     ) => {
       if (!userId) throw new Error('User ID required')
-      const result = await uploadAvatar({ data: { userId, ...payload } } as never)
+      const authHeaders = await getAuthHeaders()
+      const result = await uploadAvatar({
+        data: { ...payload, _authorization: authHeaders.Authorization },
+      } as never)
       if (!result.success) {
         const error = result.error || 'Failed to upload avatar'
         const status = (result as { status?: number }).status
@@ -399,6 +427,7 @@ export function useAvatarUpload(userId: string | undefined) {
  */
 export function useHeaderBgUpload(userId: string | undefined) {
   const queryClient = useQueryClient()
+  const { getAuthHeaders } = useAuth()
   return useMutation({
     mutationFn: async (
       payload:
@@ -406,7 +435,10 @@ export function useHeaderBgUpload(userId: string | undefined) {
         | { url: string }
     ) => {
       if (!userId) throw new Error('User ID required')
-      const result = await uploadHeaderBg({ data: { userId, ...payload } } as never)
+      const authHeaders = await getAuthHeaders()
+      const result = await uploadHeaderBg({
+        data: { ...payload, _authorization: authHeaders.Authorization },
+      } as never)
       if (!result.success) {
         const error = result.error || 'Failed to upload header background'
         const status = (result as { status?: number }).status
@@ -428,15 +460,17 @@ export function useHeaderBgUpload(userId: string | undefined) {
  * Fetch followers list for a user
  */
 export function useFollowersList(userId: string | undefined, currentUserId: string | undefined) {
+  const { getAuthHeaders, isAuthenticated } = useAuth()
   return useQuery({
     queryKey: ['followersList', userId, currentUserId],
     queryFn: async () => {
       if (!userId) throw new Error('User ID required')
-      
+      const authHeaders = isAuthenticated ? await getAuthHeaders().catch(() => null) : null
+
       const result = await getFollowersList({
         data: {
           userId,
-          currentUserId: currentUserId || undefined,
+          ...(authHeaders ? { _authorization: authHeaders.Authorization } : {}),
         },
       } as never)
       
@@ -455,15 +489,17 @@ export function useFollowersList(userId: string | undefined, currentUserId: stri
  * Fetch following list for a user
  */
 export function useFollowingList(userId: string | undefined, currentUserId: string | undefined) {
+  const { getAuthHeaders, isAuthenticated } = useAuth()
   return useQuery({
     queryKey: ['followingList', userId, currentUserId],
     queryFn: async () => {
       if (!userId) throw new Error('User ID required')
+      const authHeaders = isAuthenticated ? await getAuthHeaders().catch(() => null) : null
 
       const result = await getFollowingList({
         data: {
           userId,
-          currentUserId: currentUserId || undefined,
+          ...(authHeaders ? { _authorization: authHeaders.Authorization } : {}),
         },
       } as never)
 
@@ -482,15 +518,17 @@ export function useFollowingList(userId: string | undefined, currentUserId: stri
  * Fetch collectors list for a user (users who collected their creations)
  */
 export function useCollectorsList(userId: string | undefined, currentUserId: string | undefined) {
+  const { getAuthHeaders, isAuthenticated } = useAuth()
   return useQuery({
     queryKey: ['collectorsList', userId, currentUserId],
     queryFn: async () => {
       if (!userId) throw new Error('User ID required')
+      const authHeaders = isAuthenticated ? await getAuthHeaders().catch(() => null) : null
 
       const result = await getCollectorsList({
         data: {
           userId,
-          currentUserId: currentUserId || undefined,
+          ...(authHeaders ? { _authorization: authHeaders.Authorization } : {}),
         },
       } as never)
 
@@ -506,15 +544,17 @@ export function useCollectorsList(userId: string | undefined, currentUserId: str
 }
 
 export function usePostCollectors(postId: string | undefined, currentUserId: string | undefined) {
+  const { getAuthHeaders, isAuthenticated } = useAuth()
   return useQuery({
     queryKey: ['postCollectors', postId, currentUserId],
     queryFn: async () => {
       if (!postId) throw new Error('Post ID required')
+      const authHeaders = isAuthenticated ? await getAuthHeaders().catch(() => null) : null
 
       const result = await getPostCollectorsList({
         data: {
           postId,
-          currentUserId: currentUserId || undefined,
+          ...(authHeaders ? { _authorization: authHeaders.Authorization } : {}),
         },
       } as never)
 

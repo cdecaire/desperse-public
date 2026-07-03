@@ -17,76 +17,24 @@ import { HeartAnimation } from './HeartAnimation'
 import { PostCardMenu } from './PostCardMenu'
 import { DownloadButton } from './DownloadButton'
 import { getPrimaryDisplayMedia, type DownloadableAsset } from './postAssets'
-import { PriceTooltip } from './PriceTooltip'
+import { PostOverlayPills } from './PostOverlayPills'
+import { usePostOverlayPill } from './postOverlay'
 import { useCommentCount } from '@/hooks/useComments'
 import { useCreateReport } from '@/hooks/useReports'
 import { usePostLikes, useLikeMutation } from '@/hooks/useLikes'
 import { dmEligibilityQueryKey } from '@/hooks/useDmEligibility'
 import { useDoubleTap } from '@/hooks/useDoubleTap'
 import { useState, useEffect, useRef, useCallback, memo } from 'react'
-import { getPostDisplayState, getEditionLabel, POST_TYPE_COLORS } from './postDisplay'
+import { getEditionLabel, POST_TYPE_COLORS } from './postDisplay'
 import { POST_TYPE_META } from '@/constants/postTypes'
 import { type Category, isPresetCategory, categoryToSlug } from '@/constants/categories'
 import { CategoryPill } from '@/components/ui/category-pill'
-import { MediaPill } from '@/components/ui/media-pill'
 import { UserAvatar } from '@/components/shared/UserAvatar'
 import { RoleBadge } from '@/components/shared/RoleBadge'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { TokenText } from '@/components/shared/TokenText'
 import { Icon } from '@/components/ui/icon'
 import { formatRelativeTime } from '@/lib/dates'
-
-// Format a millisecond countdown into a compact string
-function formatCountdownCompact(ms: number): string {
-  const totalMin = Math.floor(ms / 60000)
-  if (totalMin < 60) return `${totalMin}m`
-  const hours = Math.floor(totalMin / 60)
-  if (hours < 24) return `${hours}h ${totalMin % 60}m`
-  const days = Math.floor(hours / 24)
-  return `${days}d ${hours % 24}h`
-}
-
-// Compute a compact time label for timed edition price pills
-// Accepts `now` so it can use a live-updating clock
-function getMintTimeLabel(
-  start: Date | string | null | undefined,
-  end: Date | string | null | undefined,
-  now: Date,
-): { text: string; isLive: boolean } | null {
-  if (!start && !end) return null
-  const startDate = start ? new Date(start) : null
-  const endDate = end ? new Date(end) : null
-
-  // Not started yet
-  if (startDate && now < startDate) {
-    const msUntilStart = startDate.getTime() - now.getTime()
-    const hoursUntilStart = msUntilStart / 3600000
-
-    // Within 12 hours → live countdown
-    if (hoursUntilStart <= 12) {
-      return { text: formatCountdownCompact(msUntilStart), isLive: true }
-    }
-
-    // Further out → static date
-    return {
-      text: startDate.toLocaleDateString('en-US', {
-        month: 'short', day: 'numeric', year: 'numeric',
-      }) + ' @ ' + startDate.toLocaleTimeString('en-US', {
-        hour: 'numeric', minute: '2-digit',
-      }),
-      isLive: false,
-    }
-  }
-
-  // Active → show time remaining
-  if (endDate && now < endDate) {
-    const ms = endDate.getTime() - now.getTime()
-    return { text: `${formatCountdownCompact(ms)} left`, isLive: true }
-  }
-
-  // Ended
-  return null
-}
 
 export interface PostCardUser {
   id: string
@@ -254,10 +202,6 @@ export function PostCard({
     ...post,
     isCollected: post.isCollected || localIsOwned,
   }
-  const display = getPostDisplayState(computedPost, {
-    localCollectCount,
-    localEditionSupply,
-  })
 
   // Track visibility for pausing countdowns when off-screen
   const articleRef = useRef<HTMLElement>(null)
@@ -273,35 +217,12 @@ export function PostCard({
     return () => observer.disconnect()
   }, [])
 
-  // Live clock for timed edition countdowns (ticks every 30s when needed)
-  const [now, setNow] = useState(() => new Date())
-  const hasMintWindow = post.type === 'edition' && (post.mintWindowStart || post.mintWindowEnd)
-  useEffect(() => {
-    if (!hasMintWindow || !isVisible) return
-    const result = getMintTimeLabel(post.mintWindowStart, post.mintWindowEnd, new Date())
-    if (!result?.isLive) return
-    const id = setInterval(() => setNow(new Date()), 30_000)
-    return () => clearInterval(id)
-  }, [hasMintWindow, isVisible, post.mintWindowStart, post.mintWindowEnd])
-
-  // Time-aware pill text for timed editions
-  const mintTimeResult = post.type === 'edition'
-    ? getMintTimeLabel(post.mintWindowStart, post.mintWindowEnd, now)
-    : null
-  const mintTimeLabel = mintTimeResult?.text ?? null
-  const isScheduled = !!(post.mintWindowStart && new Date(post.mintWindowStart) > now)
-  // Active: "53m left · 0.10 SOL"
-  // Scheduled (>12h): "Starts Feb 22, 2026 @ 5:30PM · 0.10 SOL"
-  // Scheduled (≤12h): "Starts in 2h 30m · 0.10 SOL"
-  const timedPillText = mintTimeLabel
-    ? isScheduled
-      ? display.overlayPillText
-        ? `Starts ${mintTimeResult?.isLive ? 'in ' : ''}${mintTimeLabel} · ${display.overlayPillText.replace(/^✓\s*/, '')}`
-        : `Starts ${mintTimeResult?.isLive ? 'in ' : ''}${mintTimeLabel}`
-      : display.overlayPillText
-        ? `${mintTimeLabel} · ${display.overlayPillText.replace(/^✓\s*/, '')}`
-        : mintTimeLabel
-    : null
+  // Overlay pill display state + timed-edition countdown (shared with GalleryCard)
+  const { display, timedPillText, isScheduled } = usePostOverlayPill(computedPost, {
+    localCollectCount,
+    localEditionSupply,
+    isVisible,
+  })
 
   // Handle collect success - update local count and invalidate DM eligibility
   const handleCollectSuccess = () => {
@@ -492,52 +413,17 @@ export function PostCard({
         />
         <HeartAnimation trigger={heartTrigger} />
 
-        {(showActionButtons || display.overlayPillText || timedPillText || display.statusPillText) && (
-          <div className="absolute inset-0 pointer-events-none z-20">
-            <div className="absolute right-7 top-3 md:right-3 md:top-3 pointer-events-auto flex items-center gap-1.5">
-              {/* Status pill (Sold, Sold Out) - NOT shown for document/3D (PostMedia handles it) */}
-              {display.statusPillText && mediaType !== 'document' && mediaType !== '3d' && (
-                <MediaPill variant="tone" toneColor={postTypeColor}>
-                  {display.statusPillText}
-                </MediaPill>
-              )}
-              {/* Price/time pill - hide for PDF/3D since PostMedia shows it */}
-              {(timedPillText || display.overlayPillText) && mediaType !== 'document' && mediaType !== '3d' && (
-                <>
-                  {/* Wrap edition price pills with tooltip for breakdown (web only) */}
-                  {display.overlayPillVariant === 'edition' && post.price && post.currency && !isScheduled ? (
-                    <PriceTooltip
-                      price={post.price}
-                      currency={post.currency}
-                      sellerFeeBasisPoints={post.sellerFeeBasisPoints}
-                    >
-                      <MediaPill variant="dark" className="cursor-default">
-                        {timedPillText || display.overlayPillText?.replace(/^✓\s*/, '')}
-                      </MediaPill>
-                    </PriceTooltip>
-                  ) : (
-                    <MediaPill
-                      variant={
-                        display.overlayPillVariant === 'edition' || timedPillText ? 'dark' :
-                        display.overlayPillVariant === 'soldOut' ? 'muted' : 'tone'
-                      }
-                      toneColor={
-                        display.overlayPillVariant === 'collectible'
-                          ? POST_TYPE_META.collectible.tone
-                          : display.overlayPillVariant === 'likes'
-                            ? 'var(--tone-standard)'
-                            : undefined
-                      }
-                      className={display.overlayPillVariant === 'likes' ? 'text-xs' : undefined}
-                    >
-                      {timedPillText || display.overlayPillText?.replace(/^✓\s*/, '')}
-                    </MediaPill>
-                  )}
-                </>
-              )}
-            </div>
-          </div>
-        )}
+        <PostOverlayPills
+          display={display}
+          timedPillText={timedPillText}
+          isScheduled={isScheduled}
+          mediaType={mediaType}
+          postType={post.type}
+          price={post.price}
+          currency={post.currency}
+          sellerFeeBasisPoints={post.sellerFeeBasisPoints}
+          position="feed"
+        />
       </div>
       
       {/* Actions & Info */}

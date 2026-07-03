@@ -143,7 +143,13 @@ export function CreatePostForm({ mode = 'create', firstPostMode = false, initial
     queryKey: ['postEditState', initialPost?.id],
     queryFn: async () => {
       if (!initialPost?.id) return null
-      const result = await getPostEditState(wrapInput({ postId: initialPost.id }) as never)
+      const authHeaders = await getAuthHeaders()
+      const result = await getPostEditState(
+        wrapInput({
+          _authorization: authHeaders.Authorization || '',
+          postId: initialPost.id,
+        }) as never
+      )
       return result.success ? result : null
     },
     enabled: isEditMode && !!initialPost?.id,

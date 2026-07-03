@@ -19,6 +19,19 @@ interface AppShellProps {
   children: React.ReactNode
 }
 
+function MarketplaceGridFrame({ children, showGrid }: AppShellProps & { showGrid: boolean }) {
+  return (
+    <div className="relative w-full">
+      <GridOverlay
+        show={showGrid}
+        inset={false}
+        className="px-4 md:px-6 lg:px-8"
+      />
+      {children}
+    </div>
+  )
+}
+
 // Routes that render without the navigation shell.
 const STANDALONE_ROUTES = ['/login']
 // Routes where the mobile bottom nav is hidden.
@@ -140,10 +153,17 @@ export default function AppShell({ children }: AppShellProps) {
             {isPostDetailPage ? (
               <Region bleed>{children}</Region>
             ) : ownsRailLayout ? (
-              // Settings/account + admin own a two-rail chrome layout (SettingsLayout):
-              // a sticky sub-nav rail flush against the app Sidebar + a capped content
-              // pane, OUTSIDE this grid. They render their own pane GridOverlay.
+              // Settings/account + admin own a two-rail chrome layout (SettingsLayout);
+              // they render full-width beside the app Sidebar, OUTSIDE the centered
+              // 12-col grid, and manage their own local overlay via GridOverlayContext.
               children
+            ) : isExplorePage || isSearchPage ? (
+              // Explore/search own marketplace layouts (filter rail + gallery grid),
+              // so render the dev column overlay against their full-width content frame
+              // instead of the default centered 12-col content block.
+              <MarketplaceGridFrame showGrid={showGrid}>
+                {children}
+              </MarketplaceGridFrame>
             ) : (
               // The page IS the 12-col grid, but CAPPED + centered so it stops
               // stretching at --region-wide (1280) on large displays. Content places

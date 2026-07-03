@@ -23,6 +23,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { useSidebar } from '@cdecaire/sable'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { Button } from '@/components/ui/button'
@@ -53,6 +54,7 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
   const { activeWallet, activeAddress } = useActiveWallet()
   const { fundWallet } = useFundWallet()
   const { preferences } = usePreferences()
+  const { collapsed } = useSidebar()
 
   const isMobile = variant === 'bottomnav'
 
@@ -1166,17 +1168,19 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
     <>
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
+          {/* Mirror Sable's SidebarItem classes so this aligns with the nav rows
+              (the footer already supplies px-3), and collapse-aware like them. */}
           <button
             id="wallets-button"
-            className={`flex items-center gap-3 px-3 py-2.5 mx-3 w-[calc(100%-1.5rem)] text-left rounded-md hover-fade text-foreground hover:bg-accent hover:text-accent-foreground ${
-              isOpen ? 'font-semibold' : 'font-medium'
+            className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-label-lg text-sidebar-foreground motion-interactive hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring ${
+              isOpen ? 'bg-sidebar-accent text-sidebar-accent-foreground font-semibold' : ''
             }`}
             aria-haspopup="menu"
           >
-            <span className="w-6 h-6 grid place-items-center">
+            <span className="grid size-6 shrink-0 place-items-center">
               <Icon name="wallet" variant={isOpen ? 'solid' : 'regular'} className="text-xl" />
             </span>
-            <span className="text-sm leading-none">Wallets</span>
+            {!collapsed && <span className="min-w-0 flex-1 truncate">Wallets</span>}
           </button>
         </PopoverTrigger>
         <PopoverContent

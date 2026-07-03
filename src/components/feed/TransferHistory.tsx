@@ -10,6 +10,8 @@ import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { Link } from '@tanstack/react-router'
 import { usePreferences } from '@/hooks/usePreferences'
 import { getExplorerUrl } from '@/server/functions/preferences'
+import { useAuth } from '@/hooks/useAuth'
+import { useCurrentUser } from '@/hooks/useCurrentUser'
 
 interface TransferHistoryProps {
 	postId: string
@@ -18,12 +20,19 @@ interface TransferHistoryProps {
 
 export function TransferHistory({ postId, postType }: TransferHistoryProps) {
 	const { preferences } = usePreferences()
+	const { getAuthHeaders, isAuthenticated } = useAuth()
+	const { user: currentUser } = useCurrentUser()
 
 	const { data, isLoading } = useQuery({
-		queryKey: ['post-transfer-history', postId],
+		// Viewer included so a blocked-state result never leaks across viewers within staleTime.
+		queryKey: ['post-transfer-history', postId, currentUser?.id ?? 'anon'],
 		queryFn: async () => {
+			const authHeaders = isAuthenticated ? await getAuthHeaders().catch(() => null) : null
 			const result = await getPostTransferHistory({
-				data: { postId },
+				data: {
+					postId,
+					...(authHeaders ? { _authorization: authHeaders.Authorization } : {}),
+				},
 			} as any)
 
 			if (!result.success) throw new Error(result.error)

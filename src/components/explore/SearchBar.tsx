@@ -5,7 +5,7 @@
 
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react'
 import { Icon } from '@/components/ui/icon'
-import { useNavigate } from '@tanstack/react-router'
+import { useNavigate, getRouteApi } from '@tanstack/react-router'
 import { Input } from '@/components/ui/input'
 import { SearchDropdown } from './SearchDropdown'
 import { useSearch } from '@/hooks/useExploreQuery'
@@ -26,6 +26,8 @@ interface SearchBarProps {
   onQueryChange?: (query: string) => void
 }
 
+const exploreRouteApi = getRouteApi('/explore')
+
 export function SearchBar({
   placeholder = 'Search',
   autoFocus = false,
@@ -33,6 +35,9 @@ export function SearchBar({
   onQueryChange,
 }: SearchBarProps) {
   const navigate = useNavigate()
+  // Search is a filter on /explore, so preserve the other active filters
+  // (view/type) when applying or clearing the query.
+  const exploreSearch = exploreRouteApi.useSearch()
   const { user: currentUser } = useCurrentUser()
   const inputRef = useRef<HTMLInputElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -50,6 +55,12 @@ export function SearchBar({
     }, 300)
     return () => clearTimeout(timer)
   }, [query])
+
+  // Keep the input in sync with the URL query so search reads as a filter on
+  // the Explore view: landing on /explore?q=… or clearing it updates the box.
+  useEffect(() => {
+    setQuery(initialQuery)
+  }, [initialQuery])
 
   // Fetch search results when debounced query changes
   const { data: searchResults, isLoading } = useSearch(
@@ -86,7 +97,7 @@ export function SearchBar({
     if (!isOpen) setIsOpen(true)
   }, [isOpen, onQueryChange])
 
-  // Handle form submit (Enter key)
+  // Handle form submit (Enter key) — applies the query as an Explore filter.
   const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault()
     const trimmed = query.trim()
@@ -94,17 +105,22 @@ export function SearchBar({
       addRecentSearch(trimmed)
       setRecentSearches(getRecentSearches())
       setIsOpen(false)
-      navigate({ to: '/search', search: { q: trimmed } })
+      navigate({ to: '/explore', search: { ...exploreSearch, q: trimmed, category: undefined } })
     }
-  }, [query, navigate])
+  }, [query, navigate, exploreSearch])
 
-  // Handle clear
+  // Handle clear — drops the query filter from the URL (the single "clear").
   const handleClear = useCallback(() => {
     setQuery('')
     setDebouncedQuery('')
     onQueryChange?.('')
+    navigate({
+      to: '/explore',
+      search: { ...exploreSearch, q: undefined },
+      replace: true,
+    })
     inputRef.current?.focus()
-  }, [onQueryChange])
+  }, [onQueryChange, navigate, exploreSearch])
 
   // Handle focus
   const handleFocus = useCallback(() => {
@@ -135,11 +151,15 @@ export function SearchBar({
     navigate({ to: '/tag/$tagSlug', params: { tagSlug } })
   }, [navigate])
 
-  // Handle selecting a category from dropdown
+  // Handle selecting a category from dropdown — applies it as an Explore filter
+  // (clearing any query), consistent with the rail's category filter.
   const handleSelectCategory = useCallback((category: string) => {
     setIsOpen(false)
-    navigate({ to: '/category/$categorySlug', params: { categorySlug: categoryToSlug(category) } })
-  }, [navigate])
+    navigate({
+      to: '/explore',
+      search: { ...exploreSearch, q: undefined, category: categoryToSlug(category) },
+    })
+  }, [navigate, exploreSearch])
 
   // Handle selecting a recent search
   const handleSelectRecent = useCallback((searchQuery: string) => {
@@ -147,8 +167,8 @@ export function SearchBar({
     addRecentSearch(searchQuery)
     setRecentSearches(getRecentSearches())
     setIsOpen(false)
-    navigate({ to: '/search', search: { q: searchQuery } })
-  }, [navigate])
+    navigate({ to: '/explore', search: { ...exploreSearch, q: searchQuery, category: undefined } })
+  }, [navigate, exploreSearch])
 
   // Handle removing a recent search
   const handleRemoveRecent = useCallback((searchQuery: string, e: React.MouseEvent) => {
@@ -256,7 +276,7 @@ export function SearchBar({
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
             autoFocus={autoFocus}
-            className="pl-10 pr-10 h-11 bg-muted/50 border border-border focus-visible:ring-1 focus-visible:ring-ring rounded-full"
+            className="pl-10 pr-10 h-11 bg-muted/50 border border-border focus-visible:ring-1 focus-visible:ring-ring rounded-lg"
             role="combobox"
             aria-label="Search"
             aria-expanded={isOpen}

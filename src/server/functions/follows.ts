@@ -8,7 +8,7 @@ import { db } from '@/server/db'
 import { follows, users, notifications } from '@/server/db/schema'
 import { eq, and, count, inArray } from 'drizzle-orm'
 import { z } from 'zod'
-import { withAuth } from '@/server/auth'
+import { withAuth, withOptionalAuth } from '@/server/auth'
 import { sendPushNotification, getActorDisplayName } from '@/server/utils/pushDispatch'
 import { isNotificationTypeEnabled } from '@/server/utils/notificationPrefs'
 import { getBlockedUserIdSet, assertNotPairwiseBlocked, PairwiseBlockError } from '@/server/utils/blocks'
@@ -309,18 +309,17 @@ export const getFollowingCount = createServerFn({
 /**
  * Get all follow-related stats for a user
  */
+const followStatsSchema = z.object({
+  userId: z.string().uuid(),
+})
+
 export const getFollowStats = createServerFn({
   method: 'GET',
 }).handler(async (input: unknown) => {
   try {
-    const rawData = input && typeof input === 'object' && 'data' in input
-      ? (input as { data: unknown }).data
-      : input
-    
-    const { userId, currentUserId } = z.object({
-      userId: z.string().uuid(),
-      currentUserId: z.string().uuid().optional(),
-    }).parse(rawData)
+    const authResult = await withOptionalAuth(followStatsSchema, input)
+    const { userId } = authResult.input
+    const currentUserId = authResult.auth?.userId
 
     // Get follower count
     const followerResult = await db
@@ -368,18 +367,17 @@ export const getFollowStats = createServerFn({
 /**
  * Get list of followers for a user
  */
+const followListSchema = z.object({
+  userId: z.string().uuid(),
+})
+
 export const getFollowersList = createServerFn({
   method: 'GET',
 }).handler(async (input: unknown) => {
   try {
-    const rawData = input && typeof input === 'object' && 'data' in input
-      ? (input as { data: unknown }).data
-      : input
-    
-    const { userId, currentUserId } = z.object({
-      userId: z.string().uuid(),
-      currentUserId: z.string().uuid().optional(),
-    }).parse(rawData)
+    const authResult = await withOptionalAuth(followListSchema, input)
+    const { userId } = authResult.input
+    const currentUserId = authResult.auth?.userId
 
     const blocked = currentUserId ? await getBlockedUserIdSet(currentUserId) : new Set<string>()
     if (blocked.has(userId)) {
@@ -461,14 +459,9 @@ export const getFollowingList = createServerFn({
   method: 'GET',
 }).handler(async (input: unknown) => {
   try {
-    const rawData = input && typeof input === 'object' && 'data' in input
-      ? (input as { data: unknown }).data
-      : input
-    
-    const { userId, currentUserId } = z.object({
-      userId: z.string().uuid(),
-      currentUserId: z.string().uuid().optional(),
-    }).parse(rawData)
+    const authResult = await withOptionalAuth(followListSchema, input)
+    const { userId } = authResult.input
+    const currentUserId = authResult.auth?.userId
 
     const blocked = currentUserId ? await getBlockedUserIdSet(currentUserId) : new Set<string>()
     if (blocked.has(userId)) {

@@ -451,7 +451,8 @@ export function BuyButton({
 
     async function loadExistingPurchase() {
       try {
-        const result = await getUserPurchaseStatus(wrapInput({ postId, userId }) as never);
+        const authHeaders = await getAuthHeaders();
+        const result = await getUserPurchaseStatus(wrapInput({ postId, _authorization: authHeaders.Authorization }) as never);
         if (result.success && result.purchase) {
           const purchase = result.purchase;
           setPurchaseId(purchase.id);
@@ -504,7 +505,7 @@ export function BuyButton({
     }
 
     loadExistingPurchase();
-  }, [isAuthenticated, userId, postId, isInitialized, onPurchased, startPolling]);
+  }, [isAuthenticated, userId, postId, isInitialized, onPurchased, startPolling, getAuthHeaders]);
 
   const formatPrice = useCallback(() => {
     if (currency === 'SOL') {
@@ -715,7 +716,8 @@ export function BuyButton({
       // If WebSocket or timeout error, check if purchase already has a signature (transaction succeeded)
       if ((isWebSocketError || isTimeoutError) && purchaseId) {
         try {
-          const purchaseStatus = await getUserPurchaseStatus(wrapInput({ postId, userId }) as never);
+          const recoveryAuthHeaders = await getAuthHeaders();
+          const purchaseStatus = await getUserPurchaseStatus(wrapInput({ postId, _authorization: recoveryAuthHeaders.Authorization }) as never);
           if (purchaseStatus.success && purchaseStatus.purchase?.txSignature) {
             // Transaction succeeded! Use the existing signature
             setTxSignature(purchaseStatus.purchase.txSignature);

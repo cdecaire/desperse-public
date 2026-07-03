@@ -1,0 +1,1 @@
+CREATE INDEX "posts_mint_window_end_idx" ON "posts" USING btree ("type","mint_window_end");

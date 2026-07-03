@@ -5,6 +5,7 @@
 
 import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
+import { withAuth } from '@/server/auth'
 import {
   checkDmEligibility,
   type DmEligibilityResult,
@@ -15,20 +16,29 @@ export type { DmEligibilityResult }
 
 const eligibilitySchema = z.object({
   creatorId: z.string().uuid(),
-  viewerId: z.string().uuid(),
 })
 
 /**
  * Server function wrapper for checkDmEligibility
  * Use this from client-side, use checkDmEligibility directly from other server functions
+ *
+ * The viewer is always the server-verified auth user — never a client-supplied id.
+ * Messaging requires being logged in, so an unauthenticated caller is simply
+ * treated as "not eligible" rather than erroring, which lets the UI render
+ * cleanly without needing to special-case a 401.
  */
 export const canUserMessage = createServerFn({
   method: 'GET',
 }).handler(async (input: unknown): Promise<{ success: boolean; data?: DmEligibilityResult; error?: string }> => {
-  const rawData = input && typeof input === 'object' && 'data' in input
-    ? (input as { data: unknown }).data
-    : input
+  const result = await withAuth(eligibilitySchema, input)
+  if (!result) {
+    return {
+      success: true,
+      data: { allowed: false, eligibleVia: [], unlockPaths: [] },
+    }
+  }
 
-  const { creatorId, viewerId } = eligibilitySchema.parse(rawData)
-  return checkDmEligibility(creatorId, viewerId)
+  const { auth, input: parsed } = result
+  // Use server-verified userId as the viewer — not a client-supplied field
+  return checkDmEligibility(parsed.creatorId, auth.userId)
 })

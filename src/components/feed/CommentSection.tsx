@@ -141,11 +141,15 @@ export function CommentSection({
   const createReportMutation = useCreateReport()
   const [commentText, setCommentText] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isComposerFocused, setIsComposerFocused] = useState(false)
   const commentsEndRef = useRef<HTMLDivElement>(null)
 
   const characterCount = commentText.length
   const isOverLimit = characterCount > MAX_COMMENT_LENGTH
   const canSubmit = commentText.trim().length > 0 && !isOverLimit && isAuthenticated && userId
+  // Reddit-style composer: collapsed to a single line until focused or non-empty,
+  // then it grows and reveals the Post action.
+  const composerExpanded = isComposerFocused || commentText.length > 0
 
   // Intersection observer for infinite scroll
   const loadMoreRef = useRef<HTMLDivElement>(null)
@@ -164,12 +168,15 @@ export function CommentSection({
     return () => observer.disconnect()
   }, [hasNextPage, isFetchingNextPage, fetchNextPage])
 
-  // Scroll to bottom when new comments are added (first page only)
+  // Scroll to bottom when new comments are added (first page only). Skipped for
+  // the inline variant, which flows in the page (desktop detail) — scrolling
+  // there would yank the whole page on load. The default variant scrolls its
+  // own internal container, so it's safe.
   useEffect(() => {
-    if (comments.length > 0 && !hasNextPage) {
+    if (variant !== 'inline' && comments.length > 0 && !hasNextPage) {
       commentsEndRef.current?.scrollIntoView({ behavior: 'smooth' })
     }
-  }, [comments.length])
+  }, [comments.length, variant])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -235,50 +242,64 @@ export function CommentSection({
     )
   }
 
-  // Shared form JSX - rendered inline to avoid focus loss on re-render
+  // Shared form JSX - rendered inline to avoid focus loss on re-render.
+  // Composer box (Reddit-style): the textarea and its actions live inside one
+  // bordered box. Idle = a single-line input; focus/typing grows it and reveals
+  // the Post action in a footer row BELOW the text (so they never collide), and
+  // the textarea becomes drag-resizable. Focus is tracked at the box level so
+  // clicking Post (inside the box) doesn't collapse it.
   const renderCommentForm = () => (
     <form onSubmit={handleSubmit}>
-      <div className="flex items-end gap-2">
-        <div className="flex-1 min-w-0">
-          <MentionAutocomplete
-            value={commentText}
-            onChange={setCommentText}
-            placeholder="Add a comment..."
-            className={cn(
-              'resize-none min-h-[40px]',
-              isOverLimit && 'border-destructive focus-visible:ring-destructive'
-            )}
-            maxLength={MAX_COMMENT_LENGTH}
-            disabled={isSubmitting}
-          />
-        </div>
-        <Button
-          type="submit"
-          variant="ghost"
-          disabled={!canSubmit || isSubmitting}
-          className="shrink-0 font-semibold text-primary px-3"
-        >
-          {isSubmitting ? (
-            <LoadingSpinner size="sm" />
-          ) : (
-            'Post'
+      <div
+        className={cn(
+          'rounded-xl border bg-background transition-colors focus-within:ring-1',
+          isOverLimit
+            ? 'border-destructive focus-within:ring-destructive'
+            : 'border-input focus-within:border-ring focus-within:ring-ring',
+        )}
+        onFocus={() => setIsComposerFocused(true)}
+        onBlur={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
+            setIsComposerFocused(false)
+          }
+        }}
+      >
+        <MentionAutocomplete
+          value={commentText}
+          onChange={setCommentText}
+          placeholder="Add a comment..."
+          className={cn(
+            'block w-full border-0 bg-transparent px-3.5 py-3 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0',
+            composerExpanded ? 'min-h-[76px] resize-y' : 'min-h-[44px] resize-none',
           )}
-        </Button>
-      </div>
-      {characterCount >= 250 && (
-        <div className="flex items-center justify-end mt-1">
-          <span
-            className={cn(
-              'text-xs',
-              isOverLimit ? 'text-destructive' : 'text-muted-foreground'
+          maxLength={MAX_COMMENT_LENGTH}
+          disabled={isSubmitting}
+        />
+
+        {composerExpanded && (
+          <div className="flex items-center justify-end gap-3 px-3 pb-2.5">
+            {characterCount >= 250 && (
+              <span
+                className={cn(
+                  'text-xs tabular-nums',
+                  isOverLimit ? 'text-destructive' : 'text-muted-foreground',
+                )}
+              >
+                {characterCount}/{MAX_COMMENT_LENGTH}
+              </span>
             )}
-          >
-            {characterCount}/{MAX_COMMENT_LENGTH}
-          </span>
-        </div>
-      )}
+            <Button
+              type="submit"
+              disabled={!canSubmit || isSubmitting}
+              className="shrink-0 h-8 rounded-full px-4 text-sm"
+            >
+              {isSubmitting ? <LoadingSpinner size="sm" /> : 'Post'}
+            </Button>
+          </div>
+        )}
+      </div>
       {isOverLimit && (
-        <p className="text-xs text-destructive mt-1">
+        <p className="mt-1 text-xs text-destructive">
           Comment must be {MAX_COMMENT_LENGTH} characters or less.
         </p>
       )}

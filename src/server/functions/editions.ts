@@ -43,7 +43,6 @@ const checkPurchaseStatusSchema = z.object({
 
 const getUserPurchaseSchema = z.object({
   postId: z.string().uuid(),
-  userId: z.string().uuid(),
 });
 
 const updatePurchaseStatusSchema = z.object({
@@ -642,8 +641,31 @@ export const getUserPurchaseStatus = createServerFn({
   error?: string;
 }> => {
   try {
-    const rawData = input && typeof input === 'object' && 'data' in input ? (input as { data: unknown }).data : input;
-    const { postId, userId } = getUserPurchaseSchema.parse(rawData);
+    // Authenticate user using withAuth helper - never trust a client-supplied userId
+    let authResult;
+    try {
+      authResult = await withAuth(getUserPurchaseSchema, input);
+    } catch (authError) {
+      // withAuth throws when auth fails - catch and return proper response
+      const message = authError instanceof Error ? authError.message : 'Authentication failed';
+      console.warn('[getUserPurchaseStatus] Auth error:', message);
+      return {
+        success: false,
+        error: message,
+      };
+    }
+
+    if (!authResult) {
+      return {
+        success: false,
+        error: 'Authentication required. Please log in.',
+      };
+    }
+
+    const { auth, input: parsed } = authResult;
+    const { postId } = parsed;
+    // Use server-verified userId - never trust a client-supplied one
+    const userId = auth.userId;
 
     const purchase = await db
       .select()

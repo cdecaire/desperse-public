@@ -3,9 +3,9 @@
  * Public page showing a single post with full details
  */
 
-import { createFileRoute, Link, Outlet, useMatchRoute } from '@tanstack/react-router'
+import { createFileRoute, Link, Outlet, useMatchRoute, useRouter } from '@tanstack/react-router'
 import { fetchPostMeta } from '@/server/functions/meta'
-import { type ReactNode, useEffect, useState } from 'react'
+import { type ReactNode, useContext, useEffect, useState } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { useQueryClient } from '@tanstack/react-query'
@@ -42,7 +42,8 @@ import { usePostCollectors, useFollowMutation } from '@/hooks/useProfileQuery'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { toast } from '@/hooks/use-toast'
 import { Description, DescriptionItem, Entity, Note } from '@cdecaire/sable'
-import { Row, Stack } from '@cdecaire/sable/layout'
+import { Row, Stack, Col, Columns, GridOverlay } from '@cdecaire/sable/layout'
+import { GridOverlayContext } from '@/components/layout/GridOverlayContext'
 
 const BASE_URL = "https://desperse.com"
 
@@ -441,7 +442,19 @@ function PostDetailPage() {
   // User state is settled when auth is initialized and user data is loaded
   const isUserReady = !isAuthInitializing && !isCurrentUserLoading
   const matchRoute = useMatchRoute()
-  
+  const router = useRouter()
+  const showGrid = useContext(GridOverlayContext)
+
+  // Back returns to wherever the user came from (Explore, feed, profile, …).
+  // On a direct load (no in-app history) fall back to Explore.
+  const handleBack = () => {
+    if (typeof window !== 'undefined' && window.history.length > 1) {
+      router.history.back()
+    } else {
+      router.navigate({ to: '/explore' })
+    }
+  }
+
   // Call all hooks first (hooks must be called unconditionally)
   const queryClient = useQueryClient()
   const { data, isLoading, isError, error } = usePostQuery({ postId })
@@ -805,8 +818,10 @@ function PostDetailPage() {
     if (activeTab !== 'comments') return null
     return (
       <div className={cn(
-        'border-t border-border shrink-0 bg-background',
-        sticky ? 'sticky bottom-0' : '',
+        'shrink-0 bg-background',
+        // Sticky (mobile, bottom of screen) sits above content → top border.
+        // Otherwise it's the composer at the top of the comments → bottom border.
+        sticky ? 'sticky bottom-0 border-t border-border' : 'border-b border-border',
       )} style={sticky ? { paddingBottom: 'env(safe-area-inset-bottom, 0px)' } : undefined}>
         {isAuthenticated ? (
           <div className="px-4 py-3">
@@ -916,54 +931,74 @@ function PostDetailPage() {
 
   return (
     <div className="pb-20 lg:pb-0">
-      {/* Desktop 2-column media viewer (lg+) — capped + centered (region-full,
-          1536) so it doesn't sprawl into a huge black letterbox on ultra-wide
-          monitors; media stays prominent. */}
+      {/* Desktop (lg+): a page on the Sable grid — image left (sticky), content
+          right. No card container; the page scrolls. Capped at region-full so
+          media doesn't sprawl on ultra-wide monitors. */}
       <div
-        className="hidden lg:flex flex-col p-4 h-screen mx-auto w-full"
+        className="relative hidden lg:block mx-auto w-full px-4 xl:px-6 pt-4 pb-16"
         style={{ maxWidth: 'var(--region-full)' }}
       >
-        {/* Back button */}
-        <Link to="/" className="w-fit">
-          <Button variant="ghost" className="mb-4">
-            <Icon name="arrow-left" variant="regular" className="mr-2" />
-            Back to Feed
-          </Button>
-        </Link>
+        {/* Dev grid overlay (⌘/Ctrl+Shift+G) — aligned to this page's own
+            capped grid, since the post page renders outside AppShell's grid. */}
+        {showGrid && <GridOverlay inset={false} className="px-4 xl:px-6" />}
 
-        <div className="flex gap-0 w-full flex-1 min-h-0 bg-card border border-border rounded-lg overflow-hidden">
-          {/* Left column: Media */}
-          <div className="flex-1 bg-black min-w-0 relative overflow-hidden">
-            <PostMedia
-              mediaUrl={displayMedia.mediaUrl}
-              coverUrl={displayMedia.coverUrl}
-              mediaType={displayMedia.mediaType}
-              alt={post.caption || 'Post media'}
-              aspectRatio="auto"
-              lazy={false}
-              price={post.price ?? null}
-              currency={post.currency ?? null}
-              hasAccess={isCollected || post.type === 'post'}
-              postType={post.type}
-              assetId={post.assetId}
-              noBorder
-              contained
-              statusPillText={(mediaType === 'document' || mediaType === '3d') ? display.statusPillText : undefined}
-              statusPillColor={postTypeColor}
-              assets={displayMedia.displayAssets}
-            />
-            <MediaOverlay />
-          </div>
+        {/* Back — returns to wherever the user came from (Explore, feed,
+            profile, …); falls back to Explore on a direct load. */}
+        <Button variant="ghost" className="mb-4 w-fit" onClick={handleBack}>
+          <Icon name="arrow-left" variant="regular" className="mr-2" />
+          Back
+        </Button>
 
-          {/* Right column: Info panel */}
-          <div className="w-[340px] flex flex-col bg-background border-l border-border shrink-0">
+        <Columns count={12}>
+          {/* Left: media — sticky, framed to the viewport so tall images (and a
+              carousel's dots/controls) stay fully visible instead of overflowing. */}
+          <Col span={{ lg: 7, xl: 8 }} className="min-w-0 self-stretch">
+            <div className="sticky top-4">
+              {/* Gallery canvas (mallow-style): the piece floats centered on a
+                  subtle padded canvas, capped to the viewport so the whole
+                  image — and a carousel's dots/controls — stay visible. The
+                  padding also keeps the art off the canvas's rounded corners. */}
+              <div className="relative flex h-[calc(100vh-6rem)] items-center justify-center rounded-lg bg-muted/30 p-4 xl:p-8">
+                <div className="relative h-full w-full">
+                  <PostMedia
+                    mediaUrl={displayMedia.mediaUrl}
+                    coverUrl={displayMedia.coverUrl}
+                    mediaType={displayMedia.mediaType}
+                    alt={post.caption || 'Post media'}
+                    aspectRatio="auto"
+                    lazy={false}
+                    noBorder
+                    contained
+                    price={post.price ?? null}
+                    currency={post.currency ?? null}
+                    hasAccess={isCollected || post.type === 'post'}
+                    postType={post.type}
+                    assetId={post.assetId}
+                    statusPillText={(mediaType === 'document' || mediaType === '3d') ? display.statusPillText : undefined}
+                    statusPillColor={postTypeColor}
+                    assets={displayMedia.displayAssets}
+                  />
+                  <MediaOverlay />
+                </div>
+              </div>
+            </div>
+          </Col>
+
+          {/* Right: content — flows with the page (no internal scroll) */}
+          <Col span={{ lg: 5, xl: 4 }} className="min-w-0">
             {isCollectibleOrEdition ? (
-              <>
-                {/* Edition/Collectible: Header + action */}
-                <Stack gap={1.5} className="px-4 pb-3 pt-3 border-b border-border shrink-0">
-                  <UserHeader showTypeBadge={false} />
+              <Stack gap={2}>
+                <UserHeader showTypeBadge={false} />
 
-                  {/* Arweave storage issue banner */}
+                <div className="space-y-2">
+                  <span className="text-title-lg block">
+                    {(post as any).nftName || post.caption?.split('\n')[0] || 'Untitled'}
+                  </span>
+                  {post.caption && <CaptionBlock caption={post.caption} muted maxHeight="max-h-[40vh]" />}
+                </div>
+
+                {/* Action area: download if owned + has downloads, collect/buy if not owned */}
+                <Stack gap={1.5}>
                   {isMintingPaused && (
                     <Note variant="warning">
                       {arweaveStatus === 'unfunded'
@@ -971,8 +1006,6 @@ function PostDetailPage() {
                         : "This edition is experiencing a temporary storage issue. Please try again later."}
                     </Note>
                   )}
-
-                  {/* Action area: download if owned + has downloads, collect/buy if not owned */}
                   {showDownload && (
                     <Button onClick={handleDownload} disabled={isDownloading} className="w-full">
                       <Icon name="download" variant="regular" className="mr-2" />
@@ -1034,48 +1067,49 @@ function PostDetailPage() {
                     postType={post.type}
                     isCollected={isCollected}
                   />
-
                 </Stack>
 
-                {/* Post info: title, description, action buttons */}
-                <div className="px-4 py-3 border-b border-border min-h-0">
-                  <span className="text-title-lg min-w-0 truncate block">
-                    {(post as any).nftName || post.caption?.split('\n')[0] || 'Untitled'}
-                  </span>
-                  {post.caption && <CaptionBlock caption={post.caption} className="mt-2" muted />}
-                  <ActionButtons skipBuy className="mt-2 -ml-2" />
-                </div>
+                <ActionButtons skipBuy className="-ml-2" />
 
-                <TabBar activeTab={desktopTab} onTabChange={setDesktopTab} />
-                <div className="flex-1 overflow-y-auto min-h-0" role="tabpanel">
-                  <TabContent activeTab={desktopTab} />
+                <div>
+                  <TabBar activeTab={desktopTab} onTabChange={setDesktopTab} />
+                  {/* Composer sits above the list (Reddit-style) so it stays
+                      reachable instead of being pushed off-screen by a long
+                      thread. */}
+                  <CommentFooter activeTab={desktopTab} />
+                  <div role="tabpanel" className="pt-1">
+                    <TabContent activeTab={desktopTab} />
+                  </div>
                 </div>
-                <CommentFooter activeTab={desktopTab} />
-              </>
+              </Stack>
             ) : (
-              <>
-                {/* Standard layout for plain posts */}
-                <div className="px-4 py-3 border-b border-border min-h-0">
-                  <UserHeader />
-                  {post.caption && <CaptionBlock caption={post.caption} className="mt-3" />}
-                  <ActionButtons className="mt-2 -ml-2" />
+              <Stack gap={2}>
+                <UserHeader />
+                {post.caption && <CaptionBlock caption={post.caption} />}
+
+                <div className="space-y-3">
+                  <ActionButtons className="-ml-2" />
                   <DownloadableAssetsSection
                     assets={downloadableAssets}
                     postType={post.type}
                     isCollected={isCollected}
-                    className="mt-3"
                   />
                 </div>
 
-                <TabBar activeTab={desktopTab} onTabChange={setDesktopTab} />
-                <div className="flex-1 overflow-y-auto min-h-0" role="tabpanel">
-                  <TabContent activeTab={desktopTab} />
+                <div>
+                  <TabBar activeTab={desktopTab} onTabChange={setDesktopTab} />
+                  {/* Composer sits above the list (Reddit-style) so it stays
+                      reachable instead of being pushed off-screen by a long
+                      thread. */}
+                  <CommentFooter activeTab={desktopTab} />
+                  <div role="tabpanel" className="pt-1">
+                    <TabContent activeTab={desktopTab} />
+                  </div>
                 </div>
-                <CommentFooter activeTab={desktopTab} />
-              </>
+              </Stack>
             )}
-          </div>
-        </div>
+          </Col>
+        </Columns>
       </div>
 
       {/* Mobile/Tablet single-column layout (<lg) */}
@@ -1259,36 +1293,32 @@ function PostDetailPage() {
 function PostDetailSkeleton() {
   return (
     <div className="pb-20 lg:pb-0" aria-hidden="true">
-      {/* Desktop 2-column skeleton (lg+) — matches the real viewer's cap. */}
+      {/* Desktop skeleton (lg+): image left + content right on the grid. */}
       <div
-        className="hidden lg:flex p-4 h-screen mx-auto w-full"
+        className="hidden lg:block mx-auto w-full px-4 xl:px-6 pt-4 pb-16"
         style={{ maxWidth: 'var(--region-full)' }}
       >
-        <div className="flex gap-0 w-full bg-card border border-border rounded-lg overflow-hidden">
-          {/* Left column: Media skeleton */}
-          <div className="flex-1 bg-black min-w-0 flex items-center justify-center">
-            <Skeleton className="w-3/4 aspect-square rounded-none" />
-          </div>
+        <Skeleton className="h-9 w-20 rounded-md mb-4" />
+        <Columns count={12}>
+          <Col span={{ lg: 7, xl: 8 }} className="min-w-0">
+            <Skeleton className="w-full h-[calc(100vh-6rem)] rounded-lg" />
+          </Col>
 
-          {/* Right column: Info panel skeleton */}
-          <div className="w-[340px] flex flex-col bg-background border-l border-border shrink-0">
-            {/* Header skeleton */}
-            <div className="px-4 py-3 border-b border-border shrink-0">
-              <div className="flex items-center gap-3">
-                <Skeleton className="w-10 h-10 rounded-full" />
-                <div className="flex-1 space-y-2">
-                  <Skeleton className="h-4 w-28" />
-                  <Skeleton className="h-3 w-20" />
-                </div>
-              </div>
-              <div className="mt-3 space-y-2">
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-3/4" />
+          <Col span={{ lg: 5, xl: 4 }} className="min-w-0 space-y-4">
+            <div className="flex items-center gap-3">
+              <Skeleton className="w-10 h-10 rounded-full" />
+              <div className="flex-1 space-y-2">
+                <Skeleton className="h-4 w-28" />
+                <Skeleton className="h-3 w-20" />
               </div>
             </div>
-
-            {/* Comments skeleton */}
-            <div className="flex-1 overflow-hidden px-4 py-3 space-y-4">
+            <Skeleton className="h-6 w-2/3" />
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-3/4" />
+            </div>
+            <Skeleton className="h-11 w-full rounded-md" />
+            <div className="space-y-4 pt-2">
               {[1, 2, 3].map((i) => (
                 <div key={i} className="flex items-start gap-3">
                   <Skeleton className="w-8 h-8 rounded-full shrink-0" />
@@ -1299,17 +1329,8 @@ function PostDetailSkeleton() {
                 </div>
               ))}
             </div>
-
-            {/* Footer skeleton */}
-            <div className="border-t border-border shrink-0 px-4 py-3 space-y-3">
-              <div className="flex items-center gap-2">
-                <Skeleton className="h-8 w-16 rounded-full" />
-                <Skeleton className="h-8 w-16 rounded-full" />
-              </div>
-              <Skeleton className="h-11 w-full rounded-md" />
-            </div>
-          </div>
-        </div>
+          </Col>
+        </Columns>
       </div>
 
       {/* Mobile/Tablet single-column skeleton (<lg) */}

@@ -59,7 +59,7 @@ export default defineEventHandler(async (event) => {
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Desperse — Recent Posts</title>
-    <link>${baseUrl}/browse</link>
+    <link>${baseUrl}/explore</link>
     <description>Recent artwork and editions from creators on Desperse</description>
     <language>en</language>
     <atom:link href="${baseUrl}/feed.xml" rel="self" type="application/rss+xml" />

@@ -6,12 +6,12 @@
 import { createServerFn } from '@tanstack/react-start'
 import { db } from '@/server/db'
 import { likes, posts, users, collections, notifications } from '@/server/db/schema'
-import { eq, and, count, desc, lt, inArray } from 'drizzle-orm'
+import { eq, and, count, desc, lt, inArray, notInArray } from 'drizzle-orm'
 import { z } from 'zod'
-import { withAuth } from '@/server/auth'
+import { withAuth, withOptionalAuth } from '@/server/auth'
 import { sendPushNotification, getActorDisplayName } from '@/server/utils/pushDispatch'
 import { isNotificationTypeEnabled } from '@/server/utils/notificationPrefs'
-import { assertNotPairwiseBlocked, PairwiseBlockError } from '@/server/utils/blocks'
+import { assertNotPairwiseBlocked, PairwiseBlockError, getBlockedUserIdSet } from '@/server/utils/blocks'
 import { isUniqueViolation } from '@/server/utils/db-errors'
 
 // Schema for like/unlike (no userId - derived from auth)
@@ -207,23 +207,23 @@ export const unlikePost = createServerFn({
 
 /**
  * Get like count and current user's like status for a post
- * Returns count visible to everyone, and isLiked only if userId is provided
+ * Returns count visible to everyone, and isLiked only for the verified viewer
+ * (derived from the auth token — never trust a client-supplied userId here).
  */
+const getPostLikesSchema = z.object({
+  postId: z.string().uuid(),
+})
+
 export const getPostLikes = createServerFn({
   method: 'GET',
 }).handler(async (input: unknown) => {
   try {
-    const rawData = input && typeof input === 'object' && 'data' in input
-      ? (input as { data: unknown }).data
-      : input
-    
-    const parseResult = z.object({
-      postId: z.string().uuid(),
-      userId: z.string().uuid().optional(),
-    }).safeParse(rawData)
-
-    // If validation fails, return 0 count and false isLiked (invalid postId means no likes)
-    if (!parseResult.success) {
+    let authResult: Awaited<ReturnType<typeof withOptionalAuth<typeof getPostLikesSchema>>>
+    try {
+      authResult = await withOptionalAuth(getPostLikesSchema, input)
+    } catch {
+      // Invalid/missing postId (or malformed payload) — preserve the
+      // existing graceful-degradation contract (zero count, not liked).
       return {
         success: true,
         likeCount: 0,
@@ -231,7 +231,8 @@ export const getPostLikes = createServerFn({
       }
     }
 
-    const { postId, userId } = parseResult.data
+    const { postId } = authResult.input
+    const userId = authResult.auth?.userId
 
     // Get like count
     const likeCountResult = await db
@@ -241,7 +242,7 @@ export const getPostLikes = createServerFn({
 
     const likeCount = likeCountResult[0]?.count || 0
 
-    // Check if current user has liked (if userId provided)
+    // Check if the verified viewer has liked this post
     let isLiked = false
     if (userId) {
       const [existingLike] = await db
@@ -304,19 +305,24 @@ export const getUserLikes = createServerFn({
 // @ts-expect-error -- TanStack Start dual-context type inference
 }).handler(async (input: unknown) => {
   try {
-    const rawData = input && typeof input === 'object' && 'data' in input
-      ? (input as { data: unknown }).data
-      : input
-    
-    const { userId, cursor, limit = 50 } = z.object({
+    const authResult = await withOptionalAuth(z.object({
       userId: z.string().uuid(),
       cursor: z.string().datetime().optional(),
       limit: z.number().int().min(1).max(50).default(50),
-    }).parse(rawData)
+    }), input)
+    const { userId, cursor, limit } = authResult.input
+
+    const blocked = await getBlockedUserIdSet(authResult.auth?.userId)
+    if (blocked.has(userId)) {
+      return { success: true, posts: [], hasMore: false, nextCursor: null }
+    }
 
     // Build conditions for liked posts
     const conditions = [
       eq(likes.userId, userId),
+      // Drop posts whose authors the viewer pairwise-blocks (the user we're
+      // looking at may have liked a blocked author's post).
+      ...(blocked.size > 0 ? [notInArray(posts.userId, Array.from(blocked))] : []),
     ]
 
     // Cursor pagination: filter by likedAt (when the like was created)

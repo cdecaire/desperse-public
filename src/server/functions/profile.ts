@@ -187,7 +187,6 @@ function nextUsernameChangeAtDate(updatedAt: Date, createdAt: Date) {
  * Upload avatar from file data or external URL (server rehosts)
  */
 const uploadAvatarSchema = z.object({
-  userId: z.string().uuid(),
   fileData: z.string().optional(),
   fileName: z.string().optional(),
   mimeType: z.string().optional(),
@@ -205,7 +204,6 @@ const uploadAvatarSchema = z.object({
  * Upload header background from file data or external URL (server rehosts)
  */
 const uploadHeaderBgSchema = z.object({
-  userId: z.string().uuid(),
   fileData: z.string().optional(),
   fileName: z.string().optional(),
   mimeType: z.string().optional(),
@@ -223,11 +221,12 @@ export const uploadHeaderBg = createServerFn({
   method: 'POST',
 }).handler(async (input: unknown) => {
   try {
-    const rawData = input && typeof input === 'object' && 'data' in input
-      ? (input as { data: unknown }).data
-      : input
-
-    const data = uploadHeaderBgSchema.parse(rawData)
+    const result = await withAuth(uploadHeaderBgSchema, input)
+    if (!result) {
+      return { success: false, status: 401, error: 'Authentication required. Please log in.' }
+    }
+    const { auth, input: data } = result
+    const userId = auth.userId
 
     const { Buffer } = await import('node:buffer')
     let fileBuffer: Buffer
@@ -275,7 +274,7 @@ export const uploadHeaderBg = createServerFn({
     const [previous] = await db
       .select({ headerBgUrl: users.headerBgUrl })
       .from(users)
-      .where(eq(users.id, data.userId))
+      .where(eq(users.id, userId))
       .limit(1)
 
     // Convert Buffer to Uint8Array for Blob construction to satisfy TS
@@ -293,7 +292,7 @@ export const uploadHeaderBg = createServerFn({
         headerBgUrl: uploadResult.url,
         updatedAt: new Date(),
       })
-      .where(eq(users.id, data.userId))
+      .where(eq(users.id, userId))
 
     // Best-effort cleanup of the previous header blob (non-blocking on failure)
     await deleteReplacedBlob(previous?.headerBgUrl, uploadResult.url, 'uploadHeaderBg')
@@ -315,11 +314,12 @@ export const uploadAvatar = createServerFn({
   method: 'POST',
 }).handler(async (input: unknown) => {
   try {
-    const rawData = input && typeof input === 'object' && 'data' in input
-      ? (input as { data: unknown }).data
-      : input
-
-    const data = uploadAvatarSchema.parse(rawData)
+    const result = await withAuth(uploadAvatarSchema, input)
+    if (!result) {
+      return { success: false, status: 401, error: 'Authentication required. Please log in.' }
+    }
+    const { auth, input: data } = result
+    const userId = auth.userId
 
     const { Buffer } = await import('node:buffer')
     let fileBuffer: Buffer
@@ -367,7 +367,7 @@ export const uploadAvatar = createServerFn({
     const [previous] = await db
       .select({ avatarUrl: users.avatarUrl })
       .from(users)
-      .where(eq(users.id, data.userId))
+      .where(eq(users.id, userId))
       .limit(1)
 
     // Convert Buffer to Uint8Array for Blob construction to satisfy TS
@@ -385,7 +385,7 @@ export const uploadAvatar = createServerFn({
         avatarUrl: uploadResult.url,
         updatedAt: new Date(),
       })
-      .where(eq(users.id, data.userId))
+      .where(eq(users.id, userId))
 
     // Best-effort cleanup of the previous avatar blob (non-blocking on failure)
     await deleteReplacedBlob(previous?.avatarUrl, uploadResult.url, 'uploadAvatar')
@@ -994,18 +994,15 @@ export const getUserForSale = createServerFn({
  */
 const collectorsListSchema = z.object({
   userId: z.string().uuid(),
-  currentUserId: z.string().uuid().optional(),
 })
 
 export const getCollectorsList = createServerFn({
   method: 'GET',
 }).handler(async (input: unknown) => {
   try {
-    const rawData = input && typeof input === 'object' && 'data' in input
-      ? (input as { data: unknown }).data
-      : input
-
-    const { userId, currentUserId } = collectorsListSchema.parse(rawData)
+    const authResult = await withOptionalAuth(collectorsListSchema, input)
+    const { userId } = authResult.input
+    const currentUserId = authResult.auth?.userId
 
     // If the viewer pairwise-blocks the slug user, return an empty list.
     // Filter individual blocked collectors below as well.
@@ -1128,18 +1125,15 @@ export const getCollectorsList = createServerFn({
  */
 const postCollectorsSchema = z.object({
 	postId: z.string(),
-	currentUserId: z.string().optional(),
 })
 
 export const getPostCollectorsList = createServerFn({
 	method: 'GET',
 }).handler(async (input: unknown) => {
 	try {
-		const rawData = input && typeof input === 'object' && 'data' in input
-			? (input as { data: unknown }).data
-			: input
-
-		const { postId, currentUserId } = postCollectorsSchema.parse(rawData)
+		const authResult = await withOptionalAuth(postCollectorsSchema, input)
+		const { postId } = authResult.input
+		const currentUserId = authResult.auth?.userId
 
 		const result = await getPostCollectorsListDirect(postId, currentUserId, undefined, 100)
 

@@ -1131,7 +1131,7 @@ export const getUserPosts = createServerFn({
     const { userId, cursor, limit } = authResult.input
 
     // If either party has blocked the other, return an empty list (matches
-    // the "empty if slug user blocked" pattern from docs/user-blocking.md).
+    // the "empty if slug user blocked" pattern from docs-internal/user-blocking.md).
     if (authResult.auth?.userId) {
       const blocked = await getBlockedUserIdSet(authResult.auth.userId)
       if (blocked.has(userId)) {
@@ -1259,16 +1259,29 @@ export const getUserPostCount = createServerFn({
 /**
  * Get post edit state (collects/purchases count for UI field locking)
  */
+const getPostEditStateSchema = z.object({ postId: z.string().uuid() })
+
 export const getPostEditState = createServerFn({
   method: 'GET',
 // @ts-expect-error -- TanStack Start dual-context type inference
 }).handler(async (input: unknown) => {
   try {
-    const rawData = input && typeof input === 'object' && 'data' in input
-      ? (input as { data: unknown }).data
-      : input
-    
-    const { postId } = z.object({ postId: z.string().uuid() }).parse(rawData)
+    // Verify authentication using withAuth helper
+    // This extracts _authorization, verifies token, strips it from input, and parses schema
+    const result = await withAuth(getPostEditStateSchema, input)
+
+    if (!result) {
+      return {
+        success: false,
+        error: 'Authentication required. Please log in.',
+      }
+    }
+
+    const { auth, input: parsed } = result
+    const { postId } = parsed
+
+    // Use server-verified user ID
+    const userId = auth.userId
 
     // Get post
     const [post] = await db
@@ -1281,6 +1294,14 @@ export const getPostEditState = createServerFn({
       return {
         success: false,
         error: 'Post not found.',
+      }
+    }
+
+    // Check ownership - only the post's author can view its edit state
+    if (post.userId !== userId) {
+      return {
+        success: false,
+        error: 'You do not have permission to view this post\'s edit state.',
       }
     }
 

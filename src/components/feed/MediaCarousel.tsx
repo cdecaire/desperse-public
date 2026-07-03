@@ -543,13 +543,12 @@ export function MediaCarousel({
         </div>
       )}
 
-      {/* Slide counter badge */}
+      {/* Slide counter badge — redundant with the dots in the detail
+          (contained) view, so shown only on feed/grid cards where the dots are
+          tiny. */}
       {/* Note: left-6 on mobile accounts for -mx-4 negative margin on PostCard media container */}
-      {hasMultiple && (
-        <div className={cn(
-          "absolute left-6 md:left-2 z-20",
-          contained ? "top-4" : "top-2"
-        )}>
+      {hasMultiple && !contained && (
+        <div className="absolute left-6 md:left-2 top-2 z-20">
           <div className="inline-flex items-center h-6 px-3 rounded-full bg-zinc-950/85 backdrop-blur-sm">
             <span className="text-[10px] text-white font-semibold tracking-[0.2px]">
               {currentIndex + 1}/{totalCount}

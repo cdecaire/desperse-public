@@ -61,7 +61,7 @@ export default defineEventHandler(async (event) => {
 			ok: true,
 			generated: new Date().toISOString(),
 			count: posts.length,
-			browseUrl: `${baseUrl}/browse`,
+			browseUrl: `${baseUrl}/explore`,
 			posts,
 		}
 	} catch (error) {

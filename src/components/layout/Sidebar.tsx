@@ -1,4 +1,5 @@
 import { Link, useLocation } from '@tanstack/react-router'
+import { useCallback, useState } from 'react'
 import {
   Sidebar as SableSidebar,
   SidebarHeader,
@@ -10,6 +11,16 @@ import MoreMenu from './MoreMenu'
 import Wallets from './Wallets'
 import { Logo } from '../shared/Logo'
 import { Icon } from '@/components/ui/icon'
+import { cn } from '@/lib/utils'
+
+const COLLAPSE_KEY = 'desperse:sidebar-collapsed'
+
+// Force every collapsed row's icon to stay left-anchored (instead of Sable's
+// justify-center) so it never moves horizontally during the width transition.
+// Every row's icon centre sits at 32px (nav/footer px-3 + item px-3 + half a
+// size-6 icon); the collapsed rail is 64px so that 32px IS the centre — zero
+// pixel shift on toggle, and perfectly centred when collapsed.
+const ITEM_ANCHOR = 'justify-start px-3'
 import { useAuth } from '../../hooks/useAuth'
 import { useCurrentUser } from '../../hooks/useCurrentUser'
 import { useNotificationCounters } from '../../hooks/useNotificationCounters'
@@ -40,6 +51,17 @@ type NavItem = { path: string; label: string; icon: string }
 
 export default function Sidebar() {
   const location = useLocation()
+  const [collapsed, setCollapsed] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false
+    return localStorage.getItem(COLLAPSE_KEY) === '1'
+  })
+  const toggleCollapsed = useCallback(() => {
+    setCollapsed((prev) => {
+      const next = !prev
+      try { localStorage.setItem(COLLAPSE_KEY, next ? '1' : '0') } catch { /* ignore */ }
+      return next
+    })
+  }, [])
   const { avatarUrl: authAvatarUrl, isAuthenticated, isReady, login } = useAuth()
   const { user: currentUser } = useCurrentUser()
   const profileAvatar = currentUser?.avatarUrl || authAvatarUrl
@@ -90,11 +112,18 @@ export default function Sidebar() {
   }
 
   return (
-    <SableSidebar>
-      <SidebarHeader>
+    <SableSidebar
+      collapsed={collapsed}
+      // 64px collapsed width (see ITEM_ANCHOR — explicit px, not rem, since the
+      // desktop root font is 14px) + a width transition for a crisp, fluid
+      // open/close. Icons stay put; only the rail width animates.
+      className="[--sidebar-width-collapsed:64px] transition-[width] duration-200 ease-out motion-reduce:transition-none"
+    >
+      <SidebarHeader className="px-3">
         <Link
           to="/"
-          className="flex items-center gap-3 px-3"
+          aria-label="Desperse home"
+          className="no-hover-bg flex items-center gap-3 px-3 hover:opacity-80 transition-opacity"
           onClick={(e) => {
             if (location.pathname === '/') {
               e.preventDefault()
@@ -102,10 +131,22 @@ export default function Sidebar() {
             }
           }}
         >
-          <span className="w-6 h-6 grid place-items-center ml-0.5">
+          {/* size-6 icon box, no ml offset — matches nav icon x so it doesn't
+              shift when collapsing (px-3 + 12 = 32px = collapsed rail centre). */}
+          <span className="grid size-6 shrink-0 place-items-center">
             <Logo size={15} className="text-foreground" />
           </span>
-          <span className="text-xl font-extrabold -ml-0.5">Desperse</span>
+          {/* Wordmark stays mounted and fades/collapses its width so it eases
+              out in sync with the rail instead of popping. */}
+          <span
+            aria-hidden={collapsed}
+            className={cn(
+              'text-xl font-extrabold whitespace-nowrap overflow-hidden transition-all duration-200 ease-out motion-reduce:transition-none',
+              collapsed ? 'max-w-0 opacity-0' : 'max-w-[9rem] opacity-100',
+            )}
+          >
+            Desperse
+          </span>
         </Link>
       </SidebarHeader>
 
@@ -121,6 +162,7 @@ export default function Sidebar() {
               label={item.label}
               active={isActive}
               icon={renderIcon(item, isActive)}
+              className={ITEM_ANCHOR}
               badge={
                 item.path === '/admin' && adminBadgeCount > 0 ? (
                   <NotificationBadge variant="destructive" count={adminBadgeCount} />
@@ -162,10 +204,23 @@ export default function Sidebar() {
           <SidebarItem
             label="Log in or Sign up"
             icon={<Icon name="right-to-bracket" variant="regular" className="text-xl" />}
+            className={ITEM_ANCHOR}
             onClick={() => login()}
           />
         )}
         <MoreMenu />
+        <SidebarItem
+          label={collapsed ? 'Expand' : 'Collapse'}
+          icon={
+            <Icon
+              name={collapsed ? 'chevron-right' : 'chevron-left'}
+              variant="regular"
+              className="text-xl"
+            />
+          }
+          className={ITEM_ANCHOR}
+          onClick={toggleCollapsed}
+        />
       </SidebarFooter>
     </SableSidebar>
   )

@@ -5,28 +5,41 @@
 
 import { createServerFn } from '@tanstack/react-start'
 import { db } from '@/server/db'
-import { posts, users, follows, collections, purchases, likes, comments, postAssets } from '@/server/db/schema'
+import { posts, users, follows, collections, purchases, postAssets } from '@/server/db/schema'
 import { eq, and, desc, sql, count, gte, notInArray, isNotNull, or, ilike, inArray } from 'drizzle-orm'
 import { z } from 'zod'
 import { withOptionalAuth } from '@/server/auth'
 import { excludeDevPostsForUser } from '@/server/utils/dev-posts'
 import { getBlockedUserIdSet } from '@/server/utils/blocks'
+import { getTrendingPostsData, getNewPostsData, getEndingSoonPostsData } from '@/server/utils/explore-feeds'
+
+const explorePostTypeSchema = z.enum(['post', 'collectible', 'edition'])
 
 // Schema for suggested creators query
 const suggestedCreatorsSchema = z.object({
-  currentUserId: z.string().uuid().optional(),
   limit: z.number().int().min(1).max(20).default(8),
 })
 
-// Schema for featured creators (landing page)
+// Schema for featured creators (landing page, browse-by-creator grids)
 const featuredCreatorsSchema = z.object({
-  limit: z.number().int().min(1).max(10).default(2),
+  limit: z.number().int().min(1).max(24).default(2),
+  offset: z.number().int().min(0).default(0),
 })
 
 // Schema for trending posts query
 const trendingPostsSchema = z.object({
   offset: z.number().int().min(0).default(0), // Offset-based pagination for score ordering
   limit: z.number().int().min(1).max(50).default(20),
+  type: explorePostTypeSchema.optional(),
+  category: z.string().max(32).optional(), // Optional category filter (slug or name)
+})
+
+// Schema for cursor-paginated gallery feeds (New, Minting Now)
+const cursorFeedSchema = z.object({
+  cursor: z.string().datetime().nullish(), // ISO datetime cursor
+  limit: z.number().int().min(1).max(50).default(20),
+  type: explorePostTypeSchema.optional(),
+  category: z.string().max(32).optional(), // Optional category filter (slug or name)
 })
 
 // Schema for search query
@@ -48,11 +61,9 @@ export const getSuggestedCreators = createServerFn({
   method: 'GET',
 }).handler(async (input: unknown) => {
   try {
-    const rawData = input && typeof input === 'object' && 'data' in input
-      ? (input as { data: unknown }).data
-      : input
-
-    const { currentUserId, limit } = suggestedCreatorsSchema.parse(rawData)
+    const authResult = await withOptionalAuth(suggestedCreatorsSchema, input)
+    const { limit } = authResult.input
+    const currentUserId = authResult.auth?.userId
 
     const thirtyDaysAgo = new Date()
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
@@ -171,308 +182,13 @@ export const getTrendingPosts = createServerFn({
 }).handler(async (input: unknown) => {
   try {
     const authResult = await withOptionalAuth(trendingPostsSchema, input)
-    const { offset, limit } = authResult.input
+    const { offset, limit, type, category } = authResult.input
 
-    const sevenDaysAgo = new Date()
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
-
-    // Get engagement counts for posts in the last 7 days
-    // Likes count
-    const likeCounts = db
-      .select({
-        postId: likes.postId,
-        count: count().as('like_count'),
-      })
-      .from(likes)
-      .groupBy(likes.postId)
-      .as('like_counts')
-
-    // Comments count
-    const commentCounts = db
-      .select({
-        postId: comments.postId,
-        count: count().as('comment_count'),
-      })
-      .from(comments)
-      .where(eq(comments.isDeleted, false))
-      .groupBy(comments.postId)
-      .as('comment_counts')
-
-    // Collects count (confirmed only)
-    const collectCounts = db
-      .select({
-        postId: collections.postId,
-        count: count().as('collect_count'),
-      })
-      .from(collections)
-      .where(eq(collections.status, 'confirmed'))
-      .groupBy(collections.postId)
-      .as('collect_counts')
-
-    // Purchase count (confirmed only)
-    const purchaseCounts = db
-      .select({
-        postId: purchases.postId,
-        count: count().as('purchase_count'),
-      })
-      .from(purchases)
-      .where(eq(purchases.status, 'confirmed'))
-      .groupBy(purchases.postId)
-      .as('purchase_counts')
-
-    // Drop posts by pairwise-blocked authors before scoring.
-    const blocked = await getBlockedUserIdSet(authResult.auth?.userId)
-
-    // Build base conditions
-    const baseConditions = [
-      await excludeDevPostsForUser(authResult.auth?.userId),
-      eq(posts.isDeleted, false),
-      eq(posts.isHidden, false),
-      gte(posts.createdAt, sevenDaysAgo),
-      ...(blocked.size > 0 ? [notInArray(posts.userId, Array.from(blocked))] : []),
-    ]
-
-    // Query trending posts with scoring
-    const trendingPosts = await db
-      .select({
-        post: posts,
-        user: {
-          id: users.id,
-          displayName: users.displayName,
-          usernameSlug: users.usernameSlug,
-          avatarUrl: users.avatarUrl,
-        },
-        likeCount: sql<number>`COALESCE(${likeCounts.count}, 0)`.as('like_count'),
-        commentCount: sql<number>`COALESCE(${commentCounts.count}, 0)`.as('comment_count'),
-        collectCount: sql<number>`COALESCE(${collectCounts.count}, 0)`.as('collect_count'),
-        purchaseCount: sql<number>`COALESCE(${purchaseCounts.count}, 0)`.as('purchase_count'),
-        // Calculate trending score with time decay
-        trendingScore: sql<number>`
-          (
-            COALESCE(${collectCounts.count}, 0) * 5 +
-            COALESCE(${purchaseCounts.count}, 0) * 5 +
-            COALESCE(${commentCounts.count}, 0) * 2 +
-            COALESCE(${likeCounts.count}, 0) * 1
-          ) * (1.0 / (1.0 + EXTRACT(EPOCH FROM (NOW() - ${posts.createdAt})) / 86400.0 * 0.15))
-        `.as('trending_score'),
-      })
-      .from(posts)
-      .innerJoin(users, eq(posts.userId, users.id))
-      .leftJoin(likeCounts, eq(posts.id, likeCounts.postId))
-      .leftJoin(commentCounts, eq(posts.id, commentCounts.postId))
-      .leftJoin(collectCounts, eq(posts.id, collectCounts.postId))
-      .leftJoin(purchaseCounts, eq(posts.id, purchaseCounts.postId))
-      .where(and(...baseConditions))
-      .orderBy(desc(sql`trending_score`))
-      .offset(offset)
-      .limit(limit + 1)
-
-    // Check if we have enough trending posts (min 6)
-    const minTrendingCount = 6
-    let postsToReturn = trendingPosts
-    let isFallback = false
-
-    if (trendingPosts.length < minTrendingCount) {
-      // Fall back to recent posts
-      isFallback = true
-      const recentPosts = await db
-        .select({
-          post: posts,
-          user: {
-            id: users.id,
-            displayName: users.displayName,
-            usernameSlug: users.usernameSlug,
-            avatarUrl: users.avatarUrl,
-          },
-          likeCount: sql<number>`COALESCE(${likeCounts.count}, 0)`.as('like_count'),
-          commentCount: sql<number>`COALESCE(${commentCounts.count}, 0)`.as('comment_count'),
-          collectCount: sql<number>`COALESCE(${collectCounts.count}, 0)`.as('collect_count'),
-          purchaseCount: sql<number>`COALESCE(${purchaseCounts.count}, 0)`.as('purchase_count'),
-          trendingScore: sql<number>`0`.as('trending_score'),
-        })
-        .from(posts)
-        .innerJoin(users, eq(posts.userId, users.id))
-        .leftJoin(likeCounts, eq(posts.id, likeCounts.postId))
-        .leftJoin(commentCounts, eq(posts.id, commentCounts.postId))
-        .leftJoin(collectCounts, eq(posts.id, collectCounts.postId))
-        .leftJoin(purchaseCounts, eq(posts.id, purchaseCounts.postId))
-        .where(
-          and(
-            await excludeDevPostsForUser(authResult.auth?.userId),
-            eq(posts.isDeleted, false),
-            eq(posts.isHidden, false),
-            ...(blocked.size > 0 ? [notInArray(posts.userId, Array.from(blocked))] : []),
-          )
-        )
-        .orderBy(desc(posts.createdAt))
-        .offset(offset)
-        .limit(limit + 1)
-
-      postsToReturn = recentPosts
-    }
-
-    // Check if there are more posts
-    const hasMore = postsToReturn.length > limit
-    const finalPosts = hasMore ? postsToReturn.slice(0, limit) : postsToReturn
-
-    // Get post asset IDs for protected downloads
-    const nftPostIds = finalPosts
-      .filter(p => p.post.type === 'edition' || p.post.type === 'collectible')
-      .map(p => p.post.id)
-
-    let postAssetIds: Record<string, string> = {}
-    if (nftPostIds.length > 0) {
-      const assetResults = await db
-        .select({
-          postId: postAssets.postId,
-          id: postAssets.id,
-        })
-        .from(postAssets)
-        .where(inArray(postAssets.postId, nftPostIds))
-
-      postAssetIds = Object.fromEntries(
-        assetResults.map(r => [r.postId, r.id])
-      )
-    }
-
-    // Get collectible asset IDs (first confirmed collection NFT mint)
-    const collectiblePostIds = finalPosts
-      .filter(p => p.post.type === 'collectible')
-      .map(p => p.post.id)
-
-    let collectibleAssetIds: Record<string, string> = {}
-    if (collectiblePostIds.length > 0) {
-      const assetIdResults = await db
-        .select({
-          postId: collections.postId,
-          nftMint: collections.nftMint,
-          createdAt: collections.createdAt,
-        })
-        .from(collections)
-        .where(
-          and(
-            inArray(collections.postId, collectiblePostIds),
-            eq(collections.status, 'confirmed'),
-            isNotNull(collections.nftMint)
-          )
-        )
-        .orderBy(collections.createdAt)
-
-      const assetIdMap = new Map<string, string>()
-      for (const result of assetIdResults) {
-        if (result.nftMint && !assetIdMap.has(result.postId)) {
-          assetIdMap.set(result.postId, result.nftMint)
-        }
-      }
-      collectibleAssetIds = Object.fromEntries(assetIdMap)
-    }
-
-    // Get user's nftMint for editions they own
-    const editionPostIds = finalPosts
-      .filter(p => p.post.type === 'edition')
-      .map(p => p.post.id)
-
-    let userNftMints: Record<string, string> = {}
-    if (authResult.auth?.userId && editionPostIds.length > 0) {
-      const userPurchases = await db
-        .select({
-          postId: purchases.postId,
-          nftMint: purchases.nftMint,
-        })
-        .from(purchases)
-        .where(
-          and(
-            inArray(purchases.postId, editionPostIds),
-            eq(purchases.userId, authResult.auth.userId),
-            eq(purchases.status, 'confirmed'),
-            isNotNull(purchases.nftMint)
-          )
-        )
-
-      userNftMints = Object.fromEntries(
-        userPurchases
-          .filter(p => p.nftMint)
-          .map(p => [p.postId, p.nftMint!])
-      )
-    }
-
-    // Determine next offset
-    const nextOffset = hasMore ? offset + limit : null
-
-    // Batch fetch assets for multi-asset posts (Phase 1)
-    const allPostIds = finalPosts.map(p => p.post.id)
-    let postAssetsMap: Record<string, Array<{
-      id: string
-      url: string
-      mimeType: string
-      fileSize: number | null
-      sortOrder: number
-    }>> = {}
-
-    if (allPostIds.length > 0) {
-      const assetResults = await db
-        .select({
-          id: postAssets.id,
-          postId: postAssets.postId,
-          storageKey: postAssets.storageKey,
-          mimeType: postAssets.mimeType,
-          fileSize: postAssets.fileSize,
-          sortOrder: postAssets.sortOrder,
-        })
-        .from(postAssets)
-        .where(
-          and(
-            inArray(postAssets.postId, allPostIds),
-            eq(postAssets.role, 'media'),
-            eq(postAssets.isPreviewable, true)
-          )
-        )
-        .orderBy(postAssets.postId, postAssets.sortOrder)
-
-      // Group by postId
-      for (const asset of assetResults) {
-        if (!postAssetsMap[asset.postId]) {
-          postAssetsMap[asset.postId] = []
-        }
-        postAssetsMap[asset.postId].push({
-          id: asset.id,
-          url: asset.storageKey,
-          mimeType: asset.mimeType,
-          fileSize: asset.fileSize,
-          sortOrder: asset.sortOrder,
-        })
-      }
-    }
+    const result = await getTrendingPostsData(authResult.auth?.userId, offset, limit, type, category)
 
     return {
       success: true,
-      isFallback,
-      sectionTitle: isFallback ? 'Recent' : 'Trending',
-      posts: finalPosts.map(p => {
-        const isHidden = p.post.isHidden ?? false
-        const assets = postAssetsMap[p.post.id]
-        return {
-          ...p.post,
-          user: p.user,
-          likeCount: Number(p.likeCount) || 0,
-          commentCount: Number(p.commentCount) || 0,
-          collectCount: Number(p.collectCount) || 0,
-          purchaseCount: Number(p.purchaseCount) || 0,
-          trendingScore: Number(p.trendingScore) || 0,
-          ...(p.post.type === 'collectible' && collectibleAssetIds[p.post.id]
-            ? { collectibleAssetId: collectibleAssetIds[p.post.id] }
-            : {}),
-          ...(postAssetIds[p.post.id] ? { assetId: postAssetIds[p.post.id] } : {}),
-          ...(p.post.type === 'edition' && userNftMints[p.post.id]
-            ? { userNftMint: userNftMints[p.post.id] }
-            : {}),
-          isHidden,
-          // Only include assets array if there are multiple assets (for carousel)
-          ...(assets && assets.length > 1 ? { assets } : {}),
-        }
-      }),
-      hasMore,
-      nextOffset,
+      ...result,
     }
   } catch (error) {
     console.error('Error in getTrendingPosts:', error)
@@ -489,6 +205,70 @@ export const getTrendingPosts = createServerFn({
 })
 
 /**
+ * Get newest posts for gallery surfaces (Home "New" row, Explore "New" tab)
+ * Recent posts unfiltered by engagement, always available
+ */
+export const getNewPosts = createServerFn({
+  method: 'GET',
+// @ts-expect-error -- TanStack Start dual-context type inference
+}).handler(async (input: unknown) => {
+  try {
+    const authResult = await withOptionalAuth(cursorFeedSchema, input)
+    const { cursor, limit, type, category } = authResult.input
+
+    const result = await getNewPostsData(authResult.auth?.userId, cursor ?? null, limit, type, category)
+
+    return {
+      success: true,
+      sectionTitle: 'New',
+      ...result,
+    }
+  } catch (error) {
+    console.error('[getNewPosts] Failed:', error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to fetch new posts.',
+      posts: [],
+      hasMore: false,
+      nextCursor: null,
+      sectionTitle: 'New',
+    }
+  }
+})
+
+/**
+ * Get editions minting now (live mint window, not sold out),
+ * ordered soonest-ending first
+ */
+export const getEndingSoonPosts = createServerFn({
+  method: 'GET',
+// @ts-expect-error -- TanStack Start dual-context type inference
+}).handler(async (input: unknown) => {
+  try {
+    const authResult = await withOptionalAuth(cursorFeedSchema, input)
+    const { cursor, limit, type, category } = authResult.input
+
+    const result = await getEndingSoonPostsData(authResult.auth?.userId, cursor ?? null, limit, type, category)
+
+    return {
+      success: true,
+      sectionTitle: 'Minting Now',
+      ...result,
+    }
+  } catch (error) {
+    console.error('[getEndingSoonPosts] Failed:', error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to fetch live mints.',
+      posts: [],
+      hasMore: false,
+      nextCursor: null,
+      sectionTitle: 'Minting Now',
+    }
+  }
+})
+
+/**
  * Get featured creators for the landing page
  * Returns creators with stats: post count, mint count, follower count
  */
@@ -496,11 +276,9 @@ export const getFeaturedCreators = createServerFn({
   method: 'GET',
 }).handler(async (input: unknown) => {
   try {
-    const rawData = input && typeof input === 'object' && 'data' in input
-      ? (input as { data: unknown }).data
-      : input
-
-    const { limit } = featuredCreatorsSchema.parse(rawData)
+    const authResult = await withOptionalAuth(featuredCreatorsSchema, input)
+    const { limit, offset } = authResult.input
+    const blocked = await getBlockedUserIdSet(authResult.auth?.userId)
 
     // Get follower counts per user (subquery)
     const followerCounts = db
@@ -569,20 +347,31 @@ export const getFeaturedCreators = createServerFn({
       .leftJoin(postCounts, eq(users.id, postCounts.userId))
       .leftJoin(collectsByCreator, eq(users.id, collectsByCreator.creatorId))
       .leftJoin(purchasesByCreator, eq(users.id, purchasesByCreator.creatorId))
-      .where(sql`COALESCE(${postCounts.count}, 0) > 0`) // Only creators with posts
+      .where(
+        and(
+          sql`COALESCE(${postCounts.count}, 0) > 0`, // Only creators with posts
+          blocked.size > 0 ? notInArray(users.id, Array.from(blocked)) : undefined
+        )
+      )
       .orderBy(
         // Score: posts + mints + followers
         desc(sql`
           COALESCE(${postCounts.count}, 0) * 2 +
           (COALESCE(${collectsByCreator.count}, 0) + COALESCE(${purchasesByCreator.count}, 0)) * 3 +
           COALESCE(${followerCounts.count}, 0)
-        `)
+        `),
+        // Stable tiebreaker so offset pagination doesn't skip/duplicate on ties
+        users.id
       )
-      .limit(limit)
+      .limit(limit + 1) // one extra to detect a next page
+      .offset(offset)
+
+    const hasMore = featuredUsers.length > limit
+    const pageUsers = hasMore ? featuredUsers.slice(0, limit) : featuredUsers
 
     return {
       success: true,
-      creators: featuredUsers.map(u => ({
+      creators: pageUsers.map(u => ({
         id: u.id,
         usernameSlug: u.usernameSlug,
         displayName: u.displayName,
@@ -592,6 +381,7 @@ export const getFeaturedCreators = createServerFn({
         postCount: Number(u.postCount) || 0,
         mintCount: Number(u.mintCount) || 0,
       })),
+      nextOffset: hasMore ? offset + limit : null,
     }
   } catch (error) {
     console.error('Error in getFeaturedCreators:', error)
@@ -599,6 +389,7 @@ export const getFeaturedCreators = createServerFn({
       success: false,
       error: error instanceof Error ? error.message : 'Failed to fetch featured creators.',
       creators: [],
+      nextOffset: null,
     }
   }
 })

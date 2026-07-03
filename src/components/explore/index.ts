@@ -2,9 +2,14 @@
  * Explore components
  */
 
-export { GradientAvatar } from './GradientAvatar'
-export { SuggestedCreators } from './SuggestedCreators'
-export { TrendingPosts } from './TrendingPosts'
 export { SearchBar } from './SearchBar'
 export { SearchDropdown } from './SearchDropdown'
-export { SearchResultsTabs, type SearchTab } from './SearchResultsTabs'
+export { CategoryChips } from './CategoryChips'
+export { ExploreSections, type ExploreTab } from './ExploreSections'
+export { ExploreFilterRail, ExplorePostTypeTabs } from './ExploreFilterRail'
+export {
+  isExplorePostTypeFilter,
+  isExploreTab,
+  type ExplorePostTypeFilter,
+} from './exploreFilters'
+export { CreatorGrid } from './CreatorGrid'

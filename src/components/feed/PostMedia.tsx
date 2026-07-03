@@ -334,7 +334,7 @@ export function PostMedia({
           <Button
             variant="ghost"
             size="icon"
-            className="absolute bottom-3 right-3 z-20 h-9 w-9 rounded-full bg-black/50 backdrop-blur-sm hover:bg-black/60 text-white"
+            className="absolute bottom-3 left-3 z-20 h-9 w-9 rounded-full bg-black/50 backdrop-blur-sm hover:bg-black/60 text-white"
             onClick={(e) => {
               e.stopPropagation()
               setLightboxOpen(true)
@@ -606,22 +606,23 @@ export function PostMedia({
                   <Icon name="pause" />
                 </Button>
               )}
-              {expandable && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-9 w-9 rounded-full bg-black/50 backdrop-blur-sm hover:bg-black/60 text-white"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    setLightboxOpen(true)
-                  }}
-                  aria-label="View full size"
-                >
-                  <Icon name="expand" />
-                </Button>
-              )}
             </div>
           </div>
+        )}
+
+        {expandable && !hasError && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute bottom-3 left-3 z-20 h-9 w-9 rounded-full bg-black/50 backdrop-blur-sm hover:bg-black/60 text-white"
+            onClick={(e) => {
+              e.stopPropagation()
+              setLightboxOpen(true)
+            }}
+            aria-label="View full size"
+          >
+            <Icon name="expand" />
+          </Button>
         )}
       </div>
     )

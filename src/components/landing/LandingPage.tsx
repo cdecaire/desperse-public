@@ -187,28 +187,53 @@ function Header() {
     }
   }
 
+  const authCtaClassName = 'border border-zinc-300 dark:border-zinc-700 px-5 py-2 rounded-full text-label-lg hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 transition-colors duration-200 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-950 dark:focus-visible:ring-white'
+
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 px-6 py-4 flex items-center bg-background/80 backdrop-blur-md border-b border-border/50" style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 1rem)' }}>
-      <Link to="/" className="flex-1 flex items-center space-x-2 hover:opacity-80 transition-opacity">
-        <Logo size={15} className="text-foreground" />
-        <span className="text-heading-3">Desperse</span>
-      </Link>
-      <nav className="hidden md:flex gap-8 text-label-lg">
-        <Link to="/browse" className="hover:text-zinc-500 dark:hover:text-zinc-400 transition-colors">
-          Browse
+    <header
+      className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 bg-background/80 px-4 py-3 backdrop-blur-md md:px-6 md:py-4"
+      style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 0.75rem)' }}
+    >
+      <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-3 md:flex-nowrap md:gap-4">
+        <Link to="/" className="flex min-w-0 flex-1 items-center space-x-2 hover:opacity-80 transition-opacity">
+          <Logo size={15} className="text-foreground" />
+          <span className="truncate text-heading-3">Desperse</span>
         </Link>
-        <a href="#features" className="hover:text-zinc-500 dark:hover:text-zinc-400 transition-colors">
-          Features
-        </a>
-        <a href="#creators" className="hover:text-zinc-500 dark:hover:text-zinc-400 transition-colors">
-          Creators
-        </a>
-        <a href="#why" className="hover:text-zinc-500 dark:hover:text-zinc-400 transition-colors">
-          Why Desperse
-        </a>
-      </nav>
-      <div className="flex-1 flex items-center justify-end gap-4">
-        <div className="flex items-center gap-2">
+        <nav className="hidden md:flex gap-8 text-label-lg">
+          <Link to="/browse" className="hover:text-zinc-500 dark:hover:text-zinc-400 transition-colors">
+            Browse
+          </Link>
+          <a href="#features" className="hover:text-zinc-500 dark:hover:text-zinc-400 transition-colors">
+            Features
+          </a>
+          <a href="#creators" className="hover:text-zinc-500 dark:hover:text-zinc-400 transition-colors">
+            Creators
+          </a>
+          <a href="#why" className="hover:text-zinc-500 dark:hover:text-zinc-400 transition-colors">
+            Why Desperse
+          </a>
+        </nav>
+        <div className="ml-auto hidden items-center gap-4 md:flex">
+          <div className="flex items-center gap-2">
+            <Icon name={activeTheme === 'light' ? 'sun-bright' : 'moon'} variant="regular" className="text-sm" />
+            <Switch
+              checked={activeTheme === 'dark'}
+              onCheckedChange={handleThemeToggle}
+              aria-label={`Switch to ${activeTheme === 'dark' ? 'light' : 'dark'} theme`}
+              className="scale-75"
+            />
+          </div>
+          {authenticated ? (
+            <Link to="/" className={authCtaClassName}>
+              Go to Feed
+            </Link>
+          ) : (
+            <button onClick={() => login()} disabled={!ready} className={authCtaClassName}>
+              Log in
+            </button>
+          )}
+        </div>
+        <div className="ml-auto flex items-center gap-2 md:hidden">
           <Icon name={activeTheme === 'light' ? 'sun-bright' : 'moon'} variant="regular" className="text-sm" />
           <Switch
             checked={activeTheme === 'dark'}
@@ -217,18 +242,17 @@ function Header() {
             className="scale-75"
           />
         </div>
+      </div>
+      <div className="mx-auto mt-4 max-w-7xl md:hidden">
         {authenticated ? (
-          <Link
-            to="/"
-            className="border border-zinc-300 dark:border-zinc-700 px-5 py-2 rounded-full text-label-lg hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 transition-colors duration-200"
-          >
+          <Link to="/" className={`${authCtaClassName} flex w-full items-center justify-center`}>
             Go to Feed
           </Link>
         ) : (
           <button
             onClick={() => login()}
             disabled={!ready}
-            className="border border-zinc-300 dark:border-zinc-700 px-5 py-2 rounded-full text-label-lg hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 transition-colors duration-200 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-950 dark:focus-visible:ring-white"
+            className={`${authCtaClassName} flex w-full items-center justify-center`}
           >
             Log in
           </button>
@@ -244,7 +268,7 @@ function Hero() {
   const { login, ready } = usePrivy()
 
   return (
-    <section className="min-h-screen flex flex-col justify-center px-6 pt-20 relative overflow-hidden bg-background">
+    <section className="relative min-h-screen overflow-hidden bg-background px-6 pt-36 flex flex-col justify-center md:pt-20">
       <div
         className="absolute inset-0 z-0 opacity-20 dark:opacity-30 pointer-events-none"
         style={{

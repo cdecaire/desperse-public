@@ -32,12 +32,12 @@ function Header() {
   }
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 px-6 py-4 flex items-center bg-background/80 backdrop-blur-md border-b border-border/50">
+    <header className="fixed top-0 left-0 right-0 z-50 px-4 py-3 flex flex-wrap items-center gap-3 bg-background/80 backdrop-blur-md border-b border-border/50 md:px-6 md:py-4 md:flex-nowrap md:gap-4">
       <Link to="/" className="flex-1 flex items-center space-x-2 hover:opacity-80 transition-opacity">
         <Logo size={15} className="text-foreground" />
         <span className="text-xl font-extrabold">Desperse</span>
       </Link>
-      <div className="flex-1 flex items-center justify-end gap-4">
+      <div className="ml-auto hidden items-center justify-end gap-4 md:flex">
         <div className="flex items-center gap-2">
           <Icon name={activeTheme === 'light' ? 'sun-bright' : 'moon'} variant="regular" className="text-sm" />
           <Switch
@@ -52,6 +52,17 @@ function Header() {
             onClick={() => login()}
             disabled={!ready}
             className="border border-zinc-300 dark:border-zinc-700 px-5 py-2 rounded-full text-sm font-medium hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 transition-all duration-300 disabled:opacity-50"
+          >
+            Log in or Sign up
+          </button>
+        )}
+      </div>
+      <div className="mx-auto mt-4 flex w-full max-w-7xl items-center justify-end md:hidden">
+        {!authenticated && (
+          <button
+            onClick={() => login()}
+            disabled={!ready}
+            className="border border-zinc-300 dark:border-zinc-700 w-full px-5 py-2 rounded-full text-sm font-medium hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 transition-all duration-300 disabled:opacity-50"
           >
             Log in or Sign up
           </button>

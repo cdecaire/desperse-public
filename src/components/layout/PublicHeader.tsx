@@ -30,7 +30,7 @@ export const PUBLIC_NAV_ITEMS = [
 ]
 
 /**
- * Header for standalone public pages (/preservation, etc.).
+ * Header for standalone public pages.
  *
  * Provides logo + theme toggle + Privy login. Authenticated users get a
  * "Go to Feed" link instead of the login button. Distinct from the landing
@@ -66,7 +66,7 @@ export function PublicHeader({ navItems, position = 'fixed' }: PublicHeaderProps
       </Link>
 
       {navItems && navItems.length > 0 && (
-        <nav className="flex gap-4 md:gap-8 text-sm font-medium">
+        <nav className="hidden sm:flex gap-4 md:gap-8 text-sm font-medium">
           {navItems.map((item) =>
             item.external ? (
               <a
@@ -97,7 +97,7 @@ export function PublicHeader({ navItems, position = 'fixed' }: PublicHeaderProps
             {recoveryMessage}
           </p>
         )}
-        <label className="flex items-center gap-2 min-h-10 cursor-pointer">
+        <label className="flex shrink-0 items-center gap-2 min-h-10 cursor-pointer">
           <Icon name={activeTheme === 'light' ? 'sun-bright' : 'moon'} variant="regular" className="text-sm" />
           <Switch
             checked={activeTheme === 'dark'}
@@ -108,7 +108,7 @@ export function PublicHeader({ navItems, position = 'fixed' }: PublicHeaderProps
         {authenticated ? (
           <Link
             to="/"
-            className="border border-zinc-300 dark:border-zinc-700 px-5 py-2 rounded-full text-sm font-medium hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 motion-interactive"
+            className="shrink-0 whitespace-nowrap border border-zinc-300 dark:border-zinc-700 px-5 py-2 rounded-full text-sm font-medium hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 motion-interactive"
           >
             Go to Feed
           </Link>
@@ -116,7 +116,7 @@ export function PublicHeader({ navItems, position = 'fixed' }: PublicHeaderProps
           <button
             onClick={() => login()}
             disabled={!ready}
-            className="border border-zinc-300 dark:border-zinc-700 px-5 py-2 rounded-full text-sm font-medium hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 motion-interactive disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-950 dark:focus-visible:ring-white"
+            className="shrink-0 whitespace-nowrap border border-zinc-300 dark:border-zinc-700 px-5 py-2 rounded-full text-sm font-medium hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 motion-interactive disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-950 dark:focus-visible:ring-white"
           >
             {recoveryMessage ? 'Retry sign in' : 'Log in'}
           </button>

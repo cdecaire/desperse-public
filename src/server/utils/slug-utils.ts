@@ -23,7 +23,7 @@ export const RESERVED_HANDLES: ReadonlySet<string> = new Set([
   'signup', 'register', 'auth', 'oauth', 'download', 'downloads', 'about',
   'terms', 'privacy', 'tos', 'cookies', 'docs', 'blog', 'news', 'feed',
   'notifications', 'search', 'discover', 'trending', 'editions', 'collect',
-  'wallet', 'pfp', 'echoes', 'preservation', 'invite', 'referral', 'beta',
+  'wallet', 'pfp', 'echoes', 'invite', 'referral', 'beta',
   'alpha', 'public', 'private', 'static', 'assets', 'cdn', 'health', 'status',
   // Common impersonation targets
   'solana', 'phantom', 'metamask', 'privy', 'vercel', 'helius', 'metaplex',
@@ -144,4 +144,3 @@ export function isValidSlugFormat(slug: string): boolean {
   const pattern = /^[a-z0-9_.-]{1,32}$/
   return pattern.test(slug)
 }
-

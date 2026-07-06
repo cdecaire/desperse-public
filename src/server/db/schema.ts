@@ -928,28 +928,6 @@ export const pfpMints = pgTable(
   }),
 )
 
-// Preservation signups — captures interest from Foundation creators displaced by
-// the 2026-04-15 shutdown. Identifies the user via ETH wallet (preferred) and/or
-// email; userId is set if they're already authenticated through Privy. The
-// catalogSnapshot is a point-in-time view of what we detected on-chain at signup.
-export const preservationSignups = pgTable(
-  'preservation_signups',
-  {
-    id: uuid('id').defaultRandom().primaryKey(),
-    userId: uuid('user_id').references(() => users.id, { onDelete: 'set null' }),
-    ethAddress: text('eth_address'),
-    email: text('email'),
-    source: text('source').notNull().default('foundation_preservation'),
-    catalogSnapshot: jsonb('catalog_snapshot'),
-    createdAt: timestamp('created_at').notNull().defaultNow(),
-  },
-  (table) => ({
-    userIdIdx: index('preservation_signups_user_id_idx').on(table.userId),
-    uniqueEthSource: unique('preservation_signups_eth_source_unique').on(table.ethAddress, table.source),
-    uniqueEmailSource: unique('preservation_signups_email_source_unique').on(table.email, table.source),
-  }),
-)
-
 // ────────────────────────────────────────────────────────────────────────────
 // Echoes Discord holder verification
 //
@@ -1061,4 +1039,3 @@ export type DiscordLink = typeof discordLinks.$inferSelect
 export type DiscordVerifiedWallet = typeof discordVerifiedWallets.$inferSelect
 export type DiscordMemberRoles = typeof discordMemberRoles.$inferSelect
 export type DiscordAuditLogEntry = typeof discordAuditLog.$inferSelect
-

@@ -719,7 +719,7 @@ const display: TypeSpec[] = [
 		weight: 700,
 		lineHeight: '1.1',
 		tracking: '-0.03em',
-		use: 'Feature page hero (Echoes, Preservation)',
+		use: 'Feature page hero (Echoes)',
 		sample: 'Preserve the work.',
 	},
 ]

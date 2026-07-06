@@ -11,9 +11,8 @@
  *     c. Delete the users row — cascade FKs handle posts, comments, follows,
  *        likes, push_tokens, mentions, user_wallets, tips, collections,
  *        purchases, notifications, content_reports, beta_feedback,
- *        creator_storage_balances, creator_settings, pfp_mints.
- *        SET NULL FKs (moderator audit fields, preservation_signups) also
- *        clear automatically.
+ *        creator_storage_balances, creator_settings, pfp_mints. SET NULL FKs
+ *        for moderator audit fields also clear automatically.
  *  3. Best-effort call privyClient.deleteUser(privyId). Failure is logged but
  *     does not fail the request — the local DB record is already gone.
  */
@@ -74,9 +73,8 @@ export default defineEventHandler(async (event) => {
 			// 3. The user — cascades to posts, comments, follows, likes,
 			//    push_tokens, mentions, user_wallets, tips, collections,
 			//    purchases, notifications, content_reports, beta_feedback,
-			//    creator_storage_balances, creator_settings, pfp_mints.
-			//    SET NULL FKs (moderator audit, preservation_signups.userId)
-			//    clear automatically.
+			//    creator_storage_balances, creator_settings, pfp_mints. SET
+			//    NULL FKs for moderator audit fields clear automatically.
 			await tx.delete(users).where(eq(users.id, userId))
 		})
 

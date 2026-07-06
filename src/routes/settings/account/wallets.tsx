@@ -116,8 +116,8 @@ function WalletsPage() {
     [wallets, user?.linkedAccounts, walletAddress],
   )
 
-  // Ethereum wallets are linked for verification/provenance only (e.g. Foundation
-  // preservation). They never sign Desperse transactions and cannot be set as primary.
+  // Ethereum wallets are linked for verification/provenance only. They never
+  // sign Desperse transactions and cannot be set as primary.
   const ethereumWallets = useMemo(() => {
     if (!user?.linkedAccounts) return []
     return user.linkedAccounts

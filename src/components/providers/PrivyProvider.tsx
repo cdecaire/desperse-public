@@ -20,8 +20,8 @@ interface PrivyProviderProps {
  * Multi-chain Configuration:
  * - walletChainType: 'ethereum-and-solana' so the Privy modal exposes both chains
  * - Solana wallets are the spending/signing wallets for the Desperse app
- * - Ethereum wallets are linked for verification/provenance only (e.g. Foundation
- *   preservation flow). They are never auto-created and never become the primary
+ * - Ethereum wallets are linked for verification/provenance only. They are
+ *   never auto-created and never become the primary
  *   Desperse wallet — see the address-format guard in setDefaultWalletDirect.
  *
  * Embedded Wallet Strategy:
@@ -150,4 +150,3 @@ export function PrivyProvider({ children, heliusWsUrl }: PrivyProviderProps) {
 }
 
 export default PrivyProvider
-

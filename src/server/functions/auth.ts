@@ -398,9 +398,8 @@ const handleAvailabilitySchema = z.object({
 
 /**
  * Check whether a username slug is currently available.
- * Used by the /preservation page (and any future onboarding flows) to show a
- * live "preview · subject to availability" indicator without reserving the
- * slug. The actual claim happens during normal signup via initAuth.
+ * Shows a live "preview · subject to availability" indicator without reserving
+ * the slug. The actual claim happens during normal signup via initAuth.
  */
 export const checkHandleAvailability = createServerFn({ method: 'POST' }).handler(
   async (input: unknown) => {
@@ -428,4 +427,3 @@ export const checkHandleAvailability = createServerFn({ method: 'POST' }).handle
     }
   },
 )
-

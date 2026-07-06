@@ -1,6 +1,7 @@
 import * as React from "react"
 import {
 	Card as SableCard,
+	CardAction as SableCardAction,
 	CardContent as SableCardContent,
 	CardDescription as SableCardDescription,
 	CardFooter as SableCardFooter,
@@ -9,24 +10,11 @@ import {
 	type CardProps as SableCardProps,
 } from "@cdecaire/sable"
 
-import { cn } from "@/lib/utils"
-
 /**
- * Migration shim (Phase 2 — Sable adoption).
+ * Compatibility wrapper over Sable's Card family.
  *
- * The app's <Card> family now renders @cdecaire/sable's Card parts (adopting
- * Sable styling: rounded-lg surface, text-title-lg title, padded sections)
- * while keeping the LEGACY shadcn API so existing call sites don't change.
- *
- * Sable exports: Card, CardHeader, CardTitle, CardDescription, CardContent,
- * CardFooter. Sable has NO `CardAction` — it is shimmed below as a minimal
- * styled <div> that preserves the legacy slot/positioning behavior.
- *
- * Notes for auditing:
- *   - Sable's <Card> adds an optional `variant` ("default" | "flat") prop —
- *     additive, so legacy callers are unaffected.
- *   - Legacy `data-slot` attributes are preserved on each part so existing
- *     `has-data-[slot=card-action]` selectors keep working.
+ * Desperse keeps the legacy shadcn import surface and `data-slot` attributes,
+ * while Sable owns the rendered card parts, including CardAction in 0.24.
  */
 
 type CardProps = SableCardProps
@@ -57,16 +45,14 @@ function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
 	)
 }
 
-// No Sable equivalent — shimmed as a styled <div> matching the legacy behavior
-// (top-right action slot within the card header grid).
-function CardAction({ className, ...props }: React.ComponentProps<"div">) {
+function CardAction({
+	className,
+	...props
+}: React.ComponentProps<typeof SableCardAction>) {
 	return (
-		<div
+		<SableCardAction
 			data-slot="card-action"
-			className={cn(
-				"col-start-2 row-span-2 row-start-1 self-start justify-self-end",
-				className
-			)}
+			className={className}
 			{...props}
 		/>
 	)

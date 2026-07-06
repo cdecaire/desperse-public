@@ -15,6 +15,14 @@ import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { PageHeader } from '@/components/shared/PageHeader'
 import { CopyrightFields, SUGGESTED_STATEMENTS } from '@/components/forms/CopyrightFields'
 import { Row } from '@cdecaire/sable/layout'
+import {
+	Form,
+	Fieldset,
+	FieldsetContent,
+	FieldsetDescription,
+	FieldsetFooter,
+	FieldsetLegend,
+} from '@cdecaire/sable'
 
 export const Route = createFileRoute('/settings/account/copyright')({
 	component: CopyrightSettingsPage,
@@ -113,28 +121,36 @@ function CopyrightForm({
 	}
 
 	return (
-		<form className="space-y-5" onSubmit={handleSubmit}>
-			<CopyrightFields
-				license={preset || null}
-				customLicense={customLicense}
-				holder={holder || null}
-				statement={rights || null}
-				onLicenseChange={handleLicenseChange}
-				onCustomLicenseChange={setCustomLicense}
-				onHolderChange={(v) => setHolder(v || '')}
-				onStatementChange={(v) => setRights(v || '')}
-				idPrefix="settings"
-				showDescription
-			/>
+		<Form className="gap-0" onSubmit={handleSubmit}>
+			<Fieldset>
+				<FieldsetLegend>Default rights metadata</FieldsetLegend>
+				<FieldsetDescription>
+					These defaults are applied when you mint a new NFT.
+				</FieldsetDescription>
+				<FieldsetContent>
+					<CopyrightFields
+						license={preset || null}
+						customLicense={customLicense}
+						holder={holder || null}
+						statement={rights || null}
+						onLicenseChange={handleLicenseChange}
+						onCustomLicenseChange={setCustomLicense}
+						onHolderChange={(v) => setHolder(v || '')}
+						onStatementChange={(v) => setRights(v || '')}
+						idPrefix="settings"
+						showDescription
+					/>
+				</FieldsetContent>
 
-			{isDirty && (
-				<Row justify="end">
+				{isDirty && (
+					<FieldsetFooter>
 					<Button type="submit" disabled={isUpdating}>
 						{isUpdating ? <LoadingSpinner size="sm" className="mr-2" /> : null}
 						Save changes
 					</Button>
-				</Row>
-			)}
-		</form>
+					</FieldsetFooter>
+				)}
+			</Fieldset>
+		</Form>
 	)
 }

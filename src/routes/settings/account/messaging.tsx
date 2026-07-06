@@ -9,6 +9,12 @@ import { Icon } from '@/components/ui/icon'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { PageHeader } from '@/components/shared/PageHeader'
 import { Stack, Row } from '@cdecaire/sable/layout'
+import {
+  Fieldset,
+  FieldsetContent,
+  FieldsetDescription,
+  FieldsetLegend,
+} from '@cdecaire/sable'
 
 export const Route = createFileRoute('/settings/account/messaging')({
   component: MessagingSettingsPage,
@@ -36,14 +42,17 @@ function MessagingSettingsPage() {
         description="Manage who can reach out to you directly."
       />
 
-      {/* DM Settings Card */}
-      <div className="rounded-lg bg-white dark:bg-input/30 border border-input px-5 md:px-6 lg:px-8 py-4 md:py-5">
-        {/* Master Toggle */}
+      <Fieldset>
+        <FieldsetLegend>Direct Messages</FieldsetLegend>
+        <FieldsetDescription>
+          Allow eligible users to start new chats.
+        </FieldsetDescription>
+        <FieldsetContent>
         <Row align="center" justify="between">
           <Row gap={1.5} align="center">
             <Icon name="message" variant="regular" className="w-5 text-center text-muted-foreground" />
             <div className="flex flex-col">
-              <span className="text-label-lg">Direct Messages</span>
+              <span className="text-label-lg">Message requests</span>
               <span className="text-caption text-muted-foreground">
                 Allow eligible users to start new chats
               </span>
@@ -124,7 +133,8 @@ function MessagingSettingsPage() {
             </Stack>
           </div>
         )}
-      </div>
+        </FieldsetContent>
+      </Fieldset>
 
       {/* Info Note */}
       <div className="rounded-lg bg-muted/50 border border-input px-5 md:px-6 lg:px-8 py-4">

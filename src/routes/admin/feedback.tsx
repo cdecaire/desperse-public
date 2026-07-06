@@ -135,7 +135,7 @@ function FeedbackListPage() {
                     <div className="flex-1 min-w-0">
                       <Row align="center" justify="between" gap={1} className="mb-1">
                         <Row align="center" gap={1} className="min-w-0">
-                          <span className="font-semibold text-sm truncate">
+                          <span className="text-label-md truncate">
                             {feedback.displayName || feedback.user?.displayName || `@${feedback.user?.usernameSlug}` || 'Unknown'}
                           </span>
                           <span className="text-caption text-muted-foreground">
@@ -157,7 +157,7 @@ function FeedbackListPage() {
 
                       {/* Message preview */}
                       {feedback.message ? (
-                        <p className="text-sm text-foreground/90 line-clamp-2">
+                        <p className="text-body-sm text-foreground/90 line-clamp-2">
                           {feedback.message}
                         </p>
                       ) : feedback.imageUrl ? (

@@ -2,34 +2,19 @@
 
 import * as React from "react"
 import {
-	Toggle as SableToggle,
 	ToggleGroup as SableToggleGroup,
+	ToggleGroupItem as SableToggleGroupItem,
 } from "@cdecaire/sable"
 import { type VariantProps } from "class-variance-authority"
 
-import { cn } from "@/lib/utils"
 import { toggleVariants } from "@/components/ui/toggle"
+import { cn } from "@/lib/utils"
 
 /**
- * Migration shim (Phase 2 — Sable adoption).
+ * Compatibility wrapper over Sable's ToggleGroup family.
  *
- * <ToggleGroup> now renders @cdecaire/sable's ToggleGroup (Base UI ToggleGroup)
- * and <ToggleGroupItem> renders Sable's Toggle (Base UI Toggle). In the Base UI
- * model a group's items ARE Toggles carrying a `value` — Sable does NOT export a
- * separate `ToggleGroupItem`, so the item is shimmed here as a themed Toggle.
- *
- * Name/state adaptations (Radix → Base UI):
- *   - Radix `ToggleGroupPrimitive.Root` → Sable `ToggleGroup`
- *   - Radix `ToggleGroupPrimitive.Item` → Sable `Toggle`
- *   - pressed state attr `data-[state=on]` → `data-pressed` (via toggleVariants)
- *
- * The legacy `spacing` prop + segmented-rounding logic is PRESERVED unchanged:
- * the `--gap` CSS var and the `data-spacing` / `data-variant` / `data-size`
- * attributes still drive the same Tailwind selectors (`data-[spacing=0]:...`,
- * `data-[spacing=default]:data-[variant=outline]:shadow-xs`). These resolve
- * identically on the Base UI host since they are app-defined data attributes,
- * not Radix internals. (Zero call sites today — effectively dead — but kept
- * fully wired for consistency.)
+ * Sable 0.24 exports ToggleGroupItem as a shadcn/Radix-parity alias, so this
+ * file only keeps Desperse's legacy spacing and segmented rounding classes.
  */
 
 const ToggleGroupContext = React.createContext<
@@ -79,12 +64,12 @@ function ToggleGroupItem({
 	variant,
 	size,
 	...props
-}: React.ComponentProps<typeof SableToggle> &
+}: React.ComponentProps<typeof SableToggleGroupItem> &
 	VariantProps<typeof toggleVariants>) {
 	const context = React.useContext(ToggleGroupContext)
 
 	return (
-		<SableToggle
+		<SableToggleGroupItem
 			data-slot="toggle-group-item"
 			data-variant={context.variant || variant}
 			data-size={context.size || size}
@@ -101,7 +86,7 @@ function ToggleGroupItem({
 			{...props}
 		>
 			{children}
-		</SableToggle>
+		</SableToggleGroupItem>
 	)
 }
 

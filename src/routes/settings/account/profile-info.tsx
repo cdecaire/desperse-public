@@ -1,5 +1,13 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { Field } from '@cdecaire/sable'
+import {
+  Field,
+  Fieldset,
+  FieldsetContent,
+  FieldsetDescription,
+  FieldsetFooter,
+  FieldsetLegend,
+  Form,
+} from '@cdecaire/sable'
 import { Col, Columns, Row, Stack } from '@cdecaire/sable/layout'
 import { useEffect, useRef, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
@@ -340,30 +348,56 @@ function ProfileInfoPage() {
 
   return (
     <div className="pt-4 pb-12">
-        <PageHeader
-          title="Profile Info"
-          description={<>Update your public profile and username. Changes apply to your public profile at /profile/{profileData.user.slug}.</>}
-        />
+      <PageHeader
+        title="Profile Info"
+        description={<>Update your public profile and username. Changes apply to your public profile at /profile/{profileData.user.slug}.</>}
+      />
 
       <Stack gap={3}>
-        {/* Header Background Image */}
-        <Stack gap={2}>
-          <Stack gap={1}>
-            <Label>Header Background Image</Label>
-            <div className="relative h-48 md:h-64 rounded-[var(--radius-md)] overflow-hidden bg-gradient-to-br from-muted via-muted/80 to-muted/60 border border-border">
-              {headerBgUrl ? (
-                <img
-                  src={headerBgUrl}
-                  alt="Header background"
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <Icon name="image" variant="regular" className="text-4xl text-muted-foreground" />
-                </div>
+        <section className="space-y-3">
+          <div className="space-y-1">
+            <h2 className="text-title-lg">Header Background Image</h2>
+            <p className="text-body-sm text-muted-foreground">Recommended: 1200x400px. Max 5MB.</p>
+          </div>
+          <div className="relative h-48 md:h-64 w-full rounded-[var(--radius-md)] overflow-hidden bg-gradient-to-br from-muted via-muted/80 to-muted/60 border border-border/80">
+            {headerBgUrl ? (
+              <img
+                src={headerBgUrl}
+                alt="Header background"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center">
+                <Icon name="image" variant="regular" className="text-4xl text-muted-foreground" />
+              </div>
+            )}
+            {/* Mobile: always visible buttons at top right */}
+            <div className="absolute top-3 right-3 flex items-center gap-2 md:!hidden">
+              <Button
+                type="button"
+                variant="default"
+                disabled={headerBgUpload.isPending || isRemovingHeaderBg}
+                onClick={() => headerBgInputRef.current?.click()}
+              >
+                {headerBgUpload.isPending && <LoadingSpinner size="sm" className="mr-2" />}
+                {headerBgUrl ? 'Change image' : 'Upload image'}
+              </Button>
+              {headerBgUrl && (
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="icon"
+                  disabled={headerBgUpload.isPending || isRemovingHeaderBg}
+                  onClick={handleRemoveHeaderBg}
+                  aria-label="Remove header image"
+                >
+                  {isRemovingHeaderBg ? <LoadingSpinner size="sm" /> : <Icon name="xmark" />}
+                </Button>
               )}
-              {/* Mobile: always visible buttons at top right */}
-              <Row gap={1} align="center" className="absolute top-3 right-3 md:hidden">
+            </div>
+            {/* Desktop: hover overlay */}
+            <div className="absolute inset-0 bg-black/0 hover:bg-black/20 transition-colors hidden md:flex items-center justify-center opacity-0 hover:opacity-100">
+              <Row gap={1} align="center">
                 <Button
                   type="button"
                   variant="default"
@@ -386,219 +420,205 @@ function ProfileInfoPage() {
                   </Button>
                 )}
               </Row>
-              {/* Desktop: hover overlay */}
-              <div className="absolute inset-0 bg-black/0 hover:bg-black/20 transition-colors hidden md:flex items-center justify-center opacity-0 hover:opacity-100">
-                <Row gap={1} align="center">
-                  <Button
-                    type="button"
-                    variant="default"
-                    disabled={headerBgUpload.isPending || isRemovingHeaderBg}
-                    onClick={() => headerBgInputRef.current?.click()}
-                  >
-                    {headerBgUpload.isPending && <LoadingSpinner size="sm" className="mr-2" />}
-                    {headerBgUrl ? 'Change image' : 'Upload image'}
-                  </Button>
-                  {headerBgUrl && (
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      size="icon"
-                      disabled={headerBgUpload.isPending || isRemovingHeaderBg}
-                      onClick={handleRemoveHeaderBg}
-                      aria-label="Remove header image"
-                    >
-                      {isRemovingHeaderBg ? <LoadingSpinner size="sm" /> : <Icon name="xmark" />}
-                    </Button>
-                  )}
-                </Row>
-              </div>
-              <input
-                ref={headerBgInputRef}
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                className="hidden"
-                onChange={(e) => handleHeaderBgFileSelect(e.target.files?.[0])}
-              />
             </div>
-            <p className="text-caption text-muted-foreground">Recommended: 1200x400px. Max 5MB.</p>
-          </Stack>
-        </Stack>
-
-        {/* Avatar */}
-        <Stack gap={2}>
-          <Row align="center" justify="between" gap={2} className="rounded-[var(--radius-lg)] bg-white dark:bg-input/30 border border-input px-5 md:px-6 lg:px-8 py-4 md:py-5">
-            <Row align="center" gap={2} className="md:gap-5 min-w-0">
-              <div className="w-16 h-16 md:w-18 md:h-18 rounded-full overflow-hidden bg-background flex items-center justify-center shrink-0">
-                {avatarUrl ? (
-                  <img src={avatarUrl} alt="Avatar preview" className="w-full h-full object-cover" />
-                ) : (
-                  <Icon name="circle-user-circle-plus" variant="regular" className="text-2xl text-muted-foreground" />
-                )}
-              </div>
-              <Stack gap={0.25} className="min-w-0">
-                <p className="text-title-lg leading-tight truncate">
-                  {profileData.user.displayName || profileData.user.slug}
-                </p>
-                <p className="text-body-sm text-muted-foreground leading-tight truncate">@{profileData.user.slug}</p>
-              </Stack>
-            </Row>
-            <Row align="center" gap={1} className="shrink-0">
-              <Button
-                type="button"
-                variant="default"
-                disabled={avatarUpload.isPending || isRemovingAvatar}
-                onClick={() => fileInputRef.current?.click()}
-              >
-                {avatarUpload.isPending && <LoadingSpinner size="sm" className="mr-2" />}
-                {avatarUrl ? 'Change photo' : 'Upload photo'}
-              </Button>
-              <Button
-                type="button"
-                variant="destructive"
-                size="icon"
-                disabled={avatarUpload.isPending || isRemovingAvatar || !avatarUrl}
-                onClick={handleRemoveAvatar}
-                aria-label="Remove photo"
-              >
-                {isRemovingAvatar ? <LoadingSpinner size="sm" /> : <Icon name="xmark" />}
-              </Button>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                className="hidden"
-                onChange={(e) => handleAvatarFileSelect(e.target.files?.[0])}
-              />
-            </Row>
-          </Row>
-        </Stack>
-
-        <form onSubmit={handleProfileSubmit}>
-          <Stack gap={2.5}>
-          <Stack gap={1}>
-            <Label>Display name</Label>
-            <div className="relative">
-              <Input
-                value={displayName}
-                maxLength={50}
-                onChange={(e) => setDisplayName(e.target.value)}
-                placeholder="Display name"
-                className="pr-14"
-              />
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 text-caption text-muted-foreground pointer-events-none">
-                {displayName.length} / 50
-              </div>
-            </div>
-          </Stack>
-
-          <div>
-            <Label className="mb-2 block">Bio</Label>
-            <div className="relative">
-              <Textarea
-                value={bio}
-                maxLength={280}
-                onChange={(e) => setBio(e.target.value)}
-                placeholder="Tell the world about you"
-                rows={6}
-                className="min-h-[140px] pb-7"
-              />
-              <div className="absolute bottom-2 right-3 text-caption text-muted-foreground pointer-events-none">
-                {bio.length} / 280
-              </div>
-            </div>
-          </div>
-
-          <Field label="Website" description="Your portfolio or personal website">
-            <Input
-              type="url"
-              value={link}
-              onChange={(e) => setLink(e.target.value)}
-              placeholder="https://example.com"
-              maxLength={2048}
+            <input
+              ref={headerBgInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              className="hidden"
+              onChange={(e) => handleHeaderBgFileSelect(e.target.files?.[0])}
             />
-          </Field>
+          </div>
+        </section>
 
-          <Columns count={12} gap={2.5}>
-            <Col span={{ base: 12, md: 6 }}>
-              <Stack gap={1}>
-                <Label>X (Twitter)</Label>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm pointer-events-none">@</span>
-                  <Input
-                    value={twitterUsername}
-                    onChange={(e) => setTwitterUsername(e.target.value.replace(/^@/, ''))}
-                    placeholder="username"
-                    maxLength={15}
-                    className="pl-7"
-                  />
+        <Fieldset>
+          <FieldsetLegend>Avatar</FieldsetLegend>
+          <FieldsetDescription>
+            This image appears beside your posts, comments, and profile.
+          </FieldsetDescription>
+          <FieldsetContent>
+            <Row align="center" justify="between" gap={2}>
+              <Row align="center" gap={2} className="md:gap-5 min-w-0">
+                <div className="w-16 h-16 md:w-18 md:h-18 rounded-full overflow-hidden bg-background flex items-center justify-center shrink-0">
+                  {avatarUrl ? (
+                    <img src={avatarUrl} alt="Avatar preview" className="w-full h-full object-cover" />
+                  ) : (
+                    <Icon name="circle-user-circle-plus" variant="regular" className="text-2xl text-muted-foreground" />
+                  )}
                 </div>
-                <p className="text-caption text-muted-foreground">
-                  Your X username (without the @)
-                </p>
-              </Stack>
-            </Col>
+                <Stack gap={0.25} className="min-w-0">
+                  <p className="text-title-lg leading-tight truncate">
+                    {profileData.user.displayName || profileData.user.slug}
+                  </p>
+                  <p className="text-body-sm text-muted-foreground leading-tight truncate">@{profileData.user.slug}</p>
+                </Stack>
+              </Row>
+              <Row align="center" gap={1} className="shrink-0">
+                <Button
+                  type="button"
+                  variant="default"
+                  disabled={avatarUpload.isPending || isRemovingAvatar}
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  {avatarUpload.isPending && <LoadingSpinner size="sm" className="mr-2" />}
+                  {avatarUrl ? 'Change photo' : 'Upload photo'}
+                </Button>
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="icon"
+                  disabled={avatarUpload.isPending || isRemovingAvatar || !avatarUrl}
+                  onClick={handleRemoveAvatar}
+                  aria-label="Remove photo"
+                >
+                  {isRemovingAvatar ? <LoadingSpinner size="sm" /> : <Icon name="xmark" />}
+                </Button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  className="hidden"
+                  onChange={(e) => handleAvatarFileSelect(e.target.files?.[0])}
+                />
+              </Row>
+            </Row>
+          </FieldsetContent>
+        </Fieldset>
 
-            <Col span={{ base: 12, md: 6 }}>
-              <Stack gap={1}>
-                <Label>Instagram</Label>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm pointer-events-none">@</span>
-                  <Input
-                    value={instagramUsername}
-                    onChange={(e) => setInstagramUsername(e.target.value.replace(/^@/, ''))}
-                    placeholder="username"
-                    maxLength={30}
-                    className="pl-7"
-                  />
+        <Form className="gap-0" onSubmit={handleProfileSubmit}>
+          <Fieldset>
+            <FieldsetLegend>Public profile</FieldsetLegend>
+            <FieldsetDescription>
+              Update your display name, bio, links, and username.
+            </FieldsetDescription>
+            <FieldsetContent>
+              <Stack gap={2.5}>
+                <Stack gap={1}>
+                  <Label>Display name</Label>
+                  <div className="relative">
+                    <Input
+                      value={displayName}
+                      maxLength={50}
+                      onChange={(e) => setDisplayName(e.target.value)}
+                      placeholder="Display name"
+                      className="pr-14"
+                    />
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 text-caption text-muted-foreground pointer-events-none">
+                      {displayName.length} / 50
+                    </div>
+                  </div>
+                </Stack>
+
+                <div>
+                  <Label className="mb-2 block">Bio</Label>
+                  <div className="relative">
+                    <Textarea
+                      value={bio}
+                      maxLength={280}
+                      onChange={(e) => setBio(e.target.value)}
+                      placeholder="Tell the world about you"
+                      rows={6}
+                      className="min-h-[140px] pb-7"
+                    />
+                    <div className="absolute bottom-2 right-3 text-caption text-muted-foreground pointer-events-none">
+                      {bio.length} / 280
+                    </div>
+                  </div>
                 </div>
-                <p className="text-caption text-muted-foreground">
-                  Your Instagram username (without the @)
-                </p>
+
+                <Field label="Website" description="Your portfolio or personal website">
+                  <Input
+                    type="url"
+                    value={link}
+                    onChange={(e) => setLink(e.target.value)}
+                    placeholder="https://example.com"
+                    maxLength={2048}
+                  />
+                </Field>
+
+                <Columns count={12} gap={2.5}>
+                  <Col span={{ base: 12, md: 6 }}>
+                    <Stack gap={1}>
+                      <Label>X (Twitter)</Label>
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm pointer-events-none">@</span>
+                        <Input
+                          value={twitterUsername}
+                          onChange={(e) => setTwitterUsername(e.target.value.replace(/^@/, ''))}
+                          placeholder="username"
+                          maxLength={15}
+                          className="pl-7"
+                        />
+                      </div>
+                      <p className="text-caption text-muted-foreground">
+                        Your X username (without the @)
+                      </p>
+                    </Stack>
+                  </Col>
+
+                  <Col span={{ base: 12, md: 6 }}>
+                    <Stack gap={1}>
+                      <Label>Instagram</Label>
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm pointer-events-none">@</span>
+                        <Input
+                          value={instagramUsername}
+                          onChange={(e) => setInstagramUsername(e.target.value.replace(/^@/, ''))}
+                          placeholder="username"
+                          maxLength={30}
+                          className="pl-7"
+                        />
+                      </div>
+                      <p className="text-caption text-muted-foreground">
+                        Your Instagram username (without the @)
+                      </p>
+                    </Stack>
+                  </Col>
+                </Columns>
+
+                <Stack gap={1}>
+                  <Row align="center" gap={1}>
+                    <Label>Username</Label>
+                    {isUsernameLocked && nextChangeLabel ? (
+                      <span className="text-xs text-[var(--tone-warning)]">
+                        Next change available: {nextChangeLabel}
+                      </span>
+                    ) : null}
+                  </Row>
+                  <div className="relative">
+                    <Input
+                      value={username}
+                      maxLength={24}
+                      onChange={(e) => {
+                        setStatusMessage(null)
+                        setUsername(e.target.value.toLowerCase())
+                      }}
+                      placeholder="username"
+                      disabled={profileUpdate.isPending || isUsernameLocked}
+                      className="pr-14"
+                    />
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 text-caption text-muted-foreground pointer-events-none">
+                      {username.length} / 24
+                    </div>
+                  </div>
+                  <p className="text-caption text-muted-foreground">Lowercase a-z, 0-9, _ and . only</p>
+                  {statusMessage ? (
+                    <p className="text-xs text-[var(--tone-warning)]">{statusMessage}</p>
+                  ) : null}
+                </Stack>
               </Stack>
-            </Col>
-          </Columns>
+            </FieldsetContent>
 
-          <Stack gap={1}>
-            <Row align="center" gap={1}>
-              <Label>Username</Label>
-              {isUsernameLocked && nextChangeLabel ? (
-                <span className="text-xs text-[var(--tone-warning)]">
-                  Next change available: {nextChangeLabel}
-                </span>
-              ) : null}
-            </Row>
-            <div className="relative">
-              <Input
-                value={username}
-                maxLength={24}
-                onChange={(e) => {
-                  setStatusMessage(null)
-                  setUsername(e.target.value.toLowerCase())
-                }}
-                placeholder="username"
-                disabled={profileUpdate.isPending || isUsernameLocked}
-                className="pr-14"
-              />
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 text-caption text-muted-foreground pointer-events-none">
-                {username.length} / 24
-              </div>
-            </div>
-            <p className="text-caption text-muted-foreground">Lowercase a-z, 0-9, _ and . only</p>
-            {statusMessage ? (
-              <p className="text-xs text-[var(--tone-warning)]">{statusMessage}</p>
-            ) : null}
-          </Stack>
-
-          {isDirty && (
-            <Row justify="end">
-              <Button type="submit" disabled={isSavingProfile}>
-                {isSavingProfile ? <LoadingSpinner size="sm" className="mr-2" /> : null}
-                Save changes
-              </Button>
-            </Row>
-          )}
-          </Stack>
-        </form>
+            {isDirty && (
+              <FieldsetFooter>
+                <Button type="submit" disabled={isSavingProfile}>
+                  {isSavingProfile ? <LoadingSpinner size="sm" className="mr-2" /> : null}
+                  Save changes
+                </Button>
+              </FieldsetFooter>
+            )}
+          </Fieldset>
+        </Form>
       </Stack>
     </div>
   )
@@ -623,4 +643,3 @@ function ProfileInfoSkeleton() {
     </Stack>
   )
 }
-

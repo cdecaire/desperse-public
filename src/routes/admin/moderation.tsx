@@ -20,8 +20,18 @@ import {
 } from '@/components/ui/select'
 import { ModerationRowMenu } from '@/components/admin/ModerationRowMenu'
 import { Badge } from '@/components/ui/badge'
-import { DataTable, Entity, StatusBadge } from '@cdecaire/sable'
-import { Row, Stack } from '@cdecaire/sable/layout'
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  DataTable,
+  Entity,
+  StatusBadge,
+} from '@cdecaire/sable'
+import { Grid, Row, Stack } from '@cdecaire/sable/layout'
 import { UserAvatar } from '@/components/shared/UserAvatar'
 import { Icon } from '@/components/ui/icon'
 import { detectMediaType } from '@/lib/media'
@@ -92,6 +102,44 @@ function ModerationListPage() {
     return filtered
   }, [data, statusFilter, typeFilter])
 
+  const moderationStats = useMemo(() => {
+    const rows = data ?? []
+    const openReports = rows.filter((report) => report.hasOpenReports).length
+    const resolvedReports = rows.length - openReports
+    const repeatItems = rows.filter((report) => ((report as any).userReportsCount || 0) > 1).length
+
+    return [
+      {
+        label: 'Open reports',
+        value: openReports,
+        badge: 'Needs review',
+        badgeVariant: 'warning' as const,
+        note: 'Items with at least one unresolved report',
+      },
+      {
+        label: 'Resolved',
+        value: resolvedReports,
+        badge: 'Cleared',
+        badgeVariant: 'success' as const,
+        note: 'Items with no open reports remaining',
+      },
+      {
+        label: 'Visible queue',
+        value: filteredData.length,
+        badge: 'Filtered',
+        badgeVariant: 'secondary' as const,
+        note: 'Rows matching the current filters',
+      },
+      {
+        label: 'Repeat items',
+        value: repeatItems,
+        badge: 'Watch',
+        badgeVariant: 'warning' as const,
+        note: 'Creators with multiple reported items',
+      },
+    ]
+  }, [data, filteredData.length])
+
   const handleRowClick = (report: typeof filteredData[0]) => {
     const isComment = report.contentType === 'comment'
     const isDmThread = report.contentType === 'dm_thread'
@@ -126,6 +174,25 @@ function ModerationListPage() {
             Review and moderate reported posts.
           </p>
         </Stack>
+
+        <Grid cols={{ base: 1, sm: 2, xl: 4 }} gap={3} className="mb-6">
+          {moderationStats.map((stat) => (
+            <Card key={stat.label} density="compact">
+              <CardHeader>
+                <CardDescription>{stat.label}</CardDescription>
+                <CardTitle className="text-mono-xl">{stat.value}</CardTitle>
+                <CardAction>
+                  <Badge variant={stat.badgeVariant} size="sm">
+                    {stat.badge}
+                  </Badge>
+                </CardAction>
+              </CardHeader>
+              <CardContent>
+                <p className="text-body-xs text-muted-foreground">{stat.note}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </Grid>
 
         {/* Filters */}
         <Row wrap className="gap-3 mb-4">
@@ -197,7 +264,19 @@ function ModerationListPage() {
         )}
 
         {filteredData && filteredData.length > 0 && (
-          <div className="border rounded-lg overflow-hidden">
+          <Card>
+            <CardHeader>
+              <CardTitle>Report queue</CardTitle>
+              <CardDescription>
+                Sorted by latest report by default.
+              </CardDescription>
+              <CardAction>
+                <Badge variant="secondary" size="sm">
+                  {filteredData.length} rows
+                </Badge>
+              </CardAction>
+            </CardHeader>
+            <CardContent className="p-0">
             <DataTable<typeof filteredData[0]>
               data={filteredData}
               rowKey={(report) => {
@@ -283,7 +362,7 @@ function ModerationListPage() {
                     const isComment = report.contentType === 'comment'
                     const isDmThread = report.contentType === 'dm_thread'
                     return (
-                      <p className="text-sm text-foreground/90 line-clamp-2">
+                      <p className="text-body-sm text-foreground/90 line-clamp-2">
                         {isDmThread ? report.contentText : isComment ? report.contentText : report.caption || '(No caption)'}
                       </p>
                     )
@@ -310,7 +389,7 @@ function ModerationListPage() {
                   sortValue: (report) => report.reportCount,
                   className: 'whitespace-nowrap',
                   cell: (report) => (
-                    <span className="font-medium">{report.reportCount}</span>
+                    <span className="text-mono-caption text-foreground">{report.reportCount}</span>
                   ),
                 },
                 {
@@ -355,13 +434,13 @@ function ModerationListPage() {
                       </div>
                       {/* Mint status for posts */}
                       {report.contentType === 'post' && (report as any).isMinted && (
-                        <span className="text-[10px] text-muted-foreground">
+                        <span className="text-mono-caption text-muted-foreground">
                           Minted: {(report as any).currentSupply || 0}{report.maxSupply ? `/${report.maxSupply}` : ''}
                         </span>
                       )}
                       {/* Repeat offender indicator */}
                       {((report as any).userReportsCount || 0) > 1 && (
-                        <span className="text-[10px] text-tone-warning">
+                        <span className="text-body-xs text-tone-warning">
                           {(report as any).userReportsCount} reported items
                         </span>
                       )}
@@ -421,7 +500,8 @@ function ModerationListPage() {
                 },
               ]}
             />
-          </div>
+            </CardContent>
+          </Card>
         )}
       </div>
     </div>

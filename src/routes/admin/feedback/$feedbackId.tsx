@@ -114,7 +114,7 @@ function FeedbackDetailPage() {
                   )}
                 </div>
                 <div>
-                  <p className="font-semibold">
+                  <p className="text-label-md">
                     {feedback.displayName || feedback.user?.displayName || `@${feedback.user?.usernameSlug}` || 'Unknown'}
                   </p>
                   {feedback.user?.usernameSlug && (
@@ -208,7 +208,7 @@ function FeedbackDetailPage() {
               {feedback.appVersion && (
                 <Row align="start" gap={1}>
                   <span className="text-muted-foreground shrink-0 w-20">Version:</span>
-                  <span className="font-mono text-xs bg-muted px-2 py-0.5 rounded">
+                  <span className="text-mono-caption bg-muted px-2 py-0.5 rounded">
                     {feedback.appVersion}
                   </span>
                 </Row>

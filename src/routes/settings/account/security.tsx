@@ -1,4 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router'
+import {
+  Fieldset,
+  FieldsetContent,
+  FieldsetDescription,
+  FieldsetLegend,
+} from '@cdecaire/sable'
 import { Stack } from '@cdecaire/sable/layout'
 import { PageHeader } from '@/components/shared/PageHeader'
 
@@ -14,10 +20,15 @@ function SecurityPage() {
         description="Manage two-factor authentication, session controls, and recovery in the future."
       />
 
-      <div className="rounded-2xl border border-border/70 bg-card p-4 md:p-6">
-        <p className="text-body-sm text-muted-foreground">Security settings coming soon.</p>
-      </div>
+      <Fieldset>
+        <FieldsetLegend>Account protection</FieldsetLegend>
+        <FieldsetDescription>
+          Session controls and recovery tools will live here.
+        </FieldsetDescription>
+        <FieldsetContent>
+          <p className="text-body-sm text-muted-foreground">Security settings coming soon.</p>
+        </FieldsetContent>
+      </Fieldset>
     </Stack>
   )
 }
-

@@ -1,5 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Row, Stack } from '@cdecaire/sable/layout'
+import {
+  Fieldset,
+  FieldsetContent,
+  FieldsetDescription,
+  FieldsetLegend,
+} from '@cdecaire/sable'
 import { usePreferences } from '@/hooks/usePreferences'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { Switch } from '@/components/ui/switch'
@@ -35,13 +41,18 @@ function NotificationsSettingsPage() {
         description="Choose which notifications you want to receive."
       />
 
-      <div className="rounded-[var(--radius-lg)] bg-white dark:bg-input/30 border border-input px-5 md:px-6 lg:px-8 py-4 md:py-5">
+      <Fieldset>
+        <FieldsetLegend>Notification events</FieldsetLegend>
+        <FieldsetDescription>
+          Control which activity appears in your notification stream.
+        </FieldsetDescription>
+        <FieldsetContent>
         {isLoading ? (
           <Row justify="center" className="py-4">
             <LoadingSpinner />
           </Row>
         ) : !user ? (
-          <p className="text-sm text-muted-foreground py-2">
+          <p className="text-body-sm text-muted-foreground py-2">
             Sign in to manage notification preferences
           </p>
         ) : (
@@ -104,7 +115,8 @@ function NotificationsSettingsPage() {
             />
           </Stack>
         )}
-      </div>
+        </FieldsetContent>
+      </Fieldset>
     </Stack>
   )
 }

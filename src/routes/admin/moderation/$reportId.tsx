@@ -416,7 +416,7 @@ function ReportDetailPage() {
                 {/* Comment content */}
                 <div className="flex-1 min-w-0">
                   <Row align="center" gap={1} className="mb-1">
-                    <span className="font-semibold text-sm">
+                    <span className="text-label-md">
                       {commentDataResult.commenter.displayName || `@${commentDataResult.commenter.usernameSlug}`}
                     </span>
                     <span className="text-caption text-muted-foreground">
@@ -429,7 +429,7 @@ function ReportDetailPage() {
                     {commentDataResult.comment.isHidden && (
                       <>
                         <span className="text-caption text-muted-foreground">·</span>
-                        <span className="flex items-center gap-1 text-xs text-destructive">
+                        <span className="flex items-center gap-1 text-body-xs text-destructive">
                           <Icon name="eye-slash" variant="regular" />
                           <span>Hidden</span>
                         </span>
@@ -438,14 +438,14 @@ function ReportDetailPage() {
                     {commentDataResult.comment.isDeleted && (
                       <>
                         <span className="text-caption text-muted-foreground">·</span>
-                        <span className="flex items-center gap-1 text-xs text-destructive">
+                        <span className="flex items-center gap-1 text-body-xs text-destructive">
                           <Icon name="trash-xmark" variant="regular" />
                           <span>Deleted</span>
                         </span>
                       </>
                     )}
                   </Row>
-                  <p className="text-sm text-foreground whitespace-pre-wrap break-words">
+                  <p className="text-body-sm text-foreground whitespace-pre-wrap break-words">
                     {commentDataResult.comment.content}
                   </p>
                 </div>
@@ -490,7 +490,7 @@ function ReportDetailPage() {
 
                   {/* Creator name and metadata */}
                   <div className="flex-1 min-w-0">
-                    <span className="font-semibold text-sm truncate block">
+                    <span className="text-label-md truncate block">
                       {postDataResult.user.displayName || `@${postDataResult.user.usernameSlug}`}
                     </span>
                     <div className="flex items-center gap-1 text-caption text-muted-foreground">
@@ -506,7 +506,7 @@ function ReportDetailPage() {
                           <>
                             <span>·</span>
                             <span className={cn('flex items-center gap-1', typeMeta.badgeClass)}>
-                              <Icon name={typeMeta.icon.replace('fa-', '')} variant={typeMeta.iconStyle === 'solid' ? 'solid' : 'regular'} className="text-[10px]" />
+                              <Icon name={typeMeta.icon.replace('fa-', '')} variant={typeMeta.iconStyle === 'solid' ? 'solid' : 'regular'} className="text-body-xs" />
                               {label}
                             </span>
                           </>
@@ -588,20 +588,20 @@ function ReportDetailPage() {
                   <h3 className="text-label-lg mb-3">Moderator notes</h3>
                   <Stack gap={1}>
                     {isCommentReport && commentDataResult?.comment.hiddenReason && (
-                      <p className="text-sm text-foreground">
-                        <span className="font-semibold">Moderator</span>{' '}
+                      <p className="text-body-sm text-foreground">
+                        <span className="text-label-md">Moderator</span>{' '}
                         {commentDataResult.comment.hiddenReason}
                       </p>
                     )}
                     {isCommentReport && commentDataResult?.comment.deleteReason && (
-                      <p className="text-sm text-foreground">
-                        <span className="font-semibold">Admin</span>{' '}
+                      <p className="text-body-sm text-foreground">
+                        <span className="text-label-md">Admin</span>{' '}
                         {commentDataResult.comment.deleteReason}
                       </p>
                     )}
                     {!isCommentReport && postDataResult.post.hiddenReason && (
-                      <p className="text-sm text-foreground">
-                        <span className="font-semibold">
+                      <p className="text-body-sm text-foreground">
+                        <span className="text-label-md">
                           {postDataResult.post.hiddenByUser
                             ? postDataResult.post.hiddenByUser.displayName || `@${postDataResult.post.hiddenByUser.usernameSlug}`
                             : 'Moderator'}
@@ -610,8 +610,8 @@ function ReportDetailPage() {
                       </p>
                     )}
                     {!isCommentReport && postDataResult.post.deleteReason && (
-                      <p className="text-sm text-foreground">
-                        <span className="font-semibold">
+                      <p className="text-body-sm text-foreground">
+                        <span className="text-label-md">
                           {postDataResult.post.deletedByUser
                             ? postDataResult.post.deletedByUser.displayName || `@${postDataResult.post.deletedByUser.usernameSlug}`
                             : 'Admin'}
@@ -712,7 +712,7 @@ function ReportDetailPage() {
                   )}
                 </div>
                 <div>
-                  <span className="font-semibold text-sm">
+                  <span className="text-label-md">
                     {dmThreadDataResult.userA?.displayName || `@${dmThreadDataResult.userA?.usernameSlug}`}
                   </span>
                   <span className="text-caption text-muted-foreground ml-2">
@@ -724,7 +724,7 @@ function ReportDetailPage() {
               {/* Separator */}
               <Row align="center" gap={1} className="text-muted-foreground">
                 <Icon name="arrows-up-down" className="text-xs" />
-                <span className="text-xs">Conversation between</span>
+                <span className="text-body-xs">Conversation between</span>
               </Row>
 
               {/* User B */}
@@ -743,7 +743,7 @@ function ReportDetailPage() {
                   )}
                 </div>
                 <div>
-                  <span className="font-semibold text-sm">
+                  <span className="text-label-md">
                     {dmThreadDataResult.userB?.displayName || `@${dmThreadDataResult.userB?.usernameSlug}`}
                   </span>
                   <span className="text-caption text-muted-foreground ml-2">

@@ -6,7 +6,14 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { Icon } from '@/components/ui/icon'
-import { Choicebox, ChoiceboxGroup } from '@cdecaire/sable'
+import {
+  Choicebox,
+  ChoiceboxGroup,
+  Fieldset,
+  FieldsetContent,
+  FieldsetDescription,
+  FieldsetLegend,
+} from '@cdecaire/sable'
 import { Row, Stack } from '@cdecaire/sable/layout'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { PageHeader } from '@/components/shared/PageHeader'
@@ -57,8 +64,16 @@ function AppSettingsPage() {
           description="Configure your theme and blockchain explorer preferences."
         />
 
-      {/* Theme Setting */}
-      <div className="rounded-[var(--radius-lg)] bg-white dark:bg-input/30 border border-input px-5 md:px-6 lg:px-8 py-4 md:py-5">
+      <Fieldset>
+        <FieldsetLegend>Theme</FieldsetLegend>
+        <FieldsetDescription>
+          {isSystemTheme
+            ? `System (${activeTheme === 'light' ? 'Light' : 'Dark'})`
+            : activeTheme === 'light'
+              ? 'Light mode'
+              : 'Dark mode'}
+        </FieldsetDescription>
+        <FieldsetContent>
         <Row align="center" justify="between">
           <Row align="center" gap={1.5}>
             <Icon
@@ -66,16 +81,7 @@ function AppSettingsPage() {
               variant="regular"
               className="w-5 text-center text-muted-foreground"
             />
-            <Stack gap={0}>
-              <span className="text-label-lg">Theme</span>
-              <span className="text-caption text-muted-foreground">
-                {isSystemTheme
-                  ? `System (${activeTheme === 'light' ? 'Light' : 'Dark'})`
-                  : activeTheme === 'light'
-                    ? 'Light mode'
-                    : 'Dark mode'}
-              </span>
-            </Stack>
+            <span className="text-label-lg">Appearance</span>
           </Row>
           <Row align="center" gap={1.5}>
             <Row align="center" gap={1.5}>
@@ -104,19 +110,19 @@ function AppSettingsPage() {
             />
           </Row>
         </Row>
-      </div>
+        </FieldsetContent>
+      </Fieldset>
 
-      {/* Explorer Preference */}
-      <div className="rounded-[var(--radius-lg)] bg-white dark:bg-input/30 border border-input px-5 md:px-6 lg:px-8 py-4 md:py-5">
-        <Row align="center" gap={1.5} className="mb-4">
-          <Icon name="arrow-up-right-from-square" variant="regular" className="w-5 text-center text-muted-foreground" />
-          <Stack gap={0}>
-            <span className="text-label-lg">Blockchain Explorer</span>
-            <span className="text-caption text-muted-foreground">
-              Choose which explorer to use for transaction links
-            </span>
-          </Stack>
-        </Row>
+      <Fieldset>
+        <FieldsetLegend>Blockchain Explorer</FieldsetLegend>
+        <FieldsetDescription>
+          Choose which explorer to use for transaction links.
+        </FieldsetDescription>
+        <FieldsetContent>
+          <Row align="center" gap={1.5}>
+            <Icon name="arrow-up-right-from-square" variant="regular" className="w-5 text-center text-muted-foreground" />
+            <span className="text-label-lg">Default explorer</span>
+          </Row>
 
         {isLoading ? (
           <Row justify="center" className="py-4">
@@ -142,7 +148,8 @@ function AppSettingsPage() {
             ))}
           </ChoiceboxGroup>
         )}
-      </div>
+        </FieldsetContent>
+      </Fieldset>
 
     </Stack>
   )

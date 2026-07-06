@@ -88,19 +88,26 @@ export default function AppShell({ children }: AppShellProps) {
 
   // Pages that render their own MobileHeader hide the global AppHeader on mobile.
   const isSettingsIndexPage = currentPath === '/settings' || currentPath === '/settings/'
+  const isSettingsHelpPage = currentPath === '/settings/help' || currentPath.startsWith('/settings/help/')
   const isAccountDetailPage =
     currentPath.startsWith('/settings/account/') &&
     currentPath !== '/settings/account' &&
     currentPath !== '/settings/account/'
   const isExplorePage = currentPath === '/explore' || currentPath === '/explore/'
   const isSearchPage = currentPath === '/search' || currentPath === '/search/'
-  const showTopNav = !isSettingsIndexPage && !isAccountDetailPage && !isExplorePage && !isSearchPage
+  const showTopNav =
+    !isSettingsIndexPage &&
+    !isSettingsHelpPage &&
+    !isAccountDetailPage &&
+    !isExplorePage &&
+    !isSearchPage
 
   // Bottom-nav visibility: hidden on settings-index/account-detail on phones (own
   // header), shown at tablet (no sidebar yet); hidden on post detail and other
   // users' profiles.
   const isSettingsPage = currentPath === '/settings' || currentPath.startsWith('/settings/')
-  const shouldHideBottomNavOnMobile = (isSettingsIndexPage || isAccountDetailPage) && !isTabletOrAbove
+  const shouldHideBottomNavOnMobile =
+    (isSettingsIndexPage || isSettingsHelpPage || isAccountDetailPage) && !isTabletOrAbove
   const shouldHideBottomNavForOtherRoutes =
     !isSettingsPage &&
     HIDE_BOTTOM_NAV_PREFIXES.some((route) => currentPath === route || currentPath.startsWith(`${route}/`))
@@ -119,12 +126,13 @@ export default function AppShell({ children }: AppShellProps) {
   // (SettingsLayout — a sticky sub-nav rail flush against the app Sidebar + a
   // capped content pane) OUTSIDE this grid, so the rail reads as chrome like the
   // Sidebar rather than as a sub-nav floating in the centered content grid. They
-  // get the bare branch below. The settings index/help still place their content
-  // directly on the 12-col grid via isWideLayout.
+  // get the bare branch below. The settings index still places its content directly
+  // on the 12-col grid via isWideLayout.
   const isSettingsAccountRoute = currentPath.startsWith('/settings/account')
   const isAdminRoute = currentPath.startsWith('/admin')
-  const ownsRailLayout = isSettingsAccountRoute || isAdminRoute
-  const isWideLayout = currentPath.startsWith('/settings') && !isSettingsAccountRoute
+  const ownsRailLayout = isSettingsAccountRoute || isSettingsHelpPage || isAdminRoute
+  const isWideLayout =
+    currentPath.startsWith('/settings') && !isSettingsAccountRoute && !isSettingsHelpPage
 
   return (
     <MessagingProvider>

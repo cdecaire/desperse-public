@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { Col, Grid, Row, Stack } from '@cdecaire/sable/layout'
+import { Grid, Row, Stack } from '@cdecaire/sable/layout'
 import { AuthGuard } from '@/components/shared/AuthGuard'
 import SettingsNav from '@/components/settings/SettingsNav'
+import { SettingsLayout } from '@/components/layout/SettingsLayout'
 import { Icon } from '@/components/ui/icon'
 
 export const Route = createFileRoute('/settings/help')({
@@ -11,21 +12,7 @@ export const Route = createFileRoute('/settings/help')({
 function HelpPage() {
   return (
     <AuthGuard>
-      {/* Sidebar + content are placed directly on AppShell's 12-column grid
-          (matching /settings/account) — a bare flex layout would auto-place into
-          a single grid column and squish to 1/12 width. */}
-      <Col
-        span={{ base: 12, md: 4, xl: 3, '2xl': 2 }}
-        start={{ md: 1, xl: 2, '2xl': 3 }}
-        className="hidden md:block"
-      >
-        <div className="sticky top-4">
-          <SettingsNav variant="desktop" />
-        </div>
-      </Col>
-
-      <Col span={{ base: 12, md: 8, xl: 7, '2xl': 6 }} start={{ md: 5 }} className="min-w-0">
-        {/* Mobile: Back button header with PWA safe-area support */}
+      <SettingsLayout nav={<SettingsNav variant="desktop" />}>
         <header
           className="md:hidden fixed top-0 left-0 right-0 z-(--z-nav) w-full border-b bg-background"
           style={{ paddingTop: 'env(safe-area-inset-top)' }}
@@ -47,8 +34,8 @@ function HelpPage() {
           </div>
         </header>
 
-        <section className="pt-settings-header md:pt-0">
-          <Stack gap={3} className="pt-4">
+        <section className="pt-settings-header md:pt-4 pb-12">
+          <Stack gap={3}>
             <Stack gap={1}>
               <h1 className="hidden md:block text-heading-3">Help</h1>
               <p className="text-body-sm text-muted-foreground">
@@ -56,8 +43,7 @@ function HelpPage() {
               </p>
             </Stack>
 
-            <Grid cols={{ base: 1, md: 2 }} gap={2}>
-              {/* Support */}
+            <Grid cols={{ base: 1, lg: 2 }} gap={2.5}>
               <Stack gap={0} className="rounded-xl border border-border/60 bg-card p-5">
                 <Row align="center" justify="between" className="mb-2">
                   <p className="text-title-lg">Support</p>
@@ -86,7 +72,6 @@ function HelpPage() {
                 </Stack>
               </Stack>
 
-              {/* Fees & Pricing */}
               <Stack gap={0} className="rounded-xl border border-border/60 bg-card p-5">
                 <Row align="center" justify="between" className="mb-2">
                   <p className="text-title-lg">Fees & Pricing</p>
@@ -106,7 +91,6 @@ function HelpPage() {
                 </div>
               </Stack>
 
-              {/* About Desperse */}
               <Stack gap={0} className="rounded-xl border border-border/60 bg-card p-5">
                 <Row align="center" justify="between" className="mb-2">
                   <p className="text-title-lg">About Desperse</p>
@@ -126,7 +110,6 @@ function HelpPage() {
                 </div>
               </Stack>
 
-              {/* Changelog */}
               <Stack gap={0} className="rounded-xl border border-border/60 bg-card p-5">
                 <Row align="center" justify="between" className="mb-2">
                   <p className="text-title-lg">Changelog</p>
@@ -146,7 +129,6 @@ function HelpPage() {
                 </div>
               </Stack>
 
-              {/* Legal */}
               <Stack gap={0} className="rounded-xl border border-border/60 bg-card p-5">
                 <Row align="center" justify="between" className="mb-2">
                   <p className="text-title-lg">Legal</p>
@@ -175,7 +157,7 @@ function HelpPage() {
             </Grid>
           </Stack>
         </section>
-      </Col>
+      </SettingsLayout>
     </AuthGuard>
   )
 }

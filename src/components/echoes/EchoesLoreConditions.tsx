@@ -49,7 +49,7 @@ const CONDITIONS = [
 	{
 		name: "Echo Classification",
 		explanation:
-			"The bio or continuity type of the Echo. Human, Augmented, Cyborg, Synth, or Ghost-Class.",
+			"The bio or continuity type of the Echo. Human, Augmented, Synth, or Ghost-Class.",
 		pct: 8,
 		accent: "nx-text-secondary",
 		border: "border-[var(--nx-secondary)]",

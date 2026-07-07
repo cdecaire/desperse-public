@@ -10,7 +10,7 @@ import {
   cancelPendingPurchase,
   retryFulfillment,
 } from '@/server/functions/editions';
-import { getExplorerUrl } from '@/server/functions/preferences';
+import { getExplorerUrl } from '@/lib/user-preferences';
 import { usePreferences } from '@/hooks/usePreferences';
 import { useWallets as useSolanaWallets, useSignTransaction } from '@privy-io/react-auth/solana';
 import { useConnectWallet } from '@privy-io/react-auth';
@@ -1149,4 +1149,3 @@ function Spinner() {
 }
 
 export default BuyButton;
-

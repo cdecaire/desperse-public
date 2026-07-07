@@ -69,14 +69,11 @@ export default function MoreMenu({ variant = 'sidebar' }: MoreMenuProps) {
         <Link
           to="/settings"
           onClick={() => setIsOpen(false)}
-          className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-accent dark:hover:bg-zinc-800 rounded-md hover-fade"
+          className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-accent hover:text-accent-foreground rounded-md hover-fade"
           role="menuitem"
         >
           <Icon name="user-gear" variant="regular" className="w-5 text-center" />
-          <div className="flex flex-col">
-            <span className="text-sm font-medium leading-none">Settings</span>
-            <span className="text-xs text-muted-foreground leading-none">Account, preferences, help</span>
-          </div>
+          <span className="text-sm font-medium">Settings</span>
         </Link>
       )}
 
@@ -85,13 +82,13 @@ export default function MoreMenu({ variant = 'sidebar' }: MoreMenuProps) {
         <Link
           to="/settings/account/app"
           onClick={() => setIsOpen(false)}
-          className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-accent dark:hover:bg-zinc-800 rounded-md hover-fade"
+          className="group flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-accent hover:text-accent-foreground rounded-md hover-fade"
           role="menuitem"
         >
           <Icon name={activeTheme === 'light' ? 'sun-bright' : 'moon'} variant="regular" className="w-5 text-center" />
           <div className="flex flex-col">
             <span className="text-sm font-medium leading-none">Theme</span>
-            <span className="text-xs text-muted-foreground leading-none">
+            <span className="text-xs text-muted-foreground leading-none group-hover:text-accent-foreground/75">
               System ({activeTheme === 'light' ? 'Light' : 'Dark'})
             </span>
           </div>
@@ -99,7 +96,7 @@ export default function MoreMenu({ variant = 'sidebar' }: MoreMenuProps) {
       ) : (
         <button
           onClick={handleThemeToggle}
-          className="flex items-center justify-between w-full px-4 py-3 text-left hover:bg-accent dark:hover:bg-zinc-800 rounded-md hover-fade"
+          className="flex items-center justify-between w-full px-4 py-3 text-left hover:bg-accent hover:text-accent-foreground rounded-md hover-fade"
           role="menuitem"
         >
           <div className="flex items-center gap-3">
@@ -117,7 +114,7 @@ export default function MoreMenu({ variant = 'sidebar' }: MoreMenuProps) {
       <Link
         to="/download"
         onClick={() => setIsOpen(false)}
-        className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-accent dark:hover:bg-zinc-800 rounded-md hover-fade"
+        className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-accent hover:text-accent-foreground rounded-md hover-fade"
         role="menuitem"
       >
         <Icon name="mobile-screen-button" variant="regular" className="w-5 text-center" />
@@ -129,7 +126,7 @@ export default function MoreMenu({ variant = 'sidebar' }: MoreMenuProps) {
           <Link
             to="/settings/help"
             onClick={() => setIsOpen(false)}
-            className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-accent dark:hover:bg-zinc-800 rounded-md hover-fade"
+            className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-accent hover:text-accent-foreground rounded-md hover-fade"
             role="menuitem"
           >
             <Icon name="circle-info" variant="regular" className="w-5 text-center" />
@@ -137,7 +134,7 @@ export default function MoreMenu({ variant = 'sidebar' }: MoreMenuProps) {
           </Link>
           <button
             onClick={handleOpenFeedback}
-            className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-accent dark:hover:bg-zinc-800 rounded-md hover-fade"
+            className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-accent hover:text-accent-foreground rounded-md hover-fade"
             role="menuitem"
           >
             <Icon name="message-lines" variant="regular" className="w-5 text-center" />
@@ -149,7 +146,7 @@ export default function MoreMenu({ variant = 'sidebar' }: MoreMenuProps) {
           <Link
             to="/privacy"
             onClick={() => setIsOpen(false)}
-            className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-accent dark:hover:bg-zinc-800 rounded-md hover-fade"
+            className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-accent hover:text-accent-foreground rounded-md hover-fade"
             role="menuitem"
           >
             <Icon name="shield-check" variant="regular" className="w-5 text-center" />
@@ -158,7 +155,7 @@ export default function MoreMenu({ variant = 'sidebar' }: MoreMenuProps) {
           <Link
             to="/terms"
             onClick={() => setIsOpen(false)}
-            className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-accent dark:hover:bg-zinc-800 rounded-md hover-fade"
+            className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-accent hover:text-accent-foreground rounded-md hover-fade"
             role="menuitem"
           >
             <Icon name="file-contract" variant="regular" className="w-5 text-center" />
@@ -172,7 +169,7 @@ export default function MoreMenu({ variant = 'sidebar' }: MoreMenuProps) {
       {isAuthenticated ? (
         <button
           onClick={handleLogout}
-          className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-accent dark:hover:bg-zinc-800 rounded-md hover-fade"
+          className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-accent hover:text-accent-foreground rounded-md hover-fade"
           role="menuitem"
         >
           <Icon name="arrow-right-from-bracket" variant="regular" className="w-5 text-center" />
@@ -181,7 +178,7 @@ export default function MoreMenu({ variant = 'sidebar' }: MoreMenuProps) {
       ) : (
         <button
           onClick={handleAuth}
-          className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-accent dark:hover:bg-zinc-800 rounded-md hover-fade"
+          className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-accent hover:text-accent-foreground rounded-md hover-fade"
           role="menuitem"
         >
           <Icon name="right-to-bracket" variant="regular" className="w-5 text-center" />
@@ -260,4 +257,3 @@ export default function MoreMenu({ variant = 'sidebar' }: MoreMenuProps) {
     </>
   )
 }
-

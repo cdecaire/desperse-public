@@ -32,7 +32,7 @@ import { Separator } from '@cdecaire/sable'
 import { getWalletOverview } from '@/server/functions/wallets'
 import { getResponsiveImageProps, resolveDecentralizedUri } from '@/lib/imageUrl'
 import { usePreferences } from '@/hooks/usePreferences'
-import { getExplorerUrl } from '@/server/functions/preferences'
+import { getExplorerUrl } from '@/lib/user-preferences'
 import { SeekerIcon } from '@/components/tipping/SeekerIcon'
 import { SendDialog } from '@/components/wallet/SendDialog'
 import { SOL_NATIVE_MINT, USDC_MAINNET_MINT, SKR_MINT } from '@/constants/tokens'
@@ -1199,4 +1199,3 @@ export default function Wallets({ variant = 'sidebar' }: WalletsProps) {
     </>
   )
 }
-

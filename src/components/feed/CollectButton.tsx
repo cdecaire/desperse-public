@@ -31,7 +31,7 @@ import {
   cancelPendingCollect,
   // submitCollectSignature, // No longer needed - server signs in prepareCollect
 } from '@/server/functions/collect';
-import { getExplorerUrl } from '@/server/functions/preferences';
+import { getExplorerUrl } from '@/lib/user-preferences';
 import { usePreferences } from '@/hooks/usePreferences';
 import { useWallets as useSolanaWallets } from '@privy-io/react-auth/solana';
 import { useNetworkStatus } from '@/hooks/useNetworkStatus';
@@ -644,4 +644,3 @@ function Spinner() {
 }
 
 export default CollectButton;
-

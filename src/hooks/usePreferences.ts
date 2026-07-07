@@ -4,12 +4,17 @@
  */
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { getUserPreferences, updateUserPreferences, defaultPreferences } from '@/server/functions/preferences'
-import type { UserPreferencesJson } from '@/server/db/schema'
-import type { ExplorerOption, ThemeOption } from '@/server/functions/preferences'
+import { getUserPreferences, updateUserPreferences } from '@/server/functions/preferences'
+import {
+  defaultPreferences,
+  type DesignThemeOption,
+  type ExplorerOption,
+  type ThemeOption,
+  type UserPreferencesJson,
+} from '@/lib/user-preferences'
 import { useAuth } from './useAuth'
 
-export type { UserPreferencesJson, ExplorerOption, ThemeOption }
+export type { DesignThemeOption, ExplorerOption, ThemeOption, UserPreferencesJson }
 
 export const preferencesQueryKey = ['userPreferences']
 
@@ -82,6 +87,10 @@ export function usePreferences() {
             ...current.notifications,
             ...updates.notifications,
           },
+          messaging: {
+            ...current.messaging,
+            ...updates.messaging,
+          },
         }
       })
 
@@ -103,6 +112,7 @@ export function usePreferences() {
 
   // Convenience methods for updating preferences
   const setTheme = (theme: ThemeOption) => updateMutation.mutate({ theme })
+  const setDesignTheme = (designTheme: DesignThemeOption) => updateMutation.mutate({ designTheme })
   const setExplorer = (explorer: ExplorerOption) => updateMutation.mutate({ explorer })
 
   // Notification preference setters
@@ -129,6 +139,7 @@ export function usePreferences() {
     updatePreferences: updateMutation.mutate,
     // Theme
     setTheme,
+    setDesignTheme,
     // Explorer
     setExplorer,
     // Notifications

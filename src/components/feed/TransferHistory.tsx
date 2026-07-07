@@ -9,7 +9,7 @@ import { Icon } from '@/components/ui/icon'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { Link } from '@tanstack/react-router'
 import { usePreferences } from '@/hooks/usePreferences'
-import { getExplorerUrl } from '@/server/functions/preferences'
+import { getExplorerUrl } from '@/lib/user-preferences'
 import { useAuth } from '@/hooks/useAuth'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
 

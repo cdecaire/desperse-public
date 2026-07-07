@@ -51,10 +51,11 @@ function SettingsIndexPage() {
                       <Link
                         key={item.path}
                         to={item.path}
+                        data-active={isActive ? '' : undefined}
                         className={`flex items-center gap-3 px-4 py-3 mx-2 rounded-lg transition-colors ${
                           isActive
                             ? 'bg-accent text-accent-foreground'
-                            : 'hover:bg-accent hover:text-accent-foreground'
+                            : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                         }`}
                       >
                         <span className="w-6 h-6 grid place-items-center flex-shrink-0">
@@ -68,11 +69,21 @@ function SettingsIndexPage() {
                           <div className="text-title-sm leading-none">
                             {item.label}
                           </div>
-                          <div className="text-caption text-muted-foreground mt-1">
+                          <div
+                            className={`text-caption mt-1 ${
+                              isActive ? 'text-accent-foreground/70' : 'text-muted-foreground'
+                            }`}
+                          >
                             {item.description}
                           </div>
                         </div>
-                        <Icon name="chevron-right" variant="regular" className="text-muted-foreground text-sm" />
+                        <Icon
+                          name="chevron-right"
+                          variant="regular"
+                          className={`text-sm ${
+                            isActive ? 'text-accent-foreground/70' : 'text-muted-foreground'
+                          }`}
+                        />
                       </Link>
                     )
                   })}

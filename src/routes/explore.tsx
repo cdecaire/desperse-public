@@ -82,7 +82,7 @@ function ExplorePage() {
                 <button
                   type="button"
                   onClick={() => setFiltersCollapsed(false)}
-                  className="mb-5 hidden items-center gap-2 rounded-lg px-3 py-2 text-label-lg text-muted-foreground hover:bg-accent hover:text-foreground motion-interactive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring lg:inline-flex"
+                  className="mb-5 hidden items-center gap-2 rounded-lg px-3 py-2 text-label-lg text-muted-foreground hover:bg-muted hover:text-foreground motion-interactive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 lg:inline-flex"
                 >
                   <Icon name="filter" className="text-base" />
                   Show filters

@@ -8,6 +8,11 @@ import { useEffect, useRef, useState } from 'react'
 import { useTheme } from 'next-themes'
 import { usePrivy } from '@privy-io/react-auth'
 import { usePreferences } from '@/hooks/usePreferences'
+import {
+  isSableDesignThemeAvailable,
+  storeSableDesignTheme,
+  type SableDesignTheme,
+} from '@/lib/sable-theme'
 
 // Theme color values matching CSS custom properties
 const THEME_COLORS = {
@@ -56,9 +61,12 @@ function ThemeSyncInner() {
     if (dbTheme && dbTheme !== theme) {
       setTheme(dbTheme)
     }
+    if (isSableDesignThemeAvailable() && preferences.designTheme) {
+      storeSableDesignTheme(preferences.designTheme as SableDesignTheme)
+    }
     hasInitialized.current = true
-    lastSyncedTheme.current = theme
-  }, [isAuthenticated, isLoading, preferences.theme, theme, setTheme])
+    lastSyncedTheme.current = dbTheme ?? theme
+  }, [isAuthenticated, isLoading, preferences.designTheme, preferences.theme, theme, setTheme])
 
   // When local theme changes (user clicks toggle), save to database
   useEffect(() => {

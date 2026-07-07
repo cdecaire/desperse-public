@@ -114,6 +114,7 @@ export default function Sidebar() {
   return (
     <SableSidebar
       collapsed={collapsed}
+      data-app-sidebar
       // 64px collapsed width (see ITEM_ANCHOR — explicit px, not rem, since the
       // desktop root font is 14px) + a width transition for a crisp, fluid
       // open/close. Icons stay put; only the rail width animates.
@@ -134,14 +135,14 @@ export default function Sidebar() {
           {/* size-6 icon box, no ml offset — matches nav icon x so it doesn't
               shift when collapsing (px-3 + 12 = 32px = collapsed rail centre). */}
           <span className="grid size-6 shrink-0 place-items-center">
-            <Logo size={15} className="text-foreground" />
+            <Logo size={15} className="text-sidebar-primary" />
           </span>
           {/* Wordmark stays mounted and fades/collapses its width so it eases
               out in sync with the rail instead of popping. */}
           <span
             aria-hidden={collapsed}
             className={cn(
-              'text-xl font-extrabold whitespace-nowrap overflow-hidden transition-all duration-200 ease-out motion-reduce:transition-none',
+              'text-xl font-extrabold whitespace-nowrap overflow-hidden text-sidebar-primary transition-all duration-200 ease-out motion-reduce:transition-none',
               collapsed ? 'max-w-0 opacity-0' : 'max-w-[9rem] opacity-100',
             )}
           >

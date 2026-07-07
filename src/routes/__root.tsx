@@ -250,6 +250,13 @@ export const Route = createRootRoute({
               } else {
                 document.documentElement.classList.add('dark');
               }
+              var sableTheme = localStorage.getItem('sable-theme-id');
+              var isNativeShell = /Desperse-(iOS|Android)/i.test(navigator.userAgent || '');
+              if (!isNativeShell && (sableTheme === 'desperse' || sableTheme === 'dossier' || sableTheme === 'cove')) {
+                document.documentElement.setAttribute('data-sable-theme', sableTheme);
+              } else {
+                document.documentElement.setAttribute('data-sable-theme', 'desperse');
+              }
             } catch (e) {}
           })();
         `,

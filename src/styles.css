@@ -31,7 +31,7 @@ html {
 
 body {
   @apply m-0;
-  font-family: 'Figtree', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: var(--font-sans, 'Figtree', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
   font-weight: 500;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -44,14 +44,14 @@ body {
 }
 
 code {
-  font-family: 'DM Mono', source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+  font-family: var(--font-mono, 'DM Mono', source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace);
   /* Tabular figures so digits align in addresses, hashes, IDs. */
   font-variant-numeric: tabular-nums;
 }
 
 .font-mono {
-  font-family: 'DM Mono', ui-monospace, SFMono-Regular, monospace;
+  font-family: var(--font-mono, 'DM Mono', ui-monospace, SFMono-Regular, monospace);
   font-variant-numeric: tabular-nums;
 }
 
@@ -128,7 +128,7 @@ code {
   input,
   select,
   textarea {
-    font-family: 'Figtree', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-family: var(--font-sans, 'Figtree', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
     font-weight: 500;
     line-height: 1.25;
     letter-spacing: -0.01em;
@@ -145,22 +145,24 @@ code {
     font-weight: 600;
   }
 
-  /* Darker button hover states in dark mode */
+  /* Theme-safe button hover states in dark mode */
   /* Note: Primary buttons use default hover:bg-primary/90 which provides subtle hover */
-  .dark button:hover[class*="bg-secondary"] {
-    background-color: var(--zinc-800) !important;
+  .dark button:hover[class~="bg-secondary"]:not([role="tab"]):not([data-active]):not([aria-current="page"]) {
+    background-color: color-mix(in oklch, var(--secondary) 88%, var(--foreground) 12%) !important;
     opacity: 1 !important;
   }
-  .dark button:hover[class*="bg-accent"] {
-    background-color: var(--zinc-800) !important;
+  .dark button:hover[class~="bg-accent"]:not([role="tab"]):not([data-active]):not([aria-current="page"]) {
+    background-color: color-mix(in oklch, var(--accent) 88%, var(--foreground) 12%) !important;
     opacity: 1 !important;
   }
-
-  /* Darker sidebar and menu hover states in dark mode */
-  /* Target sidebar navigation links and menu items */
+  .dark [role="tab"]:hover {
+    background-color: transparent !important;
+  }
+  /* Theme-safe app sidebar and menu hover states in dark mode */
+  /* Target primary app sidebar navigation links and menu items */
   /* Exclude primary buttons, no-hover-bg elements, and elements with bg-transparent hover from this rule */
-  .dark aside a:not([class*="bg-transparent"]):not(.no-hover-bg),
-  .dark aside button:not([class*="bg-primary"]):not(.no-hover-bg),
+  .dark [data-app-sidebar] a:not([class*="bg-transparent"]):not(.no-hover-bg),
+  .dark [data-app-sidebar] button:not([class*="bg-primary"]):not(.no-hover-bg),
   .dark [role="menu"] a:not(.no-hover-bg),
   .dark [role="menu"] button:not([class*="bg-primary"]):not(.no-hover-bg),
   .dark [role="menuitem"]:not(.no-hover-bg) {
@@ -170,15 +172,26 @@ code {
      (UserAvatar marks its root with data-avatar) when they're wrapped in a square
      link — the fill would otherwise show at the corners behind the round avatar.
      Covers both image AND default-icon avatars; icon action buttons are unaffected. */
-  .dark aside a:hover:not([class*="bg-transparent"]):not(.no-hover-bg):not(:has([data-avatar])),
-  .dark aside button:hover:not([class*="bg-primary"]):not(.no-hover-bg):not(:has([data-avatar])),
+  .dark [data-app-sidebar] a:hover:not([class*="bg-transparent"]):not(.no-hover-bg):not([data-active]):not([aria-current="page"]):not(:has([data-avatar])),
+  .dark [data-app-sidebar] button:hover:not([class*="bg-primary"]):not(.no-hover-bg):not([data-active]):not([aria-current="page"]):not(:has([data-avatar])),
+  .dark [data-app-sidebar] [role="button"]:hover:not(.no-hover-bg):not([data-active]):not([aria-current="page"]):not(:has([data-avatar])) {
+    background-color: var(--sidebar-accent) !important;
+  }
+  /* Current app route shares the same accent selected state as adjacent local rails. */
+  [data-app-sidebar] :is(a, button, [role="button"]):not(.no-hover-bg)[data-active],
+  [data-app-sidebar] :is(a, button, [role="button"]):not(.no-hover-bg)[aria-current="page"],
+  [data-app-sidebar] :is(a, button, [role="button"]):not(.no-hover-bg)[data-active]:hover,
+  [data-app-sidebar] :is(a, button, [role="button"]):not(.no-hover-bg)[aria-current="page"]:hover {
+    background-color: var(--accent) !important;
+    color: var(--accent-foreground) !important;
+  }
   .dark [role="menu"] a:hover:not(.no-hover-bg):not(:has([data-avatar])),
   .dark [role="menu"] button:hover:not([class*="bg-primary"]):not(.no-hover-bg):not(:has([data-avatar])),
   .dark [role="menuitem"]:hover:not(.no-hover-bg):not(:has([data-avatar])) {
-    background-color: var(--zinc-800) !important;
+    background-color: var(--accent) !important;
   }
 
-  /* Darker hover states for feed action buttons (like, comment, etc.) in dark mode */
+  /* Theme-safe hover states for feed action buttons (like, comment, etc.) in dark mode */
   /* Target buttons and links within post cards/articles */
   /* Exclude username links (those with hover:underline) and no-hover-bg elements from background hover */
   .dark article button:not(.no-hover-bg),
@@ -189,7 +202,7 @@ code {
   .dark article button:hover:not(.no-hover-bg):not(:has([data-avatar])),
   .dark article a:hover:not([class*="hover:underline"]):not(.no-hover-bg):not(:has([data-avatar])),
   .dark article [role="button"]:hover:not(.no-hover-bg):not(:has([data-avatar])) {
-    background-color: var(--zinc-900) !important;
+    background-color: var(--card) !important;
   }
   
   /* Exclude username links from background hover in dark mode */
@@ -246,7 +259,7 @@ code {
   --privy-color-background-2: var(--card);
   --privy-color-foreground-2: var(--card-foreground);
   --privy-color-foreground-3: var(--muted-foreground);
-  --privy-color-foreground-4: var(--zinc-600);
+  --privy-color-foreground-4: var(--muted-foreground);
   --privy-color-background-3: var(--muted);
   --privy-color-accent: #09090b;
   --privy-color-accent-foreground: #FFFFFF;
@@ -265,7 +278,7 @@ code {
   --privy-color-background-2: var(--card);
   --privy-color-foreground-2: var(--card-foreground);
   --privy-color-foreground-3: var(--muted-foreground);
-  --privy-color-foreground-4: var(--zinc-400);
+  --privy-color-foreground-4: var(--muted-foreground);
   --privy-color-background-3: var(--muted);
   --privy-color-accent: #fafafa;
   --privy-color-accent-foreground: #09090b;

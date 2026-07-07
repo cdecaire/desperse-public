@@ -141,7 +141,7 @@ export function ExploreFilterRail({
           <button
             type="button"
             onClick={onCollapse}
-            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-label-lg text-muted-foreground hover:bg-accent hover:text-foreground motion-interactive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-label-lg text-muted-foreground hover:bg-muted hover:text-foreground motion-interactive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40"
           >
             <span className="grid size-5 shrink-0 place-items-center">
               <Icon name="filter" className="text-base" />
@@ -164,11 +164,12 @@ export function ExploreFilterRail({
                     type="button"
                     onClick={() => selectView(v.id)}
                     aria-current={active ? 'page' : undefined}
+                    data-active={active ? '' : undefined}
                     className={cn(
-                      'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-label-lg motion-interactive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                      'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-label-lg motion-interactive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40',
                       active
-                        ? 'bg-accent text-foreground font-semibold'
-                        : 'text-muted-foreground hover:bg-accent hover:text-foreground',
+                        ? 'bg-accent text-accent-foreground font-semibold'
+                        : 'text-muted-foreground hover:bg-muted hover:text-foreground',
                     )}
                   >
                     <span className="grid size-5 shrink-0 place-items-center">
@@ -195,11 +196,12 @@ export function ExploreFilterRail({
                       type="button"
                       onClick={() => selectPostType(filter.id)}
                       aria-pressed={active}
+                      data-active={active ? '' : undefined}
                       className={cn(
-                        'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-label-lg motion-interactive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                        'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-label-lg motion-interactive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40',
                         active
-                          ? 'bg-accent text-foreground font-semibold'
-                          : 'text-muted-foreground hover:bg-accent hover:text-foreground',
+                          ? 'bg-accent text-accent-foreground font-semibold'
+                          : 'text-muted-foreground hover:bg-muted hover:text-foreground',
                       )}
                     >
                       <span className="grid size-5 shrink-0 place-items-center">
@@ -230,11 +232,12 @@ export function ExploreFilterRail({
                     type="button"
                     onClick={() => selectCategory(slug)}
                     aria-pressed={active}
+                    data-active={active ? '' : undefined}
                     className={cn(
-                      'block w-full rounded-lg px-3 py-1.5 text-left text-body-md motion-interactive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                      'block w-full rounded-lg px-3 py-1.5 text-left text-body-md motion-interactive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40',
                       active
-                        ? 'bg-accent text-foreground font-semibold'
-                        : 'text-muted-foreground hover:bg-accent hover:text-foreground',
+                        ? 'bg-accent text-accent-foreground font-semibold'
+                        : 'text-muted-foreground hover:bg-muted hover:text-foreground',
                     )}
                   >
                     {category}

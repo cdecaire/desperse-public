@@ -21,6 +21,7 @@ import {
   check,
 } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
+import type { UserPreferencesJson } from '@/lib/user-preferences';
 
 // Enums
 export const postTypeEnum = pgEnum('post_type_enum', ['post', 'collectible', 'edition']);
@@ -877,27 +878,7 @@ export type StorageType = 'centralized' | 'arweave';
 export type ArweaveStatus = 'unfunded' | 'funded' | 'uploading' | 'uploaded' | 'failed';
 
 // User preferences type (stored as JSONB in users.preferences)
-export type UserPreferencesJson = {
-  theme?: 'light' | 'dark' | 'system'
-  explorer?: 'orb' | 'solscan' | 'solana-explorer' | 'metaplex'
-  notifications?: {
-    follows?: boolean
-    likes?: boolean
-    comments?: boolean
-    collects?: boolean
-    purchases?: boolean
-    mentions?: boolean
-    messages?: boolean
-  }
-  messaging?: {
-    dmEnabled?: boolean // default true - master toggle
-    allowBuyers?: boolean // default true
-    allowCollectors?: boolean // default true
-    collectorMinCount?: number // default 3
-    allowTippers?: boolean // default true - allow tippers to message
-    tipMinAmount?: number // min SKR tokens to unlock DMs (human-readable, e.g. 5 = 5 SKR)
-  }
-}
+export type { UserPreferencesJson } from '@/lib/user-preferences';
 
 // ---------------------------------------------------------------------------
 // PFP Mints — Echoes PFP collection mint receipt log

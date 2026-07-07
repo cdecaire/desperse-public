@@ -81,10 +81,11 @@ export function AdminNav({ variant = 'desktop' }: AdminNavProps) {
               <Link
                 key={item.path}
                 to={item.path}
+                data-active={isActive ? '' : undefined}
                 className={`flex items-center gap-3 px-4 py-3 mx-2 rounded-lg hover-fade ${
                   isActive
                     ? 'bg-accent text-accent-foreground'
-                    : 'hover:bg-accent hover:text-accent-foreground'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 }`}
               >
                 <span className="w-6 h-6 grid place-items-center shrink-0">
@@ -94,14 +95,24 @@ export function AdminNav({ variant = 'desktop' }: AdminNavProps) {
                   <div className="text-sm font-medium leading-none">
                     {item.label}
                   </div>
-                  <div className="text-xs text-muted-foreground mt-1 leading-tight">
+                  <div
+                    className={`text-xs mt-1 leading-tight ${
+                      isActive ? 'text-accent-foreground/70' : 'text-muted-foreground'
+                    }`}
+                  >
                     {item.description}
                   </div>
                 </div>
                 {badgeCount > 0 && (
                   <NotificationBadge variant="destructive" count={badgeCount} />
                 )}
-                <Icon name="chevron-right" variant="regular" className="text-muted-foreground text-sm" />
+                <Icon
+                  name="chevron-right"
+                  variant="regular"
+                  className={`text-sm ${
+                    isActive ? 'text-accent-foreground/70' : 'text-muted-foreground'
+                  }`}
+                />
               </Link>
             )
           })}

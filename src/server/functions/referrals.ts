@@ -12,6 +12,13 @@ export const getReferralOwnerDashboard = createServerFn({
       return { success: false as const, error: 'Authentication required' }
     }
 
+    // Gated to moderators/admins during the invites rollout. Keep in sync with the
+    // RoleGuard on /settings/invites and the nav item in SettingsNav.
+    const { isModeratorOrAdmin } = await import('@/server/utils/auth-helpers')
+    if (!(await isModeratorOrAdmin(result.auth.userId))) {
+      return { success: false as const, error: 'Access denied' }
+    }
+
     const { getReferralOwnerDashboard: getReferralOwnerDashboardInternal } = await import('@/server/utils/referrals')
     const dashboard = await getReferralOwnerDashboardInternal(result.auth.userId)
 

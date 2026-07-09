@@ -28,18 +28,24 @@ describe('referral helpers', () => {
     expect(getCurrentReferralTierLabel(10)).toBe('Connector')
   })
 
-  it('builds a share card svg with invite details', () => {
+  it('builds a personalized share card svg with invite details', () => {
     const svg = buildReferralShareCardSvg({
       displayName: 'Carl',
+      handle: 'carl',
+      bio: 'Building things on Solana.',
+      avatarUrl: 'https://example.com/avatar.png',
       inviteCode: 'carl',
       inviteLink: 'https://desperse.app/i/carl',
       qrCodeUrl: 'https://example.com/qr.png',
       badgeLabel: 'First Signal',
     })
 
-    expect(svg).toContain('Join me on Desperse')
+    expect(svg).toContain('Carl')
+    expect(svg).toContain('@carl')
+    expect(svg).toContain('Building things on Solana.')
+    expect(svg).toContain('https://example.com/avatar.png')
     expect(svg).toContain('https://desperse.app/i/carl')
-    expect(svg).toContain('carl')
+    expect(svg).toContain('Scan to join')
     expect(svg).toContain('First Signal')
   })
 

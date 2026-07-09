@@ -1,7 +1,11 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { useEffect, useMemo, useState } from 'react'
+import { type ReactNode, useEffect, useMemo, useState } from 'react'
+import { Note, Progress } from '@cdecaire/sable'
+import { Row, Stack } from '@cdecaire/sable/layout'
 
 import { AuthGuard } from '@/components/shared/AuthGuard'
+import { RoleGuard } from '@/components/shared/RoleGuard'
+import { SettingsLayout } from '@/components/layout/SettingsLayout'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { PageHeader } from '@/components/shared/PageHeader'
 import SettingsNav from '@/components/settings/SettingsNav'
@@ -31,11 +35,12 @@ import {
   buildReferralQrCodeUrl,
   buildReferralShareCardSvg,
   buildReferralShareCopy,
+  INVITE_CARD_BG,
+  INVITE_QR_FG,
   getCurrentReferralTierLabel,
   getNextReferralMilestone,
   getReferralListState,
   getReferralStateBadgeVariant,
-  getReferralStateDescription,
   getReferralStateLabel,
 } from '@/lib/referrals'
 
@@ -43,14 +48,33 @@ export const Route = createFileRoute('/settings/invites')({
   component: InvitesPage,
 })
 
-type ShareSurfaceMode = 'card' | 'qr'
 type ReferralOwnerDashboard = NonNullable<ReturnType<typeof useReferralOwnerDashboard>['data']>
 type ReferralListItem = ReferralOwnerDashboard['referrals'][number]
+
+// A downloaded SVG can't resolve remote <image href> URLs, so every referenced
+// image must be inlined as a base64 data URI to make the file self-contained.
+async function fetchImageAsDataUri(url: string): Promise<string | null> {
+  try {
+    const res = await fetch(url)
+    if (!res.ok) return null
+    const blob = await res.blob()
+    return await new Promise<string | null>((resolve) => {
+      const reader = new FileReader()
+      reader.onloadend = () => resolve(typeof reader.result === 'string' ? reader.result : null)
+      reader.onerror = () => resolve(null)
+      reader.readAsDataURL(blob)
+    })
+  } catch {
+    return null
+  }
+}
 
 function InvitesPage() {
   return (
     <AuthGuard>
-      <InvitesPageContent />
+      <RoleGuard requiredRole="moderator" deniedMessage="Invites aren’t available yet.">
+        <InvitesPageContent />
+      </RoleGuard>
     </AuthGuard>
   )
 }
@@ -58,7 +82,6 @@ function InvitesPage() {
 function InvitesPageContent() {
   const { data: dashboard, isLoading, error } = useReferralOwnerDashboard()
   const [shareOpen, setShareOpen] = useState(false)
-  const [shareMode, setShareMode] = useState<ShareSurfaceMode>('card')
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
@@ -72,11 +95,11 @@ function InvitesPageContent() {
 
   const origin = typeof window === 'undefined' ? 'https://desperse.com' : window.location.origin
   const inviteLink = dashboard ? buildInviteLink(origin, dashboard.inviteCode) : ''
-  const qrCodeUrl = inviteLink ? buildReferralQrCodeUrl(inviteLink, 280) : ''
+  const qrCodeUrl = inviteLink ? buildReferralQrCodeUrl(inviteLink, 280, { color: INVITE_QR_FG, bgColor: INVITE_CARD_BG }) : ''
   const shareCopy = inviteLink ? buildReferralShareCopy(inviteLink) : ''
   const nextMilestone = dashboard ? getNextReferralMilestone(dashboard.activatedCount) : null
   const currentTier = dashboard ? getCurrentReferralTierLabel(dashboard.activatedCount) : 'Invite in progress'
-  const shareActionsLocked = Boolean(dashboard && dashboard.remainingSlots <= 0)
+  const pendingLimitReached = Boolean(dashboard && dashboard.remainingSlots <= 0)
 
   const groupedReferrals = useMemo(() => {
     if (!dashboard) return [] as Array<{ title: string; items: ReferralListItem[] }>
@@ -95,9 +118,7 @@ function InvitesPageContent() {
     ].filter((group) => group.items.length > 0)
   }, [dashboard])
 
-  const openShareSurface = (mode: ShareSurfaceMode) => {
-    if (shareActionsLocked) return
-    setShareMode(mode)
+  const openShareSurface = () => {
     setShareOpen(true)
   }
 
@@ -110,15 +131,30 @@ function InvitesPageContent() {
     }
   }
 
-  const downloadShareCard = () => {
+  const downloadShareCard = async () => {
     if (!dashboard) return
     try {
+      // Inline the QR (required) and avatar (best-effort) so the exported SVG
+      // renders standalone. Themed to the export panel so the QR sits on the card.
+      const [qrDataUri, avatarDataUri] = await Promise.all([
+        fetchImageAsDataUri(buildReferralQrCodeUrl(inviteLink, 512, { color: INVITE_QR_FG, bgColor: '111113' })),
+        dashboard.owner.avatarUrl ? fetchImageAsDataUri(dashboard.owner.avatarUrl) : Promise.resolve(null),
+      ])
+
+      if (!qrDataUri) {
+        toast.error('Could not build the share card right now.')
+        return
+      }
+
       const svg = buildReferralShareCardSvg({
         displayName: dashboard.owner.displayName,
+        handle: dashboard.owner.usernameSlug,
+        bio: dashboard.owner.bio,
+        avatarUrl: avatarDataUri,
         inviteCode: dashboard.inviteCode,
         inviteLink,
-        qrCodeUrl,
-        badgeLabel: currentTier,
+        qrCodeUrl: qrDataUri,
+        badgeLabel: dashboard.activatedCount > 0 ? currentTier : null,
       })
       const blob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' })
       const objectUrl = URL.createObjectURL(blob)
@@ -154,372 +190,361 @@ function InvitesPageContent() {
   }
 
   return (
-    <div className="flex flex-col md:flex-row items-start flex-1 min-h-screen">
-      <aside className="hidden md:flex md:w-64 border-r border-border/80 bg-background self-stretch">
-        <div className="sticky top-16 w-full">
-          <SettingsNav variant="desktop" />
-        </div>
-      </aside>
-
-      <div className="flex-1 w-full">
-        <header
-          className="md:hidden fixed top-0 left-0 right-0 z-40 w-full border-b bg-background"
-          style={{ paddingTop: 'env(safe-area-inset-top)' }}
-        >
-          <div className="grid grid-cols-3 items-center h-14 px-4">
-            <div className="flex items-center">
-              <Link
-                to="/settings"
-                className="inline-flex h-10 w-10 items-center justify-center rounded-md text-foreground"
-                aria-label="Back to settings"
-              >
-                <Icon name="arrow-left" />
-              </Link>
-            </div>
-            <div className="flex justify-center min-w-0 flex-1">
-              <h1 className="text-title-lg whitespace-nowrap truncate">Invites</h1>
-            </div>
-            <div aria-hidden="true" />
+    <SettingsLayout nav={<SettingsNav variant="desktop" />}>
+      <header
+        className="md:hidden fixed top-0 left-0 right-0 z-(--z-nav) w-full border-b bg-background"
+        style={{ paddingTop: 'env(safe-area-inset-top)' }}
+      >
+        <div className="grid grid-cols-3 items-center h-14 px-4">
+          <div className="flex items-center">
+            <Link
+              to="/settings"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-md text-foreground"
+              aria-label="Back to settings"
+            >
+              <Icon name="arrow-left" />
+            </Link>
           </div>
-        </header>
+          <div className="flex justify-center min-w-0 flex-1">
+            <h1 className="text-title-lg whitespace-nowrap truncate">Invites</h1>
+          </div>
+          <div aria-hidden="true" />
+        </div>
+      </header>
 
-        <section className="max-w-5xl space-y-6 px-4 md:px-6 lg:px-8 pt-settings-header">
-          <div className="pt-4 pb-10 space-y-6">
+      <section className="pt-settings-header md:pt-0">
+        <Stack gap={2.5} className="pt-4 pb-12">
             <PageHeader
               title="Invites"
               description="Bring real people into Desperse and track which invites actually activate. Recognition only. No cash value."
             />
 
             {isLoading ? (
-              <div className="rounded-2xl border border-border/60 bg-card p-10 flex items-center justify-center gap-3 text-muted-foreground">
-                <LoadingSpinner size="sm" />
-                <span>Loading your invite dashboard...</span>
-              </div>
+              <SettingsCard>
+                <Row gap={1.5} align="center" justify="center" className="py-6 text-muted-foreground">
+                  <LoadingSpinner size="sm" />
+                  <span className="text-body-sm">Loading your invites…</span>
+                </Row>
+              </SettingsCard>
             ) : error ? (
-              <div className="rounded-2xl border border-destructive/30 bg-card p-6 space-y-2">
-                <div className="flex items-center gap-2 text-destructive">
-                  <Icon name="triangle-exclamation" />
-                  <span className="font-medium">We could not load invites yet</span>
-                </div>
-                <p className="text-body-sm text-muted-foreground">
-                  Refresh and try again. If this keeps happening, continue from the main app and come back.
-                </p>
-              </div>
+              <Note variant="error">
+                We couldn’t load your invites. Refresh and try again.
+              </Note>
             ) : !dashboard ? (
-              <div className="rounded-2xl border border-border/60 bg-card p-6 text-body-sm text-muted-foreground">
-                No invite data yet.
-              </div>
+              <Note>No invite data yet.</Note>
             ) : (
-              <>
-                <div className="grid gap-4 lg:grid-cols-[1.35fr_1fr]">
-                  <section className="rounded-2xl border border-border/60 bg-card p-5 md:p-6 space-y-5">
-                    <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-                      <div className="space-y-2">
-                        <p className="text-title-lg">Share your invite</p>
-                        <p className="text-body-sm text-muted-foreground max-w-xl">
-                          Link and code both work. Activated invites count after someone completes their profile and follows a creator on Desperse.
-                        </p>
-                      </div>
-                      <Badge variant={shareActionsLocked ? 'warning' : 'outline'}>
-                        {dashboard.remainingSlots} of {dashboard.totalSlots} invite slots available
-                      </Badge>
-                    </div>
+              <Stack gap={2.5}>
+                {/* Your invite */}
+                <SettingsCard>
+                  <SectionHeader icon="paper-plane" title="Your invite" />
+                  <Stack gap={2}>
+                    <Stack gap={0.75}>
+                      <span className="text-body-sm text-muted-foreground">Invite link</span>
+                      <Input value={inviteLink} readOnly aria-label="Invite link" className="font-mono text-sm" />
+                    </Stack>
 
-                    <div className="grid gap-4 md:grid-cols-2">
-                      <div className="space-y-2">
-                        <p className="text-label-xs text-muted-foreground uppercase tracking-[0.12em]">Invite link</p>
-                        <div className="rounded-xl border border-border/60 bg-background px-4 py-3 text-sm break-all">
-                          {inviteLink}
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2">
-                          <p className="text-label-xs text-muted-foreground uppercase tracking-[0.12em]">Invite code</p>
-                          <Badge variant={dashboard.activatedCount >= 3 ? 'success' : 'secondary'} size="sm">
-                            {dashboard.activatedCount >= 3 ? 'Custom code unlocked' : 'Default code only'}
-                          </Badge>
-                        </div>
-                        <div className="rounded-xl border border-border/60 bg-background px-4 py-3 flex items-center justify-between gap-3">
-                          <span className="text-title-lg">{dashboard.inviteCode}</span>
-                          <Icon name="at" variant="regular" className="text-muted-foreground" />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                      <Button onClick={() => copyText(inviteLink, 'Invite link copied')} disabled={shareActionsLocked} className="gap-2">
+                    <Row gap={1.5} className="flex-col sm:flex-row">
+                      <Button onClick={() => copyText(inviteLink, 'Invite link copied')} className="gap-2 flex-1">
                         <Icon name="link-simple" variant="regular" />
                         Copy link
                       </Button>
-                      <Button onClick={() => copyText(dashboard.inviteCode, 'Invite code copied')} disabled={shareActionsLocked} variant="outline" className="gap-2">
-                        <Icon name="at" variant="regular" />
-                        Copy code
-                      </Button>
-                      <Button onClick={() => openShareSurface('qr')} disabled={shareActionsLocked} variant="outline" className="gap-2">
-                        <Icon name="image" variant="regular" />
-                        Show QR
-                      </Button>
-                      <Button onClick={() => openShareSurface('card')} disabled={shareActionsLocked} variant="outline" className="gap-2">
+                      <Button onClick={openShareSurface} variant="outline" className="gap-2 flex-1">
                         <Icon name="share-nodes" variant="regular" />
-                        Share card
+                        Share…
                       </Button>
-                    </div>
+                    </Row>
 
-                    {shareActionsLocked ? (
-                      <p className="text-body-sm text-muted-foreground">
-                        New share actions are locked right now. Capacity returns as pending invites activate, expire, or are removed after review.
-                      </p>
+                    <p className="text-body-sm text-muted-foreground">
+                      Your code is{' '}
+                      <button
+                        type="button"
+                        onClick={() => copyText(dashboard.inviteCode, 'Invite code copied')}
+                        className="font-medium text-foreground underline decoration-border underline-offset-4 hover:decoration-foreground transition-colors"
+                      >
+                        {dashboard.inviteCode}
+                      </button>
+                      . Link and code both work — invites are unlimited.
+                    </p>
+
+                    {pendingLimitReached ? (
+                      <Note variant="warning">
+                        You’ve reached the limit of {dashboard.totalSlots} invites waiting to activate at once. As they activate or expire, you can send more.
+                      </Note>
                     ) : null}
-                  </section>
+                  </Stack>
+                </SettingsCard>
 
-                  <section className="rounded-2xl border border-border/60 bg-card p-5 md:p-6 space-y-5">
-                    <div className="space-y-1">
-                      <p className="text-title-lg">Progress</p>
-                      <p className="text-body-sm text-muted-foreground">Activated invites are the metric that matters. Pending is visible, but secondary.</p>
-                    </div>
+                {/* Progress */}
+                <SettingsCard>
+                  <SectionHeader
+                    icon="arrow-up-right"
+                    title="Progress"
+                    aside={<span className="text-body-sm text-muted-foreground">{currentTier}</span>}
+                  />
+                  <Stack gap={2.5}>
+                    <Row gap={6} align="baseline">
+                      <Stack gap={0}>
+                        <span className="text-heading-1 text-foreground">{dashboard.activatedCount}</span>
+                        <span className="text-body-sm text-muted-foreground">Activated</span>
+                      </Stack>
+                      <Stack gap={0}>
+                        <span className="text-heading-1 text-muted-foreground">{dashboard.pendingCount}</span>
+                        <span className="text-body-sm text-muted-foreground">Pending</span>
+                      </Stack>
+                    </Row>
 
-                    <div className="grid gap-3 sm:grid-cols-2">
-                      <MetricCard label="Activated invites" value={dashboard.activatedCount} tone="primary" />
-                      <MetricCard label="Pending invites" value={dashboard.pendingCount} tone="muted" />
-                    </div>
+                    {nextMilestone ? (
+                      <Stack gap={1}>
+                        <Row justify="between" align="center">
+                          <span className="text-body-sm text-muted-foreground">Next: {nextMilestone.label}</span>
+                          <span className="text-body-sm text-muted-foreground">{dashboard.activatedCount}/{nextMilestone.target}</span>
+                        </Row>
+                        <Progress
+                          value={Math.min(100, (dashboard.activatedCount / nextMilestone.target) * 100)}
+                          aria-label={`Progress toward ${nextMilestone.label}`}
+                        />
+                        <span className="text-body-sm text-muted-foreground">
+                          {Math.max(0, nextMilestone.target - dashboard.activatedCount)} more activated invite{nextMilestone.target - dashboard.activatedCount === 1 ? '' : 's'} to unlock {nextMilestone.label.toLowerCase()}.
+                        </span>
+                      </Stack>
+                    ) : (
+                      <Note variant="success">You’ve cleared every current milestone. Top Connectors eligibility is unlocked.</Note>
+                    )}
+                  </Stack>
+                </SettingsCard>
 
-                    <div className="rounded-xl border border-border/60 bg-background p-4 space-y-3">
-                      <div className="flex items-center justify-between gap-3">
-                        <div>
-                          <p className="text-label-xs text-muted-foreground uppercase tracking-[0.12em]">Current tier</p>
-                          <p className="text-title-lg mt-1">{currentTier}</p>
-                        </div>
-                        <Badge variant="outline">{dashboard.activatedCount} activated</Badge>
-                      </div>
-
-                      {nextMilestone ? (
-                        <>
-                          <div className="space-y-2">
-                            <div className="flex items-center justify-between gap-3 text-sm">
-                              <span className="text-muted-foreground">Next unlock</span>
-                              <span>{nextMilestone.label} at {nextMilestone.target}</span>
-                            </div>
-                            <div className="h-2 rounded-full bg-muted overflow-hidden">
-                              <div
-                                className="h-full rounded-full bg-primary transition-all"
-                                style={{ width: `${Math.min(100, (dashboard.activatedCount / nextMilestone.target) * 100)}%` }}
-                              />
-                            </div>
-                          </div>
-                          <p className="text-body-sm text-muted-foreground">
-                            {Math.max(0, nextMilestone.target - dashboard.activatedCount)} more activated invite{nextMilestone.target - dashboard.activatedCount === 1 ? '' : 's'} to unlock {nextMilestone.label.toLowerCase()}.
-                          </p>
-                        </>
-                      ) : (
-                        <p className="text-body-sm text-muted-foreground">
-                          You’ve cleared the current MVP milestones. Top Connectors eligibility is already unlocked.
-                        </p>
-                      )}
-                    </div>
-                  </section>
-                </div>
-
-                <section className="rounded-2xl border border-border/60 bg-card p-5 md:p-6 space-y-5">
-                  <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
-                    <div>
-                      <p className="text-title-lg">Referral list</p>
-                      <p className="text-body-sm text-muted-foreground">
-                        Pending, activated, and removed states stay private here. Public surfaces only show status you have earned.
-                      </p>
-                    </div>
-                  </div>
+                {/* Invited people */}
+                <SettingsCard>
+                  <SectionHeader
+                    icon="users"
+                    title="Invited people"
+                    aside={dashboard.referrals.length > 0 ? <span className="text-body-sm text-muted-foreground">{dashboard.referrals.length}</span> : undefined}
+                  />
 
                   {dashboard.referrals.length === 0 ? (
-                    <div className="rounded-xl border border-dashed border-border/60 bg-background px-6 py-12 text-center">
-                      <p className="text-title-lg">Invite your first people into Desperse</p>
-                      <p className="text-body-sm text-muted-foreground mt-2 max-w-md mx-auto">
-                        Share your invite link. Referrals count after someone joins, completes their profile, and follows a creator.
+                    <Stack gap={1} align="center" className="py-8 text-center">
+                      <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
+                        <Icon name="user-plus" variant="regular" />
+                      </div>
+                      <span className="text-label-lg text-foreground">No invites yet</span>
+                      <p className="text-body-sm text-muted-foreground max-w-sm">
+                        Share your link to invite people in. They’ll appear here, and count once they complete their profile and follow a creator.
                       </p>
-                      <div className="mt-5 flex flex-col sm:flex-row items-center justify-center gap-3">
-                        <Button onClick={() => copyText(inviteLink, 'Invite link copied')} disabled={shareActionsLocked}>Copy invite link</Button>
-                        <Button onClick={() => openShareSurface('card')} disabled={shareActionsLocked} variant="outline">Open share card</Button>
-                      </div>
-                      <div className="mt-5 text-caption text-muted-foreground">
-                        <div>0/1 to First Signal</div>
-                        <div>{dashboard.remainingSlots} invite slots available</div>
-                      </div>
-                    </div>
+                      <Button onClick={() => copyText(inviteLink, 'Invite link copied')} className="gap-2 mt-1">
+                        <Icon name="link-simple" variant="regular" />
+                        Copy invite link
+                      </Button>
+                    </Stack>
                   ) : (
-                    <div className="space-y-6">
+                    <Stack gap={3}>
                       {groupedReferrals.map((group) => (
-                        <div key={group.title} className="space-y-3">
-                          <div className="flex items-center justify-between gap-3">
-                            <h2 className="text-title-sm">{group.title}</h2>
-                            <span className="text-caption text-muted-foreground">{group.items.length}</span>
-                          </div>
-                          <div className="space-y-3">
+                        <Stack gap={0} key={group.title}>
+                          <Row justify="between" align="center" className="mb-1">
+                            <span className="text-label-md text-muted-foreground">{group.title}</span>
+                            <span className="text-body-sm text-muted-foreground">{group.items.length}</span>
+                          </Row>
+                          <div>
                             {group.items.map((referral) => {
                               const listState = getReferralListState(referral.state)
                               const label = getReferralStateLabel(listState)
-                              const supportingCopy = getReferralStateDescription(listState)
                               const timestamp = referral.activatedAt || referral.expiredAt || referral.revokedAt || referral.rejectedAt || referral.createdAt
                               return (
-                                <div key={referral.id} className="rounded-xl border border-border/60 bg-background px-4 py-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                                  <div className="flex items-start gap-3 min-w-0">
+                                <Row key={referral.id} gap={2} align="center" justify="between" className="py-3 border-b border-border/50 last:border-b-0">
+                                  <Row gap={2} align="center" className="min-w-0">
                                     {referral.avatarUrl ? (
-                                      <img src={referral.avatarUrl} alt="" className="h-11 w-11 rounded-full object-cover border border-border/60" />
+                                      <img src={referral.avatarUrl} alt="" className="h-9 w-9 rounded-full object-cover shrink-0" />
                                     ) : (
-                                      <div className="h-11 w-11 rounded-full border border-border/60 bg-muted flex items-center justify-center text-muted-foreground shrink-0">
+                                      <div className="h-9 w-9 rounded-full bg-muted flex items-center justify-center text-muted-foreground shrink-0">
                                         <Icon name="user" variant="regular" />
                                       </div>
                                     )}
-                                    <div className="min-w-0 space-y-1.5">
-                                      <div className="flex flex-wrap items-center gap-2">
-                                        <span className="text-sm font-medium truncate">{referral.displayName || `@${referral.usernameSlug}`}</span>
-                                        <span className="text-sm text-muted-foreground truncate">@{referral.usernameSlug}</span>
-                                      </div>
-                                      <p className="text-body-sm text-muted-foreground">{supportingCopy}</p>
-                                    </div>
-                                  </div>
-                                  <div className="flex flex-col gap-2 items-start sm:items-end shrink-0">
-                                    <Badge variant={getReferralStateBadgeVariant(listState)}>{label}</Badge>
-                                    <span className="text-caption text-muted-foreground">{formatRelativeTime(timestamp)}</span>
-                                  </div>
-                                </div>
+                                    <Stack gap={0} className="min-w-0">
+                                      <span className="text-label-md truncate">{referral.displayName || `@${referral.usernameSlug}`}</span>
+                                      <span className="text-body-sm text-muted-foreground truncate">@{referral.usernameSlug}</span>
+                                    </Stack>
+                                  </Row>
+                                  <Stack gap={0.5} align="end" className="shrink-0">
+                                    <Badge variant={getReferralStateBadgeVariant(listState)} size="sm">{label}</Badge>
+                                    <span className="text-body-sm text-muted-foreground">{formatRelativeTime(timestamp)}</span>
+                                  </Stack>
+                                </Row>
                               )
                             })}
                           </div>
-                        </div>
+                        </Stack>
                       ))}
-                    </div>
+                    </Stack>
                   )}
-                </section>
+                </SettingsCard>
 
-                <section className="rounded-2xl border border-border/60 bg-card p-5 md:p-6 space-y-4">
+                {/* How invites work */}
+                <SettingsCard>
+                  <SectionHeader icon="circle-question" title="How invites work" />
                   <div>
-                    <p className="text-title-lg">Rules and FAQ</p>
-                    <p className="text-body-sm text-muted-foreground">Keep the language boring and clear. This is recognition, not a rewards program.</p>
+                    {INVITE_FAQ.map((faq) => (
+                      <Stack gap={0.5} key={faq.q} className="py-3 border-b border-border/50 last:border-b-0">
+                        <span className="text-label-md">{faq.q}</span>
+                        <span className="text-body-sm text-muted-foreground">{faq.a}</span>
+                      </Stack>
+                    ))}
                   </div>
-                  <div className="grid gap-3 md:grid-cols-2">
-                    <FaqItem
-                      title="What counts as activated?"
-                      body="An invite counts after the person joins, completes their profile, and follows a creator on Desperse. Signup alone does not count."
-                    />
-                    <FaqItem
-                      title="Why is something still pending?"
-                      body="Pending means the person joined from your invite but has not finished the activation steps yet."
-                    />
-                    <FaqItem
-                      title="Can progress be removed?"
-                      body="Yes. Spam, self-referrals, abuse, or review corrections can remove referral credit and any threshold-based status tied to it."
-                    />
-                    <FaqItem
-                      title="Any financial value?"
-                      body="Referral progress, badges, and status are recognition only. They have no cash value and are not transferable, sellable, redeemable, or exchangeable."
-                    />
-                  </div>
-                </section>
-              </>
+                </SettingsCard>
+              </Stack>
             )}
-          </div>
-        </section>
-      </div>
+        </Stack>
+      </section>
 
       {dashboard ? (
         <ShareSurface
           isMobile={isMobile}
-          mode={shareMode}
           open={shareOpen}
           onOpenChange={setShareOpen}
           ownerName={dashboard.owner.displayName}
+          ownerHandle={dashboard.owner.usernameSlug}
+          avatarUrl={dashboard.owner.avatarUrl}
+          headerBgUrl={dashboard.owner.headerBgUrl}
+          bio={dashboard.owner.bio}
           inviteCode={dashboard.inviteCode}
           inviteLink={inviteLink}
           qrCodeUrl={qrCodeUrl}
           shareCopy={shareCopy}
           badgeLabel={currentTier}
+          showBadge={dashboard.activatedCount > 0}
           onCopyCode={() => copyText(dashboard.inviteCode, 'Invite code copied')}
           onCopyLink={() => copyText(inviteLink, 'Invite link copied')}
-          onCopySuggested={() => copyText(shareCopy, 'Suggested share copy copied')}
+          onCopySuggested={() => copyText(shareCopy, 'Message copied')}
           onNativeShare={nativeShare}
           onDownload={downloadShareCard}
         />
       ) : null}
-    </div>
+    </SettingsLayout>
   )
 }
 
-function MetricCard({ label, value, tone }: { label: string; value: number; tone: 'primary' | 'muted' }) {
+const INVITE_FAQ = [
+  {
+    q: 'What counts as activated?',
+    a: 'An invite counts after the person joins, completes their profile, and follows a creator on Desperse. Signup alone does not count.',
+  },
+  {
+    q: 'Why is someone still pending?',
+    a: 'Pending means they joined from your invite but haven’t finished the activation steps yet.',
+  },
+  {
+    q: 'Can progress be removed?',
+    a: 'Yes. Spam, self-referrals, abuse, or review corrections can remove referral credit and any status tied to it.',
+  },
+  {
+    q: 'Is there any financial value?',
+    a: 'Progress, badges, and status are recognition only. They have no cash value and are not transferable, sellable, redeemable, or exchangeable.',
+  },
+] as const
+
+// Desperse settings card — matches the shell used across /settings/account/*.
+function SettingsCard({ children }: { children: ReactNode }) {
   return (
-    <div className="rounded-xl border border-border/60 bg-background p-4 space-y-1">
-      <p className="text-label-xs text-muted-foreground uppercase tracking-[0.12em]">{label}</p>
-      <p className={tone === 'primary' ? 'text-display-sm text-foreground' : 'text-display-sm text-muted-foreground'}>{value}</p>
+    <div className="rounded-[var(--radius-lg)] bg-white dark:bg-input/30 border border-input px-5 md:px-6 lg:px-8 py-5 md:py-6">
+      {children}
     </div>
   )
 }
 
-function FaqItem({ title, body }: { title: string; body: string }) {
+function SectionHeader({ icon, title, aside }: { icon: string; title: string; aside?: ReactNode }) {
   return (
-    <div className="rounded-xl border border-border/60 bg-background p-4 space-y-2">
-      <p className="text-sm font-medium">{title}</p>
-      <p className="text-body-sm text-muted-foreground">{body}</p>
-    </div>
+    <Row gap={1.5} align="center" justify="between" className="mb-4">
+      <Row gap={1.5} align="center">
+        <Icon name={icon} variant="regular" className="w-5 text-center text-muted-foreground" />
+        <span className="text-label-lg">{title}</span>
+      </Row>
+      {aside}
+    </Row>
   )
 }
 
-function ShareSurface(props: {
+type ShareSurfaceProps = {
   isMobile: boolean
-  mode: ShareSurfaceMode
   open: boolean
   onOpenChange: (open: boolean) => void
   ownerName: string
+  ownerHandle: string
+  avatarUrl: string | null
+  headerBgUrl: string | null
+  bio: string | null
   inviteCode: string
   inviteLink: string
   qrCodeUrl: string
   shareCopy: string
   badgeLabel: string
+  showBadge: boolean
   onCopyCode: () => void
   onCopyLink: () => void
   onCopySuggested: () => void
   onNativeShare: () => void
   onDownload: () => void
-}) {
-  const content = (
-    <div className="space-y-5">
-      <div className="rounded-2xl border border-border/60 bg-background p-4 space-y-4">
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <p className="text-title-sm">Preview</p>
-            <p className="text-body-sm text-muted-foreground">{props.mode === 'qr' ? 'QR first, plus link and code.' : 'Share card preview with deterministic export.'}</p>
-          </div>
-          <Badge variant="outline">{props.badgeLabel}</Badge>
-        </div>
-        <div className="rounded-[24px] border border-border/60 bg-zinc-950 text-zinc-50 p-5 space-y-4 overflow-hidden">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <p className="text-xl font-semibold">{props.ownerName}</p>
-              <p className="text-sm text-zinc-300">Join me on Desperse</p>
-            </div>
-            <Badge variant="secondary">{props.badgeLabel}</Badge>
-          </div>
-          <div className="grid gap-4 md:grid-cols-[1fr_168px] items-start">
-            <div className="space-y-3 min-w-0">
-              <div>
-                <p className="text-caption text-zinc-400">Invite code</p>
-                <p className="text-2xl font-semibold">{props.inviteCode}</p>
-              </div>
-              <div>
-                <p className="text-caption text-zinc-400">Invite link</p>
-                <p className="text-sm break-all text-zinc-200">{props.inviteLink}</p>
-              </div>
-              <p className="text-sm text-zinc-300">Publish, discover, and collect creative work.</p>
-            </div>
-            <div className="rounded-2xl bg-white p-3 w-[168px] mx-auto md:mx-0">
-              <img src={props.qrCodeUrl} alt="Invite QR code" className="w-full h-auto rounded-xl" />
-            </div>
-          </div>
-        </div>
+}
+
+// The recipient-facing invite card: the inviter's profile (header, avatar, bio)
+// paired with their code and a scannable QR. This is what someone actually sees.
+function InviteCard(props: ShareSurfaceProps) {
+  return (
+    <div className="rounded-2xl overflow-hidden bg-zinc-950 text-zinc-50 select-none">
+      <div className="relative h-24">
+        {props.headerBgUrl ? (
+          <img src={props.headerBgUrl} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        ) : (
+          <div className="absolute inset-0 bg-gradient-to-br from-[var(--tone-edition-dark)]/50 via-zinc-900 to-zinc-950" />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
+        {props.showBadge ? (
+          <span className="absolute top-3 right-3 rounded-full bg-zinc-950/70 backdrop-blur px-2.5 py-1 text-xs font-medium text-zinc-100">
+            {props.badgeLabel}
+          </span>
+        ) : null}
       </div>
 
+      <div className="relative z-10 px-5 -mt-9">
+        {props.avatarUrl ? (
+          <img src={props.avatarUrl} alt="" className="h-16 w-16 rounded-full object-cover ring-4 ring-zinc-950 bg-zinc-800" />
+        ) : (
+          <div className="h-16 w-16 rounded-full ring-4 ring-zinc-950 bg-zinc-800 flex items-center justify-center text-zinc-400">
+            <Icon name="user" variant="regular" />
+          </div>
+        )}
+        <p className="mt-2.5 text-lg font-semibold leading-tight">{props.ownerName}</p>
+        <p className="text-sm text-zinc-400">@{props.ownerHandle}</p>
+        {props.bio ? <p className="mt-2 text-sm text-zinc-300 line-clamp-2">{props.bio}</p> : null}
+      </div>
+
+      <div className="mt-4 px-5 py-4 border-t border-white/10">
+        <p className="text-xs text-zinc-500 mb-3">Join me on Desperse</p>
+        <div className="flex items-center justify-between gap-4">
+          <div className="min-w-0 space-y-2">
+            <div>
+              <p className="text-xs text-zinc-500">Invite code</p>
+              <p className="text-xl font-semibold leading-tight">{props.inviteCode}</p>
+            </div>
+            <p className="text-xs text-zinc-400 break-all">{props.inviteLink}</p>
+          </div>
+          <img src={props.qrCodeUrl} alt="Invite QR code" className="w-24 h-24 block shrink-0" />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function ShareSurface(props: ShareSurfaceProps) {
+  const content = (
+    <Stack gap={2.5}>
+      <Stack gap={1}>
+        <span className="text-body-sm text-muted-foreground">Preview</span>
+        <InviteCard {...props} />
+      </Stack>
+
       <div className="grid gap-4 md:grid-cols-2">
-        <div className="space-y-2">
-          <p className="text-sm font-medium">Invite link</p>
-          <Input value={props.inviteLink} readOnly />
-          <div className="flex gap-2">
+        <Stack gap={1}>
+          <span className="text-label-md">Invite link</span>
+          <Input value={props.inviteLink} readOnly aria-label="Invite link" className="font-mono text-sm" />
+          <Row gap={1.5}>
             <Button onClick={props.onCopyLink} variant="outline" className="gap-2 flex-1">
               <Icon name="link-simple" variant="regular" />
               Copy link
@@ -528,39 +553,34 @@ function ShareSurface(props: {
               <Icon name="at" variant="regular" />
               Copy code
             </Button>
-          </div>
-        </div>
-        <div className="space-y-2">
-          <p className="text-sm font-medium">Suggested share copy</p>
-          <div className="rounded-xl border border-border/60 bg-background px-4 py-3 text-sm text-muted-foreground min-h-[104px]">
+          </Row>
+        </Stack>
+        <Stack gap={1}>
+          <span className="text-label-md">Suggested message</span>
+          <div className="rounded-lg border border-input bg-muted/30 px-3.5 py-3 text-sm text-muted-foreground min-h-[92px]">
             {props.shareCopy}
           </div>
-          <div className="flex gap-2">
+          <Row gap={1.5}>
             <Button onClick={props.onCopySuggested} variant="outline" className="gap-2 flex-1">
               <Icon name="message" variant="regular" />
-              Copy copy
+              Copy message
             </Button>
             <Button onClick={props.onNativeShare} className="gap-2 flex-1">
               <Icon name="share-nodes" variant="regular" />
               Share
             </Button>
-          </div>
-        </div>
+          </Row>
+        </Stack>
       </div>
 
-      <div className="rounded-2xl border border-border/60 bg-background p-4 space-y-3">
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <p className="text-sm font-medium">QR and share card actions</p>
-            <p className="text-body-sm text-muted-foreground">The exported share card uses the same deterministic card layout every time.</p>
-          </div>
-          <Button onClick={props.onDownload} variant="outline" className="gap-2">
-            <Icon name="download" variant="regular" />
-            Download card
-          </Button>
-        </div>
-      </div>
-    </div>
+      <Row justify="between" align="center" gap={3} className="rounded-lg border border-input bg-muted/20 px-4 py-3">
+        <span className="text-body-sm text-muted-foreground">Download a shareable image of your invite card.</span>
+        <Button onClick={props.onDownload} variant="outline" className="gap-2 shrink-0">
+          <Icon name="download" variant="regular" />
+          Download
+        </Button>
+      </Row>
+    </Stack>
   )
 
   if (props.isMobile) {
@@ -568,9 +588,9 @@ function ShareSurface(props: {
       <Sheet open={props.open} onOpenChange={props.onOpenChange}>
         <SheetContent side="bottom" className="max-h-[92vh] overflow-y-auto rounded-t-2xl">
           <SheetHeader>
-            <SheetTitle>{props.mode === 'qr' ? 'Show QR' : 'Share card'}</SheetTitle>
+            <SheetTitle>Share your invite</SheetTitle>
             <SheetDescription>
-              Link, code, QR, and share card actions stay in one place.
+              Send your personal invite card, link, or QR code.
             </SheetDescription>
           </SheetHeader>
           <div className="px-4 pb-6">{content}</div>
@@ -581,11 +601,11 @@ function ShareSurface(props: {
 
   return (
     <Dialog open={props.open} onOpenChange={props.onOpenChange}>
-      <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{props.mode === 'qr' ? 'Show QR' : 'Share card'}</DialogTitle>
+          <DialogTitle>Share your invite</DialogTitle>
           <DialogDescription>
-            Link, code, QR, and share card actions stay in one clear surface.
+            Send your personal invite card, link, or QR code.
           </DialogDescription>
         </DialogHeader>
         {content}

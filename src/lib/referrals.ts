@@ -29,9 +29,23 @@ export function buildInviteLink(origin: string, inviteCode: string): string {
   return `${safeOrigin}/i/${inviteCode}`
 }
 
-export function buildReferralQrCodeUrl(inviteLink: string, size = 256): string {
-  return `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(inviteLink)}`
+export function buildReferralQrCodeUrl(
+  inviteLink: string,
+  size = 256,
+  opts?: { color?: string; bgColor?: string },
+): string {
+  const params = new URLSearchParams({ size: `${size}x${size}`, data: inviteLink, margin: '0' })
+  // Hex colors without '#'. Used to render a light-on-dark QR that sits directly
+  // on the (always-dark) invite card, with the quiet zone blended into the bg.
+  if (opts?.color) params.set('color', opts.color)
+  if (opts?.bgColor) params.set('bgcolor', opts.bgColor)
+  return `https://api.qrserver.com/v1/create-qr-code/?${params.toString()}`
 }
+
+// The invite card is always dark (zinc-950 ≈ #08080b). Light modules on the card
+// color make the QR read as printed directly on the surface — no white chip.
+export const INVITE_CARD_BG = '08080b'
+export const INVITE_QR_FG = 'fafafa'
 
 export function getReferralListState(state: ReferralBackendState): ReferralListState {
   switch (state) {
@@ -122,38 +136,51 @@ function escapeSvgText(value: string): string {
     .replace(/'/g, '&#39;')
 }
 
+function truncate(value: string, max: number): string {
+  return value.length > max ? `${value.slice(0, max - 1).trimEnd()}…` : value
+}
+
 export function buildReferralShareCardSvg(input: {
   displayName: string
+  handle: string
+  bio?: string | null
+  avatarUrl?: string | null
   inviteCode: string
   inviteLink: string
   qrCodeUrl: string
   badgeLabel?: string | null
 }) {
-  const displayName = escapeSvgText(input.displayName)
+  const displayName = escapeSvgText(truncate(input.displayName, 28))
+  const handle = escapeSvgText(`@${input.handle}`)
+  const bio = input.bio ? escapeSvgText(truncate(input.bio, 62)) : null
   const inviteCode = escapeSvgText(input.inviteCode)
-  const inviteLink = escapeSvgText(input.inviteLink)
+  const inviteLink = escapeSvgText(truncate(input.inviteLink, 40))
   const badgeLabel = input.badgeLabel ? escapeSvgText(input.badgeLabel) : null
+  const initial = escapeSvgText((input.displayName.trim()[0] || 'D').toUpperCase())
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <clipPath id="avatarClip"><circle cx="128" cy="128" r="40"/></clipPath>
+  </defs>
   <rect width="1200" height="630" rx="36" fill="#09090B"/>
   <rect x="24" y="24" width="1152" height="582" rx="28" fill="#111113" stroke="#27272A"/>
-  <rect x="64" y="64" width="704" height="502" rx="28" fill="#18181B" stroke="#2A2A2D"/>
-  <rect x="818" y="64" width="318" height="318" rx="28" fill="#FAFAFA"/>
-  <image href="${input.qrCodeUrl}" x="850" y="96" width="254" height="254" preserveAspectRatio="xMidYMid meet"/>
-  <circle cx="128" cy="128" r="32" fill="#27272A"/>
-  <text x="128" y="138" text-anchor="middle" fill="#FAFAFA" font-size="28" font-family="Inter, Arial, sans-serif">D</text>
-  <text x="176" y="124" fill="#FAFAFA" font-size="22" font-weight="600" font-family="Inter, Arial, sans-serif">${displayName}</text>
-  <text x="176" y="154" fill="#A1A1AA" font-size="18" font-family="Inter, Arial, sans-serif">Join me on Desperse</text>
-  ${badgeLabel ? `<rect x="64" y="182" width="230" height="42" rx="21" fill="#1F2937"/>
-  <text x="179" y="209" text-anchor="middle" fill="#E4E4E7" font-size="18" font-family="Inter, Arial, sans-serif">${badgeLabel}</text>` : ''}
-  <text x="64" y="294" fill="#A1A1AA" font-size="18" font-family="Inter, Arial, sans-serif">Invite code</text>
-  <text x="64" y="340" fill="#FAFAFA" font-size="44" font-weight="700" font-family="Inter, Arial, sans-serif">${inviteCode}</text>
-  <text x="64" y="414" fill="#A1A1AA" font-size="18" font-family="Inter, Arial, sans-serif">Invite link</text>
-  <text x="64" y="456" fill="#FAFAFA" font-size="24" font-family="Inter, Arial, sans-serif">${inviteLink}</text>
-  <text x="64" y="520" fill="#D4D4D8" font-size="20" font-family="Inter, Arial, sans-serif">Publish, discover, and collect creative work.</text>
-  <text x="818" y="420" fill="#FAFAFA" font-size="24" font-weight="600" font-family="Inter, Arial, sans-serif">Scan to join</text>
-  <text x="818" y="456" fill="#A1A1AA" font-size="18" font-family="Inter, Arial, sans-serif">Link and code both work for attribution.</text>
-  <text x="818" y="530" fill="#71717A" font-size="16" font-family="Inter, Arial, sans-serif">Recognition only. No cash value.</text>
+  <line x1="792" y1="88" x2="792" y2="542" stroke="#27272A" stroke-width="1"/>
+  <image href="${input.qrCodeUrl}" x="852" y="150" width="256" height="256" preserveAspectRatio="xMidYMid meet"/>
+  <circle cx="128" cy="128" r="40" fill="#27272A"/>
+  <text x="128" y="140" text-anchor="middle" fill="#FAFAFA" font-size="34" font-weight="600" font-family="Inter, Arial, sans-serif">${initial}</text>
+  ${input.avatarUrl ? `<image href="${input.avatarUrl}" x="88" y="88" width="80" height="80" clip-path="url(#avatarClip)" preserveAspectRatio="xMidYMid slice"/>` : ''}
+  <text x="188" y="118" fill="#FAFAFA" font-size="26" font-weight="600" font-family="Inter, Arial, sans-serif">${displayName}</text>
+  <text x="188" y="150" fill="#A1A1AA" font-size="19" font-family="Inter, Arial, sans-serif">${handle}</text>
+  ${bio ? `<text x="64" y="212" fill="#D4D4D8" font-size="19" font-family="Inter, Arial, sans-serif">${bio}</text>` : ''}
+  ${badgeLabel ? `<rect x="64" y="238" width="${Math.min(360, 40 + badgeLabel.length * 11)}" height="40" rx="20" fill="#27272A"/>
+  <text x="84" y="264" fill="#E4E4E7" font-size="17" font-family="Inter, Arial, sans-serif">${badgeLabel}</text>` : ''}
+  <text x="64" y="330" fill="#A1A1AA" font-size="18" font-family="Inter, Arial, sans-serif">Invite code</text>
+  <text x="64" y="376" fill="#FAFAFA" font-size="44" font-weight="700" font-family="Inter, Arial, sans-serif">${inviteCode}</text>
+  <text x="64" y="446" fill="#A1A1AA" font-size="18" font-family="Inter, Arial, sans-serif">Invite link</text>
+  <text x="64" y="486" fill="#FAFAFA" font-size="22" font-family="Inter, Arial, sans-serif">${inviteLink}</text>
+  <text x="64" y="548" fill="#71717A" font-size="16" font-family="Inter, Arial, sans-serif">Join me on Desperse · Recognition only. No cash value.</text>
+  <text x="980" y="454" text-anchor="middle" fill="#FAFAFA" font-size="22" font-weight="600" font-family="Inter, Arial, sans-serif">Scan to join</text>
+  <text x="980" y="484" text-anchor="middle" fill="#A1A1AA" font-size="17" font-family="Inter, Arial, sans-serif">Link and code both work.</text>
 </svg>`
 }

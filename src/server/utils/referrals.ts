@@ -445,6 +445,8 @@ export async function getReferralOwnerDashboard(userId: string) {
       id: users.id,
       displayName: users.displayName,
       avatarUrl: users.avatarUrl,
+      headerBgUrl: users.headerBgUrl,
+      bio: users.bio,
       usernameSlug: users.usernameSlug,
     })
     .from(users)
@@ -508,6 +510,8 @@ export async function getReferralOwnerDashboard(userId: string) {
     owner: {
       displayName: owner.displayName || owner.usernameSlug,
       avatarUrl: owner.avatarUrl,
+      headerBgUrl: owner.headerBgUrl,
+      bio: owner.bio,
       usernameSlug: owner.usernameSlug,
     },
     inviteCode: owner.usernameSlug,

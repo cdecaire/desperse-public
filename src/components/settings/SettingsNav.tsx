@@ -1,6 +1,7 @@
 import { Link, useLocation } from '@tanstack/react-router'
 import { SideNav, SideNavItem } from '@cdecaire/sable'
 import { Icon } from '@/components/ui/icon'
+import { useCurrentUser } from '@/hooks/useCurrentUser'
 
 type SettingsNavVariant = 'desktop' | 'mobile'
 
@@ -8,12 +9,16 @@ interface SettingsNavProps {
   variant?: SettingsNavVariant
 }
 
+export type SettingsNavRole = 'moderator' | 'admin'
+
 export interface SettingsNavItem {
   path: string
   label: string
   icon: string
   description: string
   disabled?: boolean
+  /** If set, the item is only shown to users with this role or higher. */
+  requiredRole?: SettingsNavRole
 }
 
 export interface SettingsNavCategory {
@@ -93,6 +98,9 @@ export const settingsCategories: SettingsNavCategory[] = [
         label: 'Invites',
         icon: 'fa-user-plus',
         description: 'Share your invite and track activated referrals',
+        // Gated during rollout. Keep in sync with the RoleGuard on
+        // /settings/invites and the getReferralOwnerDashboard server function.
+        requiredRole: 'moderator',
       },
     ],
   },
@@ -114,12 +122,29 @@ export const settingsRouteTitles: Record<string, string> = Object.fromEntries(
   settingsCategories.flatMap((cat) => cat.items.map((item) => [item.path, item.label]))
 )
 
+/**
+ * Filters settings categories by the viewer's role, dropping role-gated items
+ * (and any category left empty). `undefined` role = signed-out/loading = no gated items.
+ */
+export function getVisibleSettingsCategories(role: string | null | undefined): SettingsNavCategory[] {
+  const rank: Record<string, number> = { user: 0, moderator: 1, admin: 2 }
+  const viewerRank = rank[role ?? 'user'] ?? 0
+  return settingsCategories
+    .map((category) => ({
+      ...category,
+      items: category.items.filter((item) => !item.requiredRole || viewerRank >= rank[item.requiredRole]),
+    }))
+    .filter((category) => category.items.length > 0)
+}
+
 export function SettingsNav(_props: SettingsNavProps) {
   const location = useLocation()
+  const { user } = useCurrentUser()
+  const categories = getVisibleSettingsCategories(user?.role)
 
   return (
     <SideNav aria-label="Settings" size="lg">
-      {settingsCategories.map((category, index) => (
+      {categories.map((category, index) => (
         <div key={category.title} className="flex flex-col gap-1">
           {index === 0 ? (
             // Primary section title — matches the Desperse PageHeader exactly:

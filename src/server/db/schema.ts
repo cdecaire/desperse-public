@@ -30,7 +30,7 @@ export const currencyEnum = pgEnum('currency_enum', ['SOL', 'USDC']);
 
 export const userRoleEnum = pgEnum('user_role_enum', ['user', 'moderator', 'admin']);
 
-export const contentTypeEnum = pgEnum('content_type_enum', ['post', 'comment', 'dm_thread', 'dm_message']);
+export const contentTypeEnum = pgEnum('content_type_enum', ['post', 'comment', 'dm_thread', 'dm_message', 'user']);
 
 export const reportStatusEnum = pgEnum('report_status_enum', ['open', 'reviewing', 'resolved', 'rejected']);
 

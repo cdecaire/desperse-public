@@ -4,13 +4,13 @@
  */
 
 import { db } from '@/server/db'
-import { contentReports, posts, comments, dmThreads } from '@/server/db/schema'
+import { contentReports, posts, comments, dmThreads, users } from '@/server/db/schema'
 import { eq, and, sql } from 'drizzle-orm'
 import { authenticateWithToken } from '@/server/auth'
 import { isUniqueViolation } from './db-errors'
 
 export interface CreateReportInput {
-	contentType: 'post' | 'comment' | 'dm_thread'
+	contentType: 'post' | 'comment' | 'dm_thread' | 'user'
 	contentId: string
 	reasons: string[]
 	details?: string | null
@@ -115,6 +115,20 @@ export async function createReportDirect(
 			// User must be a participant to report the thread
 			if (thread.userAId !== reportedByUserId && thread.userBId !== reportedByUserId) {
 				return { success: false, error: 'You are not a participant in this conversation.' }
+			}
+		} else if (contentType === 'user') {
+			const [reportedUser] = await db
+				.select({ id: users.id })
+				.from(users)
+				.where(eq(users.id, contentId))
+				.limit(1)
+
+			if (!reportedUser) {
+				return { success: false, error: 'User not found.' }
+			}
+
+			if (reportedUser.id === reportedByUserId) {
+				return { success: false, error: 'You cannot report yourself.' }
 			}
 		} else {
 			return { success: false, error: 'Invalid content type' }

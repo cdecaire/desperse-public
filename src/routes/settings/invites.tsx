@@ -44,6 +44,8 @@ export const Route = createFileRoute('/settings/invites')({
 })
 
 type ShareSurfaceMode = 'card' | 'qr'
+type ReferralOwnerDashboard = NonNullable<ReturnType<typeof useReferralOwnerDashboard>['data']>
+type ReferralListItem = ReferralOwnerDashboard['referrals'][number]
 
 function InvitesPage() {
   return (
@@ -68,7 +70,7 @@ function InvitesPageContent() {
     return () => mediaQuery.removeEventListener('change', sync)
   }, [])
 
-  const origin = typeof window === 'undefined' ? 'https://desperse.app' : window.location.origin
+  const origin = typeof window === 'undefined' ? 'https://desperse.com' : window.location.origin
   const inviteLink = dashboard ? buildInviteLink(origin, dashboard.inviteCode) : ''
   const qrCodeUrl = inviteLink ? buildReferralQrCodeUrl(inviteLink, 280) : ''
   const shareCopy = inviteLink ? buildReferralShareCopy(inviteLink) : ''
@@ -77,11 +79,11 @@ function InvitesPageContent() {
   const shareActionsLocked = Boolean(dashboard && dashboard.remainingSlots <= 0)
 
   const groupedReferrals = useMemo(() => {
-    if (!dashboard) return [] as Array<{ title: string; items: any[] }>
+    if (!dashboard) return [] as Array<{ title: string; items: ReferralListItem[] }>
 
-    const pending = dashboard.referrals.filter((referral: any) => getReferralListState(referral.state) === 'pending_activation')
-    const activated = dashboard.referrals.filter((referral: any) => getReferralListState(referral.state) === 'activated')
-    const history = dashboard.referrals.filter((referral: any) => {
+    const pending = dashboard.referrals.filter((referral) => getReferralListState(referral.state) === 'pending_activation')
+    const activated = dashboard.referrals.filter((referral) => getReferralListState(referral.state) === 'activated')
+    const history = dashboard.referrals.filter((referral) => {
       const state = getReferralListState(referral.state)
       return state === 'did_not_qualify' || state === 'removed_after_review' || state === 'expired'
     })
@@ -265,7 +267,7 @@ function InvitesPageContent() {
 
                     {shareActionsLocked ? (
                       <p className="text-body-sm text-muted-foreground">
-                        New share actions are locked right now. Capacity returns when a pending invite expires or is removed after review.
+                        New share actions are locked right now. Capacity returns as pending invites activate, expire, or are removed after review.
                       </p>
                     ) : null}
                   </section>
@@ -351,7 +353,7 @@ function InvitesPageContent() {
                             <span className="text-caption text-muted-foreground">{group.items.length}</span>
                           </div>
                           <div className="space-y-3">
-                            {group.items.map((referral: any) => {
+                            {group.items.map((referral) => {
                               const listState = getReferralListState(referral.state)
                               const label = getReferralStateLabel(listState)
                               const supportingCopy = getReferralStateDescription(listState)

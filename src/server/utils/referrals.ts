@@ -2,6 +2,7 @@ import { createHmac, timingSafeEqual } from 'node:crypto'
 import { and, desc, eq, lt, ne } from 'drizzle-orm'
 
 import { env } from '@/config/env'
+import { REFERRAL_SLOT_LIMIT } from '@/lib/referrals'
 import { db } from '@/server/db'
 import { isUniqueViolation } from '@/server/utils/db-errors'
 import {
@@ -495,10 +496,12 @@ export async function getReferralOwnerDashboard(userId: string) {
     || referral.state === 'account_created'
     || referral.state === 'pending_activation'
   )).length
+  // Only in-flight referrals occupy a slot. Activated referrals are a terminal success
+  // state and must not permanently consume capacity, or the 5/10-invite milestones
+  // (which require more than REFERRAL_SLOT_LIMIT activations) would be unreachable.
   const consumedSlots = normalizedReferrals.filter((referral) => (
     referral.state === 'account_created'
     || referral.state === 'pending_activation'
-    || referral.state === 'activated'
   )).length
 
   return {
@@ -511,8 +514,8 @@ export async function getReferralOwnerDashboard(userId: string) {
     invitePath: `/i/${owner.usernameSlug}`,
     activatedCount,
     pendingCount,
-    totalSlots: 3,
-    remainingSlots: Math.max(0, 3 - consumedSlots),
+    totalSlots: REFERRAL_SLOT_LIMIT,
+    remainingSlots: Math.max(0, REFERRAL_SLOT_LIMIT - consumedSlots),
     referrals: normalizedReferrals,
   }
 }

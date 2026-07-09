@@ -17,6 +17,11 @@ import {
   verifyPrivyToken,
   stripAuthorization,
 } from '@/server/auth'
+import {
+  bindReferralToUserFromAttributionSession,
+  getActiveReferralAttributionSessionFromSignedCookie,
+  REFERRAL_ATTRIBUTION_COOKIE_NAME,
+} from '@/server/utils/referrals'
 
 function formatWalletIdentifier(address: string) {
   const trimmed = address?.trim()
@@ -31,6 +36,18 @@ function formatWalletIdentifier(address: string) {
     // Keep nice display format with ellipsis
     display: `${prefix}…${suffix}`,
   }
+}
+
+function getCookieValue(cookieHeader: string | null | undefined, name: string): string | null {
+  if (!cookieHeader) return null
+
+  for (const rawPart of cookieHeader.split(';')) {
+    const part = rawPart.trim()
+    if (!part.startsWith(`${name}=`)) continue
+    return decodeURIComponent(part.slice(name.length + 1))
+  }
+
+  return null
 }
 
 // Schema for Privy user data passed from client
@@ -184,11 +201,22 @@ export const initAuth = createServerFn({
 
     // Capture signup attribution (best-effort — getRequest can fail in some contexts)
     let signupMetadata: SignupMetadata = { ip: null, country: null, userAgent: null }
+    let referralSessionId: string | null = null
     try {
       const request = getRequest()
-      if (request) signupMetadata = extractSignupMetadataFromHeaders(request.headers)
+      if (request) {
+        signupMetadata = extractSignupMetadataFromHeaders(request.headers)
+        const referralCookie = getCookieValue(
+          request.headers.get('cookie'),
+          REFERRAL_ATTRIBUTION_COOKIE_NAME,
+        )
+        const referralSession = await getActiveReferralAttributionSessionFromSignedCookie(
+          referralCookie,
+        )
+        referralSessionId = referralSession?.id ?? null
+      }
     } catch {
-      // continue without metadata
+      // continue without metadata / referral attribution
     }
 
     // Race-tolerant insert: Privy can fire initAuth twice in fast succession
@@ -250,6 +278,20 @@ export const initAuth = createServerFn({
       await ensureWalletExists(newUser.id, walletAddress, 'embedded', { connector: 'privy', label: 'Desperse Wallet' })
     } catch (e) {
       console.warn('[initAuth] Non-critical: failed to create wallet row:', e instanceof Error ? e.message : e)
+    }
+
+    if (referralSessionId) {
+      try {
+        await bindReferralToUserFromAttributionSession({
+          attributionSessionId: referralSessionId,
+          referredUserId: newUser.id,
+        })
+      } catch (referralError) {
+        console.warn(
+          '[initAuth] Non-critical: failed to bind referral attribution:',
+          referralError instanceof Error ? referralError.message : referralError,
+        )
+      }
     }
 
     return {

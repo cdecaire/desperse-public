@@ -4,7 +4,8 @@ import { Col, Stack } from '@cdecaire/sable/layout'
 import { AuthGuard } from '@/components/shared/AuthGuard'
 import { Icon } from '@/components/ui/icon'
 import { MobileHeader, MobileHeaderSpacer } from '@/components/layout/MobileHeader'
-import { settingsCategories } from '@/components/settings/SettingsNav'
+import { getVisibleSettingsCategories } from '@/components/settings/SettingsNav'
+import { useCurrentUser } from '@/hooks/useCurrentUser'
 
 export const Route = createFileRoute('/settings/')({
   component: SettingsIndexPage,
@@ -13,6 +14,8 @@ export const Route = createFileRoute('/settings/')({
 function SettingsIndexPage() {
   const location = useLocation()
   const navigate = useNavigate()
+  const { user } = useCurrentUser()
+  const categories = getVisibleSettingsCategories(user?.role)
 
   // On desktop (md and above), redirect to profile-info by default
   useEffect(() => {
@@ -36,7 +39,7 @@ function SettingsIndexPage() {
           <div>
             <MobileHeaderSpacer />
             <div className="divide-y divide-border/80">
-            {settingsCategories.map((category) => (
+            {categories.map((category) => (
               <div key={category.title} className="py-4">
                 <h2 className="px-4 text-label-xs text-muted-foreground mb-3">
                   {category.title}

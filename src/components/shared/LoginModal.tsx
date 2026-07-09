@@ -10,7 +10,9 @@ import { usePrivy } from '@privy-io/react-auth'
 import { Link } from '@tanstack/react-router'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { useAuth } from '@/hooks/useAuth'
+import { toast } from '@/hooks/use-toast'
 import { Logo } from './Logo'
 
 interface LoginModalProps {
@@ -22,6 +24,9 @@ interface LoginModalProps {
 export function LoginModal({ open, onOpenChange, message }: LoginModalProps) {
   const { login, ready } = usePrivy()
   const { isAuthenticated } = useAuth()
+  const [inviteCode, setInviteCode] = React.useState('')
+  const [isApplyingInvite, setIsApplyingInvite] = React.useState(false)
+  const [showInviteInput, setShowInviteInput] = React.useState(false)
 
   // Close modal when user becomes authenticated
   useEffect(() => {
@@ -33,6 +38,38 @@ export function LoginModal({ open, onOpenChange, message }: LoginModalProps) {
   const handleLogin = () => {
     if (!ready) return
     login()
+  }
+
+  const handleApplyInviteCode = async () => {
+    const trimmedCode = inviteCode.trim()
+    if (!trimmedCode) {
+      toast.error('Enter an invite code first.')
+      return
+    }
+
+    setIsApplyingInvite(true)
+    try {
+      const response = await fetch('/api/v1/referrals/manual', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ code: trimmedCode }),
+      })
+
+      const payload = await response.json().catch(() => null)
+      if (!response.ok || !payload?.success) {
+        throw new Error(payload?.error?.message || 'Invite code not found')
+      }
+
+      const handle = payload?.data?.referrer?.slug ? `@${payload.data.referrer.slug}` : 'that inviter'
+      toast.success(`Invite code saved for ${handle}`)
+      setShowInviteInput(false)
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Could not save invite code')
+    } finally {
+      setIsApplyingInvite(false)
+    }
   }
 
   return (
@@ -78,6 +115,44 @@ export function LoginModal({ open, onOpenChange, message }: LoginModalProps) {
           >
             Just browsing
           </Button>
+
+          <div className="rounded-xl border border-border/60 bg-background p-4 text-left space-y-3">
+            <button
+              type="button"
+              onClick={() => setShowInviteInput((value) => !value)}
+              className="w-full flex items-center justify-between gap-3 text-sm font-medium"
+            >
+              <span>Have an invite code?</span>
+              <span className="text-muted-foreground">{showInviteInput ? 'Hide' : 'Enter code'}</span>
+            </button>
+            {showInviteInput ? (
+              <div className="space-y-3">
+                <p className="text-sm text-muted-foreground">
+                  Enter it before you sign up. We’ll save the attribution and carry it through login.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <Input
+                    value={inviteCode}
+                    onChange={(event) => setInviteCode(event.target.value)}
+                    placeholder="Enter invite code"
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    spellCheck={false}
+                    maxLength={32}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleApplyInviteCode}
+                    disabled={isApplyingInvite}
+                    className="sm:w-auto"
+                  >
+                    {isApplyingInvite ? 'Saving...' : 'Apply'}
+                  </Button>
+                </div>
+              </div>
+            ) : null}
+          </div>
 
           <p className="text-center text-caption text-muted-foreground">
             By signing in, you agree to our{' '}

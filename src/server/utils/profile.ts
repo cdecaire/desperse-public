@@ -1130,7 +1130,11 @@ export async function updateProfileDirect(
 			await deleteReplacedBlob(currentUser.headerBgUrl, updated.headerBgUrl, 'updateProfileDirect:header')
 		}
 
-		await verifyReferralActivationForUser(userId)
+		try {
+			await verifyReferralActivationForUser(userId)
+		} catch (referralErr) {
+			console.warn('[updateProfileDirect] Referral activation check failed:', referralErr instanceof Error ? referralErr.message : 'Unknown error')
+		}
 
 		return {
 			success: true,
@@ -1250,7 +1254,11 @@ export async function uploadAvatarDirect(
 
 		// Best-effort cleanup of the previous avatar blob (non-blocking on failure)
 		await deleteReplacedBlob(previous?.avatarUrl, uploadResult.url, 'uploadAvatarDirect')
-		await verifyReferralActivationForUser(auth.userId)
+		try {
+			await verifyReferralActivationForUser(auth.userId)
+		} catch (referralErr) {
+			console.warn('[uploadAvatarDirect] Referral activation check failed:', referralErr instanceof Error ? referralErr.message : 'Unknown error')
+		}
 
 		return {
 			success: true,

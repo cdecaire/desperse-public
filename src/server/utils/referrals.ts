@@ -3,6 +3,7 @@ import { and, eq, lt, ne } from 'drizzle-orm'
 
 import { env } from '@/config/env'
 import { db } from '@/server/db'
+import { isUniqueViolation } from '@/server/utils/db-errors'
 import {
   posts,
   referralAttributionSessions,
@@ -243,20 +244,39 @@ export async function bindReferralToUserFromAttributionSession(input: {
   const now = new Date()
   const expiresAt = new Date(referredUser.createdAt.getTime() + PENDING_ACTIVATION_TTL_DAYS * DAY_MS)
   const initialState: ReferralState = session.referrerUserId === input.referredUserId ? 'rejected' : 'account_created'
-  const [createdReferral] = await db
-    .insert(referrals)
-    .values({
-      referrerUserId: session.referrerUserId,
-      referredUserId: input.referredUserId,
-      attributionSessionId: session.id,
-      inviteCode: session.inviteCode,
-      state: initialState,
-      stateReason: initialState === 'rejected' ? 'self_referral' : null,
-      expiresAt,
-      rejectedAt: initialState === 'rejected' ? now : null,
-      updatedAt: now,
-    })
-    .returning()
+  let createdReferral: typeof referrals.$inferSelect
+  try {
+    const [inserted] = await db
+      .insert(referrals)
+      .values({
+        referrerUserId: session.referrerUserId,
+        referredUserId: input.referredUserId,
+        attributionSessionId: session.id,
+        inviteCode: session.inviteCode,
+        state: initialState,
+        stateReason: initialState === 'rejected' ? 'self_referral' : null,
+        expiresAt,
+        rejectedAt: initialState === 'rejected' ? now : null,
+        updatedAt: now,
+      })
+      .returning()
+    createdReferral = inserted
+  } catch (insertErr) {
+    // A concurrent request already created the referral for this user.
+    // Treat it like the existing-referral case rather than failing.
+    if (isUniqueViolation(insertErr)) {
+      const [raced] = await db
+        .select()
+        .from(referrals)
+        .where(eq(referrals.referredUserId, input.referredUserId))
+        .limit(1)
+      await markAttributionSessionConsumed(session.id, input.referredUserId)
+      if (raced) {
+        return { success: true as const, referral: raced, created: false }
+      }
+    }
+    throw insertErr
+  }
 
   await markAttributionSessionConsumed(session.id, input.referredUserId)
 
@@ -418,11 +438,17 @@ export async function verifyReferralActivationForUser(referredUserId: string) {
   return { success: true as const, status: 'activated' as const, referral: activatedReferral ?? referral }
 }
 
+// Bound the per-call sweep so the unscoped branch never loads an unbounded result set.
+// TODO: a scheduled worker should call this in a loop until it returns fewer than
+// STALE_REFERRAL_SWEEP_LIMIT to fully drain a large backlog of expired referrals.
+const STALE_REFERRAL_SWEEP_LIMIT = 500
+
 export async function expireStalePendingReferrals(now: Date = new Date(), referredUserId?: string) {
   const candidates = (await db
     .select()
     .from(referrals)
-    .where(referredUserId ? eq(referrals.referredUserId, referredUserId) : eq(referrals.state, 'pending_activation')))
+    .where(referredUserId ? eq(referrals.referredUserId, referredUserId) : eq(referrals.state, 'pending_activation'))
+    .limit(referredUserId ? 1 : STALE_REFERRAL_SWEEP_LIMIT))
     .filter((referral) => referral.state === 'pending_activation' && referral.expiresAt.getTime() <= now.getTime())
 
   let expiredCount = 0

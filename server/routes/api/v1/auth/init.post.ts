@@ -94,11 +94,15 @@ export default defineEventHandler(async (event) => {
 		}
 	}
 
-	if (referralSession && result.user?.id) {
-		await bindReferralToUserFromAttributionSession({
-			attributionSessionId: referralSession.id,
-			referredUserId: result.user.id,
-		})
+	if (referralSession && result.user?.id && result.isNewUser) {
+		try {
+			await bindReferralToUserFromAttributionSession({
+				attributionSessionId: referralSession.id,
+				referredUserId: result.user.id,
+			})
+		} catch (referralErr) {
+			console.warn(`[init.post] ${requestId} Referral binding failed:`, referralErr instanceof Error ? referralErr.message : 'Unknown error')
+		}
 		deleteCookie(event, REFERRAL_ATTRIBUTION_COOKIE_NAME, { path: '/' })
 	}
 

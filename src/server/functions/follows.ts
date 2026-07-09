@@ -141,7 +141,11 @@ export const followUser = createServerFn({
       }
     }
 
-    await verifyReferralActivationForUser(followerId)
+    try {
+      await verifyReferralActivationForUser(followerId)
+    } catch (referralErr) {
+      console.warn('[followUser] Referral activation check failed:', referralErr instanceof Error ? referralErr.message : 'Unknown error')
+    }
 
     return {
       success: true,

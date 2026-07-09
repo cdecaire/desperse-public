@@ -127,7 +127,11 @@ export async function followUserDirect(
 			}
 		}
 
-		await verifyReferralActivationForUser(userId)
+		try {
+			await verifyReferralActivationForUser(userId)
+		} catch (referralErr) {
+			console.warn('[followUserDirect] Referral activation check failed:', referralErr instanceof Error ? referralErr.message : 'Unknown error')
+		}
 
 		return {
 			success: true,

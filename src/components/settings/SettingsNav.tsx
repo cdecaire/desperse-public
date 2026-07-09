@@ -86,6 +86,17 @@ export const settingsCategories: SettingsNavCategory[] = [
     ],
   },
   {
+    title: 'Growth',
+    items: [
+      {
+        path: '/settings/invites',
+        label: 'Invites',
+        icon: 'fa-user-plus',
+        description: 'Share your invite and track activated referrals',
+      },
+    ],
+  },
+  {
     title: 'General',
     items: [
       {

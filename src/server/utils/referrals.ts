@@ -1,5 +1,5 @@
 import { createHmac, timingSafeEqual } from 'node:crypto'
-import { and, eq, lt, ne } from 'drizzle-orm'
+import { and, desc, eq, lt, ne } from 'drizzle-orm'
 
 import { env } from '@/config/env'
 import { db } from '@/server/db'
@@ -436,6 +436,85 @@ export async function verifyReferralActivationForUser(referredUserId: string) {
   })
 
   return { success: true as const, status: 'activated' as const, referral: activatedReferral ?? referral }
+}
+
+export async function getReferralOwnerDashboard(userId: string) {
+  const [owner] = await db
+    .select({
+      id: users.id,
+      displayName: users.displayName,
+      avatarUrl: users.avatarUrl,
+      usernameSlug: users.usernameSlug,
+    })
+    .from(users)
+    .where(eq(users.id, userId))
+    .limit(1)
+
+  if (!owner) {
+    return null
+  }
+
+  const fetchReferrals = () => db
+    .select({
+      id: referrals.id,
+      state: referrals.state,
+      stateReason: referrals.stateReason,
+      inviteCode: referrals.inviteCode,
+      createdAt: referrals.createdAt,
+      expiresAt: referrals.expiresAt,
+      activatedAt: referrals.activatedAt,
+      expiredAt: referrals.expiredAt,
+      rejectedAt: referrals.rejectedAt,
+      revokedAt: referrals.revokedAt,
+      referredUserId: referrals.referredUserId,
+      usernameSlug: users.usernameSlug,
+      displayName: users.displayName,
+      avatarUrl: users.avatarUrl,
+    })
+    .from(referrals)
+    .innerJoin(users, eq(referrals.referredUserId, users.id))
+    .where(eq(referrals.referrerUserId, userId))
+    .orderBy(desc(referrals.createdAt))
+
+  const rawReferrals = await fetchReferrals()
+  const now = new Date()
+  const stalePendingIds = rawReferrals
+    .filter((referral) => referral.state === 'pending_activation' && referral.expiresAt.getTime() <= now.getTime())
+    .map((referral) => referral.referredUserId)
+
+  for (const referredUserId of stalePendingIds) {
+    await expireStalePendingReferrals(now, referredUserId)
+  }
+
+  const normalizedReferrals = stalePendingIds.length > 0 ? await fetchReferrals() : rawReferrals
+
+  const activatedCount = normalizedReferrals.filter((referral) => referral.state === 'activated').length
+  const pendingCount = normalizedReferrals.filter((referral) => (
+    referral.state === 'clicked'
+    || referral.state === 'signup_started'
+    || referral.state === 'account_created'
+    || referral.state === 'pending_activation'
+  )).length
+  const consumedSlots = normalizedReferrals.filter((referral) => (
+    referral.state === 'account_created'
+    || referral.state === 'pending_activation'
+    || referral.state === 'activated'
+  )).length
+
+  return {
+    owner: {
+      displayName: owner.displayName || owner.usernameSlug,
+      avatarUrl: owner.avatarUrl,
+      usernameSlug: owner.usernameSlug,
+    },
+    inviteCode: owner.usernameSlug,
+    invitePath: `/i/${owner.usernameSlug}`,
+    activatedCount,
+    pendingCount,
+    totalSlots: 3,
+    remainingSlots: Math.max(0, 3 - consumedSlots),
+    referrals: normalizedReferrals,
+  }
 }
 
 // Bound the per-call sweep so the unscoped branch never loads an unbounded result set.

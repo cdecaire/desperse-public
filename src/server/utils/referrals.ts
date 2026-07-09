@@ -102,6 +102,7 @@ export async function getActiveReferralAttributionSessionFromSignedCookie(cookie
 
   if (!session) return null
   if (session.expiresAt.getTime() <= Date.now()) return null
+  if (session.consumedAt) return null
   return session
 }
 

@@ -54,6 +54,19 @@ export const notificationReferenceTypeEnum = pgEnum('notification_reference_type
 
 export const feedbackStatusEnum = pgEnum('feedback_status_enum', ['new', 'reviewed'])
 
+export const referralStateEnum = pgEnum('referral_state_enum', [
+  'clicked',
+  'signup_started',
+  'account_created',
+  'pending_activation',
+  'activated',
+  'rejected',
+  'revoked',
+  'expired',
+])
+
+export const referralAttributionSourceEnum = pgEnum('referral_attribution_source_enum', ['link', 'manual'])
+
 // Asset role enum for multi-asset posts
 export const assetRoleEnum = pgEnum('asset_role_enum', ['media', 'download']);
 
@@ -270,6 +283,91 @@ export const follows = pgTable(
     ),
     followerIdIdx: index('follows_follower_id_idx').on(table.followerId),
     followingIdIdx: index('follows_following_id_idx').on(table.followingId),
+  }),
+);
+
+export const referralAttributionSessions = pgTable(
+  'referral_attribution_sessions',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    referrerUserId: uuid('referrer_user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    inviteCode: text('invite_code').notNull(),
+    source: referralAttributionSourceEnum('source').notNull(),
+    referredUserId: uuid('referred_user_id').references(() => users.id, { onDelete: 'set null' }),
+    signupIp: text('signup_ip'),
+    signupUserAgent: text('signup_user_agent'),
+    consumedAt: timestamp('consumed_at'),
+    expiresAt: timestamp('expires_at').notNull(),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    updatedAt: timestamp('updated_at').notNull().defaultNow(),
+  },
+  (table) => ({
+    referrerUserIdIdx: index('referral_attribution_sessions_referrer_user_id_idx').on(table.referrerUserId),
+    referredUserIdIdx: index('referral_attribution_sessions_referred_user_id_idx').on(table.referredUserId),
+    inviteCodeIdx: index('referral_attribution_sessions_invite_code_idx').on(table.inviteCode),
+    expiresAtIdx: index('referral_attribution_sessions_expires_at_idx').on(table.expiresAt),
+  }),
+);
+
+export const referrals = pgTable(
+  'referrals',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    referrerUserId: uuid('referrer_user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    referredUserId: uuid('referred_user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    attributionSessionId: uuid('attribution_session_id').references(() => referralAttributionSessions.id, {
+      onDelete: 'set null',
+    }),
+    inviteCode: text('invite_code').notNull(),
+    state: referralStateEnum('state').notNull().default('account_created'),
+    activationSource: text('activation_source'),
+    activationQualifiedFollowUserId: uuid('activation_qualified_follow_user_id').references(() => users.id, {
+      onDelete: 'set null',
+    }),
+    activationVerifiedAt: timestamp('activation_verified_at'),
+    stateReason: text('state_reason'),
+    expiresAt: timestamp('expires_at').notNull(),
+    activatedAt: timestamp('activated_at'),
+    expiredAt: timestamp('expired_at'),
+    rejectedAt: timestamp('rejected_at'),
+    revokedAt: timestamp('revoked_at'),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    updatedAt: timestamp('updated_at').notNull().defaultNow(),
+  },
+  (table) => ({
+    referredUserUniqueIdx: uniqueIndex('referrals_referred_user_unique_idx').on(table.referredUserId),
+    referrerUserIdIdx: index('referrals_referrer_user_id_idx').on(table.referrerUserId),
+    stateIdx: index('referrals_state_idx').on(table.state),
+    expiresAtIdx: index('referrals_expires_at_idx').on(table.expiresAt),
+    attributionSessionIdIdx: index('referrals_attribution_session_id_idx').on(table.attributionSessionId),
+  }),
+);
+
+export const referralEvents = pgTable(
+  'referral_events',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    referralId: uuid('referral_id').references(() => referrals.id, { onDelete: 'set null' }),
+    attributionSessionId: uuid('attribution_session_id').references(() => referralAttributionSessions.id, {
+      onDelete: 'set null',
+    }),
+    referrerUserId: uuid('referrer_user_id').references(() => users.id, { onDelete: 'set null' }),
+    referredUserId: uuid('referred_user_id').references(() => users.id, { onDelete: 'set null' }),
+    eventName: text('event_name').notNull(),
+    payload: jsonb('payload').$type<Record<string, unknown> | null>().default(null),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  },
+  (table) => ({
+    referralIdIdx: index('referral_events_referral_id_idx').on(table.referralId),
+    attributionSessionIdIdx: index('referral_events_attribution_session_id_idx').on(table.attributionSessionId),
+    eventNameIdx: index('referral_events_event_name_idx').on(table.eventName),
+    createdAtIdx: index('referral_events_created_at_idx').on(table.createdAt),
   }),
 );
 

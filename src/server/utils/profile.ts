@@ -9,6 +9,7 @@ import { and, asc, count, desc, eq, inArray, isNull, lt, ne, or } from 'drizzle-
 import { authenticateWithToken } from '@/server/auth'
 import { uploadToBlob, deleteFromBlob, SUPPORTED_IMAGE_TYPES } from '@/server/storage/blob'
 import { excludeDevPostsForUser } from '@/server/utils/dev-posts'
+import { verifyReferralActivationForUser } from '@/server/utils/referrals'
 
 const AVATAR_MAX_BYTES = 2 * 1024 * 1024 // 2MB limit for avatars
 const HEADER_MAX_BYTES = 5 * 1024 * 1024 // 5MB limit for header backgrounds
@@ -1129,6 +1130,12 @@ export async function updateProfileDirect(
 			await deleteReplacedBlob(currentUser.headerBgUrl, updated.headerBgUrl, 'updateProfileDirect:header')
 		}
 
+		try {
+			await verifyReferralActivationForUser(userId)
+		} catch (referralErr) {
+			console.warn('[updateProfileDirect] Referral activation check failed:', referralErr instanceof Error ? referralErr.message : 'Unknown error')
+		}
+
 		return {
 			success: true,
 			user: {
@@ -1247,6 +1254,11 @@ export async function uploadAvatarDirect(
 
 		// Best-effort cleanup of the previous avatar blob (non-blocking on failure)
 		await deleteReplacedBlob(previous?.avatarUrl, uploadResult.url, 'uploadAvatarDirect')
+		try {
+			await verifyReferralActivationForUser(auth.userId)
+		} catch (referralErr) {
+			console.warn('[uploadAvatarDirect] Referral activation check failed:', referralErr instanceof Error ? referralErr.message : 'Unknown error')
+		}
 
 		return {
 			success: true,

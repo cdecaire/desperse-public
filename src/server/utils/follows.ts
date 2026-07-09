@@ -10,6 +10,7 @@ import { authenticateWithToken } from '@/server/auth'
 import { sendPushNotification, getActorDisplayName } from './pushDispatch'
 import { isNotificationTypeEnabled } from './notificationPrefs'
 import { isUniqueViolation } from './db-errors'
+import { verifyReferralActivationForUser } from './referrals'
 
 export interface FollowResult {
 	success: boolean
@@ -124,6 +125,12 @@ export async function followUserDirect(
 			} catch (pushErr) {
 				console.warn('[follows] Push notification error:', pushErr instanceof Error ? pushErr.message : 'Unknown error')
 			}
+		}
+
+		try {
+			await verifyReferralActivationForUser(userId)
+		} catch (referralErr) {
+			console.warn('[followUserDirect] Referral activation check failed:', referralErr instanceof Error ? referralErr.message : 'Unknown error')
 		}
 
 		return {

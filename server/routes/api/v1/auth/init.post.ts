@@ -8,9 +8,14 @@
  * Authentication: Required (Bearer token in Authorization header)
  */
 
-import { defineEventHandler, readBody, getHeader, setHeaders, setResponseStatus } from 'h3'
+import { defineEventHandler, readBody, getHeader, setHeaders, setResponseStatus, getCookie, deleteCookie } from 'h3'
 import { initAuthWithToken } from '@/server/utils/auth-standalone'
 import { extractSignupMetadata } from '@/server/utils/signup-metadata'
+import {
+  bindReferralToUserFromAttributionSession,
+  getActiveReferralAttributionSessionFromSignedCookie,
+  REFERRAL_ATTRIBUTION_COOKIE_NAME,
+} from '@/server/utils/referrals'
 
 export default defineEventHandler(async (event) => {
 	const requestId = `req_${crypto.randomUUID().slice(0, 12)}`
@@ -65,6 +70,9 @@ export default defineEventHandler(async (event) => {
 		extractSignupMetadata(event)
 	)
 
+	const referralCookie = getCookie(event, REFERRAL_ATTRIBUTION_COOKIE_NAME)
+	const referralSession = await getActiveReferralAttributionSessionFromSignedCookie(referralCookie)
+
 	// Debug logging
 	console.log(`[init.post] ${requestId} result=`, JSON.stringify(result))
 
@@ -84,6 +92,14 @@ export default defineEventHandler(async (event) => {
 			},
 			requestId,
 		}
+	}
+
+	if (referralSession && result.user?.id) {
+		await bindReferralToUserFromAttributionSession({
+			attributionSessionId: referralSession.id,
+			referredUserId: result.user.id,
+		})
+		deleteCookie(event, REFERRAL_ATTRIBUTION_COOKIE_NAME, { path: '/' })
 	}
 
 	return {

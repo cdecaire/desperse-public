@@ -13,6 +13,7 @@ import { sendPushNotification, getActorDisplayName } from '@/server/utils/pushDi
 import { isNotificationTypeEnabled } from '@/server/utils/notificationPrefs'
 import { getBlockedUserIdSet, assertNotPairwiseBlocked, PairwiseBlockError } from '@/server/utils/blocks'
 import { isUniqueViolation } from '@/server/utils/db-errors'
+import { verifyReferralActivationForUser } from '@/server/utils/referrals'
 
 // Schema for follow/unfollow (no followerId - derived from auth)
 const followSchema = z.object({
@@ -139,6 +140,8 @@ export const followUser = createServerFn({
         console.warn('[followUser] Push notification error:', pushErr instanceof Error ? pushErr.message : 'Unknown error')
       }
     }
+
+    await verifyReferralActivationForUser(followerId)
 
     return {
       success: true,

@@ -215,8 +215,8 @@ export const initAuth = createServerFn({
         )
         referralSessionId = referralSession?.id ?? null
       }
-    } catch {
-      // continue without metadata / referral attribution
+    } catch (e) {
+      console.warn('[initAuth] Non-critical: failed to capture signup metadata/referral attribution:', e instanceof Error ? e.message : e)
     }
 
     // Race-tolerant insert: Privy can fire initAuth twice in fast succession

@@ -134,6 +134,10 @@ export function useCurrentUser(): UseCurrentUserReturn {
   useEffect(() => {
     if (
       isUserAuthenticated &&
+      // Wait until a LINKED Solana wallet exists (embedded wallet creation is
+      // async after signup) — initAuth persists this address as the user's
+      // wallet, so firing before it exists records the wrong wallet.
+      !!walletAddress &&
       !userQuery.isLoading &&
       userQuery.data === null &&
       !initAttemptedRef.current &&
@@ -144,6 +148,7 @@ export function useCurrentUser(): UseCurrentUserReturn {
     }
   }, [
     isUserAuthenticated,
+    walletAddress,
     userQuery.isLoading,
     userQuery.data,
     initMutation.isPending,

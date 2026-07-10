@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
   })
 
   if (!result.success) {
-    throw createError({ statusCode: 404, statusMessage: result.error })
+    return sendRedirect(event, `/i/${encodeURIComponent(code)}/welcome?invalid=1`, 302)
   }
 
   setCookie(event, REFERRAL_ATTRIBUTION_COOKIE_NAME, result.cookieValue, {
@@ -32,5 +32,6 @@ export default defineEventHandler(async (event) => {
     maxAge: REFERRAL_ATTRIBUTION_COOKIE_MAX_AGE_SECONDS,
   })
 
-  return sendRedirect(event, '/', 302)
+  const refSlug = result.referrer.slug ?? code
+  return sendRedirect(event, `/i/${encodeURIComponent(code)}/welcome?ref=${encodeURIComponent(refSlug)}`, 302)
 })

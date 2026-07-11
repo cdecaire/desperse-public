@@ -1,9 +1,9 @@
 /**
  * POST /api/v1/reports
- * Create a content report (post, comment, or dm_thread)
+ * Create a content report (post, comment, dm_thread, or user)
  *
  * Body:
- * - contentType: 'post' | 'comment' | 'dm_thread'
+ * - contentType: 'post' | 'comment' | 'dm_thread' | 'user'
  * - contentId: UUID of the content
  * - reasons: string[] (at least one required)
  * - details: string (optional, max 500 chars)
@@ -47,11 +47,11 @@ export default defineEventHandler(async (event) => {
 		const { contentType, contentId, reasons, details } = body
 
 		// Validate contentType
-		if (!contentType || !['post', 'comment', 'dm_thread'].includes(contentType)) {
+		if (!contentType || !['post', 'comment', 'dm_thread', 'user'].includes(contentType)) {
 			setResponseStatus(event, 400)
 			return {
 				success: false,
-				error: { code: 'invalid_content_type', message: 'contentType must be post, comment, or dm_thread' },
+				error: { code: 'invalid_content_type', message: 'contentType must be post, comment, dm_thread, or user' },
 				requestId,
 			}
 		}

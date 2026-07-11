@@ -6,6 +6,7 @@
 
 import { useMemo } from 'react'
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
+import { usePrivy } from '@privy-io/react-auth'
 import { useWallets as useSolanaWallets } from '@privy-io/react-auth/solana'
 import { getUserWallets, setDefaultWallet } from '@/server/functions/walletPreferences'
 import { useAuth } from './useAuth'
@@ -15,12 +16,28 @@ type ServerFnInput<T> = { data: T }
 const wrapInput = <T,>(data: T): ServerFnInput<T> => ({ data })
 
 export function useActiveWallet() {
-	const { isAuthenticated, getAuthHeaders } = useAuth()
+	const { isAuthenticated, privyId, walletAddress, getAuthHeaders } = useAuth()
+	const { user } = usePrivy()
 	const { wallets: privyWallets, ready: solanaWalletsReady } = useSolanaWallets()
 	const queryClient = useQueryClient()
 
+	// Only wallets LINKED to this Privy account may ever be selected. useWallets()
+	// also reports browser-connected extension wallets that can belong to a
+	// different account entirely — using one for display/signing is an
+	// account-identity bug.
+	const ownedPrivyWallets = useMemo(() => {
+		const linked = new Set(
+			(user?.linkedAccounts ?? [])
+				.filter(
+					(a) => a.type === 'wallet' && a.chainType === 'solana' && 'address' in a,
+				)
+				.map((a) => (a as { address: string }).address),
+		)
+		return privyWallets.filter((w) => linked.has(w.address))
+	}, [privyWallets, user?.linkedAccounts])
+
 	const { data, isLoading } = useQuery({
-		queryKey: ['user-wallets'],
+		queryKey: ['user-wallets', privyId],
 		queryFn: async () => {
 			const headers = await getAuthHeaders()
 			const result = await getUserWallets(
@@ -46,22 +63,27 @@ export function useActiveWallet() {
 	}, [wallets])
 
 	// Match the active wallet address to a Privy ConnectedSolanaWallet for signing
-	// Falls back to first Privy wallet when no DB wallets exist (pre-migration users)
+	// Falls back to first OWNED Privy wallet when no DB wallets exist (pre-migration users)
 	const activePrivyWallet = useMemo(() => {
 		if (!activeWallet) {
-			// No DB wallets - fall back to first Privy wallet (existing behavior)
-			return privyWallets[0] || null
+			// No DB wallets - fall back to first linked Privy wallet
+			return ownedPrivyWallets[0] || null
 		}
 		// Match by address
 		return (
-			privyWallets.find((w) => w.address === activeWallet.address) || null
+			ownedPrivyWallets.find((w) => w.address === activeWallet.address) || null
 		)
-	}, [activeWallet, privyWallets])
+	}, [activeWallet, ownedPrivyWallets])
 
 	// Convenience: the address to use for transactions
 	const activeAddress = useMemo(() => {
-		return activeWallet?.address ?? privyWallets[0]?.address ?? null
-	}, [activeWallet, privyWallets])
+		return (
+			activeWallet?.address ??
+			ownedPrivyWallets[0]?.address ??
+			walletAddress ??
+			null
+		)
+	}, [activeWallet, ownedPrivyWallets, walletAddress])
 
 	const setActiveWalletMutation = useMutation({
 		mutationFn: async (walletId: string) => {

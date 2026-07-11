@@ -72,6 +72,27 @@ describe('referrals utils', () => {
     expect(readSignedReferralCookieValue(`${cookie}x`)).toBeNull()
   })
 
+  it('does not treat an already-consumed attribution session as active', async () => {
+    const { buildSignedReferralCookieValue, getActiveReferralAttributionSessionFromSignedCookie } = await import(
+      './referrals'
+    )
+
+    selectQueue.push([
+      {
+        id: 'session-1',
+        referrerUserId: 'referrer-1',
+        inviteCode: 'carl',
+        expiresAt: new Date('2099-01-01T00:00:00.000Z'),
+        consumedAt: new Date('2026-07-01T00:00:00.000Z'),
+      },
+    ])
+
+    const cookie = buildSignedReferralCookieValue('session-1')
+    const session = await getActiveReferralAttributionSessionFromSignedCookie(cookie)
+
+    expect(session).toBeNull()
+  })
+
   it('creates a manual attribution session for a valid invite code', async () => {
     const now = new Date('2026-07-08T12:00:00.000Z')
     vi.useFakeTimers()

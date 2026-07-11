@@ -89,6 +89,7 @@ export default function AppShell({ children }: AppShellProps) {
   // Pages that render their own MobileHeader hide the global AppHeader on mobile.
   const isSettingsIndexPage = currentPath === '/settings' || currentPath === '/settings/'
   const isSettingsHelpPage = currentPath === '/settings/help' || currentPath.startsWith('/settings/help/')
+  const isSettingsInvitesPage = currentPath === '/settings/invites' || currentPath.startsWith('/settings/invites/')
   const isAccountDetailPage =
     currentPath.startsWith('/settings/account/') &&
     currentPath !== '/settings/account' &&
@@ -98,6 +99,7 @@ export default function AppShell({ children }: AppShellProps) {
   const showTopNav =
     !isSettingsIndexPage &&
     !isSettingsHelpPage &&
+    !isSettingsInvitesPage &&
     !isAccountDetailPage &&
     !isExplorePage &&
     !isSearchPage
@@ -107,7 +109,7 @@ export default function AppShell({ children }: AppShellProps) {
   // users' profiles.
   const isSettingsPage = currentPath === '/settings' || currentPath.startsWith('/settings/')
   const shouldHideBottomNavOnMobile =
-    (isSettingsIndexPage || isSettingsHelpPage || isAccountDetailPage) && !isTabletOrAbove
+    (isSettingsIndexPage || isSettingsHelpPage || isSettingsInvitesPage || isAccountDetailPage) && !isTabletOrAbove
   const shouldHideBottomNavForOtherRoutes =
     !isSettingsPage &&
     HIDE_BOTTOM_NAV_PREFIXES.some((route) => currentPath === route || currentPath.startsWith(`${route}/`))
@@ -130,9 +132,9 @@ export default function AppShell({ children }: AppShellProps) {
   // on the 12-col grid via isWideLayout.
   const isSettingsAccountRoute = currentPath.startsWith('/settings/account')
   const isAdminRoute = currentPath.startsWith('/admin')
-  const ownsRailLayout = isSettingsAccountRoute || isSettingsHelpPage || isAdminRoute
+  const ownsRailLayout = isSettingsAccountRoute || isSettingsHelpPage || isSettingsInvitesPage || isAdminRoute
   const isWideLayout =
-    currentPath.startsWith('/settings') && !isSettingsAccountRoute && !isSettingsHelpPage
+    currentPath.startsWith('/settings') && !isSettingsAccountRoute && !isSettingsHelpPage && !isSettingsInvitesPage
 
   return (
     <MessagingProvider>

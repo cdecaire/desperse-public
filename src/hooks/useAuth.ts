@@ -4,7 +4,6 @@
  */
 
 import { usePrivy } from '@privy-io/react-auth'
-import { useWallets } from '@privy-io/react-auth/solana'
 import { useCallback, useMemo } from 'react'
 
 export interface UseAuthReturn {
@@ -43,8 +42,6 @@ export function useAuth(): UseAuthReturn {
     getAccessToken: privyGetAccessToken,
   } = usePrivy()
   
-  const { wallets } = useWallets()
-
   // Get the Solana wallet address
   // Privy can have multiple wallets, we prioritize the embedded (Privy-created) wallet
   const solanaWallet = useMemo(() => {
@@ -71,9 +68,13 @@ export function useAuth(): UseAuthReturn {
       return linkedSolana.address
     }
 
-    // Fall back to any connected Solana wallet from useWallets()
-    return wallets[0]?.address || null
-  }, [user?.linkedAccounts, wallets])
+    // No linked Solana wallet yet (embedded wallet creation is async after
+    // signup). Return null and let callers wait — never fall back to a
+    // merely-connected wallet from useWallets(): connected wallets belong to
+    // the browser, not necessarily to this account, and using one here has
+    // written another account's wallet into the DB at signup.
+    return null
+  }, [user?.linkedAccounts])
 
   // Extract user info from Privy
   const privyId = user?.id || null

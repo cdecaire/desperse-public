@@ -59,10 +59,10 @@ export const settingsCategories: SettingsNavCategory[] = [
         description: 'Control who can message you',
       },
       {
-        path: '/settings/account/security',
-        label: 'Security',
-        icon: 'fa-shield',
-        description: 'Password and security settings',
+        path: '/settings/account/privacy',
+        label: 'Privacy',
+        icon: 'fa-user-shield',
+        description: 'Control public discovery and account visibility',
       },
       {
         path: '/settings/account/storage-credits',

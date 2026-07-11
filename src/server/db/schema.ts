@@ -217,6 +217,11 @@ export const collections = pgTable(
     userIdIdx: index('collections_user_id_idx').on(table.userId),
     postIdIdx: index('collections_post_id_idx').on(table.postId),
     statusIdx: index('collections_status_idx').on(table.status),
+    leaderboardConfirmedIdx: index('collections_leaderboard_confirmed_idx').on(
+      table.status,
+      table.createdAt,
+      table.postId,
+    ),
     ipAddressIdx: index('collections_ip_address_idx').on(table.ipAddress),
   }),
 );
@@ -257,6 +262,11 @@ export const purchases = pgTable(
     userIdIdx: index('purchases_user_id_idx').on(table.userId),
     postIdIdx: index('purchases_post_id_idx').on(table.postId),
     statusIdx: index('purchases_status_idx').on(table.status),
+    leaderboardConfirmedIdx: index('purchases_leaderboard_confirmed_idx').on(
+      table.status,
+      table.mintConfirmedAt,
+      table.postId,
+    ),
     fulfillmentKeyIdx: index('purchases_fulfillment_key_idx').on(table.fulfillmentKey),
     txSignatureIdx: index('purchases_tx_signature_idx').on(table.txSignature),
   }),
@@ -283,6 +293,7 @@ export const follows = pgTable(
     ),
     followerIdIdx: index('follows_follower_id_idx').on(table.followerId),
     followingIdIdx: index('follows_following_id_idx').on(table.followingId),
+    leaderboardCreatedIdx: index('follows_leaderboard_created_idx').on(table.createdAt, table.followingId),
   }),
 );
 
@@ -344,6 +355,11 @@ export const referrals = pgTable(
     referredUserUniqueIdx: uniqueIndex('referrals_referred_user_unique_idx').on(table.referredUserId),
     referrerUserIdIdx: index('referrals_referrer_user_id_idx').on(table.referrerUserId),
     stateIdx: index('referrals_state_idx').on(table.state),
+    leaderboardActivatedIdx: index('referrals_leaderboard_activated_idx').on(
+      table.state,
+      table.activatedAt,
+      table.referrerUserId,
+    ),
     expiresAtIdx: index('referrals_expires_at_idx').on(table.expiresAt),
     attributionSessionIdIdx: index('referrals_attribution_session_id_idx').on(table.attributionSessionId),
   }),
@@ -417,6 +433,7 @@ export const likes = pgTable(
     ),
     postIdIdx: index('likes_post_id_idx').on(table.postId),
     userIdIdx: index('likes_user_id_idx').on(table.userId),
+    leaderboardCreatedIdx: index('likes_leaderboard_created_idx').on(table.createdAt, table.postId),
   }),
 );
 
@@ -482,6 +499,99 @@ export const contentReports = pgTable(
     // Index for querying all reports for a specific content item
     contentIdx: index('content_reports_content_idx').on(table.contentType, table.contentId),
     reportedByUserIdIdx: index('content_reports_reported_by_user_id_idx').on(table.reportedByUserId),
+  }),
+);
+
+// Versioned leaderboard snapshots. Category uses the literal "all" instead of
+// NULL so one complete snapshot can be selected deterministically per scope.
+export const leaderboardSnapshots = pgTable(
+  'leaderboard_snapshots',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    view: text('view').notNull(), // 'creators' | 'community'
+    period: text('period').notNull(), // '7d' | '30d' | '90d'
+    category: text('category').notNull().default('all'),
+    algorithmVersion: text('algorithm_version').notNull(),
+    bucketStartedAt: timestamp('bucket_started_at', { withTimezone: true }).notNull(),
+    entryCount: integer('entry_count').notNull().default(0),
+    isComplete: boolean('is_complete').notNull().default(false),
+    generatedAt: timestamp('generated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    scopeBucketUniqueIdx: uniqueIndex('leaderboard_snapshots_scope_bucket_unique_idx').on(
+      table.view,
+      table.period,
+      table.category,
+      table.algorithmVersion,
+      table.bucketStartedAt,
+    ),
+    scopeGeneratedIdx: index('leaderboard_snapshots_scope_generated_idx').on(
+      table.view,
+      table.period,
+      table.category,
+      table.isComplete,
+      table.generatedAt,
+    ),
+  }),
+);
+
+export const leaderboardEntries = pgTable(
+  'leaderboard_entries',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    snapshotId: uuid('snapshot_id')
+      .notNull()
+      .references(() => leaderboardSnapshots.id, { onDelete: 'cascade' }),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    rank: integer('rank').notNull(),
+    score: integer('score').notNull(),
+    paidEditionCount: integer('paid_edition_count').notNull().default(0),
+    freeCollectCount: integer('free_collect_count').notNull().default(0),
+    uniqueSupporterCount: integer('unique_supporter_count').notNull().default(0),
+    likeCount: integer('like_count').notNull().default(0),
+    netNewFollowerCount: integer('net_new_follower_count').notNull().default(0),
+    activatedReferralCount: integer('activated_referral_count').notNull().default(0),
+    recentPostId: uuid('recent_post_id').references(() => posts.id, { onDelete: 'set null' }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    snapshotUserUniqueIdx: uniqueIndex('leaderboard_entries_snapshot_user_unique_idx').on(
+      table.snapshotId,
+      table.userId,
+    ),
+    snapshotRankIdx: index('leaderboard_entries_snapshot_rank_idx').on(table.snapshotId, table.rank),
+    userIdIdx: index('leaderboard_entries_user_id_idx').on(table.userId),
+  }),
+);
+
+// Append-only audit log for account-level moderation state changes.
+export const userModerationActions = pgTable(
+  'user_moderation_actions',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    subjectUserId: uuid('subject_user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    actorUserId: uuid('actor_user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'restrict' }),
+    reportId: uuid('report_id').references(() => contentReports.id, { onDelete: 'set null' }),
+    previousStatus: text('previous_status').notNull(),
+    nextStatus: text('next_status').notNull(),
+    reason: text('reason').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    subjectCreatedIdx: index('user_moderation_actions_subject_created_idx').on(
+      table.subjectUserId,
+      table.createdAt,
+    ),
+    actorCreatedIdx: index('user_moderation_actions_actor_created_idx').on(
+      table.actorUserId,
+      table.createdAt,
+    ),
   }),
 );
 
@@ -932,6 +1042,12 @@ export type Comment = typeof comments.$inferSelect;
 export type NewComment = typeof comments.$inferInsert;
 export type ContentReport = typeof contentReports.$inferSelect;
 export type NewContentReport = typeof contentReports.$inferInsert;
+export type LeaderboardSnapshot = typeof leaderboardSnapshots.$inferSelect;
+export type NewLeaderboardSnapshot = typeof leaderboardSnapshots.$inferInsert;
+export type LeaderboardEntry = typeof leaderboardEntries.$inferSelect;
+export type NewLeaderboardEntry = typeof leaderboardEntries.$inferInsert;
+export type UserModerationAction = typeof userModerationActions.$inferSelect;
+export type NewUserModerationAction = typeof userModerationActions.$inferInsert;
 export type PostAsset = typeof postAssets.$inferSelect;
 export type NewPostAsset = typeof postAssets.$inferInsert;
 export type DownloadNonce = typeof downloadNonces.$inferSelect;

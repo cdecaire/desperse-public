@@ -323,6 +323,20 @@
       "when": 1783640702300,
       "tag": "0045_user_report_content_type",
       "breakpoints": true
+    },
+    {
+      "idx": 46,
+      "version": "7",
+      "when": 1783797689550,
+      "tag": "0046_curious_cloak",
+      "breakpoints": true
+    },
+    {
+      "idx": 47,
+      "version": "7",
+      "when": 1783806871553,
+      "tag": "0047_conscious_fallen_one",
+      "breakpoints": true
     }
   ]
 }

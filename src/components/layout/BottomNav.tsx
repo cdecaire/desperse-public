@@ -14,6 +14,7 @@ import { NotificationBadge } from '../ui/notification-badge'
 function isTopLevelPage(pathname: string): boolean {
   if (pathname === '/') return true
   if (pathname === '/explore') return true
+  if (pathname === '/leaderboard') return true
   if (pathname === '/notifications') return true
   if (pathname.startsWith('/profile')) return true
   if (pathname === '/admin' || pathname === '/admin/moderation' || pathname === '/admin/feedback') return true

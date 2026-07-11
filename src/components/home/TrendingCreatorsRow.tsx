@@ -34,8 +34,7 @@ export function TrendingCreatorsRow() {
       title="Trending Creators"
       actions={
         <Link
-          to="/explore"
-          search={{ tab: 'creators' }}
+          to="/leaderboard"
           className="text-label-lg text-muted-foreground hover:text-foreground motion-interactive"
         >
           View all <span aria-hidden="true">&rarr;</span>

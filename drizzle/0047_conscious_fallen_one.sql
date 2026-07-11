@@ -1,0 +1,2 @@
+ALTER TABLE "leaderboard_entries" ADD COLUMN "like_count" integer DEFAULT 0 NOT NULL;--> statement-breakpoint
+CREATE INDEX "likes_leaderboard_created_idx" ON "likes" USING btree ("created_at","post_id");

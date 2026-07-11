@@ -25,11 +25,11 @@ describe('deriveOnboardingState', () => {
       isNewUser: true,
       isProfileIncomplete: true,
       shouldShowOnboarding: false,
-      missingProfileFields: ['displayName', 'avatarUrl', 'bio', 'socialOrWebsite'],
+      missingProfileFields: ['displayName', 'avatarUrl'],
     })
   })
 
-  it('requires the minimum useful public profile fields', () => {
+  it('requires only a display name and a photo', () => {
     expect(
       deriveOnboardingState(
         {
@@ -49,17 +49,18 @@ describe('deriveOnboardingState', () => {
       isNewUser: false,
       isProfileIncomplete: true,
       shouldShowOnboarding: true,
-      missingProfileFields: ['displayName', 'avatarUrl', 'bio', 'socialOrWebsite'],
+      missingProfileFields: ['displayName', 'avatarUrl'],
     })
   })
 
-  it('accepts a social handle instead of a website link', () => {
+  it('does not require a bio or a website/social link', () => {
     expect(
       deriveOnboardingState(
         {
           ...completeUser,
+          bio: '',
           link: null,
-          twitterUsername: 'desperse',
+          twitterUsername: null,
         },
         {
           isAuthenticated: true,

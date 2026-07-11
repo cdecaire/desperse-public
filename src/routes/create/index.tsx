@@ -14,6 +14,7 @@ import { useOnboardingState } from '@/hooks/useOnboardingState'
 import { PageHeader } from '@cdecaire/sable'
 import { Stack } from '@cdecaire/sable/layout'
 import { clearCreateIntent, readCreateIntent } from '@/lib/createIntent'
+import { isOnboardingV1Enabled } from '@/config/env'
 
 const createSearchSchema = z.object({
   // Optional on input so `<Link to="/create">` doesn't require a search param;
@@ -45,15 +46,18 @@ function CreateContent() {
   const { firstPost } = Route.useSearch()
   const { isLoading } = useCurrentUser()
   const { shouldShowOnboarding, isAuthInitializing } = useOnboardingState()
+  // Same flag gate as the / and /profile redirects — without it this route
+  // turns onboarding on in prod through the Create button alone.
+  const redirectToOnboarding = isOnboardingV1Enabled() && shouldShowOnboarding
 
   useEffect(() => {
-    if (shouldShowOnboarding) {
+    if (redirectToOnboarding) {
       navigate({ to: '/onboarding', replace: true })
     }
-  }, [navigate, shouldShowOnboarding])
+  }, [navigate, redirectToOnboarding])
 
   useEffect(() => {
-    if (isLoading || isAuthInitializing || shouldShowOnboarding) {
+    if (isLoading || isAuthInitializing || redirectToOnboarding) {
       return
     }
 
@@ -72,7 +76,7 @@ function CreateContent() {
     }
 
     clearCreateIntent()
-  }, [firstPost, isAuthInitializing, isLoading, navigate, shouldShowOnboarding])
+  }, [firstPost, isAuthInitializing, isLoading, navigate, redirectToOnboarding])
 
   const title = firstPost ? 'Create your first post' : 'Create Post'
   const description = firstPost

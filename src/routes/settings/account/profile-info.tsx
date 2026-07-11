@@ -109,7 +109,11 @@ function ProfileInfoPage() {
   const isProfileLoading = isLoading || isPending || isCurrentUserLoading || isCurrentUserInitializing
 
   const handleAvatarFileSelect = async (file?: File | null) => {
-    if (!file || !currentUser) return
+    if (!file) return
+    if (!currentUser) {
+      toast.error('Still loading your account — try again in a moment.')
+      return
+    }
     if (file.size > 2 * 1024 * 1024) {
       toast.error('Avatar must be 2MB or smaller.')
       return

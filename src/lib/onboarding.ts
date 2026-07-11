@@ -1,4 +1,4 @@
-export type MissingProfileField = 'displayName' | 'avatarUrl' | 'bio' | 'socialOrWebsite'
+export type MissingProfileField = 'displayName' | 'avatarUrl'
 
 export interface OnboardingAuthState {
   isAuthenticated: boolean
@@ -37,12 +37,6 @@ export function getMissingProfileFields(
 
   if (!hasText(user?.displayName)) missing.push('displayName')
   if (!hasText(user?.avatarUrl)) missing.push('avatarUrl')
-  if (!hasText(user?.bio)) missing.push('bio')
-
-  const hasSocialOrWebsite =
-    hasText(user?.link) || hasText(user?.twitterUsername) || hasText(user?.instagramUsername)
-
-  if (!hasSocialOrWebsite) missing.push('socialOrWebsite')
 
   return missing
 }

@@ -10,6 +10,7 @@ import { toast } from '@/hooks/use-toast'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { RoleBadge } from '@/components/shared/RoleBadge'
+import { UserAvatarFallback } from '@/components/shared/UserAvatar'
 import { Tooltip } from '@/components/ui/tooltip'
 import { PullToRefresh } from '@/components/shared/PullToRefresh'
 import { type PostCardData } from '@/components/feed/PostCard'
@@ -167,9 +168,7 @@ function ProfileGridItem({
                 )
               })()
             ) : (
-              <div className="w-full h-full flex items-center justify-center bg-muted">
-                <Icon name="user" variant="regular" className="text-[10px] text-muted-foreground" />
-              </div>
+              <UserAvatarFallback seed={post.user.id} contained />
             )}
           </div>
         </div>
@@ -349,7 +348,7 @@ function ProfilePage() {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <Icon name="user" variant="regular" className="text-2xl text-muted-foreground" />
+              <UserAvatarFallback seed={profileUser.id} contained />
             )}
           </div>
           <Stack gap={0.5} align="center">
@@ -436,7 +435,7 @@ function ProfilePage() {
                     )
                   })()
                 ) : (
-                  <Icon name="user" variant="regular" className="text-2xl md:text-3xl text-muted-foreground" />
+                  <UserAvatarFallback seed={profileUser.id} contained />
                 )}
               </div>
               {profileUser.role === 'admin' && (

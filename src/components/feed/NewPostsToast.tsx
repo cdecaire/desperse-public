@@ -7,6 +7,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { Icon } from '@/components/ui/icon'
+import { UserAvatarFallback } from '@/components/shared/UserAvatar'
 import { cn } from '@/lib/utils'
 import { smoothScrollTo } from '@/hooks/useFeedRefresh'
 import type { NewPostCreator } from '@/hooks/useNotificationCounters'
@@ -149,9 +150,7 @@ export function NewPostsToast({
                 decoding="sync"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center bg-muted text-muted-foreground text-xs font-medium">
-                {(creator.displayName || creator.usernameSlug)[0]?.toUpperCase()}
-              </div>
+              <UserAvatarFallback seed={creator.usernameSlug} contained />
             )}
           </div>
         ))}
@@ -164,4 +163,3 @@ export function NewPostsToast({
 }
 
 export default NewPostsToast
-

@@ -6,6 +6,7 @@
 
 import { useState, useMemo } from 'react'
 import { Icon } from '@/components/ui/icon'
+import { UserAvatarFallback } from '@/components/shared/UserAvatar'
 import { Link } from '@tanstack/react-router'
 import {
   Dialog,
@@ -250,7 +251,7 @@ function ActivityItem({
                   className="w-3 h-3 rounded-full"
                 />
               ) : (
-                <Icon name="user" variant="regular" className="text-[8px] text-muted-foreground" />
+                <span className="inline-block size-3 rounded-full overflow-hidden"><UserAvatarFallback seed={user.id} contained /></span>
               )}
               <p className="text-label-lg truncate">
                 {user.displayName || user.usernameSlug}
@@ -304,4 +305,3 @@ function getActivityIcon(type: ActivityItem['type']): string {
       return 'wallet'
   }
 }
-

@@ -110,7 +110,7 @@ export function LeaderboardRow({ entry, view }: { entry: LeaderboardEntry; view:
         params={{ slug: entry.usernameSlug }}
         className="group flex min-w-0 items-center gap-3 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       >
-        <UserAvatar src={entry.avatarUrl} alt="" size="lg" />
+		<UserAvatar src={entry.avatarUrl} alt="" seed={entry.usernameSlug} size="lg" />
         <span className="min-w-0">
           <span className="block truncate text-label-lg group-hover:underline">{displayName}</span>
           <span className="block truncate text-caption text-muted-foreground">@{entry.usernameSlug}</span>

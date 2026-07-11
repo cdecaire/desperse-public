@@ -32,31 +32,41 @@ const SUPPORTED_MEDIA_TYPES = [
   ...SUPPORTED_3D_TYPES,
 ]
 
-// Accept string for file input (includes file extensions for better browser support)
-const ACCEPT_STRING = [
-  'image/jpeg',
-  'image/png',
-  'image/webp',
-  'image/gif',
-  'image/svg+xml',
-  '.svg',
-  'video/mp4',
-  'video/webm',
-  'audio/mpeg',
-  'audio/wav',
-  'audio/ogg',
-  'audio/mp3',
-  'application/pdf',
-  '.pdf',
-  'application/epub+zip',
-  '.epub',
-  '.glb',
-  '.gltf',
-  'model/gltf-binary',
-  'model/gltf+json',
-].join(',')
+// File-picker `accept` lists per kind, derived from the SUPPORTED_* lists plus
+// extension hints (better browser support), minus application/octet-stream —
+// too broad for a picker filter; octet-stream 3D files still pass validation.
+const PICKER_ACCEPT_BY_TYPE: Record<MediaType, string[]> = {
+  image: [...SUPPORTED_IMAGE_TYPES, '.svg'],
+  video: [...SUPPORTED_VIDEO_TYPES],
+  audio: [...SUPPORTED_AUDIO_TYPES],
+  document: [...SUPPORTED_DOCUMENT_TYPES, '.pdf', '.epub'],
+  '3d': [...SUPPORTED_3D_TYPES.filter((t) => t !== 'application/octet-stream'), '.glb', '.gltf'],
+}
+
+const ACCEPT_STRING = Object.values(PICKER_ACCEPT_BY_TYPE).flat().join(',')
 
 const ACCEPT_IMAGE_STRING = SUPPORTED_IMAGE_TYPES.join(',')
+
+const TYPE_LABELS: Record<MediaType, string> = {
+  image: 'an image',
+  video: 'a video',
+  audio: 'an audio file',
+  document: 'a PDF, ZIP, or EPUB',
+  '3d': 'a 3D model (GLB/GLTF)',
+}
+
+function getAcceptString(acceptedTypes?: MediaType[]): string {
+  if (!acceptedTypes?.length) return ACCEPT_STRING
+  return acceptedTypes.flatMap((type) => PICKER_ACCEPT_BY_TYPE[type]).join(',')
+}
+
+function getUnsupportedTypeMessage(acceptedTypes?: MediaType[]): string {
+  if (!acceptedTypes?.length) {
+    return 'Unsupported file type. Please upload an image, video, audio, PDF, ZIP, or 3D model (GLB/GLTF).'
+  }
+  const labels = acceptedTypes.map((type) => TYPE_LABELS[type])
+  return `Unsupported file type. Please upload ${labels.join(' or ')}.`
+}
 
 // Hard-cap upload size to avoid browser crashes from huge base64 conversions.
 
@@ -100,6 +110,8 @@ export interface MediaUploadProps {
   initialCover?: string | null
   /** Whether to require a cover image for audio files */
   requireCoverForAudio?: boolean
+  /** Restrict uploads to these media kinds (defaults to all supported types) */
+  acceptedTypes?: MediaType[]
   /** Additional class names */
   className?: string
   /** Disabled state */
@@ -185,6 +197,7 @@ export function MediaUpload({
   initialMedia = null,
   initialCover = null,
   requireCoverForAudio = true,
+  acceptedTypes,
   className,
   disabled = false,
 }: MediaUploadProps) {
@@ -219,7 +232,14 @@ export function MediaUpload({
     if (!isValidMediaType(file.type, file.name)) {
       return {
         valid: false,
-        error: 'Unsupported file type. Please upload an image, video, audio, PDF, ZIP, or 3D model (GLB/GLTF).',
+        error: getUnsupportedTypeMessage(acceptedTypes),
+      }
+    }
+
+    if (acceptedTypes?.length && !acceptedTypes.includes(getMediaTypeFromFile(file.type, file.name))) {
+      return {
+        valid: false,
+        error: getUnsupportedTypeMessage(acceptedTypes),
       }
     }
 
@@ -521,7 +541,7 @@ export function MediaUpload({
           <input
             ref={fileInputRef}
             type="file"
-            accept={ACCEPT_STRING}
+            accept={getAcceptString(acceptedTypes)}
             onChange={handleFileChange}
             className="hidden"
             disabled={disabled}
@@ -549,7 +569,9 @@ export function MediaUpload({
                 or click to browse
               </p>
               <p className="text-xs text-muted-foreground">
-                Images, videos, audio, PDFs, ZIPs, or 3D models (GLB/GLTF) • Max {MAX_UPLOAD_MB} MB
+                {acceptedTypes?.length
+                  ? `${acceptedTypes.map((type) => TYPE_LABELS[type]).join(' or ')} • Max ${MAX_UPLOAD_MB} MB`
+                  : `Images, videos, audio, PDFs, ZIPs, or 3D models (GLB/GLTF) • Max ${MAX_UPLOAD_MB} MB`}
               </p>
             </>
           )}

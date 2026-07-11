@@ -42,7 +42,7 @@ describe('useOnboardingState', () => {
       isNewUser: false,
       isProfileIncomplete: true,
       shouldShowOnboarding: true,
-      missingProfileFields: ['bio', 'socialOrWebsite'],
+      missingProfileFields: ['avatarUrl'],
     }
     const error = new Error('current user failed')
 
@@ -61,7 +61,7 @@ describe('useOnboardingState', () => {
       isNewUser: false,
       isProfileIncomplete: true,
       shouldShowOnboarding: true,
-      missingProfileFields: ['bio', 'socialOrWebsite'],
+      missingProfileFields: ['avatarUrl'],
       isLoading: false,
       isAuthInitializing: false,
       error,
@@ -73,7 +73,7 @@ describe('useOnboardingState', () => {
       isNewUser: false,
       isProfileIncomplete: true,
       shouldShowOnboarding: false,
-      missingProfileFields: ['displayName', 'avatarUrl', 'bio', 'socialOrWebsite'],
+      missingProfileFields: ['displayName', 'avatarUrl'],
     }
 
     mockCurrentUser({
@@ -92,8 +92,6 @@ describe('useOnboardingState', () => {
     expect(result.current.missingProfileFields).toEqual([
       'displayName',
       'avatarUrl',
-      'bio',
-      'socialOrWebsite',
     ])
   })
 })

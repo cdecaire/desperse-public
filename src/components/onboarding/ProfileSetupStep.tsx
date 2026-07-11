@@ -8,14 +8,9 @@ import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Icon } from '@/components/ui/icon'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
-import { deriveOnboardingState, type OnboardingProfileUser } from '@/lib/onboarding'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { deriveOnboardingState, getMissingProfileFields, type MissingProfileField, type OnboardingProfileUser } from '@/lib/onboarding'
+import { Card, CardContent } from '@/components/ui/card'
+import type { ProfileDraft } from '@/components/onboarding/OnboardingPreview'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { useProfileUpdate, useAvatarUpload } from '@/hooks/useProfileQuery'
 
@@ -38,6 +33,8 @@ export function normalizeUrl(value: string): string {
 
 interface ProfileSetupStepProps {
   onSuccess?: () => void
+  /** Reports current field values so the shell can live-preview the profile. */
+  onDraftChange?: (draft: ProfileDraft) => void
 }
 
 export function shouldAdvanceProfileSetup(user: OnboardingProfileUser): boolean {
@@ -48,7 +45,17 @@ export function shouldAdvanceProfileSetup(user: OnboardingProfileUser): boolean 
   }).isProfileIncomplete
 }
 
-export function ProfileSetupStep({ onSuccess }: ProfileSetupStepProps) {
+const MISSING_FIELD_LABELS: Record<MissingProfileField, string> = {
+  displayName: 'a display name',
+  avatarUrl: 'a photo',
+}
+
+function describeMissingFields(user: OnboardingProfileUser): string {
+  const labels = getMissingProfileFields(user).map((field) => MISSING_FIELD_LABELS[field])
+  return labels.join(' and ')
+}
+
+export function ProfileSetupStep({ onSuccess, onDraftChange }: ProfileSetupStepProps) {
   const queryClient = useQueryClient()
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const { user: currentUser } = useCurrentUser()
@@ -75,8 +82,16 @@ export function ProfileSetupStep({ onSuccess }: ProfileSetupStepProps) {
     }
   }, [currentUser])
 
+  useEffect(() => {
+    onDraftChange?.({ displayName, bio, link, avatarUrl })
+  }, [displayName, bio, link, avatarUrl, onDraftChange])
+
   const handleAvatarFileSelect = async (file?: File | null) => {
-    if (!file || !currentUser) return
+    if (!file) return
+    if (!currentUser) {
+      toast.error('Still loading your account — try again in a moment.')
+      return
+    }
     if (file.size > 2 * 1024 * 1024) {
       toast.error('Avatar must be 2MB or smaller.')
       return
@@ -162,7 +177,7 @@ export function ProfileSetupStep({ onSuccess }: ProfileSetupStepProps) {
         toast.success('Profile saved')
         onSuccess?.()
       } else {
-        toast.success('Profile saved. Finish the remaining profile fields to continue.')
+        toast.success(`Profile saved. Add ${describeMissingFields(updatedUser)} to finish setup.`)
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to save profile'
@@ -174,13 +189,7 @@ export function ProfileSetupStep({ onSuccess }: ProfileSetupStepProps) {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Set up your public profile</CardTitle>
-        <CardDescription>
-          Add the minimum identity details people need before they follow or collect from you.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
+      <CardContent className="pt-6">
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Avatar */}
           <div className="flex flex-col gap-3">
@@ -196,8 +205,8 @@ export function ProfileSetupStep({ onSuccess }: ProfileSetupStepProps) {
               <div className="flex items-center gap-2">
                 <Button
                   type="button"
-                  variant="default"
-                  disabled={avatarUpload.isPending || isRemovingAvatar}
+                  variant="outline"
+                  disabled={avatarUpload.isPending || isRemovingAvatar || !currentUser}
                   onClick={() => fileInputRef.current?.click()}
                 >
                   {avatarUpload.isPending && <LoadingSpinner size="sm" className="mr-2" />}
@@ -207,7 +216,7 @@ export function ProfileSetupStep({ onSuccess }: ProfileSetupStepProps) {
                   <Button
                     type="button"
                     variant="destructive"
-                    className="h-9 w-9 p-0"
+                    size="icon"
                     disabled={avatarUpload.isPending || isRemovingAvatar}
                     onClick={handleRemoveAvatar}
                     aria-label="Remove photo"
@@ -247,31 +256,31 @@ export function ProfileSetupStep({ onSuccess }: ProfileSetupStepProps) {
               </div>
             </div>
             {errors.displayName && (
-              <p className="text-xs text-destructive">{errors.displayName}</p>
+              <p className="text-caption text-destructive">{errors.displayName}</p>
             )}
           </div>
 
           {/* Bio */}
           <div className="space-y-2">
-            <Label htmlFor="bio">Bio</Label>
+            <Label htmlFor="bio">Bio <span className="text-muted-foreground">(optional)</span></Label>
             <div className="relative">
               <Textarea
                 id="bio"
                 value={bio}
-                maxLength={160}
+                maxLength={280}
                 onChange={(e) => setBio(e.target.value)}
                 placeholder="Tell the world about you"
                 rows={4}
                 className="min-h-[100px] pb-7"
               />
               <div className="absolute bottom-2 right-3 text-caption text-muted-foreground pointer-events-none">
-                {bio.length} / 160
+                {bio.length} / 280
               </div>
             </div>
           </div>
 
           {/* Link */}
-          <Field label="Website or social link" error={errors.link}>
+          <Field label="Website or social link (optional)" error={errors.link}>
             <Input
               id="link"
               type="text"

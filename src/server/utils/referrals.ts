@@ -1,5 +1,5 @@
 import { createHmac, timingSafeEqual } from 'node:crypto'
-import { and, eq, lt, ne } from 'drizzle-orm'
+import { and, desc, eq, lt, ne } from 'drizzle-orm'
 
 import { env } from '@/config/env'
 import { db } from '@/server/db'
@@ -81,6 +81,7 @@ async function getReferrerByInviteCode(code: string) {
       slug: users.usernameSlug,
       displayName: users.displayName,
       avatarUrl: users.avatarUrl,
+      bio: users.bio,
     })
     .from(users)
     .where(eq(users.usernameSlug, normalized))
@@ -476,4 +477,39 @@ export async function expireStalePendingReferrals(now: Date = new Date(), referr
   }
 
   return expiredCount
+}
+
+const REFERRER_PREVIEW_POST_LIMIT = 6
+
+export async function getReferrerInvitePreview(code: string) {
+  const referrer = await getReferrerByInviteCode(code)
+  if (!referrer) return null
+
+  const samplePosts = await db
+    .select({
+      id: posts.id,
+      mediaUrl: posts.mediaUrl,
+      coverUrl: posts.coverUrl,
+      caption: posts.caption,
+    })
+    .from(posts)
+    .where(and(eq(posts.userId, referrer.id), eq(posts.isDeleted, false), eq(posts.isHidden, false), eq(posts.isDev, false)))
+    .orderBy(desc(posts.createdAt))
+    .limit(REFERRER_PREVIEW_POST_LIMIT)
+
+  return { referrer, samplePosts }
+}
+
+export async function getReferralStatusForReferredUser(referredUserId: string) {
+  const [referral] = await db
+    .select({
+      state: referrals.state,
+      referrerUserId: referrals.referrerUserId,
+      inviteCode: referrals.inviteCode,
+    })
+    .from(referrals)
+    .where(eq(referrals.referredUserId, referredUserId))
+    .limit(1)
+
+  return referral ?? null
 }

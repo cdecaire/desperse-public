@@ -4,7 +4,7 @@
  */
 
 import { createServerFn } from '@tanstack/react-start'
-import { getRequest } from '@tanstack/react-start/server'
+import { getRequest, getCookie, deleteCookie } from '@tanstack/react-start/server'
 import { db } from '@/server/db'
 import { users } from '@/server/db/schema'
 import { eq } from 'drizzle-orm'
@@ -17,6 +17,26 @@ import {
   verifyPrivyToken,
   stripAuthorization,
 } from '@/server/auth'
+import {
+  bindReferralToUserFromAttributionSession,
+  getActiveReferralAttributionSessionFromSignedCookie,
+  REFERRAL_ATTRIBUTION_COOKIE_NAME,
+} from '@/server/utils/referrals'
+
+async function bindReferralForNewUser(userId: string) {
+  try {
+    const referralCookie = getCookie(REFERRAL_ATTRIBUTION_COOKIE_NAME)
+    const referralSession = await getActiveReferralAttributionSessionFromSignedCookie(referralCookie)
+    if (!referralSession) return
+    await bindReferralToUserFromAttributionSession({
+      attributionSessionId: referralSession.id,
+      referredUserId: userId,
+    })
+    deleteCookie(REFERRAL_ATTRIBUTION_COOKIE_NAME, { path: '/' })
+  } catch (e) {
+    console.warn('[initAuth] Non-critical: referral binding failed:', e instanceof Error ? e.message : e)
+  }
+}
 
 function formatWalletIdentifier(address: string) {
   const trimmed = address?.trim()
@@ -251,6 +271,8 @@ export const initAuth = createServerFn({
     } catch (e) {
       console.warn('[initAuth] Non-critical: failed to create wallet row:', e instanceof Error ? e.message : e)
     }
+
+    await bindReferralForNewUser(newUser.id)
 
     return {
       success: true,

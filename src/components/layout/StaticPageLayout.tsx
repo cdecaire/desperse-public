@@ -11,14 +11,16 @@ import { Footer } from '@/components/layout/Footer'
 
 interface StaticPageLayoutProps {
   children: React.ReactNode
+  /** Cap width for the content region. Defaults to "prose" (long-form pages). */
+  maxWidth?: string
 }
 
-export function StaticPageLayout({ children }: StaticPageLayoutProps) {
+export function StaticPageLayout({ children, maxWidth = 'prose' }: StaticPageLayoutProps) {
   return (
     <Stack gap={0} className="min-h-screen bg-background text-foreground">
       <PublicHeader navItems={PUBLIC_NAV_ITEMS} />
       <main className="flex-1 pt-32 pb-20 md:pt-40 md:pb-24">
-        <Center max="prose" className="px-4">
+        <Center max={maxWidth} className="px-4">
           {children}
         </Center>
       </main>

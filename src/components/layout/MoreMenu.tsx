@@ -66,15 +66,26 @@ export default function MoreMenu({ variant = 'sidebar' }: MoreMenuProps) {
   const MenuContent = () => (
     <div className="space-y-1">
       {isAuthenticated && (
-        <Link
-          to="/settings"
-          onClick={() => setIsOpen(false)}
-          className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-accent hover:text-accent-foreground rounded-md hover-fade"
-          role="menuitem"
-        >
-          <Icon name="user-gear" variant="regular" className="w-5 text-center" />
-          <span className="text-sm font-medium">Settings</span>
-        </Link>
+        <>
+          <Link
+            to="/leaderboard"
+            onClick={() => setIsOpen(false)}
+            className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-accent hover:text-accent-foreground rounded-md hover-fade"
+            role="menuitem"
+          >
+            <Icon name="ranking-star" variant="regular" className="w-5 text-center" />
+            <span className="text-sm font-medium">Leaderboard</span>
+          </Link>
+          <Link
+            to="/settings"
+            onClick={() => setIsOpen(false)}
+            className="flex items-center gap-3 w-full px-4 py-3 text-left hover:bg-accent hover:text-accent-foreground rounded-md hover-fade"
+            role="menuitem"
+          >
+            <Icon name="user-gear" variant="regular" className="w-5 text-center" />
+            <span className="text-sm font-medium">Settings</span>
+          </Link>
+        </>
       )}
 
       {/* Theme Switcher */}

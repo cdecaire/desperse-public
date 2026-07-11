@@ -91,6 +91,10 @@ export function usePreferences() {
             ...current.messaging,
             ...updates.messaging,
           },
+          privacy: {
+            ...current.privacy,
+            ...updates.privacy,
+          },
         }
       })
 
@@ -114,6 +118,8 @@ export function usePreferences() {
   const setTheme = (theme: ThemeOption) => updateMutation.mutate({ theme })
   const setDesignTheme = (designTheme: DesignThemeOption) => updateMutation.mutate({ designTheme })
   const setExplorer = (explorer: ExplorerOption) => updateMutation.mutate({ explorer })
+  const setLeaderboardParticipation = (enabled: boolean) =>
+    updateMutation.mutate({ privacy: { leaderboardParticipation: enabled } })
 
   // Notification preference setters
   const setNotifyFollows = (enabled: boolean) =>
@@ -142,6 +148,7 @@ export function usePreferences() {
     setDesignTheme,
     // Explorer
     setExplorer,
+    setLeaderboardParticipation,
     // Notifications
     setNotifyFollows,
     setNotifyLikes,

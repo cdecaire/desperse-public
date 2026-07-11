@@ -26,6 +26,7 @@ interface PublicHeaderProps {
 export const PUBLIC_NAV_ITEMS = [
   { label: 'Home', href: '/' },
   { label: 'Explore', href: '/explore' },
+  { label: 'Leaderboard', href: '/leaderboard' },
   { label: 'About', href: '/about' },
 ]
 
@@ -92,6 +93,13 @@ export function PublicHeader({ navItems, position = 'fixed' }: PublicHeaderProps
       )}
 
       <div className="flex-1 flex items-center justify-end gap-2 md:gap-4">
+        <Link
+          to="/leaderboard"
+          className="grid min-h-10 min-w-10 place-items-center rounded-full text-muted-foreground hover:bg-muted hover:text-foreground motion-interactive sm:hidden"
+          aria-label="Leaderboard"
+        >
+          <Icon name="ranking-star" variant="regular" />
+        </Link>
         {recoveryMessage && !authenticated && (
           <p className="hidden max-w-xs text-right text-body-sm text-(--tone-warning) md:block">
             {recoveryMessage}

@@ -38,6 +38,11 @@ const updatePreferencesSchema = z.object({
 			tipMinAmount: z.number().positive().max(10000).optional(),
 		})
 		.optional(),
+	privacy: z
+		.object({
+			leaderboardParticipation: z.boolean().optional(),
+		})
+		.optional(),
 })
 
 export const getUserPreferences = createServerFn({

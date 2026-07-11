@@ -55,6 +55,9 @@ export interface UpdatePreferencesInput {
 		allowTippers?: boolean
 		tipMinAmount?: number
 	}
+	privacy?: {
+		leaderboardParticipation?: boolean
+	}
 }
 
 export async function getPreferencesForUser(
@@ -116,6 +119,13 @@ export async function updatePreferencesForUser(
 		newPrefs.messaging = {
 			...currentPrefs.messaging,
 			...updates.messaging,
+		}
+	}
+
+	if (updates.privacy) {
+		newPrefs.privacy = {
+			...currentPrefs.privacy,
+			...updates.privacy,
 		}
 	}
 

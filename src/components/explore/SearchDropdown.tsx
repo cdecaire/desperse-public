@@ -4,6 +4,7 @@
  */
 
 import { Icon } from '@/components/ui/icon'
+import { UserAvatarFallback } from '@/components/shared/UserAvatar'
 
 interface SearchUser {
   id: string
@@ -232,9 +233,7 @@ export function SearchDropdown({
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <Icon name="user" variant="regular" className="text-muted-foreground" />
-                      </div>
+                      <UserAvatarFallback seed={user.id} contained />
                     )}
                   </div>
 

@@ -5,6 +5,7 @@
 
 import { useState, useMemo, useEffect } from 'react'
 import { Icon } from '@/components/ui/icon'
+import { UserAvatarFallback } from '@/components/shared/UserAvatar'
 import { Link } from '@tanstack/react-router'
 import {
   Dialog,
@@ -221,7 +222,7 @@ function FollowerItem({
               className="w-full h-full object-cover"
             />
           ) : (
-            <Icon name="user" variant="regular" className="text-lg text-muted-foreground" />
+            <UserAvatarFallback seed={follower.id} contained />
           )}
         </div>
 
@@ -258,4 +259,3 @@ function FollowerItem({
     </div>
   )
 }
-

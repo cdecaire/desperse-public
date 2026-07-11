@@ -5,6 +5,7 @@
 
 import { useState, useMemo } from 'react'
 import { Icon } from '@/components/ui/icon'
+import { UserAvatarFallback } from '@/components/shared/UserAvatar'
 import { Link } from '@tanstack/react-router'
 import {
   Dialog,
@@ -172,7 +173,7 @@ function LikedPostItem({
                   className="w-4 h-4 rounded-full"
                 />
               ) : (
-                <Icon name="user" variant="regular" className="text-[10px] text-muted-foreground" />
+                <span className="inline-block size-4 rounded-full overflow-hidden"><UserAvatarFallback seed={user.id} contained /></span>
               )}
               <p className="text-label-lg truncate">
                 {user.displayName || user.usernameSlug}
@@ -189,4 +190,3 @@ function LikedPostItem({
     </Link>
   )
 }
-

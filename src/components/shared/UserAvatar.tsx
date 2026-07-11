@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils'
+import { getAvatarPatternClass } from '@/lib/avatarPattern'
 import { Avatar } from '@cdecaire/sable'
 import { Icon } from '@/components/ui/icon'
 import { Tooltip } from '@/components/ui/tooltip'
@@ -7,7 +8,7 @@ import type { UserRole } from '@/components/shared/VerifiedBadge'
 /**
  * Migration shim (Phase 2 — Sable adoption).
  *
- * The avatar circle (image + muted-disc fallback) is now @cdecaire/sable's
+ * The avatar circle (image + deterministic color-field fallback) is now @cdecaire/sable's
  * <Avatar> (Base UI tracks load/error and swaps to the fallback automatically —
  * no manual `src ?` check). We keep Desperse's own concerns on the wrapper:
  *   - `data-avatar` — the dark-mode hover CSS in styles.css excludes avatars via
@@ -16,7 +17,7 @@ import type { UserRole } from '@/components/shared/VerifiedBadge'
  *   - the xs/sm/md/lg size scale (wrapper sizes the box; Sable's Avatar fills it
  *     with `size-full`, so we don't depend on Sable's own size variant).
  *
- * Public API (src/alt/size/className/role) is unchanged.
+ * Public API (src/alt/seed/size/className/role) is unchanged.
  */
 
 const sizeClasses = {
@@ -24,13 +25,6 @@ const sizeClasses = {
 	sm: 'w-8 h-8',
 	md: 'w-10 h-10',
 	lg: 'w-12 h-12',
-} as const
-
-const iconSizes = {
-	xs: 'text-[10px]',
-	sm: 'text-xs',
-	md: 'text-sm',
-	lg: 'text-lg',
 } as const
 
 const badgeSize = {
@@ -43,12 +37,33 @@ const badgeSize = {
 interface UserAvatarProps {
 	src?: string | null
 	alt?: string
+	/** A stable identifier such as a user ID, wallet address, or username. */
+	seed?: string | null
 	size?: keyof typeof sizeClasses
 	className?: string
 	role?: UserRole | null
 }
 
-export function UserAvatar({ src, alt = '', size = 'md', className, role }: UserAvatarProps) {
+interface UserAvatarFallbackProps {
+	seed?: string | null
+	contained?: boolean
+}
+
+/** Reusable visual for legacy avatar slots that still render their own image element. */
+export function UserAvatarFallback({ seed, contained = false }: UserAvatarFallbackProps) {
+	return (
+		<span
+			aria-hidden="true"
+			className={cn(
+				'avatar-fallback-pattern',
+				contained && 'avatar-fallback-pattern--contained',
+				getAvatarPatternClass(seed),
+			)}
+		/>
+	)
+}
+
+export function UserAvatar({ src, alt = '', seed, size = 'md', className, role }: UserAvatarProps) {
 	const showBadge = role === 'admin' || role === 'moderator'
 	const isAdmin = role === 'admin'
 	const badgeLabel = isAdmin ? 'Official Desperse account' : 'Desperse moderator'
@@ -58,8 +73,8 @@ export function UserAvatar({ src, alt = '', size = 'md', className, role }: User
 			<Avatar
 				src={src ?? undefined}
 				alt={alt}
-				fallback={<Icon name="user" variant="regular" className={iconSizes[size]} />}
-				className="size-full"
+				fallback={<UserAvatarFallback seed={seed ?? alt} />}
+				className="block size-full align-top leading-none"
 			/>
 			{showBadge && (
 				<span className={cn('absolute', badgeSize[size])}>

@@ -349,7 +349,7 @@ function ModerationListPage() {
                   className: 'whitespace-nowrap',
                   cell: (report) => (
                     <Entity
-                      leading={<UserAvatar src={report.creator.avatarUrl} size="xs" />}
+					  leading={<UserAvatar src={report.creator.avatarUrl} seed={report.creator.usernameSlug} size="xs" />}
                       title={report.creator.displayName || `@${report.creator.usernameSlug}`}
                       subtitle={`@${report.creator.usernameSlug}`}
                     />

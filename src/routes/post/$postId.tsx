@@ -30,6 +30,7 @@ import { POST_TYPE_META } from '@/constants/postTypes'
 import { MediaPill } from '@/components/ui/media-pill'
 import { cn } from '@/lib/utils'
 import { Icon } from '@/components/ui/icon'
+import { UserAvatarFallback } from '@/components/shared/UserAvatar'
 import { Tooltip } from '@/components/ui/tooltip'
 import { MintWindowBadge } from '@/components/feed/MintWindowBadge'
 import { useGatedDownload } from '@/hooks/useGatedDownload'
@@ -327,7 +328,7 @@ function CollectorItem({
               className="w-full h-full object-cover"
             />
           ) : (
-            <Icon name="user" variant="regular" className="text-sm text-muted-foreground" />
+            <UserAvatarFallback seed={collector.id} contained />
           )}
         </Link>
       }
@@ -733,9 +734,7 @@ function PostDetailPage() {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <Icon name="user" variant="regular" className="text-xs text-muted-foreground" />
-                </div>
+                <UserAvatarFallback seed={user.id} contained />
               )}
             </div>
           </Link>
@@ -855,9 +854,7 @@ function PostDetailPage() {
               className="w-full h-full object-cover"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center bg-muted">
-              <Icon name="user" variant="regular" className="text-muted-foreground" />
-            </div>
+            <UserAvatarFallback seed={user.id} contained />
           )}
         </div>
       </Link>

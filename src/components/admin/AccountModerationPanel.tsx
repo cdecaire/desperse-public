@@ -115,7 +115,7 @@ export function AccountModerationPanel({
         </Row>
 
         <Row align="center" gap={1.5} className="mt-4">
-          <UserAvatar src={context.user.avatarUrl} size="md" />
+		  <UserAvatar src={context.user.avatarUrl} seed={context.user.usernameSlug} size="md" />
           <div className="min-w-0">
             <p className="truncate text-label-lg">{displayName}</p>
             <p className="truncate text-caption text-muted-foreground">@{context.user.usernameSlug}</p>

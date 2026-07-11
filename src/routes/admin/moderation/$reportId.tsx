@@ -31,6 +31,7 @@ import { Badge } from '@/components/ui/badge'
 import { Icon } from '@/components/ui/icon'
 import { formatRelativeTime } from '@/lib/dates'
 import { Stack, Row } from '@cdecaire/sable/layout'
+import { AccountModerationPanel } from '@/components/admin/AccountModerationPanel'
 
 export const Route = createFileRoute('/admin/moderation/$reportId')({
   component: ReportDetailPage,
@@ -168,6 +169,11 @@ function ReportDetailPage() {
   const postDataResult = postData && postData.success ? { post: (postData as any).post, user: (postData as any).user } : null
   const commentDataResult = commentData && commentData.success ? commentData as any : null
   const dmThreadDataResult = dmThreadData && dmThreadData.success ? { thread: (dmThreadData as any).thread, userA: (dmThreadData as any).userA, userB: (dmThreadData as any).userB } : null
+  const moderatedSubjectUserId = isCommentReport
+    ? commentDataResult?.commenter?.id
+    : postDataResult?.user?.id
+  const linkedReportId = reportsData?.allReports?.find((report) => report.status === 'open')?.id
+    ?? reportsData?.allReports?.[0]?.id
 
   const hideMutation = useMutation({
     mutationFn: async (reason: string) => {
@@ -624,6 +630,15 @@ function ReportDetailPage() {
               </>
             )}
           </div>
+
+          {/* All Reports */}
+          {isModerator && moderatedSubjectUserId && (
+            <AccountModerationPanel
+              subjectUserId={moderatedSubjectUserId}
+              linkedReportId={linkedReportId}
+              viewerRole={isAdm ? 'admin' : 'moderator'}
+            />
+          )}
 
           {/* All Reports */}
           <div className="bg-card border rounded-lg p-4">

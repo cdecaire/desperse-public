@@ -35,6 +35,9 @@ export type UserPreferencesJson = {
 		allowTippers?: boolean
 		tipMinAmount?: number
 	}
+	privacy?: {
+		leaderboardParticipation?: boolean
+	}
 }
 
 export const defaultPreferences: UserPreferencesJson = {
@@ -57,6 +60,9 @@ export const defaultPreferences: UserPreferencesJson = {
 		collectorMinCount: 3,
 		allowTippers: true,
 		tipMinAmount: 50,
+	},
+	privacy: {
+		leaderboardParticipation: true,
 	},
 }
 
@@ -94,6 +100,11 @@ export function mergePreferencesWithDefaults(
 				stored.messaging?.allowTippers ?? defaultPreferences.messaging?.allowTippers,
 			tipMinAmount:
 				stored.messaging?.tipMinAmount ?? defaultPreferences.messaging?.tipMinAmount,
+		},
+		privacy: {
+			leaderboardParticipation:
+				stored.privacy?.leaderboardParticipation ??
+				defaultPreferences.privacy?.leaderboardParticipation,
 		},
 	}
 }

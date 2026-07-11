@@ -95,6 +95,7 @@ export default function AppShell({ children }: AppShellProps) {
     currentPath !== '/settings/account' &&
     currentPath !== '/settings/account/'
   const isExplorePage = currentPath === '/explore' || currentPath === '/explore/'
+  const isLeaderboardPage = currentPath === '/leaderboard' || currentPath === '/leaderboard/'
   const isSearchPage = currentPath === '/search' || currentPath === '/search/'
   const showTopNav =
     !isSettingsIndexPage &&
@@ -102,6 +103,7 @@ export default function AppShell({ children }: AppShellProps) {
     !isSettingsInvitesPage &&
     !isAccountDetailPage &&
     !isExplorePage &&
+    !isLeaderboardPage &&
     !isSearchPage
 
   // Bottom-nav visibility: hidden on settings-index/account-detail on phones (own
@@ -177,7 +179,7 @@ export default function AppShell({ children }: AppShellProps) {
               // they render full-width beside the app Sidebar, OUTSIDE the centered
               // 12-col grid, and manage their own local overlay via GridOverlayContext.
               children
-            ) : isExplorePage || isSearchPage ? (
+            ) : isExplorePage || isLeaderboardPage || isSearchPage ? (
               // Explore/search own marketplace layouts (filter rail + gallery grid),
               // so render the dev column overlay against their full-width content frame
               // instead of the default centered 12-col content block.

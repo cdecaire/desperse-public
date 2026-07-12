@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils'
 import { getAvatarPatternClass } from '@/lib/avatarPattern'
-import { Avatar } from '@cdecaire/sable'
+import { AvatarFallback, AvatarImage, AvatarRoot } from '@cdecaire/sable'
 import { Icon } from '@/components/ui/icon'
 import { Tooltip } from '@/components/ui/tooltip'
 import type { UserRole } from '@/components/shared/VerifiedBadge'
@@ -8,9 +8,10 @@ import type { UserRole } from '@/components/shared/VerifiedBadge'
 /**
  * Migration shim (Phase 2 — Sable adoption).
  *
- * The avatar circle (image + deterministic color-field fallback) is now @cdecaire/sable's
- * <Avatar> (Base UI tracks load/error and swaps to the fallback automatically —
- * no manual `src ?` check). We keep Desperse's own concerns on the wrapper:
+ * The avatar circle (image + deterministic color-field fallback) uses Sable's
+ * low-level AvatarRoot/Image/Fallback parts so the fallback can own its circular
+ * clipping frame. Base UI still tracks load/error and swaps to the fallback automatically.
+ * We keep Desperse's own concerns on the wrapper:
  *   - `data-avatar` — the dark-mode hover CSS in styles.css excludes avatars via
  *     `:not(:has([data-avatar]))`; must stay.
  *   - the admin/moderator badge overlay (Tooltip + verified.svg / shield glyph).
@@ -70,12 +71,12 @@ export function UserAvatar({ src, alt = '', seed, size = 'md', className, role }
 
 	return (
 		<div data-avatar className={cn('relative flex-shrink-0', sizeClasses[size], className)}>
-			<Avatar
-				src={src ?? undefined}
-				alt={alt}
-				fallback={<UserAvatarFallback seed={seed ?? alt} />}
-				className="block size-full align-top leading-none"
-			/>
+			<AvatarRoot className="block size-full align-top leading-none">
+				{src ? <AvatarImage src={src} alt={alt} /> : null}
+				<AvatarFallback className="absolute inset-0 overflow-hidden rounded-full p-0 leading-none">
+					<UserAvatarFallback seed={seed ?? alt} />
+				</AvatarFallback>
+			</AvatarRoot>
 			{showBadge && (
 				<span className={cn('absolute', badgeSize[size])}>
 					<Tooltip content={badgeLabel}>

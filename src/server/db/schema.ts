@@ -174,6 +174,9 @@ export const posts = pgTable(
   },
   (table) => ({
     userIdIdx: index('posts_user_id_idx').on(table.userId),
+    // Composite for per-creator newest-first queries (invite landing sample posts,
+    // profile grids): bounded index scan instead of fetch-all-and-sort.
+    userCreatedAtIdx: index('posts_user_created_at_idx').on(table.userId, table.createdAt),
     typeIdx: index('posts_type_idx').on(table.type),
     createdAtIdx: index('posts_created_at_idx').on(table.createdAt),
     filteredFeedIdx: index('posts_filtered_feed_idx').on(

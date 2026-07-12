@@ -260,9 +260,15 @@ export function InviteLandingPage({ code, referrerSlug, invalid, initialPreview 
   )
   const joinedViaThisInvite = Boolean(myReferral && referrer && myReferral.referrerUserId === referrer.id)
   const isProfileComplete = !isProfileIncomplete
-  const referrerName = referrer?.displayName?.trim() || referrer?.slug || referrerSlug || 'Someone'
+  // ?ref= is display-only fallback while the preview is in flight. Once the
+  // preview has resolved, only the resolved user may be named — otherwise a
+  // crafted URL (/i/<dead-code>/welcome?ref=<anyone>) renders "<anyone> invited
+  // you" for a code that never validated.
+  const referrerName =
+    referrer?.displayName?.trim() || referrer?.slug || (isPreviewLoading ? referrerSlug : null) || 'Someone'
+  const codeResolvedEmpty = !invalid && !isPreviewLoading && !referrer
 
-  if (invalid) {
+  if (invalid || codeResolvedEmpty) {
     return (
       <StaticPageLayout>
         <div className="flex flex-col gap-6">

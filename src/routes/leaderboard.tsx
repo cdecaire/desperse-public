@@ -15,7 +15,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { formatRelativeTime } from '@/lib/dates'
 
 function isView(value: unknown): value is LeaderboardView {
-  return value === 'creators' || value === 'community'
+  return value === 'creators' || value === 'collectors'
 }
 
 function isPeriod(value: unknown): value is LeaderboardPeriod {
@@ -37,7 +37,7 @@ export const Route = createFileRoute('/leaderboard')({
   head: () => ({
     meta: [
       { title: 'Leaderboard | Desperse' },
-      { name: 'description', content: 'Discover creators earning support and community members growing Desperse.' },
+      { name: 'description', content: 'Discover creators earning support and collectors supporting the work they love.' },
     ],
   }),
   component: LeaderboardPage,
@@ -70,14 +70,14 @@ function LeaderboardPage() {
                 <p className="max-w-2xl text-body-lg text-muted-foreground">
                   {view === 'creators'
                     ? 'Creators earning recent support through editions, collects, likes, and new followers.'
-                    : 'Community members bringing activated people into Desperse.'}
+                    : 'Collectors supporting creators through purchases, collects, and likes.'}
                 </p>
               </Stack>
 
               <LeaderboardControls view={view} period={period} />
 
               {query.isLoading ? (
-                <LeaderboardSkeleton />
+                <LeaderboardSkeleton view={view} />
               ) : query.error ? (
                 <div className="rounded-lg border border-border bg-card px-6 py-12 text-center">
                   <Icon name="triangle-exclamation" variant="regular" className="mb-3 text-3xl text-muted-foreground" />
@@ -134,7 +134,7 @@ function LeaderboardPage() {
                     <p className="mt-2 text-body-sm text-muted-foreground">
                       {view === 'creators'
                         ? 'Support score combines confirmed paid editions, free collects, likes, unique supporters, and new followers. Self-support, hidden work, moderated accounts, and opted-out accounts do not count.'
-                        : 'Community rank counts only referrals that completed the verified activation flow. Clicks and incomplete signups never count.'}
+                        : 'Support score combines confirmed paid editions, free collects, likes, and distinct creators supported. Self-activity, hidden work, moderated accounts, and opted-out accounts do not count.'}
                     </p>
                   </PopoverContent>
                 </Popover>

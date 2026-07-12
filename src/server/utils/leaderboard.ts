@@ -36,8 +36,8 @@ export type LeaderboardEntryResult = {
   paidEditionCount: number
   freeCollectCount: number
   likeCount: number
+  distinctCreatorCount: number
   newFollowerCount: number
-  activatedReferralCount: number
   isFollowing: boolean
   isCurrentUser: boolean
 }
@@ -126,7 +126,7 @@ export async function getLeaderboardPage(input: {
   limit: number
   viewerUserId?: string
 }): Promise<LeaderboardPageResult> {
-  const category = input.view === 'community'
+  const category = input.view === 'collectors'
     ? 'all'
     : normalizeLeaderboardCategory(input.category)
   const decodedCursor = decodeLeaderboardCursor(input.cursor)
@@ -139,7 +139,7 @@ export async function getLeaderboardPage(input: {
       view: input.view,
       period: input.period,
       category: category === 'all' ? null : category,
-      availableViews: ['creators', 'community'],
+      availableViews: ['creators', 'collectors'],
       entries: [],
       nextCursor: null,
     }
@@ -172,7 +172,7 @@ export async function getLeaderboardPage(input: {
       view: input.view,
       period: input.period,
       category: category === 'all' ? null : category,
-      availableViews: ['creators', 'community'],
+      availableViews: ['creators', 'collectors'],
       entries: [],
       nextCursor: null,
     }
@@ -248,8 +248,8 @@ export async function getLeaderboardPage(input: {
     paidEditionCount: entry.paidEditionCount,
     freeCollectCount: entry.freeCollectCount,
     likeCount: entry.likeCount,
+    distinctCreatorCount: entry.distinctCreatorCount,
     newFollowerCount: entry.netNewFollowerCount,
-    activatedReferralCount: entry.activatedReferralCount,
     isFollowing: followingIds.has(user.id),
     isCurrentUser: user.id === input.viewerUserId,
   }))
@@ -262,7 +262,7 @@ export async function getLeaderboardPage(input: {
     view: input.view,
     period: input.period,
     category: category === 'all' ? null : category,
-    availableViews: ['creators', 'community'],
+    availableViews: ['creators', 'collectors'],
     entries,
     nextCursor: hasMore && lastEntry
       ? encodeLeaderboardCursor({ snapshotId: snapshot.id, rank: lastEntry.rank })

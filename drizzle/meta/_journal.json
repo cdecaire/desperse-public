@@ -344,6 +344,13 @@
       "when": 1783868216869,
       "tag": "0048_curly_captain_flint",
       "breakpoints": true
+    },
+    {
+      "idx": 49,
+      "version": "7",
+      "when": 1783870495399,
+      "tag": "0049_breezy_kang",
+      "breakpoints": true
     }
   ]
 }

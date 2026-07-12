@@ -1,0 +1,1 @@
+ALTER TABLE "leaderboard_entries" ADD COLUMN "distinct_creator_count" integer DEFAULT 0 NOT NULL;

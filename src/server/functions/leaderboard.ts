@@ -33,7 +33,7 @@ export const getLeaderboard = createServerFn({ method: 'GET' }).handler(async (i
       view: 'creators' as const,
       period: '30d' as const,
       category: null,
-      availableViews: ['creators', 'community'] as const,
+      availableViews: ['creators', 'collectors'] as const,
       entries: [],
       nextCursor: null,
     }

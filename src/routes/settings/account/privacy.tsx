@@ -58,7 +58,7 @@ function PrivacyPage() {
                     Show my profile in the Leaderboard
                   </Label>
                   <span className="text-caption text-muted-foreground">
-                    Turn this off to be removed from Creator and Community rankings at the next refresh.
+                    Turn this off to be removed from Creator and Collector rankings at the next refresh.
                   </span>
                 </Stack>
               </Row>

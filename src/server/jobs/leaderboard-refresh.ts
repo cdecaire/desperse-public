@@ -8,6 +8,7 @@ import {
 } from '@/server/db/schema'
 import {
   categoryNameToScope,
+  COLLECTOR_SCORE_WEIGHTS,
   CREATOR_SCORE_WEIGHTS,
   getLeaderboardBucketStart,
   LEADERBOARD_ALGORITHM_VERSION,
@@ -32,11 +33,14 @@ type CreatorAggregateRow = {
   rank: number | string
 }
 
-type CommunityAggregateRow = {
+type CollectorAggregateRow = {
   period: LeaderboardPeriod
   user_id: string
-  activated_referral_count: number | string
-  latest_activation_at: Date | string | null
+  score: number | string
+  paid_edition_count: number | string
+  free_collect_count: number | string
+  like_count: number | string
+  distinct_creator_count: number | string
   rank: number | string
 }
 
@@ -274,9 +278,9 @@ async function aggregateCreatorRows(now: Date): Promise<CreatorAggregateRow[]> {
   return Array.from(result as unknown as CreatorAggregateRow[])
 }
 
-async function aggregateCommunityRows(now: Date): Promise<CommunityAggregateRow[]> {
+async function aggregateCollectorRows(now: Date): Promise<CollectorAggregateRow[]> {
   const dates = periodDates(now)
-  const result = await db.execute<CommunityAggregateRow>(sql`
+  const result = await db.execute<CollectorAggregateRow>(sql`
     WITH period_defs(period, since_at) AS (
       VALUES
         ('7d'::text, ${dates['7d'].toISOString()}::timestamptz),
@@ -288,32 +292,91 @@ async function aggregateCommunityRows(now: Date): Promise<CommunityAggregateRow[
       FROM users u
       WHERE ${participantSql('u')}
     ),
-    scored AS (
+    eligible_posts AS (
+      SELECT p.id, p.user_id AS creator_id
+      FROM posts p
+      INNER JOIN eligible_users creator ON creator.id = p.user_id
+      WHERE p.is_dev = false AND p.is_deleted = false AND p.is_hidden = false
+    ),
+    collector_events AS (
+      SELECT
+        pur.user_id AS collector_id,
+        ep.creator_id,
+        'paid'::text AS event_kind,
+        COALESCE(pur.mint_confirmed_at, pur.confirmed_at, pur.created_at) AS occurred_at
+      FROM purchases pur
+      INNER JOIN eligible_posts ep ON ep.id = pur.post_id
+      INNER JOIN eligible_users collector ON collector.id = pur.user_id
+      WHERE pur.status = 'confirmed' AND pur.user_id <> ep.creator_id
+
+      UNION ALL
+
+      SELECT
+        col.user_id AS collector_id,
+        ep.creator_id,
+        'collect'::text AS event_kind,
+        col.created_at AS occurred_at
+      FROM collections col
+      INNER JOIN eligible_posts ep ON ep.id = col.post_id
+      INNER JOIN eligible_users collector ON collector.id = col.user_id
+      WHERE col.status = 'confirmed' AND col.user_id <> ep.creator_id
+
+      UNION ALL
+
+      SELECT
+        l.user_id AS collector_id,
+        ep.creator_id,
+        'like'::text AS event_kind,
+        l.created_at AS occurred_at
+      FROM ${likes} l
+      INNER JOIN eligible_posts ep ON ep.id = l.post_id
+      INNER JOIN eligible_users collector ON collector.id = l.user_id
+      WHERE l.user_id <> ep.creator_id
+    ),
+    collector_metrics AS (
       SELECT
         pd.period,
-        r.referrer_user_id AS user_id,
-        COUNT(*)::int AS activated_referral_count,
-        MAX(r.activated_at) AS latest_activation_at
-      FROM referrals r
-      INNER JOIN period_defs pd ON r.activated_at >= pd.since_at
-      INNER JOIN eligible_users referrer ON referrer.id = r.referrer_user_id
-      INNER JOIN eligible_users referred ON referred.id = r.referred_user_id
-      WHERE r.state = 'activated' AND r.activated_at IS NOT NULL
-      GROUP BY pd.period, r.referrer_user_id
+        ce.collector_id AS user_id,
+        COUNT(*) FILTER (WHERE ce.event_kind = 'paid')::int AS paid_edition_count,
+        COUNT(*) FILTER (WHERE ce.event_kind = 'collect')::int AS free_collect_count,
+        COUNT(*) FILTER (WHERE ce.event_kind = 'like')::int AS like_count,
+        COUNT(DISTINCT ce.creator_id)::int AS distinct_creator_count
+      FROM collector_events ce
+      INNER JOIN period_defs pd ON ce.occurred_at >= pd.since_at
+      GROUP BY pd.period, ce.collector_id
+    ),
+    scored AS (
+      SELECT
+        period,
+        user_id,
+        paid_edition_count,
+        free_collect_count,
+        like_count,
+        distinct_creator_count,
+        (
+          paid_edition_count * ${COLLECTOR_SCORE_WEIGHTS.paidEdition} +
+          free_collect_count * ${COLLECTOR_SCORE_WEIGHTS.freeCollect} +
+          like_count * ${COLLECTOR_SCORE_WEIGHTS.like} +
+          distinct_creator_count * ${COLLECTOR_SCORE_WEIGHTS.distinctCreator}
+        )::int AS score
+      FROM collector_metrics
     )
     SELECT
       period,
       user_id,
-      activated_referral_count,
-      latest_activation_at,
+      score,
+      paid_edition_count,
+      free_collect_count,
+      like_count,
+      distinct_creator_count,
       ROW_NUMBER() OVER (
         PARTITION BY period
-        ORDER BY activated_referral_count DESC, latest_activation_at DESC, user_id ASC
+        ORDER BY score DESC, distinct_creator_count DESC, user_id ASC
       )::int AS rank
     FROM scored
     ORDER BY period, rank
   `)
-  return Array.from(result as unknown as CommunityAggregateRow[])
+  return Array.from(result as unknown as CollectorAggregateRow[])
 }
 
 function scopeKey(view: LeaderboardView, period: LeaderboardPeriod, category: string) {
@@ -422,9 +485,9 @@ async function runRefresh(options: { force?: boolean } = {}): Promise<Leaderboar
     bucketStartedAt: bucketStartedAt.toISOString(),
   })
 
-  const [creatorRows, communityRows] = await Promise.all([
+  const [creatorRows, collectorRows] = await Promise.all([
     aggregateCreatorRows(startedAt),
-    aggregateCommunityRows(startedAt),
+    aggregateCollectorRows(startedAt),
   ])
 
   const grouped = new Map<string, Omit<SnapshotEntry, 'snapshotId'>[]>()
@@ -432,7 +495,7 @@ async function runRefresh(options: { force?: boolean } = {}): Promise<Leaderboar
     for (const category of LEADERBOARD_CATEGORY_SCOPES) {
       grouped.set(scopeKey('creators', period, category), [])
     }
-    grouped.set(scopeKey('community', period, 'all'), [])
+    grouped.set(scopeKey('collectors', period, 'all'), [])
   }
 
   for (const row of creatorRows) {
@@ -447,6 +510,7 @@ async function runRefresh(options: { force?: boolean } = {}): Promise<Leaderboar
       paidEditionCount: Number(row.paid_edition_count),
       freeCollectCount: Number(row.free_collect_count),
       uniqueSupporterCount: Number(row.unique_supporter_count),
+      distinctCreatorCount: 0,
       likeCount: Number(row.like_count),
       netNewFollowerCount: Number(row.new_follower_count),
       activatedReferralCount: 0,
@@ -454,19 +518,20 @@ async function runRefresh(options: { force?: boolean } = {}): Promise<Leaderboar
     })
   }
 
-  for (const row of communityRows) {
-    const group = grouped.get(scopeKey('community', row.period, 'all'))
+  for (const row of collectorRows) {
+    const group = grouped.get(scopeKey('collectors', row.period, 'all'))
     if (!group) continue
     group.push({
       userId: row.user_id,
       rank: Number(row.rank),
-      score: Number(row.activated_referral_count),
-      paidEditionCount: 0,
-      freeCollectCount: 0,
+      score: Number(row.score),
+      paidEditionCount: Number(row.paid_edition_count),
+      freeCollectCount: Number(row.free_collect_count),
       uniqueSupporterCount: 0,
-      likeCount: 0,
+      distinctCreatorCount: Number(row.distinct_creator_count),
+      likeCount: Number(row.like_count),
       netNewFollowerCount: 0,
-      activatedReferralCount: Number(row.activated_referral_count),
+      activatedReferralCount: 0,
       recentPostId: null,
     })
   }

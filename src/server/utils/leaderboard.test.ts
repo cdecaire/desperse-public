@@ -2,19 +2,26 @@ import { describe, expect, it } from 'vitest'
 import { decodeLeaderboardCursor, encodeLeaderboardCursor } from './leaderboard'
 import {
   categoryNameToScope,
+  COLLECTOR_SCORE_WEIGHTS,
   CREATOR_SCORE_WEIGHTS,
   getLeaderboardBucketStart,
   normalizeLeaderboardCategory,
 } from './leaderboard-config'
 
 describe('leaderboard configuration', () => {
-  it('keeps the v2 score weights explicit and stable', () => {
+  it('keeps the v3 score weights explicit and stable', () => {
     expect(CREATOR_SCORE_WEIGHTS).toEqual({
       paidEdition: 6,
       freeCollect: 2,
       uniqueSupporter: 3,
       like: 1,
       newFollower: 1,
+    })
+    expect(COLLECTOR_SCORE_WEIGHTS).toEqual({
+      paidEdition: 6,
+      freeCollect: 2,
+      like: 1,
+      distinctCreator: 3,
     })
   })
 

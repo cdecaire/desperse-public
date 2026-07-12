@@ -511,7 +511,7 @@ export const leaderboardSnapshots = pgTable(
   'leaderboard_snapshots',
   {
     id: uuid('id').primaryKey().defaultRandom(),
-    view: text('view').notNull(), // 'creators' | 'community'
+    view: text('view').notNull(), // 'creators' | 'collectors'
     period: text('period').notNull(), // '7d' | '30d' | '90d'
     category: text('category').notNull().default('all'),
     algorithmVersion: text('algorithm_version').notNull(),
@@ -553,6 +553,7 @@ export const leaderboardEntries = pgTable(
     paidEditionCount: integer('paid_edition_count').notNull().default(0),
     freeCollectCount: integer('free_collect_count').notNull().default(0),
     uniqueSupporterCount: integer('unique_supporter_count').notNull().default(0),
+    distinctCreatorCount: integer('distinct_creator_count').notNull().default(0),
     likeCount: integer('like_count').notNull().default(0),
     netNewFollowerCount: integer('net_new_follower_count').notNull().default(0),
     activatedReferralCount: integer('activated_referral_count').notNull().default(0),

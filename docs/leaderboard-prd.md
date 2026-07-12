@@ -3,27 +3,29 @@
 - **Status:** Implemented on `codex/leaderboard-prd`; ready for product and engineering review
 - **Owner:** Product / Growth
 - **Proposed route:** `/leaderboard`
-- **Target release:** Phased; public creator leaderboard plus a conditional Community view
+- **Target release:** Phased; public creator and collector leaderboards
 
 ## 1. Decision summary
 
 Build a first-class **Leaderboard** destination for Desperse, not a direct
 replica of SuperRare's marketplace-volume leaderboard. The initial destination
 has two distinct views: **Creators**, for people whose work is earning meaningful
-recent support, and **Community**, for people bringing activated members into
-Desperse through referrals. This gives non-creators a legitimate way to
-participate without turning the product into a wallet-spend contest.
+recent support, and **Collectors**, for people who meaningfully support
+eligible creators through purchases, free collects, and likes. This gives
+non-creators a legitimate way to participate without turning the product into a
+wallet-spend contest.
 
 The Creators view ranks eligible creators over the last 30 days using confirmed
 paid edition purchases, confirmed free collects, current likes, unique supporters, and
-new follows created during the period. The Community view ranks eligible referrers by server-verified,
-activated referrals. Neither view ranks people by wallet spend, total portfolio
+new follows created during the period. The Collectors view ranks eligible people
+by server-verified engagement with other eligible creators. Neither view ranks
+people by wallet spend, total portfolio
 value, or an invented USD conversion. Those are either unavailable, unsafe to
 infer, or misaligned with a creator-first social product.
 
 The MVP is one new public route and a read-only leaderboard API. It reuses the
-existing Explore shell, creator cards, profile routes, confirmed
-collection/purchase records, and referral activation records. It does not change
+existing Explore shell, profile routes, confirmed collection/purchase records,
+and likes. It does not change
 minting, payment, wallet, or moderation flows.
 
 ## 2. Why now
@@ -95,8 +97,8 @@ mechanics make transaction-volume and collection-value rankings natural there.
 | Primary signal | Marketplace activity/value | Recent, confirmed creator support |
 | Economic model | ETH marketplace with primary and secondary sales | Free cNFT collects plus paid editions in SOL and USDC |
 | Main audience | Art-market participants | Creators and collectors discovering original work |
-| Best first entity | Artists, collectors, collections | Creators and community builders |
-| Product promise | Who leads the market | Who is earning meaningful community momentum |
+| Best first entity | Artists, collectors, collections | Creators and collectors |
+| Product promise | Who leads the market | Who is earning meaningful creator or collector momentum |
 | Failure to avoid | Wealth/status leaderboard | Opaque, gameable popularity contest |
 
 The differentiator is **explainable momentum**. Every row should answer “why is
@@ -107,8 +109,8 @@ this creator here?” with component metrics, not a mysterious score.
 ### Goals
 
 1. Improve discovery of active, supported creators beyond the follower graph.
-2. Give non-creators a meaningful community-growth path through qualified
-   referrals, rather than a spend or holdings ranking.
+2. Give collectors a meaningful, legible visibility path through support for
+   creators, rather than a spend or holdings ranking.
 3. Give creators a fair, legible visibility incentive for publishing work that
    people genuinely collect or purchase.
 4. Make discovery feel current with defined rolling periods and a visible
@@ -135,8 +137,8 @@ this creator here?” with component metrics, not a mysterious score.
 | --- | --- | --- |
 | Collector/explorer | Find creators with work and support worth exploring now. | Opens a profile or work card from the leaderboard. |
 | Emerging creator | Understand a credible route to greater discovery. | Can identify the public signals contributing to momentum. |
-| Established creator | See current community response without all-time incumbency dominating. | Appears/re-enters a time-bounded list from recent activity. |
-| Community builder | Receive recognition for bringing real, activated people into Desperse. | Appears in Community after verified referrals activate. |
+| Established creator | See current audience response without all-time incumbency dominating. | Appears/re-enters a time-bounded list from recent activity. |
+| Collector | Receive recognition for meaningfully supporting a range of creators. | Appears in Collectors after qualifying activity. |
 | Moderator/admin | Keep unsafe, removed, test, or manipulated activity out of discovery. | Ineligible records never appear; reports have an audit trail. |
 
 ## 7. MVP experience
@@ -161,35 +163,34 @@ Use the existing wide Explore rail/content shell, but make the route visually an
 semantically independent from Explore. The page header contains:
 
 - Title: `Leaderboard`
-- Compact segmented view control: **Creators** (default) and **Community**,
+- Compact segmented view control: **Creators** (default) and **Collectors**,
   left-aligned rather than rendered as a second full-width tab row. Use a
-  URL-controlled `view=creators|community` parameter.
+  URL-controlled `view=creators|collectors` parameter.
 - Plain-language subtitle changes with the view: `Creators earning recent
-  support through collects, purchases, likes, and new followers` or `Community members
-  bringing activated people into Desperse.`
+  support through collects, purchases, likes, and new followers` or `Collectors
+  supporting creators through purchases, collects, and likes.`
 - Right-aligned compact pill-style period toggle: **7 days**, **30 days**
   (default), **90 days**
 - A quiet footer beneath the leaderboard contains “Updated [relative time]” and
   a compact “How ranking works” popover that does not shift the leaderboard when
   opened.
 
-Rows use a dense, responsive creator-list treatment rather than a large card
-grid:
+Rows use a dense, responsive table rather than a large card grid. The identity
+column comes first, followed by rank and numeric metric columns:
 
-1. Rank (with `—` for unranked/currently ineligible creators if shown in a
+1. Avatar, display name, and `@username`
+2. Rank (with an unranked marker for currently ineligible people if shown in a
    future personal view)
-2. Avatar, display name, and `@username`
-3. One recent eligible work thumbnail when available
-4. Primary stat: `support score`
-5. Component metrics: `N paid editions`, `N collects`, `N likes`,
-   `+N followers`
-6. A fixed-width action slot with Follow / Following for other accounts and a
+3. Primary stat: `support score`
+4. Component metrics: `N paid editions`, `N collects`, `N likes`, and
+   `+N followers` for Creators; `N purchases`, `N collects`, `N likes`, and
+   `N creators supported` for Collectors
+5. A fixed-width action slot with Follow / Following for other accounts and a
    quiet, non-interactive `You` label for the signed-in viewer's own row
 
-The Community view uses the same dense identity treatment but has no work
-thumbnail or Follow-derived score. Its primary metric is `N activated referrals`
-for the selected period. The row exposes only aggregate counts—never the identity
-of referred members.
+The Collectors view uses the same dense identity treatment. It has no work
+thumbnail or Follow-derived score; its score comes from confirmed purchases,
+free collects, likes, and the breadth of creators supported.
 
 On small screens, preserve rank, identity, primary score, and a single compact
 support summary; move the rest into the row detail/accessible label. All row
@@ -224,13 +225,11 @@ have at least one qualifying event and all of the following are true:
   viewer when that relationship is available in the existing query path.
 - `preferences.privacy.leaderboardParticipation` is not explicitly `false`.
 
-The Community view has a separate eligibility rule: the referrer is an active,
-non-flagged, non-banned, non-opted-out user with at least one referral whose
-state is `activated` in the selected period. An activation is already
-server-verified: the referred user must complete a profile and follow a
-pre-existing active creator who is neither themself nor their referrer. The
-referral system also prevents self-referral and one referred user from producing
-multiple referral records.
+The Collectors view has a separate eligibility rule: the collector is an
+active, non-flagged, non-banned, non-opted-out user with qualifying activity on
+work from another eligible creator in the selected period. Self-purchases,
+self-collects, and self-likes never count. All events are joined to eligible
+posts and eligible creator and collector accounts before aggregation.
 
 ### Score
 
@@ -266,25 +265,31 @@ Definitions:
 The score intentionally rewards conversion, engagement, and breadth of support. A paid
 edition is weighted more than a free collect; unique supporters counterbalances
 one highly active wallet; likes and follows remain light, secondary signals. The exact
-weights live in one server-side `v2` algorithm configuration, alongside their
+weights live in one server-side `v3` algorithm configuration, alongside their
 explanation and tests. A change requires a new algorithm version, regeneration
 of snapshots, and a changelog note in the disclosure. Do not add a live admin
 weight editor in MVP: versioned configuration is easy to maintain and adjust,
 while retaining reproducibility and avoiding casual score manipulation.
 
-### Community ranking
+### Collector ranking
 
-Community rank is intentionally simple:
+Collector rank rewards verified support and breadth without ranking wallets by
+currency amount:
 
 ```
-communityScore = activatedReferrals
+collectorScore =
+  (confirmedPaidEditions × 6) +
+  (confirmedFreeCollects × 2) +
+  (likes × 1) +
+  (distinctCreatorsSupported × 3)
 ```
 
-Only `referrals.state = 'activated'` counts, using `activatedAt` as the event
-time. No click, signup-started, account-created, pending, expired, rejected, or
-revoked referral is eligible. Ties resolve by the most recent activation and
-then referrer ID. This makes the score explainable, inexpensive to maintain, and
-resistant to low-effort referral spam.
+Only a collector's confirmed purchases, confirmed free collects, and currently
+active likes on another eligible creator's work count. `distinctCreatorsSupported`
+is the number of eligible creators receiving at least one of those signals in
+the period. Pending or failed records, self-activity, hidden work, moderated
+accounts, and opted-out accounts never count. Ties resolve by score, then
+creator breadth, then collector ID.
 
 ### Deferred category behavior
 
@@ -307,8 +312,8 @@ model. Until then, the route always requests the all-category scope.
   edition events in a period; it does not automatically suppress a creator.
 - Keep the formula public enough to understand but do not expose per-wallet
   contribution or raw internal fraud scores.
-- Treat a referral as qualified only at its existing server-verified `activated`
-  state; never rank link clicks or raw signups.
+- Do not aggregate payment amounts or expose wallet totals; the score measures
+  verified support actions and breadth instead.
 
 ## 9. Desperse capability audit
 
@@ -322,7 +327,7 @@ model. Until then, the route always requests the all-category scope.
 | Social support | `follows`: follower/following and created time | New active follows created in period | Unfollows delete the edge, so true historical net-new counts are unavailable |
 | Existing creator discovery | `/explore?tab=creators`, CreatorGrid, CreatorCard, Home carousel | Shared identity/card tokens and Explore layout | Current ranking is all-time and opaque |
 | Existing momentum logic | Trending post queries weight collects, purchases, comments, likes with time decay | Reference only; do not reuse post formula for creators | Needs purpose-built creator aggregation |
-| Qualified community growth | `referrals`: one referrer/referred pair, server-verified `activated` state and timestamp | Community view counts activated referrals only | Do not rank clicks, pending referrals, or raw signups |
+| Collector engagement | `purchases`, `collections`, and `likes`: actor, post, status, and timestamp | Collectors view aggregates confirmed support for other eligible creators | Do not aggregate payment amounts, pending records, or self-activity |
 | Participation preference | `users.preferences` JSONB with default-merging and authenticated update path | Store `privacy.leaderboardParticipation` | Add type, default, validator, and UI; no table migration required |
 | Content series | No explicit creator-owned series/collection entity found | Out of scope | Required before a “Collections” leaderboard |
 | Secondary sales/value | No resale/listing/auction model found | Out of scope | Required before marketplace-volume/floor rankings |
@@ -345,7 +350,7 @@ Follow the repository server boundary: the server-function file exports only a
 
 ### API contract
 
-`GET getLeaderboard({ view: 'creators' | 'community', period: '7d' | '30d' |
+`GET getLeaderboard({ view: 'creators' | 'collectors', period: '7d' | '30d' |
 '90d', category?: string, cursor?: string, limit?: number })`
 
 Response:
@@ -353,9 +358,9 @@ Response:
 ```ts
 {
   success: true,
-  algorithmVersion: 'v2',
+  algorithmVersion: 'v3',
   generatedAt: string,
-  view: 'creators' | 'community',
+  view: 'creators' | 'collectors',
   period: '7d' | '30d' | '90d',
   category: string | null,
   entries: Array<{
@@ -367,7 +372,7 @@ Response:
     freeCollectCount?: number,
     likeCount?: number,
     newFollowerCount?: number,
-    activatedReferralCount?: number,
+    distinctCreatorCount?: number,
   }>,
   nextCursor: string | null,
 }
@@ -438,9 +443,9 @@ schema drift.
   `/settings/account/privacy`, and reserve a future Security page for actual
   session, recovery, and account-protection controls. The Privacy page contains
   a single, clear switch: **Show my profile in the Leaderboard** (default on).
-- Opting out removes the user’s own Creator or Community row at the next
-  snapshot. It does not reveal referred people, and it does not retroactively
-  erase their public interactions from aggregate support of other users.
+- Opting out removes the user’s own Creator or Collector row at the next
+  snapshot. It does not reveal individual supporters or retroactively erase the
+  person’s public interactions from aggregate support of other users.
 
 ### Moderation policy: `flagged`
 
@@ -516,10 +521,9 @@ on-call owner for stale snapshots identified.
 - Public `/leaderboard` route, public-navigation discovery link, authenticated
   More-menu link, view controls, loading / empty / error states, and
   profile/follow actions.
-- Creator view, plus the Community view when the referral activation system is
-  enabled in production; otherwise keep Community hidden rather than displaying
-  incomplete data.
-- Versioned v1 algorithms, two-hour snapshots, cursor API, telemetry,
+- Creator and Collector views, with the latter based on verified support actions
+  rather than referral availability.
+- Versioned v3 algorithms, two-hour snapshots, cursor API, telemetry,
   disclosure, privacy preference, and tests for all eligibility rules.
 - Internal soft launch, then a limited public release.
 
@@ -533,8 +537,6 @@ on-call owner for stale snapshots identified.
 
 ### Phase 3 — future entity leaderboards (separate PRDs)
 
-- **Supporter/collector discovery:** only with a strong privacy model, explicit
-  opt-in, and a creator-benefit hypothesis. Never default to spend ranking.
 - **Series/collections:** only after a real series model exists with ownership,
   membership, and discoverable public metadata.
 - **Marketplace value:** only after secondary sale/listing infrastructure and a
@@ -548,10 +550,10 @@ on-call owner for stale snapshots identified.
    reach the same route; signed-in users additionally see Follow actions.
 3. Changing view or period updates the URL, result set, and visible methodology
    context.
-4. Every Creator row displays rank, identity, support score, component support
-   metrics, and a working profile link. Every Community row displays rank,
-   identity, and activated-referral count without referred-member identities.
-5. Only active, opted-in users and confirmed/activated eligible events
+4. Every Creator and Collector row displays identity first, rank, support score,
+   component metrics, and a working profile link. Collector rows show purchases,
+   collects, likes, and the number of creators supported.
+5. Only active, opted-in users and confirmed eligible events
    contribute. Hidden, deleted, dev, pending, failed, reserved, abandoned,
    blocked, flagged, and banned records are excluded according to the policy.
 6. `privacy.leaderboardParticipation` defaults to on and the Privacy setting
@@ -583,5 +585,6 @@ on-call owner for stale snapshots identified.
    reduced later with evidence.
 6. The route is public and standalone. It has a public discovery link and an
    authenticated More-menu entry, rather than being buried in Explore.
-7. Community participation uses activated referrals only, giving non-creators a
-   durable, anti-spam way to appear on the Leaderboard.
+7. Collector participation uses confirmed support for other eligible creators,
+   giving non-creators a durable, privacy-conscious way to appear on the
+   Leaderboard.

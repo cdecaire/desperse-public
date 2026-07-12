@@ -3,7 +3,7 @@ import { getLeaderboard } from '@/server/functions/leaderboard'
 import { useAuth } from '@/hooks/useAuth'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
 
-export type LeaderboardView = 'creators' | 'community'
+export type LeaderboardView = 'creators' | 'collectors'
 export type LeaderboardPeriod = '7d' | '30d' | '90d'
 
 export type LeaderboardEntry = {
@@ -17,8 +17,8 @@ export type LeaderboardEntry = {
   paidEditionCount: number
   freeCollectCount: number
   likeCount: number
+  distinctCreatorCount: number
   newFollowerCount: number
-  activatedReferralCount: number
   isFollowing: boolean
   isCurrentUser: boolean
 }

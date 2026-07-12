@@ -33,7 +33,7 @@ export function LeaderboardControls({
           >
             <TabsList className="shrink-0">
               <TabsTrigger value="creators">Creators</TabsTrigger>
-              <TabsTrigger value="community">Community</TabsTrigger>
+              <TabsTrigger value="collectors">Collectors</TabsTrigger>
             </TabsList>
           </Tabs>
 

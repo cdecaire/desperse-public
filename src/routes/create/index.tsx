@@ -3,7 +3,7 @@
  * Form for creating new posts (Standard, Collectible, or Edition)
  */
 
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, stripSearchParams, useNavigate } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import { z } from 'zod'
 import { AuthGuard } from '@/components/shared/AuthGuard'
@@ -30,6 +30,11 @@ const createSearchSchema = z.object({
 
 export const Route = createFileRoute('/create/')({
   validateSearch: createSearchSchema,
+  search: {
+    // Keeps the URL clean for the common case (`/create`) — only shows
+    // `?firstPost=true` while it's actually true (the deep-link case).
+    middlewares: [stripSearchParams({ firstPost: false })],
+  },
   component: CreatePage,
 })
 

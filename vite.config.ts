@@ -134,15 +134,6 @@ const config = defineConfig({
     // TanStack Start will handle its own server function routes via middleware
     nitro({
       serverDir: 'server',
-      devServer: {
-        // Default "node-worker" runner spawns a separate OS process for the
-        // nitro vite environment. On Windows, process spawn + IPC handshake
-        // for that worker can exceed the dev-worker's ~3.1s retry budget on
-        // cold start (heavy dep graph: Solana, Privy, Metaplex), causing
-        // NitroViteError 503 "Vite environment nitro is unavailable" on the
-        // first request. "self" runs in-process, no spawn/IPC roundtrip.
-        runner: 'self',
-      },
       serverAssets: [
         {
           baseName: 'fonts',

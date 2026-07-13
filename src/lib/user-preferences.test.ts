@@ -25,3 +25,20 @@ describe('leaderboard privacy preferences', () => {
     expect(merged.privacy?.leaderboardParticipation).toBe(false)
   })
 })
+
+describe('design theme preferences', () => {
+  it.each([
+    ['dossier', 'meridian'],
+    ['cove', 'prism'],
+  ])('maps the retired %s theme to %s', (legacyTheme, currentTheme) => {
+    const preferences = mergePreferencesWithDefaults({
+      designTheme: legacyTheme as never,
+    })
+
+    expect(preferences.designTheme).toBe(currentTheme)
+  })
+
+  it('keeps a currently supported theme', () => {
+    expect(mergePreferencesWithDefaults({ designTheme: 'verdant' }).designTheme).toBe('verdant')
+  })
+})

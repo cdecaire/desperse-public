@@ -8,6 +8,7 @@
 import { Link } from '@tanstack/react-router'
 import { usePrivy } from '@privy-io/react-auth'
 import { Center } from '@cdecaire/sable/layout'
+import { Button } from '@/components/ui/button'
 
 export function Footer({ showCta = true, fluid = false }: { showCta?: boolean; fluid?: boolean }) {
   const { login, ready } = usePrivy()
@@ -18,16 +19,17 @@ export function Footer({ showCta = true, fluid = false }: { showCta?: boolean; f
           <>
             <div className="text-center mb-16">
               {/* Editorial lead — uses heading-2 size with light weight override */}
-              <p className="text-heading-2 font-light text-zinc-600 dark:text-zinc-400 mb-8">
+              <p className="text-heading-2 font-light text-muted-foreground mb-8">
                 Start creating and collecting today.
               </p>
-              <button
+              <Button
+                size="cta"
+                className="hover:scale-105 active:scale-[0.98]"
                 onClick={() => login()}
                 disabled={!ready}
-                className="px-10 py-4 bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 text-label-lg rounded-full hover:scale-105 active:scale-[0.98] transition-all duration-200 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-950 dark:focus-visible:ring-white"
               >
                 Get Started — It's Free
-              </button>
+              </Button>
             </div>
 
             <p aria-hidden="true" className="text-display-4xl text-center whitespace-nowrap opacity-10 cursor-default select-none mt-8">
@@ -39,29 +41,29 @@ export function Footer({ showCta = true, fluid = false }: { showCta?: boolean; f
         <div className={`flex flex-col md:flex-row justify-between items-start gap-12 md:items-end ${showCta ? 'mt-12 pt-12 border-t border-border' : ''}`}>
           <div className="flex flex-col sm:flex-row gap-12">
             <nav aria-label="Footer" className="space-y-4">
-              <p className="text-label-xs text-zinc-500 dark:text-zinc-500">Legal</p>
-              <Link to="/privacy" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 motion-interactive">
+              <p className="text-label-xs text-muted-foreground">Legal</p>
+              <Link to="/privacy" className="block text-muted-foreground hover:text-foreground motion-interactive">
                 Privacy Policy
               </Link>
-              <Link to="/terms" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 motion-interactive">
+              <Link to="/terms" className="block text-muted-foreground hover:text-foreground motion-interactive">
                 Terms of Service
               </Link>
-              <Link to="/fees" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 motion-interactive">
+              <Link to="/fees" className="block text-muted-foreground hover:text-foreground motion-interactive">
                 Fees
               </Link>
             </nav>
             <nav aria-label="Download" className="space-y-4">
-              <p className="text-label-xs text-zinc-500 dark:text-zinc-500">Download</p>
-              <Link to="/download" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 motion-interactive">
+              <p className="text-label-xs text-muted-foreground">Download</p>
+              <Link to="/download" className="block text-muted-foreground hover:text-foreground motion-interactive">
                 All platforms
               </Link>
-              <a href="https://testflight.apple.com/join/27uRZQ45" target="_blank" rel="noopener noreferrer" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 motion-interactive">
+              <a href="https://testflight.apple.com/join/27uRZQ45" target="_blank" rel="noopener noreferrer" className="block text-muted-foreground hover:text-foreground motion-interactive">
                 iOS · TestFlight
               </a>
-              <Link to="/download" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 motion-interactive">
+              <Link to="/download" className="block text-muted-foreground hover:text-foreground motion-interactive">
                 Solana dApp Store
               </Link>
-              <Link to="/download" className="block text-zinc-600 dark:text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 motion-interactive">
+              <Link to="/download" className="block text-muted-foreground hover:text-foreground motion-interactive">
                 Android APK
               </Link>
             </nav>
@@ -69,9 +71,9 @@ export function Footer({ showCta = true, fluid = false }: { showCta?: boolean; f
 
           <div className="mt-8 md:mt-0 text-right">
             <div className="flex gap-6 mb-4 md:justify-end">
-              <a href="https://x.com/DesperseApp" target="_blank" rel="noopener noreferrer" className="text-zinc-950 dark:text-zinc-50 hover:opacity-70">Twitter/X</a>
+              <a href="https://x.com/DesperseApp" target="_blank" rel="noopener noreferrer" className="text-foreground hover:opacity-70">Twitter/X</a>
             </div>
-            <p className="text-body-sm text-zinc-500 dark:text-zinc-500">© {new Date().getFullYear()} Desperse. All rights reserved.</p>
+            <p className="text-body-sm text-muted-foreground">© {new Date().getFullYear()} Desperse. All rights reserved.</p>
           </div>
         </div>
       </Center>

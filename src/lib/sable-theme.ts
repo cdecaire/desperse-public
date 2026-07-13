@@ -6,6 +6,7 @@ import {
 	themeManifests,
 	type ThemeId,
 } from "@cdecaire/sable/themes"
+import { normalizeDesignTheme } from "@/lib/user-preferences"
 
 export type SableDesignTheme = ThemeId
 
@@ -38,7 +39,13 @@ export function readStoredSableDesignTheme(): SableDesignTheme {
 
 	try {
 		const stored = window.localStorage.getItem(sableDesignThemeStorageKey)
-		return stored && isThemeId(stored) ? stored : defaultSableDesignTheme
+		const themeId = normalizeDesignTheme(stored)
+
+		if (stored !== themeId) {
+			window.localStorage.setItem(sableDesignThemeStorageKey, themeId)
+		}
+
+		return isThemeId(themeId) ? themeId : defaultSableDesignTheme
 	} catch {
 		return defaultSableDesignTheme
 	}

@@ -5,6 +5,7 @@
  */
 
 import { Link } from '@tanstack/react-router'
+import { Reveal } from '@cdecaire/sable'
 import { CarouselRow } from '@/components/gallery/CarouselRow'
 import { CreatorCard } from '@/components/gallery/CreatorCard'
 import { useFeaturedCreators } from '@/hooks/useExploreQuery'
@@ -30,22 +31,24 @@ export function TrendingCreatorsRow() {
   }
 
   return (
-    <CarouselRow
-      title="Trending Creators"
-      actions={
-        <Link
-          to="/leaderboard"
-          className="text-label-lg text-muted-foreground hover:text-foreground motion-interactive"
-        >
-          View all <span aria-hidden="true">&rarr;</span>
-        </Link>
-      }
-    >
-      {isLoading
-        ? Array.from({ length: 6 }).map((_, i) => <CreatorCardSkeleton key={i} />)
-        : creators?.map((creator) => (
-            <CreatorCard key={creator.id} creator={creator} className="w-72 shrink-0" />
-          ))}
-    </CarouselRow>
+    <Reveal>
+      <CarouselRow
+        title="Trending Creators"
+        actions={
+          <Link
+            to="/leaderboard"
+            className="text-label-lg text-muted-foreground hover:text-foreground motion-interactive"
+          >
+            View all <span aria-hidden="true">&rarr;</span>
+          </Link>
+        }
+      >
+        {isLoading
+          ? Array.from({ length: 6 }).map((_, i) => <CreatorCardSkeleton key={i} />)
+          : creators?.map((creator) => (
+              <CreatorCard key={creator.id} creator={creator} className="w-72 shrink-0" />
+            ))}
+      </CarouselRow>
+    </Reveal>
   )
 }

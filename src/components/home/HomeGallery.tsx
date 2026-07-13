@@ -8,8 +8,11 @@
 import { Link } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { usePrivy } from '@privy-io/react-auth'
+import { Reveal } from '@cdecaire/sable'
+import { Region } from '@cdecaire/sable/layout'
 import { getTrendingPosts, getNewPosts, getEndingSoonPosts } from '@/server/functions/explore'
 import { toGalleryPost } from '@/components/gallery/mapPost'
+import { Button } from '@/components/ui/button'
 import { CuratedRowPreview } from './CuratedRowPreview'
 import { HomeCtaBand } from './HomeCtaBand'
 import { ArtistShowcase } from './ArtistShowcase'
@@ -83,41 +86,42 @@ export function HomeGallery() {
           own px; bands break full-bleed. */}
       <main className="flex-1 pt-28 pb-24">
         <div className="space-y-16 md:space-y-24">
-          {/* Hero */}
-          <section className="px-6 md:px-10">
-            <h1 className="text-display-3xl">
-              Create. Collect. <span className="text-muted-foreground">Own.</span>
-            </h1>
-            <p className="mt-4 text-body-lg text-muted-foreground max-w-xl">
-              Where creative work becomes collectible. Publish your art, mint
-              editions, and collect directly from the artists you love — onchain,
-              in seconds.
-            </p>
-            <div className="mt-8 flex items-center gap-6">
-              {authenticated ? (
+          {/* Hero — one-time entrance, the marketing surface DESIGN.md carves
+              out for physical motion */}
+          <Region as="section" inset={false} className="px-6 md:px-10">
+            <Reveal>
+              <h1 className="text-display-3xl">
+                Create. Collect. <span className="text-muted-foreground">Own.</span>
+              </h1>
+              <p className="mt-4 text-body-lg text-muted-foreground max-w-xl">
+                Where creative work becomes collectible. Publish your art, mint
+                editions, and collect directly from the artists you love — onchain,
+                in seconds.
+              </p>
+              <div className="mt-8 flex items-center gap-6">
+                {authenticated ? (
+                  <Button size="cta" className="hover:scale-105 active:scale-[0.98]" asChild>
+                    <Link to="/">Go to Feed</Link>
+                  </Button>
+                ) : (
+                  <Button
+                    size="cta"
+                    className="hover:scale-105 active:scale-[0.98]"
+                    onClick={() => login()}
+                    disabled={!ready}
+                  >
+                    Get Started
+                  </Button>
+                )}
                 <Link
-                  to="/"
-                  className="px-8 py-4 bg-primary text-primary-foreground text-label-lg rounded-full hover:scale-105 active:scale-[0.98] transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-ring"
+                  to="/explore"
+                  className="text-label-lg text-muted-foreground hover:text-foreground motion-interactive"
                 >
-                  Go to Feed
+                  Explore the gallery <span aria-hidden="true">&rarr;</span>
                 </Link>
-              ) : (
-                <button
-                  onClick={() => login()}
-                  disabled={!ready}
-                  className="px-8 py-4 bg-primary text-primary-foreground text-label-lg rounded-full hover:scale-105 active:scale-[0.98] transition-all duration-200 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-ring"
-                >
-                  Get Started
-                </button>
-              )}
-              <Link
-                to="/explore"
-                className="text-label-lg text-muted-foreground hover:text-foreground motion-interactive"
-              >
-                Explore the gallery <span aria-hidden="true">&rarr;</span>
-              </Link>
-            </div>
-          </section>
+              </div>
+            </Reveal>
+          </Region>
 
           {/* Trending — work grid (self-hides if empty) */}
           <CuratedRowPreview
@@ -162,8 +166,8 @@ export function HomeGallery() {
           <BrowseCategories />
 
           {/* Creator recruitment — quiet band, full story lives at /about */}
-          <section className="px-6 md:px-10">
-            <div className="border-t border-border pt-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <Region as="section" inset={false} className="px-6 md:px-10">
+            <Reveal className="border-t border-border pt-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
               <div>
                 <h2 className="text-heading-2">Made by an artist? Keep 95%.</h2>
                 <p className="mt-2 text-body-md text-muted-foreground max-w-lg">
@@ -177,8 +181,8 @@ export function HomeGallery() {
               >
                 How Desperse works <span aria-hidden="true">&rarr;</span>
               </Link>
-            </div>
-          </section>
+            </Reveal>
+          </Region>
         </div>
       </main>
 

@@ -12,7 +12,9 @@ import { Reveal, TextReveal } from '@cdecaire/sable'
 import { Region, Row, Stack } from '@cdecaire/sable/layout'
 import { Footer } from '@/components/layout/Footer'
 import { PublicHeader, PUBLIC_NAV_ITEMS } from '@/components/layout/PublicHeader'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 import { Icon } from '@/components/ui/icon'
 import { getLandingProfilePreview, getTrendingPosts } from '@/server/functions/explore'
 import { GalleryGrid } from '@/components/gallery/GalleryGrid'
@@ -202,12 +204,13 @@ function HeroSection({
 
           <div className="flex flex-wrap gap-2 pt-2" aria-label="Desperse highlights">
             {VALUE_PROPS.map((item) => (
-              <span
+              <Badge
                 key={item}
-                className="rounded-full border border-border px-3 py-1 text-label-md text-muted-foreground"
+                variant="outline"
+                className="px-3 py-1 text-label-md text-muted-foreground"
               >
                 {item}
-              </span>
+              </Badge>
             ))}
           </div>
         </Stack>
@@ -231,7 +234,7 @@ function LiveCreatorPreview() {
   if (isLoading) {
     return (
       <div
-        className="overflow-hidden rounded-lg border border-border bg-overlay p-5 text-overlay-foreground shadow-[0_8px_8px_rgba(0,0,0,0.18)] md:p-6"
+        className="overflow-hidden rounded-lg border border-border bg-overlay p-5 text-overlay-foreground shadow-lg md:p-6"
         aria-label="Loading live creator profile preview"
       >
         <div className="mb-5 flex items-center gap-3">
@@ -268,7 +271,7 @@ function LiveCreatorPreview() {
 
   if (!creator) {
     return (
-      <div className="overflow-hidden rounded-lg border border-border bg-overlay p-5 text-overlay-foreground shadow-[0_8px_8px_rgba(0,0,0,0.18)] md:p-6">
+      <div className="overflow-hidden rounded-lg border border-border bg-overlay p-5 text-overlay-foreground shadow-lg md:p-6">
         <Stack gap={4}>
           <p className="text-label-md text-overlay-foreground/60">Creator profile preview</p>
           <Stack gap={2}>
@@ -288,7 +291,7 @@ function LiveCreatorPreview() {
 
   return (
     <aside
-      className="overflow-hidden rounded-lg border border-border bg-overlay p-5 text-overlay-foreground shadow-[0_8px_8px_rgba(0,0,0,0.18)] md:p-6"
+      className="overflow-hidden rounded-lg border border-border bg-overlay p-5 text-overlay-foreground shadow-lg md:p-6"
       aria-label="Live creator profile preview from Desperse"
     >
       <div className="mb-5 flex items-center justify-between gap-4">
@@ -328,7 +331,7 @@ function LiveCreatorPreview() {
                 index === 0 ? 'col-span-2 aspect-[16/10]' : 'aspect-square'
               }`}
             >
-              <div className="h-full w-full transition-transform duration-700 ease-out group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100 [&>div]:h-full [&>div]:w-full [&_img]:!h-full [&_img]:!max-h-none [&_img]:!w-full [&_img]:!object-cover [&_video]:!h-full [&_video]:!w-full [&_video]:!object-cover">
+              <div className="h-full w-full transition-transform duration-(--motion-duration-slower) ease-decelerate group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100 [&>div]:h-full [&>div]:w-full [&_img]:!h-full [&_img]:!max-h-none [&_img]:!w-full [&_img]:!object-cover [&_video]:!h-full [&_video]:!w-full [&_video]:!object-cover">
                 <PostMedia
                   mediaUrl={post.mediaUrl}
                   coverUrl={post.coverUrl}
@@ -381,7 +384,7 @@ function AudienceSection() {
           </Stack>
 
           <Reveal>
-            <div className="grid overflow-hidden rounded-lg border border-border bg-card max-md:divide-y md:grid-cols-2 md:divide-x divide-border">
+            <Card className="grid overflow-hidden max-md:divide-y md:grid-cols-2 md:divide-x divide-border">
               {AUDIENCES.map((audience) => (
                 <Stack key={audience.title} gap={4} className="p-5 md:p-6">
                   <Stack gap={3}>
@@ -399,12 +402,12 @@ function AudienceSection() {
                   </ul>
 
                   <div className="mt-auto border-t border-border pt-5">
-                    <p className="text-display-lg">{audience.metric}</p>
-                    <p className="text-label-md text-muted-foreground">{audience.accent}</p>
+                    <p className="text-display-xl leading-none tabular-nums">{audience.metric}</p>
+                    <p className="mt-2 text-label-xs text-muted-foreground">{audience.accent}</p>
                   </div>
                 </Stack>
               ))}
-            </div>
+            </Card>
           </Reveal>
         </div>
       </Region>
@@ -427,9 +430,15 @@ function WorkModesSection() {
           </div>
 
           <Reveal>
-            <div className="grid overflow-hidden rounded-lg border border-border bg-card max-md:divide-y md:grid-cols-2 lg:grid-cols-4 md:divide-x divide-border">
+            <Card className="group grid overflow-hidden max-md:divide-y md:grid-cols-12 md:divide-x divide-border">
               {WORK_MODES.map((mode) => (
-                <Stack key={mode.title} gap={3} className="p-5 md:p-6">
+                <Stack
+                  key={mode.title}
+                  gap={3}
+                  className={`motion-interactive p-5 group-hover:opacity-60 hover:opacity-100! md:p-6 md:col-span-6 ${
+                    mode.title === 'Edition' ? 'lg:col-span-4' : mode.title === 'Download' ? 'lg:col-span-2' : 'lg:col-span-3'
+                  }`}
+                >
                   <span className="flex size-10 items-center justify-center rounded-full border border-border bg-muted text-foreground">
                     <Icon name={mode.icon} variant="regular" className="text-base" />
                   </span>
@@ -439,7 +448,7 @@ function WorkModesSection() {
                   </Stack>
                 </Stack>
               ))}
-            </div>
+            </Card>
           </Reveal>
         </Stack>
       </Region>
@@ -487,13 +496,15 @@ function LiveGallerySection() {
             </Link>
           </div>
 
-          <GalleryGrid
-            posts={posts}
-            isLoading={isLoading}
-            skeletonCount={4}
-            eagerCount={2}
-            className="xl:grid-cols-4 2xl:grid-cols-4"
-          />
+          <Reveal>
+            <GalleryGrid
+              posts={posts}
+              isLoading={isLoading}
+              skeletonCount={4}
+              eagerCount={2}
+              className="xl:grid-cols-4 2xl:grid-cols-4"
+            />
+          </Reveal>
         </Stack>
       </Region>
     </section>
@@ -513,15 +524,17 @@ function HowItWorksSection() {
             </p>
           </Stack>
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            {HOW_IT_WORKS.map((step, index) => (
-              <div key={step.title} className="rounded-lg border border-border bg-card p-5">
-                <p className="text-mono-sm text-muted-foreground">{String(index + 1).padStart(2, '0')}</p>
-                <h3 className="mt-4 text-title-lg">{step.title}</h3>
-                <p className="mt-2 text-body-sm text-muted-foreground">{step.body}</p>
-              </div>
-            ))}
-          </div>
+          <Reveal>
+            <div className="grid gap-4 sm:grid-cols-2">
+              {HOW_IT_WORKS.map((step, index) => (
+                <Card key={step.title} className="p-5">
+                  <p className="text-mono-sm text-muted-foreground">{String(index + 1).padStart(2, '0')}</p>
+                  <h3 className="mt-4 text-title-lg">{step.title}</h3>
+                  <p className="mt-2 text-body-sm text-muted-foreground">{step.body}</p>
+                </Card>
+              ))}
+            </div>
+          </Reveal>
         </div>
       </Region>
     </section>
@@ -542,24 +555,26 @@ function PrinciplesSection() {
             </p>
           </div>
 
-          <div className="overflow-hidden rounded-lg border border-border bg-background">
-            {PRINCIPLES.map((principle, index) => (
-              <div
-                key={principle.bad}
-                className={`grid gap-0 md:grid-cols-[0.34fr_1fr] ${
-                  index < PRINCIPLES.length - 1 ? 'border-b border-border' : ''
-                }`}
-              >
-                <div className="flex items-center gap-3 border-border px-5 py-4 md:border-r">
-                  <Icon name="xmark" className="text-sm text-destructive" />
-                  <span className="text-label-lg">{principle.bad}</span>
+          <Reveal>
+            <Card className="overflow-hidden bg-background">
+              {PRINCIPLES.map((principle, index) => (
+                <div
+                  key={principle.bad}
+                  className={`grid gap-0 md:grid-cols-[0.34fr_1fr] ${
+                    index < PRINCIPLES.length - 1 ? 'border-b border-border' : ''
+                  }`}
+                >
+                  <div className="flex items-center gap-3 border-border px-5 py-4 md:border-r">
+                    <Icon name="xmark" className="text-sm text-destructive" />
+                    <span className="text-label-lg">{principle.bad}</span>
+                  </div>
+                  <div className="px-5 py-4">
+                    <p className="text-body-md text-muted-foreground">{principle.good}</p>
+                  </div>
                 </div>
-                <div className="px-5 py-4">
-                  <p className="text-body-md text-muted-foreground">{principle.good}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </Card>
+          </Reveal>
         </Stack>
       </Region>
     </section>
@@ -580,17 +595,23 @@ function TrustSection() {
             </p>
           </div>
 
-          <div className="grid overflow-hidden rounded-lg border border-border bg-card max-md:divide-y md:grid-cols-3 md:divide-x divide-border">
-            {TRUST_ITEMS.map((item) => (
-              <Stack key={item.title} gap={3} className="p-5 md:p-6">
-                <Icon name={item.icon} variant="regular" className="text-lg text-muted-foreground" />
-                <Stack gap={1}>
-                  <h3 className="text-title-lg">{item.title}</h3>
-                  <p className="text-body-sm text-muted-foreground">{item.body}</p>
+          <Reveal>
+            <Card className="group grid overflow-hidden max-md:divide-y md:grid-cols-3 md:divide-x divide-border">
+              {TRUST_ITEMS.map((item) => (
+                <Stack
+                  key={item.title}
+                  gap={3}
+                  className="motion-interactive p-5 group-hover:opacity-60 hover:opacity-100! md:p-6"
+                >
+                  <Icon name={item.icon} variant="regular" className="text-lg text-muted-foreground" />
+                  <Stack gap={1}>
+                    <h3 className="text-title-lg">{item.title}</h3>
+                    <p className="text-body-sm text-muted-foreground">{item.body}</p>
+                  </Stack>
                 </Stack>
-              </Stack>
-            ))}
-          </div>
+              ))}
+            </Card>
+          </Reveal>
 
           <Row gap={4} wrap className="border-t border-border pt-6">
             <Link to="/fees" className="text-label-lg text-muted-foreground hover:text-foreground motion-interactive">
@@ -618,30 +639,32 @@ function FinalCta({
   return (
     <section className="border-t border-border">
       <Region max="wide" className="py-16 md:py-24">
-        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-          <Stack gap={2}>
-            <h2 className="text-heading-1">Start with one standard post.</h2>
-            <p className="max-w-[58ch] text-body-lg text-muted-foreground">
-              Publish the work first. You can make pieces collectible, sell
-              editions, or add collector-only downloads when the piece calls for it.
-            </p>
-          </Stack>
+        <Reveal>
+          <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+            <Stack gap={2}>
+              <h2 className="text-heading-1">Start with one standard post.</h2>
+              <p className="max-w-[58ch] text-body-lg text-muted-foreground">
+                Publish the work first. You can make pieces collectible, sell
+                editions, or add collector-only downloads when the piece calls for it.
+              </p>
+            </Stack>
 
-          <div className="flex shrink-0 flex-col gap-3 sm:flex-row">
-            {authenticated ? (
-              <Button asChild size="cta">
-                <Link to="/">Go to feed</Link>
+            <div className="flex shrink-0 flex-col gap-3 sm:flex-row">
+              {authenticated ? (
+                <Button asChild size="cta">
+                  <Link to="/">Go to feed</Link>
+                </Button>
+              ) : (
+                <Button size="cta" onClick={() => login()} disabled={!ready}>
+                  Start creating
+                </Button>
+              )}
+              <Button asChild size="cta" variant="outline">
+                <Link to="/download">Get the app</Link>
               </Button>
-            ) : (
-              <Button size="cta" onClick={() => login()} disabled={!ready}>
-                Start creating
-              </Button>
-            )}
-            <Button asChild size="cta" variant="outline">
-              <Link to="/download">Get the app</Link>
-            </Button>
+            </div>
           </div>
-        </div>
+        </Reveal>
       </Region>
     </section>
   )

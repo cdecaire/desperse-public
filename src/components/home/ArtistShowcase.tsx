@@ -6,9 +6,12 @@
 
 import { Link } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
+import { Reveal } from '@cdecaire/sable'
+import { Region } from '@cdecaire/sable/layout'
 import { getLandingProfilePreview } from '@/server/functions/explore'
 import { PostMedia } from '@/components/feed/PostMedia'
 import { UserAvatar } from '@/components/shared/UserAvatar'
+import { Button } from '@/components/ui/button'
 import { detectMediaType } from '@/lib/media'
 
 function StatItem({ value, label }: { value: number; label: string }) {
@@ -36,8 +39,8 @@ export function ArtistShowcase() {
   const works = (data?.posts ?? []).slice(0, 3)
 
   return (
-    <section className="px-6 md:px-10">
-      <div>
+    <Region as="section" inset={false} className="px-6 md:px-10">
+      <Reveal>
         <h2 className="text-heading-2 mb-6">Featured Artist</h2>
         <div className="grid gap-8 lg:gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] items-center">
           {/* Identity */}
@@ -71,13 +74,11 @@ export function ArtistShowcase() {
               <StatItem value={creator.followerCount} label="Followers" />
             </div>
 
-            <Link
-              to="/profile/$slug"
-              params={{ slug: creator.usernameSlug }}
-              className="mt-8 inline-flex px-6 py-3 bg-primary text-primary-foreground text-label-lg rounded-full hover:scale-105 active:scale-[0.98] transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-ring"
-            >
-              View profile
-            </Link>
+            <Button className="mt-8 hover:scale-105 active:scale-[0.98]" asChild>
+              <Link to="/profile/$slug" params={{ slug: creator.usernameSlug }}>
+                View profile
+              </Link>
+            </Button>
           </div>
 
           {/* Work peek */}
@@ -108,7 +109,7 @@ export function ArtistShowcase() {
             </div>
           )}
         </div>
-      </div>
-    </section>
+      </Reveal>
+    </Region>
   )
 }

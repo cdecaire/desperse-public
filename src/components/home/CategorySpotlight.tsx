@@ -8,6 +8,8 @@
 
 import { Link } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
+import { Reveal } from '@cdecaire/sable'
+import { Region } from '@cdecaire/sable/layout'
 import { getPostsByCategory } from '@/server/functions/categories'
 import { toGalleryPost } from '@/components/gallery/mapPost'
 import { GalleryGrid } from '@/components/gallery/GalleryGrid'
@@ -40,8 +42,8 @@ export function CategorySpotlight({ category, limit = 4 }: CategorySpotlightProp
   if (!isLoading && posts.length === 0) return null
 
   return (
-    <section className="px-6 md:px-10">
-      <div className="flex items-end justify-between gap-4 mb-6">
+    <Region as="section" inset={false} className="px-6 md:px-10">
+      <Reveal className="flex items-end justify-between gap-4 mb-6">
         <div>
           <p className="text-label-lg text-muted-foreground mb-1">Curated</p>
           <h2 className="text-heading-2">{category}</h2>
@@ -53,8 +55,10 @@ export function CategorySpotlight({ category, limit = 4 }: CategorySpotlightProp
         >
           View all <span aria-hidden="true">&rarr;</span>
         </Link>
-      </div>
-      <GalleryGrid posts={posts} isLoading={isLoading} skeletonCount={limit} />
-    </section>
+      </Reveal>
+      <Reveal delay={80}>
+        <GalleryGrid posts={posts} isLoading={isLoading} skeletonCount={limit} />
+      </Reveal>
+    </Region>
   )
 }

@@ -5,6 +5,8 @@
  */
 
 import { Link } from '@tanstack/react-router'
+import { Reveal } from '@cdecaire/sable'
+import { Region } from '@cdecaire/sable/layout'
 import { GalleryGrid } from '@/components/gallery/GalleryGrid'
 import type { PostCardData } from '@/components/feed/PostCard'
 import type { ExploreTab } from '@/components/explore/ExploreSections'
@@ -35,8 +37,8 @@ export function CuratedRowPreview({
   if (!isLoading && capped.length === 0) return null
 
   return (
-    <section className="px-6 md:px-10 space-y-6">
-      <div className="flex items-end justify-between gap-4">
+    <Region as="section" inset={false} className="px-6 md:px-10 space-y-6">
+      <Reveal className="flex items-end justify-between gap-4">
         <h2 className="text-heading-2">{title}</h2>
         <Link
           to="/explore"
@@ -45,13 +47,15 @@ export function CuratedRowPreview({
         >
           View all <span aria-hidden="true">&rarr;</span>
         </Link>
-      </div>
-      <GalleryGrid
-        posts={capped}
-        isLoading={isLoading}
-        skeletonCount={limit}
-        eagerCount={eager ? 4 : 0}
-      />
-    </section>
+      </Reveal>
+      <Reveal delay={80}>
+        <GalleryGrid
+          posts={capped}
+          isLoading={isLoading}
+          skeletonCount={limit}
+          eagerCount={eager ? 4 : 0}
+        />
+      </Reveal>
+    </Region>
   )
 }

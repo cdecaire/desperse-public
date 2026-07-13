@@ -4,14 +4,43 @@ export type ExplorerOption = (typeof explorerOptions)[number]
 export const themeOptions = ["light", "dark", "system"] as const
 export type ThemeOption = (typeof themeOptions)[number]
 
-export const designThemeOptions = ["desperse", "dossier", "cove"] as const
+export const designThemeOptions = [
+	"desperse",
+	"meridian",
+	"atelier",
+	"prism",
+	"verdant",
+] as const
 export type DesignThemeOption = (typeof designThemeOptions)[number]
+export const defaultDesignTheme: DesignThemeOption = "desperse"
+
+/**
+ * Theme ids persisted before Sable 0.29.0 renamed its bundled themes.
+ * Keep this mapping at the preference boundary so an existing selection
+ * continues to resolve even before the user revisits their app settings.
+ */
+const legacyDesignThemeAliases = {
+	dossier: "meridian",
+	cove: "prism",
+} as const satisfies Record<string, DesignThemeOption>
 
 export function isDesignThemeOption(value: unknown): value is DesignThemeOption {
 	return (
 		typeof value === "string" &&
 		designThemeOptions.includes(value as DesignThemeOption)
 	)
+}
+
+export function normalizeDesignTheme(value: unknown): DesignThemeOption {
+	if (isDesignThemeOption(value)) return value
+
+	if (typeof value === "string" && value in legacyDesignThemeAliases) {
+		return legacyDesignThemeAliases[
+			value as keyof typeof legacyDesignThemeAliases
+		]
+	}
+
+	return defaultDesignTheme
 }
 
 export type UserPreferencesJson = {
@@ -42,7 +71,7 @@ export type UserPreferencesJson = {
 
 export const defaultPreferences: UserPreferencesJson = {
 	theme: "system",
-	designTheme: "desperse",
+	designTheme: defaultDesignTheme,
 	explorer: "solana-explorer",
 	notifications: {
 		follows: true,
@@ -73,7 +102,7 @@ export function mergePreferencesWithDefaults(
 
 	return {
 		theme: stored.theme ?? defaultPreferences.theme,
-		designTheme: stored.designTheme ?? defaultPreferences.designTheme,
+		designTheme: normalizeDesignTheme(stored.designTheme),
 		explorer: stored.explorer ?? defaultPreferences.explorer,
 		notifications: {
 			follows: stored.notifications?.follows ?? defaultPreferences.notifications?.follows,

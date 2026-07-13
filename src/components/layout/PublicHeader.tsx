@@ -116,7 +116,7 @@ export function PublicHeader({ navItems, position = 'fixed' }: PublicHeaderProps
         {authenticated ? (
           <Link
             to="/"
-            className="shrink-0 whitespace-nowrap border border-zinc-300 dark:border-zinc-700 px-5 py-2 rounded-full text-sm font-medium hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 motion-interactive"
+            className="shrink-0 whitespace-nowrap border border-border px-5 py-2 rounded-full text-sm font-medium hover:bg-primary hover:text-primary-foreground motion-interactive"
           >
             Go to Feed
           </Link>
@@ -124,7 +124,7 @@ export function PublicHeader({ navItems, position = 'fixed' }: PublicHeaderProps
           <button
             onClick={() => login()}
             disabled={!ready}
-            className="shrink-0 whitespace-nowrap border border-zinc-300 dark:border-zinc-700 px-5 py-2 rounded-full text-sm font-medium hover:bg-zinc-950 hover:text-white dark:hover:bg-white dark:hover:text-zinc-950 motion-interactive disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-zinc-950 dark:focus-visible:ring-white"
+            className="shrink-0 whitespace-nowrap border border-border px-5 py-2 rounded-full text-sm font-medium hover:bg-primary hover:text-primary-foreground motion-interactive disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-ring"
           >
             {recoveryMessage ? 'Retry sign in' : 'Log in'}
           </button>

@@ -55,7 +55,6 @@ vi.mock('@/server/db', () => {
       return builder
     }),
   }
-  mockDb.transaction = vi.fn((callback: (tx: typeof mockDb) => unknown) => callback(mockDb))
   return { db: mockDb }
 })
 
@@ -289,7 +288,7 @@ describe('referrals utils', () => {
     }])
     selectQueue.push([])
     selectQueue.push([])
-    updateQueue.push([])
+    updateQueue.push([{ id: 'current-code' }])
     insertReturningQueue.push([{ id: 'code-2', userId: 'user-1', code: 'new_code', createdAt: now }])
 
     const { setCustomReferralInviteCode } = await import('./referrals')
@@ -297,5 +296,26 @@ describe('referrals utils', () => {
 
     expect(result).toMatchObject({ success: true, code: 'new_code' })
     expect(updateSetValues).toContainEqual(expect.objectContaining({ status: 'retired', retiredAt: now }))
+  })
+
+  it('does not insert when another request already retired the current code', async () => {
+    const now = new Date('2026-07-14T12:00:00.000Z')
+    selectQueue.push([{ id: 'user-1', usernameSlug: 'default-code' }])
+    selectQueue.push([{ id: 'r1' }, { id: 'r2' }, { id: 'r3' }])
+    selectQueue.push([{
+      id: 'current-code',
+      code: 'old_code',
+      createdAt: new Date('2026-07-01T12:00:00.000Z'),
+      status: 'active',
+    }])
+    selectQueue.push([])
+    selectQueue.push([])
+    updateQueue.push([])
+
+    const { setCustomReferralInviteCode } = await import('./referrals')
+    const result = await setCustomReferralInviteCode({ userId: 'user-1', code: 'new_code', now })
+
+    expect(result).toMatchObject({ success: false, reason: 'conflict' })
+    expect(insertValues).toHaveLength(0)
   })
 })

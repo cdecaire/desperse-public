@@ -209,19 +209,25 @@ export async function setCustomReferralInviteCode(input: { userId: string; code:
   }
 
   try {
-    const created = await db.transaction(async (tx) => {
-      if (activeCode) {
-        await tx
-          .update(referralInviteCodes)
-          .set({ status: 'retired', retiredAt: now, updatedAt: now })
-          .where(eq(referralInviteCodes.id, activeCode.id))
+    if (activeCode) {
+      const retired = await db
+        .update(referralInviteCodes)
+        .set({ status: 'retired', retiredAt: now, updatedAt: now })
+        .where(and(eq(referralInviteCodes.id, activeCode.id), eq(referralInviteCodes.status, 'active')))
+        .returning({ id: referralInviteCodes.id })
+      if (retired.length === 0) {
+        return {
+          success: false as const,
+          reason: 'conflict' as const,
+          error: 'Your invite code changed in another request. Refresh and try again.',
+        }
       }
-      const [inserted] = await tx
-        .insert(referralInviteCodes)
-        .values({ userId: input.userId, code, status: 'active', updatedAt: now })
-        .returning()
-      return inserted
-    })
+    }
+
+    const [created] = await db
+      .insert(referralInviteCodes)
+      .values({ userId: input.userId, code, status: 'active', updatedAt: now })
+      .returning()
 
     await emitReferralEvent({
       eventName: activeCode ? 'referral_custom_code_changed' : 'referral_custom_code_created',

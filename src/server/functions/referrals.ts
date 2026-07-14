@@ -84,7 +84,7 @@ export const updateMyCustomInviteCode = createServerFn({ method: 'POST' }).handl
   try {
     const result = await withAuth(customInviteCodeSchema, input)
     if (!result) return { success: false as const, error: 'Authentication required' }
-    return await setCustomReferralInviteCode({ userId: result.auth.userId, code: result.data.code })
+    return await setCustomReferralInviteCode({ userId: result.auth.userId, code: result.input.code })
   } catch (error) {
     console.error('[updateMyCustomInviteCode] Error:', error)
     return { success: false as const, error: error instanceof Error ? error.message : 'Failed to update invite code' }

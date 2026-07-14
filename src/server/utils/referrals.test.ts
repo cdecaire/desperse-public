@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const selectQueue: unknown[] = []
 const updateQueue: unknown[] = []
+const updateSetValues: unknown[] = []
 const insertReturningQueue: unknown[] = []
 const insertValues: unknown[] = []
 
@@ -24,8 +25,8 @@ function makeAwaitable(resultFactory: () => Promise<unknown>, extra: Record<stri
   }
 }
 
-vi.mock('@/server/db', () => ({
-  db: {
+vi.mock('@/server/db', () => {
+  const mockDb: any = {
     select: vi.fn(() => {
       const builder: any = makeAwaitable(nextSelect)
       builder.from = vi.fn(() => builder)
@@ -36,7 +37,10 @@ vi.mock('@/server/db', () => ({
     }),
     update: vi.fn(() => {
       const builder: any = makeAwaitable(nextUpdate)
-      builder.set = vi.fn(() => builder)
+      builder.set = vi.fn((value: unknown) => {
+        updateSetValues.push(value)
+        return builder
+      })
       builder.where = vi.fn(() => builder)
       builder.returning = vi.fn(() => nextUpdate())
       return builder
@@ -50,14 +54,17 @@ vi.mock('@/server/db', () => ({
       builder.returning = vi.fn(() => nextInsertReturning())
       return builder
     }),
-  },
-}))
+  }
+  mockDb.transaction = vi.fn((callback: (tx: typeof mockDb) => unknown) => callback(mockDb))
+  return { db: mockDb }
+})
 
 describe('referrals utils', () => {
   beforeEach(() => {
     process.env.REFERRAL_COOKIE_SECRET = 'test-referral-secret'
     selectQueue.length = 0
     updateQueue.length = 0
+    updateSetValues.length = 0
     insertReturningQueue.length = 0
     insertValues.length = 0
     vi.resetModules()
@@ -98,6 +105,7 @@ describe('referrals utils', () => {
     vi.useFakeTimers()
     vi.setSystemTime(now)
 
+    selectQueue.push([]) // no matching active custom code
     selectQueue.push([
       {
         id: 'referrer-1',
@@ -211,5 +219,83 @@ describe('referrals utils', () => {
     expect(expiredCount).toBe(1)
     expect(insertValues).toHaveLength(1)
     expect(insertValues[0]).toMatchObject({ eventName: 'referral_expired' })
+  })
+
+  it('validates custom invite code format, reserved terms, and profanity', async () => {
+    const { validateCustomInviteCode } = await import('./referrals')
+
+    expect(validateCustomInviteCode('My_Code7')).toEqual({ valid: true, code: 'my_code7' })
+    expect(validateCustomInviteCode('no')).toMatchObject({ valid: false, reason: 'format' })
+    expect(validateCustomInviteCode('support')).toMatchObject({ valid: false, reason: 'reserved' })
+    expect(validateCustomInviteCode('coolshit')).toMatchObject({ valid: false, reason: 'profanity' })
+  })
+
+  it('creates a custom code after three activated referrals', async () => {
+    const now = new Date('2026-07-14T12:00:00.000Z')
+    selectQueue.push([{ id: 'user-1', usernameSlug: 'default-code' }])
+    selectQueue.push([{ id: 'r1' }, { id: 'r2' }, { id: 'r3' }])
+    selectQueue.push([]) // no current custom code
+    selectQueue.push([]) // no historical custom code collision
+    selectQueue.push([]) // no username collision
+    insertReturningQueue.push([{ id: 'code-1', userId: 'user-1', code: 'fresh_code', createdAt: now }])
+
+    const { setCustomReferralInviteCode } = await import('./referrals')
+    const result = await setCustomReferralInviteCode({ userId: 'user-1', code: 'Fresh_Code', now })
+
+    expect(result).toMatchObject({ success: true, code: 'fresh_code', defaultCode: 'default-code' })
+    expect(insertValues).toContainEqual(expect.objectContaining({ userId: 'user-1', code: 'fresh_code', status: 'active' }))
+  })
+
+  it('returns collision errors and alternatives', async () => {
+    selectQueue.push([{ id: 'user-1', usernameSlug: 'default-code' }])
+    selectQueue.push([{ id: 'r1' }, { id: 'r2' }, { id: 'r3' }])
+    selectQueue.push([])
+    selectQueue.push([{ id: 'existing-code' }])
+    selectQueue.push([])
+
+    const { setCustomReferralInviteCode } = await import('./referrals')
+    const result = await setCustomReferralInviteCode({ userId: 'user-1', code: 'taken_code' })
+
+    expect(result).toMatchObject({ success: false, reason: 'collision' })
+    expect((result as { alternatives?: string[] }).alternatives ?? []).not.toHaveLength(0)
+  })
+
+  it('enforces the seven-day custom code change cooldown', async () => {
+    const now = new Date('2026-07-14T12:00:00.000Z')
+    selectQueue.push([{ id: 'user-1', usernameSlug: 'default-code' }])
+    selectQueue.push([{ id: 'r1' }, { id: 'r2' }, { id: 'r3' }])
+    selectQueue.push([{
+      id: 'current-code',
+      code: 'old_code',
+      createdAt: new Date('2026-07-10T12:00:00.000Z'),
+      status: 'active',
+    }])
+
+    const { setCustomReferralInviteCode } = await import('./referrals')
+    const result = await setCustomReferralInviteCode({ userId: 'user-1', code: 'new_code', now })
+
+    expect(result).toMatchObject({ success: false, reason: 'rate_limited' })
+  })
+
+  it('retires the previous custom code when replacing it after cooldown', async () => {
+    const now = new Date('2026-07-14T12:00:00.000Z')
+    selectQueue.push([{ id: 'user-1', usernameSlug: 'default-code' }])
+    selectQueue.push([{ id: 'r1' }, { id: 'r2' }, { id: 'r3' }])
+    selectQueue.push([{
+      id: 'current-code',
+      code: 'old_code',
+      createdAt: new Date('2026-07-01T12:00:00.000Z'),
+      status: 'active',
+    }])
+    selectQueue.push([])
+    selectQueue.push([])
+    updateQueue.push([])
+    insertReturningQueue.push([{ id: 'code-2', userId: 'user-1', code: 'new_code', createdAt: now }])
+
+    const { setCustomReferralInviteCode } = await import('./referrals')
+    const result = await setCustomReferralInviteCode({ userId: 'user-1', code: 'new_code', now })
+
+    expect(result).toMatchObject({ success: true, code: 'new_code' })
+    expect(updateSetValues).toContainEqual(expect.objectContaining({ status: 'retired', retiredAt: now }))
   })
 })

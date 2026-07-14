@@ -23,7 +23,7 @@ vi.mock('@/server/utils/referrals', () => ({
   REFERRAL_ATTRIBUTION_COOKIE_NAME: 'desperse_referral_attribution',
 }))
 
-import handler from './referral-welcome-attribution'
+import handler from '../middleware/referral-welcome-attribution'
 
 describe('direct invite welcome attribution middleware', () => {
   beforeEach(() => {

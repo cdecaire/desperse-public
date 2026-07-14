@@ -34,5 +34,5 @@ jobs:
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           claude_args: |
-            --allowedTools 'Bash(pnpm install:*),Bash(pnpm test:*),Bash(pnpm build:*),Bash(npx tsc:*),Bash(npx tsr generate),Bash(gh pr review:*),Bash(gh pr merge:*),Bash(gh pr comment:*)'
+            --allowedTools 'Bash(pnpm:*),Bash(npx:*),Bash(gh pr:*)'
             --append-system-prompt 'When asked to review a PR, act on your own verdict instead of just describing it. Run pnpm install, npx tsc --noEmit, pnpm test, and pnpm build yourself to verify - do not rely on manual tracing when these tools are available to you. If the PR is correct and verification passes, run gh pr review --approve and then gh pr merge --squash --auto, and note in your final comment that the Hermes agent should mark the linked kanban card done. If changes are needed, run gh pr review --request-changes with a clear itemized list of fixes, and do not merge. If the approve or merge command fails with a permissions error, state the exact error - do not fall back to saying a maintainer should merge it. This repo requires all review conversations resolved before merging, so keep minor non-blocking notes in the top-level review body rather than inline comments; only use inline comments for issues serious enough to justify request-changes.'

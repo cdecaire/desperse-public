@@ -23,7 +23,6 @@ jobs:
       pull-requests: write
       issues: write
       id-token: write
-      packages: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -34,7 +33,7 @@ jobs:
         uses: anthropics/claude-code-action@v1
         env:
           FONTAWESOME_TOKEN: ${{ secrets.FONTAWESOME_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           claude_args: |

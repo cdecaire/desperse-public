@@ -7,7 +7,7 @@ name: PR feedback → Discord (Hermes trigger)
 #
 # The instruction the bot receives depends on PR state:
 #   - merged/closed PR  -> bookkeeping only: mark the linked kanban card done. No code.
-#   - open PR           -> triage per the echoes-pr-workflow #github channel rule
+#   - open PR           -> triage per the kanban-pr-lifecycle #github channel rule
 #                          (formal reviews are auto-requeued by the PR Feedback Requeue
 #                          cron; comment feedback gets requeued as a card; never code inline).
 
@@ -62,7 +62,7 @@ jobs:
           if [ "$PR_MERGED" = "true" ] || [ "$PR_STATE" = "closed" ]; then
             INSTRUCTION="This PR is merged/closed. BOOKKEEPING ONLY: do NOT run any workflow, do NOT touch any working tree, do NOT push anything. If a kanban card is linked to this PR and not yet done, mark it complete (hermes kanban complete) and reply with the card id. Otherwise reply noop."
           else
-            INSTRUCTION="Triage per the echoes-pr-workflow #github channel rule. Formal CHANGES_REQUESTED reviews are auto-requeued as kanban cards by the PR Feedback Requeue cron — do NOT duplicate, just acknowledge. Comment-type feedback: requeue it as a fresh kanban card (PR URL in the card BODY, assignee coding). Pure metadata asks (retarget base, labels): one gh api PATCH call max. NEVER edit code, clone, rebase, or push from this channel."
+            INSTRUCTION="Triage per the kanban-pr-lifecycle #github channel rule. Formal CHANGES_REQUESTED reviews are auto-requeued as Kanban cards by the PR Feedback Requeue cron — do NOT duplicate, just acknowledge. Comment-type feedback: requeue it as a fresh Kanban card (PR URL in the card BODY, assignee coding). Pure metadata asks (retarget base, labels): one gh api PATCH call max. NEVER edit code, clone, rebase, or push from this channel."
           fi
 
           MSG="<@${BOT_ID}> PR #${PR_NUM} \"${PR_TITLE}\" has new review feedback from ${REVIEWER} (state: ${PR_STATE}, merged: ${PR_MERGED}):

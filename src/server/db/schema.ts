@@ -67,6 +67,8 @@ export const referralStateEnum = pgEnum('referral_state_enum', [
 
 export const referralAttributionSourceEnum = pgEnum('referral_attribution_source_enum', ['link', 'manual'])
 
+export const referralInviteCodeStatusEnum = pgEnum('referral_invite_code_status_enum', ['active', 'retired'])
+
 // Asset role enum for multi-asset posts
 export const assetRoleEnum = pgEnum('asset_role_enum', ['media', 'download']);
 
@@ -322,6 +324,30 @@ export const referralAttributionSessions = pgTable(
     referredUserIdIdx: index('referral_attribution_sessions_referred_user_id_idx').on(table.referredUserId),
     inviteCodeIdx: index('referral_attribution_sessions_invite_code_idx').on(table.inviteCode),
     expiresAtIdx: index('referral_attribution_sessions_expires_at_idx').on(table.expiresAt),
+  }),
+);
+
+// Custom invite codes are separate from the user's immutable system code
+// (usernameSlug). Retired rows remain reserved so old links cannot be claimed.
+export const referralInviteCodes = pgTable(
+  'referral_invite_codes',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    code: text('code').notNull(),
+    status: referralInviteCodeStatusEnum('status').notNull().default('active'),
+    retiredAt: timestamp('retired_at'),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    updatedAt: timestamp('updated_at').notNull().defaultNow(),
+  },
+  (table) => ({
+    codeLowerUniqueIdx: uniqueIndex('referral_invite_codes_code_lower_unique_idx').on(sql`lower(${table.code})`),
+    activeUserUniqueIdx: uniqueIndex('referral_invite_codes_active_user_unique_idx')
+      .on(table.userId)
+      .where(sql`${table.status} = 'active'`),
+    userIdIdx: index('referral_invite_codes_user_id_idx').on(table.userId),
   }),
 );
 

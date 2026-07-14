@@ -351,6 +351,13 @@
       "when": 1783870495399,
       "tag": "0049_breezy_kang",
       "breakpoints": true
+    },
+    {
+      "idx": 50,
+      "version": "7",
+      "when": 1784051478000,
+      "tag": "0050_referral_custom_invite_codes",
+      "breakpoints": true
     }
   ]
 }

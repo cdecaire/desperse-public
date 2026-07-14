@@ -1,5 +1,5 @@
 import { createHmac, timingSafeEqual } from 'node:crypto'
-import { and, desc, eq, lt, ne } from 'drizzle-orm'
+import { and, desc, eq, lt, ne, sql } from 'drizzle-orm'
 
 import { env } from '@/config/env'
 import { REFERRAL_SLOT_LIMIT } from '@/lib/referrals'
@@ -9,6 +9,7 @@ import {
   posts,
   referralAttributionSessions,
   referralEvents,
+  referralInviteCodes,
   referrals,
   users,
   follows,
@@ -17,6 +18,10 @@ import {
 const DAY_MS = 24 * 60 * 60 * 1000
 const ATTRIBUTION_TTL_DAYS = 30
 const PENDING_ACTIVATION_TTL_DAYS = 30
+const CUSTOM_CODE_UNLOCK_COUNT = 3
+const CUSTOM_CODE_CHANGE_COOLDOWN_DAYS = 7
+const CUSTOM_CODE_PATTERN = /^[a-z0-9_]{3,20}$/
+const BLOCKED_CUSTOM_CODE_TERMS = ['fuck', 'shit', 'bitch', 'cunt', 'nigger', 'nigga', 'faggot', 'retard'] as const
 
 export const REFERRAL_ATTRIBUTION_COOKIE_NAME = 'desperse_referral_attribution'
 export const REFERRAL_ATTRIBUTION_COOKIE_MAX_AGE_SECONDS = ATTRIBUTION_TTL_DAYS * 24 * 60 * 60
@@ -52,6 +57,29 @@ export function normalizeInviteCode(code: string): string {
   return code.trim().toLowerCase().replace(/^@+/, '')
 }
 
+export type CustomInviteCodeValidation =
+  | { valid: true; code: string }
+  | { valid: false; error: string; reason: 'format' | 'reserved' | 'profanity' }
+
+export function validateCustomInviteCode(rawCode: string): CustomInviteCodeValidation {
+  const code = normalizeInviteCode(rawCode)
+  if (!CUSTOM_CODE_PATTERN.test(code)) {
+    return { valid: false, reason: 'format', error: 'Use 3-20 letters, numbers, or underscores.' }
+  }
+
+  const reserved = new Set([
+    'desperse', 'desperseapp', 'admin', 'support', 'staff', 'moderator',
+    'official', 'security', 'help', 'api', 'auth', 'login', 'signup',
+    'settings', 'profile', 'invite', 'referral', 'system', 'root', 'test',
+    'solana', 'phantom', 'privy', 'vercel', 'github', 'discord',
+  ])
+  if (reserved.has(code)) return { valid: false, reason: 'reserved', error: 'That code is reserved.' }
+  if (BLOCKED_CUSTOM_CODE_TERMS.some((term) => code.includes(term))) {
+    return { valid: false, reason: 'profanity', error: 'That code is not allowed.' }
+  }
+  return { valid: true, code }
+}
+
 export function hasCompletedReferralProfile(user: { displayName: string | null; avatarUrl: string | null }): boolean {
   return Boolean(user.displayName?.trim() && user.avatarUrl?.trim())
 }
@@ -76,6 +104,21 @@ async function emitReferralEvent(input: {
 
 async function getReferrerByInviteCode(code: string) {
   const normalized = normalizeInviteCode(code)
+  const [customCodeOwner] = await db
+    .select({
+      id: users.id,
+      slug: users.usernameSlug,
+      displayName: users.displayName,
+      avatarUrl: users.avatarUrl,
+      bio: users.bio,
+    })
+    .from(referralInviteCodes)
+    .innerJoin(users, eq(referralInviteCodes.userId, users.id))
+    .where(and(sql`lower(${referralInviteCodes.code}) = ${normalized}`, eq(referralInviteCodes.status, 'active')))
+    .limit(1)
+
+  if (customCodeOwner) return customCodeOwner
+
   const [referrer] = await db
     .select({
       id: users.id,
@@ -89,6 +132,120 @@ async function getReferrerByInviteCode(code: string) {
     .limit(1)
 
   return referrer ?? null
+}
+
+function customCodeAlternatives(code: string, userId: string): string[] {
+  const suffix = userId.replace(/[^a-z0-9]/gi, '').slice(0, 4).toLowerCase() || '1'
+  const base = code.slice(0, Math.max(3, 20 - suffix.length - 1))
+  return [`${base}_${suffix}`, `${code.slice(0, 18)}_1`].filter((value, index, values) => values.indexOf(value) === index)
+}
+
+export async function setCustomReferralInviteCode(input: { userId: string; code: string; now?: Date }) {
+  const validation = validateCustomInviteCode(input.code)
+  if (!validation.valid) return { success: false as const, ...validation }
+
+  const code = validation.code
+  const now = input.now ?? new Date()
+  const cooldownStart = new Date(now.getTime() - CUSTOM_CODE_CHANGE_COOLDOWN_DAYS * DAY_MS)
+
+  const [owner] = await db
+    .select({ id: users.id, usernameSlug: users.usernameSlug })
+    .from(users)
+    .where(eq(users.id, input.userId))
+    .limit(1)
+  if (!owner) return { success: false as const, reason: 'not_found' as const, error: 'User not found.' }
+
+  const activated = await db
+    .select({ id: referrals.id })
+    .from(referrals)
+    .where(and(eq(referrals.referrerUserId, input.userId), eq(referrals.state, 'activated')))
+    .limit(CUSTOM_CODE_UNLOCK_COUNT)
+  if (activated.length < CUSTOM_CODE_UNLOCK_COUNT) {
+    return {
+      success: false as const,
+      reason: 'locked' as const,
+      error: `Custom invite codes unlock at ${CUSTOM_CODE_UNLOCK_COUNT} activated referrals.`,
+      activatedCount: activated.length,
+      requiredCount: CUSTOM_CODE_UNLOCK_COUNT,
+    }
+  }
+
+  const [activeCode] = await db
+    .select()
+    .from(referralInviteCodes)
+    .where(and(eq(referralInviteCodes.userId, input.userId), eq(referralInviteCodes.status, 'active')))
+    .limit(1)
+  if (activeCode?.createdAt && activeCode.createdAt > cooldownStart) {
+    const nextChangeAt = new Date(activeCode.createdAt.getTime() + CUSTOM_CODE_CHANGE_COOLDOWN_DAYS * DAY_MS)
+    return {
+      success: false as const,
+      reason: 'rate_limited' as const,
+      error: `You can change your custom code again on ${nextChangeAt.toISOString()}.`,
+      nextChangeAt,
+    }
+  }
+
+  if (code === owner.usernameSlug.toLowerCase()) {
+    return { success: false as const, reason: 'collision' as const, error: 'That is already your default invite code.' }
+  }
+
+  const [codeCollision] = await db
+    .select({ id: referralInviteCodes.id })
+    .from(referralInviteCodes)
+    .where(sql`lower(${referralInviteCodes.code}) = ${code}`)
+    .limit(1)
+  const [usernameCollision] = await db
+    .select({ id: users.id })
+    .from(users)
+    .where(eq(users.usernameSlug, code))
+    .limit(1)
+  if (codeCollision || usernameCollision) {
+    return {
+      success: false as const,
+      reason: 'collision' as const,
+      error: 'That invite code is already in use.',
+      alternatives: customCodeAlternatives(code, input.userId),
+    }
+  }
+
+  try {
+    if (activeCode) {
+      const retired = await db
+        .update(referralInviteCodes)
+        .set({ status: 'retired', retiredAt: now, updatedAt: now })
+        .where(and(eq(referralInviteCodes.id, activeCode.id), eq(referralInviteCodes.status, 'active')))
+        .returning({ id: referralInviteCodes.id })
+      if (retired.length === 0) {
+        return {
+          success: false as const,
+          reason: 'conflict' as const,
+          error: 'Your invite code changed in another request. Refresh and try again.',
+        }
+      }
+    }
+
+    const [created] = await db
+      .insert(referralInviteCodes)
+      .values({ userId: input.userId, code, status: 'active', updatedAt: now })
+      .returning()
+
+    await emitReferralEvent({
+      eventName: activeCode ? 'referral_custom_code_changed' : 'referral_custom_code_created',
+      referrerUserId: input.userId,
+      payload: { code, retiredCode: activeCode?.code ?? null },
+    })
+    return { success: true as const, code: created.code, defaultCode: owner.usernameSlug, changedAt: created.createdAt }
+  } catch (error) {
+    if (isUniqueViolation(error)) {
+      return {
+        success: false as const,
+        reason: 'collision' as const,
+        error: 'That invite code was just claimed. Try another.',
+        alternatives: customCodeAlternatives(code, input.userId),
+      }
+    }
+    throw error
+  }
 }
 
 export async function getActiveReferralAttributionSessionFromSignedCookie(cookieValue: string | null | undefined) {
@@ -459,6 +616,12 @@ export async function getReferralOwnerDashboard(userId: string) {
     return null
   }
 
+  const [activeCustomCode] = await db
+    .select({ code: referralInviteCodes.code, createdAt: referralInviteCodes.createdAt })
+    .from(referralInviteCodes)
+    .where(and(eq(referralInviteCodes.userId, userId), eq(referralInviteCodes.status, 'active')))
+    .limit(1)
+
   const fetchReferrals = () => db
     .select({
       id: referrals.id,
@@ -516,8 +679,11 @@ export async function getReferralOwnerDashboard(userId: string) {
       bio: owner.bio,
       usernameSlug: owner.usernameSlug,
     },
-    inviteCode: owner.usernameSlug,
-    invitePath: `/i/${owner.usernameSlug}`,
+    inviteCode: activeCustomCode?.code ?? owner.usernameSlug,
+    invitePath: `/i/${activeCustomCode?.code ?? owner.usernameSlug}`,
+    defaultInviteCode: owner.usernameSlug,
+    customInviteCode: activeCustomCode?.code ?? null,
+    customCodeUnlocked: activatedCount >= CUSTOM_CODE_UNLOCK_COUNT,
     activatedCount,
     pendingCount,
     totalSlots: REFERRAL_SLOT_LIMIT,

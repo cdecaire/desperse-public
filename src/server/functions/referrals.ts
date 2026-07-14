@@ -2,7 +2,11 @@ import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
 
 import { withAuth } from '@/server/auth'
-import { getReferralStatusForReferredUser, getReferrerInvitePreview } from '@/server/utils/referrals'
+import {
+  getReferralStatusForReferredUser,
+  getReferrerInvitePreview,
+  setCustomReferralInviteCode,
+} from '@/server/utils/referrals'
 
 const inviteCodeSchema = z.object({
   code: z.string().min(1),
@@ -69,5 +73,20 @@ export const getReferralOwnerDashboard = createServerFn({
       success: false as const,
       error: error instanceof Error ? error.message : 'Failed to load referral dashboard',
     }
+  }
+})
+
+const customInviteCodeSchema = z.object({
+  code: z.string().min(1).max(64),
+})
+
+export const updateMyCustomInviteCode = createServerFn({ method: 'POST' }).handler(async (input: unknown) => {
+  try {
+    const result = await withAuth(customInviteCodeSchema, input)
+    if (!result) return { success: false as const, error: 'Authentication required' }
+    return await setCustomReferralInviteCode({ userId: result.auth.userId, code: result.input.code })
+  } catch (error) {
+    console.error('[updateMyCustomInviteCode] Error:', error)
+    return { success: false as const, error: error instanceof Error ? error.message : 'Failed to update invite code' }
   }
 })

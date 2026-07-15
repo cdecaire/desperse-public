@@ -167,7 +167,7 @@ export function GalleryGrid({
       {/* Load more sentinel — keep raw div: ref must attach to the observed DOM node */}
       {onLoadMore && (
         <div ref={loadMoreRef} className="py-8 flex justify-center">
-          {isFetchingNextPage && <LoadingSpinner size="md" />}
+          {isFetchingNextPage && <LoadingSpinner size="sm" />}
         </div>
       )}
     </>

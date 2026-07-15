@@ -23,6 +23,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { shouldShowFirstPostCta } from '@/lib/onboarding'
+import { publicProfileQueryOptions } from '@/lib/profile-query'
 import {
   useProfileUser,
   useFollowStats,
@@ -61,13 +62,12 @@ export const Route = createFileRoute('/profile/$slug')({
     }
     return {}
   },
-  loader: async ({ params }) => {
-    try {
-      const meta = await (fetchProfileMeta as any)({ data: { slug: params.slug } })
-      return { meta }
-    } catch {
-      return { meta: null }
-    }
+  loader: async ({ params, context }) => {
+    const [meta] = await Promise.all([
+      (fetchProfileMeta as any)({ data: { slug: params.slug } }).catch(() => null),
+      context.queryClient.ensureQueryData(publicProfileQueryOptions(params.slug)).catch(() => null),
+    ])
+    return { meta }
   },
   head: ({ loaderData, params }) => {
     const meta = loaderData?.meta
@@ -210,6 +210,7 @@ function ProfilePage() {
   const {
     data: profileData,
     isLoading: isUserLoading,
+    isPlaceholderData: isProfileViewerPending,
     error: userError,
   } = useProfileUser(slug)
   
@@ -482,7 +483,7 @@ function ProfilePage() {
             )}
 
             {/* Profile Actions - Other user's profile */}
-            {!isAuthInitializing && !isCurrentUserLoading && !isOwnProfile && isAuthenticated && (
+            {!isAuthInitializing && !isCurrentUserLoading && !isProfileViewerPending && !isOwnProfile && isAuthenticated && (
               <Row gap={0.5} align="center" className="absolute bottom-0 right-0">
                 <TipButton
                   creatorId={profileUser.id}

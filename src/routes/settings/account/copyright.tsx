@@ -12,9 +12,9 @@ import { type LicensePreset } from '@/server/functions/creatorSettings'
 import type { CreatorSettingsInput } from '@/server/functions/creatorSettings'
 import { Button } from '@/components/ui/button'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
+import { ContentLoadingSkeleton } from '@/components/shared/ContentLoadingSkeleton'
 import { PageHeader } from '@/components/shared/PageHeader'
 import { CopyrightFields, SUGGESTED_STATEMENTS } from '@/components/forms/CopyrightFields'
-import { Row } from '@cdecaire/sable/layout'
 import {
 	Form,
 	Fieldset,
@@ -43,9 +43,7 @@ function CopyrightSettingsPage() {
 			/>
 
 			{isLoading ? (
-				<Row justify="center" className="py-4">
-					<LoadingSpinner />
-				</Row>
+				<ContentLoadingSkeleton label="Loading copyright settings" rows={4} variant="form" />
 			) : !user ? (
 				<p className="text-body-sm text-muted-foreground py-2">
 					Sign in to manage copyright settings

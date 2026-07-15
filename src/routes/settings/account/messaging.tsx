@@ -6,7 +6,7 @@ import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Icon } from '@/components/ui/icon'
-import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
+import { Skeleton } from '@/components/ui/skeleton'
 import { PageHeader } from '@/components/shared/PageHeader'
 import { Stack, Row } from '@cdecaire/sable/layout'
 import {
@@ -59,7 +59,7 @@ function MessagingSettingsPage() {
             </div>
           </Row>
           {isLoading ? (
-            <LoadingSpinner className="w-5 h-5" />
+            <Skeleton aria-label="Loading messaging preference" className="h-6 w-10 rounded-full" role="status" />
           ) : !user ? (
             <span className="text-caption text-muted-foreground">Sign in required</span>
           ) : (

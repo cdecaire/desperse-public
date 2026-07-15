@@ -9,7 +9,7 @@ import { Row, Stack } from '@cdecaire/sable/layout'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Icon } from '@/components/ui/icon'
-import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
+import { ContentLoadingSkeleton } from '@/components/shared/ContentLoadingSkeleton'
 import { PageHeader } from '@/components/shared/PageHeader'
 import { usePreferences } from '@/hooks/usePreferences'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
@@ -42,9 +42,7 @@ function PrivacyPage() {
         </FieldsetDescription>
         <FieldsetContent>
           {isLoading ? (
-            <Row justify="center" className="py-4">
-              <LoadingSpinner />
-            </Row>
+            <ContentLoadingSkeleton label="Loading privacy preferences" rows={2} variant="compact" />
           ) : !user ? (
             <p className="py-2 text-body-sm text-muted-foreground">
               Sign in to manage privacy preferences.

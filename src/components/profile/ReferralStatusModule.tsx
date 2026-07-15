@@ -17,7 +17,7 @@ export function ReferralStatusModule({
     <div
       className={`mx-4 mt-4 rounded-xl border p-4 ${
         status.hasAccent
-          ? 'border-primary/40 bg-primary/5 shadow-[inset_3px_0_0_var(--primary)]'
+          ? 'border-primary/40 bg-primary/5'
           : 'border-border bg-card/50'
       }`}
       data-testid="referral-status-module"

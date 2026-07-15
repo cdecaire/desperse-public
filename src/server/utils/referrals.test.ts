@@ -318,4 +318,80 @@ describe('referrals utils', () => {
     expect(result).toMatchObject({ success: false, reason: 'conflict' })
     expect(insertValues).toHaveLength(0)
   })
+
+  it('rejects a referral and writes an actor-attributed moderation event', async () => {
+    const referral = {
+      id: 'referral-1',
+      referrerUserId: 'referrer-1',
+      referredUserId: 'referred-1',
+      attributionSessionId: 'session-1',
+      inviteCode: 'carl',
+      state: 'pending_activation',
+      rejectedAt: null,
+      revokedAt: null,
+    }
+    selectQueue.push([referral])
+    updateQueue.push([{ ...referral, state: 'rejected', stateReason: 'duplicate account' }])
+
+    const { moderateReferral } = await import('./referrals')
+    const result = await moderateReferral({
+      referralId: referral.id,
+      actorUserId: 'moderator-1',
+      action: 'reject',
+      reason: 'duplicate account',
+    })
+
+    expect(result).toMatchObject({ success: true, referral: { state: 'rejected' } })
+    expect(updateSetValues).toContainEqual(expect.objectContaining({ state: 'rejected', stateReason: 'duplicate account' }))
+    expect(insertValues).toContainEqual(expect.objectContaining({
+      eventName: 'referral_moderation_action',
+      payload: expect.objectContaining({ action: 'reject', actorUserId: 'moderator-1' }),
+    }))
+  })
+
+  it('excludes a referral from leaderboards without changing referral state', async () => {
+    const referral = {
+      id: 'referral-1',
+      referrerUserId: 'referrer-1',
+      referredUserId: 'referred-1',
+      attributionSessionId: 'session-1',
+      inviteCode: 'carl',
+      state: 'activated',
+    }
+    selectQueue.push([referral])
+
+    const { moderateReferral } = await import('./referrals')
+    const result = await moderateReferral({
+      referralId: referral.id,
+      actorUserId: 'moderator-1',
+      action: 'exclude',
+      reason: 'under review',
+    })
+
+    expect(result).toMatchObject({ success: true, referral: { state: 'activated' } })
+    expect(updateSetValues).toHaveLength(0)
+    expect(insertValues).toContainEqual(expect.objectContaining({
+      eventName: 'referral_moderation_action',
+      payload: expect.objectContaining({ action: 'exclude', previousState: 'activated', nextState: 'activated' }),
+    }))
+  })
+
+  it('retires an active custom code and records the moderation reason', async () => {
+    const code = { id: 'code-1', userId: 'referrer-1', code: 'impersonator', status: 'active' }
+    selectQueue.push([code])
+    updateQueue.push([{ ...code, status: 'retired' }])
+
+    const { retireReferralInviteCode } = await import('./referrals')
+    const result = await retireReferralInviteCode({
+      codeId: code.id,
+      actorUserId: 'moderator-1',
+      reason: 'impersonation',
+    })
+
+    expect(result).toMatchObject({ success: true, changed: true, code: { status: 'retired' } })
+    expect(insertValues).toContainEqual(expect.objectContaining({
+      eventName: 'referral_moderation_action',
+      payload: expect.objectContaining({ action: 'retire_code', reason: 'impersonation' }),
+    }))
+  })
 })

@@ -12,6 +12,14 @@ interface AdminNavProps {
 
 const adminNavItems = [
   {
+    path: '/admin/referrals',
+    label: 'Referral Moderation',
+    description: 'Review referral state, exclusions, and invite codes',
+    icon: 'fa-user-group',
+    badgeKey: null,
+    disabled: false,
+  },
+  {
     path: '/admin/moderation',
     label: 'Content Moderation',
     description: 'Review reported content and take action',
@@ -45,7 +53,7 @@ export function AdminNav({ variant = 'desktop' }: AdminNavProps) {
           {adminNavItems.map((item) => {
             const isActive =
               location.pathname === item.path || location.pathname.startsWith(`${item.path}/`)
-            const badgeCount = notificationCounters?.[item.badgeKey] ?? 0
+            const badgeCount = item.badgeKey ? notificationCounters?.[item.badgeKey] ?? 0 : 0
 
             return (
               <SideNavItem
@@ -75,7 +83,7 @@ export function AdminNav({ variant = 'desktop' }: AdminNavProps) {
           {adminNavItems.map((item) => {
             const isActive =
               location.pathname === item.path || location.pathname.startsWith(`${item.path}/`)
-            const badgeCount = notificationCounters?.[item.badgeKey] ?? 0
+            const badgeCount = item.badgeKey ? notificationCounters?.[item.badgeKey] ?? 0 : 0
 
             return (
               <Link

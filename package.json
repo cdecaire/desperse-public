@@ -12,6 +12,7 @@
     "test": "vitest run",
     "routes:generate": "tsr generate",
     "db:generate": "drizzle-kit generate",
+    "db:check": "tsx --env-file=.env.local scripts/db-check.ts",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",

@@ -11,7 +11,7 @@ import { z } from 'zod'
 import { withOptionalAuth } from '@/server/auth'
 import { excludeDevPostsForUser } from '@/server/utils/dev-posts'
 import { getBlockedUserIdSet } from '@/server/utils/blocks'
-import { getTrendingPostsData, getNewPostsData, getEndingSoonPostsData } from '@/server/utils/explore-feeds'
+import { getTrendingPostsData, getNewPostsData, getMintingNowPostsData } from '@/server/utils/explore-feeds'
 
 const explorePostTypeSchema = z.enum(['post', 'collectible', 'edition'])
 
@@ -40,6 +40,10 @@ const cursorFeedSchema = z.object({
   limit: z.number().int().min(1).max(50).default(20),
   type: explorePostTypeSchema.optional(),
   category: z.string().max(32).optional(), // Optional category filter (slug or name)
+})
+
+const mintingNowFeedSchema = cursorFeedSchema.extend({
+  cursor: z.string().max(512).nullish(),
 })
 
 // Schema for search query
@@ -237,18 +241,18 @@ export const getNewPosts = createServerFn({
 })
 
 /**
- * Get editions minting now (live mint window, not sold out),
- * ordered soonest-ending first
+ * Get paid editions that are currently available to mint, including untimed
+ * editions and editions with a live mint window.
  */
-export const getEndingSoonPosts = createServerFn({
+export const getMintingNowPosts = createServerFn({
   method: 'GET',
 // @ts-expect-error -- TanStack Start dual-context type inference
 }).handler(async (input: unknown) => {
   try {
-    const authResult = await withOptionalAuth(cursorFeedSchema, input)
+    const authResult = await withOptionalAuth(mintingNowFeedSchema, input)
     const { cursor, limit, type, category } = authResult.input
 
-    const result = await getEndingSoonPostsData(authResult.auth?.userId, cursor ?? null, limit, type, category)
+    const result = await getMintingNowPostsData(authResult.auth?.userId, cursor ?? null, limit, type, category)
 
     return {
       success: true,
@@ -256,7 +260,7 @@ export const getEndingSoonPosts = createServerFn({
       ...result,
     }
   } catch (error) {
-    console.error('[getEndingSoonPosts] Failed:', error)
+    console.error('[getMintingNowPosts] Failed:', error)
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Failed to fetch live mints.',

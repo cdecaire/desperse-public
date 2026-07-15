@@ -187,7 +187,7 @@ export const posts = pgTable(
       table.isHidden,
       table.createdAt,
     ),
-    // Minting Now feed: WHERE type='edition' AND mint_window_end > now() ORDER BY mint_window_end
+    // Timed-edition availability checks; Minting Now also includes untimed paid editions.
     mintWindowEndIdx: index('posts_mint_window_end_idx').on(
       table.type,
       table.mintWindowEnd,

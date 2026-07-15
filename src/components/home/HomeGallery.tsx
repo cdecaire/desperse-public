@@ -10,7 +10,7 @@ import { useQuery } from '@tanstack/react-query'
 import { usePrivy } from '@privy-io/react-auth'
 import { Reveal } from '@cdecaire/sable'
 import { Region } from '@cdecaire/sable/layout'
-import { getTrendingPosts, getNewPosts, getEndingSoonPosts } from '@/server/functions/explore'
+import { getTrendingPosts, getNewPosts, getMintingNowPosts } from '@/server/functions/explore'
 import { toGalleryPost } from '@/components/gallery/mapPost'
 import { Button } from '@/components/ui/button'
 import { CuratedRowPreview } from './CuratedRowPreview'
@@ -46,7 +46,7 @@ export function HomeGallery() {
   const { data: mintingData, isLoading: mintingLoading } = useQuery({
     queryKey: ['home-minting-preview'],
     queryFn: async () => {
-      const result = await getEndingSoonPosts({
+      const result = await getMintingNowPosts({
         data: { limit: PREVIEW_LIMIT },
       } as never)
       if (!result.success) throw new Error(result.error || 'Failed to fetch live mints')

@@ -6,7 +6,7 @@
 
 import { db } from '@/server/db'
 import { posts, users, collections, purchases, likes, comments, postAssets } from '@/server/db/schema'
-import { eq, and, desc, asc, sql, count, gt, lt, lte, gte, notInArray, isNotNull, isNull, or, inArray } from 'drizzle-orm'
+import { eq, and, desc, sql, count, gt, lt, lte, gte, notInArray, isNotNull, isNull, or, inArray } from 'drizzle-orm'
 import { excludeDevPostsForUser } from '@/server/utils/dev-posts'
 import { getBlockedUserIdSet } from '@/server/utils/blocks'
 import { PRESET_CATEGORIES, normalizeCategoryKey, categoryToSlug } from '@/constants/categories'
@@ -73,8 +73,55 @@ export type ExploreFeedPage = {
 export type ExploreCursorFeedPage = {
   posts: HydratedExplorePost[]
   hasMore: boolean
-  /** ISO datetime cursor for the next page, null when exhausted */
+  /** Opaque cursor for the next page, null when exhausted */
   nextCursor: string | null
+}
+
+type MintingNowCursor = {
+  purchases: number
+  interactions: number
+  createdAt: string
+  id: string
+}
+
+export function encodeMintingNowCursor(cursor: MintingNowCursor): string {
+  return Buffer.from(JSON.stringify(cursor)).toString('base64url')
+}
+
+export function decodeMintingNowCursor(cursor: string): MintingNowCursor | null {
+  try {
+    const parsed = JSON.parse(Buffer.from(cursor, 'base64url').toString('utf8')) as Partial<MintingNowCursor>
+    if (
+      !Number.isInteger(parsed.purchases) ||
+      !Number.isInteger(parsed.interactions) ||
+      typeof parsed.createdAt !== 'string' ||
+      Number.isNaN(Date.parse(parsed.createdAt)) ||
+      typeof parsed.id !== 'string' ||
+      parsed.id.length === 0
+    ) {
+      return null
+    }
+
+    return parsed as MintingNowCursor
+  } catch {
+    return null
+  }
+}
+
+/**
+ * An edition belongs in Minting Now whenever it can be purchased right now:
+ * it is paid, its optional mint window is open, and it still has supply.
+ * Untimed editions have null window bounds and remain eligible.
+ */
+export function buildMintingNowAvailabilityCondition() {
+  return and(
+    eq(posts.type, 'edition'),
+    isNotNull(posts.price),
+    isNotNull(posts.currency),
+    or(isNull(posts.mintWindowStart), lte(posts.mintWindowStart, sql`now()`)),
+    or(isNull(posts.mintWindowEnd), gt(posts.mintWindowEnd, sql`now()`)),
+    or(isNull(posts.maxSupply), lt(posts.currentSupply, posts.maxSupply))
+  )
 }
 
 /** Engagement-count subqueries joined by every explore feed query */
@@ -264,13 +311,18 @@ export async function hydratePostsWithAssetData(
   return finalPosts.map(p => {
     const isHidden = p.post.isHidden ?? false
     const assets = postAssetsMap[p.post.id]
+    const purchaseCount = Number(p.purchaseCount) || 0
     return {
       ...p.post,
       user: p.user,
+      // posts.currentSupply reserves capacity before fulfillment and can include
+      // in-flight purchases. Gallery supply should match the detail page's
+      // confirmed-mint count; availability checks still use the reservation value.
+      currentSupply: p.post.type === 'edition' ? purchaseCount : p.post.currentSupply,
       likeCount: Number(p.likeCount) || 0,
       commentCount: Number(p.commentCount) || 0,
       collectCount: Number(p.collectCount) || 0,
-      purchaseCount: Number(p.purchaseCount) || 0,
+      purchaseCount,
       trendingScore: Number(p.trendingScore) || 0,
       ...(p.post.type === 'collectible' && collectibleAssetIds[p.post.id]
         ? { collectibleAssetId: collectibleAssetIds[p.post.id] }
@@ -434,12 +486,12 @@ export async function getNewPostsData(
 }
 
 /**
- * Minting Now: editions with a live mint window (started, not ended, not
- * sold out), ordered soonest-ending first.
- * Cursor-paginated on mintWindowEnd (ISO datetime, ascending) — rows drop
- * out of this feed as windows close, so offsets would skip posts.
+ * Minting Now: paid editions that are currently available to purchase,
+ * including both untimed editions and editions with a live mint window.
+ * Editions with more confirmed purchases rank first, then editions with more
+ * likes and comments. Creation time and post ID provide stable tie-breakers.
  */
-export async function getEndingSoonPostsData(
+export async function getMintingNowPostsData(
   authUserId: string | undefined,
   cursor: string | null,
   limit: number,
@@ -456,6 +508,34 @@ export async function getEndingSoonPostsData(
 
   const { likeCounts, commentCounts, collectCounts, purchaseCounts } = buildEngagementCountSubqueries()
   const baseConditions = await buildBaseConditions(authUserId, undefined, category)
+  const purchaseRank = sql<number>`COALESCE(${purchaseCounts.count}, 0)`
+  const interactionRank = sql<number>`COALESCE(${likeCounts.count}, 0) + COALESCE(${commentCounts.count}, 0)`
+  const decodedCursor = cursor ? decodeMintingNowCursor(cursor) : null
+
+  if (cursor && !decodedCursor) {
+    throw new Error('Invalid Minting Now cursor.')
+  }
+
+  const cursorCondition = decodedCursor
+    ? or(
+        lt(purchaseRank, decodedCursor.purchases),
+        and(
+          eq(purchaseRank, decodedCursor.purchases),
+          lt(interactionRank, decodedCursor.interactions)
+        ),
+        and(
+          eq(purchaseRank, decodedCursor.purchases),
+          eq(interactionRank, decodedCursor.interactions),
+          lt(posts.createdAt, new Date(decodedCursor.createdAt))
+        ),
+        and(
+          eq(purchaseRank, decodedCursor.purchases),
+          eq(interactionRank, decodedCursor.interactions),
+          eq(posts.createdAt, new Date(decodedCursor.createdAt)),
+          lt(posts.id, decodedCursor.id)
+        )
+      )
+    : undefined
 
   const rows = await db
     .select({
@@ -469,8 +549,9 @@ export async function getEndingSoonPostsData(
       likeCount: sql<number>`COALESCE(${likeCounts.count}, 0)`.as('like_count'),
       commentCount: sql<number>`COALESCE(${commentCounts.count}, 0)`.as('comment_count'),
       collectCount: sql<number>`COALESCE(${collectCounts.count}, 0)`.as('collect_count'),
-      purchaseCount: sql<number>`COALESCE(${purchaseCounts.count}, 0)`.as('purchase_count'),
+      purchaseCount: purchaseRank.as('purchase_count'),
       trendingScore: sql<number>`0`.as('trending_score'),
+      interactionCount: interactionRank.as('interaction_count'),
     })
     .from(posts)
     .innerJoin(users, eq(posts.userId, users.id))
@@ -481,15 +562,16 @@ export async function getEndingSoonPostsData(
     .where(
       and(
         ...baseConditions,
-        eq(posts.type, 'edition'),
-        isNotNull(posts.mintWindowEnd),
-        gt(posts.mintWindowEnd, sql`now()`),
-        or(isNull(posts.mintWindowStart), lte(posts.mintWindowStart, sql`now()`)),
-        or(isNull(posts.maxSupply), lt(posts.currentSupply, posts.maxSupply)),
-        ...(cursor ? [gt(posts.mintWindowEnd, new Date(cursor))] : [])
+        buildMintingNowAvailabilityCondition(),
+        cursorCondition
       )
     )
-    .orderBy(asc(posts.mintWindowEnd))
+    .orderBy(
+      desc(purchaseRank),
+      desc(interactionRank),
+      desc(posts.createdAt),
+      desc(posts.id)
+    )
     .limit(limit + 1)
 
   const hasMore = rows.length > limit
@@ -500,8 +582,13 @@ export async function getEndingSoonPostsData(
   return {
     posts: hydrated,
     hasMore,
-    nextCursor: hasMore && lastRow?.post.mintWindowEnd
-      ? lastRow.post.mintWindowEnd.toISOString()
+    nextCursor: hasMore && lastRow
+      ? encodeMintingNowCursor({
+          purchases: Number(lastRow.purchaseCount),
+          interactions: Number(lastRow.interactionCount),
+          createdAt: lastRow.post.createdAt.toISOString(),
+          id: lastRow.post.id,
+        })
       : null,
   }
 }

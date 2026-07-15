@@ -1,0 +1,17 @@
+diff --git a/dist/runtime/internal/vite/node-runner.mjs b/dist/runtime/internal/vite/node-runner.mjs
+index b3de514..7814911 100644
+--- a/dist/runtime/internal/vite/node-runner.mjs
++++ b/dist/runtime/internal/vite/node-runner.mjs
+@@ -58,8 +58,10 @@ class EnvRunner {
+     if (this.entryError) {
+       return renderError(req, this.entryError);
+     }
+-    for (let i = 0; i < 5 && !(this.entry || this.entryError); i++) {
+-      await new Promise((r) => setTimeout(r, 100 * Math.pow(2, i)));
++    // Cold imports of large server graphs can exceed the original ~3.1s window.
++    // Poll for up to 30s, returning immediately once the entry settles.
++    for (let i = 0; i < 600 && !(this.entry || this.entryError); i++) {
++      await new Promise((r) => setTimeout(r, 50));
+     }
+     if (this.entryError) {
+       return renderError(req, this.entryError);

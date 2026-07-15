@@ -465,6 +465,139 @@ export function profileTemplate(
 	)
 }
 
+// ─── Invite OG Template ──────────────────────────────────────
+
+export interface InviteOgMeta {
+	displayName: string
+	slug: string | null
+}
+
+export function inviteTemplate(
+	meta: InviteOgMeta,
+	artDataUri: string | null,
+	avatarDataUri: string | null,
+) {
+	const initials = meta.displayName
+		.split(/\s+/)
+		.map((word) => word[0])
+		.slice(0, 2)
+		.join("")
+		.toUpperCase()
+
+	return (
+		<div
+			style={{
+				display: "flex",
+				width: OG_WIDTH,
+				height: OG_HEIGHT,
+				backgroundColor: COLORS.bg,
+				fontFamily: "Figtree",
+				position: "relative",
+				overflow: "hidden",
+			}}
+		>
+			<DotPattern />
+			<AccentBar color={COLORS.accent} colorEnd={COLORS.accentLight} />
+
+			{artDataUri ? (
+				<div
+					style={{
+						display: "flex",
+						position: "absolute",
+						right: 0,
+						top: 0,
+						width: 520,
+						height: OG_HEIGHT,
+					}}
+				>
+					<img
+						src={artDataUri}
+						width={520}
+						height={OG_HEIGHT}
+						style={{ width: "100%", height: "100%", objectFit: "cover" }}
+					/>
+					<div
+						style={{
+							display: "flex",
+							position: "absolute",
+							inset: 0,
+							background: `linear-gradient(to right, ${COLORS.bg}, ${COLORS.bg}10 55%, ${COLORS.bg}25)`,
+						}}
+					/>
+				</div>
+			) : null}
+
+			<div
+				style={{
+					display: "flex",
+					flexDirection: "column",
+					justifyContent: "space-between",
+					padding: "48px 56px 52px",
+					width: artDataUri ? 760 : "100%",
+					height: "100%",
+					position: "relative",
+					zIndex: 1,
+				}}
+			>
+				<div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+					<DesperseLogoMark size={44} color="#ffffff" />
+					<span style={{ fontSize: 36, fontWeight: 800, color: COLORS.text }}>Desperse</span>
+				</div>
+
+				<div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+					<div style={{ display: "flex", alignItems: "center", gap: 18 }}>
+						{avatarDataUri ? (
+							<img
+								src={avatarDataUri}
+								width={88}
+								height={88}
+								style={{ borderRadius: 44, objectFit: "cover", border: `3px solid ${COLORS.accentLight}` }}
+							/>
+						) : (
+							<div
+								style={{
+									display: "flex",
+									alignItems: "center",
+									justifyContent: "center",
+									width: 88,
+									height: 88,
+									borderRadius: 44,
+									backgroundColor: COLORS.accent,
+									fontSize: 34,
+									fontWeight: 700,
+									color: COLORS.text,
+								}}
+							>
+								{initials}
+							</div>
+						)}
+						<div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+							<span style={{ fontSize: 26, color: COLORS.textMuted }}>You’re invited by</span>
+							<span style={{ fontSize: 38, fontWeight: 700, color: COLORS.text }}>{meta.displayName}</span>
+						</div>
+					</div>
+
+					<div
+						style={{
+							display: "flex",
+							fontSize: 68,
+							fontWeight: 800,
+							lineHeight: 1.05,
+							letterSpacing: "-0.035em",
+							color: COLORS.text,
+							maxWidth: 670,
+						}}
+					>
+						Join the creative network.
+					</div>
+				</div>
+
+				<Watermark />
+			</div>
+		</div>
+	)
+}
+
 // ─── Default OG Template ─────────────────────────────────────
 // Mirrors the landing page hero: dot pattern, stacked tagline, left-aligned
 

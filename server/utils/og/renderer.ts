@@ -72,6 +72,7 @@ export async function renderOgImage(
 export async function fetchImageAsDataUri(
 	url: string,
 	timeoutMs = 3000,
+	requireImageContentType = false,
 ): Promise<string | null> {
 	try {
 		const controller = new AbortController()
@@ -81,6 +82,7 @@ export async function fetchImageAsDataUri(
 		if (!res.ok) return null
 		const buf = await res.arrayBuffer()
 		const contentType = res.headers.get("content-type") || "image/png"
+		if (requireImageContentType && !contentType.toLowerCase().startsWith("image/")) return null
 		return `data:${contentType};base64,${Buffer.from(buf).toString("base64")}`
 	} catch {
 		return null

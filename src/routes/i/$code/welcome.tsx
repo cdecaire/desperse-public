@@ -30,8 +30,8 @@ export const Route = createFileRoute('/i/$code/welcome')({
     const name = referrer?.displayName?.trim() || referrer?.slug
     const title = name ? `${name} invited you to Desperse` : 'Join Desperse'
     const description = referrer?.bio?.trim() || 'Publish, discover, and collect creative work on Solana.'
-    const ogImage = referrer?.slug
-      ? `${BASE_URL}/api/og/profile/${referrer.slug}`
+    const ogImage = referrer
+      ? `${BASE_URL}/api/og/invite/${encodeURIComponent(params.code)}`
       : `${BASE_URL}/api/og/default`
     const url = `${BASE_URL}/i/${params.code}`
 

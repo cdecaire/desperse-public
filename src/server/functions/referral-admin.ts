@@ -5,22 +5,20 @@ import { withAuth } from '@/server/auth'
 import { requireModerator } from '@/server/utils/auth-helpers'
 import {
   getReferralInviteCodesForModeration,
-  moderateReferral,
   retireReferralInviteCode,
   searchReferralInviteCodesForModeration,
   searchReferralsForModeration,
+  setUserLeaderboardExclusion,
 } from '@/server/utils/referrals'
 
 const searchSchema = z.object({
   query: z.string().trim().min(1).max(100),
 })
 
-const moderationSchema = z.object({
-  referralId: z.string().uuid(),
-  action: z.enum(['reject', 'revoke', 'restore', 'correct', 'exclude', 'include']),
+const leaderboardExclusionSchema = z.object({
+  targetUserId: z.string().uuid(),
+  excluded: z.boolean(),
   reason: z.string().trim().min(3).max(500),
-  correctedReferrerUserId: z.string().uuid().optional(),
-  correctedInviteCode: z.string().trim().min(1).max(64).optional(),
 })
 
 const codeListSchema = z.object({ userId: z.string().uuid() })
@@ -45,15 +43,15 @@ export const searchReferralModeration = createServerFn({ method: 'POST' }).handl
   }
 })
 
-export const applyReferralModeration = createServerFn({ method: 'POST' }).handler(async (input: unknown) => {
+export const setReferralLeaderboardExclusion = createServerFn({ method: 'POST' }).handler(async (input: unknown) => {
   try {
-    const result = await withAuth(moderationSchema, input)
+    const result = await withAuth(leaderboardExclusionSchema, input)
     if (!result) return { success: false as const, error: 'Authentication required' }
     await requireModerator(result.auth.userId)
-    return await moderateReferral({ ...result.input, actorUserId: result.auth.userId })
+    return await setUserLeaderboardExclusion({ ...result.input, actorUserId: result.auth.userId })
   } catch (error) {
-    console.error('[applyReferralModeration] Failed:', error instanceof Error ? error.message : 'Unknown error')
-    return { success: false as const, error: 'Failed to apply referral moderation action.' }
+    console.error('[setReferralLeaderboardExclusion] Failed:', error instanceof Error ? error.message : 'Unknown error')
+    return { success: false as const, error: 'Failed to update leaderboard exclusion.' }
   }
 })
 

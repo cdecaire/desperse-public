@@ -4,15 +4,13 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { useAuth } from '@/hooks/useAuth'
 import {
-  applyReferralModeration,
   listReferralInviteCodesForModeration,
   retireReferralCodeForModeration,
   searchReferralModeration,
+  setReferralLeaderboardExclusion,
 } from '@/server/functions/referral-admin'
 
 export const Route = createFileRoute('/admin/referrals')({ component: ReferralModerationPage })
-
-type ReferralAction = 'reject' | 'revoke' | 'restore' | 'correct' | 'exclude' | 'include'
 
 function ReferralModerationPage() {
   const { getAuthHeaders } = useAuth()
@@ -44,26 +42,15 @@ function ReferralModerationPage() {
     },
   })
 
-  const moderate = useMutation({
-    mutationFn: async ({ referralId, action }: { referralId: string; action: ReferralAction }) => {
-      const reason = window.prompt(`Reason for ${action}:`)?.trim()
+  const setExclusion = useMutation({
+    mutationFn: async ({ targetUserId, excluded }: { targetUserId: string; excluded: boolean }) => {
+      const reason = window.prompt(
+        excluded ? 'Reason for excluding this user from the leaderboard:' : 'Reason for restoring this user to the leaderboard:',
+      )?.trim()
       if (!reason) throw new Error('A reason is required')
-      const correction = action === 'correct'
-        ? window.prompt('New invite code (leave blank if only changing referrer):')?.trim()
-        : undefined
-      const correctedReferrerUserId = action === 'correct'
-        ? window.prompt('New referrer user ID (leave blank to keep current):')?.trim()
-        : undefined
       const headers = await getAuthHeaders()
-      const result = await applyReferralModeration({
-        data: {
-          referralId,
-          action,
-          reason,
-          correctedInviteCode: correction || undefined,
-          correctedReferrerUserId: correctedReferrerUserId || undefined,
-          _authorization: headers.Authorization,
-        },
+      const result = await setReferralLeaderboardExclusion({
+        data: { targetUserId, excluded, reason, _authorization: headers.Authorization },
       } as any)
       if (!result.success) throw new Error(result.error)
       return result
@@ -88,7 +75,7 @@ function ReferralModerationPage() {
     },
   })
 
-  const error = search.error || moderate.error || codes.error || retireCode.error
+  const error = search.error || setExclusion.error || codes.error || retireCode.error
 
   return (
     <div className="space-y-6 pt-4">
@@ -165,34 +152,25 @@ function ReferralModerationPage() {
               </div>
               <div className="text-right">
                 <span className="rounded-full border px-2 py-1 text-body-xs">{referral.state}</span>
-                {referral.leaderboardExcluded && <p className="mt-2 text-body-xs text-tone-warning">Leaderboard excluded</p>}
+                {referral.referrerExcluded && (
+                  <p className="mt-2 text-body-xs text-tone-warning">Referrer excluded from leaderboard</p>
+                )}
               </div>
             </div>
 
-            {referral.stateReason && <p className="text-body-xs text-muted-foreground">Reason: {referral.stateReason}</p>}
-
             <div className="flex flex-wrap gap-2">
-              {(['reject', 'revoke', 'restore', 'correct'] as const).map((action) => (
-                <button
-                  key={action}
-                  type="button"
-                  disabled={moderate.isPending}
-                  className="rounded-md border px-3 py-1.5 text-body-xs hover:bg-muted disabled:opacity-50"
-                  onClick={() => moderate.mutate({ referralId: referral.id, action })}
-                >
-                  {action}
-                </button>
-              ))}
               <button
                 type="button"
-                disabled={moderate.isPending}
+                disabled={setExclusion.isPending}
                 className="rounded-md border px-3 py-1.5 text-body-xs hover:bg-muted disabled:opacity-50"
-                onClick={() => moderate.mutate({
-                  referralId: referral.id,
-                  action: referral.leaderboardExcluded ? 'include' : 'exclude',
+                onClick={() => setExclusion.mutate({
+                  targetUserId: referral.referrerUserId,
+                  excluded: !referral.referrerExcluded,
                 })}
               >
-                {referral.leaderboardExcluded ? 'Include in leaderboard' : 'Exclude from leaderboard'}
+                {referral.referrerExcluded
+                  ? `Restore @${referral.referrer?.usernameSlug || 'referrer'} to leaderboard`
+                  : `Exclude @${referral.referrer?.usernameSlug || 'referrer'} from leaderboard`}
               </button>
               <button
                 type="button"

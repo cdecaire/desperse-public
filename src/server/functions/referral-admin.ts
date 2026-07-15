@@ -30,34 +30,54 @@ const retireCodeSchema = z.object({
 })
 
 export const searchReferralModeration = createServerFn({ method: 'POST' }).handler(async (input: unknown) => {
-  const result = await withAuth(searchSchema, input)
-  if (!result) return { success: false as const, error: 'Authentication required' }
-  await requireModerator(result.auth.userId)
-  const [referrals, inviteCodes] = await Promise.all([
-    searchReferralsForModeration(result.input.query),
-    searchReferralInviteCodesForModeration(result.input.query),
-  ])
-  return { success: true as const, referrals, inviteCodes }
+  try {
+    const result = await withAuth(searchSchema, input)
+    if (!result) return { success: false as const, error: 'Authentication required' }
+    await requireModerator(result.auth.userId)
+    const [referrals, inviteCodes] = await Promise.all([
+      searchReferralsForModeration(result.input.query),
+      searchReferralInviteCodesForModeration(result.input.query),
+    ])
+    return { success: true as const, referrals, inviteCodes }
+  } catch (error) {
+    console.error('[searchReferralModeration] Failed:', error instanceof Error ? error.message : 'Unknown error')
+    return { success: false as const, error: 'Failed to search referral moderation records.' }
+  }
 })
 
 export const applyReferralModeration = createServerFn({ method: 'POST' }).handler(async (input: unknown) => {
-  const result = await withAuth(moderationSchema, input)
-  if (!result) return { success: false as const, error: 'Authentication required' }
-  await requireModerator(result.auth.userId)
-  return moderateReferral({ ...result.input, actorUserId: result.auth.userId })
+  try {
+    const result = await withAuth(moderationSchema, input)
+    if (!result) return { success: false as const, error: 'Authentication required' }
+    await requireModerator(result.auth.userId)
+    return await moderateReferral({ ...result.input, actorUserId: result.auth.userId })
+  } catch (error) {
+    console.error('[applyReferralModeration] Failed:', error instanceof Error ? error.message : 'Unknown error')
+    return { success: false as const, error: 'Failed to apply referral moderation action.' }
+  }
 })
 
 export const listReferralInviteCodesForModeration = createServerFn({ method: 'POST' }).handler(async (input: unknown) => {
-  const result = await withAuth(codeListSchema, input)
-  if (!result) return { success: false as const, error: 'Authentication required' }
-  await requireModerator(result.auth.userId)
-  const codes = await getReferralInviteCodesForModeration(result.input.userId)
-  return { success: true as const, codes }
+  try {
+    const result = await withAuth(codeListSchema, input)
+    if (!result) return { success: false as const, error: 'Authentication required' }
+    await requireModerator(result.auth.userId)
+    const codes = await getReferralInviteCodesForModeration(result.input.userId)
+    return { success: true as const, codes }
+  } catch (error) {
+    console.error('[listReferralInviteCodesForModeration] Failed:', error instanceof Error ? error.message : 'Unknown error')
+    return { success: false as const, error: 'Failed to load referral invite codes.' }
+  }
 })
 
 export const retireReferralCodeForModeration = createServerFn({ method: 'POST' }).handler(async (input: unknown) => {
-  const result = await withAuth(retireCodeSchema, input)
-  if (!result) return { success: false as const, error: 'Authentication required' }
-  await requireModerator(result.auth.userId)
-  return retireReferralInviteCode({ ...result.input, actorUserId: result.auth.userId })
+  try {
+    const result = await withAuth(retireCodeSchema, input)
+    if (!result) return { success: false as const, error: 'Authentication required' }
+    await requireModerator(result.auth.userId)
+    return await retireReferralInviteCode({ ...result.input, actorUserId: result.auth.userId })
+  } catch (error) {
+    console.error('[retireReferralCodeForModeration] Failed:', error instanceof Error ? error.message : 'Unknown error')
+    return { success: false as const, error: 'Failed to retire referral invite code.' }
+  }
 })

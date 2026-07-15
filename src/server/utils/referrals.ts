@@ -779,8 +779,6 @@ export async function getReferralStatusForReferredUser(referredUserId: string) {
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 const REFERRAL_MODERATION_EVENT = 'referral_moderation_action'
 
-type ReferralModerationAction = 'reject' | 'revoke' | 'restore' | 'correct' | 'exclude' | 'include'
-
 export async function searchReferralsForModeration(rawQuery: string, limit = 50) {
   const query = rawQuery.trim()
   if (!query) return []
@@ -820,129 +818,67 @@ export async function searchReferralsForModeration(rawQuery: string, limit = 50)
       .where(inArray(users.id, involvedUserIds))
     : []
   const userById = new Map(involvedUsers.map((user) => [user.id, user]))
-  const excludedIds = await getReferralLeaderboardExcludedIds(rows.map((row) => row.id))
+  const excludedUserIds = await getLeaderboardExcludedUserIds()
 
   return rows.map((row) => ({
     ...row,
     referrer: userById.get(row.referrerUserId) ?? null,
     referredUser: userById.get(row.referredUserId) ?? null,
-    leaderboardExcluded: excludedIds.has(row.id),
+    referrerExcluded: excludedUserIds.has(row.referrerUserId),
   }))
 }
 
 /**
- * Resolve exclusion state from the durable moderation event stream. This keeps
- * profile credit/state untouched while giving leaderboard queries one canonical
- * filter to apply.
+ * Set (or clear) a user's leaderboard exclusion. Recorded as a durable
+ * moderation event keyed on the referrer — the user's referrals, profile
+ * credit, and the invitees are all left untouched; only leaderboard ranking is
+ * affected. Reversible: the latest exclude_user/include_user event wins.
  */
-export async function getReferralLeaderboardExcludedIds(referralIds: string[]) {
-  const excluded = new Set<string>()
-  if (referralIds.length === 0) return excluded
-
-  const events = await db
-    .select({ referralId: referralEvents.referralId, payload: referralEvents.payload })
-    .from(referralEvents)
-    .where(and(
-      inArray(referralEvents.referralId, referralIds),
-      eq(referralEvents.eventName, REFERRAL_MODERATION_EVENT),
-    ))
-    .orderBy(desc(referralEvents.createdAt))
-
-  const resolved = new Set<string>()
-  for (const event of events) {
-    if (!event.referralId || resolved.has(event.referralId)) continue
-    const action = event.payload?.action
-    if (action !== 'exclude' && action !== 'include') continue
-    resolved.add(event.referralId)
-    if (action === 'exclude') excluded.add(event.referralId)
-  }
-  return excluded
-}
-
-export async function moderateReferral(input: {
-  referralId: string
+export async function setUserLeaderboardExclusion(input: {
+  targetUserId: string
   actorUserId: string
-  action: ReferralModerationAction
+  excluded: boolean
   reason: string
-  correctedReferrerUserId?: string
-  correctedInviteCode?: string
 }) {
-  const [referral] = await db.select().from(referrals).where(eq(referrals.id, input.referralId)).limit(1)
-  if (!referral) return { success: false as const, error: 'Referral not found' }
-
   const reason = input.reason.trim()
   if (!reason) return { success: false as const, error: 'A moderation reason is required' }
-  const now = new Date()
-  let updatedReferral = referral
-
-  if (input.action === 'reject' || input.action === 'revoke') {
-    const terminalState = input.action === 'reject' ? 'rejected' : 'revoked'
-    const [updated] = await db
-      .update(referrals)
-      .set({
-        state: terminalState,
-        stateReason: reason,
-        rejectedAt: terminalState === 'rejected' ? now : referral.rejectedAt,
-        revokedAt: terminalState === 'revoked' ? now : referral.revokedAt,
-        activationSource: null,
-        activationQualifiedFollowUserId: null,
-        activationVerifiedAt: null,
-        activatedAt: null,
-        updatedAt: now,
-      })
-      .where(eq(referrals.id, referral.id))
-      .returning()
-    if (!updated) return { success: false as const, error: 'Referral changed before the action could be applied' }
-    updatedReferral = updated
-  } else if (input.action === 'restore' || input.action === 'correct') {
-    if (input.action === 'correct' && !input.correctedReferrerUserId && !input.correctedInviteCode?.trim()) {
-      return { success: false as const, error: 'Correction requires a referrer user id or invite code' }
-    }
-    const [updated] = await db
-      .update(referrals)
-      .set({
-        referrerUserId: input.correctedReferrerUserId ?? referral.referrerUserId,
-        inviteCode: input.correctedInviteCode?.trim() ? normalizeInviteCode(input.correctedInviteCode) : referral.inviteCode,
-        state: 'pending_activation',
-        stateReason: reason,
-        expiresAt: new Date(now.getTime() + PENDING_ACTIVATION_TTL_DAYS * DAY_MS),
-        rejectedAt: null,
-        revokedAt: null,
-        expiredAt: null,
-        activationSource: null,
-        activationQualifiedFollowUserId: null,
-        activationVerifiedAt: null,
-        activatedAt: null,
-        updatedAt: now,
-      })
-      .where(eq(referrals.id, referral.id))
-      .returning()
-    if (!updated) return { success: false as const, error: 'Referral changed before the action could be applied' }
-    updatedReferral = updated
-  }
 
   await emitReferralEvent({
     eventName: REFERRAL_MODERATION_EVENT,
-    referralId: referral.id,
-    attributionSessionId: referral.attributionSessionId,
-    referrerUserId: updatedReferral.referrerUserId,
-    referredUserId: referral.referredUserId,
+    referrerUserId: input.targetUserId,
     payload: {
-      action: input.action,
+      action: input.excluded ? 'exclude_user' : 'include_user',
       reason,
       actorUserId: input.actorUserId,
-      previousState: referral.state,
-      nextState: updatedReferral.state,
-      previousReferrerUserId: referral.referrerUserId,
-      previousInviteCode: referral.inviteCode,
     },
   })
+  return { success: true as const, excluded: input.excluded }
+}
 
-  if (input.action === 'restore' || input.action === 'correct') {
-    await verifyReferralActivationForUser(referral.referredUserId)
+/**
+ * Resolve the set of users currently excluded from the leaderboard by replaying
+ * the durable moderation event stream (latest exclude_user/include_user per user
+ * wins). This is the canonical filter the leaderboard applies:
+ * `referrerUserId NOT IN (excluded)`. Profile credit/state stays untouched.
+ */
+export async function getLeaderboardExcludedUserIds() {
+  const events = await db
+    .select({ referrerUserId: referralEvents.referrerUserId, payload: referralEvents.payload })
+    .from(referralEvents)
+    .where(eq(referralEvents.eventName, REFERRAL_MODERATION_EVENT))
+    .orderBy(desc(referralEvents.createdAt))
+
+  const excluded = new Set<string>()
+  const resolved = new Set<string>()
+  for (const event of events) {
+    const userId = event.referrerUserId
+    const action = event.payload?.action
+    if (!userId || (action !== 'exclude_user' && action !== 'include_user')) continue
+    if (resolved.has(userId)) continue
+    resolved.add(userId)
+    if (action === 'exclude_user') excluded.add(userId)
   }
-
-  return { success: true as const, referral: updatedReferral }
+  return excluded
 }
 
 export async function retireReferralInviteCode(input: {

@@ -32,6 +32,7 @@ vi.mock('@/server/db', () => {
       builder.from = vi.fn(() => builder)
       builder.where = vi.fn(() => builder)
       builder.innerJoin = vi.fn(() => builder)
+      builder.orderBy = vi.fn(() => builder)
       builder.limit = vi.fn(() => nextSelect())
       return builder
     }),
@@ -319,61 +320,52 @@ describe('referrals utils', () => {
     expect(insertValues).toHaveLength(0)
   })
 
-  it('rejects a referral and writes an actor-attributed moderation event', async () => {
-    const referral = {
-      id: 'referral-1',
-      referrerUserId: 'referrer-1',
-      referredUserId: 'referred-1',
-      attributionSessionId: 'session-1',
-      inviteCode: 'carl',
-      state: 'pending_activation',
-      rejectedAt: null,
-      revokedAt: null,
-    }
-    selectQueue.push([referral])
-    updateQueue.push([{ ...referral, state: 'rejected', stateReason: 'duplicate account' }])
-
-    const { moderateReferral } = await import('./referrals')
-    const result = await moderateReferral({
-      referralId: referral.id,
+  it('excludes a user from the leaderboard via a durable event without touching referral state', async () => {
+    const { setUserLeaderboardExclusion } = await import('./referrals')
+    const result = await setUserLeaderboardExclusion({
+      targetUserId: 'referrer-1',
       actorUserId: 'moderator-1',
-      action: 'reject',
-      reason: 'duplicate account',
+      excluded: true,
+      reason: 'spammed the invite',
     })
 
-    expect(result).toMatchObject({ success: true, referral: { state: 'rejected' } })
-    expect(updateSetValues).toContainEqual(expect.objectContaining({ state: 'rejected', stateReason: 'duplicate account' }))
-    expect(insertValues).toContainEqual(expect.objectContaining({
-      eventName: 'referral_moderation_action',
-      payload: expect.objectContaining({ action: 'reject', actorUserId: 'moderator-1' }),
-    }))
-  })
-
-  it('excludes a referral from leaderboards without changing referral state', async () => {
-    const referral = {
-      id: 'referral-1',
-      referrerUserId: 'referrer-1',
-      referredUserId: 'referred-1',
-      attributionSessionId: 'session-1',
-      inviteCode: 'carl',
-      state: 'activated',
-    }
-    selectQueue.push([referral])
-
-    const { moderateReferral } = await import('./referrals')
-    const result = await moderateReferral({
-      referralId: referral.id,
-      actorUserId: 'moderator-1',
-      action: 'exclude',
-      reason: 'under review',
-    })
-
-    expect(result).toMatchObject({ success: true, referral: { state: 'activated' } })
+    expect(result).toMatchObject({ success: true, excluded: true })
     expect(updateSetValues).toHaveLength(0)
     expect(insertValues).toContainEqual(expect.objectContaining({
       eventName: 'referral_moderation_action',
-      payload: expect.objectContaining({ action: 'exclude', previousState: 'activated', nextState: 'activated' }),
+      referrerUserId: 'referrer-1',
+      referralId: null,
+      payload: expect.objectContaining({ action: 'exclude_user', actorUserId: 'moderator-1', reason: 'spammed the invite' }),
     }))
+  })
+
+  it('requires a reason to change a user leaderboard exclusion', async () => {
+    const { setUserLeaderboardExclusion } = await import('./referrals')
+    const result = await setUserLeaderboardExclusion({
+      targetUserId: 'referrer-1',
+      actorUserId: 'moderator-1',
+      excluded: true,
+      reason: '   ',
+    })
+
+    expect(result).toMatchObject({ success: false })
+    expect(insertValues).toHaveLength(0)
+  })
+
+  it('resolves leaderboard exclusions from the event stream, latest action wins', async () => {
+    // Events are returned newest-first (createdAt desc). referrer-1 was excluded
+    // then later re-included → not excluded; referrer-2 is currently excluded.
+    selectQueue.push([
+      { referrerUserId: 'referrer-1', payload: { action: 'include_user' } },
+      { referrerUserId: 'referrer-2', payload: { action: 'exclude_user' } },
+      { referrerUserId: 'referrer-1', payload: { action: 'exclude_user' } },
+      { referrerUserId: 'referrer-3', payload: { action: 'retire_code' } },
+    ])
+
+    const { getLeaderboardExcludedUserIds } = await import('./referrals')
+    const excluded = await getLeaderboardExcludedUserIds()
+
+    expect([...excluded].sort()).toEqual(['referrer-2'])
   })
 
   it('retires an active custom code and records the moderation reason', async () => {

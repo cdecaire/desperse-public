@@ -1,5 +1,5 @@
 import { createHmac, timingSafeEqual } from 'node:crypto'
-import { and, desc, eq, lt, ne, sql } from 'drizzle-orm'
+import { and, desc, eq, ilike, inArray, lt, ne, or, sql } from 'drizzle-orm'
 
 import { env } from '@/config/env'
 import { getPublicReferralStatus, REFERRAL_SLOT_LIMIT } from '@/lib/referrals'
@@ -774,4 +774,239 @@ export async function getReferralStatusForReferredUser(referredUserId: string) {
     .limit(1)
 
   return referral ?? null
+}
+
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+const REFERRAL_MODERATION_EVENT = 'referral_moderation_action'
+
+type ReferralModerationAction = 'reject' | 'revoke' | 'restore' | 'correct' | 'exclude' | 'include'
+
+export async function searchReferralsForModeration(rawQuery: string, limit = 50) {
+  const query = rawQuery.trim()
+  if (!query) return []
+  const normalized = normalizeInviteCode(query)
+  const userConditions = [
+    ilike(users.usernameSlug, `%${normalized}%`),
+    ilike(users.displayName, `%${query}%`),
+  ]
+  if (UUID_PATTERN.test(query)) userConditions.push(eq(users.id, query))
+
+  const matchingUsers = await db
+    .select({ id: users.id, usernameSlug: users.usernameSlug, displayName: users.displayName, avatarUrl: users.avatarUrl })
+    .from(users)
+    .where(or(...userConditions))
+    .limit(50)
+  const matchingUserIds = matchingUsers.map((user) => user.id)
+
+  const referralConditions = [ilike(referrals.inviteCode, `%${normalized}%`)]
+  if (UUID_PATTERN.test(query)) referralConditions.push(eq(referrals.id, query))
+  if (matchingUserIds.length > 0) {
+    referralConditions.push(inArray(referrals.referrerUserId, matchingUserIds))
+    referralConditions.push(inArray(referrals.referredUserId, matchingUserIds))
+  }
+
+  const rows = await db
+    .select()
+    .from(referrals)
+    .where(or(...referralConditions))
+    .orderBy(desc(referrals.createdAt))
+    .limit(Math.min(Math.max(limit, 1), 100))
+
+  const involvedUserIds = [...new Set(rows.flatMap((row) => [row.referrerUserId, row.referredUserId]))]
+  const involvedUsers = involvedUserIds.length > 0
+    ? await db
+      .select({ id: users.id, usernameSlug: users.usernameSlug, displayName: users.displayName, avatarUrl: users.avatarUrl })
+      .from(users)
+      .where(inArray(users.id, involvedUserIds))
+    : []
+  const userById = new Map(involvedUsers.map((user) => [user.id, user]))
+  const excludedIds = await getReferralLeaderboardExcludedIds(rows.map((row) => row.id))
+
+  return rows.map((row) => ({
+    ...row,
+    referrer: userById.get(row.referrerUserId) ?? null,
+    referredUser: userById.get(row.referredUserId) ?? null,
+    leaderboardExcluded: excludedIds.has(row.id),
+  }))
+}
+
+/**
+ * Resolve exclusion state from the durable moderation event stream. This keeps
+ * profile credit/state untouched while giving leaderboard queries one canonical
+ * filter to apply.
+ */
+export async function getReferralLeaderboardExcludedIds(referralIds: string[]) {
+  const excluded = new Set<string>()
+  if (referralIds.length === 0) return excluded
+
+  const events = await db
+    .select({ referralId: referralEvents.referralId, payload: referralEvents.payload })
+    .from(referralEvents)
+    .where(and(
+      inArray(referralEvents.referralId, referralIds),
+      eq(referralEvents.eventName, REFERRAL_MODERATION_EVENT),
+    ))
+    .orderBy(desc(referralEvents.createdAt))
+
+  const resolved = new Set<string>()
+  for (const event of events) {
+    if (!event.referralId || resolved.has(event.referralId)) continue
+    const action = event.payload?.action
+    if (action !== 'exclude' && action !== 'include') continue
+    resolved.add(event.referralId)
+    if (action === 'exclude') excluded.add(event.referralId)
+  }
+  return excluded
+}
+
+export async function moderateReferral(input: {
+  referralId: string
+  actorUserId: string
+  action: ReferralModerationAction
+  reason: string
+  correctedReferrerUserId?: string
+  correctedInviteCode?: string
+}) {
+  const [referral] = await db.select().from(referrals).where(eq(referrals.id, input.referralId)).limit(1)
+  if (!referral) return { success: false as const, error: 'Referral not found' }
+
+  const reason = input.reason.trim()
+  if (!reason) return { success: false as const, error: 'A moderation reason is required' }
+  const now = new Date()
+  let updatedReferral = referral
+
+  if (input.action === 'reject' || input.action === 'revoke') {
+    const terminalState = input.action === 'reject' ? 'rejected' : 'revoked'
+    const [updated] = await db
+      .update(referrals)
+      .set({
+        state: terminalState,
+        stateReason: reason,
+        rejectedAt: terminalState === 'rejected' ? now : referral.rejectedAt,
+        revokedAt: terminalState === 'revoked' ? now : referral.revokedAt,
+        activationSource: null,
+        activationQualifiedFollowUserId: null,
+        activationVerifiedAt: null,
+        activatedAt: null,
+        updatedAt: now,
+      })
+      .where(eq(referrals.id, referral.id))
+      .returning()
+    if (!updated) return { success: false as const, error: 'Referral changed before the action could be applied' }
+    updatedReferral = updated
+  } else if (input.action === 'restore' || input.action === 'correct') {
+    if (input.action === 'correct' && !input.correctedReferrerUserId && !input.correctedInviteCode?.trim()) {
+      return { success: false as const, error: 'Correction requires a referrer user id or invite code' }
+    }
+    const [updated] = await db
+      .update(referrals)
+      .set({
+        referrerUserId: input.correctedReferrerUserId ?? referral.referrerUserId,
+        inviteCode: input.correctedInviteCode?.trim() ? normalizeInviteCode(input.correctedInviteCode) : referral.inviteCode,
+        state: 'pending_activation',
+        stateReason: reason,
+        expiresAt: new Date(now.getTime() + PENDING_ACTIVATION_TTL_DAYS * DAY_MS),
+        rejectedAt: null,
+        revokedAt: null,
+        expiredAt: null,
+        activationSource: null,
+        activationQualifiedFollowUserId: null,
+        activationVerifiedAt: null,
+        activatedAt: null,
+        updatedAt: now,
+      })
+      .where(eq(referrals.id, referral.id))
+      .returning()
+    if (!updated) return { success: false as const, error: 'Referral changed before the action could be applied' }
+    updatedReferral = updated
+  }
+
+  await emitReferralEvent({
+    eventName: REFERRAL_MODERATION_EVENT,
+    referralId: referral.id,
+    attributionSessionId: referral.attributionSessionId,
+    referrerUserId: updatedReferral.referrerUserId,
+    referredUserId: referral.referredUserId,
+    payload: {
+      action: input.action,
+      reason,
+      actorUserId: input.actorUserId,
+      previousState: referral.state,
+      nextState: updatedReferral.state,
+      previousReferrerUserId: referral.referrerUserId,
+      previousInviteCode: referral.inviteCode,
+    },
+  })
+
+  if (input.action === 'restore' || input.action === 'correct') {
+    await verifyReferralActivationForUser(referral.referredUserId)
+  }
+
+  return { success: true as const, referral: updatedReferral }
+}
+
+export async function retireReferralInviteCode(input: {
+  codeId: string
+  actorUserId: string
+  reason: string
+}) {
+  const [code] = await db
+    .select()
+    .from(referralInviteCodes)
+    .where(eq(referralInviteCodes.id, input.codeId))
+    .limit(1)
+  if (!code) return { success: false as const, error: 'Invite code not found' }
+  if (code.status === 'retired') return { success: true as const, code, changed: false }
+  if (!input.reason.trim()) return { success: false as const, error: 'A moderation reason is required' }
+
+  const now = new Date()
+  const [retired] = await db
+    .update(referralInviteCodes)
+    .set({ status: 'retired', retiredAt: now, updatedAt: now })
+    .where(and(eq(referralInviteCodes.id, code.id), eq(referralInviteCodes.status, 'active')))
+    .returning()
+  if (!retired) return { success: false as const, error: 'Invite code changed before it could be retired' }
+
+  await emitReferralEvent({
+    eventName: REFERRAL_MODERATION_EVENT,
+    referrerUserId: code.userId,
+    payload: {
+      action: 'retire_code',
+      reason: input.reason.trim(),
+      actorUserId: input.actorUserId,
+      codeId: code.id,
+      code: code.code,
+    },
+  })
+  return { success: true as const, code: retired, changed: true }
+}
+
+export async function getReferralInviteCodesForModeration(userId: string) {
+  return db
+    .select()
+    .from(referralInviteCodes)
+    .where(eq(referralInviteCodes.userId, userId))
+    .orderBy(desc(referralInviteCodes.createdAt))
+}
+
+export async function searchReferralInviteCodesForModeration(rawQuery: string) {
+  const query = rawQuery.trim()
+  if (!query) return []
+  const conditions = [ilike(referralInviteCodes.code, `%${normalizeInviteCode(query)}%`)]
+  if (UUID_PATTERN.test(query)) conditions.push(eq(referralInviteCodes.id, query))
+  const codes = await db
+    .select()
+    .from(referralInviteCodes)
+    .where(or(...conditions))
+    .orderBy(desc(referralInviteCodes.createdAt))
+    .limit(50)
+  const ownerIds = [...new Set(codes.map((code) => code.userId))]
+  const owners = ownerIds.length > 0
+    ? await db
+      .select({ id: users.id, usernameSlug: users.usernameSlug, displayName: users.displayName })
+      .from(users)
+      .where(inArray(users.id, ownerIds))
+    : []
+  const ownerById = new Map(owners.map((owner) => [owner.id, owner]))
+  return codes.map((code) => ({ ...code, owner: ownerById.get(code.userId) ?? null }))
 }

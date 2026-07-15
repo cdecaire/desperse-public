@@ -21,7 +21,7 @@ import {
 import { Icon } from '@/components/ui/icon'
 import { Input } from '@/components/ui/input'
 import { toast } from '@/hooks/use-toast'
-import { useReferralOwnerDashboard } from '@/hooks/useReferrals'
+import { useReferralLeaderboard, useReferralOwnerDashboard } from '@/hooks/useReferrals'
 import { formatRelativeTime } from '@/lib/dates'
 import {
   buildInviteLink,
@@ -74,6 +74,7 @@ function InvitesPage() {
 
 function InvitesPageContent() {
   const { data: dashboard, isLoading, error } = useReferralOwnerDashboard()
+  const { data: leaderboard } = useReferralLeaderboard()
 
   const origin = typeof window === 'undefined' ? 'https://desperse.com' : window.location.origin
   const inviteLink = dashboard ? buildInviteLink(origin, dashboard.inviteCode) : ''
@@ -416,6 +417,44 @@ function InvitesPageContent() {
                       ))}
                     </Stack>
                   )}
+                </SettingsCard>
+
+                {/* Top Connectors preview */}
+                <SettingsCard>
+                  <SectionHeader
+                    title="Top Connectors"
+                    aside={<Badge variant="secondary" size="sm">This week</Badge>}
+                  />
+                  <Stack gap={2}>
+                    {leaderboard?.currentUserStatus?.state === 'ranked' ? (
+                      <div>
+                        <p className="text-title-lg">You’re #{leaderboard.currentUserStatus.rank} this week</p>
+                        <p className="mt-1 text-body-sm text-muted-foreground">Ranked by valid invites activated since Monday.</p>
+                      </div>
+                    ) : leaderboard?.currentUserStatus?.state === 'awaiting' ? (
+                      <div>
+                        <p className="text-title-lg">You’re eligible for this week’s board</p>
+                        <p className="mt-1 text-body-sm text-muted-foreground">Rankings may be reviewed before publication.</p>
+                      </div>
+                    ) : leaderboard?.currentUserStatus?.state === 'review-held' ? (
+                      <div>
+                        <p className="text-title-lg">Leaderboard status under review</p>
+                        <p className="mt-1 text-body-sm text-muted-foreground">Your profile credit remains visible while board placement is reviewed.</p>
+                      </div>
+                    ) : (
+                      <div>
+                        <p className="text-title-lg">Activate 10 invites to qualify</p>
+                        <p className="mt-1 text-body-sm text-muted-foreground">
+                          {leaderboard?.currentUserStatus?.state === 'ineligible'
+                            ? `${leaderboard.currentUserStatus.remainingToQualify} more valid activation${leaderboard.currentUserStatus.remainingToQualify === 1 ? '' : 's'} to Top Connectors.`
+                            : 'Top Connectors highlights people bringing active community members into Desperse.'}
+                        </p>
+                      </div>
+                    )}
+                    <Button asChild variant="outline" className="w-full md:w-fit">
+                      <Link to="/top-connectors">View leaderboard</Link>
+                    </Button>
+                  </Stack>
                 </SettingsCard>
 
                 {/* How invites work */}

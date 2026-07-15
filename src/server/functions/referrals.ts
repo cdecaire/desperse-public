@@ -1,9 +1,10 @@
 import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
 
-import { withAuth } from '@/server/auth'
+import { withAuth, withOptionalAuth } from '@/server/auth'
 import {
   getPublicReferralProfileStatus as getPublicReferralProfileStatusInternal,
+  getReferralLeaderboard as getReferralLeaderboardInternal,
   getReferralStatusForReferredUser,
   getReferrerInvitePreview,
   setCustomReferralInviteCode,
@@ -50,6 +51,12 @@ export const getPublicReferralProfileStatus = createServerFn({ method: 'GET' }).
   const rawData = input && typeof input === 'object' && 'data' in input ? (input as { data: unknown }).data : input
   const { userId } = publicProfileStatusSchema.parse(rawData)
   return getPublicReferralProfileStatusInternal(userId)
+})
+
+/** Public weekly Top Connectors board, with private status for the signed-in user. */
+export const getReferralLeaderboard = createServerFn({ method: 'GET' }).handler(async (input: unknown) => {
+  const result = await withOptionalAuth(z.object({}), input)
+  return getReferralLeaderboardInternal({ currentUserId: result.auth?.userId })
 })
 
 export const getReferralOwnerDashboard = createServerFn({

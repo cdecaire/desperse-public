@@ -2,7 +2,13 @@ import { createHmac, timingSafeEqual } from 'node:crypto'
 import { and, desc, eq, ilike, inArray, lt, ne, or, sql } from 'drizzle-orm'
 
 import { env } from '@/config/env'
-import { getPublicReferralStatus, REFERRAL_SLOT_LIMIT } from '@/lib/referrals'
+import {
+  getPublicReferralStatus,
+  getReferralLeaderboardStatus,
+  rankReferralLeaderboardEntries,
+  REFERRAL_SLOT_LIMIT,
+  type ReferralLeaderboardCandidate,
+} from '@/lib/referrals'
 import { db } from '@/server/db'
 import { isUniqueViolation } from '@/server/utils/db-errors'
 import {
@@ -699,6 +705,65 @@ export async function getPublicReferralProfileStatus(userId: string) {
     .where(and(eq(referrals.referrerUserId, userId), eq(referrals.state, 'activated')))
 
   return getPublicReferralStatus(result?.count ?? 0)
+}
+
+function getUtcWeekStart(now: Date): Date {
+  const start = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()))
+  const daysSinceMonday = (start.getUTCDay() + 6) % 7
+  start.setUTCDate(start.getUTCDate() - daysSinceMonday)
+  return start
+}
+
+export async function getReferralLeaderboard(input?: { currentUserId?: string | null; now?: Date }) {
+  const generatedAt = input?.now ?? new Date()
+  const weekStartedAt = getUtcWeekStart(generatedAt)
+  const [rows, excludedUserIds] = await Promise.all([
+    db
+      .select({
+        userId: users.id,
+        usernameSlug: users.usernameSlug,
+        displayName: users.displayName,
+        avatarUrl: users.avatarUrl,
+        totalActivatedCount: sql<number>`count(*)::int`,
+        weeklyActivatedCount: sql<number>`count(*) filter (where ${referrals.activatedAt} >= ${weekStartedAt})::int`,
+      })
+      .from(referrals)
+      .innerJoin(users, eq(referrals.referrerUserId, users.id))
+      .where(eq(referrals.state, 'activated'))
+      .groupBy(users.id, users.usernameSlug, users.displayName, users.avatarUrl),
+    getLeaderboardExcludedUserIds(),
+  ])
+
+  const candidates: ReferralLeaderboardCandidate[] = rows.map((row) => ({
+    ...row,
+    totalActivatedCount: Number(row.totalActivatedCount),
+    weeklyActivatedCount: Number(row.weeklyActivatedCount),
+    excluded: excludedUserIds.has(row.userId),
+  }))
+  const entries = rankReferralLeaderboardEntries(candidates)
+  const currentUser = input?.currentUserId
+    ? candidates.find((candidate) => candidate.userId === input.currentUserId) ?? {
+      userId: input.currentUserId,
+      usernameSlug: '',
+      displayName: null,
+      avatarUrl: null,
+      totalActivatedCount: 0,
+      weeklyActivatedCount: 0,
+      excluded: excludedUserIds.has(input.currentUserId),
+    }
+    : null
+  const currentRank = currentUser
+    ? entries.find((entry) => entry.userId === currentUser.userId)?.rank ?? null
+    : null
+
+  return {
+    entries: entries.slice(0, 100),
+    currentUserStatus: currentUser
+      ? getReferralLeaderboardStatus({ ...currentUser, rank: currentRank })
+      : null,
+    generatedAt: generatedAt.toISOString(),
+    weekStartedAt: weekStartedAt.toISOString(),
+  }
 }
 
 // Bound the per-call sweep so the unscoped branch never loads an unbounded result set.

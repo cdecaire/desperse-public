@@ -32,6 +32,7 @@ vi.mock('@/server/db', () => {
       builder.from = vi.fn(() => builder)
       builder.where = vi.fn(() => builder)
       builder.innerJoin = vi.fn(() => builder)
+      builder.groupBy = vi.fn(() => builder)
       builder.orderBy = vi.fn(() => builder)
       builder.limit = vi.fn(() => nextSelect())
       return builder
@@ -366,6 +367,27 @@ describe('referrals utils', () => {
     const excluded = await getLeaderboardExcludedUserIds()
 
     expect([...excluded].sort()).toEqual(['referrer-2'])
+  })
+
+  it('builds the weekly board from valid activations and applies moderation exclusions', async () => {
+    selectQueue.push([
+      { referrerUserId: 'referrer-2', payload: { action: 'exclude_user' } },
+    ])
+    selectQueue.push([
+      { userId: 'referrer-1', usernameSlug: 'alpha', displayName: 'Alpha', avatarUrl: null, totalActivatedCount: 12, weeklyActivatedCount: 4 },
+      { userId: 'referrer-2', usernameSlug: 'beta', displayName: 'Beta', avatarUrl: null, totalActivatedCount: 20, weeklyActivatedCount: 8 },
+      { userId: 'referrer-3', usernameSlug: 'gamma', displayName: 'Gamma', avatarUrl: null, totalActivatedCount: 9, weeklyActivatedCount: 5 },
+    ])
+
+    const { getReferralLeaderboard } = await import('./referrals')
+    const result = await getReferralLeaderboard({
+      currentUserId: 'referrer-1',
+      now: new Date('2026-07-15T12:00:00.000Z'),
+    })
+
+    expect(result.weekStartedAt).toBe('2026-07-13T00:00:00.000Z')
+    expect(result.entries.map((entry) => entry.userId)).toEqual(['referrer-1'])
+    expect(result.currentUserStatus).toEqual({ state: 'ranked', rank: 1 })
   })
 
   it('retires an active custom code and records the moderation reason', async () => {

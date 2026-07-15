@@ -4,6 +4,7 @@ import {
   buildReferralShareCardSvg,
   getCurrentReferralTierLabel,
   getNextReferralMilestone,
+  getPublicReferralStatus,
   getReferralListState,
   getReferralStateLabel,
 } from '@/lib/referrals'
@@ -26,6 +27,19 @@ describe('referral helpers', () => {
     expect(getCurrentReferralTierLabel(1)).toBe('First Signal')
     expect(getCurrentReferralTierLabel(3)).toBe('Custom invite code unlocked')
     expect(getCurrentReferralTierLabel(10)).toBe('Connector')
+  })
+
+  it('derives public profile status only after an activation', () => {
+    expect(getPublicReferralStatus(0)).toBeNull()
+    expect(getPublicReferralStatus(1)).toEqual({
+      activatedCount: 1,
+      badgeLabel: 'First Signal',
+      hasAccent: false,
+      hasFrame: false,
+    })
+    expect(getPublicReferralStatus(5)).toMatchObject({ badgeLabel: 'First Signal', hasAccent: true })
+    expect(getPublicReferralStatus(10)).toMatchObject({ badgeLabel: 'Connector', hasAccent: true })
+    expect(getPublicReferralStatus(25)).toMatchObject({ badgeLabel: 'Connector', hasFrame: true })
   })
 
   it('builds a personalized share card svg with invite details', () => {

@@ -123,6 +123,25 @@ export function getCurrentReferralTierLabel(activatedCount: number): string {
   return 'Invite in progress'
 }
 
+export type PublicReferralStatus = {
+  activatedCount: number
+  badgeLabel: 'First Signal' | 'Connector'
+  hasAccent: boolean
+  hasFrame: boolean
+}
+
+/** Public profile treatment derived only from current valid activations. */
+export function getPublicReferralStatus(activatedCount: number): PublicReferralStatus | null {
+  if (activatedCount < 1) return null
+
+  return {
+    activatedCount,
+    badgeLabel: activatedCount >= 10 ? 'Connector' : 'First Signal',
+    hasAccent: activatedCount >= 5,
+    hasFrame: activatedCount >= 25,
+  }
+}
+
 export function buildReferralShareCopy(inviteLink: string): string {
   return `I’m inviting people to Desperse. Join through my invite: ${inviteLink}`
 }

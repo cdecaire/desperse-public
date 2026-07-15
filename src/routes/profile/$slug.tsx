@@ -45,6 +45,8 @@ import { useBlockUser, useUnblockUser } from '@/hooks/useBlocks'
 import { BlockConfirmDialog } from '@/components/forms/BlockConfirmDialog'
 import { Stack, Row, Grid } from '@cdecaire/sable/layout'
 import { buildOgMeta } from '@/lib/og-meta'
+import { ReferralStatusModule } from '@/components/profile/ReferralStatusModule'
+import { usePublicReferralProfileStatus } from '@/hooks/useReferrals'
 
 type ProfileTab = 'posts' | 'collected' | 'for-sale'
 
@@ -213,6 +215,7 @@ function ProfilePage() {
   
   const profileUser = profileData?.user
   const profileStats = profileData?.stats
+  const { data: referralStatus } = usePublicReferralProfileStatus(profileUser?.id)
 
   // Fetch follow stats
   const { data: followStats } = useFollowStats(
@@ -396,7 +399,13 @@ function ProfilePage() {
           {/* Avatar and Profile Controls */}
           <div className="shrink-0 relative pt-2">
             <div className="relative w-20 h-20 md:w-24 md:h-24">
-              <div className="w-full h-full rounded-full bg-background border-4 border-background flex items-center justify-center overflow-hidden shadow-sm">
+              <div className={`w-full h-full rounded-full bg-background border-4 flex items-center justify-center overflow-hidden shadow-sm ${
+                referralStatus?.hasFrame
+                  ? 'border-primary ring-4 ring-primary/30'
+                  : referralStatus?.hasAccent
+                    ? 'border-primary/60'
+                    : 'border-background'
+              }`}>
                 {profileUser.avatarUrl ? (
                   (() => {
                     const avatarProps = getResponsiveImageProps(profileUser.avatarUrl, {
@@ -635,6 +644,10 @@ function ProfilePage() {
           </div>
         </Stack>
       </div>
+
+      {referralStatus && (
+        <ReferralStatusModule status={referralStatus} isOwner={isOwnProfile} />
+      )}
 
       {/* Divider */}
       <div className="mx-4 mt-4 border-t border-border" />

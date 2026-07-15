@@ -44,6 +44,7 @@ import { getResponsiveImageProps } from '@/lib/imageUrl'
 import { useBlockUser, useUnblockUser } from '@/hooks/useBlocks'
 import { BlockConfirmDialog } from '@/components/forms/BlockConfirmDialog'
 import { Stack, Row, Grid } from '@cdecaire/sable/layout'
+import { buildOgMeta } from '@/lib/og-meta'
 
 type ProfileTab = 'posts' | 'collected' | 'for-sale'
 
@@ -73,27 +74,7 @@ export const Route = createFileRoute('/profile/$slug')({
     const ogImage = `${BASE_URL}/api/og/profile/${params.slug}`
     const url = `${BASE_URL}/profile/${params.slug}`
 
-    return {
-      meta: [
-        { title },
-        { name: "description", content: description },
-        // Open Graph
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
-        { property: "og:image", content: ogImage },
-        { property: "og:image:width", content: "1200" },
-        { property: "og:image:height", content: "630" },
-        { property: "og:url", content: url },
-        { property: "og:type", content: "profile" },
-        { property: "og:site_name", content: "Desperse" },
-        // Twitter Card
-        { name: "twitter:site", content: "@desperseapp" },
-        { name: "twitter:card", content: "summary_large_image" },
-        { name: "twitter:title", content: title },
-        { name: "twitter:description", content: description },
-        { name: "twitter:image", content: ogImage },
-      ],
-    }
+    return { meta: buildOgMeta({ title, description, image: ogImage, url, type: 'profile' }) }
   },
 })
 

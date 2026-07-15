@@ -13,6 +13,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import type { ProfileDraft } from '@/components/onboarding/OnboardingPreview'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { useProfileUpdate, useAvatarUpload } from '@/hooks/useProfileQuery'
+import { uploadAvatarFile } from '@/lib/avatar-upload'
 
 export function isValidUrl(value: string): boolean {
   if (!value.trim()) return true
@@ -92,32 +93,14 @@ export function ProfileSetupStep({ onSuccess, onDraftChange }: ProfileSetupStepP
       toast.error('Still loading your account — try again in a moment.')
       return
     }
-    if (file.size > 2 * 1024 * 1024) {
-      toast.error('Avatar must be 2MB or smaller.')
-      return
+    try {
+      const url = await uploadAvatarFile(file, (input) => avatarUpload.mutateAsync(input))
+      setAvatarUrl(url)
+      toast.success('Avatar updated')
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to upload avatar'
+      toast.error(message)
     }
-    const reader = new FileReader()
-    reader.onloadend = async () => {
-      const base64 = (reader.result as string)?.split(',')[1]
-      if (!base64) {
-        toast.error('Failed to read file.')
-        return
-      }
-      try {
-        const url = await avatarUpload.mutateAsync({
-          fileData: base64,
-          fileName: file.name,
-          mimeType: file.type,
-          fileSize: file.size,
-        })
-        setAvatarUrl(url)
-        toast.success('Avatar updated')
-      } catch (err) {
-        const message = err instanceof Error ? err.message : 'Failed to upload avatar'
-        toast.error(message)
-      }
-    }
-    reader.readAsDataURL(file)
   }
 
   const handleRemoveAvatar = async () => {

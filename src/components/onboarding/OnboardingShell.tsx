@@ -66,7 +66,7 @@ export function getOnboardingSteps(stage: OnboardingStage = 'profile'): Onboardi
  * calc(-100% + 16px) — the previous column's circle center — with width:100%
  * so it lands exactly on this column's own circle center. Titles hide on
  * mobile (the current step's title renders below the row instead). */
-function Stepper({
+export function Stepper({
   steps,
   onStepClick,
 }: {

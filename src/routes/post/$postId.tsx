@@ -45,6 +45,7 @@ import { toast } from '@/hooks/use-toast'
 import { Description, DescriptionItem, Entity, Note } from '@cdecaire/sable'
 import { Row, Stack, Col, Columns, GridOverlay } from '@cdecaire/sable/layout'
 import { GridOverlayContext } from '@/components/layout/GridOverlayContext'
+import { buildOgMeta } from '@/lib/og-meta'
 
 const BASE_URL = "https://desperse.com"
 
@@ -65,27 +66,7 @@ export const Route = createFileRoute('/post/$postId')({
     const ogImage = `${BASE_URL}/api/og/post/${params.postId}`
     const url = `${BASE_URL}/post/${params.postId}`
 
-    return {
-      meta: [
-        { title },
-        { name: "description", content: description },
-        // Open Graph
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
-        { property: "og:image", content: ogImage },
-        { property: "og:image:width", content: "1200" },
-        { property: "og:image:height", content: "630" },
-        { property: "og:url", content: url },
-        { property: "og:type", content: "article" },
-        { property: "og:site_name", content: "Desperse" },
-        // Twitter Card
-        { name: "twitter:site", content: "@desperseapp" },
-        { name: "twitter:card", content: "summary_large_image" },
-        { name: "twitter:title", content: title },
-        { name: "twitter:description", content: description },
-        { name: "twitter:image", content: ogImage },
-      ],
-    }
+    return { meta: buildOgMeta({ title, description, image: ogImage, url, type: 'article' }) }
   },
 })
 

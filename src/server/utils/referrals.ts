@@ -2,7 +2,7 @@ import { createHmac, timingSafeEqual } from 'node:crypto'
 import { and, desc, eq, lt, ne, sql } from 'drizzle-orm'
 
 import { env } from '@/config/env'
-import { REFERRAL_SLOT_LIMIT } from '@/lib/referrals'
+import { getPublicReferralStatus, REFERRAL_SLOT_LIMIT } from '@/lib/referrals'
 import { db } from '@/server/db'
 import { isUniqueViolation } from '@/server/utils/db-errors'
 import {
@@ -690,6 +690,15 @@ export async function getReferralOwnerDashboard(userId: string) {
     remainingSlots: Math.max(0, REFERRAL_SLOT_LIMIT - consumedSlots),
     referrals: normalizedReferrals,
   }
+}
+
+export async function getPublicReferralProfileStatus(userId: string) {
+  const [result] = await db
+    .select({ count: sql<number>`count(*)::int` })
+    .from(referrals)
+    .where(and(eq(referrals.referrerUserId, userId), eq(referrals.state, 'activated')))
+
+  return getPublicReferralStatus(result?.count ?? 0)
 }
 
 // Bound the per-call sweep so the unscoped branch never loads an unbounded result set.

@@ -3,6 +3,7 @@ import { z } from 'zod'
 
 import { withAuth } from '@/server/auth'
 import {
+  getPublicReferralProfileStatus as getPublicReferralProfileStatusInternal,
   getReferralStatusForReferredUser,
   getReferrerInvitePreview,
   setCustomReferralInviteCode,
@@ -10,6 +11,10 @@ import {
 
 const inviteCodeSchema = z.object({
   code: z.string().min(1),
+})
+
+const publicProfileStatusSchema = z.object({
+  userId: z.string().min(1),
 })
 
 /**
@@ -38,6 +43,13 @@ export const getMyReferralStatus = createServerFn({ method: 'POST' }).handler(as
   }
   const referral = await getReferralStatusForReferredUser(result.auth.userId)
   return { success: true as const, referral }
+})
+
+/** Public recognition state. Returns null until the first valid activation. */
+export const getPublicReferralProfileStatus = createServerFn({ method: 'GET' }).handler(async (input: unknown) => {
+  const rawData = input && typeof input === 'object' && 'data' in input ? (input as { data: unknown }).data : input
+  const { userId } = publicProfileStatusSchema.parse(rawData)
+  return getPublicReferralProfileStatusInternal(userId)
 })
 
 export const getReferralOwnerDashboard = createServerFn({

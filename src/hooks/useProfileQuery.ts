@@ -5,7 +5,6 @@
 
 import { useQuery, useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
-  getUserBySlug,
   getUserPosts,
   getUserCollections,
   getUserForSale,
@@ -20,32 +19,35 @@ import { getUserLikes } from '@/server/functions/likes'
 import { getUserComments } from '@/server/functions/comments'
 import { currentUserQueryKey, useCurrentUser } from './useCurrentUser'
 import { useAuth } from './useAuth'
+import {
+  type ProfileQueryData,
+  profileQueryKeys,
+  publicProfileQueryOptions,
+  viewerProfileQueryOptions,
+} from '@/lib/profile-query'
 
 /**
  * Fetch profile user by slug
  */
 export function useProfileUser(slug: string | undefined) {
-  const { getAuthHeaders, isAuthenticated } = useAuth()
-  const { user: currentUser } = useCurrentUser()
+  const queryClient = useQueryClient()
+  const { getAuthHeaders, isAuthenticated, isReady, privyId } = useAuth()
+  const profileSlug = slug ?? ''
+  const isViewerQuery = isReady && isAuthenticated && !!privyId
+  const publicData = queryClient.getQueryData<ProfileQueryData>(profileQueryKeys.public(profileSlug))
+  const getAuthorization = async () => {
+    const headers = await getAuthHeaders()
+    return headers.Authorization ?? null
+  }
+  const options = isViewerQuery
+    ? viewerProfileQueryOptions(profileSlug, privyId, getAuthorization)
+    : publicProfileQueryOptions(profileSlug)
   // Include the viewer in the cache key so that block state is computed for
   // the right person — same slug looks different to different viewers.
   return useQuery({
-    queryKey: ['profile', slug, currentUser?.id],
-    queryFn: async () => {
-      const authHeaders = isAuthenticated ? await getAuthHeaders().catch(() => null) : null
-      const result = await getUserBySlug({
-        data: {
-          slug: slug!,
-          ...(authHeaders ? { _authorization: authHeaders.Authorization } : {}),
-        },
-      } as never)
-      if (!result.success) {
-        throw new Error(result.error || 'User not found')
-      }
-      return result
-    },
+    ...options,
+    placeholderData: isViewerQuery ? publicData : undefined,
     enabled: !!slug,
-    staleTime: 5 * 60 * 1000, // 5 minutes
   })
 }
 
@@ -570,4 +572,3 @@ export function usePostCollectors(postId: string | undefined, currentUserId: str
 }
 
 export default useProfileUser
-

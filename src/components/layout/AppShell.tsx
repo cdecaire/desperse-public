@@ -8,13 +8,13 @@ import Sidebar from './Sidebar'
 import { PublicHeader, PUBLIC_NAV_ITEMS } from './PublicHeader'
 import { GridOverlayContext } from './GridOverlayContext'
 import { Toaster } from '@/components/ui/toaster'
-import { RouteProgressBar } from '@/components/shared/RouteProgressBar'
 import { NetworkBanner } from '@/components/shared/NetworkBanner'
 import { RpcHealthBanner } from '@/components/shared/RpcHealthBanner'
 import { LoginModal, useLoginModal } from '@/components/shared/LoginModal'
 import { FloatingMessageButton, MessagingProvider } from '@/components/messaging'
 import { useAuth } from '@/hooks/useAuth'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
+import { getCommittedPathname } from '@/lib/router-state'
 
 interface AppShellProps {
   children: React.ReactNode
@@ -39,8 +39,7 @@ const STANDALONE_ROUTES = ['/login']
 const HIDE_BOTTOM_NAV_PREFIXES = ['/post']
 
 export default function AppShell({ children }: AppShellProps) {
-  const routerState = useRouterState()
-  const currentPath = routerState.location.pathname
+  const currentPath = useRouterState({ select: getCommittedPathname })
   const { showModal, setShowModal } = useLoginModal()
   const { isAuthenticated } = useAuth()
   const { user: currentUser } = useCurrentUser()
@@ -143,7 +142,6 @@ export default function AppShell({ children }: AppShellProps) {
       <SableAppShell
         banners={
           <>
-            <RouteProgressBar />
             <NetworkBanner />
             <RpcHealthBanner />
           </>

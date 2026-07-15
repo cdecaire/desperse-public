@@ -17,7 +17,7 @@ import {
   ThemeSwitcher,
 } from '@cdecaire/sable'
 import { Row, Stack } from '@cdecaire/sable/layout'
-import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
+import { ContentLoadingSkeleton } from '@/components/shared/ContentLoadingSkeleton'
 import { PageHeader } from '@/components/shared/PageHeader'
 
 export const Route = createFileRoute('/settings/account/app')({
@@ -227,9 +227,7 @@ function AppSettingsPage() {
           </Row>
 
         {isLoading ? (
-          <Row justify="center" className="py-4">
-            <LoadingSpinner />
-          </Row>
+          <ContentLoadingSkeleton label="Loading app preferences" rows={2} variant="compact" />
         ) : !user ? (
           <p className="text-body-sm text-muted-foreground py-2">
             Sign in to set explorer preference

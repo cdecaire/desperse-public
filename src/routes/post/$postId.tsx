@@ -41,23 +41,24 @@ import { LICENSE_LABELS } from '@/components/forms/CopyrightFields'
 import { usePreferences } from '@/hooks/usePreferences'
 import { usePostCollectors, useFollowMutation } from '@/hooks/useProfileQuery'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
+import { ContentLoadingSkeleton } from '@/components/shared/ContentLoadingSkeleton'
 import { toast } from '@/hooks/use-toast'
 import { Description, DescriptionItem, Entity, Note } from '@cdecaire/sable'
 import { Row, Stack, Col, Columns, GridOverlay } from '@cdecaire/sable/layout'
 import { GridOverlayContext } from '@/components/layout/GridOverlayContext'
 import { buildOgMeta } from '@/lib/og-meta'
+import { publicPostQueryOptions } from '@/lib/post-query'
 
 const BASE_URL = "https://desperse.com"
 
 export const Route = createFileRoute('/post/$postId')({
   component: PostDetailPage,
-  loader: async ({ params }) => {
-    try {
-      const meta = await (fetchPostMeta as any)({ data: { postId: params.postId } })
-      return { meta }
-    } catch {
-      return { meta: null }
-    }
+  loader: async ({ context, params }) => {
+    const [meta] = await Promise.all([
+      (fetchPostMeta as any)({ data: { postId: params.postId } }).catch(() => null),
+      context.queryClient.ensureQueryData(publicPostQueryOptions(params.postId)).catch(() => null),
+    ])
+    return { meta }
   },
   head: ({ loaderData, params }) => {
     const meta = loaderData?.meta
@@ -387,11 +388,7 @@ function CollectorsList({
   getTokenUrl?: (sig: string) => string
 }) {
   if (isLoading) {
-    return (
-      <Row align="center" justify="center" className="py-8">
-        <LoadingSpinner />
-      </Row>
-    )
+    return <ContentLoadingSkeleton label="Loading collectors" rows={3} variant="compact" />
   }
 
   if (!collectors || collectors.length === 0) {
@@ -421,8 +418,6 @@ function PostDetailPage() {
   const { postId } = Route.useParams()
   const { isAuthenticated, isReady, login, getAccessToken } = useAuth()
   const { user: currentUser, isLoading: isCurrentUserLoading, isAuthInitializing } = useCurrentUser()
-  // User state is settled when auth is initialized and user data is loaded
-  const isUserReady = !isAuthInitializing && !isCurrentUserLoading
   const matchRoute = useMatchRoute()
   const router = useRouter()
   const showGrid = useContext(GridOverlayContext)
@@ -439,7 +434,10 @@ function PostDetailPage() {
 
   // Call all hooks first (hooks must be called unconditionally)
   const queryClient = useQueryClient()
-  const { data, isLoading, isError, error } = usePostQuery({ postId })
+  const { data, isLoading, isError, error, isPlaceholderData } = usePostQuery({ postId })
+  // Public loader data can paint the destination immediately, but ownership
+  // actions wait for the authenticated viewer response to settle.
+  const isUserReady = !isAuthInitializing && !isCurrentUserLoading && !isPlaceholderData
   const { downloadProtectedAsset, isAuthenticating: isDownloading } = useGatedDownload()
   const { preferences } = usePreferences()
   

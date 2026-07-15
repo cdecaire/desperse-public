@@ -3,7 +3,7 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { OnboardingShell } from '@/components/onboarding/OnboardingShell'
 import { AuthGuard } from '@/components/shared/AuthGuard'
-import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
+import { ContentLoadingSkeleton } from '@/components/shared/ContentLoadingSkeleton'
 import { StaticPageLayout } from '@/components/layout/StaticPageLayout'
 import { useOnboardingState } from '@/hooks/useOnboardingState'
 
@@ -44,10 +44,7 @@ function OnboardingContent() {
   if (isResolving) {
     return (
       <StaticPageLayout maxWidth="64rem">
-        <Stack align="center" className="gap-3 text-muted-foreground">
-          <LoadingSpinner size="lg" />
-          <p className="text-body-sm">Checking your onboarding state...</p>
-        </Stack>
+        <ContentLoadingSkeleton label="Loading onboarding" rows={3} variant="form" />
       </StaticPageLayout>
     )
   }

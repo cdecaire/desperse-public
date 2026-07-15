@@ -6,7 +6,7 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { Row, Stack } from '@cdecaire/sable/layout'
 import { useBetaFeedbackById, useMarkBetaFeedbackReviewed } from '@/hooks/useFeedback'
-import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
+import { ContentLoadingSkeleton } from '@/components/shared/ContentLoadingSkeleton'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icon'
@@ -70,12 +70,7 @@ function FeedbackDetailPage() {
       </Button>
 
       {(isLoading || isPending) && (
-        <Row align="center" justify="center" className="py-12">
-          <LoadingSpinner size="lg" />
-          <div className="ml-4 text-body-sm text-muted-foreground">
-            Loading feedback...
-          </div>
-        </Row>
+        <ContentLoadingSkeleton label="Loading feedback" variant="detail" />
       )}
 
       {error && (

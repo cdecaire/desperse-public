@@ -6,6 +6,7 @@ import {
   getReferralOwnerDashboard,
 } from '@/server/functions/referrals'
 import { useAuth } from '@/hooks/useAuth'
+import { useCurrentUser } from '@/hooks/useCurrentUser'
 
 export const referralOwnerDashboardQueryKey = ['referral-owner-dashboard'] as const
 
@@ -49,14 +50,17 @@ export function usePublicReferralProfileStatus(userId: string | undefined) {
 }
 
 export function useReferralLeaderboard() {
-  const { getAuthHeaders } = useAuth()
+  const { isAuthenticated, getAuthHeaders } = useAuth()
+  const { user } = useCurrentUser()
 
   return useQuery({
-    queryKey: ['referral-leaderboard', 'weekly'],
+    queryKey: ['referral-leaderboard', 'weekly', user?.id ?? 'public'],
     queryFn: async () => {
-      const authHeaders = await getAuthHeaders()
+      const authorization = isAuthenticated
+        ? (await getAuthHeaders().catch(() => ({} as Record<string, string>))).Authorization
+        : undefined
       return getReferralLeaderboard({
-        data: authHeaders.Authorization ? { _authorization: authHeaders.Authorization } : {},
+        data: authorization ? { _authorization: authorization } : {},
       } as never)
     },
     staleTime: 60 * 1000,

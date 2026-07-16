@@ -603,12 +603,11 @@ export async function verifyReferralActivationForUser(referredUserId: string) {
     payload: { source: 'first_follow', followingUserId: qualifyingTarget.followingId },
   })
 
-  const activatedReferrals = await db
-    .select({ id: referrals.id })
+  const [activatedReferralCount] = await db
+    .select({ count: sql<number>`count(*)::int` })
     .from(referrals)
     .where(and(eq(referrals.referrerUserId, referral.referrerUserId), eq(referrals.state, 'activated')))
-    .limit(10)
-  const milestone = getReferralMilestoneConfirmation(activatedReferrals.length)
+  const milestone = getReferralMilestoneConfirmation(activatedReferralCount?.count ?? 0)
 
   try {
     await db.insert(notifications).values({

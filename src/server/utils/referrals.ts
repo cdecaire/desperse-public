@@ -868,6 +868,82 @@ export async function getReferralStatusForReferredUser(referredUserId: string) {
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 const REFERRAL_MODERATION_EVENT = 'referral_moderation_action'
 
+export async function moderateReferralLifecycle(input: {
+  referralId: string
+  actorUserId: string
+  action: 'revoke' | 'restore'
+  reason: string
+  now?: Date
+}) {
+  const reason = input.reason.trim()
+  if (!reason) return { success: false as const, error: 'A moderation reason is required' }
+
+  const [referral] = await db.select().from(referrals).where(eq(referrals.id, input.referralId)).limit(1)
+  if (!referral) return { success: false as const, error: 'Referral not found' }
+
+  const nextState = input.action === 'revoke' ? 'revoked' : 'pending_activation'
+  if (referral.state === nextState) return { success: true as const, referral, changed: false }
+  if (input.action === 'revoke' && referral.state !== 'activated') {
+    return { success: false as const, error: 'Only activated referrals can be revoked' }
+  }
+  if (input.action === 'restore' && referral.state !== 'revoked' && referral.state !== 'rejected') {
+    return { success: false as const, error: 'Only rejected or revoked referrals can be restored' }
+  }
+
+  const now = input.now ?? new Date()
+  const [updated] = await db
+    .update(referrals)
+    .set(input.action === 'revoke'
+      ? {
+          state: 'revoked',
+          stateReason: reason,
+          activationSource: null,
+          activationQualifiedFollowUserId: null,
+          activationVerifiedAt: null,
+          activatedAt: null,
+          revokedAt: now,
+          updatedAt: now,
+        }
+      : {
+          state: 'pending_activation',
+          stateReason: null,
+          activationSource: null,
+          activationQualifiedFollowUserId: null,
+          activationVerifiedAt: null,
+          activatedAt: null,
+          expiredAt: null,
+          rejectedAt: null,
+          revokedAt: null,
+          expiresAt: new Date(now.getTime() + PENDING_ACTIVATION_TTL_DAYS * DAY_MS),
+          updatedAt: now,
+        })
+    .where(and(eq(referrals.id, referral.id), eq(referrals.state, referral.state)))
+    .returning()
+  if (!updated) return { success: false as const, error: 'Referral changed before moderation completed' }
+
+  await emitReferralEvent({
+    eventName: input.action === 'revoke' ? 'referral_revoked' : 'referral_restored',
+    referralId: referral.id,
+    attributionSessionId: referral.attributionSessionId,
+    referrerUserId: referral.referrerUserId,
+    referredUserId: referral.referredUserId,
+    payload: {
+      action: input.action,
+      actorUserId: input.actorUserId,
+      reason,
+      previousState: referral.state,
+      nextState,
+    },
+  })
+
+  // Counts, profile recognition, and leaderboard rows are derived from current
+  // activated records. Restoration re-enters the canonical verifier rather than
+  // trusting a moderator to reactivate a referral directly.
+  if (input.action === 'restore') await verifyReferralActivationForUser(referral.referredUserId)
+
+  return { success: true as const, referral: updated, changed: true }
+}
+
 export async function searchReferralsForModeration(rawQuery: string, limit = 50) {
   const query = rawQuery.trim()
   if (!query) return []

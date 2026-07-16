@@ -5,6 +5,7 @@ import { withAuth } from '@/server/auth'
 import { requireModerator } from '@/server/utils/auth-helpers'
 import {
   getReferralInviteCodesForModeration,
+  moderateReferralLifecycle,
   retireReferralInviteCode,
   searchReferralInviteCodesForModeration,
   searchReferralsForModeration,
@@ -24,6 +25,11 @@ const leaderboardExclusionSchema = z.object({
 const codeListSchema = z.object({ userId: z.string().uuid() })
 const retireCodeSchema = z.object({
   codeId: z.string().uuid(),
+  reason: z.string().trim().min(3).max(500),
+})
+const referralLifecycleSchema = z.object({
+  referralId: z.string().uuid(),
+  action: z.enum(['revoke', 'restore']),
   reason: z.string().trim().min(3).max(500),
 })
 
@@ -52,6 +58,18 @@ export const setReferralLeaderboardExclusion = createServerFn({ method: 'POST' }
   } catch (error) {
     console.error('[setReferralLeaderboardExclusion] Failed:', error instanceof Error ? error.message : 'Unknown error')
     return { success: false as const, error: 'Failed to update leaderboard exclusion.' }
+  }
+})
+
+export const moderateReferralLifecycleForModeration = createServerFn({ method: 'POST' }).handler(async (input: unknown) => {
+  try {
+    const result = await withAuth(referralLifecycleSchema, input)
+    if (!result) return { success: false as const, error: 'Authentication required' }
+    await requireModerator(result.auth.userId)
+    return await moderateReferralLifecycle({ ...result.input, actorUserId: result.auth.userId })
+  } catch (error) {
+    console.error('[moderateReferralLifecycleForModeration] Failed:', error instanceof Error ? error.message : 'Unknown error')
+    return { success: false as const, error: 'Failed to update referral lifecycle.' }
   }
 })
 

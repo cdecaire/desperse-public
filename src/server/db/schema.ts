@@ -45,6 +45,7 @@ export const notificationTypeEnum = pgEnum('notification_type_enum', [
   'mention',
   'content_hidden',
   'content_deleted',
+  'referral_activated',
 ]);
 
 export const notificationReferenceTypeEnum = pgEnum('notification_reference_type_enum', [
@@ -1115,6 +1116,10 @@ export type NotificationMetadata = {
   contentLabel?: string
   /** Parent post ID (for comment moderation — so notification can link to post) */
   parentPostId?: string
+  /** Referral milestone crossed by this activation, when applicable */
+  milestoneTarget?: number
+  /** Calm, product-native milestone confirmation copy */
+  milestoneMessage?: string
 }
 
 // Arweave storage types

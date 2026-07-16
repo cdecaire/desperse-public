@@ -1,10 +1,10 @@
 export const REFERRAL_SLOT_LIMIT = 3
 
 export const REFERRAL_MILESTONES = [
-  { target: 1, label: 'First Signal badge' },
-  { target: 3, label: 'Custom invite code' },
-  { target: 5, label: 'Profile accent' },
-  { target: 10, label: 'Connector badge and Top Connectors eligibility' },
+  { target: 1, label: 'First Signal badge', confirmation: 'Unlocked: First Signal' },
+  { target: 3, label: 'Custom invite code', confirmation: 'Custom invite code unlocked' },
+  { target: 5, label: 'Profile accent', confirmation: 'Profile accent unlocked' },
+  { target: 10, label: 'Connector badge and Top Connectors eligibility', confirmation: 'You now qualify for Top Connectors' },
 ] as const
 
 export type ReferralBackendState =
@@ -113,6 +113,11 @@ export function getReferralStateBadgeVariant(state: ReferralListState):
 
 export function getNextReferralMilestone(activatedCount: number) {
   return REFERRAL_MILESTONES.find((milestone) => activatedCount < milestone.target) ?? null
+}
+
+export function getReferralMilestoneConfirmation(activatedCount: number) {
+  const milestone = REFERRAL_MILESTONES.find(({ target }) => target === activatedCount)
+  return milestone ? { target: milestone.target, message: milestone.confirmation } : null
 }
 
 export function getCurrentReferralTierLabel(activatedCount: number): string {

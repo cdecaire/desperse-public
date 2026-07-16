@@ -5,6 +5,7 @@ import { env } from '@/config/env'
 import {
   getPublicReferralStatus,
   getReferralLeaderboardStatus,
+  getReferralMilestoneConfirmation,
   rankReferralLeaderboardEntries,
   REFERRAL_SLOT_LIMIT,
   type ReferralLeaderboardCandidate,
@@ -13,6 +14,7 @@ import { db } from '@/server/db'
 import { isUniqueViolation } from '@/server/utils/db-errors'
 import {
   posts,
+  notifications,
   referralAttributionSessions,
   referralEvents,
   referralInviteCodes,
@@ -600,6 +602,28 @@ export async function verifyReferralActivationForUser(referredUserId: string) {
     referredUserId,
     payload: { source: 'first_follow', followingUserId: qualifyingTarget.followingId },
   })
+
+  const [activatedReferralCount] = await db
+    .select({ count: sql<number>`count(*)::int` })
+    .from(referrals)
+    .where(and(eq(referrals.referrerUserId, referral.referrerUserId), eq(referrals.state, 'activated')))
+  const milestone = getReferralMilestoneConfirmation(activatedReferralCount?.count ?? 0)
+
+  try {
+    await db.insert(notifications).values({
+      userId: referral.referrerUserId,
+      actorId: referredUserId,
+      type: 'referral_activated',
+      metadata: milestone
+        ? { milestoneTarget: milestone.target, milestoneMessage: milestone.message }
+        : null,
+    })
+  } catch (notificationError) {
+    console.warn(
+      '[verifyReferralActivationForUser] Failed to create referral notification:',
+      notificationError instanceof Error ? notificationError.message : 'Unknown error',
+    )
+  }
 
   return { success: true as const, status: 'activated' as const, referral: activatedReferral ?? referral }
 }

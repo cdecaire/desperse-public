@@ -12,7 +12,7 @@ import { detectMediaType } from '@/lib/media'
 import { formatRelativeTime } from '@/lib/dates'
 
 // Types defined locally to avoid importing from server functions
-export type NotificationType = 'follow' | 'like' | 'comment' | 'collect' | 'purchase' | 'mention' | 'content_hidden' | 'content_deleted'
+export type NotificationType = 'follow' | 'like' | 'comment' | 'collect' | 'purchase' | 'mention' | 'content_hidden' | 'content_deleted' | 'referral_activated'
 export type NotificationReferenceType = 'post' | 'comment'
 
 export interface NotificationWithActor {
@@ -39,6 +39,8 @@ export interface NotificationWithActor {
     reason?: string
     contentLabel?: string
     parentPostId?: string
+    milestoneTarget?: number
+    milestoneMessage?: string
   } | null
 }
 
@@ -71,6 +73,8 @@ function getNotificationText(type: NotificationType, referenceType?: Notificatio
       return referenceType === 'comment'
         ? 'Your comment was removed by a moderator'
         : 'Your post was removed by a moderator'
+    case 'referral_activated':
+      return 'activated from your invite'
     default:
       return 'interacted with you'
   }
@@ -80,6 +84,7 @@ function getNotificationText(type: NotificationType, referenceType?: Notificatio
 type NotificationLinkInfo =
   | { to: '/profile/$slug'; params: { slug: string } }
   | { to: '/post/$postId'; params: { postId: string } }
+  | { to: '/settings/invites'; params: Record<string, never> }
 
 function getNotificationLink(notification: NotificationWithActor): NotificationLinkInfo {
   const { type, referenceType, referenceId, reference, actor } = notification
@@ -87,6 +92,8 @@ function getNotificationLink(notification: NotificationWithActor): NotificationL
   switch (type) {
     case 'follow':
       return { to: '/profile/$slug', params: { slug: actor.usernameSlug } }
+    case 'referral_activated':
+      return { to: '/settings/invites', params: {} }
     case 'like':
     case 'collect':
     case 'purchase':
@@ -220,6 +227,10 @@ export function NotificationItem({ notification }: NotificationItemProps) {
           </Link>{' '}
           <span className="text-muted-foreground">{actionText}</span>
         </p>
+
+        {type === 'referral_activated' && metadata?.milestoneMessage && (
+          <p className="text-sm font-medium mt-1">{metadata.milestoneMessage}</p>
+        )}
 
         {/* Comment preview */}
         {type === 'comment' && reference?.content && (

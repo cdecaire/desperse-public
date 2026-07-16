@@ -180,16 +180,26 @@ describe('referrals utils', () => {
         activationQualifiedFollowUserId: 'creator-1',
       },
     ])
+    selectQueue.push([{ id: 'referral-1' }]) // activated referrals after this transition
 
     const { verifyReferralActivationForUser } = await import('./referrals')
     const result = await verifyReferralActivationForUser('referred-1')
 
     expect(result.success).toBe(true)
     expect(result.status).toBe('activated')
-    expect(insertValues).toHaveLength(3)
+    expect(insertValues).toHaveLength(4)
     expect(insertValues[0]).toMatchObject({ eventName: 'referral_activation_source_completed' })
     expect(insertValues[1]).toMatchObject({ eventName: 'referral_activation_verified_server' })
     expect(insertValues[2]).toMatchObject({ eventName: 'referral_activated' })
+    expect(insertValues[3]).toMatchObject({
+      userId: 'referrer-1',
+      actorId: 'referred-1',
+      type: 'referral_activated',
+      metadata: {
+        milestoneTarget: 1,
+        milestoneMessage: 'Unlocked: First Signal',
+      },
+    })
 
     vi.useRealTimers()
   })

@@ -4,6 +4,7 @@ import {
   buildReferralShareCardSvg,
   getCurrentReferralTierLabel,
   getNextReferralMilestone,
+  getReferralMilestoneConfirmation,
   getPublicReferralStatus,
   getReferralLeaderboardStatus,
   getReferralListState,
@@ -29,6 +30,19 @@ describe('referral helpers', () => {
     expect(getCurrentReferralTierLabel(1)).toBe('First Signal')
     expect(getCurrentReferralTierLabel(3)).toBe('Custom invite code unlocked')
     expect(getCurrentReferralTierLabel(10)).toBe('Connector')
+  })
+
+  it('returns calm confirmation copy only at milestone thresholds', () => {
+    expect(getReferralMilestoneConfirmation(1)).toEqual({
+      target: 1,
+      message: 'Unlocked: First Signal',
+    })
+    expect(getReferralMilestoneConfirmation(3)).toEqual({
+      target: 3,
+      message: 'Custom invite code unlocked',
+    })
+    expect(getReferralMilestoneConfirmation(2)).toBeNull()
+    expect(getReferralMilestoneConfirmation(11)).toBeNull()
   })
 
   it('derives public profile status only after an activation', () => {

@@ -195,7 +195,7 @@ function InvitesPageContent() {
         <Stack gap={2.5} className="pt-4 pb-12">
             <PageHeader
               title="Invites"
-              description="Bring real people into Desperse and track which invites actually activate. Recognition only. No cash value."
+              description="Bring real people into Desperse and track which invites actually activate."
             />
 
             {isLoading ? (
@@ -352,7 +352,7 @@ function InvitesPageContent() {
                         </span>
                       </Stack>
                     ) : (
-                      <Note variant="success">You’ve cleared every current milestone. Top Connectors eligibility is unlocked.</Note>
+                      <Note variant="success">You’ve cleared every current milestone. Referral board eligibility is unlocked.</Note>
                     )}
                   </Stack>
                 </SettingsCard>
@@ -419,10 +419,10 @@ function InvitesPageContent() {
                   )}
                 </SettingsCard>
 
-                {/* Top Connectors preview */}
+                {/* Referral board preview */}
                 <SettingsCard>
                   <SectionHeader
-                    title="Top Connectors"
+                    title="Referral board"
                     aside={<Badge variant="secondary" size="sm">This week</Badge>}
                   />
                   <Stack gap={2}>
@@ -446,13 +446,13 @@ function InvitesPageContent() {
                         <p className="text-title-lg">Activate 10 invites to qualify</p>
                         <p className="mt-1 text-body-sm text-muted-foreground">
                           {leaderboard?.currentUserStatus?.state === 'ineligible'
-                            ? `${leaderboard.currentUserStatus.remainingToQualify} more valid activation${leaderboard.currentUserStatus.remainingToQualify === 1 ? '' : 's'} to Top Connectors.`
-                            : 'Top Connectors highlights people bringing active community members into Desperse.'}
+                            ? `${leaderboard.currentUserStatus.remainingToQualify} more valid activation${leaderboard.currentUserStatus.remainingToQualify === 1 ? '' : 's'} to reach the referral board.`
+                            : 'The referral board highlights members bringing active people into Desperse.'}
                         </p>
                       </div>
                     )}
                     <Button asChild variant="outline" className="w-full md:w-fit">
-                      <Link to="/top-connectors">View leaderboard</Link>
+                      <Link to="/leaderboard" search={{ view: 'referrals' }}>View leaderboard</Link>
                     </Button>
                   </Stack>
                 </SettingsCard>
@@ -490,10 +490,6 @@ const INVITE_FAQ = [
   {
     q: 'Can progress be removed?',
     a: 'Yes. Spam, self-referrals, abuse, or review corrections can remove referral credit and any status tied to it.',
-  },
-  {
-    q: 'Is there any financial value?',
-    a: 'Progress, badges, and status are recognition only. They have no cash value and are not transferable, sellable, redeemable, or exchangeable.',
   },
 ] as const
 

@@ -367,10 +367,7 @@ export function InviteLandingPage({ code, referrerSlug, invalid, initialPreview 
         <section className="rounded-2xl border bg-muted/20 p-5 text-body-sm text-muted-foreground">
           <div className="flex items-start gap-3">
             <Icon name="triangle-exclamation" variant="regular" className="mt-0.5 text-lg" />
-            <p>
-              Recognition only. No cash value. This invite flow is about joining Desperse and finishing activation,
-              not rewards or future value.
-            </p>
+            <p>This invite flow is about joining Desperse and finishing activation.</p>
           </div>
         </section>
       </div>

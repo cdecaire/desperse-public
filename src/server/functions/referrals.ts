@@ -53,7 +53,7 @@ export const getPublicReferralProfileStatus = createServerFn({ method: 'GET' }).
   return getPublicReferralProfileStatusInternal(userId)
 })
 
-/** Public weekly Top Connectors board, with private status for the signed-in user. */
+/** Public weekly referral board, with private status for the signed-in user. */
 export const getReferralLeaderboard = createServerFn({ method: 'GET' }).handler(async (input: unknown) => {
   const result = await withOptionalAuth(z.object({}), input)
   return getReferralLeaderboardInternal({ currentUserId: result.auth?.userId })

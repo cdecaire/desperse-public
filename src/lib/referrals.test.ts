@@ -29,7 +29,7 @@ describe('referral helpers', () => {
     expect(getCurrentReferralTierLabel(0)).toBe('Invite in progress')
     expect(getCurrentReferralTierLabel(1)).toBe('First Signal')
     expect(getCurrentReferralTierLabel(3)).toBe('Custom invite code unlocked')
-    expect(getCurrentReferralTierLabel(10)).toBe('Connector')
+    expect(getCurrentReferralTierLabel(10)).toBe('Referrer')
   })
 
   it('returns calm confirmation copy only at milestone thresholds', () => {
@@ -54,11 +54,11 @@ describe('referral helpers', () => {
       hasFrame: false,
     })
     expect(getPublicReferralStatus(5)).toMatchObject({ badgeLabel: 'First Signal', hasAccent: true })
-    expect(getPublicReferralStatus(10)).toMatchObject({ badgeLabel: 'Connector', hasAccent: true })
-    expect(getPublicReferralStatus(25)).toMatchObject({ badgeLabel: 'Connector', hasFrame: true })
+    expect(getPublicReferralStatus(10)).toMatchObject({ badgeLabel: 'Referrer', hasAccent: true })
+    expect(getPublicReferralStatus(25)).toMatchObject({ badgeLabel: 'Referrer', hasFrame: true })
   })
 
-  it('derives Top Connectors states for ineligible, awaiting, ranked, and excluded users', () => {
+  it('derives referral board states for ineligible, awaiting, ranked, and excluded users', () => {
     expect(getReferralLeaderboardStatus({ totalActivatedCount: 9, weeklyActivatedCount: 3, rank: null, excluded: false }))
       .toEqual({ state: 'ineligible', remainingToQualify: 1 })
     expect(getReferralLeaderboardStatus({ totalActivatedCount: 10, weeklyActivatedCount: 0, rank: null, excluded: false }))
@@ -69,7 +69,7 @@ describe('referral helpers', () => {
       .toEqual({ state: 'review-held' })
   })
 
-  it('ranks only qualified, non-excluded connectors by weekly activations', () => {
+  it('ranks only qualified, non-excluded referrers by weekly activations', () => {
     const ranked = rankReferralLeaderboardEntries([
       { userId: 'b', usernameSlug: 'beta', displayName: 'Beta', avatarUrl: null, totalActivatedCount: 15, weeklyActivatedCount: 2, excluded: false },
       { userId: 'a', usernameSlug: 'alpha', displayName: 'Alpha', avatarUrl: null, totalActivatedCount: 12, weeklyActivatedCount: 4, excluded: false },

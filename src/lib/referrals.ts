@@ -4,7 +4,7 @@ export const REFERRAL_MILESTONES = [
   { target: 1, label: 'First Signal badge', confirmation: 'Unlocked: First Signal' },
   { target: 3, label: 'Custom invite code', confirmation: 'Custom invite code unlocked' },
   { target: 5, label: 'Profile accent', confirmation: 'Profile accent unlocked' },
-  { target: 10, label: 'Connector badge and Top Connectors eligibility', confirmation: 'You now qualify for Top Connectors' },
+  { target: 10, label: 'Referrer badge and referral board eligibility', confirmation: 'You now qualify for the referral board' },
 ] as const
 
 export type ReferralBackendState =
@@ -121,7 +121,7 @@ export function getReferralMilestoneConfirmation(activatedCount: number) {
 }
 
 export function getCurrentReferralTierLabel(activatedCount: number): string {
-  if (activatedCount >= 10) return 'Connector'
+  if (activatedCount >= 10) return 'Referrer'
   if (activatedCount >= 5) return 'Profile accent unlocked'
   if (activatedCount >= 3) return 'Custom invite code unlocked'
   if (activatedCount >= 1) return 'First Signal'
@@ -130,7 +130,7 @@ export function getCurrentReferralTierLabel(activatedCount: number): string {
 
 export type PublicReferralStatus = {
   activatedCount: number
-  badgeLabel: 'First Signal' | 'Connector'
+  badgeLabel: 'First Signal' | 'Referrer'
   hasAccent: boolean
   hasFrame: boolean
 }
@@ -141,7 +141,7 @@ export function getPublicReferralStatus(activatedCount: number): PublicReferralS
 
   return {
     activatedCount,
-    badgeLabel: activatedCount >= 10 ? 'Connector' : 'First Signal',
+    badgeLabel: activatedCount >= 10 ? 'Referrer' : 'First Signal',
     hasAccent: activatedCount >= 5,
     hasFrame: activatedCount >= 25,
   }
@@ -161,7 +161,7 @@ export type ReferralLeaderboardCandidate = {
 
 export type ReferralLeaderboardEntry = ReferralLeaderboardCandidate & {
   rank: number
-  badgeLabel: 'Connector'
+  badgeLabel: 'Referrer'
 }
 
 export function rankReferralLeaderboardEntries(
@@ -178,7 +178,7 @@ export function rankReferralLeaderboardEntries(
       || b.totalActivatedCount - a.totalActivatedCount
       || a.usernameSlug.localeCompare(b.usernameSlug)
     ))
-    .map((candidate, index) => ({ ...candidate, rank: index + 1, badgeLabel: 'Connector' }))
+    .map((candidate, index) => ({ ...candidate, rank: index + 1, badgeLabel: 'Referrer' }))
 }
 
 export function getReferralLeaderboardStatus(input: {
@@ -258,7 +258,7 @@ export function buildReferralShareCardSvg(input: {
   <text x="64" y="376" fill="#FAFAFA" font-size="44" font-weight="700" font-family="Inter, Arial, sans-serif">${inviteCode}</text>
   <text x="64" y="446" fill="#A1A1AA" font-size="18" font-family="Inter, Arial, sans-serif">Invite link</text>
   <text x="64" y="486" fill="#FAFAFA" font-size="22" font-family="Inter, Arial, sans-serif">${inviteLink}</text>
-  <text x="64" y="548" fill="#71717A" font-size="16" font-family="Inter, Arial, sans-serif">Join me on Desperse · Recognition only. No cash value.</text>
+  <text x="64" y="548" fill="#71717A" font-size="16" font-family="Inter, Arial, sans-serif">Join me on Desperse</text>
   <text x="980" y="454" text-anchor="middle" fill="#FAFAFA" font-size="22" font-weight="600" font-family="Inter, Arial, sans-serif">Scan to join</text>
   <text x="980" y="484" text-anchor="middle" fill="#A1A1AA" font-size="17" font-family="Inter, Arial, sans-serif">Link and code both work.</text>
 </svg>`

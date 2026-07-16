@@ -749,7 +749,7 @@ export async function getReferralLeaderboard(input?: { currentUserId?: string | 
         displayName: users.displayName,
         avatarUrl: users.avatarUrl,
         totalActivatedCount: sql<number>`count(*)::int`,
-        weeklyActivatedCount: sql<number>`count(*) filter (where ${referrals.activatedAt} >= ${weekStartedAt})::int`,
+        weeklyActivatedCount: sql<number>`count(*) filter (where ${referrals.activatedAt} >= ${weekStartedAt.toISOString()})::int`,
       })
       .from(referrals)
       .innerJoin(users, eq(referrals.referrerUserId, users.id))

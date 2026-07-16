@@ -5,8 +5,10 @@ import {
   getCurrentReferralTierLabel,
   getNextReferralMilestone,
   getPublicReferralStatus,
+  getReferralLeaderboardStatus,
   getReferralListState,
   getReferralStateLabel,
+  rankReferralLeaderboardEntries,
 } from '@/lib/referrals'
 
 describe('referral helpers', () => {
@@ -40,6 +42,31 @@ describe('referral helpers', () => {
     expect(getPublicReferralStatus(5)).toMatchObject({ badgeLabel: 'First Signal', hasAccent: true })
     expect(getPublicReferralStatus(10)).toMatchObject({ badgeLabel: 'Connector', hasAccent: true })
     expect(getPublicReferralStatus(25)).toMatchObject({ badgeLabel: 'Connector', hasFrame: true })
+  })
+
+  it('derives Top Connectors states for ineligible, awaiting, ranked, and excluded users', () => {
+    expect(getReferralLeaderboardStatus({ totalActivatedCount: 9, weeklyActivatedCount: 3, rank: null, excluded: false }))
+      .toEqual({ state: 'ineligible', remainingToQualify: 1 })
+    expect(getReferralLeaderboardStatus({ totalActivatedCount: 10, weeklyActivatedCount: 0, rank: null, excluded: false }))
+      .toEqual({ state: 'awaiting' })
+    expect(getReferralLeaderboardStatus({ totalActivatedCount: 12, weeklyActivatedCount: 2, rank: 4, excluded: false }))
+      .toEqual({ state: 'ranked', rank: 4 })
+    expect(getReferralLeaderboardStatus({ totalActivatedCount: 20, weeklyActivatedCount: 8, rank: null, excluded: true }))
+      .toEqual({ state: 'review-held' })
+  })
+
+  it('ranks only qualified, non-excluded connectors by weekly activations', () => {
+    const ranked = rankReferralLeaderboardEntries([
+      { userId: 'b', usernameSlug: 'beta', displayName: 'Beta', avatarUrl: null, totalActivatedCount: 15, weeklyActivatedCount: 2, excluded: false },
+      { userId: 'a', usernameSlug: 'alpha', displayName: 'Alpha', avatarUrl: null, totalActivatedCount: 12, weeklyActivatedCount: 4, excluded: false },
+      { userId: 'c', usernameSlug: 'charlie', displayName: 'Charlie', avatarUrl: null, totalActivatedCount: 30, weeklyActivatedCount: 9, excluded: true },
+      { userId: 'd', usernameSlug: 'delta', displayName: 'Delta', avatarUrl: null, totalActivatedCount: 9, weeklyActivatedCount: 5, excluded: false },
+    ])
+
+    expect(ranked.map(({ userId, rank }) => ({ userId, rank }))).toEqual([
+      { userId: 'a', rank: 1 },
+      { userId: 'b', rank: 2 },
+    ])
   })
 
   it('builds a personalized share card svg with invite details', () => {

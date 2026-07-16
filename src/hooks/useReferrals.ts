@@ -1,7 +1,12 @@
 import { useQuery } from '@tanstack/react-query'
 
-import { getPublicReferralProfileStatus, getReferralOwnerDashboard } from '@/server/functions/referrals'
+import {
+  getPublicReferralProfileStatus,
+  getReferralLeaderboard,
+  getReferralOwnerDashboard,
+} from '@/server/functions/referrals'
 import { useAuth } from '@/hooks/useAuth'
+import { useCurrentUser } from '@/hooks/useCurrentUser'
 
 export const referralOwnerDashboardQueryKey = ['referral-owner-dashboard'] as const
 
@@ -39,6 +44,25 @@ export function usePublicReferralProfileStatus(userId: string | undefined) {
     queryKey: ['public-referral-profile-status', userId],
     queryFn: () => getPublicReferralProfileStatus({ data: { userId: userId! } } as never),
     enabled: Boolean(userId),
+    staleTime: 60 * 1000,
+    retry: false,
+  })
+}
+
+export function useReferralLeaderboard() {
+  const { isAuthenticated, getAuthHeaders } = useAuth()
+  const { user } = useCurrentUser()
+
+  return useQuery({
+    queryKey: ['referral-leaderboard', 'weekly', user?.id ?? 'public'],
+    queryFn: async () => {
+      const authorization = isAuthenticated
+        ? (await getAuthHeaders().catch(() => ({} as Record<string, string>))).Authorization
+        : undefined
+      return getReferralLeaderboard({
+        data: authorization ? { _authorization: authorization } : {},
+      } as never)
+    },
     staleTime: 60 * 1000,
     retry: false,
   })

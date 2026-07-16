@@ -142,6 +142,61 @@ export function getPublicReferralStatus(activatedCount: number): PublicReferralS
   }
 }
 
+export const REFERRAL_LEADERBOARD_QUALIFICATION_COUNT = 10
+
+export type ReferralLeaderboardCandidate = {
+  userId: string
+  usernameSlug: string
+  displayName: string | null
+  avatarUrl: string | null
+  totalActivatedCount: number
+  weeklyActivatedCount: number
+  excluded: boolean
+}
+
+export type ReferralLeaderboardEntry = ReferralLeaderboardCandidate & {
+  rank: number
+  badgeLabel: 'Connector'
+}
+
+export function rankReferralLeaderboardEntries(
+  candidates: ReferralLeaderboardCandidate[],
+): ReferralLeaderboardEntry[] {
+  return candidates
+    .filter((candidate) => (
+      !candidate.excluded
+      && candidate.totalActivatedCount >= REFERRAL_LEADERBOARD_QUALIFICATION_COUNT
+      && candidate.weeklyActivatedCount > 0
+    ))
+    .sort((a, b) => (
+      b.weeklyActivatedCount - a.weeklyActivatedCount
+      || b.totalActivatedCount - a.totalActivatedCount
+      || a.usernameSlug.localeCompare(b.usernameSlug)
+    ))
+    .map((candidate, index) => ({ ...candidate, rank: index + 1, badgeLabel: 'Connector' }))
+}
+
+export function getReferralLeaderboardStatus(input: {
+  totalActivatedCount: number
+  weeklyActivatedCount: number
+  rank: number | null
+  excluded: boolean
+}):
+  | { state: 'ineligible'; remainingToQualify: number }
+  | { state: 'awaiting' }
+  | { state: 'ranked'; rank: number }
+  | { state: 'review-held' } {
+  if (input.excluded) return { state: 'review-held' }
+  if (input.totalActivatedCount < REFERRAL_LEADERBOARD_QUALIFICATION_COUNT) {
+    return {
+      state: 'ineligible',
+      remainingToQualify: REFERRAL_LEADERBOARD_QUALIFICATION_COUNT - input.totalActivatedCount,
+    }
+  }
+  if (input.rank) return { state: 'ranked', rank: input.rank }
+  return { state: 'awaiting' }
+}
+
 export function buildReferralShareCopy(inviteLink: string): string {
   return `I’m inviting people to Desperse. Join through my invite: ${inviteLink}`
 }

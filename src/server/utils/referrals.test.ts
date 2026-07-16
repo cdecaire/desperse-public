@@ -283,6 +283,160 @@ describe('referrals utils', () => {
     expect(insertValues[0]).toMatchObject({ eventName: 'referral_expired' })
   })
 
+  it('records the canonical rejected event for a self-referral', async () => {
+    const now = new Date('2026-07-16T12:00:00.000Z')
+    vi.useFakeTimers()
+    vi.setSystemTime(now)
+    const session = {
+      id: 'session-self', referrerUserId: 'user-self', inviteCode: 'self', source: 'link',
+      expiresAt: new Date('2026-08-01T00:00:00.000Z'),
+    }
+    selectQueue.push([session])
+    selectQueue.push([{ id: 'user-self', createdAt: now }])
+    selectQueue.push([])
+    insertReturningQueue.push([{
+      id: 'referral-self', referrerUserId: 'user-self', referredUserId: 'user-self',
+      attributionSessionId: session.id, inviteCode: session.inviteCode, state: 'rejected',
+      stateReason: 'self_referral', expiresAt: new Date('2026-08-15T12:00:00.000Z'),
+    }])
+
+    const { bindReferralToUserFromAttributionSession } = await import('./referrals')
+    const result = await bindReferralToUserFromAttributionSession({
+      attributionSessionId: session.id,
+      referredUserId: 'user-self',
+    })
+
+    expect(result).toMatchObject({ success: true, created: true, referral: { state: 'rejected' } })
+    expect(insertValues).toContainEqual(expect.objectContaining({
+      eventName: 'referral_rejected', payload: { reason: 'self_referral' },
+    }))
+    vi.useRealTimers()
+  })
+
+  it('revokes an activated referral with actor, reason, and previous state audit data', async () => {
+    const now = new Date('2026-07-16T12:00:00.000Z')
+    const referral = {
+      id: 'referral-1', referrerUserId: 'referrer-1', referredUserId: 'referred-1',
+      attributionSessionId: 'session-1', state: 'activated', activatedAt: now,
+    }
+    selectQueue.push([referral])
+    updateQueue.push([{ ...referral, state: 'revoked', activatedAt: null, revokedAt: now }])
+
+    const { moderateReferralLifecycle } = await import('./referrals')
+    const result = await moderateReferralLifecycle({
+      referralId: referral.id, actorUserId: 'moderator-1', action: 'revoke',
+      reason: 'fraud confirmed', now,
+    })
+
+    expect(result).toMatchObject({ success: true, changed: true, referral: { state: 'revoked' } })
+    expect(updateSetValues[0]).toMatchObject({ state: 'revoked', activatedAt: null, revokedAt: now })
+    expect(insertValues).toContainEqual(expect.objectContaining({
+      eventName: 'referral_revoked',
+      payload: {
+        action: 'revoke', actorUserId: 'moderator-1', reason: 'fraud confirmed',
+        previousState: 'activated', nextState: 'revoked',
+      },
+    }))
+  })
+
+  it('treats duplicate revocation as idempotent', async () => {
+    selectQueue.push([{
+      id: 'referral-1', referrerUserId: 'referrer-1', referredUserId: 'referred-1', state: 'revoked',
+    }])
+    const { moderateReferralLifecycle } = await import('./referrals')
+    const result = await moderateReferralLifecycle({
+      referralId: 'referral-1', actorUserId: 'moderator-1', action: 'revoke', reason: 'duplicate',
+    })
+    expect(result).toMatchObject({ success: true, changed: false })
+    expect(updateSetValues).toHaveLength(0)
+    expect(insertValues).toHaveLength(0)
+  })
+
+  it('restores a revoked referral to pending and reruns canonical activation checks', async () => {
+    const now = new Date('2026-07-16T12:00:00.000Z')
+    const referral = {
+      id: 'referral-1', referrerUserId: 'referrer-1', referredUserId: 'referred-1',
+      attributionSessionId: 'session-1', state: 'revoked', revokedAt: now,
+    }
+    const restored = {
+      ...referral, state: 'pending_activation', revokedAt: null,
+      expiresAt: new Date('2026-08-15T12:00:00.000Z'),
+    }
+    selectQueue.push([referral])
+    updateQueue.push([restored])
+    selectQueue.push([restored])
+    selectQueue.push([restored])
+    selectQueue.push([{ id: 'referred-1', displayName: null, avatarUrl: null, createdAt: now }])
+
+    const { moderateReferralLifecycle } = await import('./referrals')
+    const result = await moderateReferralLifecycle({
+      referralId: referral.id, actorUserId: 'moderator-1', action: 'restore',
+      reason: 'appeal approved', now,
+    })
+
+    expect(result).toMatchObject({ success: true, changed: true, referral: { state: 'pending_activation' } })
+    expect(updateSetValues[0]).toMatchObject({
+      state: 'pending_activation', stateReason: null, activatedAt: null, revokedAt: null,
+    })
+    expect(insertValues).toContainEqual(expect.objectContaining({
+      eventName: 'referral_restored',
+      payload: expect.objectContaining({ actorUserId: 'moderator-1', reason: 'appeal approved' }),
+    }))
+  })
+
+  it('covers attribution through binding, activation events, and notification writes', async () => {
+    const now = new Date('2026-07-16T12:00:00.000Z')
+    vi.useFakeTimers()
+    vi.setSystemTime(now)
+    const session = {
+      id: 'session-e2e', referrerUserId: 'referrer-1', inviteCode: 'carl', source: 'manual',
+      expiresAt: new Date('2026-08-15T12:00:00.000Z'),
+    }
+    const created = {
+      id: 'referral-e2e', referrerUserId: 'referrer-1', referredUserId: 'referred-1',
+      attributionSessionId: session.id, inviteCode: 'carl', state: 'account_created',
+      expiresAt: new Date('2026-08-15T12:00:00.000Z'),
+    }
+    const pending = { ...created, state: 'pending_activation' }
+    const activated = { ...pending, state: 'activated', activatedAt: now }
+
+    selectQueue.push([])
+    selectQueue.push([{ id: 'referrer-1', slug: 'carl', displayName: 'Carl', avatarUrl: null }])
+    insertReturningQueue.push([session])
+    selectQueue.push([session])
+    selectQueue.push([{ id: 'referred-1', createdAt: now }])
+    selectQueue.push([])
+    insertReturningQueue.push([created])
+    updateQueue.push([])
+    updateQueue.push([pending])
+    selectQueue.push([pending])
+    selectQueue.push([pending])
+    selectQueue.push([{
+      id: 'referred-1', displayName: 'New User', avatarUrl: 'https://example.com/avatar.png', createdAt: now,
+    }])
+    selectQueue.push([{ followingId: 'creator-1' }])
+    updateQueue.push([activated])
+    selectQueue.push([{ count: 1 }])
+
+    const { createOrRestoreReferralAttributionSession, bindReferralToUserFromAttributionSession } = await import('./referrals')
+    const attribution = await createOrRestoreReferralAttributionSession({ inviteCode: 'carl', source: 'manual' })
+    expect(attribution).toMatchObject({ success: true, session: { id: 'session-e2e' } })
+    const binding = await bindReferralToUserFromAttributionSession({
+      attributionSessionId: session.id,
+      referredUserId: 'referred-1',
+    })
+
+    expect(binding).toMatchObject({ success: true, created: true })
+    expect(insertValues.map((value: any) => value.eventName).filter(Boolean)).toEqual(expect.arrayContaining([
+      'referral_signup_started', 'referral_account_created', 'referral_pending_created',
+      'referral_activation_verified_server', 'referral_activated',
+    ]))
+    expect(insertValues).toContainEqual(expect.objectContaining({
+      userId: 'referrer-1', actorId: 'referred-1', type: 'referral_activated',
+    }))
+    vi.useRealTimers()
+  })
+
   it('validates custom invite code format, reserved terms, and profanity', async () => {
     const { validateCustomInviteCode } = await import('./referrals')
 

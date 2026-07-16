@@ -204,7 +204,7 @@ describe('referrals utils', () => {
     vi.useRealTimers()
   })
 
-  it('does not repeat the Top Connectors milestone after more than 10 activations', async () => {
+  it('does not repeat the referral board milestone after more than 10 activations', async () => {
     const now = new Date('2026-07-08T12:00:00.000Z')
     vi.useFakeTimers()
     vi.setSystemTime(now)

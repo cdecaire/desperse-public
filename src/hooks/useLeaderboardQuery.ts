@@ -5,6 +5,9 @@ import { useCurrentUser } from '@/hooks/useCurrentUser'
 
 export type LeaderboardView = 'creators' | 'collectors'
 export type LeaderboardPeriod = '7d' | '30d' | '90d'
+/** Page-level tab identity. `referrals` is served by a different (weekly) data
+ * path (`useReferralLeaderboard`), so it is NOT a server `LeaderboardView`. */
+export type LeaderboardTab = LeaderboardView | 'referrals'
 
 export type LeaderboardEntry = {
   rank: number

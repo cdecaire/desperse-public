@@ -25,7 +25,7 @@ export function ReferralStatusModule({
       <Row justify="between" align="center" gap={2} wrap>
         <Stack gap={0.5}>
           <Row gap={1} align="center" wrap>
-            <Badge variant={status.badgeLabel === 'Connector' ? 'default' : 'secondary'}>
+            <Badge variant={status.badgeLabel === 'Referrer' ? 'default' : 'secondary'}>
               <Icon name="users" variant="solid" className="mr-1" />
               {status.badgeLabel}
             </Badge>

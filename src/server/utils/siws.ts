@@ -16,6 +16,7 @@ import * as ed25519 from '@noble/ed25519'
 import { addressToBytes, validateAddress } from '@/server/services/blockchain/addressUtils'
 import { generateUniqueSlug } from '@/server/utils/slug-utils'
 import { getPrivyClient, type AuthenticatedUser } from '@/server/auth'
+import { formatWalletIdentifier } from '@/lib/wallet-identity'
 import { isUniqueViolation } from './db-errors'
 
 // ============================================================================
@@ -437,12 +438,8 @@ export async function findOrCreateWalletUser(
     }
 
     // 3. Not found - create new user
-    const prefix = walletAddress.slice(0, 4)
-    const suffix = walletAddress.slice(-4)
-    const abbreviated = `${prefix}...${suffix}`
-    const slugBase = `${prefix}-${suffix}`.toLowerCase()
-
-    const usernameSlug = await generateUniqueSlug(slugBase)
+    const walletLabel = formatWalletIdentifier(walletAddress)
+    const usernameSlug = await generateUniqueSlug(walletLabel.slugBase)
 
     // Try to create a real Privy user, fall back to synthetic if it fails
     const privyResult = await ensurePrivyUser(walletAddress)
@@ -454,7 +451,7 @@ export async function findOrCreateWalletUser(
         privyId,
         walletAddress,
         usernameSlug,
-        displayName: abbreviated,
+        displayName: walletLabel.display,
         signupIp: signupMetadata?.ip ?? null,
         signupCountry: signupMetadata?.country ?? null,
         signupUserAgent: signupMetadata?.userAgent ?? null,

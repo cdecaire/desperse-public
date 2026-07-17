@@ -22,21 +22,7 @@ import {
   getActiveReferralAttributionSessionFromSignedCookie,
   REFERRAL_ATTRIBUTION_COOKIE_NAME,
 } from '@/server/utils/referrals'
-
-function formatWalletIdentifier(address: string) {
-  const trimmed = address?.trim()
-  if (!trimmed) {
-    return { slugBase: 'user', display: 'user' }
-  }
-  const prefix = trimmed.slice(0, 4)
-  const suffix = trimmed.slice(-4)
-  return {
-    // Hyphenated to remain slug-safe after normalization
-    slugBase: `${prefix}-${suffix}`,
-    // Keep nice display format with ellipsis
-    display: `${prefix}…${suffix}`,
-  }
-}
+import { formatWalletIdentifier } from '@/lib/wallet-identity'
 
 function getCookieValue(cookieHeader: string | null | undefined, name: string): string | null {
   if (!cookieHeader) return null

@@ -105,8 +105,16 @@ export function getHeliusRpcUrl(): string {
   if (apiKey) {
     return `https://mainnet.helius-rpc.com/?api-key=${apiKey}`;
   }
-  // Fallback to public RPC (rate limited, not recommended for production)
-  console.warn('HELIUS_API_KEY not set, using public RPC endpoint');
+  // In production, refuse to silently route mainnet reads/writes through the
+  // heavily rate-limited public RPC — a missing key is a misconfiguration that
+  // should fail loudly rather than degrade minting/confirmation reliability.
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error(
+      'HELIUS_API_KEY is required in production (refusing to fall back to public RPC)',
+    );
+  }
+  // Non-production: fall back to public RPC (rate limited) for local/dev convenience.
+  console.warn('HELIUS_API_KEY not set, using public RPC endpoint (non-production)');
   return 'https://api.mainnet-beta.solana.com';
 }
 

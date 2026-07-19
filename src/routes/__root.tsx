@@ -17,7 +17,7 @@ import { sableIconSet } from '@/lib/sable-icon-adapter'
 
 // Routes that should not be wrapped in the AppShell (standalone pages)
 // Note: '/' is conditionally standalone based on auth state (see RpcHealthProviderWrapper)
-const STANDALONE_ROUTES = ['/about', '/privacy', '/terms', '/fees', '/changelog', '/export-wallet', '/echoes', '/download', '/dev/typography-test', '/dev/home-preview', '/i', '/onboarding']
+const STANDALONE_ROUTES = ['/about', '/privacy', '/terms', '/fees', '/changelog', '/export-wallet', '/echoes', '/download', '/dev/typography-test', '/dev/home-preview', '/dev/onboarding-preview', '/i', '/onboarding']
 import { PrivyProvider } from '../components/providers/PrivyProvider'
 import { RpcHealthProvider } from '../components/providers/RpcHealthProvider'
 import { ThemeProvider } from '../components/providers/ThemeProvider'

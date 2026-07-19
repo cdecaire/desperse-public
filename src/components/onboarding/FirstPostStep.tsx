@@ -1,13 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { toast } from '@/hooks/use-toast'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Icon } from '@/components/ui/icon'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
-import { Card, CardContent } from '@/components/ui/card'
 import { MediaUpload, type UploadedMedia } from '@/components/forms/MediaUpload'
-import type { PostDraft } from '@/components/onboarding/OnboardingPreview'
 import { useAuth } from '@/hooks/useAuth'
 import { createPost } from '@/server/functions/posts'
 
@@ -15,24 +13,36 @@ interface FirstPostStepProps {
   onPublished: (post?: { id: string }) => void
   onSkip: () => void
   onBack?: () => void
-  /** Reports the in-progress image/caption so the shell can live-preview it. */
-  onDraftChange?: (draft: PostDraft | null) => void
+  /** Media picked so far — owned by the flow so back-nav never loses it. */
+  media: UploadedMedia | null
+  onMediaChange: (media: UploadedMedia | null) => void
+  caption: string
+  onCaptionChange: (caption: string) => void
+  /** Dev-preview mode: static sample media, stubbed publish (no createPost). */
+  preview?: boolean
 }
 
-export function FirstPostStep({ onPublished, onSkip, onBack, onDraftChange }: FirstPostStepProps) {
+export function FirstPostStep({
+  onPublished,
+  onSkip,
+  onBack,
+  media,
+  onMediaChange,
+  caption,
+  onCaptionChange,
+  preview = false,
+}: FirstPostStepProps) {
   const { getAuthHeaders } = useAuth()
-
-  const [media, setMedia] = useState<UploadedMedia | null>(null)
-  const [caption, setCaption] = useState('')
   const [isPublishing, setIsPublishing] = useState(false)
-
-  useEffect(() => {
-    onDraftChange?.(media ? { mediaUrl: media.url, caption } : null)
-  }, [media, caption, onDraftChange])
 
   const handlePublish = async () => {
     if (!media) {
       toast.error('Add an image to publish.')
+      return
+    }
+    if (preview) {
+      toast.success('Published (preview)')
+      onPublished({ id: 'preview' })
       return
     }
     setIsPublishing(true)
@@ -60,17 +70,14 @@ export function FirstPostStep({ onPublished, onSkip, onBack, onDraftChange }: Fi
   }
 
   return (
-    <Card>
-      <CardContent className="space-y-5 pt-6">
-        <div className="space-y-2">
-          <Label>Image</Label>
-          <MediaUpload
-            acceptedTypes={['image']}
-            onUpload={setMedia}
-            onRemove={() => setMedia(null)}
-            disabled={isPublishing}
-          />
-        </div>
+      <div className="space-y-5">
+        <MediaUpload
+          acceptedTypes={['image']}
+          initialMedia={media}
+          onUpload={onMediaChange}
+          onRemove={() => onMediaChange(null)}
+          disabled={isPublishing}
+        />
 
         <div className="space-y-2">
           <Label htmlFor="firstPostCaption">Caption <span className="text-muted-foreground">(optional)</span></Label>
@@ -78,7 +85,7 @@ export function FirstPostStep({ onPublished, onSkip, onBack, onDraftChange }: Fi
             id="firstPostCaption"
             value={caption}
             maxLength={2000}
-            onChange={(e) => setCaption(e.target.value)}
+            onChange={(e) => onCaptionChange(e.target.value)}
             placeholder="Say something about this piece"
             rows={3}
             disabled={isPublishing}
@@ -108,16 +115,15 @@ export function FirstPostStep({ onPublished, onSkip, onBack, onDraftChange }: Fi
               onClick={onSkip}
               disabled={isPublishing}
             >
-              No thanks, let me browse the work
+              I'll share something later
             </Button>
             <Button type="button" size="cta" onClick={handlePublish} disabled={isPublishing || !media}>
               {isPublishing ? <LoadingSpinner size="sm" className="mr-2" /> : null}
-              Publish
+              {isPublishing ? 'Publishing…' : 'Publish collectible'}
             </Button>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
   )
 }
 

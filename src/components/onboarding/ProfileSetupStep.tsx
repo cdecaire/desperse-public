@@ -158,12 +158,15 @@ export function ProfileSetupStep({ onSuccess, onDraftChange, preview = false }: 
   }, [currentUser])
 
   // Auto-generate the slug from the display name until the user edits it by hand.
-  // Empty names leave the seeded slug alone so we never blank out a valid handle.
+  // Skip entirely once the account has a *customized* handle (usernameLastChangedAt
+  // set): regenerating would clobber their chosen slug and, inside the 30-day change
+  // window, get 429'd on save and trap them on this step. New users (never changed →
+  // null) still get the convenience; empty names leave the seeded slug alone.
   useEffect(() => {
-    if (usernameManuallyEdited) return
+    if (usernameManuallyEdited || currentUser?.usernameLastChangedAt) return
     const generated = slugifyName(displayName)
     if (generated) setUsername(generated)
-  }, [displayName, usernameManuallyEdited])
+  }, [displayName, usernameManuallyEdited, currentUser?.usernameLastChangedAt])
 
   // Debounced availability check (350ms), with own-slug fast path, suffix
   // auto-probing for auto-generated collisions, and stale-result guards.

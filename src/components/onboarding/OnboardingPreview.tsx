@@ -1,5 +1,6 @@
 import { UserAvatar } from '@/components/shared/UserAvatar'
 import { Icon } from '@/components/ui/icon'
+import { MediaPill } from '@/components/ui/media-pill'
 import { cn } from '@/lib/utils'
 
 export interface ProfileDraft {
@@ -7,6 +8,7 @@ export interface ProfileDraft {
   bio: string
   link: string
   avatarUrl: string
+  usernameSlug: string
 }
 
 export interface PostDraft {
@@ -37,6 +39,7 @@ function displayDomain(link: string): string {
  */
 export function OnboardingPreview({ profile, post, showPostPlaceholder = true, className }: OnboardingPreviewProps) {
   const name = profile?.displayName?.trim()
+  const slug = profile?.usernameSlug?.trim()
   const bio = profile?.bio?.trim()
   const link = profile?.link?.trim()
 
@@ -46,6 +49,7 @@ export function OnboardingPreview({ profile, post, showPostPlaceholder = true, c
         <UserAvatar src={profile?.avatarUrl || null} alt={name || ''} size="lg" />
         <div className="space-y-1">
           <p className={cn('text-title-lg', !name && 'text-muted-foreground/60')}>{name || 'Your name'}</p>
+          {slug ? <p className="text-mono-sm text-muted-foreground">@{slug}</p> : null}
           <p className={cn('text-body-sm', bio ? 'text-muted-foreground' : 'text-muted-foreground/60')}>
             {bio || 'Your bio appears here'}
           </p>
@@ -60,7 +64,13 @@ export function OnboardingPreview({ profile, post, showPostPlaceholder = true, c
 
       {post?.mediaUrl ? (
         <div>
-          <img src={post.mediaUrl} alt={post.caption || 'First post'} className="aspect-square w-full object-cover" />
+          <div className="relative">
+            <img src={post.mediaUrl} alt={post.caption || 'First post'} className="aspect-square w-full object-cover" />
+            {/* Scheme-paired Collectible badge — matches the iOS share-card treatment. */}
+            <MediaPill variant="tone" toneColor="var(--tone-collectible)" className="absolute right-3 top-3">
+              Collectible
+            </MediaPill>
+          </div>
           {post.caption?.trim() ? (
             <p className="line-clamp-2 px-5 py-3 text-body-sm text-muted-foreground">{post.caption}</p>
           ) : null}

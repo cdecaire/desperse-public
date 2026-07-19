@@ -2,13 +2,13 @@ import { Link } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 
 import { toast } from '@/hooks/use-toast'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icon'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
+import type { UploadedMedia } from '@/components/forms/MediaUpload'
 import { FirstPostStep } from './FirstPostStep'
 import { OnboardingPreview, type PostDraft, type ProfileDraft } from './OnboardingPreview'
 import { ProfileSetupStep } from './ProfileSetupStep'
@@ -28,7 +28,13 @@ interface OnboardingShellProps {
   isLoading?: boolean
   /** Whether the required profile fields (name + avatar) are already done. */
   isComplete?: boolean
+  /**
+   * Dev-preview mode: force-start at the profile stage, seed sample content, and
+   * stub every write so the whole flow is walkable without touching an account.
+   */
+  previewMode?: boolean
 }
+
 
 export function getOnboardingSteps(stage: OnboardingStage = 'profile'): OnboardingStep[] {
   const currentIndex = STAGE_ORDER.indexOf(stage)
@@ -38,20 +44,20 @@ export function getOnboardingSteps(stage: OnboardingStage = 'profile'): Onboardi
   return [
     {
       id: 'profile',
-      title: 'Set up your profile',
-      description: 'Add the identity details people need before they follow or collect from you.',
+      title: 'Make it yours',
+      description: 'Choose the name and photo people will know you by.',
       status: statusFor(0),
     },
     {
       id: 'firstPost',
-      title: 'Create your first collectible',
-      description: 'One image and a caption. It publishes as a free collectible fans can mint.',
+      title: 'Make your first drop',
+      description: 'Add a piece people can collect. Keep it simple.',
       status: statusFor(1),
     },
     {
       id: 'summary',
-      title: 'Tell the world',
-      description: 'Share your new profile — anyone who joins through your link is credited to you.',
+      title: 'Share',
+      description: 'Share your profile so people can follow and collect from you.',
       status: statusFor(2),
     },
   ]
@@ -120,37 +126,54 @@ export function Stepper({
 export function OnboardingShell({
   isLoading = false,
   isComplete = false,
+  previewMode = false,
 }: OnboardingShellProps) {
   const { user } = useCurrentUser()
   // Initializer only — no isComplete re-sync effect. The route gates on
   // isLoading, so isComplete is settled by first render; re-syncing on later
   // refetches would yank the user out of whatever stage they navigated to.
-  const [stage, setStage] = useState<OnboardingStage>(isComplete ? 'firstPost' : 'profile')
+  // Preview always starts at profile so all three stages are reachable.
+  const [stage, setStage] = useState<OnboardingStage>(
+    previewMode ? 'profile' : isComplete ? 'firstPost' : 'profile',
+  )
   const [profileDraft, setProfileDraft] = useState<ProfileDraft | null>(null)
-  const [postDraft, setPostDraft] = useState<PostDraft | null>(null)
+  // Post state lives at the flow level (not inside FirstPostStep) so navigating
+  // back from Share never drops the picked image or caption.
+  const [postMedia, setPostMedia] = useState<UploadedMedia | null>(null)
+  const [postCaption, setPostCaption] = useState('')
   const [publishedPostId, setPublishedPostId] = useState<string | null>(null)
   const [canNativeShare, setCanNativeShare] = useState(false)
+
+  const postDraft: PostDraft | null = postMedia ? { mediaUrl: postMedia.url, caption: postCaption } : null
 
   useEffect(() => {
     setCanNativeShare(typeof navigator !== 'undefined' && 'share' in navigator)
   }, [])
 
-  const steps = getOnboardingSteps(stage)
-  const currentStep = steps.find((step) => step.status === 'current')
+  // Contained header per stage: a "01 / 03" counter plus a title + subtitle that
+  // live inside the panel card rather than floating above it.
+  const stepIndex = STAGE_ORDER.indexOf(stage)
+  const counter = `${String(stepIndex + 1).padStart(2, '0')} / ${String(STAGE_ORDER.length).padStart(2, '0')}`
+  const header =
+    stage === 'summary'
+      ? {
+          title: publishedPostId ? 'Your first collectible is live' : "You're ready to create",
+          description: publishedPostId
+            ? 'Share it with your people and invite them to collect.'
+            : 'Share your profile, or explore what other creators are making.',
+        }
+      : stage === 'firstPost'
+        ? { title: 'Make your first drop', description: 'Add a piece people can collect. Keep it simple.' }
+        : { title: 'Make it yours', description: 'Choose the name and photo people will know you by.' }
 
   // Fall back to the saved user for anything the drafts haven't touched yet.
   const previewProfile: ProfileDraft | null = profileDraft ?? (user
-    ? { displayName: user.displayName ?? '', bio: user.bio ?? '', link: user.link ?? '', avatarUrl: user.avatarUrl ?? '' }
+    ? { displayName: user.displayName ?? '', bio: user.bio ?? '', link: user.link ?? '', avatarUrl: user.avatarUrl ?? '', usernameSlug: user.usernameSlug ?? '' }
     : null)
 
   const inviteLink = user?.usernameSlug
     ? `${typeof window !== 'undefined' ? window.location.origin : 'https://desperse.com'}/i/${user.usernameSlug}`
     : null
-
-  const handleStepClick = (step: OnboardingStep) => {
-    if (step.status === 'upcoming') return
-    setStage(step.id)
-  }
 
   const handleCopyLink = async () => {
     if (!inviteLink) return
@@ -163,7 +186,7 @@ export function OnboardingShell({
   }
 
   const shareText = publishedPostId
-    ? 'My first collectible is live on Desperse — free to collect.'
+    ? 'I just shared my first collectible on Desperse.'
     : 'Join me on Desperse.'
   // When a post exists, share the invite link deep-linked to the art: the
   // redirect captures referral attribution, then lands (and unfurls) on the post.
@@ -188,44 +211,29 @@ export function OnboardingShell({
   }
 
   return (
-    <div className="flex w-full flex-col gap-6">
-        <div className="space-y-2">
-          <Badge variant="outline">First-run setup</Badge>
-          <h1 className="text-heading-2">Get set up on Desperse</h1>
-        </div>
-
-        {isLoading ? (
-          <>
-            <div className="flex items-start">
-              <div className="flex-1"><Skeleton className="h-8 w-8 rounded-full" /></div>
-              <div className="flex-1"><Skeleton className="h-8 w-8 rounded-full" /></div>
-              <div className="flex-1"><Skeleton className="h-8 w-8 rounded-full" /></div>
+    <div className="w-full lg:grid lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start lg:gap-8">
+      {/* Left: the flow panel — counter, title, and step body all contained. */}
+      <Card className="overflow-hidden">
+        <CardContent className="space-y-7 p-6 sm:p-8">
+          <header className="space-y-3">
+            <p className="text-label-sm font-medium tabular-nums text-muted-foreground">{counter}</p>
+            <div className="space-y-1.5">
+              <h2 className="text-balance text-heading-2">{header.title}</h2>
+              <p className="max-w-prose text-pretty text-body-md text-muted-foreground">{header.description}</p>
             </div>
-            <Card>
-              <CardContent className="space-y-4 pt-6">
-                <Skeleton className="h-16 w-16 rounded-full" />
-                <Skeleton className="h-10 w-full" />
-                <Skeleton className="h-24 w-full" />
-              </CardContent>
-            </Card>
-          </>
-        ) : (
-          <div className="space-y-4">
-            <Stepper steps={steps} onStepClick={handleStepClick} />
-            {currentStep ? (
-              <div className="space-y-1">
-                <p className="text-label-lg sm:hidden">{currentStep.title}</p>
-                <p className="text-body-sm text-muted-foreground">{currentStep.description}</p>
-              </div>
-            ) : null}
-          </div>
-        )}
+          </header>
 
-        {!isLoading ? (
-          <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start lg:gap-8">
+          {isLoading ? (
+            <div className="space-y-4">
+              <Skeleton className="h-16 w-16 rounded-full" />
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-24 w-full" />
+              <Skeleton className="h-11 w-full" />
+            </div>
+          ) : (
             <div key={stage} className="animate-in fade-in-0 slide-in-from-bottom-1 duration-200 motion-reduce:animate-none">
               {stage === 'profile' ? (
-                <ProfileSetupStep onSuccess={() => setStage('firstPost')} onDraftChange={setProfileDraft} />
+                <ProfileSetupStep onSuccess={() => setStage('firstPost')} onDraftChange={setProfileDraft} preview={previewMode} />
               ) : null}
 
               {stage === 'firstPost' ? (
@@ -236,7 +244,11 @@ export function OnboardingShell({
                   }}
                   onSkip={() => setStage('summary')}
                   onBack={() => setStage('profile')}
-                  onDraftChange={setPostDraft}
+                  media={postMedia}
+                  onMediaChange={setPostMedia}
+                  caption={postCaption}
+                  onCaptionChange={setPostCaption}
+                  preview={previewMode}
                 />
               ) : null}
 
@@ -246,89 +258,69 @@ export function OnboardingShell({
                       where the preview column doesn't exist. */}
                   <OnboardingPreview profile={previewProfile} post={postDraft} showPostPlaceholder={false} className="lg:hidden" />
 
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-title-lg">
-                        {publishedPostId ? 'Your first collectible is live' : "You're set up"}
-                      </CardTitle>
-                      <CardDescription className="text-body-sm">
-                        {publishedPostId
-                          ? 'That was it — your art is now collectible on Solana. Share your profile so people can follow and mint it.'
-                          : 'Share your profile link — anyone who joins through it is credited to you.'}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                      <div className="flex flex-wrap items-center gap-3">
-                        <Button type="button" size="cta" onClick={handleCopyLink} disabled={!inviteLink}>
-                          <Icon name="link-simple" variant="regular" className="mr-2 text-sm" />
-                          Copy invite link
+                  <div className="flex flex-col gap-3">
+                    <Button type="button" size="cta" className="w-full" onClick={handleCopyLink} disabled={!inviteLink}>
+                      <Icon name="link-simple" variant="regular" className="mr-2 text-sm" />
+                      Copy invite link
+                    </Button>
+                    <div className="flex flex-wrap items-center gap-2">
+                      {xShareUrl ? (
+                        <Button asChild variant="outline" className="flex-1">
+                          <a href={xShareUrl} target="_blank" rel="noopener noreferrer">
+                            <Icon name="x-twitter" variant="brands" className="mr-2 text-sm" />
+                            Share on X
+                          </a>
                         </Button>
-                        {xShareUrl ? (
-                          <Button asChild variant="outline">
-                            <a href={xShareUrl} target="_blank" rel="noopener noreferrer">
-                              <Icon name="x-twitter" variant="brands" className="mr-2 text-sm" />
-                              Share on X
-                            </a>
-                          </Button>
-                        ) : null}
-                        {canNativeShare ? (
-                          <Button type="button" variant="outline" onClick={handleNativeShare} disabled={!inviteLink}>
-                            <Icon name="share-nodes" variant="regular" className="mr-2 text-sm" />
-                            Share
-                          </Button>
-                        ) : null}
-                        {publishedPostId ? (
-                          <Button asChild variant="ghost" className="px-0 text-body-sm text-muted-foreground hover:bg-transparent">
-                            <Link to="/post/$postId" params={{ postId: publishedPostId }}>
-                              View your post
-                            </Link>
-                          </Button>
-                        ) : null}
-                      </div>
+                      ) : null}
+                      {canNativeShare ? (
+                        <Button type="button" variant="outline" className="flex-1" onClick={handleNativeShare} disabled={!inviteLink}>
+                          <Icon name="share-nodes" variant="regular" className="mr-2 text-sm" />
+                          Share
+                        </Button>
+                      ) : null}
+                    </div>
+                  </div>
 
-                      <ul className="space-y-3 border-t border-border pt-5 text-body-sm text-muted-foreground">
-                        <li className="flex items-start gap-3">
-                          <Icon name="sparkles" variant="regular" className="mt-0.5 shrink-0 text-foreground" />
-                          <span>Limited editions and priced drops unlock from your post composer whenever you're ready to sell.</span>
-                        </li>
-                        <li className="flex items-start gap-3">
-                          <Icon name="users" variant="regular" className="mt-0.5 shrink-0 text-foreground" />
-                          <span>Follow creators you like from Explore to build your feed.</span>
-                        </li>
-                        <li className="flex items-start gap-3">
-                          <Icon name="wallet" variant="regular" className="mt-0.5 shrink-0 text-foreground" />
-                          <span>Your wallet, payouts, and notification settings live under Settings.</span>
-                        </li>
-                      </ul>
+                  <ul className="space-y-2.5 border-t border-border pt-5 text-body-sm text-muted-foreground">
+                    <li className="flex items-center gap-3">
+                      <Icon name="sparkles" variant="regular" className="shrink-0 text-foreground" />
+                      <span>Sell limited editions and priced drops from the composer.</span>
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <Icon name="users" variant="regular" className="shrink-0 text-foreground" />
+                      <span>Follow creators in Explore to build your feed.</span>
+                    </li>
+                    <li className="flex items-center gap-3">
+                      <Icon name="wallet" variant="regular" className="shrink-0 text-foreground" />
+                      <span>Manage your wallet and settings anytime.</span>
+                    </li>
+                  </ul>
 
-                      <div className="flex items-center justify-between gap-3">
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          className="px-0 text-body-sm text-muted-foreground hover:bg-transparent"
-                          onClick={() => setStage('firstPost')}
-                        >
-                          <Icon name="arrow-left" variant="regular" className="mr-1.5 text-xs" />
-                          Back
-                        </Button>
-                        <Button asChild size="cta">
-                          <Link to="/">Explore Desperse</Link>
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <div className="flex items-center justify-between gap-3">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      className="px-0 text-body-sm text-muted-foreground hover:bg-transparent"
+                      onClick={() => setStage('firstPost')}
+                    >
+                      <Icon name="arrow-left" variant="regular" className="mr-1.5 text-xs" />
+                      Back
+                    </Button>
+                    <Button asChild size="cta">
+                      <Link to="/">Explore Desperse</Link>
+                    </Button>
+                  </div>
                 </div>
               ) : null}
             </div>
+          )}
+        </CardContent>
+      </Card>
 
-            <div className="hidden lg:sticky lg:top-24 lg:block">
-              {stage !== 'summary' ? (
-                <p className="mb-2 text-label-sm text-muted-foreground">Live preview</p>
-              ) : null}
-              <OnboardingPreview profile={previewProfile} post={postDraft} showPostPlaceholder={stage !== 'summary'} />
-            </div>
-          </div>
-        ) : null}
+      {/* Right: live preview — desktop only; the payoff card renders inline on mobile summary. */}
+      <div className="mt-6 hidden lg:sticky lg:top-24 lg:mt-0 lg:block">
+        <OnboardingPreview profile={previewProfile} post={postDraft} showPostPlaceholder={stage !== 'summary'} />
+      </div>
     </div>
   )
 }

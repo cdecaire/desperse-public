@@ -319,15 +319,18 @@ export async function confirmTipInternal(
 			};
 		}
 
-		// Signature reuse guard: a single payment signature must not confirm more than
-		// one tip (prevents replaying one genuine payment across many prepared tips).
+		// Signature reuse guard: a payment signature may back only ONE tip. Claim it as
+		// soon as it is attached to ANY other tip (pending OR confirmed) — checking only
+		// confirmed tips would let a client attach one real payment to a second tip while
+		// the first is still pending-with-signature, double-crediting a single payment.
+		// (A residual concurrent double-confirm is still theoretically possible without a
+		// unique index on tx_signature — tracked as a follow-up hardening.)
 		const [reused] = await db
 			.select({ id: tips.id })
 			.from(tips)
 			.where(
 				and(
 					eq(tips.txSignature, input.txSignature),
-					eq(tips.status, "confirmed"),
 					ne(tips.id, tip.id),
 				),
 			)

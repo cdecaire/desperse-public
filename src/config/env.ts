@@ -86,6 +86,13 @@ export const env = {
   // When enabled, returns error instead of subsidizing fees
   DISABLE_FEE_SUBSIDY: getEnvVar('DISABLE_FEE_SUBSIDY', 'false') === 'true',
 
+  // Per-creator collectible collections (Bubblegum cNFTs verified into an MPL Core
+  // collection). OFF by default: when off, collectibles mint ungrouped exactly as
+  // before. Runtime (non-VITE) flag so it can be enabled on devnet for validation
+  // and flipped off instantly if a collection-attached mint misbehaves — a bad
+  // attachment would fail the collect itself, not just the grouping.
+  FEATURE_COLLECTIBLE_COLLECTIONS: getEnvVar('FEATURE_COLLECTIBLE_COLLECTIONS', 'false') === 'true',
+
   // Arweave / Turbo Storage
   FEATURE_ARWEAVE_STORAGE: getEnvVar('VITE_FEATURE_ARWEAVE_STORAGE', 'false') === 'true',
   TURBO_SERVER_PRIVATE_KEY: getEnvVar('TURBO_SERVER_PRIVATE_KEY', ''),

@@ -364,6 +364,8 @@ export function useProfileUpdate() {
       headerBgUrl?: string | null
       link?: string | null
       slug?: string
+      collectionName?: string | null
+      collectionImageUrl?: string | null
     }) => {
       const authHeaders = await getAuthHeaders()
       const authorization = authHeaders.Authorization

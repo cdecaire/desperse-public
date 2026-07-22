@@ -258,6 +258,45 @@ export async function uploadMetadataJson(
   }
 }
 
+/**
+ * Upload a creator's per-creator collection metadata JSON, keyed by user id
+ * (`collection-metadata/{userId}.json`). Overwrites by default: the JSON is
+ * deterministic from the profile, so a concurrent first-mint race or a future
+ * "edit collection" re-upload both resolve to the same/updated path safely.
+ */
+export async function uploadCollectionMetadataJson(
+  metadata: Record<string, unknown>,
+  userId: string,
+  allowOverwrite = true
+): Promise<UploadResult | UploadError> {
+  try {
+    const pathname = `collection-metadata/${userId}.json`
+    const jsonBlob = new Blob([JSON.stringify(metadata, null, 2)], {
+      type: 'application/json',
+    })
+
+    const blob = await put(pathname, jsonBlob, {
+      access: 'public',
+      contentType: 'application/json',
+      ...(allowOverwrite && { allowOverwrite: true }),
+    })
+
+    return {
+      success: true,
+      url: blob.url,
+      pathname: blob.pathname,
+      mediaType: 'image',
+    }
+  } catch (error) {
+    console.error('Collection metadata upload error:', error)
+    return {
+      success: false,
+      error: 'Failed to upload collection metadata.',
+      code: 'UPLOAD_FAILED',
+    }
+  }
+}
+
 // ============================================================================
 // Gated Asset Downloads
 // ============================================================================

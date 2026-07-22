@@ -164,6 +164,10 @@ const updateProfileSchema = z.object({
     .max(24)
     .regex(/^[a-z0-9_.]+$/, 'Slug must be lowercase a-z, 0-9, _ or .')
     .optional(),
+  // Creator overrides for their collectibles collection (null = fall back to
+  // displayName / avatarUrl). Consumed by ensureCreatorCollection at lazy creation.
+  collectionName: z.string().trim().max(50).optional().nullable(),
+  collectionImageUrl: z.string().url().optional().nullable(),
 })
 
 const USERNAME_LIMIT_DAYS = env.PROFILE_USERNAME_CHANGE_LIMIT_DAYS ?? 30
@@ -1232,6 +1236,14 @@ export const updateProfile = createServerFn({
 
     if (rest.instagramUsername !== undefined) {
       updates.instagramUsername = rest.instagramUsername
+    }
+
+    if (rest.collectionName !== undefined) {
+      updates.collectionName = rest.collectionName
+    }
+
+    if (rest.collectionImageUrl !== undefined) {
+      updates.collectionImageUrl = rest.collectionImageUrl
     }
 
     if (slug !== undefined && slug !== user.usernameSlug) {

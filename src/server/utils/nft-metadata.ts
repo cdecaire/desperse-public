@@ -6,6 +6,65 @@
 
 import type { Category } from '@/constants/categories'
 
+/** Desperse logo (public asset) used as a creator's collection image when they have no avatar. */
+export const DESPERSE_COLLECTION_FALLBACK_IMAGE = 'https://www.desperse.com/icon-512x512.png'
+
+export interface CreatorCollectionMetadata {
+  name: string
+  symbol: string
+  description: string
+  image: string
+  external_url: string
+  properties: {
+    files: Array<{ uri: string; type: string }>
+    category: 'image'
+  }
+}
+
+/** Best-effort image MIME from a URL extension; defaults to image/png. */
+function inferImageMimeType(url: string): string {
+  const extension = url.split('?')[0].split('.').pop()?.toLowerCase()
+  const map: Record<string, string> = {
+    png: 'image/png',
+    jpg: 'image/jpeg',
+    jpeg: 'image/jpeg',
+    gif: 'image/gif',
+    webp: 'image/webp',
+    svg: 'image/svg+xml',
+  }
+  return map[extension || ''] || 'image/png'
+}
+
+/**
+ * Off-chain metadata for a creator's per-creator MPL Core collection — the verified
+ * group their free collectibles are minted into. Name and image derive from the
+ * creator's profile, falling back to their @handle and the Desperse logo. Deterministic
+ * from the profile, so it can be safely re-uploaded when a future "edit collection"
+ * feature lands.
+ */
+export function generateCreatorCollectionMetadata(creator: {
+  displayName: string | null
+  usernameSlug: string
+  avatarUrl: string | null
+  /** Creator overrides — win over the profile-derived defaults when set. */
+  collectionName?: string | null
+  collectionImageUrl?: string | null
+}): CreatorCollectionMetadata {
+  const name = creator.collectionName?.trim() || creator.displayName?.trim() || `@${creator.usernameSlug}`
+  const image = creator.collectionImageUrl?.trim() || creator.avatarUrl?.trim() || DESPERSE_COLLECTION_FALLBACK_IMAGE
+  return {
+    name,
+    symbol: 'DESP',
+    description: `Collectibles by ${name} on Desperse.`,
+    image,
+    external_url: `https://www.desperse.com/profile/${creator.usernameSlug}`,
+    properties: {
+      files: [{ uri: image, type: inferImageMimeType(image) }],
+      category: 'image',
+    },
+  }
+}
+
 /**
  * Generate Metaplex-compatible metadata JSON for NFT posts
  * Supports both single-asset and multi-asset posts

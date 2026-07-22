@@ -20,6 +20,7 @@ import { CopyrightFields, SUGGESTED_STATEMENTS } from './CopyrightFields'
 type StorageType = "centralized" | "arweave"
 import { EditionOptions, type Currency, type MintWindowState } from './EditionOptions'
 import { NftMetadataOptions } from './NftMetadataOptions'
+import { CollectionDetailsSection } from './CollectionDetailsSection'
 import { CategorySelector } from './CategorySelector'
 import { type Category, categoriesToStrings, stringsToCategories } from '@/constants/categories'
 import { PostCard } from '@/components/feed/PostCard'
@@ -575,10 +576,14 @@ export function CreatePostForm({ mode = 'create', firstPostMode = false, initial
         throw new Error(result.error || 'Failed to create post')
       }
       
-      // Invalidate feed queries to show new post
-      queryClient.invalidateQueries({ queryKey: ['feed'] })
+      // Refetch feed + the creator's own profile posts so the new post is present
+      // on arrival. refetchType: 'all' is required — these queries are inactive on the
+      // create page, so the default ('active') would only mark them stale and let the
+      // feed serve cached data until a manual refresh.
+      queryClient.invalidateQueries({ queryKey: ['feed'], refetchType: 'all' })
+      queryClient.invalidateQueries({ queryKey: ['userPosts'], refetchType: 'all' })
       toastSuccess('Post created successfully!')
-      
+
       // Navigate to feed
       navigate({ to: '/' })
     }
@@ -1155,7 +1160,13 @@ export function CreatePostForm({ mode = 'create', firstPostMode = false, initial
             mode={formState.type as 'collectible' | 'edition'}
           />
         )}
-        
+
+        {/* Collectibles only — editions get their own per-post collection, so this
+            per-creator collection concept doesn't apply to them. */}
+        {formState.type === 'collectible' && !(isEditMode && areNftFieldsLocked) && (
+          <CollectionDetailsSection />
+        )}
+
         {/* Error message (rate limit, etc.) */}
         {formError && (
           <div className="flex items-start gap-2 p-3 rounded-lg bg-destructive/10 text-destructive text-sm" role="alert">

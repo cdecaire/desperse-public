@@ -88,6 +88,22 @@ export const users = pgTable(
     link: text('link'),
     twitterUsername: text('twitter_username'),
     instagramUsername: text('instagram_username'),
+    // Per-creator MPL Core collection that this creator's free collectibles are
+    // verified into. Null until their first collectible mint, then created lazily
+    // (see ensureCreatorCollection) and reused. Update authority = server fee-payer
+    // key. Mirrors posts.masterMint but keyed on the creator rather than the post.
+    collectionMint: text('collection_mint'),
+    // Creator-set overrides for their collectibles collection name/artwork. Null =
+    // fall back to displayName / avatarUrl. Editable BEFORE the collection exists
+    // (consumed by ensureCreatorCollection at lazy creation); editing AFTER it exists
+    // also triggers an on-chain updateCollection (server holds the update authority).
+    collectionName: text('collection_name'),
+    collectionImageUrl: text('collection_image_url'),
+    // Last time the creator edited their live collection (name/artwork), triggering
+    // an on-chain updateCollection. Null until the first such edit — so the first
+    // edit is always allowed and the rate-limit window is measured from the last
+    // edit, not from lazy creation. Gates edits to one per COLLECTION_EDIT_LIMIT_DAYS.
+    collectionUpdatedAt: timestamp('collection_updated_at'),
     role: userRoleEnum('role').notNull().default('user'),
     preferences: jsonb('preferences').$type<UserPreferencesJson>().notNull().default({}),
     // Username change tracking - null means never changed (first change is free)

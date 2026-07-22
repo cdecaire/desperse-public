@@ -99,6 +99,11 @@ export const users = pgTable(
     // also triggers an on-chain updateCollection (server holds the update authority).
     collectionName: text('collection_name'),
     collectionImageUrl: text('collection_image_url'),
+    // Last time the creator edited their live collection (name/artwork), triggering
+    // an on-chain updateCollection. Null until the first such edit — so the first
+    // edit is always allowed and the rate-limit window is measured from the last
+    // edit, not from lazy creation. Gates edits to one per COLLECTION_EDIT_LIMIT_DAYS.
+    collectionUpdatedAt: timestamp('collection_updated_at'),
     role: userRoleEnum('role').notNull().default('user'),
     preferences: jsonb('preferences').$type<UserPreferencesJson>().notNull().default({}),
     // Username change tracking - null means never changed (first change is free)

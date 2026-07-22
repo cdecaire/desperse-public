@@ -41,6 +41,9 @@ export const env = {
   MAX_FILE_SIZE_MB: getEnvVarAsNumber('VITE_MAX_FILE_SIZE_MB', 100),
   HANDLE_CHANGE_RATE_LIMIT: getEnvVarAsNumber('VITE_HANDLE_CHANGE_RATE_LIMIT', 3),
   PROFILE_USERNAME_CHANGE_LIMIT_DAYS: getEnvVarAsNumber('VITE_PROFILE_USERNAME_CHANGE_LIMIT_DAYS', 30),
+  // Min days between on-chain edits of a creator's live collectibles collection.
+  // Editing is rare and costs fee-payer SOL, so it's deliberately throttled.
+  COLLECTION_EDIT_LIMIT_DAYS: getEnvVarAsNumber('VITE_COLLECTION_EDIT_LIMIT_DAYS', 90),
 
   // Dev posts flag — set to 'true' in .env.local to mark posts as dev (hidden from production feeds)
   DEV_POSTS: getEnvVar('DEV_POSTS', 'false') === 'true',

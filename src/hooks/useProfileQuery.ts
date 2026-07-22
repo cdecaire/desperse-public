@@ -14,6 +14,7 @@ import {
   uploadAvatar,
   uploadHeaderBg,
 } from '@/server/functions/profile'
+import { updateMyCollection } from '@/server/functions/creatorCollection'
 import { getFollowStats, followUser, unfollowUser, getFollowersList, getFollowingList } from '@/server/functions/follows'
 import { getUserLikes } from '@/server/functions/likes'
 import { getUserComments } from '@/server/functions/comments'
@@ -388,6 +389,41 @@ export function useProfileUpdate() {
       queryClient.invalidateQueries({ queryKey: ['profile', data.user.slug] })
       queryClient.invalidateQueries({ queryKey: ['profile'] })
       queryClient.invalidateQueries({ queryKey: currentUserQueryKey })
+    },
+  })
+}
+
+/**
+ * Edit a LIVE collectibles collection (name/artwork) — triggers an on-chain
+ * updateCollection. Distinct from useProfileUpdate, which only saves the draft
+ * overrides used before the collection exists. Rate-limited server-side.
+ */
+export function useUpdateCollection() {
+  const queryClient = useQueryClient()
+  const { getAuthHeaders } = useAuth()
+  return useMutation({
+    mutationFn: async (payload: {
+      collectionName?: string | null
+      collectionImageUrl?: string | null
+    }) => {
+      const authHeaders = await getAuthHeaders()
+      const result = await updateMyCollection({
+        data: { ...payload, _authorization: authHeaders.Authorization },
+      } as never)
+      if (!result.success) {
+        const err: Error & { code?: string; remainingDays?: number } = new Error(
+          result.error || 'Failed to update collection',
+        )
+        err.code = (result as { code?: string }).code
+        err.remainingDays = (result as { remainingDays?: number }).remainingDays
+        throw err
+      }
+      return result
+    },
+    onSuccess: () => {
+      // Refresh the current user so collectionName/image/updatedAt reflect the edit.
+      queryClient.invalidateQueries({ queryKey: currentUserQueryKey })
+      queryClient.invalidateQueries({ queryKey: ['profile'] })
     },
   })
 }

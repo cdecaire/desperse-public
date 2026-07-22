@@ -3,12 +3,13 @@
  *
  * Expandable "Collection details" card on the create-collectible form. Shows the
  * creator's per-creator collectibles collection (the group their cNFTs are verified
- * into). Two states:
- *  - Draft (no collection yet): editable name + image. Saved as overrides on the
- *    user; consumed by ensureCreatorCollection when the collection is lazily created
- *    on first collect. No on-chain object exists yet, so this is just a stored draft.
- *  - Live (collection already exists): read-only. Editing an existing collection
- *    (which needs an on-chain updateCollection) is the documented follow-on.
+ * into). Two states, both editable:
+ *  - Draft (no collection yet): edits are saved as overrides on the user (no chain);
+ *    consumed by ensureCreatorCollection when the collection is lazily created on
+ *    first collect.
+ *  - Live (collection already exists): edits trigger an on-chain updateCollection
+ *    (the server holds the update authority). Rate-limited to one edit per
+ *    COLLECTION_EDIT_LIMIT_DAYS — a cooldown message shows while locked.
  *
  * Name/image default to the creator's display name + avatar (Desperse logo if none).
  */
@@ -21,13 +22,15 @@ import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
 import { cn } from '@/lib/utils'
+import { env } from '@/config/env'
 import { toast } from '@/hooks/use-toast'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
-import { useProfileUpdate, useAvatarUpload } from '@/hooks/useProfileQuery'
+import { useProfileUpdate, useAvatarUpload, useUpdateCollection } from '@/hooks/useProfileQuery'
 import { uploadAvatarFile } from '@/lib/avatar-upload'
 
 /** Desperse logo fallback (matches the on-chain collection image when no avatar). */
 const DESPERSE_LOGO = 'https://www.desperse.com/icon-512x512.png'
+const MS_PER_DAY = 1000 * 60 * 60 * 24
 
 export function CollectionDetailsSection() {
 	const { user } = useCurrentUser()
@@ -36,6 +39,7 @@ export function CollectionDetailsSection() {
 
 	const profileUpdate = useProfileUpdate()
 	const avatarUpload = useAvatarUpload(user?.id)
+	const updateCollection = useUpdateCollection()
 
 	const hasCollection = Boolean(user?.collectionMint)
 
@@ -47,8 +51,15 @@ export function CollectionDetailsSection() {
 	const previewName = name.trim() || profileName
 	const previewImage = imageUrl.trim() || user?.avatarUrl?.trim() || DESPERSE_LOGO
 
+	// Cooldown for editing a LIVE collection (measured from the last edit).
+	const lastEditedAt = user?.collectionUpdatedAt ? new Date(user.collectionUpdatedAt) : null
+	const cooldownRemainingDays = lastEditedAt
+		? Math.max(0, Math.ceil(env.COLLECTION_EDIT_LIMIT_DAYS - (Date.now() - lastEditedAt.getTime()) / MS_PER_DAY))
+		: 0
+	const inCooldown = hasCollection && cooldownRemainingDays > 0
+
 	const dirty = name !== (user?.collectionName ?? '') || imageUrl !== (user?.collectionImageUrl ?? '')
-	const isBusy = profileUpdate.isPending || avatarUpload.isPending
+	const isBusy = profileUpdate.isPending || avatarUpload.isPending || updateCollection.isPending
 
 	const handleImageSelect = async (file?: File | null) => {
 		if (!file || !user) return
@@ -61,12 +72,20 @@ export function CollectionDetailsSection() {
 	}
 
 	const handleSave = async () => {
+		const payload = {
+			collectionName: name.trim() || null,
+			collectionImageUrl: imageUrl.trim() || null,
+		}
 		try {
-			await profileUpdate.mutateAsync({
-				collectionName: name.trim() || null,
-				collectionImageUrl: imageUrl.trim() || null,
-			})
-			toast.success('Collection details saved')
+			if (hasCollection) {
+				// Live collection → on-chain update (rate-limited server-side).
+				await updateCollection.mutateAsync(payload)
+				toast.success('Collection updated — changes will appear in wallets shortly')
+			} else {
+				// Draft → just persist overrides for lazy creation.
+				await profileUpdate.mutateAsync(payload)
+				toast.success('Collection details saved')
+			}
 		} catch (err) {
 			toast.error(err instanceof Error ? err.message : 'Failed to save collection details')
 		}
@@ -115,67 +134,62 @@ export function CollectionDetailsSection() {
 						) : null}
 					</div>
 
-					{hasCollection ? (
+					<div className="flex items-center gap-3">
+						<Button
+							type="button"
+							variant="outline"
+							disabled={isBusy || !user || inCooldown}
+							onClick={() => fileInputRef.current?.click()}
+						>
+							{avatarUpload.isPending ? <LoadingSpinner size="sm" className="mr-2" /> : null}
+							{imageUrl ? 'Change image' : 'Upload image'}
+						</Button>
+						{imageUrl ? (
+							<button
+								type="button"
+								className="text-xs text-muted-foreground hover:text-foreground"
+								onClick={() => setImageUrl('')}
+								disabled={inCooldown}
+							>
+								Use my avatar
+							</button>
+						) : null}
+						<input
+							ref={fileInputRef}
+							type="file"
+							accept="image/jpeg,image/png,image/webp"
+							className="hidden"
+							onChange={(e) => handleImageSelect(e.target.files?.[0])}
+						/>
+					</div>
+
+					<div className="space-y-1.5">
+						<Label htmlFor="collectionName" className="text-xs">
+							Collection name
+						</Label>
+						<Input
+							id="collectionName"
+							value={name}
+							maxLength={50}
+							placeholder={profileName}
+							onChange={(e) => setName(e.target.value)}
+							disabled={isBusy || inCooldown}
+						/>
+					</div>
+
+					<div className="flex items-center justify-between gap-3">
 						<p className="text-xs leading-relaxed text-muted-foreground">
-							Your collectibles are grouped under this collection in wallets and marketplaces. Editing its
-							name and artwork is coming soon.
+							{inCooldown
+								? `Your collection is live on-chain. You can edit it again in ${cooldownRemainingDays} day${cooldownRemainingDays === 1 ? '' : 's'}.`
+								: hasCollection
+									? 'Your collection is live. Saving updates its name and artwork on-chain — changes appear in wallets shortly.'
+									: 'Applies when your collection is created — the first time someone collects your work. Leave blank to use your profile.'}
 						</p>
-					) : (
-						<>
-							<div className="flex items-center gap-3">
-								<Button
-									type="button"
-									variant="outline"
-									disabled={isBusy || !user}
-									onClick={() => fileInputRef.current?.click()}
-								>
-									{avatarUpload.isPending ? <LoadingSpinner size="sm" className="mr-2" /> : null}
-									{imageUrl ? 'Change image' : 'Upload image'}
-								</Button>
-								{imageUrl ? (
-									<button
-										type="button"
-										className="text-xs text-muted-foreground hover:text-foreground"
-										onClick={() => setImageUrl('')}
-									>
-										Use my avatar
-									</button>
-								) : null}
-								<input
-									ref={fileInputRef}
-									type="file"
-									accept="image/jpeg,image/png,image/webp"
-									className="hidden"
-									onChange={(e) => handleImageSelect(e.target.files?.[0])}
-								/>
-							</div>
-
-							<div className="space-y-1.5">
-								<Label htmlFor="collectionName" className="text-xs">
-									Collection name
-								</Label>
-								<Input
-									id="collectionName"
-									value={name}
-									maxLength={50}
-									placeholder={profileName}
-									onChange={(e) => setName(e.target.value)}
-									disabled={isBusy}
-								/>
-							</div>
-
-							<div className="flex items-center justify-between gap-3">
-								<p className="text-xs leading-relaxed text-muted-foreground">
-									Applies when your collection is created — the first time someone collects your work. Leave
-									blank to use your profile.
-								</p>
-								<Button type="button" onClick={handleSave} disabled={isBusy || !dirty}>
-									{profileUpdate.isPending ? <LoadingSpinner size="sm" className="mr-2" /> : null}
-									Save
-								</Button>
-							</div>
-						</>
-					)}
+						<Button type="button" onClick={handleSave} disabled={isBusy || !dirty || inCooldown}>
+							{isBusy ? <LoadingSpinner size="sm" className="mr-2" /> : null}
+							{updateCollection.isPending ? 'Updating…' : 'Save'}
+						</Button>
+					</div>
 				</div>
 			) : null}
 		</div>

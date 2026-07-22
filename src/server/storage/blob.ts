@@ -261,16 +261,26 @@ export async function uploadMetadataJson(
 /**
  * Upload a creator's per-creator collection metadata JSON, keyed by user id
  * (`collection-metadata/{userId}.json`). Overwrites by default: the JSON is
- * deterministic from the profile, so a concurrent first-mint race or a future
- * "edit collection" re-upload both resolve to the same/updated path safely.
+ * deterministic from the profile, so a concurrent first-mint race or the initial
+ * lazy-creation re-upload both resolve to the same path safely.
+ *
+ * Pass `version` to write a distinct, immutable path
+ * (`collection-metadata/{userId}-{version}.json`) instead. Edits to a LIVE
+ * collection use this so the on-chain `uri` changes to a genuinely new URL —
+ * without it, overwriting in place leaves the URI unchanged and DAS/wallets keep
+ * serving the stale cached JSON.
  */
 export async function uploadCollectionMetadataJson(
   metadata: Record<string, unknown>,
   userId: string,
-  allowOverwrite = true
+  allowOverwrite = true,
+  version?: string | number
 ): Promise<UploadResult | UploadError> {
   try {
-    const pathname = `collection-metadata/${userId}.json`
+    const pathname =
+      version !== undefined && version !== null && `${version}` !== ''
+        ? `collection-metadata/${userId}-${version}.json`
+        : `collection-metadata/${userId}.json`
     const jsonBlob = new Blob([JSON.stringify(metadata, null, 2)], {
       type: 'application/json',
     })

@@ -65,6 +65,7 @@ export default defineEventHandler(async (event) => {
 
 	// Authenticate
 	let userId: string
+	let privyId: string
 	try {
 		const auth = await authenticateWithToken(token)
 		if (!auth?.userId) {
@@ -79,6 +80,7 @@ export default defineEventHandler(async (event) => {
 			}
 		}
 		userId = auth.userId
+		privyId = auth.privyId
 	} catch {
 		setResponseStatus(event, 401)
 		return {
@@ -186,7 +188,7 @@ export default defineEventHandler(async (event) => {
 	}
 
 	// Call the internal prepare function
-	const result = await prepareTipInternal(userId, senderWallet, {
+	const result = await prepareTipInternal(userId, privyId, senderWallet, {
 		toUserId: body.toUserId as string,
 		amount: body.amount as number,
 		context: context as 'profile' | 'message_unlock',

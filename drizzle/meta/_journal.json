@@ -351,6 +351,13 @@
       "when": 1783870495399,
       "tag": "0049_breezy_kang",
       "breakpoints": true
+    },
+    {
+      "idx": 50,
+      "version": "7",
+      "when": 1785108334991,
+      "tag": "0050_opposite_steel_serpent",
+      "breakpoints": true
     }
   ]
 }

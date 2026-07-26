@@ -897,7 +897,8 @@ export async function getUserActivityDirect(
 			.where(
 				and(
 					eq(tips.fromUserId, userId),
-					eq(tips.status, 'confirmed')
+					eq(tips.status, 'confirmed'),
+					eq(tips.verificationVersion, 1)
 				)
 			)
 

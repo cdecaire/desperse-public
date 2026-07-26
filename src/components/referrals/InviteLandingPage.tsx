@@ -8,7 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { UserAvatar } from '@/components/shared/UserAvatar'
 import { StaticPageLayout } from '@/components/layout/StaticPageLayout'
 import { getPrimaryDisplayMedia } from '@/components/feed/postAssets'
-import { getOnboardingSteps } from '@/components/onboarding/OnboardingShell'
+import { getOnboardingSteps, Stepper } from '@/components/onboarding/OnboardingShell'
 import { useAuth } from '@/hooks/useAuth'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { useFollowMutation, useFollowStats } from '@/hooks/useProfileQuery'
@@ -173,25 +173,11 @@ function NextStepsView({
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="grid gap-3 sm:grid-cols-2">
-              {steps.slice(0, 2).map((step, index) => (
-                <div
-                  key={step.id}
-                  className={
-                    step.status === 'current'
-                      ? 'rounded-xl border border-foreground/20 bg-muted/30 p-4'
-                      : 'rounded-xl border border-border/60 p-4 opacity-60'
-                  }
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted text-label-sm">
-                      {index + 1}
-                    </span>
-                    <p className="text-label-lg">{step.title}</p>
-                  </div>
-                  <p className="mt-1.5 text-body-sm text-muted-foreground">{step.description}</p>
-                </div>
-              ))}
+            <div className="space-y-2">
+              <Stepper steps={steps.slice(0, 2)} />
+              <p className="text-body-sm text-muted-foreground">
+                {steps.find((step) => step.status === 'current')?.description}
+              </p>
             </div>
 
             <Button asChild size="cta" className="w-full sm:w-auto">
@@ -381,10 +367,7 @@ export function InviteLandingPage({ code, referrerSlug, invalid, initialPreview 
         <section className="rounded-2xl border bg-muted/20 p-5 text-body-sm text-muted-foreground">
           <div className="flex items-start gap-3">
             <Icon name="triangle-exclamation" variant="regular" className="mt-0.5 text-lg" />
-            <p>
-              Recognition only. No cash value. This invite flow is about joining Desperse and finishing activation,
-              not rewards or future value.
-            </p>
+            <p>This invite flow is about joining Desperse and finishing activation.</p>
           </div>
         </section>
       </div>

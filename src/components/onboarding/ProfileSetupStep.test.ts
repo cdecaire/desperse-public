@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { isValidUrl, normalizeUrl, shouldAdvanceProfileSetup } from './ProfileSetupStep'
+import { filterUsernameInput, isValidUrl, normalizeUrl, shouldAdvanceProfileSetup, slugifyName } from './ProfileSetupStep'
 
 describe('ProfileSetupStep validation', () => {
   it('normalizes URL without protocol', () => {
@@ -63,5 +63,28 @@ describe('ProfileSetupStep validation', () => {
         instagramUsername: null,
       })
     ).toBe(true)
+  })
+})
+
+describe('username slug helpers', () => {
+  it('slugifies a display name to the allowed charset', () => {
+    expect(slugifyName('Alice Wonder')).toBe('alicewonder')
+  })
+
+  it('lowercases and strips disallowed characters, keeping _ and .', () => {
+    expect(slugifyName('Cool_Artist.42!')).toBe('cool_artist.42')
+  })
+
+  it('truncates a generated slug to 24 characters', () => {
+    expect(slugifyName('a'.repeat(40)).length).toBe(24)
+  })
+
+  it('returns empty for a name with no slug-safe characters', () => {
+    expect(slugifyName('★☆✦')).toBe('')
+  })
+
+  it('filters raw keystrokes the same way, capped at 24', () => {
+    expect(filterUsernameInput('My Handle')).toBe('myhandle')
+    expect(filterUsernameInput('x'.repeat(30)).length).toBe(24)
   })
 })

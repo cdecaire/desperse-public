@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { z } from 'zod'
 import { InviteLandingPage, type InviteReferrerPreviewResult } from '@/components/referrals/InviteLandingPage'
 import { getInviteReferrerPreview } from '@/server/functions/referrals'
+import { buildOgMeta } from '@/lib/og-meta'
 
 const BASE_URL = 'https://desperse.com'
 
@@ -30,31 +31,19 @@ export const Route = createFileRoute('/i/$code/welcome')({
     const name = referrer?.displayName?.trim() || referrer?.slug
     const title = name ? `${name} invited you to Desperse` : 'Join Desperse'
     const description = referrer?.bio?.trim() || 'Publish, discover, and collect creative work on Solana.'
-    const ogImage = referrer?.slug
-      ? `${BASE_URL}/api/og/profile/${referrer.slug}`
+    const ogImage = referrer
+      ? `${BASE_URL}/api/og/invite/${encodeURIComponent(params.code)}`
       : `${BASE_URL}/api/og/default`
     const url = `${BASE_URL}/i/${params.code}`
 
     return {
-      meta: [
-        { title: `${title} | Desperse` },
-        { name: 'description', content: description },
-        // Open Graph
-        { property: 'og:title', content: title },
-        { property: 'og:description', content: description },
-        { property: 'og:image', content: ogImage },
-        { property: 'og:image:width', content: '1200' },
-        { property: 'og:image:height', content: '630' },
-        { property: 'og:url', content: url },
-        { property: 'og:type', content: 'website' },
-        { property: 'og:site_name', content: 'Desperse' },
-        // Twitter Card
-        { name: 'twitter:site', content: '@desperseapp' },
-        { name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'twitter:title', content: title },
-        { name: 'twitter:description', content: description },
-        { name: 'twitter:image', content: ogImage },
-      ],
+      meta: buildOgMeta({
+        title,
+        description,
+        image: ogImage,
+        url,
+        documentTitle: `${title} | Desperse`,
+      }),
     }
   },
 })

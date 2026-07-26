@@ -7,7 +7,7 @@ import { useEffect } from 'react'
 import { Icon } from '@/components/ui/icon'
 import { useNavigate } from '@tanstack/react-router'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
-import { LoadingSpinner } from './LoadingSpinner'
+import { ContentLoadingSkeleton } from './ContentLoadingSkeleton'
 import { EmptyState } from './EmptyState'
 
 interface RoleGuardProps {
@@ -41,11 +41,7 @@ export function RoleGuard({ children, requiredRole, deniedMessage }: RoleGuardPr
   // Show loading state only while we don't have a user yet
   // Once we have a user (even if still initializing), we can check access
   if (isLoading && !currentUser) {
-    return (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <LoadingSpinner size="lg" />
-      </div>
-    )
+    return <ContentLoadingSkeleton className="min-h-[50vh]" label="Checking access" />
   }
 
   // Show error if user doesn't have access
@@ -69,4 +65,3 @@ export function RoleGuard({ children, requiredRole, deniedMessage }: RoleGuardPr
 }
 
 export default RoleGuard
-

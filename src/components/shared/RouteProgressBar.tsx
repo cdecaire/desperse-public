@@ -6,109 +6,83 @@
  * Only displays if navigation takes longer than 250ms to avoid flicker.
  */
 
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useRouterState } from '@tanstack/react-router'
 import { Progress, ProgressTrack, ProgressIndicator } from '@cdecaire/sable'
+import { hasUncommittedNavigation } from '@/lib/router-state'
 
 const SHOW_DELAY_MS = 250 // Show progress bar after 250ms
-const COMPLETE_DELAY_MS = 150 // Delay before completing (allows route to render)
+const HIDE_DELAY_MS = 200 // Keep the completed state visible long enough to read
 
 export function RouteProgressBar() {
-  const routerState = useRouterState()
-  const pathname = routerState.location.pathname
+  const isNavigating = useRouterState({
+    select: hasUncommittedNavigation,
+  })
   const [isVisible, setIsVisible] = useState(false)
   const [progress, setProgress] = useState(0)
-  
-  const showTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-  const completeTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null)
-  const previousPathnameRef = useRef<string>(pathname)
-  const isNavigatingRef = useRef<boolean>(false)
 
-  // Handle pathname changes (navigation start/end)
+  const isVisibleRef = useRef(false)
+  const showTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const hideTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const progressIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
   useEffect(() => {
-    const pathnameChanged = pathname !== previousPathnameRef.current
-    
-    if (pathnameChanged) {
-      // Navigation started - clear any existing timers
-      if (showTimeoutRef.current) {
+    const clearTimers = () => {
+      if (showTimeoutRef.current !== null) {
         clearTimeout(showTimeoutRef.current)
+        showTimeoutRef.current = null
       }
-      if (completeTimeoutRef.current) {
-        clearTimeout(completeTimeoutRef.current)
+      if (hideTimeoutRef.current !== null) {
+        clearTimeout(hideTimeoutRef.current)
+        hideTimeoutRef.current = null
       }
-      if (progressIntervalRef.current) {
+      if (progressIntervalRef.current !== null) {
         clearInterval(progressIntervalRef.current)
+        progressIntervalRef.current = null
+      }
+    }
+
+    const startProgress = () => {
+      let currentProgress = 10
+      setProgress(currentProgress)
+      progressIntervalRef.current = setInterval(() => {
+        const increment = currentProgress < 50 ? 10 : currentProgress < 80 ? 5 : 2
+        currentProgress = Math.min(currentProgress + increment, 90)
+        setProgress(currentProgress)
+      }, 100)
+    }
+
+    clearTimers()
+
+    if (isNavigating) {
+      // Restart cleanly if another navigation begins during the completion phase.
+      if (isVisibleRef.current) {
+        startProgress()
+        return clearTimers
       }
 
-      // If we were already navigating, complete the previous navigation
-      if (isNavigatingRef.current) {
-        completeProgress()
-      }
-
-      // Start new navigation
-      isNavigatingRef.current = true
-      previousPathnameRef.current = pathname
       setProgress(0)
-
-      // Schedule showing the progress bar after delay
       showTimeoutRef.current = setTimeout(() => {
-        // Only show if still navigating (pathname hasn't changed again)
-        if (isNavigatingRef.current) {
-          setIsVisible(true)
-          setProgress(10) // Start at 10%
-
-          // Simulate progress (not real progress, just visual feedback)
-          let currentProgress = 10
-          progressIntervalRef.current = setInterval(() => {
-            // Slow down as we approach 90% (don't go to 100% until route loads)
-            const increment = currentProgress < 50 ? 10 : currentProgress < 80 ? 5 : 2
-            currentProgress = Math.min(currentProgress + increment, 90)
-            setProgress(currentProgress)
-          }, 100)
-        }
+        showTimeoutRef.current = null
+        isVisibleRef.current = true
+        setIsVisible(true)
+        startProgress()
       }, SHOW_DELAY_MS)
-
-      // Schedule completion after a short delay (route should be loaded by then)
-      completeTimeoutRef.current = setTimeout(() => {
-        if (isNavigatingRef.current) {
-          completeProgress()
-        }
-      }, COMPLETE_DELAY_MS)
-    }
-
-    // Cleanup on unmount
-    return () => {
-      if (showTimeoutRef.current) {
-        clearTimeout(showTimeoutRef.current)
-      }
-      if (completeTimeoutRef.current) {
-        clearTimeout(completeTimeoutRef.current)
-      }
-      if (progressIntervalRef.current) {
-        clearInterval(progressIntervalRef.current)
-      }
-    }
-  }, [pathname])
-
-  const completeProgress = () => {
-    isNavigatingRef.current = false
-    
-    // Complete progress to 100%
-    setProgress(100)
-
-    // Clear progress interval
-    if (progressIntervalRef.current) {
-      clearInterval(progressIntervalRef.current)
-      progressIntervalRef.current = null
-    }
-
-    // Hide after a short delay for smooth transition
-    setTimeout(() => {
-      setIsVisible(false)
+    } else if (isVisibleRef.current) {
+      // The router has actually resolved: complete, then dismiss the indicator.
+      setProgress(100)
+      hideTimeoutRef.current = setTimeout(() => {
+        hideTimeoutRef.current = null
+        isVisibleRef.current = false
+        setIsVisible(false)
+        setProgress(0)
+      }, HIDE_DELAY_MS)
+    } else {
       setProgress(0)
-    }, 200)
-  }
+    }
+
+    return clearTimers
+  }, [isNavigating])
 
   if (!isVisible) return null
 
@@ -124,4 +98,3 @@ export function RouteProgressBar() {
     </Progress>
   )
 }
-

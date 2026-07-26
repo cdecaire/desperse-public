@@ -11,7 +11,7 @@ import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { Icon } from '@/components/ui/icon'
-import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
+import { ContentLoadingSkeleton } from '@/components/shared/ContentLoadingSkeleton'
 import { PageHeader } from '@/components/shared/PageHeader'
 
 export const Route = createFileRoute('/settings/account/notifications')({
@@ -48,9 +48,7 @@ function NotificationsSettingsPage() {
         </FieldsetDescription>
         <FieldsetContent>
         {isLoading ? (
-          <Row justify="center" className="py-4">
-            <LoadingSpinner />
-          </Row>
+          <ContentLoadingSkeleton label="Loading notification preferences" rows={5} variant="compact" />
         ) : !user ? (
           <p className="text-body-sm text-muted-foreground py-2">
             Sign in to manage notification preferences

@@ -8,7 +8,7 @@ import {
   getSuggestedCreators,
   getTrendingPosts,
   getNewPosts,
-  getEndingSoonPosts,
+  getMintingNowPosts,
   getFeaturedCreators,
   search,
 } from '@/server/functions/explore'
@@ -127,7 +127,7 @@ export function useNewPosts(
 /**
  * Fetch editions minting now with infinite scroll (gallery "Minting Now" tab)
  */
-export function useEndingSoonPosts(
+export function useMintingNowPosts(
   currentUserId?: string | null,
   isAuthReady: boolean = true,
   postType?: ExploreFeedPostType,
@@ -135,10 +135,10 @@ export function useEndingSoonPosts(
 ) {
   const { getAuthHeaders, isAuthenticated } = useAuth()
   return useInfiniteQuery({
-    queryKey: ['ending-soon-posts', currentUserId || 'public', postType || 'all', category || 'all-cats'],
+    queryKey: ['minting-now-posts', currentUserId || 'public', postType || 'all', category || 'all-cats'],
     queryFn: async ({ pageParam }) => {
       const authHeaders = isAuthenticated ? await getAuthHeaders().catch(() => null) : null
-      const result = await getEndingSoonPosts({
+      const result = await getMintingNowPosts({
         data: {
           cursor: pageParam ?? undefined,
           limit: 20,
@@ -157,7 +157,7 @@ export function useEndingSoonPosts(
     initialPageParam: null as string | null,
     getNextPageParam: (lastPage) => lastPage.nextCursor,
     enabled: isAuthReady,
-    // Mint windows are time-sensitive — refresh more aggressively
+    // Timed availability is time-sensitive — refresh more aggressively
     staleTime: 60 * 1000, // 1 minute
     gcTime: 5 * 60 * 1000, // 5 minutes
   })

@@ -8,7 +8,7 @@ import { useQuery } from '@tanstack/react-query'
 import { getReportsQueue } from '@/server/functions/admin'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { useAuth } from '@/hooks/useAuth'
-import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
+import { ContentLoadingSkeleton } from '@/components/shared/ContentLoadingSkeleton'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { useState, useMemo } from 'react'
 import {
@@ -226,21 +226,11 @@ function ModerationListPage() {
         </Row>
 
         {isLoadingUser && (
-          <Row align="center" justify="center" className="py-12">
-            <LoadingSpinner size="lg" />
-            <div className="ml-4 text-body-sm text-muted-foreground">
-              Loading user...
-            </div>
-          </Row>
+          <ContentLoadingSkeleton label="Loading moderation queue" rows={5} />
         )}
 
         {!isLoadingUser && (isLoading || isPending) && (
-          <Row align="center" justify="center" className="py-12">
-            <LoadingSpinner size="lg" />
-            <div className="ml-4 text-body-sm text-muted-foreground">
-              Loading reports...
-            </div>
-          </Row>
+          <ContentLoadingSkeleton label="Loading moderation queue" rows={5} />
         )}
 
         {error && (

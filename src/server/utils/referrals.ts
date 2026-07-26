@@ -1,14 +1,23 @@
 import { createHmac, timingSafeEqual } from 'node:crypto'
-import { and, desc, eq, lt, ne } from 'drizzle-orm'
+import { and, desc, eq, ilike, inArray, lt, ne, or, sql } from 'drizzle-orm'
 
 import { env } from '@/config/env'
-import { REFERRAL_SLOT_LIMIT } from '@/lib/referrals'
+import {
+  getPublicReferralStatus,
+  getReferralLeaderboardStatus,
+  getReferralMilestoneConfirmation,
+  rankReferralLeaderboardEntries,
+  REFERRAL_SLOT_LIMIT,
+  type ReferralLeaderboardCandidate,
+} from '@/lib/referrals'
 import { db } from '@/server/db'
 import { isUniqueViolation } from '@/server/utils/db-errors'
 import {
   posts,
+  notifications,
   referralAttributionSessions,
   referralEvents,
+  referralInviteCodes,
   referrals,
   users,
   follows,
@@ -17,6 +26,10 @@ import {
 const DAY_MS = 24 * 60 * 60 * 1000
 const ATTRIBUTION_TTL_DAYS = 30
 const PENDING_ACTIVATION_TTL_DAYS = 30
+const CUSTOM_CODE_UNLOCK_COUNT = 3
+const CUSTOM_CODE_CHANGE_COOLDOWN_DAYS = 7
+const CUSTOM_CODE_PATTERN = /^[a-z0-9_]{3,20}$/
+const BLOCKED_CUSTOM_CODE_TERMS = ['fuck', 'shit', 'bitch', 'cunt', 'nigger', 'nigga', 'faggot', 'retard'] as const
 
 export const REFERRAL_ATTRIBUTION_COOKIE_NAME = 'desperse_referral_attribution'
 export const REFERRAL_ATTRIBUTION_COOKIE_MAX_AGE_SECONDS = ATTRIBUTION_TTL_DAYS * 24 * 60 * 60
@@ -52,6 +65,29 @@ export function normalizeInviteCode(code: string): string {
   return code.trim().toLowerCase().replace(/^@+/, '')
 }
 
+export type CustomInviteCodeValidation =
+  | { valid: true; code: string }
+  | { valid: false; error: string; reason: 'format' | 'reserved' | 'profanity' }
+
+export function validateCustomInviteCode(rawCode: string): CustomInviteCodeValidation {
+  const code = normalizeInviteCode(rawCode)
+  if (!CUSTOM_CODE_PATTERN.test(code)) {
+    return { valid: false, reason: 'format', error: 'Use 3-20 letters, numbers, or underscores.' }
+  }
+
+  const reserved = new Set([
+    'desperse', 'desperseapp', 'admin', 'support', 'staff', 'moderator',
+    'official', 'security', 'help', 'api', 'auth', 'login', 'signup',
+    'settings', 'profile', 'invite', 'referral', 'system', 'root', 'test',
+    'solana', 'phantom', 'privy', 'vercel', 'github', 'discord',
+  ])
+  if (reserved.has(code)) return { valid: false, reason: 'reserved', error: 'That code is reserved.' }
+  if (BLOCKED_CUSTOM_CODE_TERMS.some((term) => code.includes(term))) {
+    return { valid: false, reason: 'profanity', error: 'That code is not allowed.' }
+  }
+  return { valid: true, code }
+}
+
 export function hasCompletedReferralProfile(user: { displayName: string | null; avatarUrl: string | null }): boolean {
   return Boolean(user.displayName?.trim() && user.avatarUrl?.trim())
 }
@@ -76,6 +112,21 @@ async function emitReferralEvent(input: {
 
 async function getReferrerByInviteCode(code: string) {
   const normalized = normalizeInviteCode(code)
+  const [customCodeOwner] = await db
+    .select({
+      id: users.id,
+      slug: users.usernameSlug,
+      displayName: users.displayName,
+      avatarUrl: users.avatarUrl,
+      bio: users.bio,
+    })
+    .from(referralInviteCodes)
+    .innerJoin(users, eq(referralInviteCodes.userId, users.id))
+    .where(and(sql`lower(${referralInviteCodes.code}) = ${normalized}`, eq(referralInviteCodes.status, 'active')))
+    .limit(1)
+
+  if (customCodeOwner) return customCodeOwner
+
   const [referrer] = await db
     .select({
       id: users.id,
@@ -89,6 +140,120 @@ async function getReferrerByInviteCode(code: string) {
     .limit(1)
 
   return referrer ?? null
+}
+
+function customCodeAlternatives(code: string, userId: string): string[] {
+  const suffix = userId.replace(/[^a-z0-9]/gi, '').slice(0, 4).toLowerCase() || '1'
+  const base = code.slice(0, Math.max(3, 20 - suffix.length - 1))
+  return [`${base}_${suffix}`, `${code.slice(0, 18)}_1`].filter((value, index, values) => values.indexOf(value) === index)
+}
+
+export async function setCustomReferralInviteCode(input: { userId: string; code: string; now?: Date }) {
+  const validation = validateCustomInviteCode(input.code)
+  if (!validation.valid) return { success: false as const, ...validation }
+
+  const code = validation.code
+  const now = input.now ?? new Date()
+  const cooldownStart = new Date(now.getTime() - CUSTOM_CODE_CHANGE_COOLDOWN_DAYS * DAY_MS)
+
+  const [owner] = await db
+    .select({ id: users.id, usernameSlug: users.usernameSlug })
+    .from(users)
+    .where(eq(users.id, input.userId))
+    .limit(1)
+  if (!owner) return { success: false as const, reason: 'not_found' as const, error: 'User not found.' }
+
+  const activated = await db
+    .select({ id: referrals.id })
+    .from(referrals)
+    .where(and(eq(referrals.referrerUserId, input.userId), eq(referrals.state, 'activated')))
+    .limit(CUSTOM_CODE_UNLOCK_COUNT)
+  if (activated.length < CUSTOM_CODE_UNLOCK_COUNT) {
+    return {
+      success: false as const,
+      reason: 'locked' as const,
+      error: `Custom invite codes unlock at ${CUSTOM_CODE_UNLOCK_COUNT} activated referrals.`,
+      activatedCount: activated.length,
+      requiredCount: CUSTOM_CODE_UNLOCK_COUNT,
+    }
+  }
+
+  const [activeCode] = await db
+    .select()
+    .from(referralInviteCodes)
+    .where(and(eq(referralInviteCodes.userId, input.userId), eq(referralInviteCodes.status, 'active')))
+    .limit(1)
+  if (activeCode?.createdAt && activeCode.createdAt > cooldownStart) {
+    const nextChangeAt = new Date(activeCode.createdAt.getTime() + CUSTOM_CODE_CHANGE_COOLDOWN_DAYS * DAY_MS)
+    return {
+      success: false as const,
+      reason: 'rate_limited' as const,
+      error: `You can change your custom code again on ${nextChangeAt.toISOString()}.`,
+      nextChangeAt,
+    }
+  }
+
+  if (code === owner.usernameSlug.toLowerCase()) {
+    return { success: false as const, reason: 'collision' as const, error: 'That is already your default invite code.' }
+  }
+
+  const [codeCollision] = await db
+    .select({ id: referralInviteCodes.id })
+    .from(referralInviteCodes)
+    .where(sql`lower(${referralInviteCodes.code}) = ${code}`)
+    .limit(1)
+  const [usernameCollision] = await db
+    .select({ id: users.id })
+    .from(users)
+    .where(eq(users.usernameSlug, code))
+    .limit(1)
+  if (codeCollision || usernameCollision) {
+    return {
+      success: false as const,
+      reason: 'collision' as const,
+      error: 'That invite code is already in use.',
+      alternatives: customCodeAlternatives(code, input.userId),
+    }
+  }
+
+  try {
+    if (activeCode) {
+      const retired = await db
+        .update(referralInviteCodes)
+        .set({ status: 'retired', retiredAt: now, updatedAt: now })
+        .where(and(eq(referralInviteCodes.id, activeCode.id), eq(referralInviteCodes.status, 'active')))
+        .returning({ id: referralInviteCodes.id })
+      if (retired.length === 0) {
+        return {
+          success: false as const,
+          reason: 'conflict' as const,
+          error: 'Your invite code changed in another request. Refresh and try again.',
+        }
+      }
+    }
+
+    const [created] = await db
+      .insert(referralInviteCodes)
+      .values({ userId: input.userId, code, status: 'active', updatedAt: now })
+      .returning()
+
+    await emitReferralEvent({
+      eventName: activeCode ? 'referral_custom_code_changed' : 'referral_custom_code_created',
+      referrerUserId: input.userId,
+      payload: { code, retiredCode: activeCode?.code ?? null },
+    })
+    return { success: true as const, code: created.code, defaultCode: owner.usernameSlug, changedAt: created.createdAt }
+  } catch (error) {
+    if (isUniqueViolation(error)) {
+      return {
+        success: false as const,
+        reason: 'collision' as const,
+        error: 'That invite code was just claimed. Try another.',
+        alternatives: customCodeAlternatives(code, input.userId),
+      }
+    }
+    throw error
+  }
 }
 
 export async function getActiveReferralAttributionSessionFromSignedCookie(cookieValue: string | null | undefined) {
@@ -438,6 +603,28 @@ export async function verifyReferralActivationForUser(referredUserId: string) {
     payload: { source: 'first_follow', followingUserId: qualifyingTarget.followingId },
   })
 
+  const [activatedReferralCount] = await db
+    .select({ count: sql<number>`count(*)::int` })
+    .from(referrals)
+    .where(and(eq(referrals.referrerUserId, referral.referrerUserId), eq(referrals.state, 'activated')))
+  const milestone = getReferralMilestoneConfirmation(activatedReferralCount?.count ?? 0)
+
+  try {
+    await db.insert(notifications).values({
+      userId: referral.referrerUserId,
+      actorId: referredUserId,
+      type: 'referral_activated',
+      metadata: milestone
+        ? { milestoneTarget: milestone.target, milestoneMessage: milestone.message }
+        : null,
+    })
+  } catch (notificationError) {
+    console.warn(
+      '[verifyReferralActivationForUser] Failed to create referral notification:',
+      notificationError instanceof Error ? notificationError.message : 'Unknown error',
+    )
+  }
+
   return { success: true as const, status: 'activated' as const, referral: activatedReferral ?? referral }
 }
 
@@ -458,6 +645,12 @@ export async function getReferralOwnerDashboard(userId: string) {
   if (!owner) {
     return null
   }
+
+  const [activeCustomCode] = await db
+    .select({ code: referralInviteCodes.code, createdAt: referralInviteCodes.createdAt })
+    .from(referralInviteCodes)
+    .where(and(eq(referralInviteCodes.userId, userId), eq(referralInviteCodes.status, 'active')))
+    .limit(1)
 
   const fetchReferrals = () => db
     .select({
@@ -516,13 +709,84 @@ export async function getReferralOwnerDashboard(userId: string) {
       bio: owner.bio,
       usernameSlug: owner.usernameSlug,
     },
-    inviteCode: owner.usernameSlug,
-    invitePath: `/i/${owner.usernameSlug}`,
+    inviteCode: activeCustomCode?.code ?? owner.usernameSlug,
+    invitePath: `/i/${activeCustomCode?.code ?? owner.usernameSlug}`,
+    defaultInviteCode: owner.usernameSlug,
+    customInviteCode: activeCustomCode?.code ?? null,
+    customCodeUnlocked: activatedCount >= CUSTOM_CODE_UNLOCK_COUNT,
     activatedCount,
     pendingCount,
     totalSlots: REFERRAL_SLOT_LIMIT,
     remainingSlots: Math.max(0, REFERRAL_SLOT_LIMIT - consumedSlots),
     referrals: normalizedReferrals,
+  }
+}
+
+export async function getPublicReferralProfileStatus(userId: string) {
+  const [result] = await db
+    .select({ count: sql<number>`count(*)::int` })
+    .from(referrals)
+    .where(and(eq(referrals.referrerUserId, userId), eq(referrals.state, 'activated')))
+
+  return getPublicReferralStatus(result?.count ?? 0)
+}
+
+function getUtcWeekStart(now: Date): Date {
+  const start = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()))
+  const daysSinceMonday = (start.getUTCDay() + 6) % 7
+  start.setUTCDate(start.getUTCDate() - daysSinceMonday)
+  return start
+}
+
+export async function getReferralLeaderboard(input?: { currentUserId?: string | null; now?: Date }) {
+  const generatedAt = input?.now ?? new Date()
+  const weekStartedAt = getUtcWeekStart(generatedAt)
+  const [rows, excludedUserIds] = await Promise.all([
+    db
+      .select({
+        userId: users.id,
+        usernameSlug: users.usernameSlug,
+        displayName: users.displayName,
+        avatarUrl: users.avatarUrl,
+        totalActivatedCount: sql<number>`count(*)::int`,
+        weeklyActivatedCount: sql<number>`count(*) filter (where ${referrals.activatedAt} >= ${weekStartedAt.toISOString()})::int`,
+      })
+      .from(referrals)
+      .innerJoin(users, eq(referrals.referrerUserId, users.id))
+      .where(eq(referrals.state, 'activated'))
+      .groupBy(users.id, users.usernameSlug, users.displayName, users.avatarUrl),
+    getLeaderboardExcludedUserIds(),
+  ])
+
+  const candidates: ReferralLeaderboardCandidate[] = rows.map((row) => ({
+    ...row,
+    totalActivatedCount: Number(row.totalActivatedCount),
+    weeklyActivatedCount: Number(row.weeklyActivatedCount),
+    excluded: excludedUserIds.has(row.userId),
+  }))
+  const entries = rankReferralLeaderboardEntries(candidates)
+  const currentUser = input?.currentUserId
+    ? candidates.find((candidate) => candidate.userId === input.currentUserId) ?? {
+      userId: input.currentUserId,
+      usernameSlug: '',
+      displayName: null,
+      avatarUrl: null,
+      totalActivatedCount: 0,
+      weeklyActivatedCount: 0,
+      excluded: excludedUserIds.has(input.currentUserId),
+    }
+    : null
+  const currentRank = currentUser
+    ? entries.find((entry) => entry.userId === currentUser.userId)?.rank ?? null
+    : null
+
+  return {
+    entries: entries.slice(0, 100),
+    currentUserStatus: currentUser
+      ? getReferralLeaderboardStatus({ ...currentUser, rank: currentRank })
+      : null,
+    generatedAt: generatedAt.toISOString(),
+    weekStartedAt: weekStartedAt.toISOString(),
   }
 }
 
@@ -599,4 +863,175 @@ export async function getReferralStatusForReferredUser(referredUserId: string) {
     .limit(1)
 
   return referral ?? null
+}
+
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+const REFERRAL_MODERATION_EVENT = 'referral_moderation_action'
+
+export async function searchReferralsForModeration(rawQuery: string, limit = 50) {
+  const query = rawQuery.trim()
+  if (!query) return []
+  const normalized = normalizeInviteCode(query)
+  const userConditions = [
+    ilike(users.usernameSlug, `%${normalized}%`),
+    ilike(users.displayName, `%${query}%`),
+  ]
+  if (UUID_PATTERN.test(query)) userConditions.push(eq(users.id, query))
+
+  const matchingUsers = await db
+    .select({ id: users.id, usernameSlug: users.usernameSlug, displayName: users.displayName, avatarUrl: users.avatarUrl })
+    .from(users)
+    .where(or(...userConditions))
+    .limit(50)
+  const matchingUserIds = matchingUsers.map((user) => user.id)
+
+  const referralConditions = [ilike(referrals.inviteCode, `%${normalized}%`)]
+  if (UUID_PATTERN.test(query)) referralConditions.push(eq(referrals.id, query))
+  if (matchingUserIds.length > 0) {
+    referralConditions.push(inArray(referrals.referrerUserId, matchingUserIds))
+    referralConditions.push(inArray(referrals.referredUserId, matchingUserIds))
+  }
+
+  const rows = await db
+    .select()
+    .from(referrals)
+    .where(or(...referralConditions))
+    .orderBy(desc(referrals.createdAt))
+    .limit(Math.min(Math.max(limit, 1), 100))
+
+  const involvedUserIds = [...new Set(rows.flatMap((row) => [row.referrerUserId, row.referredUserId]))]
+  const involvedUsers = involvedUserIds.length > 0
+    ? await db
+      .select({ id: users.id, usernameSlug: users.usernameSlug, displayName: users.displayName, avatarUrl: users.avatarUrl })
+      .from(users)
+      .where(inArray(users.id, involvedUserIds))
+    : []
+  const userById = new Map(involvedUsers.map((user) => [user.id, user]))
+  const excludedUserIds = await getLeaderboardExcludedUserIds()
+
+  return rows.map((row) => ({
+    ...row,
+    referrer: userById.get(row.referrerUserId) ?? null,
+    referredUser: userById.get(row.referredUserId) ?? null,
+    referrerExcluded: excludedUserIds.has(row.referrerUserId),
+  }))
+}
+
+/**
+ * Set (or clear) a user's leaderboard exclusion. Recorded as a durable
+ * moderation event keyed on the referrer — the user's referrals, profile
+ * credit, and the invitees are all left untouched; only leaderboard ranking is
+ * affected. Reversible: the latest exclude_user/include_user event wins.
+ */
+export async function setUserLeaderboardExclusion(input: {
+  targetUserId: string
+  actorUserId: string
+  excluded: boolean
+  reason: string
+}) {
+  const reason = input.reason.trim()
+  if (!reason) return { success: false as const, error: 'A moderation reason is required' }
+
+  await emitReferralEvent({
+    eventName: REFERRAL_MODERATION_EVENT,
+    referrerUserId: input.targetUserId,
+    payload: {
+      action: input.excluded ? 'exclude_user' : 'include_user',
+      reason,
+      actorUserId: input.actorUserId,
+    },
+  })
+  return { success: true as const, excluded: input.excluded }
+}
+
+/**
+ * Resolve the set of users currently excluded from the leaderboard by replaying
+ * the durable moderation event stream (latest exclude_user/include_user per user
+ * wins). This is the canonical filter the leaderboard applies:
+ * `referrerUserId NOT IN (excluded)`. Profile credit/state stays untouched.
+ */
+export async function getLeaderboardExcludedUserIds() {
+  const events = await db
+    .select({ referrerUserId: referralEvents.referrerUserId, payload: referralEvents.payload })
+    .from(referralEvents)
+    .where(eq(referralEvents.eventName, REFERRAL_MODERATION_EVENT))
+    .orderBy(desc(referralEvents.createdAt))
+
+  const excluded = new Set<string>()
+  const resolved = new Set<string>()
+  for (const event of events) {
+    const userId = event.referrerUserId
+    const action = event.payload?.action
+    if (!userId || (action !== 'exclude_user' && action !== 'include_user')) continue
+    if (resolved.has(userId)) continue
+    resolved.add(userId)
+    if (action === 'exclude_user') excluded.add(userId)
+  }
+  return excluded
+}
+
+export async function retireReferralInviteCode(input: {
+  codeId: string
+  actorUserId: string
+  reason: string
+}) {
+  const [code] = await db
+    .select()
+    .from(referralInviteCodes)
+    .where(eq(referralInviteCodes.id, input.codeId))
+    .limit(1)
+  if (!code) return { success: false as const, error: 'Invite code not found' }
+  if (code.status === 'retired') return { success: true as const, code, changed: false }
+  if (!input.reason.trim()) return { success: false as const, error: 'A moderation reason is required' }
+
+  const now = new Date()
+  const [retired] = await db
+    .update(referralInviteCodes)
+    .set({ status: 'retired', retiredAt: now, updatedAt: now })
+    .where(and(eq(referralInviteCodes.id, code.id), eq(referralInviteCodes.status, 'active')))
+    .returning()
+  if (!retired) return { success: false as const, error: 'Invite code changed before it could be retired' }
+
+  await emitReferralEvent({
+    eventName: REFERRAL_MODERATION_EVENT,
+    referrerUserId: code.userId,
+    payload: {
+      action: 'retire_code',
+      reason: input.reason.trim(),
+      actorUserId: input.actorUserId,
+      codeId: code.id,
+      code: code.code,
+    },
+  })
+  return { success: true as const, code: retired, changed: true }
+}
+
+export async function getReferralInviteCodesForModeration(userId: string) {
+  return db
+    .select()
+    .from(referralInviteCodes)
+    .where(eq(referralInviteCodes.userId, userId))
+    .orderBy(desc(referralInviteCodes.createdAt))
+}
+
+export async function searchReferralInviteCodesForModeration(rawQuery: string) {
+  const query = rawQuery.trim()
+  if (!query) return []
+  const conditions = [ilike(referralInviteCodes.code, `%${normalizeInviteCode(query)}%`)]
+  if (UUID_PATTERN.test(query)) conditions.push(eq(referralInviteCodes.id, query))
+  const codes = await db
+    .select()
+    .from(referralInviteCodes)
+    .where(or(...conditions))
+    .orderBy(desc(referralInviteCodes.createdAt))
+    .limit(50)
+  const ownerIds = [...new Set(codes.map((code) => code.userId))]
+  const owners = ownerIds.length > 0
+    ? await db
+      .select({ id: users.id, usernameSlug: users.usernameSlug, displayName: users.displayName })
+      .from(users)
+      .where(inArray(users.id, ownerIds))
+    : []
+  const ownerById = new Map(owners.map((owner) => [owner.id, owner]))
+  return codes.map((code) => ({ ...code, owner: ownerById.get(code.userId) ?? null }))
 }

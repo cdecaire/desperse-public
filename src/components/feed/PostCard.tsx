@@ -3,7 +3,7 @@
  * Displays a post in the feed with media, caption, and actions
  */
 
-import { Link, useNavigate } from '@tanstack/react-router'
+import { Link, useNavigate, useRouter } from '@tanstack/react-router'
 import { useQueryClient } from '@tanstack/react-query'
 import { cn } from '@/lib/utils'
 import { PostMedia } from './PostMedia'
@@ -134,6 +134,7 @@ export function PostCard({
   const [heartTrigger, setHeartTrigger] = useState(0)
 
   const navigate = useNavigate()
+  const router = useRouter()
 
   // Get comment count
   const { data: commentCount } = useCommentCount(post.id)
@@ -197,6 +198,13 @@ export function PostCard({
     onSingleTap: handleMediaSingleTap,
     onDoubleTap: handleMediaDoubleTap,
   })
+
+  // The double-tap gesture intentionally delays single-tap navigation. Use that
+  // window to warm the destination loader so the eventual route commit is ready.
+  const preloadPostDetail = useCallback(() => {
+    if (isPreview || mediaIsInteractive) return
+    void router.preloadRoute({ to: '/post/$postId', params: { postId: post.id } })
+  }, [isPreview, mediaIsInteractive, post.id, router])
 
   const computedPost = {
     ...post,
@@ -391,7 +399,10 @@ export function PostCard({
       )}
       
       {/* Media - Full bleed on mobile */}
-      <div className={cn('relative -mx-4 md:mx-0', !mediaIsInteractive && !isPreview && 'cursor-pointer')}>
+      <div
+        className={cn('relative -mx-4 md:mx-0', !mediaIsInteractive && !isPreview && 'cursor-pointer')}
+        onPointerDown={preloadPostDetail}
+      >
         <PostMedia
           mediaUrl={displayMedia.mediaUrl}
           coverUrl={displayMedia.coverUrl}
@@ -629,4 +640,3 @@ export function PostCard({
 }
 
 export default memo(PostCard)
-

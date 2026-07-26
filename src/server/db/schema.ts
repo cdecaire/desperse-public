@@ -45,6 +45,7 @@ export const notificationTypeEnum = pgEnum('notification_type_enum', [
   'mention',
   'content_hidden',
   'content_deleted',
+  'referral_activated',
 ]);
 
 export const notificationReferenceTypeEnum = pgEnum('notification_reference_type_enum', [
@@ -67,6 +68,8 @@ export const referralStateEnum = pgEnum('referral_state_enum', [
 
 export const referralAttributionSourceEnum = pgEnum('referral_attribution_source_enum', ['link', 'manual'])
 
+export const referralInviteCodeStatusEnum = pgEnum('referral_invite_code_status_enum', ['active', 'retired'])
+
 // Asset role enum for multi-asset posts
 export const assetRoleEnum = pgEnum('asset_role_enum', ['media', 'download']);
 
@@ -85,6 +88,22 @@ export const users = pgTable(
     link: text('link'),
     twitterUsername: text('twitter_username'),
     instagramUsername: text('instagram_username'),
+    // Per-creator MPL Core collection that this creator's free collectibles are
+    // verified into. Null until their first collectible mint, then created lazily
+    // (see ensureCreatorCollection) and reused. Update authority = server fee-payer
+    // key. Mirrors posts.masterMint but keyed on the creator rather than the post.
+    collectionMint: text('collection_mint'),
+    // Creator-set overrides for their collectibles collection name/artwork. Null =
+    // fall back to displayName / avatarUrl. Editable BEFORE the collection exists
+    // (consumed by ensureCreatorCollection at lazy creation); editing AFTER it exists
+    // also triggers an on-chain updateCollection (server holds the update authority).
+    collectionName: text('collection_name'),
+    collectionImageUrl: text('collection_image_url'),
+    // Last time the creator edited their live collection (name/artwork), triggering
+    // an on-chain updateCollection. Null until the first such edit — so the first
+    // edit is always allowed and the rate-limit window is measured from the last
+    // edit, not from lazy creation. Gates edits to one per COLLECTION_EDIT_LIMIT_DAYS.
+    collectionUpdatedAt: timestamp('collection_updated_at'),
     role: userRoleEnum('role').notNull().default('user'),
     preferences: jsonb('preferences').$type<UserPreferencesJson>().notNull().default({}),
     // Username change tracking - null means never changed (first change is free)
@@ -185,7 +204,7 @@ export const posts = pgTable(
       table.isHidden,
       table.createdAt,
     ),
-    // Minting Now feed: WHERE type='edition' AND mint_window_end > now() ORDER BY mint_window_end
+    // Timed-edition availability checks; Minting Now also includes untimed paid editions.
     mintWindowEndIdx: index('posts_mint_window_end_idx').on(
       table.type,
       table.mintWindowEnd,
@@ -322,6 +341,30 @@ export const referralAttributionSessions = pgTable(
     referredUserIdIdx: index('referral_attribution_sessions_referred_user_id_idx').on(table.referredUserId),
     inviteCodeIdx: index('referral_attribution_sessions_invite_code_idx').on(table.inviteCode),
     expiresAtIdx: index('referral_attribution_sessions_expires_at_idx').on(table.expiresAt),
+  }),
+);
+
+// Custom invite codes are separate from the user's immutable system code
+// (usernameSlug). Retired rows remain reserved so old links cannot be claimed.
+export const referralInviteCodes = pgTable(
+  'referral_invite_codes',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    code: text('code').notNull(),
+    status: referralInviteCodeStatusEnum('status').notNull().default('active'),
+    retiredAt: timestamp('retired_at'),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    updatedAt: timestamp('updated_at').notNull().defaultNow(),
+  },
+  (table) => ({
+    codeLowerUniqueIdx: uniqueIndex('referral_invite_codes_code_lower_unique_idx').on(sql`lower(${table.code})`),
+    activeUserUniqueIdx: uniqueIndex('referral_invite_codes_active_user_unique_idx')
+      .on(table.userId)
+      .where(sql`${table.status} = 'active'`),
+    userIdIdx: index('referral_invite_codes_user_id_idx').on(table.userId),
   }),
 );
 
@@ -1111,6 +1154,10 @@ export type NotificationMetadata = {
   contentLabel?: string
   /** Parent post ID (for comment moderation — so notification can link to post) */
   parentPostId?: string
+  /** Referral milestone crossed by this activation, when applicable */
+  milestoneTarget?: number
+  /** Calm, product-native milestone confirmation copy */
+  milestoneMessage?: string
 }
 
 // Arweave storage types

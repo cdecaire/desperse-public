@@ -368,7 +368,7 @@ export const getNotificationCounters = createServerFn({
 })
 
 // Types for user notifications
-export type NotificationType = 'follow' | 'like' | 'comment' | 'collect' | 'purchase'
+export type NotificationType = 'follow' | 'like' | 'comment' | 'collect' | 'purchase' | 'mention' | 'content_hidden' | 'content_deleted' | 'referral_activated'
 export type NotificationReferenceType = 'post' | 'comment'
 
 export interface NotificationWithActor {
@@ -391,6 +391,13 @@ export interface NotificationWithActor {
     content?: string
     postId?: string
   }
+  metadata?: {
+    reason?: string
+    contentLabel?: string
+    parentPostId?: string
+    milestoneTarget?: number
+    milestoneMessage?: string
+  } | null
 }
 
 /**
@@ -677,6 +684,7 @@ export const getUserNotifications = createServerFn({
           createdAt: n.createdAt,
           actor: row.actor,
           reference,
+          metadata: n.metadata,
         }
       })
 

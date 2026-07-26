@@ -1,6 +1,6 @@
 {
-  "id": "f12c0a32-f90e-4715-a6ef-b05411085068",
-  "prevId": "a69dd62e-b797-4568-998d-b2fdce740589",
+  "id": "50923ce1-c077-4396-9166-ecef42c7d03f",
+  "prevId": "3ff896ef-4b47-44a3-a12c-e3b971d55fc5",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -4889,6 +4889,127 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.referral_invite_codes": {
+      "name": "referral_invite_codes",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "code": {
+          "name": "code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "referral_invite_code_status_enum",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'active'"
+        },
+        "retired_at": {
+          "name": "retired_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "referral_invite_codes_code_lower_unique_idx": {
+          "name": "referral_invite_codes_code_lower_unique_idx",
+          "columns": [
+            {
+              "expression": "lower(\"code\")",
+              "asc": true,
+              "isExpression": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "referral_invite_codes_active_user_unique_idx": {
+          "name": "referral_invite_codes_active_user_unique_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"referral_invite_codes\".\"status\" = 'active'",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "referral_invite_codes_user_id_idx": {
+          "name": "referral_invite_codes_user_id_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "referral_invite_codes_user_id_users_id_fk": {
+          "name": "referral_invite_codes_user_id_users_id_fk",
+          "tableFrom": "referral_invite_codes",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.referrals": {
       "name": "referrals",
       "schema": "",
@@ -5292,107 +5413,9 @@
           "primaryKey": false,
           "notNull": true
         },
-        "from_wallet_address": {
-          "name": "from_wallet_address",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "to_wallet_address": {
-          "name": "to_wallet_address",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "source_token_account": {
-          "name": "source_token_account",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "destination_token_account": {
-          "name": "destination_token_account",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "token_program": {
-          "name": "token_program",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "token_decimals": {
-          "name": "token_decimals",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "prepared_blockhash": {
-          "name": "prepared_blockhash",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "last_valid_block_height": {
-          "name": "last_valid_block_height",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "prepared_message_hash": {
-          "name": "prepared_message_hash",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "verification_version": {
-          "name": "verification_version",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "default": 0
-        },
         "tx_signature": {
           "name": "tx_signature",
           "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "signature_submitted_at": {
-          "name": "signature_submitted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "verification_claim_key": {
-          "name": "verification_claim_key",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "verification_claimed_at": {
-          "name": "verification_claimed_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "verification_attempts": {
-          "name": "verification_attempts",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "default": 0
-        },
-        "last_verification_code": {
-          "name": "last_verification_code",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "failed_at": {
-          "name": "failed_at",
-          "type": "timestamp",
           "primaryKey": false,
           "notNull": false
         },
@@ -5497,8 +5520,8 @@
           "method": "btree",
           "with": {}
         },
-        "tips_tx_signature_unique_idx": {
-          "name": "tips_tx_signature_unique_idx",
+        "tips_tx_signature_idx": {
+          "name": "tips_tx_signature_idx",
           "columns": [
             {
               "expression": "tx_signature",
@@ -5507,8 +5530,7 @@
               "nulls": "last"
             }
           ],
-          "isUnique": true,
-          "where": "\"tips\".\"tx_signature\" is not null",
+          "isUnique": false,
           "concurrently": false,
           "method": "btree",
           "with": {}
@@ -5545,12 +5567,7 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
-      "checkConstraints": {
-        "tips_version_one_snapshot_check": {
-          "name": "tips_version_one_snapshot_check",
-          "value": "\"tips\".\"verification_version\" <> 1 OR (\"tips\".\"from_wallet_address\" IS NOT NULL AND \"tips\".\"to_wallet_address\" IS NOT NULL AND \"tips\".\"source_token_account\" IS NOT NULL AND \"tips\".\"destination_token_account\" IS NOT NULL AND \"tips\".\"token_mint\" IS NOT NULL AND \"tips\".\"token_program\" IS NOT NULL AND \"tips\".\"token_decimals\" IS NOT NULL AND \"tips\".\"prepared_blockhash\" IS NOT NULL AND \"tips\".\"last_valid_block_height\" IS NOT NULL AND \"tips\".\"prepared_message_hash\" IS NOT NULL)"
-        }
-      },
+      "checkConstraints": {},
       "isRLSEnabled": false
     },
     "public.user_blocks": {
@@ -5991,6 +6008,24 @@
           "primaryKey": false,
           "notNull": false
         },
+        "collection_mint": {
+          "name": "collection_mint",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "collection_name": {
+          "name": "collection_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "collection_image_url": {
+          "name": "collection_image_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
         "role": {
           "name": "role",
           "type": "user_role_enum",
@@ -6235,7 +6270,8 @@
         "purchase",
         "mention",
         "content_hidden",
-        "content_deleted"
+        "content_deleted",
+        "referral_activated"
       ]
     },
     "public.post_type_enum": {
@@ -6253,6 +6289,14 @@
       "values": [
         "link",
         "manual"
+      ]
+    },
+    "public.referral_invite_code_status_enum": {
+      "name": "referral_invite_code_status_enum",
+      "schema": "public",
+      "values": [
+        "active",
+        "retired"
       ]
     },
     "public.referral_state_enum": {

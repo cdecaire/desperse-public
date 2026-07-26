@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Icon } from "@/components/ui/icon"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner"
+import { ContentLoadingSkeleton } from "@/components/shared/ContentLoadingSkeleton"
 import { PageHeader } from "@/components/shared/PageHeader"
 import { useArweaveBalance } from "@/hooks/useArweaveBalance"
 import {
@@ -200,10 +201,7 @@ function StorageCreditsPage() {
 			{/* === Card 1: Authorization Status + Balances === */}
 			<div className="rounded-[var(--radius-lg)] bg-white dark:bg-input/30 border border-input px-5 md:px-6 lg:px-8 py-6 md:py-8">
 				{isLoading || isSharedLoading ? (
-					<Stack gap={1} align="center" className="py-4">
-						<LoadingSpinner size="sm" />
-						<span className="text-sm text-muted-foreground">Loading storage status...</span>
-					</Stack>
+					<ContentLoadingSkeleton label="Loading storage status" rows={3} variant="compact" />
 				) : error ? (
 					<Stack gap={1} align="center" className="py-4">
 						<Icon name="circle-exclamation" variant="regular" className="text-2xl text-destructive" />

@@ -1,10 +1,10 @@
 export const REFERRAL_SLOT_LIMIT = 3
 
 export const REFERRAL_MILESTONES = [
-  { target: 1, label: 'First Signal badge' },
-  { target: 3, label: 'Custom invite code' },
-  { target: 5, label: 'Profile accent' },
-  { target: 10, label: 'Connector badge and Top Connectors eligibility' },
+  { target: 1, label: 'First Signal badge', confirmation: 'Unlocked: First Signal' },
+  { target: 3, label: 'Custom invite code', confirmation: 'Custom invite code unlocked' },
+  { target: 5, label: 'Profile accent', confirmation: 'Profile accent unlocked' },
+  { target: 10, label: 'Referrer badge and referral board eligibility', confirmation: 'You now qualify for the referral board' },
 ] as const
 
 export type ReferralBackendState =
@@ -115,12 +115,91 @@ export function getNextReferralMilestone(activatedCount: number) {
   return REFERRAL_MILESTONES.find((milestone) => activatedCount < milestone.target) ?? null
 }
 
+export function getReferralMilestoneConfirmation(activatedCount: number) {
+  const milestone = REFERRAL_MILESTONES.find(({ target }) => target === activatedCount)
+  return milestone ? { target: milestone.target, message: milestone.confirmation } : null
+}
+
 export function getCurrentReferralTierLabel(activatedCount: number): string {
-  if (activatedCount >= 10) return 'Connector'
+  if (activatedCount >= 10) return 'Referrer'
   if (activatedCount >= 5) return 'Profile accent unlocked'
   if (activatedCount >= 3) return 'Custom invite code unlocked'
   if (activatedCount >= 1) return 'First Signal'
   return 'Invite in progress'
+}
+
+export type PublicReferralStatus = {
+  activatedCount: number
+  badgeLabel: 'First Signal' | 'Referrer'
+  hasAccent: boolean
+  hasFrame: boolean
+}
+
+/** Public profile treatment derived only from current valid activations. */
+export function getPublicReferralStatus(activatedCount: number): PublicReferralStatus | null {
+  if (activatedCount < 1) return null
+
+  return {
+    activatedCount,
+    badgeLabel: activatedCount >= 10 ? 'Referrer' : 'First Signal',
+    hasAccent: activatedCount >= 5,
+    hasFrame: activatedCount >= 25,
+  }
+}
+
+export const REFERRAL_LEADERBOARD_QUALIFICATION_COUNT = 10
+
+export type ReferralLeaderboardCandidate = {
+  userId: string
+  usernameSlug: string
+  displayName: string | null
+  avatarUrl: string | null
+  totalActivatedCount: number
+  weeklyActivatedCount: number
+  excluded: boolean
+}
+
+export type ReferralLeaderboardEntry = ReferralLeaderboardCandidate & {
+  rank: number
+  badgeLabel: 'Referrer'
+}
+
+export function rankReferralLeaderboardEntries(
+  candidates: ReferralLeaderboardCandidate[],
+): ReferralLeaderboardEntry[] {
+  return candidates
+    .filter((candidate) => (
+      !candidate.excluded
+      && candidate.totalActivatedCount >= REFERRAL_LEADERBOARD_QUALIFICATION_COUNT
+      && candidate.weeklyActivatedCount > 0
+    ))
+    .sort((a, b) => (
+      b.weeklyActivatedCount - a.weeklyActivatedCount
+      || b.totalActivatedCount - a.totalActivatedCount
+      || a.usernameSlug.localeCompare(b.usernameSlug)
+    ))
+    .map((candidate, index) => ({ ...candidate, rank: index + 1, badgeLabel: 'Referrer' }))
+}
+
+export function getReferralLeaderboardStatus(input: {
+  totalActivatedCount: number
+  weeklyActivatedCount: number
+  rank: number | null
+  excluded: boolean
+}):
+  | { state: 'ineligible'; remainingToQualify: number }
+  | { state: 'awaiting' }
+  | { state: 'ranked'; rank: number }
+  | { state: 'review-held' } {
+  if (input.excluded) return { state: 'review-held' }
+  if (input.totalActivatedCount < REFERRAL_LEADERBOARD_QUALIFICATION_COUNT) {
+    return {
+      state: 'ineligible',
+      remainingToQualify: REFERRAL_LEADERBOARD_QUALIFICATION_COUNT - input.totalActivatedCount,
+    }
+  }
+  if (input.rank) return { state: 'ranked', rank: input.rank }
+  return { state: 'awaiting' }
 }
 
 export function buildReferralShareCopy(inviteLink: string): string {
@@ -179,7 +258,7 @@ export function buildReferralShareCardSvg(input: {
   <text x="64" y="376" fill="#FAFAFA" font-size="44" font-weight="700" font-family="Inter, Arial, sans-serif">${inviteCode}</text>
   <text x="64" y="446" fill="#A1A1AA" font-size="18" font-family="Inter, Arial, sans-serif">Invite link</text>
   <text x="64" y="486" fill="#FAFAFA" font-size="22" font-family="Inter, Arial, sans-serif">${inviteLink}</text>
-  <text x="64" y="548" fill="#71717A" font-size="16" font-family="Inter, Arial, sans-serif">Join me on Desperse · Recognition only. No cash value.</text>
+  <text x="64" y="548" fill="#71717A" font-size="16" font-family="Inter, Arial, sans-serif">Join me on Desperse</text>
   <text x="980" y="454" text-anchor="middle" fill="#FAFAFA" font-size="22" font-weight="600" font-family="Inter, Arial, sans-serif">Scan to join</text>
   <text x="980" y="484" text-anchor="middle" fill="#A1A1AA" font-size="17" font-family="Inter, Arial, sans-serif">Link and code both work.</text>
 </svg>`

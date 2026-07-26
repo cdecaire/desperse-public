@@ -1,11 +1,21 @@
 import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
 
-import { withAuth } from '@/server/auth'
-import { getReferralStatusForReferredUser, getReferrerInvitePreview } from '@/server/utils/referrals'
+import { withAuth, withOptionalAuth } from '@/server/auth'
+import {
+  getPublicReferralProfileStatus as getPublicReferralProfileStatusInternal,
+  getReferralLeaderboard as getReferralLeaderboardInternal,
+  getReferralStatusForReferredUser,
+  getReferrerInvitePreview,
+  setCustomReferralInviteCode,
+} from '@/server/utils/referrals'
 
 const inviteCodeSchema = z.object({
   code: z.string().min(1),
+})
+
+const publicProfileStatusSchema = z.object({
+  userId: z.string().min(1),
 })
 
 /**
@@ -34,6 +44,19 @@ export const getMyReferralStatus = createServerFn({ method: 'POST' }).handler(as
   }
   const referral = await getReferralStatusForReferredUser(result.auth.userId)
   return { success: true as const, referral }
+})
+
+/** Public recognition state. Returns null until the first valid activation. */
+export const getPublicReferralProfileStatus = createServerFn({ method: 'GET' }).handler(async (input: unknown) => {
+  const rawData = input && typeof input === 'object' && 'data' in input ? (input as { data: unknown }).data : input
+  const { userId } = publicProfileStatusSchema.parse(rawData)
+  return getPublicReferralProfileStatusInternal(userId)
+})
+
+/** Public weekly referral board, with private status for the signed-in user. */
+export const getReferralLeaderboard = createServerFn({ method: 'GET' }).handler(async (input: unknown) => {
+  const result = await withOptionalAuth(z.object({}), input)
+  return getReferralLeaderboardInternal({ currentUserId: result.auth?.userId })
 })
 
 export const getReferralOwnerDashboard = createServerFn({
@@ -69,5 +92,20 @@ export const getReferralOwnerDashboard = createServerFn({
       success: false as const,
       error: error instanceof Error ? error.message : 'Failed to load referral dashboard',
     }
+  }
+})
+
+const customInviteCodeSchema = z.object({
+  code: z.string().min(1).max(64),
+})
+
+export const updateMyCustomInviteCode = createServerFn({ method: 'POST' }).handler(async (input: unknown) => {
+  try {
+    const result = await withAuth(customInviteCodeSchema, input)
+    if (!result) return { success: false as const, error: 'Authentication required' }
+    return await setCustomReferralInviteCode({ userId: result.auth.userId, code: result.input.code })
+  } catch (error) {
+    console.error('[updateMyCustomInviteCode] Error:', error)
+    return { success: false as const, error: error instanceof Error ? error.message : 'Failed to update invite code' }
   }
 })

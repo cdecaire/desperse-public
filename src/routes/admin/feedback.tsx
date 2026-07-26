@@ -5,7 +5,7 @@
 
 import { createFileRoute, Outlet, useMatchRoute, Link } from '@tanstack/react-router'
 import { useBetaFeedbackList } from '@/hooks/useFeedback'
-import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
+import { ContentLoadingSkeleton } from '@/components/shared/ContentLoadingSkeleton'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { Icon } from '@/components/ui/icon'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -79,12 +79,7 @@ function FeedbackListPage() {
         </Tabs>
 
         {(isLoading || isPending) && (
-          <Row align="center" justify="center" className="py-12">
-            <LoadingSpinner size="lg" />
-            <div className="ml-4 text-body-sm text-muted-foreground">
-              Loading feedback...
-            </div>
-          </Row>
+          <ContentLoadingSkeleton label="Loading feedback" rows={5} />
         )}
 
         {error && (

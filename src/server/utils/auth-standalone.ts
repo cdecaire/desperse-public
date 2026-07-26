@@ -12,6 +12,7 @@ import { eq, or } from 'drizzle-orm'
 import { z } from 'zod'
 import { generateUniqueSlug } from '@/server/utils/slug-utils'
 import { verifyPrivyToken } from '@/server/auth'
+import { formatWalletIdentifier } from '@/lib/wallet-identity'
 import { validateSessionToken } from './siws'
 import { isUniqueViolation } from './db-errors'
 
@@ -22,19 +23,6 @@ const privyUserSchema = z.object({
   walletAddress: z.string(),
   avatarUrl: z.string().url().optional(),
 })
-
-function formatWalletIdentifier(address: string) {
-  const trimmed = address?.trim()
-  if (!trimmed) {
-    return { slugBase: 'user', display: 'user' }
-  }
-  const prefix = trimmed.slice(0, 4)
-  const suffix = trimmed.slice(-4)
-  return {
-    slugBase: `${prefix}-${suffix}`,
-    display: `${prefix}…${suffix}`,
-  }
-}
 
 /**
  * Transform user for REST API response

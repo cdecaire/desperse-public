@@ -3,10 +3,14 @@
  * Fetches a single post by ID
  */
 
-import { useQuery } from '@tanstack/react-query'
-import { getPost } from '@/server/functions/posts'
-import { useCurrentUser } from './useCurrentUser'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useAuth } from './useAuth'
+import {
+  type PostQueryData,
+  postQueryKeys,
+  publicPostQueryOptions,
+  viewerPostQueryOptions,
+} from '@/lib/post-query'
 
 interface UsePostQueryOptions {
   postId: string
@@ -14,33 +18,22 @@ interface UsePostQueryOptions {
 }
 
 export function usePostQuery({ postId, enabled = true }: UsePostQueryOptions) {
-  const { user: currentUser } = useCurrentUser()
-  const { getAuthHeaders } = useAuth()
+  const queryClient = useQueryClient()
+  const { isAuthenticated, isReady, privyId, getAuthHeaders } = useAuth()
+  const isViewerQuery = isReady && isAuthenticated && !!privyId
+  const publicData = queryClient.getQueryData<PostQueryData>(postQueryKeys.public(postId))
+  const getAuthorization = async () => {
+    const headers = await getAuthHeaders()
+    return headers.Authorization ?? null
+  }
+  const options = isViewerQuery
+    ? viewerPostQueryOptions(postId, privyId, getAuthorization)
+    : publicPostQueryOptions(postId)
 
   return useQuery({
-    queryKey: ['post', postId],
-    queryFn: async () => {
-      const authHeaders = await getAuthHeaders()
-      const result = await getPost({
-        data: {
-          postId,
-          currentUserId: currentUser?.id,
-          ...(authHeaders.Authorization ? { _authorization: authHeaders.Authorization } : {}),
-        }
-      } as any)
-
-      if (!result.success) {
-        throw new Error(result.error || 'Post not found')
-      }
-
-      return {
-        post: result.post,
-        user: result.user,
-      }
-    },
+    ...options,
+    placeholderData: isViewerQuery ? publicData : undefined,
     enabled: enabled && !!postId,
-    staleTime: 60 * 1000, // 1 minute
-    gcTime: 5 * 60 * 1000, // 5 minutes
   })
 }
 

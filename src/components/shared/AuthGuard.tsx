@@ -8,7 +8,7 @@ import { useNavigate } from '@tanstack/react-router'
 import { useEffect, useRef } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { buildCreateIntent, saveCreateIntent, shouldPreserveCreateIntent } from '@/lib/createIntent'
-import { LoadingSpinner } from './LoadingSpinner'
+import { ContentLoadingSkeleton } from './ContentLoadingSkeleton'
 
 interface AuthGuardProps {
   children: React.ReactNode
@@ -70,24 +70,15 @@ export function AuthGuard({ children }: AuthGuardProps) {
 
   // Show loading state while checking auth
   if (isLoading || !isReady) {
-    return (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <LoadingSpinner size="lg" />
-      </div>
-    )
+    return <ContentLoadingSkeleton className="min-h-[50vh]" label="Checking sign-in" />
   }
 
   // Don't render children if not authenticated
   if (!isAuthenticated) {
-    return (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <LoadingSpinner size="lg" />
-      </div>
-    )
+    return <ContentLoadingSkeleton className="min-h-[50vh]" label="Opening sign-in" />
   }
 
   return <>{children}</>
 }
 
 export default AuthGuard
-

@@ -4,8 +4,12 @@ import {
   buildReferralShareCardSvg,
   getCurrentReferralTierLabel,
   getNextReferralMilestone,
+  getReferralMilestoneConfirmation,
+  getPublicReferralStatus,
+  getReferralLeaderboardStatus,
   getReferralListState,
   getReferralStateLabel,
+  rankReferralLeaderboardEntries,
 } from '@/lib/referrals'
 
 describe('referral helpers', () => {
@@ -25,7 +29,58 @@ describe('referral helpers', () => {
     expect(getCurrentReferralTierLabel(0)).toBe('Invite in progress')
     expect(getCurrentReferralTierLabel(1)).toBe('First Signal')
     expect(getCurrentReferralTierLabel(3)).toBe('Custom invite code unlocked')
-    expect(getCurrentReferralTierLabel(10)).toBe('Connector')
+    expect(getCurrentReferralTierLabel(10)).toBe('Referrer')
+  })
+
+  it('returns calm confirmation copy only at milestone thresholds', () => {
+    expect(getReferralMilestoneConfirmation(1)).toEqual({
+      target: 1,
+      message: 'Unlocked: First Signal',
+    })
+    expect(getReferralMilestoneConfirmation(3)).toEqual({
+      target: 3,
+      message: 'Custom invite code unlocked',
+    })
+    expect(getReferralMilestoneConfirmation(2)).toBeNull()
+    expect(getReferralMilestoneConfirmation(11)).toBeNull()
+  })
+
+  it('derives public profile status only after an activation', () => {
+    expect(getPublicReferralStatus(0)).toBeNull()
+    expect(getPublicReferralStatus(1)).toEqual({
+      activatedCount: 1,
+      badgeLabel: 'First Signal',
+      hasAccent: false,
+      hasFrame: false,
+    })
+    expect(getPublicReferralStatus(5)).toMatchObject({ badgeLabel: 'First Signal', hasAccent: true })
+    expect(getPublicReferralStatus(10)).toMatchObject({ badgeLabel: 'Referrer', hasAccent: true })
+    expect(getPublicReferralStatus(25)).toMatchObject({ badgeLabel: 'Referrer', hasFrame: true })
+  })
+
+  it('derives referral board states for ineligible, awaiting, ranked, and excluded users', () => {
+    expect(getReferralLeaderboardStatus({ totalActivatedCount: 9, weeklyActivatedCount: 3, rank: null, excluded: false }))
+      .toEqual({ state: 'ineligible', remainingToQualify: 1 })
+    expect(getReferralLeaderboardStatus({ totalActivatedCount: 10, weeklyActivatedCount: 0, rank: null, excluded: false }))
+      .toEqual({ state: 'awaiting' })
+    expect(getReferralLeaderboardStatus({ totalActivatedCount: 12, weeklyActivatedCount: 2, rank: 4, excluded: false }))
+      .toEqual({ state: 'ranked', rank: 4 })
+    expect(getReferralLeaderboardStatus({ totalActivatedCount: 20, weeklyActivatedCount: 8, rank: null, excluded: true }))
+      .toEqual({ state: 'review-held' })
+  })
+
+  it('ranks only qualified, non-excluded referrers by weekly activations', () => {
+    const ranked = rankReferralLeaderboardEntries([
+      { userId: 'b', usernameSlug: 'beta', displayName: 'Beta', avatarUrl: null, totalActivatedCount: 15, weeklyActivatedCount: 2, excluded: false },
+      { userId: 'a', usernameSlug: 'alpha', displayName: 'Alpha', avatarUrl: null, totalActivatedCount: 12, weeklyActivatedCount: 4, excluded: false },
+      { userId: 'c', usernameSlug: 'charlie', displayName: 'Charlie', avatarUrl: null, totalActivatedCount: 30, weeklyActivatedCount: 9, excluded: true },
+      { userId: 'd', usernameSlug: 'delta', displayName: 'Delta', avatarUrl: null, totalActivatedCount: 9, weeklyActivatedCount: 5, excluded: false },
+    ])
+
+    expect(ranked.map(({ userId, rank }) => ({ userId, rank }))).toEqual([
+      { userId: 'a', rank: 1 },
+      { userId: 'b', rank: 2 },
+    ])
   })
 
   it('builds a personalized share card svg with invite details', () => {

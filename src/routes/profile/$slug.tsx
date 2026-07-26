@@ -23,6 +23,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { shouldShowFirstPostCta } from '@/lib/onboarding'
+import { publicProfileQueryOptions } from '@/lib/profile-query'
 import {
   useProfileUser,
   useFollowStats,
@@ -44,6 +45,9 @@ import { getResponsiveImageProps } from '@/lib/imageUrl'
 import { useBlockUser, useUnblockUser } from '@/hooks/useBlocks'
 import { BlockConfirmDialog } from '@/components/forms/BlockConfirmDialog'
 import { Stack, Row, Grid } from '@cdecaire/sable/layout'
+import { buildOgMeta } from '@/lib/og-meta'
+import { ReferralStatusModule } from '@/components/profile/ReferralStatusModule'
+import { usePublicReferralProfileStatus } from '@/hooks/useReferrals'
 
 type ProfileTab = 'posts' | 'collected' | 'for-sale'
 
@@ -58,13 +62,12 @@ export const Route = createFileRoute('/profile/$slug')({
     }
     return {}
   },
-  loader: async ({ params }) => {
-    try {
-      const meta = await (fetchProfileMeta as any)({ data: { slug: params.slug } })
-      return { meta }
-    } catch {
-      return { meta: null }
-    }
+  loader: async ({ params, context }) => {
+    const [meta] = await Promise.all([
+      (fetchProfileMeta as any)({ data: { slug: params.slug } }).catch(() => null),
+      context.queryClient.ensureQueryData(publicProfileQueryOptions(params.slug)).catch(() => null),
+    ])
+    return { meta }
   },
   head: ({ loaderData, params }) => {
     const meta = loaderData?.meta
@@ -73,27 +76,7 @@ export const Route = createFileRoute('/profile/$slug')({
     const ogImage = `${BASE_URL}/api/og/profile/${params.slug}`
     const url = `${BASE_URL}/profile/${params.slug}`
 
-    return {
-      meta: [
-        { title },
-        { name: "description", content: description },
-        // Open Graph
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
-        { property: "og:image", content: ogImage },
-        { property: "og:image:width", content: "1200" },
-        { property: "og:image:height", content: "630" },
-        { property: "og:url", content: url },
-        { property: "og:type", content: "profile" },
-        { property: "og:site_name", content: "Desperse" },
-        // Twitter Card
-        { name: "twitter:site", content: "@desperseapp" },
-        { name: "twitter:card", content: "summary_large_image" },
-        { name: "twitter:title", content: title },
-        { name: "twitter:description", content: description },
-        { name: "twitter:image", content: ogImage },
-      ],
-    }
+    return { meta: buildOgMeta({ title, description, image: ogImage, url, type: 'profile' }) }
   },
 })
 
@@ -227,11 +210,13 @@ function ProfilePage() {
   const {
     data: profileData,
     isLoading: isUserLoading,
+    isPlaceholderData: isProfileViewerPending,
     error: userError,
   } = useProfileUser(slug)
   
   const profileUser = profileData?.user
   const profileStats = profileData?.stats
+  const { data: referralStatus } = usePublicReferralProfileStatus(profileUser?.id)
 
   // Fetch follow stats
   const { data: followStats } = useFollowStats(
@@ -415,7 +400,13 @@ function ProfilePage() {
           {/* Avatar and Profile Controls */}
           <div className="shrink-0 relative pt-2">
             <div className="relative w-20 h-20 md:w-24 md:h-24">
-              <div className="w-full h-full rounded-full bg-background border-4 border-background flex items-center justify-center overflow-hidden shadow-sm">
+              <div className={`w-full h-full rounded-full bg-background border-4 flex items-center justify-center overflow-hidden shadow-sm ${
+                referralStatus?.hasFrame
+                  ? 'border-primary ring-4 ring-primary/30'
+                  : referralStatus?.hasAccent
+                    ? 'border-primary/60'
+                    : 'border-background'
+              }`}>
                 {profileUser.avatarUrl ? (
                   (() => {
                     const avatarProps = getResponsiveImageProps(profileUser.avatarUrl, {
@@ -492,7 +483,7 @@ function ProfilePage() {
             )}
 
             {/* Profile Actions - Other user's profile */}
-            {!isAuthInitializing && !isCurrentUserLoading && !isOwnProfile && isAuthenticated && (
+            {!isAuthInitializing && !isCurrentUserLoading && !isProfileViewerPending && !isOwnProfile && isAuthenticated && (
               <Row gap={0.5} align="center" className="absolute bottom-0 right-0">
                 <TipButton
                   creatorId={profileUser.id}
@@ -654,6 +645,10 @@ function ProfilePage() {
           </div>
         </Stack>
       </div>
+
+      {referralStatus && (
+        <ReferralStatusModule status={referralStatus} isOwner={isOwnProfile} />
+      )}
 
       {/* Divider */}
       <div className="mx-4 mt-4 border-t border-border" />

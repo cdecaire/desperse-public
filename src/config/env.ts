@@ -41,6 +41,9 @@ export const env = {
   MAX_FILE_SIZE_MB: getEnvVarAsNumber('VITE_MAX_FILE_SIZE_MB', 100),
   HANDLE_CHANGE_RATE_LIMIT: getEnvVarAsNumber('VITE_HANDLE_CHANGE_RATE_LIMIT', 3),
   PROFILE_USERNAME_CHANGE_LIMIT_DAYS: getEnvVarAsNumber('VITE_PROFILE_USERNAME_CHANGE_LIMIT_DAYS', 30),
+  // Min days between on-chain edits of a creator's live collectibles collection.
+  // Editing is rare and costs fee-payer SOL, so it's deliberately throttled.
+  COLLECTION_EDIT_LIMIT_DAYS: getEnvVarAsNumber('VITE_COLLECTION_EDIT_LIMIT_DAYS', 90),
 
   // Dev posts flag — set to 'true' in .env.local to mark posts as dev (hidden from production feeds)
   DEV_POSTS: getEnvVar('DEV_POSTS', 'false') === 'true',
@@ -86,6 +89,13 @@ export const env = {
   // When enabled, returns error instead of subsidizing fees
   DISABLE_FEE_SUBSIDY: getEnvVar('DISABLE_FEE_SUBSIDY', 'false') === 'true',
 
+  // Per-creator collectible collections (Bubblegum cNFTs verified into an MPL Core
+  // collection). OFF by default: when off, collectibles mint ungrouped exactly as
+  // before. Runtime (non-VITE) flag so it can be enabled on devnet for validation
+  // and flipped off instantly if a collection-attached mint misbehaves — a bad
+  // attachment would fail the collect itself, not just the grouping.
+  FEATURE_COLLECTIBLE_COLLECTIONS: getEnvVar('FEATURE_COLLECTIBLE_COLLECTIONS', 'false') === 'true',
+
   // Arweave / Turbo Storage
   FEATURE_ARWEAVE_STORAGE: getEnvVar('VITE_FEATURE_ARWEAVE_STORAGE', 'false') === 'true',
   TURBO_SERVER_PRIVATE_KEY: getEnvVar('TURBO_SERVER_PRIVATE_KEY', ''),
@@ -105,8 +115,16 @@ export function getHeliusRpcUrl(): string {
   if (apiKey) {
     return `https://mainnet.helius-rpc.com/?api-key=${apiKey}`;
   }
-  // Fallback to public RPC (rate limited, not recommended for production)
-  console.warn('HELIUS_API_KEY not set, using public RPC endpoint');
+  // In production, refuse to silently route mainnet reads/writes through the
+  // heavily rate-limited public RPC — a missing key is a misconfiguration that
+  // should fail loudly rather than degrade minting/confirmation reliability.
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error(
+      'HELIUS_API_KEY is required in production (refusing to fall back to public RPC)',
+    );
+  }
+  // Non-production: fall back to public RPC (rate limited) for local/dev convenience.
+  console.warn('HELIUS_API_KEY not set, using public RPC endpoint (non-production)');
   return 'https://api.mainnet-beta.solana.com';
 }
 

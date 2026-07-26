@@ -2,9 +2,10 @@
 // before any Privy/Solana code that uses it (e.g., signing modal)
 import '@/lib/buffer-polyfill'
 
-import { HeadContent, Scripts, createRootRoute, useRouterState } from '@tanstack/react-router'
+import { HeadContent, Scripts, createRootRouteWithContext, useRouterState } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
-import { useEffect, useState, useRef } from 'react'
+import type { QueryClient } from '@tanstack/react-query'
+import { useEffect } from 'react'
 import { Analytics } from '@vercel/analytics/react'
 
 import { IconProvider, ToastProvider } from '@cdecaire/sable'
@@ -16,16 +17,17 @@ import { sableIconSet } from '@/lib/sable-icon-adapter'
 
 // Routes that should not be wrapped in the AppShell (standalone pages)
 // Note: '/' is conditionally standalone based on auth state (see RpcHealthProviderWrapper)
-const STANDALONE_ROUTES = ['/about', '/privacy', '/terms', '/fees', '/changelog', '/export-wallet', '/echoes', '/download', '/dev/typography-test', '/dev/home-preview', '/i', '/onboarding']
+const STANDALONE_ROUTES = ['/about', '/privacy', '/terms', '/fees', '/changelog', '/export-wallet', '/echoes', '/download', '/dev/typography-test', '/dev/home-preview', '/dev/onboarding-preview', '/i', '/onboarding']
 import { PrivyProvider } from '../components/providers/PrivyProvider'
-import { QueryProvider } from '../components/providers/QueryProvider'
 import { RpcHealthProvider } from '../components/providers/RpcHealthProvider'
 import { ThemeProvider } from '../components/providers/ThemeProvider'
 import { ThemeSync } from '../components/providers/ThemeSync'
 import { ErrorBoundary } from '../components/shared/ErrorBoundary'
+import { RouteProgressBar } from '../components/shared/RouteProgressBar'
 import { SplashScreen } from '../components/shared/SplashScreen'
 import { NotFoundPage } from '../components/shared/NotFoundPage'
 import { useAuth } from '../hooks/useAuth'
+import { getCommittedPathname } from '@/lib/router-state'
 
 import appCss from '../styles.css?url'
 
@@ -39,7 +41,7 @@ const getRpcConfig = createServerFn({ method: 'GET' }).handler(async () => {
   return { heliusWsUrl: wsUrl }
 })
 
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   loader: () => getRpcConfig(),
   notFoundComponent: NotFoundPage,
   head: () => ({
@@ -294,6 +296,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body>
         <ErrorBoundary>
           <IconProvider set={sableIconSet} defaultVariant="regular">
+            <RouteProgressBar />
             {/* Toast provider + viewport — bound once near the app root so the
                 imperative toast() API works on every route (including standalone
                 routes that bypass AppShell). Toaster injects the top-center /
@@ -301,13 +304,11 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             <ToastProvider timeout={5000} closeIcon={<Icon name="xmark" />}>
               <Toaster />
               <ThemeProvider>
-                <QueryProvider>
-                  <PrivyProvider heliusWsUrl={heliusWsUrl}>
-                    <RpcHealthProviderWrapper>
-                      {children}
-                    </RpcHealthProviderWrapper>
-                  </PrivyProvider>
-                </QueryProvider>
+                <PrivyProvider heliusWsUrl={heliusWsUrl}>
+                  <RpcHealthProviderWrapper>
+                    {children}
+                  </RpcHealthProviderWrapper>
+                </PrivyProvider>
               </ThemeProvider>
             </ToastProvider>
           </IconProvider>
@@ -322,8 +323,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 // Wrapper component to access auth state for RpcHealthProvider, sync theme, and show splash
 function RpcHealthProviderWrapper({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isReady } = useAuth()
-  const routerState = useRouterState()
-  const pathname = routerState.location.pathname
+  const pathname = useRouterState({ select: getCommittedPathname })
 
   // Check if this is a standalone route (no AppShell)
   // Also treat home page as standalone for unauthenticated users (shows landing page)
@@ -331,32 +331,11 @@ function RpcHealthProviderWrapper({ children }: { children: React.ReactNode }) {
   const isHomePageUnauthenticated = pathname === '/' && isReady && !isAuthenticated
   const shouldBeStandalone = isStandaloneRoute || isHomePageUnauthenticated
 
-  // Track committed layout mode to prevent flash during route transitions
-  // When pathname updates, the children (route outlet) may briefly still render the previous route
-  // We defer the layout switch until after a microtask to let the route component settle
-  const [committedStandalone, setCommittedStandalone] = useState(shouldBeStandalone)
-  const previousPathnameRef = useRef(pathname)
-
-  useEffect(() => {
-    if (pathname !== previousPathnameRef.current) {
-      previousPathnameRef.current = pathname
-      // Defer layout mode change to next tick to let route outlet update first
-      // This prevents briefly showing wrong content with wrong layout during navigation
-      const timeout = setTimeout(() => {
-        setCommittedStandalone(shouldBeStandalone)
-      }, 0)
-      return () => clearTimeout(timeout)
-    } else {
-      // Same pathname, update immediately (e.g., auth state changed)
-      setCommittedStandalone(shouldBeStandalone)
-    }
-  }, [pathname, shouldBeStandalone])
-
   return (
     <RpcHealthProvider isAuthenticated={isAuthenticated}>
       <ThemeSync />
       {/* Standalone routes skip splash and AppShell */}
-      {committedStandalone ? (
+      {shouldBeStandalone ? (
         children
       ) : (
         <>

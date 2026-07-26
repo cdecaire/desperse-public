@@ -9,7 +9,7 @@ import { db } from '@/server/db'
 import { users } from '@/server/db/schema'
 import { eq } from 'drizzle-orm'
 import { z } from 'zod'
-import { generateUniqueSlug, isReservedHandle, isSlugTaken, normalizeSlug } from '@/server/utils/slug-utils'
+import { generateUniqueSlug, isReservedHandle, isSlugTaken } from '@/server/utils/slug-utils'
 import { isUniqueViolation } from '@/server/utils/db-errors'
 import { extractSignupMetadataFromHeaders, type SignupMetadata } from '@/server/utils/signup-metadata'
 import {
@@ -22,21 +22,7 @@ import {
   getActiveReferralAttributionSessionFromSignedCookie,
   REFERRAL_ATTRIBUTION_COOKIE_NAME,
 } from '@/server/utils/referrals'
-
-function formatWalletIdentifier(address: string) {
-  const trimmed = address?.trim()
-  if (!trimmed) {
-    return { slugBase: 'user', display: 'user' }
-  }
-  const prefix = trimmed.slice(0, 4)
-  const suffix = trimmed.slice(-4)
-  return {
-    // Hyphenated to remain slug-safe after normalization
-    slugBase: `${prefix}-${suffix}`,
-    // Keep nice display format with ellipsis
-    display: `${prefix}…${suffix}`,
-  }
-}
+import { formatWalletIdentifier } from '@/lib/wallet-identity'
 
 function getCookieValue(cookieHeader: string | null | undefined, name: string): string | null {
   if (!cookieHeader) return null
@@ -451,7 +437,12 @@ export const checkHandleAvailability = createServerFn({ method: 'POST' }).handle
           ? (input as { data: unknown }).data
           : input
       const { handle } = handleAvailabilitySchema.parse(rawData)
-      const normalized = normalizeSlug(handle)
+      // Normalize to the update-profile slug contract (lowercase [a-z0-9_.]) so the
+      // availability indicator agrees with what the PATCH will actually save. The
+      // shared normalizeSlug() maps "_" → "-", which would check a different string
+      // than the one saved, giving a false available/taken result for handles with
+      // underscores. This is the sole caller, so aligning it here is safe.
+      const normalized = handle.trim().toLowerCase().replace(/[^a-z0-9_.]/g, '')
       if (!normalized || normalized === 'user') {
         return { success: true, normalized, available: false, reason: 'invalid' as const }
       }

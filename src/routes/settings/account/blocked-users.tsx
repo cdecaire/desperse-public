@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { Row, Stack } from '@cdecaire/sable/layout'
+import { Stack } from '@cdecaire/sable/layout'
 import { Icon } from '@/components/ui/icon'
 import { Button } from '@/components/ui/button'
-import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
+import { ContentLoadingSkeleton } from '@/components/shared/ContentLoadingSkeleton'
 import { PageHeader } from '@/components/shared/PageHeader'
 import { useBlockedUsers, useUnblockUser } from '@/hooks/useBlocks'
 
@@ -22,9 +22,7 @@ function BlockedUsersPage() {
       />
 
       {isLoading ? (
-        <Row justify="center" className="py-12">
-          <LoadingSpinner />
-        </Row>
+        <ContentLoadingSkeleton label="Loading blocked accounts" rows={4} />
       ) : error ? (
         <p className="text-body-sm text-muted-foreground py-4">
           Couldn't load your blocked accounts. Try again in a moment.

@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { type ReactNode, useEffect, useMemo, useState } from 'react'
+import { type ReactNode, useMemo } from 'react'
 import { Note, Progress } from '@cdecaire/sable'
 import { Row, Stack } from '@cdecaire/sable/layout'
 
@@ -12,23 +12,16 @@ import SettingsNav from '@/components/settings/SettingsNav'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { Icon } from '@/components/ui/icon'
 import { Input } from '@/components/ui/input'
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from '@/components/ui/sheet'
 import { toast } from '@/hooks/use-toast'
-import { useReferralOwnerDashboard } from '@/hooks/useReferrals'
+import { useReferralLeaderboard, useReferralOwnerDashboard } from '@/hooks/useReferrals'
 import { formatRelativeTime } from '@/lib/dates'
 import {
   buildInviteLink,
@@ -81,17 +74,7 @@ function InvitesPage() {
 
 function InvitesPageContent() {
   const { data: dashboard, isLoading, error } = useReferralOwnerDashboard()
-  const [shareOpen, setShareOpen] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-    const mediaQuery = window.matchMedia('(max-width: 767px)')
-    const sync = () => setIsMobile(mediaQuery.matches)
-    sync()
-    mediaQuery.addEventListener('change', sync)
-    return () => mediaQuery.removeEventListener('change', sync)
-  }, [])
+  const { data: leaderboard } = useReferralLeaderboard()
 
   const origin = typeof window === 'undefined' ? 'https://desperse.com' : window.location.origin
   const inviteLink = dashboard ? buildInviteLink(origin, dashboard.inviteCode) : ''
@@ -117,10 +100,6 @@ function InvitesPageContent() {
       { title: 'History', items: history },
     ].filter((group) => group.items.length > 0)
   }, [dashboard])
-
-  const openShareSurface = () => {
-    setShareOpen(true)
-  }
 
   const copyText = async (value: string, successMessage: string) => {
     try {
@@ -216,7 +195,7 @@ function InvitesPageContent() {
         <Stack gap={2.5} className="pt-4 pb-12">
             <PageHeader
               title="Invites"
-              description="Bring real people into Desperse and track which invites actually activate. Recognition only. No cash value."
+              description="Bring real people into Desperse and track which invites actually activate."
             />
 
             {isLoading ? (
@@ -234,36 +213,102 @@ function InvitesPageContent() {
               <Note>No invite data yet.</Note>
             ) : (
               <Stack gap={2.5}>
+                {/* The invite card itself — click for quick actions. */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      type="button"
+                      aria-label="Invite card — open quick actions"
+                      className="block w-full text-left rounded-2xl cursor-pointer ring-offset-2 ring-offset-background transition-shadow hover:ring-2 hover:ring-border focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                    >
+                      <InviteCard
+                        ownerName={dashboard.owner.displayName}
+                        ownerHandle={dashboard.owner.usernameSlug}
+                        avatarUrl={dashboard.owner.avatarUrl}
+                        headerBgUrl={dashboard.owner.headerBgUrl}
+                        bio={dashboard.owner.bio}
+                        inviteCode={dashboard.inviteCode}
+                        inviteLink={inviteLink}
+                        qrCodeUrl={qrCodeUrl}
+                        badgeLabel={currentTier}
+                        showBadge={dashboard.activatedCount > 0}
+                      />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="center" className="min-w-[12rem]">
+                    <DropdownMenuItem onClick={nativeShare} className="gap-2.5">
+                      <Icon name="share-nodes" variant="regular" className="w-4 text-center text-muted-foreground" />
+                      Share invite
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => copyText(inviteLink, 'Invite link copied')} className="gap-2.5">
+                      <Icon name="link-simple" variant="regular" className="w-4 text-center text-muted-foreground" />
+                      Copy link
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => copyText(dashboard.inviteCode, 'Invite code copied')}
+                      className="gap-2.5"
+                    >
+                      <Icon name="at" variant="regular" className="w-4 text-center text-muted-foreground" />
+                      Copy code
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => copyText(shareCopy, 'Message copied')} className="gap-2.5">
+                      <Icon name="message" variant="regular" className="w-4 text-center text-muted-foreground" />
+                      Copy message
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={downloadShareCard} className="gap-2.5">
+                      <Icon name="download" variant="regular" className="w-4 text-center text-muted-foreground" />
+                      Download image
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
                 {/* Your invite */}
                 <SettingsCard>
-                  <SectionHeader icon="paper-plane" title="Your invite" />
+                  <SectionHeader title="Your invite" />
                   <Stack gap={2}>
                     <Stack gap={0.75}>
                       <span className="text-body-sm text-muted-foreground">Invite link</span>
-                      <Input value={inviteLink} readOnly aria-label="Invite link" className="font-mono text-sm" />
+                      <div className="relative">
+                        <Input
+                          value={inviteLink}
+                          readOnly
+                          aria-label="Invite link"
+                          className="font-mono text-sm h-12 pr-24"
+                        />
+                        <Button
+                          onClick={() => copyText(inviteLink, 'Invite link copied')}
+                          variant="secondary"
+                          className="absolute right-1.5 top-1/2 -translate-y-1/2 h-9 md:h-9 px-3"
+                        >
+                          Copy
+                        </Button>
+                      </div>
                     </Stack>
 
-                    <Row gap={1.5} className="flex-col sm:flex-row">
-                      <Button onClick={() => copyText(inviteLink, 'Invite link copied')} className="gap-2 flex-1">
-                        <Icon name="link-simple" variant="regular" />
-                        Copy link
+                    <Button onClick={nativeShare} className="w-full h-12">
+                      Share invite
+                    </Button>
+
+                    <div className="grid grid-cols-3 gap-2">
+                      <Button
+                        onClick={() => copyText(dashboard.inviteCode, 'Invite code copied')}
+                        variant="outline"
+                        className="h-10 md:h-10 px-2"
+                      >
+                        Copy code
                       </Button>
-                      <Button onClick={openShareSurface} variant="outline" className="gap-2 flex-1">
-                        <Icon name="share-nodes" variant="regular" />
-                        Share…
+                      <Button onClick={() => copyText(shareCopy, 'Message copied')} variant="outline" className="h-10 md:h-10 px-2">
+                        Copy message
                       </Button>
-                    </Row>
+                      <Button onClick={downloadShareCard} variant="outline" className="h-10 md:h-10 px-2">
+                        Download
+                      </Button>
+                    </div>
 
                     <p className="text-body-sm text-muted-foreground">
-                      Your code is{' '}
-                      <button
-                        type="button"
-                        onClick={() => copyText(dashboard.inviteCode, 'Invite code copied')}
-                        className="font-medium text-foreground underline decoration-border underline-offset-4 hover:decoration-foreground transition-colors"
-                      >
-                        {dashboard.inviteCode}
-                      </button>
-                      . Link and code both work — invites are unlimited.
+                      Link and code both work — invites are unlimited.
                     </p>
 
                     {pendingLimitReached ? (
@@ -277,7 +322,6 @@ function InvitesPageContent() {
                 {/* Progress */}
                 <SettingsCard>
                   <SectionHeader
-                    icon="arrow-up-right"
                     title="Progress"
                     aside={<span className="text-body-sm text-muted-foreground">{currentTier}</span>}
                   />
@@ -308,7 +352,7 @@ function InvitesPageContent() {
                         </span>
                       </Stack>
                     ) : (
-                      <Note variant="success">You’ve cleared every current milestone. Top Connectors eligibility is unlocked.</Note>
+                      <Note variant="success">You’ve cleared every current milestone. Referral board eligibility is unlocked.</Note>
                     )}
                   </Stack>
                 </SettingsCard>
@@ -316,7 +360,6 @@ function InvitesPageContent() {
                 {/* Invited people */}
                 <SettingsCard>
                   <SectionHeader
-                    icon="users"
                     title="Invited people"
                     aside={dashboard.referrals.length > 0 ? <span className="text-body-sm text-muted-foreground">{dashboard.referrals.length}</span> : undefined}
                   />
@@ -330,8 +373,7 @@ function InvitesPageContent() {
                       <p className="text-body-sm text-muted-foreground max-w-sm">
                         Share your link to invite people in. They’ll appear here, and count once they complete their profile and follow a creator.
                       </p>
-                      <Button onClick={() => copyText(inviteLink, 'Invite link copied')} className="gap-2 mt-1">
-                        <Icon name="link-simple" variant="regular" />
+                      <Button onClick={() => copyText(inviteLink, 'Invite link copied')} className="mt-1">
                         Copy invite link
                       </Button>
                     </Stack>
@@ -377,9 +419,47 @@ function InvitesPageContent() {
                   )}
                 </SettingsCard>
 
+                {/* Referral board preview */}
+                <SettingsCard>
+                  <SectionHeader
+                    title="Referral board"
+                    aside={<Badge variant="secondary" size="sm">This week</Badge>}
+                  />
+                  <Stack gap={2}>
+                    {leaderboard?.currentUserStatus?.state === 'ranked' ? (
+                      <div>
+                        <p className="text-title-lg">You’re #{leaderboard.currentUserStatus.rank} this week</p>
+                        <p className="mt-1 text-body-sm text-muted-foreground">Ranked by valid invites activated since Monday.</p>
+                      </div>
+                    ) : leaderboard?.currentUserStatus?.state === 'awaiting' ? (
+                      <div>
+                        <p className="text-title-lg">You’re eligible for this week’s board</p>
+                        <p className="mt-1 text-body-sm text-muted-foreground">Rankings may be reviewed before publication.</p>
+                      </div>
+                    ) : leaderboard?.currentUserStatus?.state === 'review-held' ? (
+                      <div>
+                        <p className="text-title-lg">Leaderboard status under review</p>
+                        <p className="mt-1 text-body-sm text-muted-foreground">Your profile credit remains visible while board placement is reviewed.</p>
+                      </div>
+                    ) : (
+                      <div>
+                        <p className="text-title-lg">Activate 10 invites to qualify</p>
+                        <p className="mt-1 text-body-sm text-muted-foreground">
+                          {leaderboard?.currentUserStatus?.state === 'ineligible'
+                            ? `${leaderboard.currentUserStatus.remainingToQualify} more valid activation${leaderboard.currentUserStatus.remainingToQualify === 1 ? '' : 's'} to reach the referral board.`
+                            : 'The referral board highlights members bringing active people into Desperse.'}
+                        </p>
+                      </div>
+                    )}
+                    <Button asChild variant="outline" className="w-full md:w-fit">
+                      <Link to="/leaderboard" search={{ view: 'referrals' }}>View leaderboard</Link>
+                    </Button>
+                  </Stack>
+                </SettingsCard>
+
                 {/* How invites work */}
                 <SettingsCard>
-                  <SectionHeader icon="circle-question" title="How invites work" />
+                  <SectionHeader title="How invites work" />
                   <div>
                     {INVITE_FAQ.map((faq) => (
                       <Stack gap={0.5} key={faq.q} className="py-3 border-b border-border/50 last:border-b-0">
@@ -394,29 +474,6 @@ function InvitesPageContent() {
         </Stack>
       </section>
 
-      {dashboard ? (
-        <ShareSurface
-          isMobile={isMobile}
-          open={shareOpen}
-          onOpenChange={setShareOpen}
-          ownerName={dashboard.owner.displayName}
-          ownerHandle={dashboard.owner.usernameSlug}
-          avatarUrl={dashboard.owner.avatarUrl}
-          headerBgUrl={dashboard.owner.headerBgUrl}
-          bio={dashboard.owner.bio}
-          inviteCode={dashboard.inviteCode}
-          inviteLink={inviteLink}
-          qrCodeUrl={qrCodeUrl}
-          shareCopy={shareCopy}
-          badgeLabel={currentTier}
-          showBadge={dashboard.activatedCount > 0}
-          onCopyCode={() => copyText(dashboard.inviteCode, 'Invite code copied')}
-          onCopyLink={() => copyText(inviteLink, 'Invite link copied')}
-          onCopySuggested={() => copyText(shareCopy, 'Message copied')}
-          onNativeShare={nativeShare}
-          onDownload={downloadShareCard}
-        />
-      ) : null}
     </SettingsLayout>
   )
 }
@@ -434,10 +491,6 @@ const INVITE_FAQ = [
     q: 'Can progress be removed?',
     a: 'Yes. Spam, self-referrals, abuse, or review corrections can remove referral credit and any status tied to it.',
   },
-  {
-    q: 'Is there any financial value?',
-    a: 'Progress, badges, and status are recognition only. They have no cash value and are not transferable, sellable, redeemable, or exchangeable.',
-  },
 ] as const
 
 // Desperse settings card — matches the shell used across /settings/account/*.
@@ -449,22 +502,16 @@ function SettingsCard({ children }: { children: ReactNode }) {
   )
 }
 
-function SectionHeader({ icon, title, aside }: { icon: string; title: string; aside?: ReactNode }) {
+function SectionHeader({ title, aside }: { title: string; aside?: ReactNode }) {
   return (
     <Row gap={1.5} align="center" justify="between" className="mb-4">
-      <Row gap={1.5} align="center">
-        <Icon name={icon} variant="regular" className="w-5 text-center text-muted-foreground" />
-        <span className="text-label-lg">{title}</span>
-      </Row>
+      <span className="text-label-lg">{title}</span>
       {aside}
     </Row>
   )
 }
 
-type ShareSurfaceProps = {
-  isMobile: boolean
-  open: boolean
-  onOpenChange: (open: boolean) => void
+type InviteCardProps = {
   ownerName: string
   ownerHandle: string
   avatarUrl: string | null
@@ -473,19 +520,13 @@ type ShareSurfaceProps = {
   inviteCode: string
   inviteLink: string
   qrCodeUrl: string
-  shareCopy: string
   badgeLabel: string
   showBadge: boolean
-  onCopyCode: () => void
-  onCopyLink: () => void
-  onCopySuggested: () => void
-  onNativeShare: () => void
-  onDownload: () => void
 }
 
 // The recipient-facing invite card: the inviter's profile (header, avatar, bio)
 // paired with their code and a scannable QR. This is what someone actually sees.
-function InviteCard(props: ShareSurfaceProps) {
+function InviteCard(props: InviteCardProps) {
   return (
     <div className="rounded-2xl overflow-hidden bg-zinc-950 text-zinc-50 select-none">
       <div className="relative h-24">
@@ -529,87 +570,5 @@ function InviteCard(props: ShareSurfaceProps) {
         </div>
       </div>
     </div>
-  )
-}
-
-function ShareSurface(props: ShareSurfaceProps) {
-  const content = (
-    <Stack gap={2.5}>
-      <Stack gap={1}>
-        <span className="text-body-sm text-muted-foreground">Preview</span>
-        <InviteCard {...props} />
-      </Stack>
-
-      <div className="grid gap-4 md:grid-cols-2">
-        <Stack gap={1}>
-          <span className="text-label-md">Invite link</span>
-          <Input value={props.inviteLink} readOnly aria-label="Invite link" className="font-mono text-sm" />
-          <Row gap={1.5}>
-            <Button onClick={props.onCopyLink} variant="outline" className="gap-2 flex-1">
-              <Icon name="link-simple" variant="regular" />
-              Copy link
-            </Button>
-            <Button onClick={props.onCopyCode} variant="outline" className="gap-2 flex-1">
-              <Icon name="at" variant="regular" />
-              Copy code
-            </Button>
-          </Row>
-        </Stack>
-        <Stack gap={1}>
-          <span className="text-label-md">Suggested message</span>
-          <div className="rounded-lg border border-input bg-muted/30 px-3.5 py-3 text-sm text-muted-foreground min-h-[92px]">
-            {props.shareCopy}
-          </div>
-          <Row gap={1.5}>
-            <Button onClick={props.onCopySuggested} variant="outline" className="gap-2 flex-1">
-              <Icon name="message" variant="regular" />
-              Copy message
-            </Button>
-            <Button onClick={props.onNativeShare} className="gap-2 flex-1">
-              <Icon name="share-nodes" variant="regular" />
-              Share
-            </Button>
-          </Row>
-        </Stack>
-      </div>
-
-      <Row justify="between" align="center" gap={3} className="rounded-lg border border-input bg-muted/20 px-4 py-3">
-        <span className="text-body-sm text-muted-foreground">Download a shareable image of your invite card.</span>
-        <Button onClick={props.onDownload} variant="outline" className="gap-2 shrink-0">
-          <Icon name="download" variant="regular" />
-          Download
-        </Button>
-      </Row>
-    </Stack>
-  )
-
-  if (props.isMobile) {
-    return (
-      <Sheet open={props.open} onOpenChange={props.onOpenChange}>
-        <SheetContent side="bottom" className="max-h-[92vh] overflow-y-auto rounded-t-2xl">
-          <SheetHeader>
-            <SheetTitle>Share your invite</SheetTitle>
-            <SheetDescription>
-              Send your personal invite card, link, or QR code.
-            </SheetDescription>
-          </SheetHeader>
-          <div className="px-4 pb-6">{content}</div>
-        </SheetContent>
-      </Sheet>
-    )
-  }
-
-  return (
-    <Dialog open={props.open} onOpenChange={props.onOpenChange}>
-      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Share your invite</DialogTitle>
-          <DialogDescription>
-            Send your personal invite card, link, or QR code.
-          </DialogDescription>
-        </DialogHeader>
-        {content}
-      </DialogContent>
-    </Dialog>
   )
 }

@@ -12,6 +12,9 @@
     "test": "vitest run",
     "routes:generate": "tsr generate",
     "db:generate": "drizzle-kit generate",
+    "db:check": "tsx --env-file=.env.local scripts/db-check.ts",
+    "validate:collection-devnet": "tsx --env-file=.env.local scripts/validate-collectible-collection-devnet.ts",
+    "verify:referrals": "tsx scripts/verify-referrals.ts",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
@@ -125,6 +128,9 @@
     "overrides": {
       "h3@>=2.0.0-0 <2.0.1-rc.17": "2.0.1-rc.21",
       "h3@>=1.0.0 <1.15.11": "1.15.11"
+    },
+    "patchedDependencies": {
+      "nitro@3.0.1-alpha.2": "patches/nitro@3.0.1-alpha.2.patch"
     }
   }
 }

@@ -1,6 +1,6 @@
 /**
  * Map an explore-feed server post (getTrendingPosts / getNewPosts /
- * getEndingSoonPosts response) into the PostCardData shape consumed by
+ * getMintingNowPosts response) into the PostCardData shape consumed by
  * GalleryCard and PostCard.
  */
 

@@ -17,7 +17,7 @@ import { ExploreSearchResults } from './ExploreSearchResults'
 import {
   useTrendingPosts,
   useNewPosts,
-  useEndingSoonPosts,
+  useMintingNowPosts,
   getInfinitePostsList,
 } from '@/hooks/useExploreQuery'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
@@ -90,7 +90,7 @@ export function ExploreSections({ railCollapsed = false }: ExploreSectionsProps)
     feedPostType,
     feedCategory
   )
-  const mintingQuery = useEndingSoonPosts(
+  const mintingQuery = useMintingNowPosts(
     currentUser?.id,
     feedEnabled && activeTab === 'minting',
     feedPostType,
@@ -128,7 +128,7 @@ export function ExploreSections({ railCollapsed = false }: ExploreSectionsProps)
     <EmptyState
       icon={<Icon name="clock" variant="regular" className="text-4xl" />}
       title="No live mints right now"
-      description="Timed editions will show up here while their mint window is open."
+      description="Paid editions will show up here whenever they are available to collect."
     />
   ) : (
     <EmptyState

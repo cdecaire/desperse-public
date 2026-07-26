@@ -12,6 +12,7 @@ export const Route = createFileRoute('/admin')({
 
 // Map routes to page titles for mobile header
 const routeTitles: Record<string, string> = {
+  '/admin/referrals': 'Referral Moderation',
   '/admin/moderation': 'Content Moderation',
   '/admin/feedback': 'Beta Feedback',
 }

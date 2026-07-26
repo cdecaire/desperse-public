@@ -5,6 +5,7 @@
 
 import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
 import { mplBubblegum } from '@metaplex-foundation/mpl-bubblegum';
+import { mplCore } from '@metaplex-foundation/mpl-core';
 import { signerIdentity, publicKey as umiPublicKey, createSignerFromKeypair } from '@metaplex-foundation/umi';
 import bs58 from 'bs58';
 import { getHeliusRpcUrl, env } from '@/config/env';
@@ -48,8 +49,11 @@ export function getUmi() {
   const rpcUrl = getHeliusRpcUrl();
   const secretKey = parsePrivateKey(env.COMPRESSED_MINT_FEE_PAYER_PRIVATE_KEY);
 
-  // Initialize Umi
-  const umi = createUmi(rpcUrl).use(mplBubblegum());
+  // Initialize Umi. mplCore is registered alongside Bubblegum so this same
+  // fee-payer identity can also create the per-creator Core collection that
+  // collectibles are verified into (see ensureCreatorCollection) — keeping the
+  // collection's update authority identical to the cNFT mint signer.
+  const umi = createUmi(rpcUrl).use(mplBubblegum()).use(mplCore());
 
   const keypair = umi.eddsa.createKeypairFromSecretKey(secretKey);
   const signer = createSignerFromKeypair(umi, keypair);

@@ -134,6 +134,12 @@ const config = defineConfig({
     // TanStack Start will handle its own server function routes via middleware
     nitro({
       serverDir: 'server',
+      // Keep colocated test files from being scanned as route/middleware
+      // handlers or server-util auto-imports. Without this, a file like
+      // server/routes/i/[code].get.test.ts is registered as the /i/:code
+      // handler (its vitest imports then 500 at runtime and break the prod
+      // Nitro build). See hotfix 5245034 — this replaces per-file relocation.
+      ignore: ['**/*.test.ts', '**/*.test.tsx'],
       serverAssets: [
         {
           baseName: 'fonts',

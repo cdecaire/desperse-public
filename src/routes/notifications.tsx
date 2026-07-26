@@ -7,6 +7,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useEffect, useRef, useCallback } from 'react'
 import { AuthGuard } from '@/components/shared/AuthGuard'
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
+import { ContentLoadingSkeleton } from '@/components/shared/ContentLoadingSkeleton'
 import { PageHeader } from '@/components/shared/PageHeader'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { PullToRefresh } from '@/components/shared/PullToRefresh'
@@ -86,11 +87,7 @@ function NotificationsContent() {
   }, [queryClient])
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <LoadingSpinner />
-      </div>
-    )
+    return <ContentLoadingSkeleton className="min-h-[50vh]" label="Loading notifications" rows={6} />
   }
 
   if (error) {

@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { Row } from '@cdecaire/sable/layout'
 import { AuthGuard } from '@/components/shared/AuthGuard'
 import { EmptyState } from '@/components/shared/EmptyState'
-import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
+import { ContentLoadingSkeleton } from '@/components/shared/ContentLoadingSkeleton'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { useAuth } from '@/hooks/useAuth'
 import { useOnboardingState } from '@/hooks/useOnboardingState'
@@ -55,11 +55,7 @@ function ProfileRedirect() {
   }, [user?.usernameSlug, shouldShowOnboarding, navigate])
 
   if (isLoading) {
-    return (
-      <Row justify="center" align="center" className="min-h-[50vh]">
-        <LoadingSpinner size="lg" />
-      </Row>
-    )
+    return <ContentLoadingSkeleton className="min-h-[50vh]" label="Loading your profile" />
   }
 
   // User is authenticated but no wallet connected - need to link wallet
@@ -93,9 +89,5 @@ function ProfileRedirect() {
   }
 
   // Still loading or about to redirect
-  return (
-    <Row justify="center" align="center" className="min-h-[50vh]">
-      <LoadingSpinner size="lg" />
-    </Row>
-  )
+  return <ContentLoadingSkeleton className="min-h-[50vh]" label="Opening your profile" />
 }

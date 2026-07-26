@@ -19,8 +19,10 @@
 import { db } from '@/server/db';
 import { posts, users } from '@/server/db/schema';
 import { and, eq } from 'drizzle-orm';
+import { env } from '@/config/env';
 import { getUmi, getMerkleTreePublicKey, getUmiRpcEndpoint } from './umiClient';
-import { publicKey, transactionBuilder, none, createNoopSigner } from '@metaplex-foundation/umi';
+import { ensureCreatorCollection } from './ensureCreatorCollection';
+import { publicKey, transactionBuilder, none, some, createNoopSigner } from '@metaplex-foundation/umi';
 import { mintV2 } from '@metaplex-foundation/mpl-bubblegum';
 import bs58 from 'bs58';
 
@@ -189,6 +191,31 @@ export async function buildCompressedCollectTransaction(
     const userPays = params.userPays ?? false; // Default to server-paid for backward compatibility
 
     const nftSymbol = (post.nftSymbol?.trim() || 'DSPRS').slice(0, 10);
+
+    // Ensure this creator's collectibles Core collection exists (lazily created on
+    // their first collectible mint, reused after) and verify this cNFT into it. Null
+    // → mint ungrouped and retry next collect. The collection's update authority is
+    // this same server key, so it doubles as the mint's collection authority.
+    // Gated OFF by default: when the flag is off this is skipped entirely and
+    // collectibles mint exactly as before (no collection accounts on the tx).
+    let collectionPk: ReturnType<typeof publicKey> | null = null;
+    const creatorCollectionMint = env.FEATURE_COLLECTIBLE_COLLECTIONS
+      ? await ensureCreatorCollection(creator.id)
+      : null;
+    if (creatorCollectionMint) {
+      try {
+        collectionPk = publicKey(creatorCollectionMint);
+      } catch {
+        console.warn('[collect] Stored collection mint is invalid, minting ungrouped:', creatorCollectionMint);
+        collectionPk = null;
+      }
+    }
+    console.info('[collect] Collection grouping:', {
+      postId: post.id,
+      creatorId: creator.id,
+      grouped: Boolean(collectionPk),
+      collection: collectionPk ? collectionPk.toString() : 'none',
+    });
     const metadata = {
       name,
       symbol: nftSymbol,
@@ -238,6 +265,12 @@ export async function buildCompressedCollectTransaction(
       leafOwner: user,
       payer: payer,                              // noop signer (user pays) OR server signer (server pays)
       treeCreatorOrDelegate: treeAuthority,     // tree authority (server key, server signs)
+      // Verify into the creator's Core collection when one is available. coreCollection
+      // is the collection account; collectionAuthority (the server key) authorizes the
+      // verification — it defaults to the tree delegate, which is this same key.
+      ...(collectionPk
+        ? { coreCollection: collectionPk, collectionAuthority: serverSigner }
+        : {}),
       metadata: {
         name,
         symbol: nftSymbol,
@@ -250,7 +283,7 @@ export async function buildCompressedCollectTransaction(
             share: 100,
           },
         ],
-        collection: none(), // explicitly no collection
+        collection: collectionPk ? some(collectionPk) : none(),
       },
     });
 

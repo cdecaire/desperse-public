@@ -29,7 +29,7 @@ export function PostCardSkeleton({
       )}
       
       {/* Media skeleton */}
-      <Skeleton className="w-full aspect-square" />
+      <Skeleton className="w-full aspect-[4/5]" />
       
       {/* Content skeleton */}
       <div className="px-2 py-3 space-y-3">
@@ -64,4 +64,3 @@ export function FeedSkeleton({ count = 3 }: FeedSkeletonProps) {
 }
 
 export default PostCardSkeleton
-

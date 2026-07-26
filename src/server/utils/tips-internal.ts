@@ -6,12 +6,100 @@
 
 import { db } from "@/server/db";
 import { tips, users } from "@/server/db/schema";
-import { eq, and, sql } from "drizzle-orm";
+import { eq, and, ne, isNull, sql } from "drizzle-orm";
 import { buildTipTransaction, skrToRawAmount } from "./tip-transaction";
 import type { TipTransactionResult } from "./tip-transaction";
+import { getHeliusRpcUrl } from "@/config/env";
 
 // Rate limit: 1 tip per sender per recipient per 24 hours
 const TIP_RATE_LIMIT_HOURS = 24;
+
+/**
+ * Verify on-chain that `txSignature` actually delivered at least `expectedRawAmount`
+ * of `tokenMint` to `recipientWallet`. This is what makes a tip trustworthy: without
+ * it, a client could mark any tip "confirmed" with a fabricated or unrelated signature
+ * and unlock DMs / inflate tip stats without paying.
+ *
+ * Returns:
+ *  - 'confirmed' — tx landed, succeeded, and moved >= the expected amount to the recipient
+ *  - 'failed'    — tx failed on-chain, or landed but did NOT pay the recipient correctly
+ *  - 'pending'   — tx not visible yet (still propagating); caller should leave the tip
+ *                  pending and reconcile later rather than crediting or rejecting it
+ *
+ * Uses @solana/web3.js getTransaction (full ledger + token-balance metadata) with a
+ * short bounded retry, mirroring the proven confirmEditionPayment fallback pattern.
+ */
+async function verifyTipPayment(
+	txSignature: string,
+	recipientWallet: string,
+	tokenMint: string,
+	expectedRawAmount: bigint,
+): Promise<{ status: "confirmed" | "failed" | "pending"; error?: string }> {
+	const MAX_ATTEMPTS = 4;
+	const RETRY_DELAY_MS = 3_000;
+	try {
+		const { Connection } = await import("@solana/web3.js");
+		const connection = new Connection(getHeliusRpcUrl(), "confirmed");
+
+		for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+			const tx = await connection.getTransaction(txSignature, {
+				maxSupportedTransactionVersion: 0,
+			});
+
+			if (tx) {
+				if (tx.meta?.err) {
+					return {
+						status: "failed",
+						error: `Transaction failed on-chain: ${JSON.stringify(tx.meta.err)}`,
+					};
+				}
+
+				// Confirm the recipient's token balance for this mint grew by >= the tip amount.
+				const pre = tx.meta?.preTokenBalances ?? [];
+				const post = tx.meta?.postTokenBalances ?? [];
+				const postEntry = post.find(
+					(b) => b.mint === tokenMint && b.owner === recipientWallet,
+				);
+				if (!postEntry) {
+					return {
+						status: "failed",
+						error: "Transaction did not credit the recipient's token account",
+					};
+				}
+				const preEntry = pre.find(
+					(b) => b.accountIndex === postEntry.accountIndex,
+				);
+				const preAmt = BigInt(preEntry?.uiTokenAmount.amount ?? "0");
+				const postAmt = BigInt(postEntry.uiTokenAmount.amount);
+				const delta = postAmt - preAmt;
+
+				if (delta >= expectedRawAmount) {
+					return { status: "confirmed" };
+				}
+				return {
+					status: "failed",
+					error: `Transferred amount (${delta}) is less than the tip amount (${expectedRawAmount})`,
+				};
+			}
+
+			// Not visible yet — wait and retry (skip the wait after the final attempt).
+			if (attempt < MAX_ATTEMPTS) {
+				await new Promise((r) => setTimeout(r, RETRY_DELAY_MS));
+			}
+		}
+
+		// Still not visible after the bounded wait. Treat as pending so a legit-but-slow
+		// tip is reconciled later rather than wrongly credited or rejected now.
+		return { status: "pending" };
+	} catch (err) {
+		// RPC/network error — never fail-open to "confirmed"; leave it pending for retry.
+		console.warn(
+			"[verifyTipPayment] RPC error, returning pending:",
+			err instanceof Error ? err.message : "Unknown",
+		);
+		return { status: "pending" };
+	}
+}
 
 export interface PrepareTipInput {
 	toUserId: string;
@@ -120,7 +208,10 @@ export async function prepareTipInternal(
 			};
 		}
 
-		// Cancel any existing pending tips from this sender to this recipient
+		// Cancel any existing *un-broadcast* pending tips from this sender to this
+		// recipient. Only fail tips with no txSignature — a pending tip that already
+		// has a signature was broadcast and may still be confirming on-chain, so it is
+		// left for reconcileTipsFromTo() to finalize rather than wrongly marked failed.
 		await db
 			.update(tips)
 			.set({ status: "failed" })
@@ -129,6 +220,7 @@ export async function prepareTipInternal(
 					eq(tips.fromUserId, fromUserId),
 					eq(tips.toUserId, input.toUserId),
 					eq(tips.status, "pending"),
+					isNull(tips.txSignature),
 				),
 			);
 
@@ -195,11 +287,14 @@ export async function confirmTipInternal(
 	input: ConfirmTipInput,
 ): Promise<ConfirmTipResult> {
 	try {
-		// Get the pending tip
+		// Get the pending tip (including the amount/mint/recipient we must verify against)
 		const [tip] = await db
 			.select({
 				id: tips.id,
 				fromUserId: tips.fromUserId,
+				toUserId: tips.toUserId,
+				amount: tips.amount,
+				tokenMint: tips.tokenMint,
 				status: tips.status,
 			})
 			.from(tips)
@@ -224,17 +319,91 @@ export async function confirmTipInternal(
 			};
 		}
 
-		// Update tip with transaction signature and mark as confirmed
+		// Signature reuse guard: a payment signature may back only ONE tip. Claim it as
+		// soon as it is attached to ANY other tip (pending OR confirmed) — checking only
+		// confirmed tips would let a client attach one real payment to a second tip while
+		// the first is still pending-with-signature, double-crediting a single payment.
+		// (A residual concurrent double-confirm is still theoretically possible without a
+		// unique index on tx_signature — tracked as a follow-up hardening.)
+		const [reused] = await db
+			.select({ id: tips.id })
+			.from(tips)
+			.where(
+				and(
+					eq(tips.txSignature, input.txSignature),
+					ne(tips.id, tip.id),
+				),
+			)
+			.limit(1);
+		if (reused) {
+			return {
+				success: false,
+				error: "This transaction has already been used for another tip",
+				status: "signature_reused",
+			};
+		}
+
+		// Resolve the recipient's wallet the same way prepare did, so we can check the
+		// on-chain transfer actually landed in their token account.
+		const { getPrimaryWalletAddress } = await import("./wallet-compat");
+		const [recipient] = await db
+			.select({ walletAddress: users.walletAddress })
+			.from(users)
+			.where(eq(users.id, tip.toUserId))
+			.limit(1);
+		const recipientWallet =
+			(await getPrimaryWalletAddress(tip.toUserId)) ||
+			recipient?.walletAddress ||
+			null;
+
+		if (!recipientWallet) {
+			return {
+				success: false,
+				error: "Recipient wallet unavailable",
+				status: "no_wallet",
+			};
+		}
+
+		// Verify the payment on-chain before crediting the tip.
+		const verification = await verifyTipPayment(
+			input.txSignature,
+			recipientWallet,
+			tip.tokenMint,
+			tip.amount,
+		);
+
+		if (verification.status === "confirmed") {
+			await db
+				.update(tips)
+				.set({
+					txSignature: input.txSignature,
+					status: "confirmed",
+					confirmedAt: new Date(),
+				})
+				.where(eq(tips.id, input.tipId));
+			return { success: true, status: "confirmed" };
+		}
+
+		if (verification.status === "failed") {
+			await db
+				.update(tips)
+				.set({ txSignature: input.txSignature, status: "failed" })
+				.where(eq(tips.id, input.tipId));
+			return {
+				success: false,
+				error: verification.error ?? "Tip payment failed on-chain",
+				status: "failed",
+			};
+		}
+
+		// Pending: the tx isn't visible yet. Store the signature but keep the tip
+		// pending; reconcileTipsFromTo() will finalize it on the next eligibility read.
+		// The client shows success on broadcast regardless, so this is not a UX regression.
 		await db
 			.update(tips)
-			.set({
-				txSignature: input.txSignature,
-				status: "confirmed",
-				confirmedAt: new Date(),
-			})
+			.set({ txSignature: input.txSignature })
 			.where(eq(tips.id, input.tipId));
-
-		return { success: true, status: "confirmed" };
+		return { success: true, status: "pending" };
 	} catch (error) {
 		console.error(
 			"[confirmTip] Error:",
@@ -280,6 +449,73 @@ export async function getTipStatsInternal(
 }
 
 /**
+ * Reconcile any pending-but-broadcast tips for a sender→recipient pair.
+ *
+ * A tip is left `pending` with a stored `txSignature` when it was broadcast but not yet
+ * visible on-chain at confirm time. This re-checks those (rare) tips on-chain and flips
+ * them to `confirmed`/`failed`, so slow-to-propagate legit tips are not permanently lost
+ * for eligibility/stats. Bounded: only touches pending rows that already have a signature.
+ */
+async function reconcileTipsFromTo(
+	fromUserId: string,
+	toUserId: string,
+): Promise<void> {
+	const pending = await db
+		.select({
+			id: tips.id,
+			amount: tips.amount,
+			tokenMint: tips.tokenMint,
+			txSignature: tips.txSignature,
+		})
+		.from(tips)
+		.where(
+			and(
+				eq(tips.fromUserId, fromUserId),
+				eq(tips.toUserId, toUserId),
+				eq(tips.status, "pending"),
+				sql`${tips.txSignature} IS NOT NULL`,
+			),
+		);
+
+	if (pending.length === 0) return;
+
+	// Resolve recipient wallet once for the whole batch.
+	const { getPrimaryWalletAddress } = await import("./wallet-compat");
+	const [recipient] = await db
+		.select({ walletAddress: users.walletAddress })
+		.from(users)
+		.where(eq(users.id, toUserId))
+		.limit(1);
+	const recipientWallet =
+		(await getPrimaryWalletAddress(toUserId)) ||
+		recipient?.walletAddress ||
+		null;
+	if (!recipientWallet) return;
+
+	for (const tip of pending) {
+		if (!tip.txSignature) continue;
+		const verification = await verifyTipPayment(
+			tip.txSignature,
+			recipientWallet,
+			tip.tokenMint,
+			tip.amount,
+		);
+		if (verification.status === "confirmed") {
+			await db
+				.update(tips)
+				.set({ status: "confirmed", confirmedAt: new Date() })
+				.where(and(eq(tips.id, tip.id), eq(tips.status, "pending")));
+		} else if (verification.status === "failed") {
+			await db
+				.update(tips)
+				.set({ status: "failed" })
+				.where(and(eq(tips.id, tip.id), eq(tips.status, "pending")));
+		}
+		// still pending → leave for a later reconcile
+	}
+}
+
+/**
  * Get total confirmed tips from one user to another (for eligibility checks)
  * Returns the total in human-readable SKR
  */
@@ -287,6 +523,10 @@ export async function getTotalTipsFromTo(
 	fromUserId: string,
 	toUserId: string,
 ): Promise<number> {
+	// Finalize any broadcast-but-not-yet-confirmed tips before summing, so this gate
+	// reflects real on-chain payments.
+	await reconcileTipsFromTo(fromUserId, toUserId);
+
 	const [result] = await db
 		.select({
 			total: sql<string>`COALESCE(SUM(${tips.amount}), 0)`,

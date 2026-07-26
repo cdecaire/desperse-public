@@ -447,7 +447,7 @@ function FeedContent() {
         {/* Load more trigger — keep raw div: ref must attach to the observed DOM node */}
         <div ref={loadMoreRef} className="py-8 flex justify-center">
           {isFetchingNextPage && (
-            <LoadingSpinner size="md" />
+            <LoadingSpinner size="sm" />
           )}
           {!hasNextPage && posts.length > 0 && (
             <p className="text-sm text-muted-foreground">You've reached the end</p>

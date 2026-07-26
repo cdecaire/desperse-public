@@ -258,6 +258,55 @@ export async function uploadMetadataJson(
   }
 }
 
+/**
+ * Upload a creator's per-creator collection metadata JSON, keyed by user id
+ * (`collection-metadata/{userId}.json`). Overwrites by default: the JSON is
+ * deterministic from the profile, so a concurrent first-mint race or the initial
+ * lazy-creation re-upload both resolve to the same path safely.
+ *
+ * Pass `version` to write a distinct, immutable path
+ * (`collection-metadata/{userId}-{version}.json`) instead. Edits to a LIVE
+ * collection use this so the on-chain `uri` changes to a genuinely new URL —
+ * without it, overwriting in place leaves the URI unchanged and DAS/wallets keep
+ * serving the stale cached JSON.
+ */
+export async function uploadCollectionMetadataJson(
+  metadata: Record<string, unknown>,
+  userId: string,
+  allowOverwrite = true,
+  version?: string | number
+): Promise<UploadResult | UploadError> {
+  try {
+    const pathname =
+      version !== undefined && version !== null && `${version}` !== ''
+        ? `collection-metadata/${userId}-${version}.json`
+        : `collection-metadata/${userId}.json`
+    const jsonBlob = new Blob([JSON.stringify(metadata, null, 2)], {
+      type: 'application/json',
+    })
+
+    const blob = await put(pathname, jsonBlob, {
+      access: 'public',
+      contentType: 'application/json',
+      ...(allowOverwrite && { allowOverwrite: true }),
+    })
+
+    return {
+      success: true,
+      url: blob.url,
+      pathname: blob.pathname,
+      mediaType: 'image',
+    }
+  } catch (error) {
+    console.error('Collection metadata upload error:', error)
+    return {
+      success: false,
+      error: 'Failed to upload collection metadata.',
+      code: 'UPLOAD_FAILED',
+    }
+  }
+}
+
 // ============================================================================
 // Gated Asset Downloads
 // ============================================================================

@@ -9,7 +9,7 @@ import { hidePost, unhidePost, softDeletePost, resolveReports, hideComment, unhi
 import { getPost } from '@/server/functions/posts'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { useAuth } from '@/hooks/useAuth'
-import { LoadingSpinner } from '@/components/shared/LoadingSpinner'
+import { ContentLoadingSkeleton } from '@/components/shared/ContentLoadingSkeleton'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { Button } from '@/components/ui/button'
 import { toast } from '@/hooks/use-toast'
@@ -362,21 +362,11 @@ function ReportDetailPage() {
       </Button>
 
       {isLoadingUser && (
-        <Row align="center" justify="center" className="py-12">
-          <LoadingSpinner size="lg" />
-          <div className="ml-4 text-body-sm text-muted-foreground">
-            Loading user...
-          </div>
-        </Row>
+        <ContentLoadingSkeleton label="Loading report details" variant="detail" />
       )}
 
       {!isLoadingUser && isLoading && (
-        <Row align="center" justify="center" className="py-12">
-          <LoadingSpinner size="lg" />
-          <div className="ml-4 text-body-sm text-muted-foreground">
-            Loading report details...
-          </div>
-        </Row>
+        <ContentLoadingSkeleton label="Loading report details" variant="detail" />
       )}
 
       {!isLoading && error && (

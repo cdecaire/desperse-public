@@ -8,6 +8,7 @@ const row: ClaimedTip = {
 	attempts: 1,
 	preparedMessageHash: "hash",
 	preparedBlockhash: "blockhash",
+	lastValidBlockHeight: 100,
 };
 
 describe("tip reconciliation", () => {

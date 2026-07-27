@@ -314,6 +314,7 @@ export async function confirmTipInternal(
 				id: tips.id,
 				preparedMessageHash: tips.preparedMessageHash,
 				preparedBlockhash: tips.preparedBlockhash,
+				lastValidBlockHeight: tips.lastValidBlockHeight,
 			});
 
 		if (!claimed) {
@@ -344,13 +345,18 @@ export async function confirmTipInternal(
 			};
 		}
 
-		if (!claimed.preparedMessageHash || !claimed.preparedBlockhash) {
+		if (
+			!claimed.preparedMessageHash ||
+			!claimed.preparedBlockhash ||
+			claimed.lastValidBlockHeight === null
+		) {
 			throw new Error("Version 1 tip is missing prepared message evidence");
 		}
 
 		const verification = await verifyTipTransaction(input.txSignature, {
 			preparedMessageHash: claimed.preparedMessageHash,
 			preparedBlockhash: claimed.preparedBlockhash,
+			lastValidBlockHeight: claimed.lastValidBlockHeight,
 		});
 
 		if (verification === "confirmation_pending") {

@@ -7,12 +7,14 @@ import { getHeliusRpcUrl } from "@/config/env";
 export type TipVerificationCode =
 	| "confirmed"
 	| "confirmation_pending"
+	| "blockhash_expired"
 	| "transaction_failed"
 	| "prepared_message_mismatch";
 
 export interface PreparedTipEvidence {
 	preparedMessageHash: string;
 	preparedBlockhash: string;
+	lastValidBlockHeight: number;
 }
 
 export function validateTransactionSignature(signature: string): boolean {
@@ -41,14 +43,22 @@ export function verifyPreparedMessage(
 export async function verifyTipTransaction(
 	signature: string,
 	prepared: PreparedTipEvidence,
+	connection: Pick<Connection, "getTransaction" | "getBlockHeight"> = new Connection(
+		getHeliusRpcUrl(),
+		"confirmed",
+	),
 ): Promise<TipVerificationCode> {
-	const connection = new Connection(getHeliusRpcUrl(), "confirmed");
 	const transaction = await connection.getTransaction(signature, {
 		commitment: "confirmed",
 		maxSupportedTransactionVersion: 0,
 	});
 
-	if (!transaction) return "confirmation_pending";
+	if (!transaction) {
+		const blockHeight = await connection.getBlockHeight("confirmed");
+		return blockHeight > prepared.lastValidBlockHeight
+			? "blockhash_expired"
+			: "confirmation_pending";
+	}
 	if (transaction.meta?.err) return "transaction_failed";
 
 	return verifyPreparedMessage(

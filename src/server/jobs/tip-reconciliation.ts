@@ -70,15 +70,22 @@ async function claimDueTips(now: Date, limit: number): Promise<ClaimedTip[]> {
 				txSignature: tips.txSignature,
 				preparedMessageHash: tips.preparedMessageHash,
 				preparedBlockhash: tips.preparedBlockhash,
+				lastValidBlockHeight: tips.lastValidBlockHeight,
 				attempts: tips.verificationAttempts,
 			});
 
-		if (row?.txSignature && row.preparedMessageHash && row.preparedBlockhash) {
+		if (
+			row?.txSignature &&
+			row.preparedMessageHash &&
+			row.preparedBlockhash &&
+			row.lastValidBlockHeight !== null
+		) {
 			claimed.push({
 				...row,
 				txSignature: row.txSignature,
 				preparedMessageHash: row.preparedMessageHash,
 				preparedBlockhash: row.preparedBlockhash,
+				lastValidBlockHeight: row.lastValidBlockHeight,
 				claimKey,
 			});
 		}

@@ -95,6 +95,7 @@ describe("confirmTipInternal", () => {
 					id: "tip-1",
 					preparedMessageHash: "prepared-hash",
 					preparedBlockhash: "prepared-blockhash",
+					lastValidBlockHeight: 100,
 				},
 			],
 			[{ id: "tip-1" }],
@@ -111,6 +112,7 @@ describe("confirmTipInternal", () => {
 		expect(mocks.verify).toHaveBeenCalledWith("signature-1", {
 			preparedMessageHash: "prepared-hash",
 			preparedBlockhash: "prepared-blockhash",
+			lastValidBlockHeight: 100,
 		});
 		expect(mocks.updateSets.at(-1)).toMatchObject({ status: "confirmed" });
 	});

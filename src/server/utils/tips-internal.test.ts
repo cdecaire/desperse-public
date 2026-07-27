@@ -5,6 +5,10 @@ const mocks = vi.hoisted(() => ({
 	updateResults: [] as unknown[][],
 	updateError: null as unknown,
 	updateSets: [] as Record<string, unknown>[],
+	insertValues: [] as Record<string, unknown>[],
+	insertResults: [] as unknown[][],
+	getUserById: vi.fn(),
+	buildTipTransaction: vi.fn(),
 	verify: vi.fn(),
 }));
 
@@ -32,16 +36,34 @@ function updateBuilder() {
 	return builder;
 }
 
+function insertBuilder() {
+	const builder = {
+		values: (payload: Record<string, unknown>) => {
+			mocks.insertValues.push(payload);
+			return builder;
+		},
+		returning: async () => mocks.insertResults.shift() ?? [],
+	};
+	return builder;
+}
+
 vi.mock("@/server/db", () => ({
 	db: {
 		select: () => selectBuilder(mocks.selectResults.shift() ?? []),
 		update: () => updateBuilder(),
-		insert: vi.fn(),
+		insert: () => insertBuilder(),
 	},
 }));
 
 vi.mock("@/server/auth", () => ({
-	getPrivyClient: vi.fn(),
+	getPrivyClient: () => ({ getUserById: mocks.getUserById }),
+}));
+
+vi.mock("./tip-transaction", () => ({
+	buildTipTransaction: mocks.buildTipTransaction,
+	rawAmountToSkr: (amount: bigint) => Number(amount) / 1_000_000,
+	SKR_DECIMALS: 6,
+	skrToRawAmount: (amount: number) => BigInt(Math.round(amount * 1_000_000)),
 }));
 
 vi.mock("./tip-payment-verifier", () => ({
@@ -49,18 +71,22 @@ vi.mock("./tip-payment-verifier", () => ({
 	verifyTipTransaction: mocks.verify,
 }));
 
-import { confirmTipInternal } from "./tips-internal";
+import { confirmTipInternal, prepareTipInternal } from "./tips-internal";
 
 const input = { tipId: "tip-1", txSignature: "signature-1" };
 
+function resetMocks() {
+	vi.clearAllMocks();
+	mocks.selectResults = [];
+	mocks.updateResults = [];
+	mocks.updateError = null;
+	mocks.updateSets = [];
+	mocks.insertValues = [];
+	mocks.insertResults = [];
+}
+
 describe("confirmTipInternal", () => {
-	beforeEach(() => {
-		vi.clearAllMocks();
-		mocks.selectResults = [];
-		mocks.updateResults = [];
-		mocks.updateError = null;
-		mocks.updateSets = [];
-	});
+	beforeEach(resetMocks);
 
 	it("persists and claims the signature before verification, then conditionally confirms", async () => {
 		mocks.updateResults = [
@@ -115,5 +141,55 @@ describe("confirmTipInternal", () => {
 
 		expect(result).toEqual({ success: true, status: "confirmed" });
 		expect(mocks.verify).not.toHaveBeenCalled();
+	});
+});
+
+describe("prepareTipInternal", () => {
+	beforeEach(resetMocks);
+
+	it("prepares a tip for a SIWS sender without looking up the synthetic Privy ID", async () => {
+		const senderWallet = "11111111111111111111111111111111";
+		const recipientWallet = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
+
+		mocks.getUserById.mockImplementation(async (privyId: string) => {
+			if (privyId.startsWith("siws:")) throw new Error("Privy user not found");
+			return {
+				linkedAccounts: [
+					{
+						type: "wallet",
+						chainType: "solana",
+						address: recipientWallet,
+						walletClientType: "privy",
+					},
+				],
+			};
+		});
+		mocks.selectResults = [
+			[{ id: "recipient-1", walletAddress: recipientWallet, privyId: "did:privy:recipient" }],
+			[],
+			[],
+		];
+		mocks.insertResults = [[{ id: "tip-1" }]];
+		mocks.buildTipTransaction.mockResolvedValue({
+			transactionBase64: "prepared-transaction",
+			blockhash: "prepared-blockhash",
+			lastValidBlockHeight: 123,
+			messageHash: "prepared-hash",
+			sourceTokenAccount: "source-token-account",
+			destinationTokenAccount: "destination-token-account",
+			tokenProgram: "token-program",
+		});
+
+		const result = await prepareTipInternal(
+			"sender-1",
+			`siws:${senderWallet}`,
+			senderWallet,
+			{ toUserId: "recipient-1", amount: 1, context: "profile" },
+		);
+
+		expect(result).toMatchObject({ success: true, tipId: "tip-1" });
+		expect(mocks.getUserById).toHaveBeenCalledTimes(1);
+		expect(mocks.getUserById).toHaveBeenCalledWith("did:privy:recipient");
+		expect(mocks.insertValues[0]).toMatchObject({ fromWalletAddress: senderWallet });
 	});
 });

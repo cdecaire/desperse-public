@@ -75,6 +75,11 @@ function canonicalAddress(address: string): string | null {
 }
 
 async function getVerifiedSolanaWallets(privyId: string): Promise<PrivyWalletAccount[]> {
+	if (privyId.startsWith("siws:")) {
+		const address = canonicalAddress(privyId.slice("siws:".length));
+		return address ? [{ type: "wallet", chainType: "solana", address }] : [];
+	}
+
 	const privyUser = await getPrivyClient().getUserById(privyId);
 	return (privyUser.linkedAccounts as PrivyWalletAccount[]).filter(
 		(account) =>

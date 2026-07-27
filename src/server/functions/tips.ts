@@ -37,7 +37,7 @@ export const prepareTip = createServerFn({
 	const { prepareTipInternal } = await import(
 		"@/server/utils/tips-internal"
 	);
-	return prepareTipInternal(auth.userId, data.walletAddress, {
+	return prepareTipInternal(auth.userId, auth.privyId, data.walletAddress, {
 		toUserId: data.toUserId,
 		amount: data.amount,
 		context: data.context,

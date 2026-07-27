@@ -18,6 +18,7 @@ import {
 	getAssociatedTokenAddress,
 } from "@solana/spl-token";
 import { Buffer } from "buffer";
+import { createHash } from "node:crypto";
 import { getHeliusRpcUrl } from "@/config/env";
 import { validateAddress } from "@/server/services/blockchain/addressUtils";
 import { SKR_MINT } from "@/constants/tokens";
@@ -40,6 +41,10 @@ export interface TipTransactionResult {
 	transactionBase64: string;
 	blockhash: string;
 	lastValidBlockHeight: number;
+	sourceTokenAccount: string;
+	destinationTokenAccount: string;
+	tokenProgram: string;
+	messageHash: string;
 }
 
 /**
@@ -165,5 +170,11 @@ export async function buildTipTransaction(
 		transactionBase64: Buffer.from(serialized).toString("base64"),
 		blockhash: latestBlockhash.blockhash,
 		lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
+		sourceTokenAccount: senderAta.toBase58(),
+		destinationTokenAccount: recipientAta.toBase58(),
+		tokenProgram: TOKEN_PROGRAM_ID.toBase58(),
+		messageHash: createHash("sha256")
+			.update(Buffer.from(messageV0.serialize()))
+			.digest("hex"),
 	};
 }

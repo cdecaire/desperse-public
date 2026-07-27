@@ -149,7 +149,8 @@ export async function enrichTransactionHistory(
 		.where(
 			and(
 				inArray(tips.txSignature, signatures),
-				eq(tips.status, 'confirmed')
+				eq(tips.status, 'confirmed'),
+				eq(tips.verificationVersion, 1)
 			)
 		)
 
@@ -450,7 +451,13 @@ export async function fetchUserTips(
 		})
 		.from(tips)
 		.innerJoin(users, eq(tips.toUserId, users.id))
-		.where(and(eq(tips.fromUserId, userId), eq(tips.status, 'confirmed')))
+		.where(
+			and(
+				eq(tips.fromUserId, userId),
+				eq(tips.status, 'confirmed'),
+				eq(tips.verificationVersion, 1),
+			),
+		)
 		.orderBy(desc(tips.createdAt))
 		.limit(limit)
 
@@ -469,7 +476,13 @@ export async function fetchUserTips(
 		})
 		.from(tips)
 		.innerJoin(users, eq(tips.fromUserId, users.id))
-		.where(and(eq(tips.toUserId, userId), eq(tips.status, 'confirmed')))
+		.where(
+			and(
+				eq(tips.toUserId, userId),
+				eq(tips.status, 'confirmed'),
+				eq(tips.verificationVersion, 1),
+			),
+		)
 		.orderBy(desc(tips.createdAt))
 		.limit(limit)
 

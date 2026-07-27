@@ -1012,7 +1012,23 @@ export const tips = pgTable(
       .references(() => users.id, { onDelete: 'cascade' }),
     amount: bigint('amount', { mode: 'bigint' }).notNull(), // Raw token amount (smallest unit)
     tokenMint: text('token_mint').notNull(), // SPL token mint address (SKR)
+    fromWalletAddress: text('from_wallet_address'),
+    toWalletAddress: text('to_wallet_address'),
+    sourceTokenAccount: text('source_token_account'),
+    destinationTokenAccount: text('destination_token_account'),
+    tokenProgram: text('token_program'),
+    tokenDecimals: integer('token_decimals'),
+    preparedBlockhash: text('prepared_blockhash'),
+    lastValidBlockHeight: bigint('last_valid_block_height', { mode: 'number' }),
+    preparedMessageHash: text('prepared_message_hash'),
+    verificationVersion: integer('verification_version').notNull().default(0),
     txSignature: text('tx_signature'), // Solana transaction signature
+    signatureSubmittedAt: timestamp('signature_submitted_at'),
+    verificationClaimKey: text('verification_claim_key'),
+    verificationClaimedAt: timestamp('verification_claimed_at'),
+    verificationAttempts: integer('verification_attempts').notNull().default(0),
+    lastVerificationCode: text('last_verification_code'),
+    failedAt: timestamp('failed_at'),
     status: tipStatusEnum('status').notNull().default('pending'),
     context: text('context'), // 'profile' | 'message_unlock'
     createdAt: timestamp('created_at').notNull().defaultNow(),
@@ -1024,7 +1040,13 @@ export const tips = pgTable(
     statusIdx: index('tips_status_idx').on(table.status),
     // For eligibility checks: sum confirmed tips from viewer to creator
     fromToStatusIdx: index('tips_from_to_status_idx').on(table.fromUserId, table.toUserId, table.status),
-    txSignatureIdx: index('tips_tx_signature_idx').on(table.txSignature),
+    txSignatureUniqueIdx: uniqueIndex('tips_tx_signature_unique_idx')
+      .on(table.txSignature)
+      .where(sql`${table.txSignature} is not null`),
+    versionOneSnapshotCheck: check(
+      'tips_version_one_snapshot_check',
+      sql`${table.verificationVersion} <> 1 OR (${table.fromWalletAddress} IS NOT NULL AND ${table.toWalletAddress} IS NOT NULL AND ${table.sourceTokenAccount} IS NOT NULL AND ${table.destinationTokenAccount} IS NOT NULL AND ${table.tokenMint} IS NOT NULL AND ${table.tokenProgram} IS NOT NULL AND ${table.tokenDecimals} IS NOT NULL AND ${table.preparedBlockhash} IS NOT NULL AND ${table.lastValidBlockHeight} IS NOT NULL AND ${table.preparedMessageHash} IS NOT NULL)`,
+    ),
   }),
 );
 

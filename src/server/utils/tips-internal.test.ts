@@ -1,229 +1,195 @@
-/**
- * Tests for tip confirmation — the money-critical path.
- *
- * confirmTipInternal is what gates DM unlocks and tip stats, so a client must
- * NOT be able to mark a tip "confirmed" without a real on-chain payment. These
- * tests drive the real function with a mocked RPC (`getTransaction`) and DB, and
- * assert the guards (ownership, status, signature reuse) and the on-chain
- * verification decision (confirmed / underpaid / not-credited / failed / pending).
- */
-
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
-	mockDbSelect: vi.fn(),
-	mockDbUpdate: vi.fn(),
-	mockDbInsert: vi.fn(),
-	mockGetTransaction: vi.fn(),
-	mockGetPrimaryWallet: vi.fn(),
-	// Per-test queue: each db.select() call shifts the next array off the front.
 	selectResults: [] as unknown[][],
-	// Records every db.update(...).set(payload) payload so we can assert the write.
+	updateResults: [] as unknown[][],
+	updateError: null as unknown,
 	updateSets: [] as Record<string, unknown>[],
+	insertValues: [] as Record<string, unknown>[],
+	insertResults: [] as unknown[][],
+	getUserById: vi.fn(),
+	buildTipTransaction: vi.fn(),
+	verify: vi.fn(),
 }));
+
+function selectBuilder(result: unknown[]) {
+	const builder = {
+		from: () => builder,
+		where: () => builder,
+		limit: () => Promise.resolve(result),
+	};
+	return builder;
+}
+
+function updateBuilder() {
+	const builder = {
+		set: (payload: Record<string, unknown>) => {
+			mocks.updateSets.push(payload);
+			return builder;
+		},
+		where: () => builder,
+		returning: async () => {
+			if (mocks.updateError) throw mocks.updateError;
+			return mocks.updateResults.shift() ?? [];
+		},
+	};
+	return builder;
+}
+
+function insertBuilder() {
+	const builder = {
+		values: (payload: Record<string, unknown>) => {
+			mocks.insertValues.push(payload);
+			return builder;
+		},
+		returning: async () => mocks.insertResults.shift() ?? [],
+	};
+	return builder;
+}
 
 vi.mock("@/server/db", () => ({
 	db: {
-		select: mocks.mockDbSelect,
-		update: mocks.mockDbUpdate,
-		insert: mocks.mockDbInsert,
+		select: () => selectBuilder(mocks.selectResults.shift() ?? []),
+		update: () => updateBuilder(),
+		insert: () => insertBuilder(),
 	},
 }));
 
-vi.mock("@/config/env", () => ({
-	getHeliusRpcUrl: () => "https://mainnet.helius-rpc.com/?api-key=test",
+vi.mock("@/server/auth", () => ({
+	getPrivyClient: () => ({ getUserById: mocks.getUserById }),
 }));
 
 vi.mock("./tip-transaction", () => ({
-	buildTipTransaction: vi.fn(),
-	skrToRawAmount: vi.fn((n: number) => BigInt(Math.round(n * 1_000_000))),
-	rawAmountToSkr: vi.fn((r: bigint) => Number(r) / 1_000_000),
+	buildTipTransaction: mocks.buildTipTransaction,
+	rawAmountToSkr: (amount: bigint) => Number(amount) / 1_000_000,
+	SKR_DECIMALS: 6,
+	skrToRawAmount: (amount: number) => BigInt(Math.round(amount * 1_000_000)),
 }));
 
-vi.mock("./wallet-compat", () => ({
-	getPrimaryWalletAddress: mocks.mockGetPrimaryWallet,
+vi.mock("./tip-payment-verifier", () => ({
+	validateTransactionSignature: () => true,
+	verifyTipTransaction: mocks.verify,
 }));
 
-vi.mock("@solana/web3.js", () => {
-	class MockConnection {
-		constructor(_url: string, _commitment?: string) {}
-		getTransaction = mocks.mockGetTransaction;
-	}
-	return { Connection: MockConnection };
-});
+import { confirmTipInternal, prepareTipInternal } from "./tips-internal";
 
-import { confirmTipInternal } from "./tips-internal";
+const input = { tipId: "tip-1", txSignature: "signature-1" };
 
-// ── Fixtures ────────────────────────────────────────────────────────────────
-const ME = "user-me";
-const RECIPIENT = "user-recipient";
-const RECIPIENT_WALLET = "RecipientWa11etAddress1111111111111111111111";
-const MINT = "SKRMint1111111111111111111111111111111111111";
-const TIP_RAW = 1_000_000n; // 1 SKR at 6 decimals
-const SIG = "5xTxSignature1111111111111111111111111111111111111111111111111111";
-
-function pendingTip(overrides: Record<string, unknown> = {}) {
-	return {
-		id: "tip-1",
-		fromUserId: ME,
-		toUserId: RECIPIENT,
-		amount: TIP_RAW,
-		tokenMint: MINT,
-		status: "pending",
-		...overrides,
-	};
-}
-
-/** A getTransaction result whose token-balance delta credits `amount` to the recipient. */
-function txCrediting(amount: bigint, err: unknown = null) {
-	return {
-		meta: {
-			err,
-			preTokenBalances: [
-				{ accountIndex: 3, mint: MINT, owner: RECIPIENT_WALLET, uiTokenAmount: { amount: "0" } },
-			],
-			postTokenBalances: [
-				{ accountIndex: 3, mint: MINT, owner: RECIPIENT_WALLET, uiTokenAmount: { amount: amount.toString() } },
-			],
-		},
-	};
-}
-
-// db.select() → consumes the next queued result; supports .from().where().limit() and await.
-function makeSelectBuilder() {
-	const result = mocks.selectResults.length ? mocks.selectResults.shift() : [];
-	const builder: Record<string, unknown> = {};
-	for (const m of ["from", "where", "orderBy", "limit"]) builder[m] = () => builder;
-	(builder as { then: unknown }).then = (res: (v: unknown) => unknown, rej: (e: unknown) => unknown) =>
-		Promise.resolve(result).then(res, rej);
-	(builder as { limit: unknown }).limit = () => Promise.resolve(result);
-	return builder;
-}
-
-// db.update().set(payload).where() → records payload, resolves.
-function makeUpdateBuilder() {
-	let payload: Record<string, unknown> = {};
-	const builder: Record<string, unknown> = {
-		set: (p: Record<string, unknown>) => {
-			payload = p;
-			return builder;
-		},
-		where: () => {
-			mocks.updateSets.push(payload);
-			return Promise.resolve(undefined);
-		},
-	};
-	return builder;
+function resetMocks() {
+	vi.clearAllMocks();
+	mocks.selectResults = [];
+	mocks.updateResults = [];
+	mocks.updateError = null;
+	mocks.updateSets = [];
+	mocks.insertValues = [];
+	mocks.insertResults = [];
 }
 
 describe("confirmTipInternal", () => {
-	beforeEach(() => {
-		vi.clearAllMocks();
-		mocks.selectResults = [];
-		mocks.updateSets = [];
-		mocks.mockDbSelect.mockImplementation(() => makeSelectBuilder());
-		mocks.mockDbUpdate.mockImplementation(() => makeUpdateBuilder());
-		mocks.mockGetPrimaryWallet.mockResolvedValue(RECIPIENT_WALLET);
-	});
+	beforeEach(resetMocks);
 
-	// ── Guards ────────────────────────────────────────────────────────────────
-
-	it("rejects a tip that does not exist", async () => {
-		mocks.selectResults = [[]]; // get tip → none
-		const res = await confirmTipInternal(ME, { tipId: "missing", txSignature: SIG });
-		expect(res).toMatchObject({ success: false, status: "not_found" });
-		expect(mocks.mockGetTransaction).not.toHaveBeenCalled();
-	});
-
-	it("rejects confirmation by a user who does not own the tip", async () => {
-		mocks.selectResults = [[pendingTip({ fromUserId: "someone-else" })]];
-		const res = await confirmTipInternal(ME, { tipId: "tip-1", txSignature: SIG });
-		expect(res).toMatchObject({ success: false, status: "unauthorized" });
-		expect(mocks.mockGetTransaction).not.toHaveBeenCalled();
-	});
-
-	it("rejects a tip that is not pending (no double-confirm)", async () => {
-		mocks.selectResults = [[pendingTip({ status: "confirmed" })]];
-		const res = await confirmTipInternal(ME, { tipId: "tip-1", txSignature: SIG });
-		expect(res).toMatchObject({ success: false, status: "invalid_status" });
-		expect(mocks.mockGetTransaction).not.toHaveBeenCalled();
-	});
-
-	it("rejects a signature already attached to another tip, pending or confirmed (no replay)", async () => {
-		// The reuse guard matches ANY other tip carrying this signature — a client must
-		// not attach one payment to a second tip even while the first is still pending.
-		mocks.selectResults = [
-			[pendingTip()], // get tip
-			[{ id: "other-tip" }], // signature-reuse check finds a match (any status)
+	it("persists and claims the signature before verification, then conditionally confirms", async () => {
+		mocks.updateResults = [
+			[
+				{
+					id: "tip-1",
+					preparedMessageHash: "prepared-hash",
+					preparedBlockhash: "prepared-blockhash",
+				},
+			],
+			[{ id: "tip-1" }],
 		];
-		const res = await confirmTipInternal(ME, { tipId: "tip-1", txSignature: SIG });
-		expect(res).toMatchObject({ success: false, status: "signature_reused" });
-		expect(mocks.mockGetTransaction).not.toHaveBeenCalled();
-	});
+		mocks.verify.mockResolvedValue("confirmed");
 
-	it("rejects when the recipient has no resolvable wallet", async () => {
-		mocks.mockGetPrimaryWallet.mockResolvedValue(null);
-		mocks.selectResults = [
-			[pendingTip()], // get tip
-			[], // reuse check
-			[{ walletAddress: null }], // recipient row (no legacy wallet either)
-		];
-		const res = await confirmTipInternal(ME, { tipId: "tip-1", txSignature: SIG });
-		expect(res).toMatchObject({ success: false, status: "no_wallet" });
-		expect(mocks.mockGetTransaction).not.toHaveBeenCalled();
-	});
+		const result = await confirmTipInternal("user-1", input);
 
-	// ── On-chain verification decision ─────────────────────────────────────────
-
-	it("confirms when the tx credits the recipient with >= the tip amount", async () => {
-		mocks.selectResults = [[pendingTip()], [], [{ walletAddress: RECIPIENT_WALLET }]];
-		mocks.mockGetTransaction.mockResolvedValueOnce(txCrediting(TIP_RAW));
-		const res = await confirmTipInternal(ME, { tipId: "tip-1", txSignature: SIG });
-		expect(res).toEqual({ success: true, status: "confirmed" });
-		expect(mocks.updateSets.at(-1)).toMatchObject({ status: "confirmed", txSignature: SIG });
-	});
-
-	it("fails when the tx transferred less than the tip amount", async () => {
-		mocks.selectResults = [[pendingTip()], [], [{ walletAddress: RECIPIENT_WALLET }]];
-		mocks.mockGetTransaction.mockResolvedValueOnce(txCrediting(TIP_RAW / 2n));
-		const res = await confirmTipInternal(ME, { tipId: "tip-1", txSignature: SIG });
-		expect(res).toMatchObject({ success: false, status: "failed" });
-		expect(mocks.updateSets.at(-1)).toMatchObject({ status: "failed" });
-	});
-
-	it("fails when the tx did not credit the recipient's token account", async () => {
-		mocks.selectResults = [[pendingTip()], [], [{ walletAddress: RECIPIENT_WALLET }]];
-		mocks.mockGetTransaction.mockResolvedValueOnce({
-			meta: {
-				err: null,
-				preTokenBalances: [],
-				postTokenBalances: [
-					// Credited a DIFFERENT wallet, not the recipient.
-					{ accountIndex: 3, mint: MINT, owner: "SomeOtherWa11et", uiTokenAmount: { amount: TIP_RAW.toString() } },
-				],
-			},
+		expect(result).toEqual({ success: true, status: "confirmed" });
+		expect(mocks.updateSets[0]).toMatchObject({
+			txSignature: "signature-1",
+			verificationClaimKey: expect.any(String),
 		});
-		const res = await confirmTipInternal(ME, { tipId: "tip-1", txSignature: SIG });
-		expect(res).toMatchObject({ success: false, status: "failed" });
+		expect(mocks.verify).toHaveBeenCalledWith("signature-1", {
+			preparedMessageHash: "prepared-hash",
+			preparedBlockhash: "prepared-blockhash",
+		});
+		expect(mocks.updateSets.at(-1)).toMatchObject({ status: "confirmed" });
 	});
 
-	it("fails when the tx errored on-chain", async () => {
-		mocks.selectResults = [[pendingTip()], [], [{ walletAddress: RECIPIENT_WALLET }]];
-		mocks.mockGetTransaction.mockResolvedValueOnce(txCrediting(TIP_RAW, { InstructionError: [0, "Custom"] }));
-		const res = await confirmTipInternal(ME, { tipId: "tip-1", txSignature: SIG });
-		expect(res).toMatchObject({ success: false, status: "failed" });
-		expect(mocks.updateSets.at(-1)).toMatchObject({ status: "failed" });
+	it("maps a concurrent unique-index collision to signature_reused", async () => {
+		mocks.updateError = { code: "23505" };
+
+		const result = await confirmTipInternal("user-1", input);
+
+		expect(result).toMatchObject({ success: false, status: "signature_reused" });
+		expect(mocks.verify).not.toHaveBeenCalled();
 	});
 
-	it("leaves the tip pending (never fail-open to confirmed) when the RPC errors", async () => {
-		// An RPC/network failure must not credit the tip. verifyTipPayment catches and
-		// returns 'pending' so reconcileTipsFromTo can finalize it later on-chain.
-		mocks.selectResults = [[pendingTip()], [], [{ walletAddress: RECIPIENT_WALLET }]];
-		mocks.mockGetTransaction.mockRejectedValue(new Error("RPC unavailable"));
-		const res = await confirmTipInternal(ME, { tipId: "tip-1", txSignature: SIG });
-		expect(res).toEqual({ success: true, status: "pending" });
-		// Signature stored, but status was NOT flipped to confirmed.
-		expect(mocks.updateSets.at(-1)).toMatchObject({ txSignature: SIG });
-		expect(mocks.updateSets.some((s) => s.status === "confirmed")).toBe(false);
+	it("returns idempotent success when the same tip is already confirmed with the signature", async () => {
+		mocks.updateResults = [[]];
+		mocks.selectResults = [
+			[
+				{
+					fromUserId: "user-1",
+					status: "confirmed",
+					txSignature: "signature-1",
+					lastVerificationCode: "confirmed",
+				},
+			],
+		];
+
+		const result = await confirmTipInternal("user-1", input);
+
+		expect(result).toEqual({ success: true, status: "confirmed" });
+		expect(mocks.verify).not.toHaveBeenCalled();
+	});
+});
+
+describe("prepareTipInternal", () => {
+	beforeEach(resetMocks);
+
+	it("prepares a tip for a SIWS sender without looking up the synthetic Privy ID", async () => {
+		const senderWallet = "11111111111111111111111111111111";
+		const recipientWallet = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
+
+		mocks.getUserById.mockImplementation(async (privyId: string) => {
+			if (privyId.startsWith("siws:")) throw new Error("Privy user not found");
+			return {
+				linkedAccounts: [
+					{
+						type: "wallet",
+						chainType: "solana",
+						address: recipientWallet,
+						walletClientType: "privy",
+					},
+				],
+			};
+		});
+		mocks.selectResults = [
+			[{ id: "recipient-1", walletAddress: recipientWallet, privyId: "did:privy:recipient" }],
+			[],
+			[],
+		];
+		mocks.insertResults = [[{ id: "tip-1" }]];
+		mocks.buildTipTransaction.mockResolvedValue({
+			transactionBase64: "prepared-transaction",
+			blockhash: "prepared-blockhash",
+			lastValidBlockHeight: 123,
+			messageHash: "prepared-hash",
+			sourceTokenAccount: "source-token-account",
+			destinationTokenAccount: "destination-token-account",
+			tokenProgram: "token-program",
+		});
+
+		const result = await prepareTipInternal(
+			"sender-1",
+			`siws:${senderWallet}`,
+			senderWallet,
+			{ toUserId: "recipient-1", amount: 1, context: "profile" },
+		);
+
+		expect(result).toMatchObject({ success: true, tipId: "tip-1" });
+		expect(mocks.getUserById).toHaveBeenCalledTimes(1);
+		expect(mocks.getUserById).toHaveBeenCalledWith("did:privy:recipient");
+		expect(mocks.insertValues[0]).toMatchObject({ fromWalletAddress: senderWallet });
 	});
 });

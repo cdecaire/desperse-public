@@ -575,8 +575,29 @@ export async function verifyReferralActivationForUser(referredUserId: string) {
       activatedAt: now,
       updatedAt: now,
     })
-    .where(eq(referrals.id, referral.id))
+    .where(and(eq(referrals.id, referral.id), eq(referrals.state, 'pending_activation')))
     .returning()
+
+  // Another request may have completed (or otherwise ended) the pending
+  // transition after our initial read. Only the request that changed the row
+  // owns the activation side effects.
+  if (!activatedReferral) {
+    const [currentReferral] = await db
+      .select()
+      .from(referrals)
+      .where(eq(referrals.id, referral.id))
+      .limit(1)
+
+    if (!currentReferral) {
+      return { success: true as const, status: 'no_referral' as const }
+    }
+
+    return {
+      success: true as const,
+      status: currentReferral.state,
+      ...(currentReferral.state === 'activated' ? { referral: currentReferral } : {}),
+    }
+  }
 
   await emitReferralEvent({
     eventName: 'referral_activation_source_completed',
@@ -625,7 +646,7 @@ export async function verifyReferralActivationForUser(referredUserId: string) {
     )
   }
 
-  return { success: true as const, status: 'activated' as const, referral: activatedReferral ?? referral }
+  return { success: true as const, status: 'activated' as const, referral: activatedReferral }
 }
 
 export async function getReferralOwnerDashboard(userId: string) {

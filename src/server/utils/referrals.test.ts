@@ -255,6 +255,45 @@ describe('referrals utils', () => {
     vi.useRealTimers()
   })
 
+  it('does not emit duplicate activation events when another request wins the transition', async () => {
+    const referral = {
+      id: 'referral-1',
+      referrerUserId: 'referrer-1',
+      referredUserId: 'referred-1',
+      attributionSessionId: 'session-1',
+      inviteCode: 'carl',
+      state: 'pending_activation',
+      expiresAt: new Date('2026-08-01T00:00:00.000Z'),
+    }
+    const activatedReferral = {
+      ...referral,
+      state: 'activated',
+      activationSource: 'first_follow',
+      activationQualifiedFollowUserId: 'creator-1',
+    }
+
+    selectQueue.push([referral])
+    selectQueue.push([referral])
+    selectQueue.push([
+      {
+        id: 'referred-1',
+        displayName: 'New User',
+        avatarUrl: 'https://example.com/avatar.png',
+        createdAt: new Date('2026-07-08T11:00:00.000Z'),
+      },
+    ])
+    selectQueue.push([{ followingId: 'creator-1' }])
+    updateQueue.push([])
+    selectQueue.push([activatedReferral])
+
+    const { verifyReferralActivationForUser } = await import('./referrals')
+    const result = await verifyReferralActivationForUser('referred-1')
+
+    expect(result.success).toBe(true)
+    expect(result.status).toBe('activated')
+    expect(insertValues).toHaveLength(0)
+  })
+
   it('expires stale pending referrals after 30 days', async () => {
     const now = new Date('2026-08-09T12:00:00.000Z')
     const expiredReferral = {

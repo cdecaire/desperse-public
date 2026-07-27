@@ -24,6 +24,7 @@ import {
 
 const TIP_RATE_LIMIT_HOURS = 24;
 const VERIFICATION_VERSION = 1;
+const INITIAL_RETRY_DELAY_MS = 15_000;
 
 export interface PrepareTipInput {
 	toUserId: string;
@@ -353,12 +354,14 @@ export async function confirmTipInternal(
 		});
 
 		if (verification === "confirmation_pending") {
+			const nextVerificationAt = new Date(Date.now() + INITIAL_RETRY_DELAY_MS);
 			await db
 				.update(tips)
 				.set({
 					verificationClaimKey: null,
 					verificationClaimedAt: null,
 					lastVerificationCode: verification,
+					nextVerificationAt,
 				})
 				.where(and(eq(tips.id, input.tipId), eq(tips.verificationClaimKey, claimKey)));
 			return { success: true, status: "confirmation_pending" };

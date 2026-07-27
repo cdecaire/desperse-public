@@ -1027,6 +1027,7 @@ export const tips = pgTable(
     verificationClaimKey: text('verification_claim_key'),
     verificationClaimedAt: timestamp('verification_claimed_at'),
     verificationAttempts: integer('verification_attempts').notNull().default(0),
+    nextVerificationAt: timestamp('next_verification_at'),
     lastVerificationCode: text('last_verification_code'),
     failedAt: timestamp('failed_at'),
     status: tipStatusEnum('status').notNull().default('pending'),
@@ -1038,6 +1039,7 @@ export const tips = pgTable(
     fromUserIdIdx: index('tips_from_user_id_idx').on(table.fromUserId),
     toUserIdIdx: index('tips_to_user_id_idx').on(table.toUserId),
     statusIdx: index('tips_status_idx').on(table.status),
+    verificationDueIdx: index('tips_verification_due_idx').on(table.status, table.nextVerificationAt),
     // For eligibility checks: sum confirmed tips from viewer to creator
     fromToStatusIdx: index('tips_from_to_status_idx').on(table.fromUserId, table.toUserId, table.status),
     txSignatureUniqueIdx: uniqueIndex('tips_tx_signature_unique_idx')

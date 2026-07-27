@@ -8,7 +8,6 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { UserAvatar } from '@/components/shared/UserAvatar'
 import { StaticPageLayout } from '@/components/layout/StaticPageLayout'
 import { getPrimaryDisplayMedia } from '@/components/feed/postAssets'
-import { getOnboardingSteps, Stepper } from '@/components/onboarding/OnboardingShell'
 import { useAuth } from '@/hooks/useAuth'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
 import { useFollowMutation, useFollowStats } from '@/hooks/useProfileQuery'
@@ -156,8 +155,6 @@ function NextStepsView({
   currentUserId: string | undefined
   isProfileComplete: boolean
 }) {
-  const steps = getOnboardingSteps(isProfileComplete ? 'firstPost' : 'profile')
-
   return (
     <StaticPageLayout>
       <div className="flex flex-col gap-6">
@@ -167,22 +164,35 @@ function NextStepsView({
               <Icon name="circle-check" variant="solid" className="text-lg text-(--tone-standard)" />
               <Badge variant="outline">Invite accepted</Badge>
             </div>
-            <CardTitle className="text-heading-2">Let's get your profile ready</CardTitle>
+            <CardTitle className="text-heading-2">Finish activating your invite</CardTitle>
             <CardDescription className="text-body-md">
-              Two quick steps and you're set up as a creator on Desperse.
+              Complete your profile and follow an eligible creator before this invite counts.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="space-y-2">
-              <Stepper steps={steps.slice(0, 2)} />
-              <p className="text-body-sm text-muted-foreground">
-                {steps.find((step) => step.status === 'current')?.description}
-              </p>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="rounded-xl border border-foreground/20 bg-muted/30 p-4">
+                <p className="text-label-lg">1. Complete your profile</p>
+                <p className="mt-1.5 text-body-sm text-muted-foreground">
+                  {isProfileComplete ? 'Profile complete.' : 'Add the name and photo people will know you by.'}
+                </p>
+              </div>
+              <div className="rounded-xl border border-border/60 p-4">
+                <p className="text-label-lg">2. Follow an eligible creator</p>
+                <p className="mt-1.5 text-body-sm text-muted-foreground">
+                  Choose a creator from Explore. Following the person who invited you may not qualify.
+                </p>
+              </div>
             </div>
 
-            <Button asChild size="cta" className="w-full sm:w-auto">
-              <Link to="/onboarding">{isProfileComplete ? 'Continue onboarding' : 'Get started'}</Link>
-            </Button>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Button asChild size="cta" className="w-full sm:w-auto">
+                <Link to="/onboarding">{isProfileComplete ? 'Continue onboarding' : 'Complete profile'}</Link>
+              </Button>
+              <Button asChild variant="outline" className="w-full sm:w-auto">
+                <Link to="/explore">Find an eligible creator</Link>
+              </Button>
+            </div>
 
             <ReferrerStrip referrer={referrer} referrerName={referrerName} currentUserId={currentUserId} />
           </CardContent>

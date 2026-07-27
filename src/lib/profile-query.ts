@@ -48,4 +48,3 @@ export function viewerProfileQueryOptions(
 		gcTime: 10 * 60 * 1000,
 	})
 }
-

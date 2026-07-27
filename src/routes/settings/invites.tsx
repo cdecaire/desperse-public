@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { type ReactNode, useMemo } from 'react'
+import { type FormEvent, type ReactNode, useMemo, useState } from 'react'
 import { Note, Progress } from '@cdecaire/sable'
 import { Row, Stack } from '@cdecaire/sable/layout'
 
@@ -21,7 +21,7 @@ import {
 import { Icon } from '@/components/ui/icon'
 import { Input } from '@/components/ui/input'
 import { toast } from '@/hooks/use-toast'
-import { useReferralLeaderboard, useReferralOwnerDashboard } from '@/hooks/useReferrals'
+import { useReferralLeaderboard, useReferralOwnerDashboard, useUpdateCustomInviteCode } from '@/hooks/useReferrals'
 import { formatRelativeTime } from '@/lib/dates'
 import {
   buildInviteLink,
@@ -75,6 +75,9 @@ function InvitesPage() {
 function InvitesPageContent() {
   const { data: dashboard, isLoading, error } = useReferralOwnerDashboard()
   const { data: leaderboard } = useReferralLeaderboard()
+  const updateCustomCode = useUpdateCustomInviteCode()
+  const [customCode, setCustomCode] = useState('')
+  const [customCodeFeedback, setCustomCodeFeedback] = useState<string | null>(null)
 
   const origin = typeof window === 'undefined' ? 'https://desperse.com' : window.location.origin
   const inviteLink = dashboard ? buildInviteLink(origin, dashboard.inviteCode) : ''
@@ -83,6 +86,19 @@ function InvitesPageContent() {
   const nextMilestone = dashboard ? getNextReferralMilestone(dashboard.activatedCount) : null
   const currentTier = dashboard ? getCurrentReferralTierLabel(dashboard.activatedCount) : 'Invite in progress'
   const pendingLimitReached = Boolean(dashboard && dashboard.remainingSlots <= 0)
+
+  const submitCustomCode = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const result = await updateCustomCode.mutateAsync(customCode)
+    if (!result.success) {
+      setCustomCodeFeedback(result.error || 'Could not update your invite code.')
+      return
+    }
+
+    setCustomCode('')
+    setCustomCodeFeedback(`Your invite code is now ${result.code}.`)
+    toast.success('Custom invite code updated')
+  }
 
   const groupedReferrals = useMemo(() => {
     if (!dashboard) return [] as Array<{ title: string; items: ReferralListItem[] }>
@@ -317,6 +333,55 @@ function InvitesPageContent() {
                       </Note>
                     ) : null}
                   </Stack>
+                </SettingsCard>
+
+                {/* Custom invite code */}
+                <SettingsCard>
+                  <SectionHeader title="Custom invite code" />
+                  {dashboard.customCodeUnlocked ? (
+                    <form onSubmit={submitCustomCode}>
+                      <Stack gap={1.5}>
+                        <p className="text-body-sm text-muted-foreground">
+                          Choose 3–20 letters, numbers, or underscores. Availability is checked when you submit, and codes can be changed once every 7 days.
+                        </p>
+                        <Row gap={1.5} className="flex-col sm:flex-row">
+                          <Input
+                            value={customCode}
+                            onChange={(event) => {
+                              setCustomCode(event.target.value.toLowerCase().replace(/^@+/, ''))
+                              setCustomCodeFeedback(null)
+                            }}
+                            placeholder={dashboard.customInviteCode || dashboard.defaultInviteCode}
+                            aria-label="Custom invite code"
+                            aria-describedby="custom-invite-code-feedback"
+                            pattern="[a-z0-9_]{3,20}"
+                            minLength={3}
+                            maxLength={20}
+                            autoCapitalize="none"
+                            autoCorrect="off"
+                            spellCheck={false}
+                            className="font-mono"
+                            required
+                          />
+                          <Button type="submit" disabled={updateCustomCode.isPending} className="shrink-0">
+                            {updateCustomCode.isPending ? 'Checking…' : dashboard.customInviteCode ? 'Change code' : 'Claim code'}
+                          </Button>
+                        </Row>
+                        <p
+                          id="custom-invite-code-feedback"
+                          className="text-body-sm text-muted-foreground"
+                          aria-live="polite"
+                        >
+                          {customCodeFeedback
+                            || (dashboard.customInviteCode
+                              ? `Current custom code: ${dashboard.customInviteCode}`
+                              : 'Reserved or unavailable codes will show alternatives.')}
+                        </p>
+                      </Stack>
+                    </form>
+                  ) : (
+                    <Note>Unlock a custom code after 3 activated invites. You have {dashboard.activatedCount}.</Note>
+                  )}
                 </SettingsCard>
 
                 {/* Progress */}

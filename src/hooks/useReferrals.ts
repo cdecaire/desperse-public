@@ -1,9 +1,10 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import {
   getPublicReferralProfileStatus,
   getReferralLeaderboard,
   getReferralOwnerDashboard,
+  updateMyCustomInviteCode,
 } from '@/server/functions/referrals'
 import { useAuth } from '@/hooks/useAuth'
 import { useCurrentUser } from '@/hooks/useCurrentUser'
@@ -36,6 +37,27 @@ export function useReferralOwnerDashboard() {
     enabled: isAuthenticated,
     staleTime: 60 * 1000,
     retry: false,
+  })
+}
+
+export function useUpdateCustomInviteCode() {
+  const { getAuthHeaders } = useAuth()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (code: string) => {
+      const authHeaders = await getAuthHeaders()
+      if (!authHeaders.Authorization) return { success: false as const, error: 'Authentication required' }
+
+      return updateMyCustomInviteCode({
+        data: { code, _authorization: authHeaders.Authorization },
+      } as never)
+    },
+    onSuccess: async (result) => {
+      if (result.success) {
+        await queryClient.invalidateQueries({ queryKey: referralOwnerDashboardQueryKey })
+      }
+    },
   })
 }
 

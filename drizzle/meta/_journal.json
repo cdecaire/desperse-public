@@ -393,6 +393,13 @@
       "when": 1785108722538,
       "tag": "0055_light_ezekiel",
       "breakpoints": true
+    },
+    {
+      "idx": 56,
+      "version": "7",
+      "when": 1785153975930,
+      "tag": "0056_chemical_blink",
+      "breakpoints": true
     }
   ]
 }

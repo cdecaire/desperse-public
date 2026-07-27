@@ -4,9 +4,42 @@ import bs58 from "bs58";
 import {
 	validateTransactionSignature,
 	verifyPreparedMessage,
+	verifyTipTransaction,
 } from "./tip-payment-verifier";
 
 describe("tip payment verifier", () => {
+	it("fails a missing transaction once its prepared blockhash expires", async () => {
+		const prepared = {
+			preparedMessageHash: "hash",
+			preparedBlockhash: "prepared-blockhash",
+			lastValidBlockHeight: 100,
+		};
+		const rpc = {
+			getTransaction: async () => null,
+			getBlockHeight: async () => 101,
+		};
+
+		await expect(verifyTipTransaction("signature", prepared, rpc as never)).resolves.toBe(
+			"blockhash_expired",
+		);
+	});
+
+	it("keeps retrying a missing transaction while its blockhash is still valid", async () => {
+		const prepared = {
+			preparedMessageHash: "hash",
+			preparedBlockhash: "prepared-blockhash",
+			lastValidBlockHeight: 100,
+		};
+		const rpc = {
+			getTransaction: async () => null,
+			getBlockHeight: async () => 100,
+		};
+
+		await expect(verifyTipTransaction("signature", prepared, rpc as never)).resolves.toBe(
+			"confirmation_pending",
+		);
+	});
+
 	it("accepts only 64-byte base58 signatures", () => {
 		expect(validateTransactionSignature(bs58.encode(new Uint8Array(64)))).toBe(true);
 		expect(validateTransactionSignature(bs58.encode(new Uint8Array(63)))).toBe(false);
@@ -18,6 +51,7 @@ describe("tip payment verifier", () => {
 		const prepared = {
 			preparedMessageHash: createHash("sha256").update(message).digest("hex"),
 			preparedBlockhash: "prepared-blockhash",
+			lastValidBlockHeight: 100,
 		};
 
 		expect(verifyPreparedMessage(message, "prepared-blockhash", prepared)).toBe(
@@ -42,6 +76,7 @@ describe("tip payment verifier", () => {
 				.update(preparedMessage)
 				.digest("hex"),
 			preparedBlockhash: "prepared-blockhash",
+			lastValidBlockHeight: 100,
 		};
 
 		expect(

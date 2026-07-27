@@ -4,7 +4,7 @@
   "crons": [
     { "path": "/api/v1/discord/recheck", "schedule": "0 9 * * *" },
     { "path": "/api/v1/leaderboard/refresh", "schedule": "*/10 * * * *" },
-    { "path": "/api/v1/tips/reconcile", "schedule": "* * * * *" }
+    { "path": "/api/v1/tips/reconcile", "schedule": "*/2 * * * *" }
   ],
   "images": {
     "sizes": [320, 480, 640, 800, 1200, 1600],
